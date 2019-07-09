@@ -6,7 +6,7 @@
 
     <!-- read to upload artifact to central repository https://central.sonatype.org/pages/ossrh-guide.html-->
 
-    <groupId>json-values</groupId>
+    <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
     <version>1.0.0-SNAPSHOT</version>
