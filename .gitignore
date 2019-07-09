@@ -1,0 +1,12 @@
+target/
+.DS_Store/
+dependency-reduced-pom.xml
+*.iml
+.idea/
+javadoc
+data
+coverage-report
+benchmarking
+scripts/.tmp
+scripts/libs
+src/main/java/jsonvalue/libs/

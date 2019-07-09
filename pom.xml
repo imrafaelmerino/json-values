@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- read to upload artifact to central repository https://central.sonatype.org/pages/ossrh-guide.html-->
+
+    <groupId>json-values</groupId>
+    <artifactId>json-values</artifactId>
+    <packaging>jar</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <name>json-values</name>
+    <description>json-values is a functional Java library to work with immutable jsons using persistent data structures.</description>
+    <url>https://gitlab.com/rafael.merino.garcia/json-values</url>
+
+    <licenses>
+        <license>
+            <name>Apache License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <scm>
+        <url>https://gitlab.com/rafael.merino.garcia/json-values.git</url>
+    </scm>
+
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <DEPENDENCY_SCALA_CHECK_VERSION>1.14.0</DEPENDENCY_SCALA_CHECK_VERSION>
+        <DEPENDENCY_SCALA_VERSION>2.12.8</DEPENDENCY_SCALA_VERSION>
+        <DEPENDENCY_SCALA_TEST_VERSION>3.0.7</DEPENDENCY_SCALA_TEST_VERSION>
+        <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
+        <PLUGIN_SCALA_VERSION>4.0.1</PLUGIN_SCALA_VERSION>
+        <PLUGIN_SCALA_TEST_VERSION>2.0.0</PLUGIN_SCALA_TEST_VERSION>
+        <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
+        <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
+        <JAVAX_JSON_VERSION>1.1.4</JAVAX_JSON_VERSION>
+        <CYCLOPS_VERSION>10.0.1</CYCLOPS_VERSION>
+        <sonar.exclusions>**/jsonvalues/libs/**</sonar.exclusions>
+        <sonar.projectKey>json-values</sonar.projectKey>
+    </properties>
+
+    <dependencies>
+
+
+        <dependency>
+            <groupId>org.scalacheck</groupId>
+            <artifactId>scalacheck_2.12</artifactId>
+            <version>${DEPENDENCY_SCALA_CHECK_VERSION}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scalatest</groupId>
+            <artifactId>scalatest_2.12</artifactId>
+            <version>${DEPENDENCY_SCALA_TEST_VERSION}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.scala-lang</groupId>
+            <artifactId>scala-library</artifactId>
+            <version>${DEPENDENCY_SCALA_VERSION}</version>
+            <scope>compile</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.3.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>checker-qual</artifactId>
+            <version>2.8.2</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.checkerframework</groupId>
+            <artifactId>jdk8</artifactId>
+            <version>2.8.2</version>
+            <scope>provided</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <!--                            <relocations>-->
+                            <!--                                <relocation>-->
+                            <!--                                    <pattern>scala</pattern>-->
+                            <!--                                    <shadedPattern>jsonvalues.libs</shadedPattern>-->
+                            <!--                                </relocation>-->
+                            <!--                            </relocations>-->
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${PLUGIN_COMPILER_VERSION}</version>
+                <configuration>
+                    <encoding>UTF-8</encoding>
+                    <source>${COMPILER_SOURCE_VERSION}</source>
+                    <target>${COMPILER_TARGET_VERSION}</target>
+                    <showWarnings>true</showWarnings>
+                    <compilerArgs>
+                        <arg>-Xlint:all</arg>
+                    </compilerArgs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>net.alchim31.maven</groupId>
+                <artifactId>scala-maven-plugin</artifactId>
+                <version>${PLUGIN_SCALA_VERSION}</version>
+                <configuration>
+                    <recompileMode>incremental</recompileMode>
+                    <addJavacArgs>-deprecation</addJavacArgs>
+                    <addScalacArgs>-deprecation</addScalacArgs>
+                </configuration>
+
+                <executions>
+                    <execution>
+                        <id>compile</id>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <!-- disable surefire -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.22.0</version>
+                <configuration>
+                    <skipTests>false</skipTests>
+                </configuration>
+            </plugin>
+            <!--enable scalatest-->
+            <plugin>
+                <groupId>org.scalatest</groupId>
+                <artifactId>scalatest-maven-plugin</artifactId>
+                <version>${PLUGIN_SCALA_TEST_VERSION}</version>
+                <configuration>
+                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
+                    <junitxml>.</junitxml>
+                    <filereports>TestSuite.txt</filereports>
+                    <skipTests>false</skipTests>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>local</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <distributionManagement>
+                <repository>
+                    <id>releases</id>
+                    <name>Repositorio de releases</name>
+                    <url>http://127.0.0.1:8081/repository/maven-releases/</url>
+                </repository>
+                <snapshotRepository>
+                    <id>snapshots</id>
+                    <name>Repositorio de snapshots</name>
+                    <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
+                </snapshotRepository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>release</id>
+            <activation>
+                <activeByDefault>false</activeByDefault>
+            </activation>
+
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.8</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>package</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-source-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>attach-sources</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-javadoc-plugin</artifactId>
+                        <version>3.1.0</version>
+                        <executions>
+                            <execution>
+                                <id>attach-javadocs</id>
+                                <goals>
+                                    <goal>jar</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                        <configuration>
+                            <javadocExecutable>/Users/rmerino/.sdkman/candidates/java/9.0.1-oracle/bin/javadoc
+                            </javadocExecutable>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>

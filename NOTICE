@@ -1,0 +1,11 @@
+The following NOTICEs are pertain to software distributed with this project.
+
+// ------------------------------------------------------------------
+// NOTICE file corresponding to the section 4d of The Apache License,
+// Version 2.0, in this case for
+// ------------------------------------------------------------------
+
+The library org.scala-lang.scala-library is packaged in the library.
+Some code from org.glassfish.javax.json has been changed to parse strings into jsons.
+
+
