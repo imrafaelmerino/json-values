@@ -17,6 +17,13 @@
             <distribution>repo</distribution>
         </license>
     </licenses>
+    <developers>
+        <developer>
+            <id>imrafaelmerino</id>
+            <name>Rafael Merino García</name>
+            <email>imrafaelmerino@gmail.com</email>
+        </developer>
+    </developers>
     <scm>
         <url>https://github.com/imrafaelmerino/json-values.git</url>
     </scm>
@@ -178,8 +185,6 @@
             <activation>
                 <activeByDefault>false</activeByDefault>
             </activation>
-
-
             <distributionManagement>
                 <snapshotRepository>
                     <id>ossrh</id>
@@ -210,7 +215,7 @@
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
-                                <phase>package</phase>
+                                <phase>verify</phase>
                                 <goals>
                                     <goal>sign</goal>
                                 </goals>
