@@ -202,10 +202,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Constants.ALPHABET),
                                              (freqTypeOfArr.intFreq, jsArrIntGen),
                                              (freqTypeOfArr.longFreq, jsArrLongGen),
                                              (freqTypeOfArr.doubleFreq, jsArrDoubleGen)
-                                             ).map(it=>{
-    println(it)
-    it
-  })
+                                             )
 
   val pairNameValueGen: Gen[(String, JsElem)] =
   {
@@ -230,12 +227,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Constants.ALPHABET),
       pairs <- Gen.containerOfN[Array, (String, JsElem)](size,
                                                          pairNameValueGen
                                                          )
-    } yield
-      {
-        val obj = JsObj.of(scala.collection.immutable.HashMap[String, JsElem](pairs: _*).asJava)
-        println(obj)
-        obj
-      }
+    } yield JsObj.of(scala.collection.immutable.HashMap[String, JsElem](pairs: _*).asJava)
 
   }
   val jsElemGen: Gen[JsElem] = Gen.oneOf(jsValueGen,

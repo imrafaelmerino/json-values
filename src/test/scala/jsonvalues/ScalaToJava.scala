@@ -30,22 +30,6 @@ object ScalaToJava
                                     )
   }
 
-  val longbinaryop = (f: (Long, Long) => Long) => new LongBinaryOperator
-  {
-    override def applyAsLong(left : Long,
-                             right: Long
-                            ): Long = f.apply(left,
-                                              right
-                                             )
-  }
 
-  val intbinaryop = (f: (Int, Int) => Int) => new IntBinaryOperator
-  {
-    override def applyAsInt(left: Int,
-                            right: Int
-                           ): Int = f.apply(left,
-                                            right
-                                           )
-  }
 
 }

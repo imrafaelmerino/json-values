@@ -1,7 +1,7 @@
 package jsonvalues.specifications.immutable.jsobject
 
-import jsonvalues.JsArray.TYPE.SET
 import jsonvalues.JsArray.TYPE
+import jsonvalues.JsArray.TYPE.SET
 import jsonvalues._
 import jsonvalues.specifications.BasePropSpec
 import org.scalacheck.Gen
@@ -23,7 +23,11 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.union_(js, SET).equals(js) && js.union_(js, SET).hashCode() == js.hashCode()
+            js.union_(js,
+                      SET
+                      ).equals(js) && js.union_(js,
+                                                SET
+                                                ).hashCode() == js.hashCode()
           }
           )
   }
@@ -32,7 +36,11 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection(js, TYPE.LIST).equals(js) && js.intersection(js, TYPE.LIST).hashCode() == js.hashCode()
+            js.intersection(js,
+                            TYPE.LIST
+                            ).equals(js) && js.intersection(js,
+                                                            TYPE.LIST
+                                                            ).hashCode() == js.hashCode()
           }
           )
   }
@@ -69,8 +77,18 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.union_(b, SET).fields().containsAll(b.union_(a, SET).fields()) &&
-            b.union_(a, SET).fields().containsAll(a.union_(b, SET).fields())
+            a.union_(b,
+                     SET
+                     ).fields().containsAll(b.union_(a,
+                                                     SET
+                                                     ).fields()
+                                            ) &&
+            b.union_(a,
+                     SET
+                     ).fields().containsAll(a.union_(b,
+                                                     SET
+                                                     ).fields()
+                                            )
 
           }
           )
@@ -83,7 +101,12 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.intersection(b, TYPE.LIST).equals(b.intersection(a, TYPE.LIST))
+            a.intersection(b,
+                           TYPE.LIST
+                           ).equals(b.intersection(a,
+                                                   TYPE.LIST
+                                                   )
+                                    )
           }
           )
   }
@@ -96,22 +119,16 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            println("------------")
-            println("a: "+a)
-            println("b: "+b)
             val obj = a.intersection_(b,
                                       SET
                                       )
-            println(obj)
             val obj1 = b.intersection_(a,
-                                      SET
-                                      )
-            println(obj1)
-            val eq = obj.equals(obj1,
-                                  SET
-                                  )
-            println(eq)
-            eq
+                                       SET
+                                       )
+            obj.equals(obj1,
+                       SET
+                       )
+
           }
           )
   }
@@ -121,7 +138,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection(JsObj.empty(), TYPE.LIST).equals(JsObj.empty())
+            js.intersection(JsObj.empty(),
+                            TYPE.LIST
+                            ).equals(JsObj.empty())
           }
           )
   }
@@ -130,7 +149,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection_(JsObj.empty(), SET).equals(JsObj.empty())
+            js.intersection_(JsObj.empty(),
+                             SET
+                             ).equals(JsObj.empty())
           }
           )
   }
@@ -140,8 +161,12 @@ class SetTheoryOpsSpec extends BasePropSpec
     val ONE = JsInt.of(1)
     val TWO = JsInt.of(2)
     val THREE = JsInt.of(3)
-    val obj3 = JsObj.of("d",ONE)
-    val obj4 = JsObj.of("e",TWO)
+    val obj3 = JsObj.of("d",
+                        ONE
+                        )
+    val obj4 = JsObj.of("e",
+                        TWO
+                        )
 
     val gen: Gen[JsObj] = Gen.const(JsObj.of("a",
                                              JsArray.of(ONE,
@@ -166,21 +191,14 @@ class SetTheoryOpsSpec extends BasePropSpec
                          ).equals(obj)
 
 
-
-
               val result = obj.union_(b,
                                       TYPE.MULTISET
                                       )
 
 
-
-
               val result1 = obj.union_(b,
                                        SET
                                        )
-
-
-
 
 
               val result2 = obj.union_(b,
@@ -189,8 +207,6 @@ class SetTheoryOpsSpec extends BasePropSpec
 
 
               result.size("a").orElse(0) == 6 && result1.size("a").orElse(0) == 5 && result2.size("a").orElse(0) == 3
-
-
 
 
           }

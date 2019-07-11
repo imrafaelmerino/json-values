@@ -2314,30 +2314,5 @@ class TestJsArray
         Assertions.assertFalse(_arr_.containsPath("1.b"));
     }
 
-    @Test
-    void test_appends_all()
-    {
-        final JsArray a = JsArray.of(1,
-                                     2,
-                                     3
-                                    );
-        final JsArray b = JsArray.of(4,
-                                     5,
-                                     6
-                                    );
-
-        final JsObj obj = JsObj.of("",
-                                  JsArray.of(1,
-                                             2,
-                                             3,
-                                             4,
-                                             5,
-                                             6
-                                            ));
-       System.out.println(obj.get(""));
-
-
-    }
-
 
 }

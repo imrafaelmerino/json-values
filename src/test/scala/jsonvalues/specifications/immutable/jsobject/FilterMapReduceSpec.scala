@@ -86,39 +86,6 @@ class FilterMapReduceSpec extends BasePropSpec
            )
   }
 
-  //  property("filterObjs_  (removes empty Json)")
-  //  {
-  //    check(
-  //           forAll(jsGen.jsObjGen)
-  //           {
-  //             js =>
-  //               println(js)
-  //               val predicate: Predicate[JsPair] = p => !p.elem.asJson().isEmpty
-  //               val obj = js.filterObjs_(predicate)
-  //               println(obj)
-  //               (js.isEmpty && obj.isEmpty) ||
-  //               (!js.isEmpty && obj.stream_().filter(p => p.elem.isJson).allMatch(p => !p.elem.asJson().isEmpty)) ||
-  //               (obj.isEmpty && js.stream_().filter(p => p.elem.isJson).allMatch(p => p.elem.asJson().isEmpty))
-  //
-  //           }
-  //         )
-  //  }
-  //
-  //  property("filterObjs (removes empty Json)")
-  //  {
-  //    check(
-  //           forAll(jsGen.jsObjGen)
-  //           {
-  //             js =>
-  //               val predicate: Predicate[JsPair] = p => !p.elem.asJson().isEmpty
-  //               val obj = js.filterObjs(predicate)
-  //               (js.isEmpty && obj.isEmpty) ||
-  //               (obj.isEmpty && js.stream_().filter(p => p.elem.isJson && p.path.tail().isEmpty).allMatch(p => p.elem.asJson().isEmpty)) ||
-  //               (!js.isEmpty && obj.stream_().filter(p => p.elem.isJson && p.path.tail().isEmpty).allMatch(p => !p.elem.asJson().isEmpty))
-  //           }
-  //         )
-  //  }
-
   property("filterKeys (removes all keys)")
   {
     check(
