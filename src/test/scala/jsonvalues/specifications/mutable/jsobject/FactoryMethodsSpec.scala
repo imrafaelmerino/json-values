@@ -11,7 +11,7 @@ class FactoryMethodsSpec extends BasePropSpec
 {
 
 
-  property("parse factory methods")
+  property("of factory methods")
   {
     check(forAll(jsPairGen.pairOfValueGen)
           { p =>
@@ -92,7 +92,7 @@ class FactoryMethodsSpec extends BasePropSpec
           )
   }
 
-  //keyValueFilter doesn't change the structure parse the json
+  //keyValueFilter doesn't change the structure of the json
   property("json object parser: filtering all x keys")
   {
     check(forAll(jsGen.jsObjGen)

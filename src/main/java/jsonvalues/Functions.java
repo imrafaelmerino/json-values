@@ -142,9 +142,9 @@ class Functions
 
     }
 
-    static <R> Function<JsPair, R> ifElse(Predicate<JsPair> predicate,
-                                          Function<JsPair, R> ifTrue,
-                                          Function<JsPair, R> ifFalse
+    static <R> Function<JsPair, R> ifElse(Predicate<? super JsPair> predicate,
+                                          Function<? super JsPair, R> ifTrue,
+                                          Function<? super JsPair, R> ifFalse
                                          )
     {
         return pair -> predicate.test(pair) ? ifTrue.apply(pair) : ifFalse.apply(pair);
@@ -275,8 +275,8 @@ class Functions
 
     static <T> Trampoline<Optional<T>> reduce(final JsObj obj,
                                               final BinaryOperator<T> op,
-                                              final Function<JsPair, T> fn,
-                                              final Predicate<JsPair> predicate,
+                                              final Function<? super JsPair, T> fn,
+                                              final Predicate<? super JsPair> predicate,
                                               final JsPath path,
                                               final Optional<T> result
                                              )
@@ -329,8 +329,8 @@ class Functions
 
     static <T> Trampoline<Optional<T>> reduce(final JsArray arr,
                                               final BinaryOperator<T> op,
-                                              final Function<JsPair, T> fn,
-                                              final Predicate<JsPair> predicate,
+                                              final Function<? super JsPair, T> fn,
+                                              final Predicate<? super JsPair> predicate,
                                               final JsPath path,
                                               final Optional<T> result
                                              )
@@ -381,8 +381,8 @@ class Functions
 
     static <T> Trampoline<Optional<T>> reduce_(final JsArray arr,
                                                final BinaryOperator<T> op,
-                                               final Function<JsPair, T> fn,
-                                               final Predicate<JsPair> predicate,
+                                               final Function<? super JsPair, T> fn,
+                                               final Predicate<? super JsPair> predicate,
                                                final JsPath path,
                                                final Optional<T> result
                                               )
@@ -443,8 +443,8 @@ class Functions
 
     static <T> Trampoline<Optional<T>> reduce_(final JsObj obj,
                                                final BinaryOperator<T> op,
-                                               final Function<JsPair, T> fn,
-                                               final Predicate<JsPair> predicate,
+                                               final Function<? super JsPair, T> fn,
+                                               final Predicate<? super JsPair> predicate,
                                                final JsPath path,
                                                final Optional<T> result
                                               )
@@ -3851,38 +3851,57 @@ class Functions
                                                   b.asJsObj(),
                                                   ARRAY_AS
                                                  );
-        return union_(a.asJsArray(),
-                      b.asJsArray(),
-                      ARRAY_AS
-                     );
+        if (ARRAY_AS == TYPE.LIST) return union_(a.asJsArray(),
+                                                 b.asJsArray()
+                                                );
+
+        return union(a.asJsArray(),
+                     b.asJsArray(),
+                     ARRAY_AS
+                    );
 
 
     }
 
     static Trampoline<JsArray> union_(final JsArray a,
-                                      final JsArray b,
-                                      final TYPE ARRAY_AS
-
+                                      final JsArray b
                                      )
     {
 
-        switch (ARRAY_AS)
+        if (b.isEmpty()) return done(a);
+
+        if (a.isEmpty()) return done(b);
+
+
+        final JsElem head = a.head();
+        final JsElem otherHead = b.head();
+
+        final Trampoline<JsArray> $tail = union_(a.tail(),
+                                                 b.tail()
+                                                );
+
+
+        if (head.isJson() && isSameType(otherHead).test(head))
         {
-            case SET:
-                return unionAsSet(a,
-                                  b
-                                 );
-            case LIST:
-                return unionAsList_(a,
-                                    b
-                                   );
-            case MULTISET:
-                return unionAsMultiSet(a,
-                                       b
-                                      );
+
+
+            final Json<?> obj = head.asJson();
+            final Json<?> obj1 = otherHead.asJson();
+
+            Trampoline<? extends Json<?>> $head = more(() -> union_(obj,
+                                                                    obj1,
+                                                                    JsArray.TYPE.LIST
+                                                                   ));
+
+
+            return appendFront_(() -> $head,
+                                () -> $tail
+                               );
         }
 
-        throw new IllegalArgumentException(ARRAY_AS.name() + " option not supported");
+        return appendFront(head,
+                           () -> $tail
+                          );
 
 
     }
@@ -3890,8 +3909,8 @@ class Functions
 
     private static <T> Trampoline<Optional<T>> reduce_(final Json<?> json,
                                                        final BinaryOperator<T> op,
-                                                       final Function<JsPair, T> fn,
-                                                       final Predicate<JsPair> predicate,
+                                                       final Function<? super JsPair, T> fn,
+                                                       final Predicate<? super JsPair> predicate,
                                                        final JsPath headPath,
                                                        final Optional<T> result
 
@@ -3963,7 +3982,7 @@ class Functions
 
     private static <T> Optional<T> mapAndReduce(final JsPair p,
                                                 final BinaryOperator<T> op,
-                                                final Function<JsPair, T> fn,
+                                                final Function<? super JsPair, T> fn,
                                                 final Optional<T> result
                                                )
     {
@@ -4080,47 +4099,6 @@ class Functions
 
     }
 
-    private static Trampoline<JsArray> unionAsList_(final JsArray a,
-                                                    final JsArray b
-                                                   )
-    {
-        if (b.isEmpty()) return done(a);
-
-        if (a.isEmpty()) return done(b);
-
-
-        final JsElem head = a.head();
-        final JsElem otherHead = b.head();
-
-        final Trampoline<JsArray> $tail = unionAsList_(a.tail(),
-                                                       b.tail()
-                                                      );
-
-
-        if (head.isJson() && isSameType(otherHead).test(head))
-        {
-
-
-            final Json<?> obj = head.asJson();
-            final Json<?> obj1 = otherHead.asJson();
-
-            Trampoline<? extends Json<?>> $head = more(() -> union_(obj,
-                                                                    obj1,
-                                                                    JsArray.TYPE.LIST
-                                                                   ));
-
-
-            return appendFront_(() -> $head,
-                                () -> $tail
-                               );
-        }
-
-        return appendFront(head,
-                           () -> $tail
-                          );
-
-
-    }
 
     private static Trampoline<JsArray> unionAsMultiSet(final JsArray a,
                                                        final JsArray b

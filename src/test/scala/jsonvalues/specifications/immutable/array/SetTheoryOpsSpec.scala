@@ -9,7 +9,7 @@ class SetTheoryOpsSpec extends BasePropSpec
 {
 
 
-  property("union parse an array with itself returns the same array (TYPE.SET)")
+  property("union of an array with itself returns the same array (TYPE.SET)")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -18,7 +18,7 @@ class SetTheoryOpsSpec extends BasePropSpec
          )
   }
 
-  property("union parse an array with itself returns the same array (TYPE.LIST)")
+  property("union of an array with itself returns the same array (TYPE.LIST)")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -27,7 +27,7 @@ class SetTheoryOpsSpec extends BasePropSpec
          )
   }
 
-  property("union parse an array with itself returns the same array duplicated (TYPE.MULTISET)")
+  property("union of an array with itself returns the same array duplicated (TYPE.MULTISET)")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -36,35 +36,20 @@ class SetTheoryOpsSpec extends BasePropSpec
          )
   }
 
-  property("union_ parse an array with itself itself returns the same array (TYPE.SET)")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            js.union_(js, TYPE.SET).equals(js) && js.union_(js, TYPE.SET).hashCode() == js.hashCode()
-          }
-         )
-  }
 
-  property("union_ parse an array with itself returns the same array (TYPE.LIST)")
+
+  property("union_ of an array with itself returns the same array ")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.union_(js, TYPE.LIST).equals(js) && js.union_(js, TYPE.LIST).hashCode() == js.hashCode()
+            js.union_(js).equals(js) && js.union_(js).hashCode() == js.hashCode()
           }
          )
   }
 
 
-  property("union_ parse an array with itself returns the same array duplicated (TYPE.MULTISET)")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            js.union_(js, TYPE.MULTISET).size() == 2 * js.size()
-          }
-         )
-  }
 
-  property("intersection parse an array with itself returns the same array (MULTISET AND LIST)")
+  property("intersection of an array with itself returns the same array (MULTISET AND LIST)")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -74,13 +59,11 @@ class SetTheoryOpsSpec extends BasePropSpec
          )
   }
 //
-  property("union parse an array A with an empty array, returns A")
+  property("union of an array A with an empty array, returns A")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.union(JsArray.empty(), TYPE.SET).equals(js) && js.union_(JsArray.empty(), TYPE.SET).equals(js) &&
-            js.union(JsArray.empty(), TYPE.LIST).equals(js) && js.union_(JsArray.empty(), TYPE.LIST).equals(js) &&
-            js.union(JsArray.empty(), TYPE.MULTISET).equals(js) && js.union_(JsArray.empty(), TYPE.MULTISET).equals(js)
+            js.union(JsArray.empty(), TYPE.LIST).equals(js) && js.union_(JsArray.empty()).equals(js)
           }
          )
   }
@@ -107,8 +90,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.union_(b, TYPE.MULTISET).size() == b.union_(a, TYPE.MULTISET).size() &&
-            a.union_(b, TYPE.LIST).size() == b.union_(a, TYPE.LIST).size()
+            a.union_(b).size() == b.union_(a).size()
 
 
           }
@@ -141,7 +123,7 @@ class SetTheoryOpsSpec extends BasePropSpec
   }
 
 
-  property("intersection parse an array with an empty array returns an empty array")
+  property("intersection of an array with an empty array returns an empty array")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -152,7 +134,7 @@ class SetTheoryOpsSpec extends BasePropSpec
          )
   }
 
-  property("intersection_ parse an array with an empty array returns an empty array")
+  property("intersection_ of an array with an empty array returns an empty array")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>

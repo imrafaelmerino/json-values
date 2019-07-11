@@ -347,8 +347,8 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
     @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final Function<JsPair, R> map,
-                                        final Predicate<JsPair> predicate
+                                        final Function<? super JsPair, R> map,
+                                        final Predicate<? super JsPair> predicate
                                        )
     {
         return Functions.reduce(this,
@@ -365,8 +365,8 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
     @Override
     public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
-                                         final Function<JsPair, R> map,
-                                         final Predicate<JsPair> predicate
+                                         final Function<? super JsPair, R> map,
+                                         final Predicate<? super JsPair> predicate
                                         )
     {
         return Functions.reduce_(this,
@@ -496,14 +496,12 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
 
     @Override
-    public final JsArray union_(final JsArray that,
-                                final TYPE ARRAY_AS
+    public final JsArray union_(final JsArray that
                                )
     {
 
         return Functions.union_(this,
-                                requireNonNull(that),
-                                requireNonNull(ARRAY_AS)
+                                requireNonNull(that)
                                )
                         .get();
     }

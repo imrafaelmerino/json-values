@@ -5,7 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 import java.util.Objects;
 
 /**
- * Represents the index of a JsElement in a JsArray.
+ * Represents the index of a JsElem in a JsArray.
  */
 public final class Index implements Position
 {
@@ -22,7 +22,7 @@ public final class Index implements Position
     }
 
     /**
-     * Returns an new index instance witch represents the given position in an array. The special index -1
+     * Returns a new instance witch represents the given index in an array. The special index -1
      * points to the last element of an array.
      *
      * @param index the given position
@@ -42,7 +42,7 @@ public final class Index implements Position
      Compares this index with another given position. If the given position is an index, both are
      compared numerically, if it's a key, both are compared lexicographically.
      @param o the given position
-     @return 0 if they are equal, +1 if this is greater than the given position, -1 otherwise
+     @return 0 if they are equal, +1 if this is greater, -1 otherwise
      */
     @Override
     public int compareTo(final Position o)

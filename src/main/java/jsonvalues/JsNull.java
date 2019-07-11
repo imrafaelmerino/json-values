@@ -3,7 +3,7 @@ package jsonvalues;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
- Singleton JsElement that represents null. It's a singleton, only the instance JsNull.NULL exists.
+Represents null, which a valid json value. It's a singleton, only the instance JsNull.NULL exists.
  */
 public final class JsNull implements JsElem
 {

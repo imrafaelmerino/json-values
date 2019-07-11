@@ -42,12 +42,12 @@ package jsonvalues;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.io.*;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.Reader;
 import java.lang.ref.WeakReference;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 import java.util.Objects;
@@ -55,17 +55,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static jsonvalues.JsParser.Event.*;
 
-
-/**
- * JSON parser implementation. NoneContext, ArrayContext, ObjectContext is used
- * to go to next parser state.
- *
- * @author Jitendra Kotamraju
- * @author Kin-man Chung
- */
 class JsParser implements Closeable
 {
-    static final JsParser.BufferPool pool = new JsParser.BufferPool();
+    private static final JsParser.BufferPool pool = new JsParser.BufferPool();
 
     /**
      * An event from {@code JsParser}.
@@ -130,7 +122,8 @@ class JsParser implements Closeable
     private final Stack stack = new Stack();
     private final Tokenizer tokenizer;
 
-    JsParser(Reader reader) {
+    JsParser(Reader reader)
+    {
         tokenizer = new Tokenizer(Objects.requireNonNull(reader),
                                   pool
         );
@@ -212,7 +205,7 @@ class JsParser implements Closeable
 
     @Nullable Event next() throws MalformedJson
     {
-        return  currentEvent = currentContext.getNextEvent();
+        return currentEvent = currentContext.getNextEvent();
     }
 
     @Override
@@ -224,8 +217,8 @@ class JsParser implements Closeable
         }
         catch (IOException e)
         {
-            throw new JsException("I/O error while closing JSON tokenizer",
-                                  e
+            throw new RuntimeException("I/O error while closing JSON tokenizer",
+                                       e
             );
         }
     }
@@ -251,7 +244,7 @@ class JsParser implements Closeable
 
     private abstract static class Context
     {
-         @Nullable Context next;
+        @Nullable Context next;
 
         abstract @Nullable Event getNextEvent() throws MalformedJson;
 
@@ -311,7 +304,7 @@ class JsParser implements Closeable
 
             if (token == Tokenizer.Token.EOF)
             {
-                if(currentEvent==null) return null;
+                if (currentEvent == null) return null;
                 switch (currentEvent)
                 {
                     case START_OBJECT:
@@ -400,7 +393,7 @@ class JsParser implements Closeable
             Tokenizer.Token token = tokenizer.nextToken();
             if (token == Tokenizer.Token.EOF)
             {
-                if(currentEvent==null) return null;
+                if (currentEvent == null) return null;
                 switch (currentEvent)
                 {
                     case START_ARRAY:
@@ -1135,8 +1128,8 @@ class JsParser implements Closeable
             }
             catch (IOException ioe)
             {
-                throw new JsException("I/O error while parsing JSON",
-                                      ioe
+                throw new RuntimeException("I/O error while parsing JSON",
+                                           ioe
                 );
             }
         }
@@ -1284,50 +1277,4 @@ class JsParser implements Closeable
 
     }
 
-
-    /**
-     * <code>JsonException</code> indicates that some exception happened during
-     * JSON processing.
-     */
-    static class JsException extends RuntimeException
-    {
-
-        static final long serialVersionUID = 1L;
-
-        /**
-         * Constructs a new runtime exception with the specified detail message.
-         * The cause is not initialized, and may subsequently be initialized by a
-         * call to {@link #initCause}.
-         *
-         * @param message the detail message. The detail message is saved for
-         *          later retrieval by the {@link #getMessage()} method.
-         */
-        JsException(String message)
-        {
-            super(message);
-        }
-
-        /**
-         * Constructs a new runtime exception with the specified detail message and
-         * cause.  <p>Note that the detail message associated with
-         * {@code cause} is <i>not</i> automatically incorporated in
-         * this runtime exception's detail message.
-         *
-         * @param message the detail message (which is saved for later retrieval
-         *         by the {@link #getMessage()} method).
-         * @param cause the cause (which is saved for later retrieval by the
-         *         {@link #getCause()} method). (A <tt>null</tt> value is
-         *         permitted, and indicates that the cause is nonexistent or
-         *         unknown.)
-         */
-        JsException(String message,
-                    Throwable cause
-                   )
-        {
-            super(message,
-                  cause
-                 );
-        }
-
-    }
 }

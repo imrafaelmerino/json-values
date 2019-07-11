@@ -16,7 +16,7 @@ public final class JsStr implements JsElem, Comparable<JsStr>
 
 
     /**
-     The string value
+     The string value.
      */
     public final String x;
 
@@ -25,6 +25,10 @@ public final class JsStr implements JsElem, Comparable<JsStr>
         this.x = x;
     }
 
+    /**
+     Compares two {@code JsStr} objects lexicographically.
+     @see String#compareTo(String)
+     */
     @Override
     public int compareTo(final JsStr o)
     {
@@ -33,7 +37,7 @@ public final class JsStr implements JsElem, Comparable<JsStr>
 
 
     /**
-     Indicates whether some other object is "equal to" this json string
+     Indicates whether some other object is "equal to" this json string.
      @param that the reference object with which to compare.
      @return true if <code>that</code> is a JsStr with the same value as <code>this</code> JsStr
      */
@@ -49,7 +53,7 @@ public final class JsStr implements JsElem, Comparable<JsStr>
     }
 
     /**
-     Tests this JsStr on a predicate
+     Tests this JsStr on a predicate.
      @param predicate the predicate
      @return true if this string satisfies the predicate
      */
@@ -60,7 +64,7 @@ public final class JsStr implements JsElem, Comparable<JsStr>
 
 
     /**
-     Returns the hashcode of this json string
+     Returns the hashcode of this json string.
      @return hashcode of this JsStr
      */
     @Override
@@ -70,7 +74,7 @@ public final class JsStr implements JsElem, Comparable<JsStr>
     }
 
     /**
-     Maps this JsStr into another one
+     Maps this JsStr into another one.
      @param fn the mapping function
      @return a new JsStr
      */

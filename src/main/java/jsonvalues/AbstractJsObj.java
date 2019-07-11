@@ -261,8 +261,8 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
 
     @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final Function<JsPair, R> map,
-                                        final Predicate<JsPair> predicate
+                                        final Function<? super JsPair, R> map,
+                                        final Predicate<? super JsPair> predicate
                                        )
     {
         return Functions.reduce(this,
@@ -277,8 +277,8 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
 
     @Override
     public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
-                                         final Function<JsPair, R> map,
-                                         final Predicate<JsPair> predicate
+                                         final Function<? super JsPair, R> map,
+                                         final Predicate<? super JsPair> predicate
                                         )
     {
         return Functions.reduce_(this,

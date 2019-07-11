@@ -16,9 +16,9 @@ import static jsonvalues.JsParser.Event.START_OBJECT;
 import static jsonvalues.MyScalaImpl.Map.EMPTY;
 
 /**
- Represents a json object, which is an unordered set of name/element pairs. The immutable implementation
- use the immutable Scala HashMaps as persistent data structures, whereas the mutable implementation
- use the conventional Java HashMaps.
+ Represents a json object, which is an unordered set of name/element pairs. Two implementations are
+ provided, an immutable which uses the persistent Scala HashMap, and a mutable which uses the conventional
+ Java HashMap.
  */
 public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
 {
@@ -241,7 +241,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem of the map is an immutable Json
 
      */
-    static JsObj _of_(final java.util.Map<String, JsElem> map)
+    static JsObj _of_(final java.util.Map<String,JsElem> map)
     {
         Functions.throwErrorIfImmutableElemFound(Objects.requireNonNull(map)
                                                         .values());
@@ -702,119 +702,74 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
     JsObj tail(final String key);
 
     /**
-     Returns the intersection or this object and another given as a parameter.
+     Returns the intersection of this object and another, defining characteristics like order and duplicates
+     occurrence in arrays with the given ARRAY_AS parameter.
      <pre>
 
 
      {@code }
      </pre>
-     @param that the given json
-     @param ARRAY_AS option to define if any array in the structure is considered as a SETS, LISTS OR MULTISET
-     @return a new object of the same type as the inputs (mutable or immutable)
+     @param that the other obj
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     JsObj intersection(final JsObj that,
                        final TYPE ARRAY_AS
                       );
 
 
-    /**
-     Returns the intersection of this object and another given as a parameter, considering any existing
-     array as a list.
-     <pre>
 
-
-     {@code }
-     </pre>
-     @param that the given json
-     @return a new object of the same type as the inputs (mutable or immutable)
-     */
-    default JsObj intersection(final JsObj that)
-    {
-        return intersection(requireNonNull(that),
-                            LIST
-                           );
-    }
 
     /**
-     Returns the intersection or this object and another given as a parameter. It compares recursively
-     the jsons that occupies the same keys in both objects.
+     /**
+     Returns the intersection of this object and another given as parameter applying recursively
+     the intersection to those elements which are Json of the same type and are located at the same key
+     and defining characteristics like order and duplicates occurrence in arrays with the given ARRAY_AS
+     parameter.
      <pre>
-
-
      {@code }
      </pre>
-     @param that the given object
-     @param ARRAY_AS option to define if any array in the structure is considered as a SETS, LISTS OR MULTISET
-
-     @return a new object of the same type as the inputs (mutable or immutable)
+     @param that the other object
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     JsObj intersection_(final JsObj that,
                         final TYPE ARRAY_AS
                        );
 
-    /**
-     Returns the intersection of this object and another given as a parameter, considering any existing
-     array as a list. It compares recursively the jsons that occupies the same keys in both objects.
-     <pre>
-     {@code }
-     </pre>
-     @param that the given json
-     @return a new object of the same type as the inputs (mutable or immutable)
-     */
-    default JsObj intersection_(final JsObj that)
-    {
-        return intersection_(requireNonNull(that),
-                             LIST
-                            );
-    }
 
     /**
-     Returns the union of this object and another given as parameter considering any existing array
-     as a list.
-     @param that the given json
+     Returns the union of this object and another given as a parameter.
+     @param that the other object
      <pre>
      {@code
 
      }
      </pre>
-     @return a new object of the same type as the inputs (mutable or immutable)
+     @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     JsObj union(final JsObj that);
 
 
     /**
-     Returns the union of this object and another given as parameter. It compares recursively the
-     jsons that occupies the same keys in both objects.
+     Returns the union of this object and another given as parameter applying recursively the union
+     to those elements which are Json of the same type and are located at the same key
+     and defining characteristics like order and duplicates occurrence in arrays with the given ARRAY_AS
+     parameter.
      <pre>
 
 
      {@code }
      </pre>
-     @param that the given json
-     @param ARRAY_AS option to define if any array in the structure is considered as a SETS, LISTS OR MULTISET
-     @return a new object of the same type as the inputs (mutable or immutable)
+     @param that the other object
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     JsObj union_(final JsObj that,
                  final TYPE ARRAY_AS
                 );
 
-    /**
-     Returns the union or this object and another given as a parameter, considering any existing
-     array as a list. It compares recursively the jsons that occupies the same keys in both objects.
-     <pre>
 
-
-     {@code }
-     </pre>
-     @param that the given json
-     @return a new object of the same type as the inputs (mutable or immutable)
-     */
-    default JsObj union_(final JsObj that)
-    {
-        return union_(requireNonNull(that),
-                      LIST
-                     );
-    }
 
     /**
      Returns an immutable object from one or more pairs.

@@ -46,7 +46,7 @@ public final class JsBool implements JsElem
     }
 
     /**
-     Returns the hashcode of this json boolean
+     Returns the hashcode of this json boolean.
      @return 1 if true, 0 if false
      */
     @Override
@@ -56,7 +56,7 @@ public final class JsBool implements JsElem
     }
 
     /**
-     Negates this json boolean (implementation of ! operator)
+     Negates this json boolean (implementation of ! operator).
      @return the inverse value of this
      */
     public JsBool negate()
@@ -65,7 +65,7 @@ public final class JsBool implements JsElem
     }
 
     /**
-     * Static factory method to create a JsBool from a boolean primitive type
+     * Static factory method to create a JsBool from a boolean primitive type.
      * @param b the boolean value
      * @return either {@link JsBool#TRUE} or {@link JsBool#FALSE}
      */

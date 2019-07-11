@@ -15,9 +15,8 @@ import static jsonvalues.JsParser.Event.START_ARRAY;
 import static jsonvalues.MyScalaImpl.Vector.EMPTY;
 
 /**
- Represents a json array, which is an ordered list of elements. The immutable implementation use immutable
- Scala Vectors as persistent data structures, whereas the mutable implementation use the conventional
- Java ArrayList.
+ Represents a json array, which is an ordered list of elements. Two implementations are provided, an
+ immutable which uses the persistent Scala Vector and a mutable which uses the conventional Java ArrayList.
  */
 public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
@@ -352,8 +351,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
 
     /**
-     Specifies if an array is a SET, a MULTISET or a LIST. The result of some methods depends on how
-     arrays are defined.
+     Type of arrays: SET, MULTISET or LIST.
      */
     enum TYPE
     {
@@ -605,7 +603,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns an immutable array from one or more strings
+     Returns an immutable array from one or more strings.
      @param str a string
      @param others more optional strings
      @return an immutable JsArray
@@ -624,7 +622,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns a mutable array from one or more strings
+     Returns a mutable array from one or more strings.
      @param str a string
      @param others more optional strings
      @return a mutable JsArray
@@ -643,7 +641,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns an immutable array from one or more integers
+     Returns an immutable array from one or more integers.
      @param number an integer
      @param others more optional integers
      @return an immutable JsArray
@@ -681,7 +679,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns an immutable array from one or more longs
+     Returns an immutable array from one or more longs.
      @param number a long
      @param others more optional longs
      @return an immutable JsArray
@@ -700,7 +698,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns an immutable array from one or more booleans
+     Returns an immutable array from one or more booleans.
      @param bool a boolean
      @param others more optional booleans
      @return an immutable JsArray
@@ -719,7 +717,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns an immutable array from one or more doubles
+     Returns an immutable array from one or more doubles.
      @param number a double
      @param others more optional doubles
      @return an immutable JsArray
@@ -738,7 +736,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns a mutable array from one or more longs
+     Returns a mutable array from one or more longs.
      @param number a long
      @param others more optional longs
      @return a mutable JsArray
@@ -757,7 +755,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns a mutable array from one or more booleans
+     Returns a mutable array from one or more booleans.
      @param bool a boolean
      @param others more optional booleans
      @return a mutable JsArray
@@ -776,7 +774,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns a mutable array from one or more doubles
+     Returns a mutable array from one or more doubles.
      @param number a double
      @param others more optional doubles
      @return a mutable JsArray
@@ -803,109 +801,55 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     JsArray tail();
 
     /**
-     Returns the intersection or this array and another given as a parameter.
-     <pre>
-     {@code }
-     </pre>
-     @param that the given json
-     @param ARRAY_AS option to define if any array in the structure, including <code>this</code> and <code>that</code> themselves, is considered as a SETS, LISTS OR MULTISET
-     @return a new array of the same type as the inputs (mutable or immutable)
+     Returns the intersection of this array and another given as a parameter, defining characteristics
+     like order and duplicates occurrence with the given ARRAY_AS parameter.
+     @param that the other array
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
     JsArray intersection(final JsArray that,
                          final TYPE ARRAY_AS
                         );
 
     /**
-     Returns the intersection or this array and another given as a parameter, considering any existing
-     array as a list, including <code>this</code> and <code>that</code> themselves.
+     Returns the intersection of this array and another given as parameter considering both {@link TYPE#LIST}lists
+     and applying recursively the intersection to those elements which are Json of the same type and
+     are located at the same position.
      <pre>
-
 
      {@code }
      </pre>
-     @param that the given json
-     @return a new array of the same type as the inputs (mutable or immutable)
+     @param that the other array
+     @return a JsArray of the same type as the inputs (mutable or immutable)
      */
-    default JsArray intersection(final JsArray that)
-    {
-        return intersection(that,
-                            LIST
-                           );
-    }
-
-
-
+    JsArray intersection_(final JsArray that);
 
     /**
-     Returns the intersection or this array and another given as a parameter, considering any existing array
-     as a list, including <code>this</code> and <code>that</code> themselves. It compares recursively
-     the jsons that occupies the same position in both arrays.
-     <pre>
-
-
-     {@code }
-     </pre>
-     @param that the given json
-     @return a new array of the same type as the inputs (mutable or immutable)
-     */
-     JsArray intersection_(final JsArray that);
-
-    /**
-     Returns the union of this array and another given as parameter.
-     @param that the given json
-     @param ARRAY_AS option to define if any array in the structure, including <code>this</code> and <code>that</code> themselves, is considered as a SETS, LISTS OR MULTISET
-     @return a new array of the same type as the inputs (mutable or immutable)
+     Returns the union of this array and another, defining characteristics like order and duplicates
+     occurrence with the given ARRAY_AS parameter.
+     @param that the other array
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return a new json array of the same type as the inputs (mutable or immutable)
      */
     JsArray union(final JsArray that,
                   final TYPE ARRAY_AS
                  );
 
-    /**
-     Returns the union of this array and another given as parameter.
-     @param that the given json
-     @return a new array of the same type as the inputs (mutable or immutable)
-     */
-    default JsArray union(final JsArray that)
-    {
-        return union(that,
-                     LIST
-                    );
-    }
 
     /**
-     Returns the union of this array and another given as parameter It compares recursively the jsons
-     that occupies the same position in both arrays.
+     Returns the union of this array and another given as parameter considering both {@link TYPE#LIST}lists
+     and applying recursively the union to those elements which are Json of the same type and are located
+     at the same position.
      <pre>
 
 
      {@code }
      </pre>
-     @param that the given json
-     @param ARRAY_AS option to define if any array in the structure, including <code>this</code> and <code>that</code> themselves, is considered as a SETS, LISTS OR MULTISET
-     @return a new array of the same type as the inputs (mutable or immutable)
+     @param that the other array
+     @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
-    JsArray union_(final JsArray that,
-                   final TYPE ARRAY_AS
-                  );
+    JsArray union_(final JsArray that);
 
-    /**
-     Returns the union of this array and another given as parameter, considering any existing array
-     as a list, including <code>this</code> and <code>that</code> themselves. It compares recursively
-     the jsons that occupies the same position in both arrays.
-     <pre>
-
-
-     {@code }
-     </pre>
-     @param that the given json
-     @return a new array of the same type as the inputs (mutable or immutable)
-     */
-    default JsArray union_(final JsArray that)
-    {
-        return union_(that,
-                      LIST
-                     );
-    }
 
     /**
      Returns an immutable array from one or more pairs.
@@ -934,7 +878,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     /**
-     Returns a mutable array from one or more pairs
+     Returns a mutable array from one or more pairs.
      @param pair a pair
      @param pairs more optional pairs
      @return a mutable JsArray

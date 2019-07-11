@@ -19,7 +19,7 @@ public final class JsDouble implements JsNumber, Comparable<JsDouble>
 {
 
     /**
-     The double value
+     The double value.
      */
     public final double x;
 

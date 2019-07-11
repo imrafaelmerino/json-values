@@ -10,7 +10,7 @@ import org.scalacheck.Prop.forAll
 class SetTheoryOpsSpec extends BasePropSpec
 {
 
-  property("union parse an object with itself returns the same object")
+  property("union of an object with itself returns the same object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
@@ -19,7 +19,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("union_ parse an object with itself itself returns the same object")
+  property("union_ of an object with itself itself returns the same object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
@@ -28,16 +28,16 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("intersection parse an object with itself returns the same object")
+  property("intersection of an object with itself returns the same object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection(js).equals(js) && js.intersection(js).hashCode() == js.hashCode()
+            js.intersection(js, TYPE.LIST).equals(js) && js.intersection(js, TYPE.LIST).hashCode() == js.hashCode()
           }
           )
   }
   //
-  property("union parse an object A with an empty object, returns A")
+  property("union of an object A with an empty object, returns A")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
@@ -83,7 +83,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.intersection(b).equals(b.intersection(a))
+            a.intersection(b, TYPE.LIST).equals(b.intersection(a, TYPE.LIST))
           }
           )
   }
@@ -117,16 +117,16 @@ class SetTheoryOpsSpec extends BasePropSpec
   }
 
 
-  property("intersection parse an object with an empty object returns an empty object")
+  property("intersection of an object with an empty object returns an empty object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection(JsObj.empty()).equals(JsObj.empty())
+            js.intersection(JsObj.empty(), TYPE.LIST).equals(JsObj.empty())
           }
           )
   }
 
-  property("intersection_ parse an object with an empty object returns an empty object")
+  property("intersection_ of an object with an empty object returns an empty object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>

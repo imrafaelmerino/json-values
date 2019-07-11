@@ -7,8 +7,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- *  Represents the parsing of a string into a Json that may either result in a MalformedJson exception
- *  or a successfully parsed json.
+ *Computation that parses a string into a Json and may either result in a MalformedJson exception
+ *or a successfully parsed json.
  */
 public final class Try
 {

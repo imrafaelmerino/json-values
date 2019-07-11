@@ -125,26 +125,14 @@ class TestsUnionAndIntersection
                            .orElseThrow();
 
 
-        Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
-                               );
 
-        Assertions.assertEquals(c,
-                                a.union_(b,
-                                         MULTISET
+        Assertions.assertEquals(d,
+                                a.union_(b
                                         )
                                );
 
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
-                               );
-
-        Assertions.assertEquals(d,
-                                a.union(b)
+                                a.union(b,LIST)
                                );
 
         Assertions.assertEquals(e,
@@ -267,7 +255,7 @@ class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.intersection(b
+                                a.intersection(b,LIST
                                               )
                                );
 
@@ -291,7 +279,7 @@ class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.intersection_(b
+                                a.intersection_(b,LIST
                                                )
                                );
 

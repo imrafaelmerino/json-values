@@ -17,7 +17,7 @@ public class JsElems
 
     /**
      Returns a function that maps a json element if it's a json double, returning the element otherwise
-     @param fn the function to be applied to map the value parse this JsElem it it's a JsDouble
+     @param fn the function to be applied to map the value of this JsElem it it's a JsDouble
      @return the same this JsElem or a new JsDouble with its value mapped
      */
     public static Function<JsElem, JsElem> mapIfDouble(DoubleUnaryOperator fn)
@@ -32,7 +32,7 @@ public class JsElems
 
     /**
      Returns a function that maps a json element if it's a big decimal (or a double), returning the element otherwise
-     @param fn the function to be applied to map the value parse this JsElem it it's a JsBigDecimal or JsDouble
+     @param fn the function to be applied to map the value of this JsElem it it's a JsBigDecimal or JsDouble
      @return the same this JsElem or a new JsBigDecimal with its value mapped
      */
     public static Function<JsElem, JsElem> mapIfBigDecimal(UnaryOperator<BigDecimal> fn)
@@ -46,7 +46,7 @@ public class JsElems
 
     /**
      Returns a function that maps a json element if it's a json integer, returning the element otherwise
-     @param fn the function to be applied to map the value parse this JsElem it it's a JsInt
+     @param fn the function to be applied to map the value of this JsElem it it's a JsInt
      @return the same JsElem or a new JsInt with its value mapped
      */
     public static Function<JsElem, JsElem> mapIfInt(final IntUnaryOperator fn)
@@ -62,7 +62,7 @@ public class JsElems
 
     /**
      Returns a function that maps a json element if it's a json string, returning the element otherwise
-     @param fn the function to be applied to map the value parse this JsElem it it's a JsStr
+     @param fn the function to be applied to map the value of this JsElem it it's a JsStr
      @return the same JsElem or a new JsStr with its value mapped
      */
     public static Function<JsElem, JsElem> mapIfStr(final UnaryOperator<String> fn)

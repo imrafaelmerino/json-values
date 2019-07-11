@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
- *  Represents the parsing of a string into a JsObj, that may either result in a MalformedJson exception
+ *  Computation that parses a string into a JsObj and may either result in a MalformedJson exception
  *  or a successfully parsed object.
  */
 public final class TryObj

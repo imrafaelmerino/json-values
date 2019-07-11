@@ -2025,8 +2025,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #reduce_(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
      */
     <R> Optional<R> reduce(BinaryOperator<R> op,
-                           Function<JsPair, R> map,
-                           Predicate<JsPair> predicate
+                           Function<? super JsPair, R> map,
+                           Predicate<? super JsPair> predicate
                           );
 
     /**
@@ -2041,8 +2041,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #reduce(BinaryOperator, Function, Predicate) to apply the reduction only in the first level
      */
     <R> Optional<R> reduce_(BinaryOperator<R> op,
-                            Function<JsPair, R> map,
-                            Predicate<JsPair> predicate
+                            Function<? super JsPair, R> map,
+                            Predicate<? super JsPair> predicate
                            );
 
     /**

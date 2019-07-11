@@ -1254,13 +1254,13 @@ class TestJsArray
                                     .orElseThrow();
 
         Assertions.assertEquals(arr1,
-                                arr1.intersection(arr1)
+                                arr1.intersection(arr1,LIST)
                                );
         Assertions.assertEquals(arr2,
-                                arr2.intersection(arr2)
+                                arr2.intersection(arr2,LIST)
                                );
         Assertions.assertEquals(JsArray.empty(),
-                                arr1.intersection(arr2)
+                                arr1.intersection(arr2,LIST)
                                );
 
         Assertions.assertEquals(JsArray.empty(),

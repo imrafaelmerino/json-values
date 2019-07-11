@@ -7,7 +7,7 @@ import java.util.function.UnaryOperator;
 public class Utils
 {
     /**
-     Declarative way parse implementing {@code  if(pair.elem.isInt()) return Pair.parse(pair.path, pair.elem.asJsInt().map(operator)) else return pair}
+     Declarative way of implementing {@code  if(pair.elem.isInt()) return Pair.parse(pair.path, pair.elem.asJsInt().map(operator)) else return pair}
      <p>
      Examples:
      <pre>
@@ -39,7 +39,7 @@ public class Utils
     }
 
     /**
-     Declarative way parse implementing {@code  if(pair.elem.isStr()) return Pair.parse(pair.path, pair.elem.asJsStr().map(mapFn)) else return pair}
+     Declarative way of implementing {@code  if(pair.elem.isStr()) return Pair.parse(pair.path, pair.elem.asJsStr().map(mapFn)) else return pair}
      <p>
      Examples:
      <pre>
@@ -51,7 +51,7 @@ public class Utils
      pair1.mapIfStr(String::toUpperCase).equals(pair1) // true, same pair is returned
      }
      </pre>
-     @param fn the function to be applied to map the string parse the JsStr
+     @param fn the function to be applied to map the string of the JsStr
      @return the same this instance if the JsElem is not a JsStr or a new pair
      */
     public static Function<JsPair, JsPair> mapIfStr(UnaryOperator<String> fn)

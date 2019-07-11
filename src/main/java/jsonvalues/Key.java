@@ -21,8 +21,8 @@ public final class Key implements Position
     }
 
     /**
-     * Returns a new key instance which represents an entry with the given name in a json object. Any
-     * string, but null, can represent a key in a json object, even the empty string.
+     * Returns a new instance which represents a key with the given name in a json object. Any string,
+     * but null, can represent a key in a json object, even the empty string.
      *
      * @param key the given name of the key
      * @return a new Key object
@@ -37,7 +37,7 @@ public final class Key implements Position
      compares this key with another given position. If the given position is a key, both are compared
      lexicographically, if it's an index, both are compared numerically.
      @param o the given position
-     @return 0 if they are equal, +1 if this is greater than the given position, -1 otherwise
+     @return 0 if they are equal, +1 if this is greater, -1 otherwise
      */
     @Override
     public int compareTo(final Position o)
