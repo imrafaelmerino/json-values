@@ -704,11 +704,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
     /**
      Returns the intersection of this object and another, defining characteristics like order and duplicates
      occurrence in arrays with the given ARRAY_AS parameter.
-     <pre>
-
-
-     {@code }
-     </pre>
      @param that the other obj
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
@@ -726,9 +721,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      the intersection to those elements which are Json of the same type and are located at the same key
      and defining characteristics like order and duplicates occurrence in arrays with the given ARRAY_AS
      parameter.
-     <pre>
-     {@code }
-     </pre>
      @param that the other object
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
@@ -741,11 +733,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
     /**
      Returns the union of this object and another given as a parameter.
      @param that the other object
-     <pre>
-     {@code
-
-     }
-     </pre>
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     JsObj union(final JsObj that);
@@ -756,11 +743,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      to those elements which are Json of the same type and are located at the same key
      and defining characteristics like order and duplicates occurrence in arrays with the given ARRAY_AS
      parameter.
-     <pre>
-
-
-     {@code }
-     </pre>
      @param that the other object
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)

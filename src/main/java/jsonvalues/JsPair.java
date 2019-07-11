@@ -6,7 +6,7 @@ import java.util.Objects;
 import java.util.function.UnaryOperator;
 
 /**
- Immutable pair which represents a JsElem of a json and its JsPath location: (path, element).
+ Immutable pair which represents a JsElem of a Json and its JsPath location: (path, element).
  */
 public final class JsPair
 {
@@ -18,7 +18,7 @@ public final class JsPair
 
 
     /**
-     the path of the element.
+     the location of the element.
      */
     public final JsPath path;
 
@@ -37,7 +37,7 @@ public final class JsPair
      Returns a json pair from the path-like string and the json element.
      @param path the path-like string
      @param elem the JsElem
-     @return a JsPair
+     @return an immutable JsPair
      */
     public static JsPair of(String path,
                             JsElem elem
@@ -52,7 +52,7 @@ public final class JsPair
      Returns a json pair from the path and the json element.
      @param path the JsPath object
      @param elem the JsElem
-     @return a JsPair
+     @return an immutable JsPair
      */
     public static JsPair of(JsPath path,
                             JsElem elem
@@ -78,7 +78,7 @@ public final class JsPair
     }
 
     /**
-     Returns true if that is a pair and both represents the same element at the same path.
+     Returns true if that is a pair and both represents the same element at the same location.
      @param that the reference object with which to compare.
      @return true if this.element.equals(that.element) and this.path.equals(that.path)
      */

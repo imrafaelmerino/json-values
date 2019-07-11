@@ -7,9 +7,6 @@ import org.scalacheck.Prop.forAll
 class AppendToArraySpec extends BasePropSpec
 {
 
-
-
-
   property("appends elements to the back after creating a new array in an empty object")
   {
     check(forAll(jsPathGen.arrayPathGen,

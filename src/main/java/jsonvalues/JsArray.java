@@ -208,11 +208,11 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      Returns true if this array is equal to the given as a parameter. In the case of ARRAY_AS=LIST,
      this method is equivalent to JsArray.equals(Object).
      @param array the given array
-     @param ARRAY_AS enum to specify if arrays are considered as lists or sets or multisets
-     @return true if both arrays are equals
+     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+     @return true if both arrays are equals according to ARRAY_AS parameter
      */
-    default boolean equals(JsArray array,
-                           TYPE ARRAY_AS
+    default boolean equals(final JsArray array,
+                           final TYPE ARRAY_AS
                           )
     {
         if (ARRAY_AS == LIST) return this.equals(array);
@@ -815,10 +815,6 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      Returns the intersection of this array and another given as parameter considering both {@link TYPE#LIST}lists
      and applying recursively the intersection to those elements which are Json of the same type and
      are located at the same position.
-     <pre>
-
-     {@code }
-     </pre>
      @param that the other array
      @return a JsArray of the same type as the inputs (mutable or immutable)
      */
@@ -840,11 +836,6 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      Returns the union of this array and another given as parameter considering both {@link TYPE#LIST}lists
      and applying recursively the union to those elements which are Json of the same type and are located
      at the same position.
-     <pre>
-
-
-     {@code }
-     </pre>
      @param that the other array
      @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
