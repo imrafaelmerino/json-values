@@ -3,31 +3,23 @@
          xmlns="http://maven.apache.org/POM/4.0.0"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-
-    <!-- read to upload artifact to central repository https://central.sonatype.org/pages/ossrh-guide.html-->
-
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
     <version>0.1.0</version>
     <name>json-values</name>
     <description>json-values is a functional Java library to work with immutable jsons using persistent data structures.</description>
-    <url>https://gitlab.com/rafael.merino.garcia/json-values</url>
-
+    <url>https://github.com/imrafaelmerino/json-values</url>
     <licenses>
-
         <license>
             <name>Apache License, Version 2.0</name>
             <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
             <distribution>repo</distribution>
         </license>
     </licenses>
-
     <scm>
-        <url>https://gitlab.com/rafael.merino.garcia/json-values.git</url>
+        <url>https://github.com/imrafaelmerino/json-values.git</url>
     </scm>
-
-
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <DEPENDENCY_SCALA_CHECK_VERSION>1.14.0</DEPENDENCY_SCALA_CHECK_VERSION>
@@ -45,8 +37,6 @@
     </properties>
 
     <dependencies>
-
-
         <dependency>
             <groupId>org.scalacheck</groupId>
             <artifactId>scalacheck_2.12</artifactId>
@@ -83,12 +73,10 @@
             <version>2.8.2</version>
             <scope>provided</scope>
         </dependency>
-
     </dependencies>
 
     <build>
         <plugins>
-
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -99,14 +87,6 @@
                         <goals>
                             <goal>shade</goal>
                         </goals>
-                        <configuration>
-                            <!--                            <relocations>-->
-                            <!--                                <relocation>-->
-                            <!--                                    <pattern>scala</pattern>-->
-                            <!--                                    <shadedPattern>jsonvalues.libs</shadedPattern>-->
-                            <!--                                </relocation>-->
-                            <!--                            </relocations>-->
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -152,7 +132,6 @@
                     <skipTests>false</skipTests>
                 </configuration>
             </plugin>
-            <!--enable scalatest-->
             <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
