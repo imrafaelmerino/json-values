@@ -35,12 +35,11 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>0.1.2</version>
+  <version>0.1.1</version>
 </dependency>
 ```
-Where 0.1.2 is the latest stable version, and that's all. It's a zero-dependency library, so you won't 
-have to go through a kind of dependency hell to get it working. You can play around with the library
- using the java _REPL_ (>= Java 9) just typing:
+and that's all. It's a zero-dependency library, so you won't have to go through a kind of dependency hell to get it working. 
+You can play around with the library using the java _REPL_ (>= Java 9) just typing:
 ```
 jshell --class-path ${PATH_TO_JAR}/json-values-X.Y.Z.jar
 ```
