@@ -24,7 +24,7 @@ calls are turned into iterative loops by Trampolines. The API exposes a well-kno
 Trampoline in case you want to do some _head and tail_ programming, and you should! Because, first, it's 
 fun and second and more important, it makes the code more declarative, concise, and easy to reason about.
  My experience says that the more difficult the task is, the more benefit you'll get using this approach; 
- however, sometimes a simple loop is enough and more transparent.
+ however, sometimes a simple loop is simpler and more transparent.
  
 #### REQUIREMENTS
 * Java 8 or greater.
@@ -40,7 +40,7 @@ Add the following dependency to your building tool:
 ```
 Where X.Y.Z is the latest stable version, and that's all. It's a zero-dependency library, so you won't 
 have to go through a kind of dependency hell to get it working. You can play around with the library
- using the java _REPL_ (>= JAVA 9) just typing:
+ using the java _REPL_ (>= Java 9) just typing:
 ```
 jshell --class-path ${PATH_TO_JAR}/json-values-X.Y.Z.jar
 ```
@@ -48,17 +48,15 @@ jshell --class-path ${PATH_TO_JAR}/json-values-X.Y.Z.jar
 Before getting started, remember the great quote from **Venkat Subramaniam**:
 
 _By nature, we're wired to mistake familiar as simple and the unfamiliar as complex_.
-#### 0 - Basic concepts
-
 #### 0.1 - JsPath
 A JsPath represents a location in a Json. There are two ways of creating paths:
 * From a string using the method _JsPath.of(...)_. A path is made up of keys and indexes 
 separated by dots. Keys are URL-encoded to escape special characters; therefore, 
 they could be part of an URL. When keys are numbers, they have to be single-quoted, 
 to distinguish them from indexes..
-* Using the _key_ and _index_ methods from JsPath, in which case, keys don't have to be URL-encoded.
+* Using the _key_ and _index_ methods from _JsPath_, in which case, keys don't have to be URL-encoded.
 ```
-{
+{ 
 "a": [ {"b": [1,2,3]} ],
 " ": "z",
 ".": "dot",
@@ -66,6 +64,7 @@ to distinguish them from indexes..
 "'": null,
 "": ""
 }
+
 JsPath.of("a.0.b.0")                                // 1
 JsPath.empty().key("a").index(0).key("b").index(0)  // 1
 
@@ -119,17 +118,16 @@ A set of _JsPairs_ can model a Json, which makes obvious how to implement stream
 #### 1- How to create a Json?
 **json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
-* **of** and **parse** methods return immutable jsons or values.
-* **\_of\_** and **\_parse\_** methods return mutable jsons. 
+* **of** and **parse** methods return **immutable** jsons or values.
+* **\_of\_** and **\_parse\_** methods return **mutable** jsons. 
 
 You may be asking what's the point of using underscores to name methods. The reason is that symbols are 
 great to convey information quickly and concisely, and distinguish methods that return mutable objects from 
 the ones that return immutable ones, is something that has to be highlighted somehow. Not like in other 
 languages like Scala, symbols are not allowed in Java to name variables and methods, that's why I use an underscore. 
-I prefer to use an exclamation as Ruby does.
+I prefer to use an exclamation as Ruby does, but I can't.
 ##### 1.1- Creation of immutable json objects.
 ```
-import jsonvalues.*;
 JsObj empty = JsObj.empty();  // empty immutable instance is a singleton
 
 JsObj x = JsObj.of("a", JsInt.of(1), 
@@ -150,13 +148,12 @@ Assert.assertNotEquals(empty, y);  // empty will never change
 JsObj w = JsObj.of( JsPair.of("a.b.0", 1 ),
                     JsPair.of("a.b.1", 2 )
                   );
-//parsing a string, which returns a _jsonvalues.TryObj_ computation that may fail                       
+                  
+//parsing a string, which returns a jsonvalues.TryObj computation that may fail                       
 JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
-Assert.assertEquals(w, z);   
  ```
 ##### 1.2- Creation of mutable json objects.
 ```
-import jsonvalues.*;
 JsObj _empty_ = JsObj._empty_();  
    
 JsObj _x_ = JsObj._of_("a", JsInt.of(1), 
@@ -177,14 +174,13 @@ Assert.assertEquals(_empty_, _y_); // something called _empty_ it's not empty an
 JsObj _w_ = JsObj._of_( JsPair.of("a.b.0", 1),
                         JsPair.of("a.b.1", 2)
                       );
-// parsing a string, which returns a _jsonvalues.TryObj_ computation that may fail                  
+                      
+// parsing a string, which returns a TryObj computation that may fail                  
 JsObj _z_ = JsObj._parse_("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
-Assert.assertEquals(_w_, _z_);       
 ```
 
 ##### 1.3- Creation of immutable json arrays.
 ```
-import jsonvalues.*;
 JsArray a = JsArray.of(1,2,3);  // from varargs of ints
 
 JsArray b = JsArray.of("a","b","c"); // from varargs of strings
@@ -200,7 +196,7 @@ JsArray d = JsArray.of(JsPair.of("0.a.b.0", "a"),
                        JsPair.of("0.a.b.1", "b")
                        );
 
-//parsing a string, which returns a _jsonvalues.TryArray_ computation that may fail                      
+//parsing a string, which returns a TryArr computation that may fail                      
 JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
 
 JsArray empty = JsArray.empty();
@@ -212,8 +208,6 @@ Assert.assertNotEquals(empty, f); // empty  will never change
 ```               
 ##### 1.4- Creation of mutable json arrays.
 ```
-import jsonvalues.*;
-
 JsArray _a_ = JsArray._of_(1,2,3);  // from varargs of ints
 
 JsArray _b_ = JsArray._of_("a","b","c"); // from varargs of strings
@@ -230,7 +224,7 @@ JsArray d = JsArray._of_(JsPair.of("0.a.b.0", "a"),
                          JsPair.of("0.a.b.1", "b")
                          );
 
-//parsing a string, which returns a jsonvalues.TryArray computation                        
+//parsing a string, which returns a TryArr computation                        
 JsArray e =  JsArray._parse_("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
 
 JsArray _empty_ = JsArray._empty_();
@@ -238,14 +232,10 @@ JsArray _f_ = _empty_.append(JsInt.of(1))
                      .append(JsInt.of(2))           
                      .prepend(JsInt.of(0));   
                      
-Assert.assertEquals(_empty_, _f_); //  _empty_ is not empty! is [0,1,2]   
-```            
-##### 1.5- Going from immutable to mutable back and forth.
-
-
-   
+Assert.assertEquals(_empty_, _f_); //  _empty_ is not empty!, it's [0,1,2]   
+```               
 ##### 2- Streams and Collectors.
-Stream methods returns sequences of JsPai:
+Stream methods returns sequences of JsPairs:
 ```
 JsObj x = JsObj.of("a", JsArray.of(1,2,3),
                    "b", JsObj.of("c",JsInt.of(4),
@@ -277,14 +267,13 @@ Let's multiply by 10 every number:
 Function<JsPair,JsPair> times10ifInt = p -> p.elem.isInt()) ? p.elem.asJsInt().map(i->i*10) : p.elem;
 x.stream_().map(times10ifNumber).collector(JsObj.collector());
 ```
-What if you want to get the stream back into a mutable json. Well, taking into account the convention pointed out in _1_, it only requires two underscores:
+What if you want to get the stream back into a mutable json. Well, taking into account the convention mentioned before, it only requires two underscores:
 ```
 x.stream_().map(times10ifNumber).collector(JsObj._collector_());
 ```
+As it was expected, JsObj.\_collector\_() returns a mutable object whereas JsObj.collector() returns an immutable one.
 
-So, as it was expected, JsObj.\_collector\_() returns a mutable object whereas JsObj.collector() returns an immutable one.
-
-For arrays it's just the same:
+For arrays, it's just the same:
 ```
 JsArray x = JsArray.of(JsArray.of(1,2), 
                        JsStr.of("red"), 
@@ -533,7 +522,7 @@ I developed a json generator for this purpose.
 ##### 11- Release plan
 to be documented
 
-
+Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com
 
  
 
