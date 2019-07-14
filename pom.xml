@@ -37,7 +37,6 @@
         <PLUGIN_SCALA_TEST_VERSION>2.0.0</PLUGIN_SCALA_TEST_VERSION>
         <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
         <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
-        <JAVAX_JSON_VERSION>1.1.4</JAVAX_JSON_VERSION>
         <sonar.exclusions>**/jsonvalues/libs/**</sonar.exclusions>
         <sonar.projectKey>json-values</sonar.projectKey>
     </properties>
