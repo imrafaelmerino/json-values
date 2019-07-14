@@ -714,8 +714,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
 
 
 
-
-    /**
      /**
      Returns the intersection of this object and another given as parameter applying recursively
      the intersection to those elements which are Json of the same type and are located at the same key

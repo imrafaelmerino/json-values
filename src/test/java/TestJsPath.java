@@ -115,6 +115,7 @@ import org.junit.jupiter.api.Test;
     @Test
     void empty_key_equals(){
         Assertions.assertEquals(JsPath.empty().key(""), JsPath.of(""));
+        Assertions.assertEquals(JsPath.empty().key("."), JsPath.of("%2E"));
         Assertions.assertEquals(JsPath.of("'a'.'b'.+.1"), JsPath.of("a.b.%20.1"));
     }
 

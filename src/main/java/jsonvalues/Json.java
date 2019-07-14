@@ -40,9 +40,9 @@ import static jsonvalues.JsParser.Event.START_ARRAY;
  put data in:
 
  //all the logic goes into the supplier{@code
- Supplier<JsElem> supplier = ()-> (doesnt-put-anything-condition) ? JsNothing.NOTHING : JsInt.of(2);
- json.putIfAbsent(path,supplier)
- }
+Supplier<JsElem> supplier = ()-> (doesnt-put-anything-condition) ? JsNothing.NOTHING : JsInt.of(2);
+json.putIfAbsent(path,supplier)
+}
  Another way to see a json is like a stream of pairs, which opens the door to doing all the operations
  that were introduced in Java 8 (map, filter, reduce, etc). For this purpose the methods {@link #stream_()}
  or {@link #stream()} are provided. To put the stream back into an <b>immutable</b> json the collectors {@link JsObj#collector()}
@@ -252,40 +252,37 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Appends one or more elements, starting from the first, to the array located at the given path in
-     this json, returning the same this instance if the array is not present.
+     Appends one element given by a supplier, to the array located at the given path in this json,
+     returning the same this instance if the array is not present. The supplier is not applied if
+     there's no array at the specified path.
      @param path   the path-like string pointing to the existing array in which all the elements will be appended
-     @param elem   the first JsElem to be appended to the existing array
-     @param others more optional JsElem to be appended
+     @param supplier   the given supplier
      @return same this instance or a new json of the same type T
      */
     default T appendIfPresent(final String path,
-                              final JsElem elem,
-                              final JsElem... others
+                              final Supplier<JsElem> supplier
                              )
     {
         return appendIfPresent(JsPath.of(path),
-                               elem,
-                               others
+                               supplier
                               );
     }
 
     /**
-     Appends one or more elements, starting from the first, to the array located at the given path in
-     this json, returning the same this instance if the array is not present.
+     Appends one element given by a supplier, to the array located at the given path in this json,
+     returning the same this instance if the array is not present. The supplier is not applied if
+     there's no array at the specified path.
      @param path   the JsPath pointing to the existing array in which all the elements will be appended
-     @param elem   the first JsElem to be appended to the existing array
-     @param others more optional JsElem to be appended
+     @param supplier   the given supplier
      @return same this instance or a new json of the same type T
      */
     default T appendIfPresent(final JsPath path,
-                              final JsElem elem,
-                              final JsElem... others
+                              final Supplier<JsElem> supplier
                              )
     {
         return Functions.ifArrElse(it -> append(path,
-                                                elem,
-                                                others
+                                                Objects.requireNonNull(supplier)
+                                                       .get()
                                                ),
                                    it ->
                                    {
@@ -391,7 +388,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param elem   the first JsElem to be prepended to the existing or created array
      @param others more optional JsElem to be prepended
 
-     @return same this instance or a new json parse the same type T
+     @return same this instance or a new json of the same type T
      */
     default T prepend(final JsPath path,
                       final JsElem elem,
@@ -412,34 +409,15 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     prepends one or more elements, starting from the first, to the array located at the path in this json. If the array at the path doesn't
-     exist, a new one is created, replacing any existing element and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
-     The same this instance is returned when it's an array and the head of the path is a key or when it's an object and the head of the path is an index.
-     <p>
-     Examples:<pre>{@code
-    JsObj.empty().prepend("0.a",JsInt.parse(1)) == JsObj.empty()  // object containsElem keys and not indexes
-    JsArray.empty().prepend("a.0",JsInt.parse(1)) == JsArray.empty() // array containsElem indexes and not keys
-
-    //a new array is created at a.x
-    JsObj.empty().prepend("a.x", JsInt.parse(1),JsStr.parse("a"),JsBool.FALSE)  // =>  {a: { x: [1, "a", false] } }
-
-    //a new array is created at a.x.2, filling with null the positions a.x.0 and a.x.1
-    JsObj.empty().prepend("a.x.2",JsBool.TRUE, JsBool.FALSE) // =>  {a: { x: [ null, null,  [true, false] ] } }
-
-    // {a: { x: 2, c: "bye"} }, a.x=2 is replaced by an array
-    JsObj a = JsObj.parse("{ 'a': { 'x' : 2, 'c': 'bye' } }".replaceAll("'","\"")).orElseThrow()
-    a.prepend("a.x", JsBool.TRUE, JsBool.FALSE)  // =>  {a: { x: [true, false], c: "bye"} }
-
-    // [ { a: { x: [ true ] } } ], two new elements are appended to the back parse the array at 0.a.x
-    JsArray x = JsArray.parse("[ { 'a' : { 'x': [ true ] } } ]".replaceAll("'","\"")).orElseThrow()
-    x.prepend("0.a.x", JsBool.TRUE, JsBool.FALSE)  // => [ { a: { x: [ true, false, true] } } ]
-    }</pre>
-
+     Prepends one or more elements, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
      @param path   the path-like string pointing to the array in which all the elements will be prepended
      @param elem   the first JsElem to be prepended to the existing or created array
      @param others more optional JsElem to be prepended
-
-     @return same this instance or a new json parse the same type T
+     @return same this instance or a new json of the same type T
      */
     default T prepend(final String path,
                       final JsElem elem,
@@ -455,27 +433,12 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     prepends all the elements parse the array computed by the function, starting from the head, to the array located at the path in this json, returning the same
+     Prepends all the elements of the array computed by the function, starting from the head, to the
+     array located at the path in this json, returning the same
      this instance if the array is not present, in which case, the function is not invoked.
-     <p>
-     Examples:
-     <pre>{@code
-    // function that returns an array with the first and last element parse the input
-    Function<JsArray,JsArray> fn = arr -> JsArray.parse(arr.get("0"), arr.get("-1"), JsBigInt.parse(BigInteger.ONE))
-
-    JsObj.empty().prependAllIfPresent(JsPath.parse("a"),fn) == JsObj.empty()       //there's no array present at a
-
-    JsArray.empty().prependAllIfPresent(JsPath.parse("0"),fn) == JsArray.empty()   //there's no array present at 0
-
-    JsObj a = JsObj.parse("{ 'a': { 'x' : [1, 2, 3] } }".replaceAll("'","\"")).orElseThrow()
-    a.prependAllIfPresent(JsPath.parse("a.x"),fn) // => {a: { x: [1, 3, 1, 1, 2, 3] } }
-    }</pre>
-
      @param path the JsPath object pointing to the existing array in which all the elements will be prepended
      @param function   the function which input is the existing array and output the array of elements that will be prepended
-
-
-     @return same this instance or a new json parse the same type T
+     @return same this instance or a new json of the same type T
 
      */
     default T prependAllIfPresent(final JsPath path,
@@ -498,26 +461,13 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     prepends all the elements parse the array computed by the function, starting from the head, to the array located at the path in this json, returning the same
-     this instance if the array is not present, in which case, the function is not invoked.
-     <p>
-     Examples:
-     <pre>{@code
-    // function that returns an array with the first and last element parse the input
-    Function<JsArray,JsArray> fn = arr -> JsArray.parse(arr.get("0"), arr.get("-1"), JsBigInt.parse(BigInteger.ONE))
-
-    JsObj.empty().prependAllIfPresent("a",fn) == JsObj.empty()       //there's no array present at a
-
-    JsArray.empty().prependAllIfPresent("0",fn) == JsArray.empty()   //there's no array present at 0
-
-    JsObj a = JsObj.parse("{ 'a': { 'x' : [1, 2, 3] } }".replaceAll("'","\"")).orElseThrow()
-    a.prependAllIfPresent("a.x",fn) // => {a: { x: [1, 3, 1, 1, 2, 3] } }
-    }</pre>
-
+     Prepends all the elements of the array computed by the function, starting from the head, to the
+     array located at the path in this json, returning the same this instance if the array is not present,
+     in which case, the function is not invoked.
      @param path the path-like string pointing  to the existing array in which all the elements will be prepended
      @param function   the function which input is the existing array and output the array of elements that will be prepended
 
-     @return same this instance or a new json parse the same type T
+     @return same this instance or a new json of the same type T
      */
     default T prependAllIfPresent(final String path,
                                   final Function<? super JsArray, JsArray> function
@@ -530,76 +480,40 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     prepends one or more elements, starting from the first, to the array located at the path in this json, returning the same this instance if the array is not present.
-     <p>
-     Examples:
-     <pre>{@code
-    //no array is present at a.x so no element is appended
-    JsObj.empty().prependIfPresent(JsPath.parse("a.x"), JsInt.parse(1),JsNull.NULL) == JsObj.empty()
-
-    //the element at a.x is not array (is an integer), so no element is appended
-    JsObj a = JsObj.parse("{ 'a': { 'x' : 2, 'c': 'bye' } }".replaceAll("'","\"")).orElseThrow()
-    a.prependIfPresent(JsPath.parse("a.x"), JsInt.parse(1)) == JsObj.empty()
-
-    //two new elements are appended to the back parse the existing array at 0.a.x
-    JsArray x = JsArray.parse("[ { 'a' : { 'x': [ true ] } } ]".replaceAll("'","\"")).orElseThrow()
-    x.prependIfPresent(JsPath.parse("0.a.x"), JsInt.parse(1), JsStr.parse("hi"))  // => [ { a: { x: [ 1, "hi", true ] } } ]
-    }</pre>
-
-
-     @param path   the path-like string pointing to the array in which all the elements will be prepended
-     @param elem   the first JsElem to be appended to the existing array
-     @param others more optional JsElem to be appended
-
-     @return same this instance or a new json parse the same type T
+     Prepends one element given by a supplier, to the array located at the given path in this json,
+     returning the same this instance if the array is not present. The supplier is not applied if
+     there's no array at the specified path.
+     @param path   the JsPath pointing to the existing array in which all the elements will be appended
+     @param supplier   the given supplier
+     @return same this instance or a new json of the same type T
      */
     default T prependIfPresent(final String path,
-                               final JsElem elem,
-                               final JsElem... others
+                               final Supplier<JsElem> supplier
                               )
     {
 
         return prependIfPresent(JsPath.of(requireNonNull(path)),
-                                requireNonNull(elem),
-                                requireNonNull(others)
+                                requireNonNull(supplier)
                                );
     }
 
     /**
-     prepends one or more elements, starting from the first, to the array located at the path in this json, returning the same this instance if the array is not present.
-     <p>
-     Examples:
-     <pre>{@code
-    //no array is present at a.x so no element is appended
-    JsObj.empty().prependIfPresent(JsPath.parse("a.x"), JsInt.parse(1),JsNull.NULL) == JsObj.empty()
-
-    //the element at a.x is not array (is an integer), so no element is appended
-    JsObj a = JsObj.parse("{ 'a': { 'x' : 2, 'c': 'bye' } }".replaceAll("'","\"")).orElseThrow()
-    a.prependIfPresent(JsPath.parse("a.x"), JsInt.parse(1)) == JsObj.empty()
-
-    //two new elements are appended to the back parse the existing array at 0.a.x
-    JsArray x = JsArray.parse("[ { 'a' : { 'x': [ true ] } } ]".replaceAll("'","\"")).orElseThrow()
-    x.prependIfPresent(JsPath.parse("0.a.x"), JsInt.parse(1), JsStr.parse("hi"))  // => [ { a: { x: [ 1, "hi", true] } } ]
-    }</pre>
-
-     @param path   the JsPath pointing to the array in which all the elements will be prepended
-     @param elem   the first JsElem to be appended to the existing array
-     @param others more optional JsElem to be appended
-
-     @return same this instance or a new json parse the same type T
+     Prepends one element given by a supplier, to the array located at the given path in this json,
+     returning the same this instance if the array is not present. The supplier is not applied if
+     there's no array at the specified path.
+     @param path   the JsPath pointing to the existing array in which all the elements will be appended
+     @param supplier   the given supplier
+     @return same this instance or a new json of the same type T
      */
     default T prependIfPresent(final JsPath path,
-                               final JsElem elem,
-                               final JsElem... others
+                               final Supplier<JsElem> supplier
                               )
     {
 
         requireNonNull(path);
-        requireNonNull(elem);
-        requireNonNull(others);
+        requireNonNull(supplier);
         return Functions.ifArrElse(it -> prepend(path,
-                                                 elem,
-                                                 others
+                                                 supplier.get()
                                                 ),
                                    it ->
                                    {
@@ -614,90 +528,38 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Filters the pairs of elements in the first level of this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':1,'x':'apple','c':[1,'peach',false],'e':{'f':'orange','g':2},'g':false}".replace("'","\"")
-    Json.parse(a).objOrElseThrow().filterElems(p->p.elem.isStr())
-    //{"e":{"f":"orange","g":2},"x":"apple","c":[1,"peach",false]}
-
-    Json.parse(a).objOrElseThrow().filterElems(p->p.elem.isIntegral())
-    //{"e":{"f":"orange", "g":2},"a":1,"c":[1,"peach",false]}
-    }</pre>
-
+     Filters the pairs of elements in the first level of this json, removing those that don't match
+     the predicate.
      @param filter the predicate which takes as the input every JsPair in the first level parse this json
-
-     @return same this instance if all the pairs satisfy the predicate or a new filtered json parse the same type T
-
+     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterElems_(Predicate) how to filter the pair of elements of the whole json and not only the first level
      */
     T filterElems(final Predicate<JsPair> filter);
 
     /**
      Filters all the pairs of elements of this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':1,'x':'apple','c':[1,'peach',false],'e':{'f':'},'g':false}".replace("'","\"")
-    Json.parse(a).objOrElseThrow().filterElems_(p->p.elem.isStr())
-    //{"e":{"f":"orange"},"x":"apple","c":["peach"]}
-
-    Json.parse(a).objOrElseThrow().filterElems_(p->p.elem.isIntegral())
-    //{"e":{"g":2},"a":1,"c":[1]}
-
-    String x = "{'a':1,'x':'apple','c':2, 'DD':3, 'EE':4, 'f':{'GG':2,'h':3}}".replace("'","\"")
-    Json.parse(x).objOrElseThrow().filterElems_(p->p.elem.isIntegral() && p.path.last().isKey(key->key.length()==1))
-    //{"f":{"h":3},"a":1,"c":2}
-
-    Json.parse(x).objOrElseThrow().filterElems_(p->p.elem.isIntegral() && p.path.head().isKey(key->key.length()==1))
-    //{"f":{"GG":2,"h":3},"a":1,"c":2}
-    }</pre>
-
      @param filter the predicate which takes as the input every JsPair of this json
-
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-
      @see #filterElems(Predicate) how to filter the pairs of values parse only the first level
      */
     T filterElems_(final Predicate<JsPair> filter);
 
     /**
-     Filters the pair of jsons in the first level parse this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':{},'x':[],'c':[1,2,{},[]],'e':{'f':'a','g':2},'g':false}".replace("'","\"")
-    Json.parse(a).objOrElseThrow().filterObjs(p->p.elem.isNotEmpty())
-    // {"e":{"f":"a","g":2},"g":false,"c":[1,2,{},[]]}
-
-    Json.parse(a).objOrElseThrow().filterObjs(p->p.path.isNotEmpty)
-    }</pre>
-
+     Filters the pair of jsons in the first level parse this json, removing those that don't match
+     the predicate.
      @param filter the predicate which takes as the input every JsPair in the first level parse this json
 
-     @return same this instance if all the pairs satisfy the predicate or a new filtered json parse the same type T
+     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
 
-     @see #filterObjs_(BiPredicate) how to filter the pair of jsons parse the whole json and not only the first level
+     @see #filterObjs_(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
      */
     T filterObjs(final BiPredicate<JsPath, JsObj> filter
                 );
 
     /**
      Filters all the pair of jsons parse this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':{},'x':[],'c':[1,2,{},[],[true,false]],'e':{'f':'a','g':2},'g':false}".replace("'","\"")
-
-    Json.parse(a).objOrElseThrow().filterObjs_(p->p.elem.isNotEmpty())
-    // {"e":{"f":"a","g":2},"g":false,"c":[1,2,[true,false]]}
-
-    Json.parse(a).objOrElseThrow().filterObjs_(p->p.path.last().isKey())
-    //{"e":{"f":"a","g":2},"a":{},"x":[],"g":false,"c":[1,2]}
-
-    }</pre>
-
      @param filter the predicate which takes as the input every JsPair of this json
-
-     @return same this instance if all the pairs satisfy the predicate or a new filtered json parse the same type T
-
+     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterObjs(BiPredicate) how to filter the pair of jsons parse only the first level
      */
     T filterObjs_(final BiPredicate<JsPath, JsObj> filter
@@ -705,74 +567,32 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Filters the keys in the first level parse this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':1,'x':'a','cc':[1,2,{'a':1,'bb':'h'}],'ee':{'f':'g','gg':2},'g':1}".replace("'","\"")
-    Json.parse(a).objOrElseThrow().filterKeys(p->p.path.last().asKey().name.length()==1)
-    //{"a":1,"x":"a","g":1}
-
-    Json.parse(a).objOrElseThrow().filterKeys(p->p.path.last().asKey().name.length()==2)
-    // {"cc":[1,2,{"a":1,"bb":"h"}],"ee":{"f":"g","gg":2}}
-
-    Json.parse(a).objOrElseThrow().filterKeys(p->p.elem.isIntegral())
-    //{"a":1,"g":1}
-    }</pre>
-
      @param filter the predicate which takes as the input every JsPair in the first level parse this json
-
-     @return same this instance if all the keys satisfy the predicate or a new filtered json parse the same type T
-
-     @see #filterKeys_(Predicate) how to filter the keys parse the whole json and not only the first level
+     @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
+     @see #filterKeys_(Predicate) how to filter the keys of the whole json and not only the first level
      */
     T filterKeys(final Predicate<JsPair> filter);
 
     /**
      Filters all the keys parse this json, removing those that don't match the predicate.
-     <p>Examples:
-     <pre>{@code
-    String a = "{'a':1,'x':'a','cc':[1,2,{'a':1,'bb':'h'}],'ee':{'f':'g','gg':2},'g':1}".replace("'","\"")
-    Json.parse(a).objOrElseThrow().filterKeys_(p->p.path.last().asKey().name.length()==1)
-    //{"a":1,"x":"a","g":1}
-
-    Json.parse(a).objOrElseThrow().filterKeys(p->p.path.last().asKey().name.length()==2)
-    {"cc":[1,2,{"bb":"h"}],"ee":{"gg":2}}
-
-    Json.parse(a).objOrElseThrow().filterKeys_(p->p.elem.isStr())
-    //{"x":"a"}
-    }</pre>
-
      @param filter the predicate which takes as the input every JsPair of this json
-
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
-
      @see #filterKeys(Predicate) how to filter the keys of only the first level
      */
     T filterKeys_(final Predicate<JsPair> filter);
 
     /**
-     Returns the element located at the key or index specified by the given position or {@link JsNothing} if it doesn't exist.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-     @param position key or index parse the element
+     Returns the element located at the key or index specified by the given position or {@link JsNothing} if it
+     doesn't exist.
+     @param position key or index of the element
      @return the JsElem located at the given Position or JsNothing if it doesn't exist
      */
     JsElem get(final Position position);
 
     /**
      Returns the element located at the given path or {@link JsNothing} if it doesn't exist.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the element that will be returned
-
+     @param path the JsPath object of the element that will be returned
      @return the JsElem located at the given JsPath or JsNothing if it doesn't exist
-
      */
     default JsElem get(final JsPath path)
     {
@@ -783,16 +603,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Returns the element located at the given path or {@link JsNothing} if it doesn't exist.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the element that will be returned
-
+     @param path the path-like string of the element that will be returned
      @return the JsElem located at the given JsPath or JsNothing if it doesn't exist
-
      */
     default JsElem get(final String path)
     {
@@ -801,15 +613,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the array located at the given path or {@link Optional#empty()} if it doesn't exist or it's not an array.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the JsArray that will be returned
-
+     Returns the array located at the given path or {@link Optional#empty()} if it doesn't exist or
+     it's not an array.
+     @param path the JsPath object of the JsArray that will be returned
      @return the JsArray located at the given JsPath wrapped in an Optional
 
      */
@@ -824,17 +630,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the array located at the given path as a big decimal or {@link Optional#empty()} if it doesn't exist or it's not an array.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the JsArray that will be returned
-
+     Returns the array located at the given path as a big decimal or {@link Optional#empty()} if it
+     doesn't exist or it's not an array.
+     @param path the path-like string of the JsArray that will be returned
      @return the JsArray located at the given path wrapped in an Optional
-
      */
     default Optional<JsArray> getArray(final String path)
     {
@@ -843,17 +642,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if it doesn't exist or it's not a decimal number.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the BigDecimal that will be returned
-
+     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if
+     it doesn't exist or it's not a decimal number.
+     @param path the JsPath object of the BigDecimal that will be returned
      @return the BigDecimal located at the given JsPath wrapped in an Optional
-
      */
     default Optional<BigDecimal> getBigDecimal(final JsPath path)
     {
@@ -867,17 +659,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if it doesn't exist or it's not a decimal number.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the BigDecimal that will be returned
-
+     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if it
+     doesn't exist or it's not a decimal number.
+     @param path the path-like string of the BigDecimal that will be returned
      @return the BigDecimal located at the given path wrapped in an Optional
-
      */
     default Optional<BigDecimal> getBigDecimal(final String path)
     {
@@ -885,17 +670,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it doesn't exist or it's not an integral number.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the BigInteger that will be returned
-
+     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it doesn't
+     exist or it's not an integral number.
+     @param path the JsPath object of the BigInteger that will be returned
      @return the BigInteger located at the given JsPath wrapped in an Optional
-
      */
     default Optional<BigInteger> getBigInt(final JsPath path)
     {
@@ -910,17 +688,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it doesn't exist  or it's not an integral number.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the BigInteger that will be returned
-
+     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it
+     doesn't exist  or it's not an integral number.
+     @param path the path-like string of the BigInteger that will be returned
      @return the BigInteger located at the given path wrapped in an Optional
-
      */
     default Optional<BigInteger> getBigInt(final String path)
     {
@@ -930,16 +701,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Returns the boolean located at the given path or {@link Optional#empty()} if it doesn't exist.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the Boolean that will be returned
-
+     @param path the JsPath object of the Boolean that will be returned
      @return the Boolean located at the given JsPath wrapped in an Optional
-
      */
     default Optional<Boolean> getBool(final JsPath path)
     {
@@ -953,16 +716,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Returns the boolean located at the given path or {@link Optional#empty()} if it doesn't exist.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the Boolean that will be returned
-
+     @param path the path-like string of the Boolean that will be returned
      @return the Boolean located at the given JsPath wrapped in an Optional
-
      */
     default Optional<Boolean> getBool(final String path)
     {
@@ -971,18 +726,12 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it doesn't exist or it's not a decimal number. If the number is a BigDecimal,
-     the conversion is identical to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about the precision parse the BigDecimal
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the double that will be returned
-
+     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it
+     doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
+     to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
+     the precision of the BigDecimal
+     @param path the JsPath object of the double that will be returned
      @return the decimal number located at the given JsPath wrapped in an OptionalDouble
-
      */
     default OptionalDouble getDouble(final JsPath path)
     {
@@ -997,18 +746,12 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it doesn't exist or it's not a decimal number. If the number is a BigDecimal,
-     the conversion is identical to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about the precision parse the BigDecimal
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the decimal number that will be returned
-
+     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it
+     doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is
+     identical to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information
+     about the precision of the BigDecimal
+     @param path the path-like string of the decimal number that will be returned
      @return the decimal number located at the given path wrapped in an OptionalDouble
-
      */
     default OptionalDouble getDouble(final String path)
     {
@@ -1017,17 +760,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it doesn't exist or it's not an integral number
-     or it's an integral number but doesn't fit in an integer.
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the integral number that will be returned
-
+     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     @param path the JsPath object of the integral number that will be returned
      @return the integral number located at the given JsPath wrapped in an OptionalInt
-
      */
     default OptionalInt getInt(final JsPath path)
     {
@@ -1043,17 +779,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it doesn't exist or it's not an integral number
-     or it's an integral number but doesn't fit in an integer.
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the integral number that will be returned
-
+     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     @param path the path-like string of the integral number that will be returned
      @return the integral number located at the given path wrapped in an OptionalInt
-
      */
     default OptionalInt getInt(final String path)
     {
@@ -1062,17 +791,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it doesn't exist or it's not an integral number
-     or it's an integral number but doesn't fit in a long.
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the integral number that will be returned
-
+     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
+     @param path the JsPath object of the integral number that will be returned
      @return the integral number located at the given JsPath wrapped in an OptionalLong
-
      */
     default OptionalLong getLong(final JsPath path)
     {
@@ -1088,17 +810,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it doesn't exist or it's not an integral number
-     or it's an integral number but doesn't fit in a long.
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the integral number that will be returned
-
+     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
+     @param path the path-like string of the integral number that will be returned
      @return the integral number located at the given path wrapped in an OptionalLong
-
      */
     default OptionalLong getLong(final String path)
     {
@@ -1107,17 +822,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the object located at the given path or {@link Optional#empty()} if it doesn't exist or it's not an object.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the JsObj that will be returned
-
+     Returns the object located at the given path or {@link Optional#empty()} if it doesn't exist or it's
+     not an object.
+     @param path the JsPath object of the JsObj that will be returned
      @return the JsObj located at the given JsPath wrapped in an Optional
-
      */
     default Optional<JsObj> getObj(final JsPath path)
     {
@@ -1130,17 +838,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the object located at the given path or {@link Optional#empty()} if it doesn't exist or it's not an object.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the JsObj that will be returned
-
+     Returns the object located at the given path or {@link Optional#empty()} if it doesn't exist or it's
+     not an object.
+     @param path the path-like string of the JsObj that will be returned
      @return the JsObj located at the given path wrapped in an Optional
-
      */
     default Optional<JsObj> getObj(final String path)
     {
@@ -1149,17 +850,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Returns the string located at the given path or {@link Optional#empty()} if it doesn't exist or it's not an string.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the JsPath object parse the JsStr that will be returned
-
+     Returns the string located at the given path or {@link Optional#empty()} if it doesn't exist or it's
+     not an string.
+     @param path the JsPath object of the JsStr that will be returned
      @return the JsStr located at the given path wrapped in an Optional
-
      */
     default Optional<String> getStr(final JsPath path)
     {
@@ -1173,17 +867,10 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Returns the string located at the given path or {@link Optional#empty()} if it doesn't exist or it's not an string.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
-     @param path the path-like string parse the JsStr that will be returned
-
+     Returns the string located at the given path or {@link Optional#empty()} if it doesn't exist or it's
+     not an string.
+     @param path the path-like string of the JsStr that will be returned
      @return the JsStr located at the given path wrapped in an Optional
-
      */
     default Optional<String> getStr(final String path)
     {
@@ -1192,17 +879,11 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Declarative way parse implementing if(this.isEmpty()) return emptySupplier.get() else return nonEmptySupplier.get()
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
+     Declarative way parse implementing if(this.isEmpty()) return emptySupplier.get() else return
+     nonEmptySupplier.get()
      @param emptySupplier    Supplier that will produce the result if this json is empty
      @param nonemptySupplier Supplier that will produce the result if this json is not empty
-     @param <A>      the type parse the result
-
+     @param <A>      the type of the result
      @return an object parse type A
 
      */
@@ -1263,14 +944,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps the values in the first level parse this json.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
      @param fn the mapping function
 
-     @return a new mapped json parse the same type T
+     @return a new mapped json of the same type T
      @see #mapObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map keys parse json objects
      @see #mapElems_(Function) to map all the values and not only the first level
@@ -1282,12 +958,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      Maps the values in the first level parse this json that satisfies a given predicate.
      @param fn the mapping function
      @param predicate the given predicate that determines what JsValues will be mapped
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-     @return same this instance or a new mapped json parse the same type T
+     @return same this instance or a new mapped json of the same type T
 
 
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
@@ -1300,15 +971,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the values parse this json.
-
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
      @param fn the mapping function
-     @return a new mapped json parse the same type T
-
+     @return a new mapped json of the same type T
      @see #mapObjs_(BiFunction) to map jsons
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapElems(Function) to map only the first level
@@ -1318,17 +982,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the values parse this json that satisfies a given predicate.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the  mapping function
      @param predicate the given predicate that determines what JsValues will be mapped
-
-     @return same this instance or a new mapped json parse the same type TT
-
+     @return same this instance or a new mapped json of the same type TT
      @see #mapObjs_(BiFunction, BiPredicate) to map jsons
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapElems(Function, Predicate) to map only the first level
@@ -1339,17 +995,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps the jsons in the first level parse this json that satisfies a given predicate.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the mapping function
      @param predicate the given predicate that determines what Jsons will be mapped
-
-     @return same this instance or a new mapped json parse the same type T
-
+     @return same this instance or a new mapped json of the same type T
      @see #mapElems(Function, Predicate) to map values
      @see #mapKeys(Function, Predicate) to map keys parse json objects
      @see #mapObjs_(BiFunction, BiPredicate) to map all the jsons and not only the first level
@@ -1360,15 +1008,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps the jsons in the first level parse this json.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
      @param fn the  mapping function
-
-     @return a new mapped json parse the same type T
-
+     @return a new mapped json of the same type T
      @see #mapElems(Function) to map values
      @see #mapKeys(Function) to map keys parse json objects
      @see #mapObjs_(BiFunction) to map all the jsons and not only the first level
@@ -1378,17 +1019,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the jsons parse this json that satisfies a given predicate.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the  mapping function
      @param predicate the given predicate that determines what Jsons will be mapped
-
-     @return same this instance or a new mapped json parse the same type T
-
+     @return same this instance or a new mapped json of the same type T
      @see #mapElems_(Function, Predicate) to map values
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
@@ -1399,15 +1032,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the jsons parse this json.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the mapping function
-     @return a new mapped json parse the same type T
-
+     @return a new mapped json of the same type T
      @see #mapElems_(Function) to map values
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapObjs(BiFunction) to map only the first level
@@ -1417,15 +1043,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps the keys in the first level parse this json.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
      @param fn the mapping function
-
-     @return a new mapped json parse the same type T
-
+     @return a new mapped json of the same type T
      @see #mapElems(Function) to map values
      @see #mapObjs(BiFunction) to map jsons
      @see #mapKeys_(Function) to map all the keys and not only the first level
@@ -1434,18 +1053,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps the keys in the first level parse this json that satisfies a given predicate.
-
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the mapping function
      @param predicate the given predicate that determines what keys will be mapped
-
-     @return same this instance or a new mapped json parse the same type T
-
+     @return same this instance or a new mapped json of the same type T
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
      @see #mapElems(Function, Predicate) to map values
      @see #mapKeys_(Function, Predicate) to map all the keys and not only the first level
@@ -1456,15 +1066,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the keys parse this json.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the mapping function
-     @return a new mapped json parse the same type T
-
+     @return a new mapped json of the same type T
      @see #mapElems_(Function) to map values
      @see #mapObjs_(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
@@ -1473,17 +1076,9 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Maps all the keys parse this json that satisfies a given predicate.
-     <p>
-     Examples:
-     <pre>
-     {@code }
-     </pre>
-
      @param fn the mapping function
      @param predicate the given predicate that determines what keys will be mapped
-
-     @return same this instance or a new mapped json parse the same type T
-
+     @return same this instance or a new mapped json of the same type T
      @see #mapElems_(Function, Predicate) to map values
      @see #mapObjs_(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
@@ -1494,18 +1089,16 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      If the given path is not already associated with a value or is associated with null, associates it with the given value. Otherwise,
-     replaces the associated value with the results parse the given remapping function. This method may be parse use when combining multiple mapped
+     replaces the associated value with the results of the given remapping function. This method may be of use when combining multiple mapped
      values for a key.For example, to either create or append a String msg to a value mapping:
      {@code
-
      map.merge(key, msg, String::concat)
      }
-
      @param path the given JsPath object which the resulting value is to be associated
      @param value the given value to be merged with the existing value associated with the path or, if no existing value or a null value is
      associated with the path, to be associated with the path
      @param fn the given function to recompute a value if present
-     @return a new json parse the same type T
+     @return a new json of the same type T
      */
     default T merge(final JsPath path,
                     final JsElem value,
@@ -1527,18 +1120,16 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      If the given path is not already associated with a value or is associated with null, associates it with the given value. Otherwise,
-     replaces the associated value with the results parse the given remapping function. This method may be parse use when combining multiple mapped
+     replaces the associated value with the results of the given remapping function. This method may be of use when combining multiple mapped
      values for a key.For example, to either create or append a String msg to a value mapping:
      {@code
-
      map.merge(key, msg, String::concat)
      }
-
      @param path the given path-like string which the resulting value is to be associated
      @param value the given value to be merged with the existing value associated with the path or, if no existing value or a null value is
      associated with the path, to be associated with the path
      @param fn the given function to recompute a value if present
-     @return a new json parse the same type T
+     @return a new json of the same type T
      */
     default T merge(final String path,
                     final JsElem value,
@@ -1553,30 +1144,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Tries to parse the string into an immutable json.
-     <p>
-     Examples:
-     <pre>{@code
-    Json.parse("{1}").isFailure() == true
-
-    Json.parse("{1}").objOrElse(()-> JsObj._empty_()).equals(JsObj._empty_())
-
-    Json.parse("{1}").objOrElseThrow()  //jsonvalues.MalformedJson thrown: Json malformed: Invalid token=NUMBER at
-    //(line no=1, column no=2, offset=1). Expected tokens are: [STRING]
-
-    Json.parse("{ 'a': 1 }".replaceAll("'","\"")).objOrElse(()-> JsObj.empty()).equals(JsObj._parse_("a", JsInt.parse(1)))
-
-    // java.lang.IllegalArgumentException thrown: Received an array: []
-    Json.parse("[]").objOrElseThrow((arr,ex)->{
-    if(ex!=null) return ex;
-    else return new IllegalArgumentException("Received an array: "+arr);
-    }
-    )
-
-    Json.parse("[1,2]").arrOrElseThrow().equals(JsArray._parse_(JsInt.parse(1),JsInt.parse(2)))
-    }</pre>
-
      @param str the string that will be parsed
-
      @return a {@link Try} computation
      */
     static Try parse(String str)
@@ -1607,27 +1175,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Tries to parse the string into an immutable json, performing some operations while the parsing.
-     <p>
-     It's faster to do certain operations right while the parsing, instead parse parsing the string into a json and apply them later.
-
-     Examples:
-     <pre>{@code
-
-    //removes null and converts to uppercase keys
-    String a = "{'a': {'x':1},'x':null,'c':' hi ','d':[2, ' bye ',{ 'e':' hi ','f': null }] }".replaceAll("'","\"")
-    Json.parse(a,Options.builder().filter(pair->pair.elem.isNotNull()).keyMap(key-> key.toUpperCase()))
-    .objOrElseThrow()
-    //the result is {"A":{"B":1},"C":" hi ","D":[2, " bye ",{"E":" hi "}]}
-
-    //trims and converts to uppercase string elements
-    Json.parse(a,Options.builder().map(pair-> pair.elem.mapIfStr(s->s.trim().toUpperCase()))).objOrElseThrow()
-    //the result is {"a":{"x":1},"x":null,"c":"HI","d":[2, "BYE",{"e":"HI","f":null}]}
-
-    }</pre>
-
      @param str     the string that will be parsed
      @param options a Options with the filters and maps that will be applied during the parsing
-
      @return a {@link Try} computation
      */
     static Try parse(String str,
@@ -1664,28 +1213,16 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     /**
      Inserts the element returned by the function at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
-     <p>
      The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object. In both cases the function is not invoked.
      The same instance is returned as well when the element returned by the function is {@link JsNothing}
-     Examples:
-     <pre>
-     {@code
-
-
-
-
-     }
-     </pre>
-
      @param path    the JsPath object where the JsElem will be inserted at
      @param fn the function that takes as an input the JsElem at the path and produces the JsElem to be inserted at the path
 
-     @return the same instance or a new json parse the same type T
+     @return the same instance or a new json of the same type T
      */
     T put(final JsPath path,
           final Function<? super JsElem, ? extends JsElem> fn
          );
-
 
     /**
      Inserts the element returned by the function at the path in this json, replacing any existing
@@ -1708,22 +1245,13 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
+     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty
+     indexes in arrays when necessary.
      <p>
-     The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object or the element is {@link JsNothing}
-     Examples:
-     <pre>
-     {@code
-
-
-
-
-     }
-     </pre>
-
+     The same instance is returned when the head of the path is a key and this is an array or the head
+     of the path is an index and this is an object or the element is {@link JsNothing}
      @param path    the JsPath object where the element will be inserted at
      @param element the JsElem that will be inserted
-
      @return the same instance or a new json of the same type T
      */
     default T put(final JsPath path,
@@ -1745,19 +1273,11 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
+     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty
+     indexes in arrays when necessary.
      <p>
-     The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object or the element is {@link JsNothing}
-     Examples:
-     <pre>
-     {@code
-
-
-
-
-     }
-     </pre>
-
+     The same instance is returned when the head of the path is a key and this is an array or the
+     head of the path is an index and this is an object or the element is {@link JsNothing}
      @param path    the path-like string where the element will be inserted at
      @param element the JsElem that will be inserted
 
@@ -1773,22 +1293,12 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Inserts the integer number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
-     <p>
-     The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object or the element is {@link JsNothing}
-     Examples:
-     <pre>
-     {@code
-
-
-
-
-     }
-     </pre>
-
+     Inserts the integer number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull}
+     empty indexes in arrays when necessary. The same instance is returned when the head of the path
+     is a key and this is an array or the head of the path is an index and this is an object or the
+     element is {@link JsNothing}
      @param path    the path-like string where the integer number will be inserted at
      @param n the integer that will be inserted
-
      @return the same instance or a new json of the same type T
      */
     default T put(final String path,
@@ -1802,22 +1312,12 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Inserts the long number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
-     <p>
-     The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object or the element is {@link JsNothing}
-     Examples:
-     <pre>
-     {@code
-
-
-
-
-     }
-     </pre>
-
+     Inserts the long number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull}
+     empty indexes in arrays when necessary. The same instance is returned when the head of the path
+     is a key and this is an array or the head of the path is an index and this is an object or the
+     element is {@link JsNothing}
      @param path    the path-like string where the long number will be inserted at
      @param n the long number that will be inserted
-
      @return the same instance or a new json of the same type T
      */
     default T put(final String path,
@@ -2021,7 +1521,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param map the mapping function which produces an object of type R from a JsValue
      @param predicate the predicate that determines what JsValue will be mapped and reduced
      @param <R> the type of the operands of the operator
-     @return an {@link Optional} describing the of parse the reduction
+     @return an {@link Optional} describing the of of the reduction
      @see #reduce_(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
      */
     <R> Optional<R> reduce(BinaryOperator<R> op,
@@ -2218,7 +1718,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     boolean isMutable();
 
     /**
-     @return  true if the implementation is immutable
+     @return true if the implementation is immutable
      */
     boolean isImmutable();
 
