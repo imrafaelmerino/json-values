@@ -353,9 +353,9 @@ Json mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
                        );               
 ```
 
-_filterKeys_ methods remove keys from JsObj based on the full path of the key and its element.
+_filterKeys_ methods remove keys from JsObj based on the full path of the key and its associated element.
 
-_filterElements_ methods remove keys from JsObj based on the full path of the key and its element.
+_filterElements_ methods remove keys from JsObj based on the full path of the key and its associated element.
 
 _filterObjs_ is a specialization of filterElements to remove json objects. 
 
