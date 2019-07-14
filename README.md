@@ -126,7 +126,7 @@ great to convey information quickly and concisely, and distinguish methods that 
 the ones that return immutable ones, is something that has to be highlighted somehow. Not like in other 
 languages like Scala, symbols are not allowed in Java to name variables and methods, that's why I use an underscore. 
 I prefer to use an exclamation as Ruby does, but I can't.
-##### 1.1- Creation of immutable json objects.
+#### 1.1- Creation of immutable json objects.
 ```
 JsObj empty = JsObj.empty();  // empty immutable instance is a singleton
 
@@ -152,7 +152,7 @@ JsObj w = JsObj.of( JsPair.of("a.b.0", 1 ),
 //parsing a string, which returns a jsonvalues.TryObj computation that may fail                       
 JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
  ```
-##### 1.2- Creation of mutable json objects.
+#### 1.2- Creation of mutable json objects.
 ```
 JsObj _empty_ = JsObj._empty_();  
    
@@ -179,7 +179,7 @@ JsObj _w_ = JsObj._of_( JsPair.of("a.b.0", 1),
 JsObj _z_ = JsObj._parse_("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
 ```
 
-##### 1.3- Creation of immutable json arrays.
+#### 1.3- Creation of immutable json arrays.
 ```
 JsArray a = JsArray.of(1,2,3);  // from varargs of ints
 
@@ -206,7 +206,7 @@ JsArray f = empty.append(JsInt.of(1))
 
 Assert.assertNotEquals(empty, f); // empty  will never change      
 ```               
-##### 1.4- Creation of mutable json arrays.
+#### 1.4- Creation of mutable json arrays.
 ```
 JsArray _a_ = JsArray._of_(1,2,3);  // from varargs of ints
 
@@ -234,7 +234,7 @@ JsArray _f_ = _empty_.append(JsInt.of(1))
                      
 Assert.assertEquals(_empty_, _f_); //  _empty_ is not empty!, it's [0,1,2]   
 ```               
-##### 2- Streams and Collectors.
+#### 2- Streams and Collectors.
 Stream methods returns sequences of JsPairs:
 ```
 JsObj x = JsObj.of("a", JsArray.of(1,2,3),
@@ -245,23 +245,23 @@ JsObj x = JsObj.of("a", JsArray.of(1,2,3),
 x.stream().forEach(System.out::println)
 ```
 prints out the following sequence of two pairs:
-
+```text
 ("a", [1,2,3])
 ("b", {"c":4, "d": "hi"})
-
+```
 By convention, every method that ends with an underscore is applied recursively to every element that is a Json.
 Taking that into account:
 ```
 x.stream_().forEach(System.out::println)
 ```
 prints out the following sequence of five pairs:
-
+```text
 ("a.0", 1) 
 ("a.1", 2)
 ("a.2", 3) 
 ("b.c", 4)
 ("b.d", "hi")
-
+```
 Let's multiply by 10 every number:
 ```
 Function<JsPair,JsPair> times10ifInt = p -> p.elem.isInt()) ? p.elem.asJsInt().map(i->i*10) : p.elem;
@@ -284,22 +284,23 @@ JsArray x = JsArray.of(JsArray.of(1,2),
 x.stream().forEach(System.out::println)
 ```
 prints out the following sequence of three pairs:
-
+```text
 ("0", [1,2])
 ("1", "red")
 ("2", {"c":"blue", "d":"pink"})
+```
 and
 ```
 x.stream_().forEach(System.out::println)
 ```
 prints out the following sequence of five pairs:
-
+```text
 ("0.0", 1)
 ("0.1", 2)
 ("1", "red")
 ("2.c", "blue")
 ("2.d", "pink")
-
+```
 Let's convert every string to uppercase:
 ```
 Function<JsPair,JsPair> toUpperCase = p -> p.elem.isStr() ? p.elem.asJsStr().map(String::toUpperCase) : p.elem;
@@ -308,7 +309,7 @@ x.stream_().map(toUpperCase).collector(JsArray._collector_()) // stream into mut
 ```
 By the way, the implemented collectors support parallel streams.
 
-##### 3- Filter, map and reduce.
+#### 3- Filter, map and reduce.
 Every operation can be applied only to the first level of a json 
 ```
 Json filterKeys(final Predicate<JsPair> predicate);
@@ -369,9 +370,10 @@ of the tree, they transform their leaves (map) or cut them down (filter). They r
 _Haskell_, it must be familiar.
 
 
-##### 3.1- Examples.
+#### 3.1- Examples.
 to be documented.
-##### 4- Union and intersection. 
+
+#### 4- Union and intersection. 
 Both operations can be applied to the first level of the jsons
 ```
 JsObj union(final JsObj that);
@@ -397,10 +399,10 @@ JsArray intersection_(final JsArray that);
 Arrays can be considered lists (ordered and with duplicates), sets(not ordered and without duplicated)
 alternatively, multisets (not ordered and with duplicates) using the parameter _ARRAY_AS_.
 
-##### 4.1- Examples.
+#### 4.1- Examples.
 to be documented.
 
-##### 5- Getting data in and pulling data out. 
+#### 5- Getting data in and pulling data out. 
 ```
 {
 "a": { "b": [ { "c": 1,
@@ -437,11 +439,11 @@ json.putIfPresent("a.b.0.d", e -> JsStr.of("a"))
 json.appendIfPresent("e.0", ()-> JsStr.of("a"))
 json.prependIfPresent("e.0", ()-> JsStr.of("a"))
 json.merge("a.b.0.c",
-           JsInt.of(1),                                   // no element: put default value
-           (d,e)-> e.asJsInt().map(i-> i + d.asJsInt().x) // elem exists: put existing + default 
+           JsInt.of(1),                                   // no element: puts default value
+           (d,e)-> e.asJsInt().map(i-> i + d.asJsInt().x) // elem exists: puts existing + default 
           );                
 ```
-##### 6- Equality. 
+#### 6- Equality. 
 The following objects
 ```
 JsObj x = JsObj.of("a", JsInt.of(1),
@@ -481,20 +483,22 @@ b.equals(c, TYPE.SET)      //true
 b.equals(c, TYPE.MULTISET) //false
 ```
 
-##### 7- Exceptions and errors. 
+#### 7- Exceptions and errors. 
 Exceptions and errors are both treated as Exceptions in Java and most of the mainstream languages, but, conceptually, they are quite different. Errors mean that someone has to fix something; it could be an error of the user of the library or an error of the library itself. On the other hand, exceptions are expected in irregular situations at runtime, like accessing a non-existing file. No matter what you do, the
 file could be deleted anytime by any other process, and the only thing you can do is to handle that possibility. 
 **json-values** use the native unchecked exception _UnsupportedException_ when the client of the library makes an error,
 for example, getting the head of an empty array, which means that the programmer needs to change something, 
 for example, adding a guard condition. Another error could be to pass in null to a method, in which case it throws a  NullPointerException. No method in the library accepts null as a parameter.
 The only exception in the API is the checked MalformedJson, which occurs when a not well-formed string is parsed into a Json.
-##### 8- Trampolines
+
+#### 8- Trampolines
 to be documented
-##### 9- Performance
+
+#### 9- Performance
 A benchmark using [jmh](https://openjdk.java.net/projects/code-tools/jmh/) has been carried out on my computer.
 The following results have been obtained parsing a string into a json of size 100,1000 and 10000,
 using Jackson and json-values (both mutable an immutable implementations):
-
+```
 Benchmark          Mean        Mean error   Units
 jackson_100       4003.461       95.410     ns/op
 mutable_100       5778.173      277.587     ns/op
@@ -507,11 +511,11 @@ immutable_1000   200210.212     7026.397    ns/op
 jackson_10000    1089908.830    23290.189   ns/op
 mutable_10000    1309524.154   276923.222   ns/op
 immutable_10000  2460901.909    66524.870   ns/op
-
-As expected, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
+```
+As expectd, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
 defensive copies of objects are performed.
 
-##### 10- Tools. 
+#### 10- Tools. 
 Different compiler plug-ins to find bugs at _compile time_ have been used:
 * [The Checker Framework Compiler](https://checkerframework.org), which found some NullPointerException.
 * [Google error-prone](https://errorprone.info), which found a bug related to [BigDecimalEquals](https://errorprone.info/bugpattern/BigDecimalEquals)
@@ -519,7 +523,7 @@ Different compiler plug-ins to find bugs at _compile time_ have been used:
 Part of the testing has been carried out using [Scala Check](https://www.scalacheck.org/) and Property Based Testing. 
 I developed a json generator for this purpose.
 
-##### 11- Release plan
+#### 11- Release plan
 to be documented
 
 Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com
