@@ -1,5 +1,5 @@
 #### INTRODUCTION
-After more than two years working on it, I'm very proud to announced **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
+After more than two years working on it, I'm very proud to announce **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
 from _Scala_. _Java_ doesn't implement _persistent data structures_ natively, nevertheless, Scala does and 
 runs on the _JVM_; therefore, you can go from Java to Scala smoothly and without any impact on the performance. 
 
