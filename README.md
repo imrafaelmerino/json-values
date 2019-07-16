@@ -261,14 +261,10 @@ prints out the following sequence of five pairs:
 ("b.c", 4)
 ("b.d", "hi")
 ```
-Let's multiply by 10 every number:
-```
-Function<JsPair,JsPair> times10ifInt = p -> p.elem.isInt()) ? p.elem.asJsInt().map(i->i*10) : p.elem;
-x.stream_().map(times10ifNumber).collector(JsObj.collector());
-```
+
 What if you want to get the stream back into a mutable json. Well, taking into account the convention mentioned before, it only requires two underscores:
 ```
-x.stream_().map(times10ifNumber).collector(JsObj._collector_());
+x.stream_().collector(JsObj._collector_());
 ```
 As it was expected, JsObj.\_collector\_() returns a mutable object whereas JsObj.collector() returns an immutable one.
 
@@ -299,12 +295,6 @@ prints out the following sequence of five pairs:
 ("1", "red")
 ("2.c", "blue")
 ("2.d", "pink")
-```
-Let's convert every string to uppercase:
-```
-Function<JsPair,JsPair> toUpperCase = p -> p.elem.isStr() ? p.elem.asJsStr().map(String::toUpperCase) : p.elem;
-x.stream_().map(toUpperCase).collector(JsArray.collector())   // stream into immutable array
-x.stream_().map(toUpperCase).collector(JsArray._collector_()) // stream into mutable array
 ```
 By the way, the implemented collectors support parallel streams.
 
@@ -355,7 +345,7 @@ Json mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
 
 _filterKeys_ methods remove keys from JsObj based on the full path of the key and its associated element.
 
-_filterElements_ methods remove keys from JsObj based on the full path of the key and its associated element.
+_filterElems_ methods remove keys from JsObj based on the full path of the key and its associated element.
 
 _filterObjs_ is a specialization of filterElements to remove json objects. 
 
@@ -380,8 +370,8 @@ JsObj intersection(final JsObj that,
                    final TYPE ARRAY_AS
                   );
 JsArray union(final JsArray that,
-                  final TYPE ARRAY_AS
-                 );    
+              final TYPE ARRAY_AS
+             );    
 ```
 or to the whole structure recursively
 ```              
