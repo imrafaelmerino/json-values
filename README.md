@@ -347,7 +347,7 @@ _filterKeys_ methods remove keys from JsObj based on the full path of the key an
 
 _filterElems_ methods remove keys from JsObj based on the full path of the key and its associated element.
 
-_filterObjs_ is a specialization of filterElements to remove json objects. 
+_filterObjs_ is a specialization of filterElems to remove json objects. 
 
 The same considerations apply for the map functions, except that they map the elements that satisfy 
 the specified predicate, instead of removing them.
