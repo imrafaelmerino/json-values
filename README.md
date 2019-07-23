@@ -391,7 +391,7 @@ alternatively, multisets (not ordered and with duplicates) using the parameter _
 #### 4.1- Examples.
 to be documented.
 
-#### 5- Getting data in and pulling data out. 
+#### 5- Putting data in and getting data out. 
 ```
 {
 "a": { "b": [ { "c": 1,
