@@ -40,7 +40,6 @@
         <sonar.exclusions>**/jsonvalues/libs/**</sonar.exclusions>
         <sonar.projectKey>json-values</sonar.projectKey>
     </properties>
-
     <dependencies>
         <dependency>
             <groupId>org.scalacheck</groupId>
@@ -79,7 +78,6 @@
             <scope>provided</scope>
         </dependency>
     </dependencies>
-
     <build>
         <plugins>
             <plugin>
@@ -118,7 +116,6 @@
                     <addJavacArgs>-deprecation</addJavacArgs>
                     <addScalacArgs>-deprecation</addScalacArgs>
                 </configuration>
-
                 <executions>
                     <execution>
                         <id>compile</id>
@@ -158,7 +155,6 @@
             </plugin>
         </plugins>
     </build>
-
     <profiles>
         <profile>
             <id>local</id>

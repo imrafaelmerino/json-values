@@ -79,7 +79,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param str the string to be parsed
      @return a {@link Try} computation
      */
-    static Try _parse_(String str)
+    static Try _parse_(final String str)
     {
 
         try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))
@@ -123,8 +123,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param options a builder with the filters and maps that, if specified, will be applied during the parsing
      @return a {@link Try} computation
      */
-    static Try _parse_(String str,
-                       ParseOptions options
+    static Try _parse_(final String str,
+                       final ParseOptions options
                       )
     {
         try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))
@@ -174,8 +174,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param elems the JsArray of elements to be appended
      @return same this instance or a new json of the same type T
      */
-    T appendAll(JsPath path,
-                JsArray elems
+    T appendAll(final JsPath path,
+                final JsArray elems
                );
 
     /**
@@ -189,8 +189,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
      @return same this instance or a new json of the same type T
      */
-    default T appendAll(String path,
-                        JsArray elems
+    default T appendAll(final String path,
+                        final JsArray elems
                        )
     {
         return appendAll(JsPath.of(path),
@@ -216,14 +216,18 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
                      final JsElem... others
                     )
     {
-        final ArrayList<JsElem> collection = new ArrayList<>(Arrays.asList(requireNonNull(others)));
-        collection.add(0,
-                       requireNonNull(elem)
-                      );
 
-        return appendAll(requireNonNull(path),
-                         jsonvalues.JsArray.of(collection)
-                        );
+
+        T result = append(path,
+                          elem
+                         );
+        for (final JsElem other : Objects.requireNonNull(others))
+        {
+            result = result.append(path,
+                                   Objects.requireNonNull(other)
+                                  );
+        }
+        return result;
 
     }
 
@@ -250,17 +254,48 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
                      );
     }
 
+    /**
+     Appends one element to the array located at the given path in this json. If the array doesn't exist,
+     a new one is created, replacing any existing element in the path and filling empty indexes in arrays
+     with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it's an array
+     and the head of the path is a key or when it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which the element will be appended
+     @param elem   the JsElem to be appended to the existing or created array
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final JsElem elem
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem
+                     );
+    }
 
     /**
-     Appends one element given by a supplier, to the array located at the given path in this json,
+     Appends one element to the array located at the given path in this json. If the array doesn't exist,
+     a new one is created, replacing any existing element in the path and filling empty indexes in arrays
+     with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it's an array
+     and the head of the path is a key or when it's an object and the head of the path is an index.
+     @param path   the path pointing to the array in which the element will be appended
+     @param elem   the JsElem to be appended to the existing or created array
+     @return same this instance or a new json of the same type T
+     */
+    T append(final JsPath path,
+             final JsElem elem
+            );
+
+
+    /**
+     Appends the element given by the supplier, to the array located at the given path in this json,
      returning the same this instance if the array is not present. The supplier is not applied if
      there's no array at the specified path.
-     @param path   the path-like string pointing to the existing array in which all the elements will be appended
+     @param path   the path-like string pointing to the existing array in which the element will be appended
      @param supplier   the given supplier
      @return same this instance or a new json of the same type T
      */
     default T appendIfPresent(final String path,
-                              final Supplier<JsElem> supplier
+                              final Supplier<? extends JsElem> supplier
                              )
     {
         return appendIfPresent(JsPath.of(path),
@@ -269,15 +304,15 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Appends one element given by a supplier, to the array located at the given path in this json,
+     Appends the element given by the supplier, to the array located at the given path in this json,
      returning the same this instance if the array is not present. The supplier is not applied if
      there's no array at the specified path.
-     @param path   the JsPath pointing to the existing array in which all the elements will be appended
+     @param path   the JsPath pointing to the existing array in which the element will be appended
      @param supplier   the given supplier
      @return same this instance or a new json of the same type T
      */
     default T appendIfPresent(final JsPath path,
-                              final Supplier<JsElem> supplier
+                              final Supplier<? extends JsElem> supplier
                              )
     {
         return Functions.ifArrElse(it -> append(path,
@@ -295,21 +330,21 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Appends all the elements of the array computed by the function, starting from the head, to an
+     Appends all the elements of the array computed by the supplier, starting from the head, to an
      array located at the given path in this json, returning the same this instance if the array is 
-     not present, in which case, the function is not invoked.
+     not present, in which case, the supplier is not invoked.
      @param path the given JsPath object pointing to the existing array in which all the elements will be appended
-     @param function   the function which input is the existing array and output the array of elements that will be appended
+     @param supplier   the supplier of the array of elements that will be appended
      @return same this instance or a new json of the same type T
      */
     default T appendAllIfPresent(final JsPath path,
-                                 final Function<? super JsArray, JsArray> function
+                                 final Supplier<JsArray> supplier
 
 
                                 )
     {
         return Functions.ifArrElse(it -> appendAll(path,
-                                                   requireNonNull(function).apply(it)
+                                                   requireNonNull(supplier).get()
                                                   ),
                                    it ->
                                    {
@@ -323,22 +358,20 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Appends all the elements of the array computed by the function, starting from the head, to
-     an array located at the path in this json, returning the same this instance if the array is not 
-     present, in which case, the function is not invoked.
+     Appends all the elements of the array computed by the supplier, starting from the head, to an array
+     located at the path in this json, returning the same this instance if the array is not present,
+     in which case, the supplier is not invoked.
      @param path the path-like string pointing to the existing array in which all the elements will be appended
-     @param function the function which input is the existing array and output the array of elements that will be appended
+     @param supplier the supplier of the array of elements that will be appended
      @return same this instance or a new json of the same type T
-
-
      */
     default T appendAllIfPresent(final String path,
-                                 final Function<? super JsArray, JsArray> function
+                                 final Supplier<JsArray> supplier
 
                                 )
     {
         return appendAllIfPresent(JsPath.of(path),
-                                  function
+                                  supplier
                                  );
     }
 
@@ -354,8 +387,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
      @return same this instance or a new json of the same type T
      */
-    T prependAll(JsPath path,
-                 JsArray elems
+    T prependAll(final JsPath path,
+                 final JsArray elems
                 );
 
     /**
@@ -369,8 +402,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
      @return same this instance or a new json of the same type T
      */
-    default T prependAll(String path,
-                         JsArray elems
+    default T prependAll(final String path,
+                         final JsArray elems
                         )
     {
         return prependAll(JsPath.of(path),
@@ -387,7 +420,6 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param path   the JsPath pointing to the array in which all the elements will be prepended
      @param elem   the first JsElem to be prepended to the existing or created array
      @param others more optional JsElem to be prepended
-
      @return same this instance or a new json of the same type T
      */
     default T prepend(final JsPath path,
@@ -395,17 +427,49 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
                       final JsElem... others
                      )
     {
+        // T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    Objects.requireNonNull(others[i - 1])
+                                   );
+        }
+        return result.prepend(path,
+                              elem
+                             );
+    }
 
-        final ArrayList<JsElem> collection = new ArrayList<>(Arrays.asList(requireNonNull(others)));
-        collection.add(0,
-                       requireNonNull(elem)
+    /**
+     prepends one element to the array located at the path in this json. If the array at the path doesn't
+     exist, a new one is created, replacing any existing element in the path and filling empty indexes in
+     arrays with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it's
+     an array and the head of the path is a key or when it's an object and the head of the path is an index.
+     @param path   the JsPath pointing to the array in which the element will be prepended
+     @param elem   the JsElem to be prepended to the existing or created array
+     @return same this instance or a new json of the same type T
+     */
+    T prepend(final JsPath path,
+              final JsElem elem
+             );
+
+    /**
+     prepends one element to the array located at the path in this json. If the array at the path doesn't
+     exist, a new one is created, replacing any existing element in the path and filling empty indexes in
+     arrays with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it's
+     an array and the head of the path is a key or when it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which the element will be prepended
+     @param elem   the JsElem to be prepended to the existing or created array
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final JsElem elem
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem
                       );
-
-        return prependAll(requireNonNull(path),
-                          jsonvalues.JsArray.of(collection)
-                         );
-
-
     }
 
     /**
@@ -433,22 +497,21 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
 
     /**
-     Prepends all the elements of the array computed by the function, starting from the head, to the
-     array located at the path in this json, returning the same
-     this instance if the array is not present, in which case, the function is not invoked.
+     Prepends all the elements of the array computed by the supplier, starting from the head, to the
+     array located at the path in this json, returning the same this instance if the array is not present,
+     in which case, the supplier is not invoked.
      @param path the JsPath object pointing to the existing array in which all the elements will be prepended
-     @param function   the function which input is the existing array and output the array of elements that will be prepended
+     @param supplier   the supplier of the array of elements that will be prepended
      @return same this instance or a new json of the same type T
-
      */
     default T prependAllIfPresent(final JsPath path,
-                                  final Function<? super JsArray, JsArray> function
+                                  final Supplier<JsArray> supplier
                                  )
     {
 
-        requireNonNull(function);
+        requireNonNull(supplier);
         return Functions.ifArrElse(it -> prependAll(path,
-                                                    function.apply(it)
+                                                    supplier.get()
                                                    ),
                                    it ->
                                    {
@@ -461,20 +524,19 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     }
 
     /**
-     Prepends all the elements of the array computed by the function, starting from the head, to the
+     Prepends all the elements of the array computed by the supplier, starting from the head, to the
      array located at the path in this json, returning the same this instance if the array is not present,
-     in which case, the function is not invoked.
+     in which case, the supplier is not invoked.
      @param path the path-like string pointing  to the existing array in which all the elements will be prepended
-     @param function   the function which input is the existing array and output the array of elements that will be prepended
-
+     @param supplier   the supplier of the array of elements that will be prepended
      @return same this instance or a new json of the same type T
      */
     default T prependAllIfPresent(final String path,
-                                  final Function<? super JsArray, JsArray> function
+                                  final Supplier<JsArray> supplier
                                  )
     {
         return prependAllIfPresent(JsPath.of(path),
-                                   function
+                                   supplier
                                   );
     }
 
@@ -494,6 +556,106 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
         return prependIfPresent(JsPath.of(requireNonNull(path)),
                                 requireNonNull(supplier)
+                               );
+    }
+
+    /**
+     Prepends one or more strings to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the strings will be prepended
+     @param str   the string to be prepended
+     @param  others more optional strings to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final String path,
+                               final String str,
+                               final String... others
+                              )
+    {
+
+        return prependIfPresent(JsPath.of(requireNonNull(path)),
+                                requireNonNull(str),
+                                requireNonNull(others)
+                               );
+    }
+
+    /**
+     Prepends one or more integers to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the integers will be prepended
+     @param number   the integer to be prepended
+     @param  others more optional integers to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final String path,
+                               final int number,
+                               final int... others
+                              )
+    {
+
+        return prependIfPresent(JsPath.of(requireNonNull(path)),
+                                number,
+                                others
+                               );
+    }
+
+    /**
+     Prepends one or more strings to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the strings will be prepended
+     @param number   the string to be prepended
+     @param  others more optional strings to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final String path,
+                               final long number,
+                               final long... others
+                              )
+    {
+
+        return prependIfPresent(JsPath.of(requireNonNull(path)),
+                                number,
+                                others
+                               );
+    }
+
+    /**
+     Prepends one or more doubles to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the doubles will be prepended
+     @param number   the double to be prepended
+     @param  others more optional doubles to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final String path,
+                               final double number,
+                               final double... others
+                              )
+    {
+
+        return prependIfPresent(JsPath.of(requireNonNull(path)),
+                                number,
+                                others
+                               );
+    }
+
+    /**
+     Prepends one or more booleans to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the booleans will be prepended
+     @param bool   the boolean to be prepended
+     @param  others more optional booleans to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final String path,
+                               final boolean bool,
+                               final boolean... others
+                              )
+    {
+
+        return prependIfPresent(JsPath.of(requireNonNull(path)),
+                                bool,
+                                others
                                );
     }
 
@@ -526,6 +688,155 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
     }
 
+    /**
+     Prepends one or more integers to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the integers will be prepended
+     @param number   the integer to be prepended
+     @param  others more optional integers to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final JsPath path,
+                               final int number,
+                               final int... others
+                              )
+    {
+
+        requireNonNull(path);
+        return Functions.ifArrElse(it -> prepend(path,
+                                                 number,
+                                                 others
+                                                ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(path));
+
+    }
+
+    /**
+     Prepends one or more longs to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the longs will be prepended
+     @param number   the long to be prepended
+     @param  others more optional longs to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final JsPath path,
+                               final long number,
+                               final long... others
+                              )
+    {
+
+        requireNonNull(path);
+        return Functions.ifArrElse(it -> prepend(path,
+                                                 number,
+                                                 others
+                                                ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(path));
+
+    }
+
+    /**
+     Prepends one or more doubles to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the doubles will be prepended
+     @param number   the double to be prepended
+     @param  others more optional doubles to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final JsPath path,
+                               final double number,
+                               final double... others
+                              )
+    {
+
+        requireNonNull(path);
+        return Functions.ifArrElse(it -> prepend(path,
+                                                 number,
+                                                 others
+                                                ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(path));
+
+    }
+
+    /**
+     Prepends one or more strings to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the strings will be prepended
+     @param str   the string to be prepended
+     @param  others more optional strings to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final JsPath path,
+                               final String str,
+                               final String... others
+                              )
+    {
+
+        requireNonNull(path);
+        return Functions.ifArrElse(it -> prepend(path,
+                                                 str,
+                                                 others
+                                                ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(path));
+
+    }
+
+    /**
+     Prepends one or more booleans to the array located at the given path in this json in the following
+     order [number, others, existing elements], returning the same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the booleans will be prepended
+     @param bool   the boolean to be prepended
+     @param  others more optional booleans to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prependIfPresent(final JsPath path,
+                               final boolean bool,
+                               final boolean... others
+                              )
+    {
+
+        requireNonNull(path);
+        return Functions.ifArrElse(it -> prepend(path,
+                                                 bool,
+                                                 others
+                                                ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(path));
+
+    }
 
     /**
      Filters the pairs of elements in the first level of this json, removing those that don't match
@@ -1460,6 +1771,950 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
                      requireNonNull(path),
                      $ -> supplier.get()
                     );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified integer, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path the given JsPath object
+     @param number the specified integer
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final JsPath path,
+                          final int number
+                         )
+    {
+        return putIf(JsElem::isNothing,
+                     requireNonNull(path),
+                     $ -> JsInt.of(number)
+                    );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified long, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path the given JsPath object
+     @param number the specified long
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final JsPath path,
+                          final long number
+                         )
+    {
+        return putIf(JsElem::isNothing,
+                     requireNonNull(path),
+                     $ -> JsLong.of(number)
+                    );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified double, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path the given JsPath object
+     @param number the specified double
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final JsPath path,
+                          final double number
+                         )
+    {
+        return putIf(JsElem::isNothing,
+                     requireNonNull(path),
+                     $ -> JsDouble.of(number)
+                    );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified integer, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path  the path-like string
+     @param number the specified integer
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final String path,
+                          final int number
+                         )
+    {
+        return putIfAbsent(JsPath.of(path),
+                           number
+                          );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified long, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path  the path-like string
+     @param number the specified long
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final String path,
+                          final long number
+                         )
+    {
+        return putIfAbsent(JsPath.of(path),
+                           number
+                          );
+    }
+
+    /**
+     Inserts at the given path in this json, if no element is present, the specified double, replacing
+     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+     arrays when necessary.
+     @param path  the path-like string
+     @param number the specified double
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfAbsent(final String path,
+                          final double number
+                         )
+    {
+        return putIfAbsent(JsPath.of(path),
+                           number
+                          );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified integer.
+     @param path the given path
+     @param number the specified integer
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final JsPath path,
+                           final int number
+                          )
+    {
+        return putIfPresent(path,
+                            e -> JsInt.of(number)
+                           );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified long.
+     @param path the given path
+     @param number the specified long
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final JsPath path,
+                           final long number
+                          )
+    {
+        return putIfPresent(path,
+                            e -> JsLong.of(number)
+                           );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified double.
+     @param path the given path
+     @param number the specified double
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final JsPath path,
+                           final double number
+                          )
+    {
+        return putIfPresent(path,
+                            e -> JsDouble.of(number)
+                           );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified integer.
+     @param path the given path-like string
+     @param number the specified integer
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final String path,
+                           final int number
+                          )
+    {
+        return putIfPresent(JsPath.of(path),
+                            e -> JsInt.of(number)
+                           );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified long.
+     @param path the given path-like string
+     @param number the specified long
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final String path,
+                           final long number
+                          )
+    {
+        return putIfPresent(JsPath.of(path),
+                            e -> JsLong.of(number)
+                           );
+    }
+
+    /**
+     Inserts at the given path in this json, if some element is present, the specified double.
+     @param path the given path-like string
+     @param number the specified double
+     @return the same instance or a new json of the same type T
+     */
+    default T putIfPresent(final String path,
+                           final double number
+                          )
+    {
+        return putIfPresent(JsPath.of(path),
+                            e -> JsDouble.of(number)
+                           );
+    }
+
+    /**
+     Appends one or more integers to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the integers will be appended
+     @param number   the integer to be appended
+     @param  others more optional integers to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final JsPath path,
+                              final int number,
+                              final int... others
+                             )
+    {
+        return Functions.ifArrElse(it -> append(path,
+                                                number,
+                                                others
+                                               ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(Objects.requireNonNull(path)));
+    }
+
+    /**
+     Appends one or more longs to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the longs will be appended
+     @param number   the long to be appended
+     @param  others more optional longs to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final JsPath path,
+                              final long number,
+                              final long... others
+                             )
+    {
+        return Functions.ifArrElse(it -> append(path,
+                                                number,
+                                                others
+                                               ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(Objects.requireNonNull(path)));
+
+    }
+
+    /**
+     Appends one or more strings to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the strings will be appended
+     @param str   the string to be appended
+     @param  others more optional strings to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final JsPath path,
+                              final String str,
+                              final String... others
+                             )
+    {
+        return Functions.ifArrElse(it -> append(path,
+                                                str,
+                                                others
+                                               ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(Objects.requireNonNull(path)));
+
+    }
+
+    /**
+     Appends one or more booleans to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the booleans will be appended
+     @param number   the boolean to be appended
+     @param  others more optional booleans to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final JsPath path,
+                              final boolean number,
+                              final boolean... others
+                             )
+    {
+        return Functions.ifArrElse(it -> append(path,
+                                                number,
+                                                others
+                                               ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(Objects.requireNonNull(path)));
+
+    }
+
+    /**
+     Appends one or more doubles to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path pointing to the existing array in which the doubles will be appended
+     @param number   the double to be appended
+     @param  others more optional doubles to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final JsPath path,
+                              final double number,
+                              final double... others
+                             )
+    {
+        return Functions.ifArrElse(it -> append(path,
+                                                number,
+                                                others
+                                               ),
+                                   it ->
+                                   {
+                                       //this is an instance of T (recursive type)
+                                       @SuppressWarnings("unchecked") final T t = (T) this;
+                                       return t;
+                                   }
+                                  )
+                        .apply(get(Objects.requireNonNull(path)));
+
+    }
+
+    /**
+     Appends one or more integers to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the integers will be appended
+     @param number   the integer to be appended
+     @param  others more optional integers to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final String path,
+                              final int number,
+                              final int... others
+                             )
+    {
+        return appendIfPresent(JsPath.of(path),
+                               number,
+                               others
+                              );
+
+    }
+
+    /**
+     Appends one or more longs to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the longs will be appended
+     @param number   the long to be appended
+     @param  others more optional longs to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final String path,
+                              final long number,
+                              final long... others
+                             )
+    {
+        return appendIfPresent(JsPath.of(path),
+                               number,
+                               others
+                              );
+
+    }
+
+    /**
+     Appends one or more strings to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the strings will be appended
+     @param str   the string to be appended
+     @param  others more optional strings to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final String path,
+                              final String str,
+                              final String... others
+                             )
+    {
+        return appendIfPresent(JsPath.of(path),
+                               str,
+                               others
+                              );
+
+    }
+
+    /**
+     Appends one or more booleans to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the booleans will be appended
+     @param bool   the boolean to be appended
+     @param  others more optional booleans to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final String path,
+                              final boolean bool,
+                              final boolean... others
+                             )
+    {
+        return appendIfPresent(JsPath.of(path),
+                               bool,
+                               others
+                              );
+    }
+
+    /**
+     Appends one or more doubles to the array located at the given path in this json, returning the
+     same this instance if the array is not present.
+     @param path   the path-like string pointing to the existing array in which the doubles will be appended
+     @param number   the double to be appended
+     @param  others more optional doubles to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T appendIfPresent(final String path,
+                              final double number,
+                              final double... others
+                             )
+    {
+        return appendIfPresent(JsPath.of(path),
+                               number,
+                               others
+                              );
+
+    }
+
+    /**
+     Appends one or more strings, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which all the strings will be appended
+     @param elem   the first string to be appended to the existing or created array
+     @param others more optional strings to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final String elem,
+                     final String... others
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem,
+                      others
+                     );
+    }
+
+    /**
+     Appends one or more integers, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which all the integers will be appended
+     @param elem   the first integer to be appended to the existing or created array
+     @param others more optional integers to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final int elem,
+                     final int... others
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem,
+                      others
+                     );
+    }
+
+    /**
+     Appends one or more longs, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which all the longs will be appended
+     @param elem   the first long to be appended to the existing or created array
+     @param others more optional longs to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final long elem,
+                     final long... others
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem,
+                      others
+                     );
+    }
+
+    /**
+     Appends one or more booleans, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which all the booleans will be appended
+     @param elem   the first boolean to be appended to the existing or created array
+     @param others more optional booleans to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final boolean elem,
+                     final boolean... others
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem,
+                      others
+                     );
+    }
+
+    /**
+     Appends one or more doubles, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path-like string pointing to the array in which all the doubles will be appended
+     @param elem   the first double to be appended to the existing or created array
+     @param others more optional doubles to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final String path,
+                     final double elem,
+                     final double... others
+                    )
+    {
+        return append(JsPath.of(path),
+                      elem,
+                      others
+                     );
+    }
+
+    /**
+     Appends one or more strings, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path pointing to the array in which all the strings will be appended
+     @param elem   the first string to be appended to the existing or created array
+     @param others more optional strings to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final JsPath path,
+                     final String elem,
+                     final String... others
+                    )
+    {
+        T result = append(path,
+                          JsStr.of(elem)
+                         );
+        for (final String other : others)
+        {
+            result = result.append(path,
+                                   JsStr.of(other)
+                                  );
+        }
+        return result;
+
+    }
+
+    /**
+     Appends one or more integers, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path pointing to the array in which all the integers will be appended
+     @param elem   the first integer to be appended to the existing or created array
+     @param others more optional integers to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final JsPath path,
+                     final int elem,
+                     final int... others
+                    )
+    {
+        T result = append(path,
+                          JsInt.of(elem)
+                         );
+        for (final int other : others)
+        {
+            result = result.append(path,
+                                   JsInt.of(other)
+                                  );
+        }
+        return result;
+    }
+
+    /**
+     Appends one or more longs, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path pointing to the array in which all the longs will be appended
+     @param elem   the first long to be appended to the existing or created array
+     @param others more optional longs to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final JsPath path,
+                     final long elem,
+                     final long... others
+                    )
+    {
+        T result = append(path,
+                          JsLong.of(elem)
+                         );
+        for (final long other : others)
+        {
+            result = result.append(path,
+                                   JsLong.of(other)
+                                  );
+        }
+        return result;
+    }
+
+    /**
+     Appends one or more booleans, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path pointing to the array in which all the booleans will be appended
+     @param elem   the first boolean to be appended to the existing or created array
+     @param others more optional booleans to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final JsPath path,
+                     final boolean elem,
+                     final boolean... others
+                    )
+    {
+        T result = append(path,
+                          JsBool.of(elem)
+                         );
+        for (final boolean other : others)
+        {
+            result = result.append(path,
+                                   JsBool.of(other)
+                                  );
+        }
+        return result;
+    }
+
+    /**
+     Appends one or more doubles, starting from the first, to the array located at the given path in
+     this json. If the array doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the given path pointing to the array in which all the doubles will be appended
+     @param elem   the first double to be appended to the existing or created array
+     @param others more optional doubles to be appended
+     @return same this instance or a new json of the same type T
+     */
+    default T append(final JsPath path,
+                     final double elem,
+                     final double... others
+                    )
+    {
+        T result = append(path,
+                          JsDouble.of(elem)
+                         );
+        for (final double other : others)
+        {
+            result = result.append(path,
+                                   JsDouble.of(other)
+                                  );
+        }
+        return result;
+    }
+
+    /**
+     Prepends one or more strings, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first string to be prepended to the existing or created array
+     @param others more optional strings to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final String elem,
+                      final String... others
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem,
+                       others
+                      );
+    }
+
+    /**
+     Prepends one or more integers, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first integer to be prepended to the existing or created array
+     @param others more optional integers to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final int elem,
+                      final int... others
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem,
+                       others
+                      );
+    }
+
+    /**
+     Prepends one or more longs, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first long to be prepended to the existing or created array
+     @param others more optional longs to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final long elem,
+                      final long... others
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem,
+                       others
+                      );
+    }
+
+    /**
+     Prepends one or more booleans, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first boolean to be prepended to the existing or created array
+     @param others more optional booleans to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final boolean elem,
+                      final boolean... others
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem,
+                       others
+                      );
+    }
+
+    /**
+     Prepends one or more doubles, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first double to be prepended to the existing or created array
+     @param others more optional doubles to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final String path,
+                      final double elem,
+                      final double... others
+                     )
+    {
+        return prepend(JsPath.of(path),
+                       elem,
+                       others
+                      );
+    }
+
+    /**
+     Prepends one or more strings, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the path-like string pointing to the array in which all the string will be prepended
+     @param elem   the first string to be prepended to the existing or created array
+     @param others more optional strings to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final JsPath path,
+                      final String elem,
+                      final String... others
+                     )
+    {
+        // T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    JsStr.of(Objects.requireNonNull(others[i - 1]))
+                                   );
+        }
+        return result.prepend(path,
+                              JsStr.of(elem)
+                             );
+    }
+
+    /**
+     prepends one or more integers, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the JsPath pointing to the array in which all the integers will be prepended
+     @param elem   the first integer to be prepended to the existing or created array
+     @param others more optional integers to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final JsPath path,
+                      final int elem,
+                      final int... others
+                     )
+    {
+// T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    JsInt.of(others[i - 1])
+                                   );
+        }
+        return result.prepend(path,
+                              JsInt.of(elem)
+                             );
+    }
+
+    /**
+     prepends one or more longs, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the JsPath pointing to the array in which all the longs will be prepended
+     @param elem   the first long to be prepended to the existing or created array
+     @param others more optional longs to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final JsPath path,
+                      final long elem,
+                      final long... others
+                     )
+    {
+// T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    JsLong.of(others[i - 1])
+                                   );
+        }
+        return result.prepend(path,
+                              JsLong.of(elem)
+                             );
+    }
+
+    /**
+     prepends one or more booleans, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the JsPath pointing to the array in which all the booleans will be prepended
+     @param elem   the first boolean to be prepended to the existing or created array
+     @param others more optional booleans to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final JsPath path,
+                      final boolean elem,
+                      final boolean... others
+                     )
+    {
+        // T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    JsBool.of(others[i - 1])
+                                   );
+        }
+        return result.prepend(path,
+                              JsBool.of(elem)
+                             );
+    }
+
+    /**
+     prepends one or more doubles, starting from the first, to the array located at the path in this
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
+     it's an object and the head of the path is an index.
+     @param path   the JsPath pointing to the array in which all the doubles will be prepended
+     @param elem   the first double to be prepended to the existing or created array
+     @param others more optional doubles to be prepended
+     @return same this instance or a new json of the same type T
+     */
+    default T prepend(final JsPath path,
+                      final double elem,
+                      final double... others
+                     )
+    {
+        // T recursive type, this is an instance of T
+        @SuppressWarnings("unchecked")
+        T result = (T) this;
+        for (int i = Objects.requireNonNull(others).length; i > 0; i--)
+        {
+            result = result.prepend(path,
+                                    JsDouble.of(others[i - 1])
+                                   );
+        }
+        return result.prepend(path,
+                              JsDouble.of(elem)
+                             );
     }
 
     /**

@@ -11,8 +11,7 @@ a look at one of my favorite talks ever, [_The value of values_](https://www.you
 from **Rich Hickey**. **json-values** is _functional_ because you can take advantage of immutable data structures to represent a Json.
 
 * **Data over abstraction**. The API is declarative and data-centric. You only need values and functions to 
-manipulate them and not fancy abstractions, long enterprise names, setters or complex DSLs, just values 
-and functions to manipulate them in a declarative way. [Narcissistic Design](https://www.youtube.com/watch?v=LEZv-kQUSi4) from **Stuart Halloway** is a 
+manipulate them and not fancy abstractions, long enterprise names, setters or complex DSLs.[Narcissistic Design](https://www.youtube.com/watch?v=LEZv-kQUSi4) from **Stuart Halloway** is a 
 great talk that elaborates on this point.
 
 * _It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures_. —Alan Perlis. 
@@ -48,12 +47,15 @@ Before getting started, remember the great quote from **Venkat Subramaniam**:
 
 _By nature, we're wired to mistake familiar as simple and the unfamiliar as complex_.
 #### 0.1 - JsPath
-A JsPath represents a location in a Json. There are two ways of creating paths:
-* From a string using the method _JsPath.of(...)_. A path is made up of keys and indexes 
+A JsPath represents a string syntax for identifying a specific value within a JSON. It's similar to the Json Pointer specification
+defined in [rfc6901](https://tools.ietf.org/html/rfc6901), but I'd argue it's more readable. 
+There are two ways of creating paths:
+* From a path-like string using the method _JsPath.of(...)_. A path is made up of keys and indexes 
 separated by dots. Keys are URL-encoded to escape special characters; therefore, 
 they could be part of an URL. When keys are numbers, they have to be single-quoted, 
-to distinguish them from indexes..
-* Using the _key_ and _index_ methods from _JsPath_, in which case, keys don't have to be URL-encoded.
+to distinguish them from indexes.
+* Using the _key_ and _index_ methods from the _JsPath_ class API, in which case, the keys aren't URL-encoded. This way is less readable and less concise. On the other hand,  it's more efficient because no string is parsed and sometimes more convenient because keys don't need to to be URL-encoded. I recommend using the path-like string approach at first and only
+to change to the API way during optimization and if it's justified.
 ```
 { 
 "a": [ {"b": [1,2,3]} ],
@@ -61,59 +63,63 @@ to distinguish them from indexes..
 ".": "dot",
 "1": [false, true]
 "'": null,
-"": ""
+"": 1.2
 }
 
-JsPath.of("a.0.b.0")                                // 1
-JsPath.empty().key("a").index(0).key("b").index(0)  // 1
-
-JsPath.of("a.0.b.1")                                // 2
-JsPath.empty().key("a").index(0).key("b").index(1)  // 2
-
-JsPath.of("a.0.b.2")                                // 3
-JsPath.empty().key("a").index(0).key("b").index(2)  // 3
-// the index -1 means the last element of the array
-JsPath.of("a.0.b.-1")                               // 3
-JsPath.empty().key("a").index(0).key("b").index(-1) // 3
-
-JsPath.of("+")                                      // "z"
-JsPath.empty().key(" ")                             // "z"
-JsPath.of("%20")                                    // "z"
-
-JsPath.of("'1'.0")                                  // false
-JsPath.empty().key("1").index(0)                    // false
-
-JsPath.of("'1'.1")                                  // true
-JsPath.empty().key("1").index(1)                    // true
-
-JsPath.of("%27")                                    // null
-JsPath.empty().key("'")                             // null
-
-// empty string is a valid key!
-JsPath.of("")                                       // ""
-JsPath.empty().key("")                              // ""
+// 1
+JsPath.of("a.0.b.0")                                
+JsPath.empty().key("a").index(0).key("b").index(0)
+// 2
+JsPath.of("a.0.b.1")                                
+JsPath.empty().key("a").index(0).key("b").index(1) 
+// 3
+JsPath.of("a.0.b.2")                                
+JsPath.empty().key("a").index(0).key("b").index(2)  
+// the index -1 points to the last element of the array (3 in this case)
+JsPath.of("a.0.b.-1")                               
+JsPath.empty().key("a").index(0).key("b").index(-1) 
+// "z"
+JsPath.of("+")                                       
+JsPath.empty().key(" ")                            
+JsPath.of("%20")                                    
+// false
+JsPath.of("'1'.0")                                  
+JsPath.empty().key("1").index(0)                    
+// true
+JsPath.of("'1'.1")                                 
+JsPath.empty().key("1").index(1)
+// null
+JsPath.of("%27")                                  
+JsPath.empty().key("'")                             
+// 1.2, empty string is a valid key!
+JsPath.of("")                                      
+JsPath.empty().key("")
 ```
 #### 0.2 - JsElem
 Every element in a Json is a _JsElem_. There is one for each json value described in [json.org](https://www.json.org):
 * _JsStr_ represents immutable strings.
 * The singletons _JsBool.TRUE_ and _JsBool.FALSE_ represent true and false.
 * The singleton _JsNull.NULL_ represents null.
-* _JsObj_ represents objects. 
-* _JsArray_ represents arrays.
+* _JsObj_ represents a json object, which is an unordered set of name/value pairs.
+* _JsArray_ represents a json array, which is an ordered collection of values.
 * _JsNumber_ represents immutable numbers. There are five different specializations: 
     * _JsInt_
     * _JsLong_
     * _JsDouble_
     * _JsBigInt_
     * _JsBigDec_
- 
+* The singleton _JsNothing.NOTHING_ represents nothing. It's not part on any specification. It's a convenient type
+that make certain functions that return a JsElem total on their arguments. For example the function _JsElem get(JsPath)_  is total
+because returns a JsElem for every JsPath. If there is no element located at a path, it returns _NOTHING_.
+In other functions like _Json putIfPresent(Function<JsElem,JsElem>)_, this type comes in handy as well because allows the function
+to insert nothing even if an element is present just returning _JsNothing.NOTHING_
 #### 0.3 - JsPair
 Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an 
 element of a _Json_ and the position where it's located at:
 
 JsPair = (JsPath, JsElem)
 
-A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_ (see section 2) 
+A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_ (see section 2).
 #### 1- How to create a Json?
 **json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
@@ -127,111 +133,110 @@ languages like Scala, symbols are not allowed in Java to name variables and meth
 I prefer to use an exclamation as Ruby does, but I can't.
 #### 1.1- Creation of immutable json objects.
 ```
-JsObj empty = JsObj.empty();  // empty immutable instance is a singleton
-
+// from keys and associated elements
 JsObj x = JsObj.of("a", JsInt.of(1), 
                    "b", JsBool.TRUE, 
                    "c", JsNull.NULL, 
                    "d", JsStr.of("hi")
                    );
-
+// empty immutable instance is a singleton
+JsObj empty = JsObj.empty();                    
 JsObj y = empty.put("a", 1)
                .put("b", true)
                .put("c", null)
                .put("d", "hi");
-
 Assert.assertEquals(x, y);   
-Assert.assertNotEquals(empty, y);  // empty will never change
+// empty will never change
+Assert.assertNotEquals(empty, y);  
 
 // from varargs of json pairs
 JsObj w = JsObj.of( JsPair.of("a.b.0", 1 ),
                     JsPair.of("a.b.1", 2 )
-                  );
-                  
-//parsing a string, which returns a jsonvalues.TryObj computation that may fail                       
+                  );             
+//parsing a string, which returns a TryObj computation that may fail                       
 JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+Assert.assertEquals(w, z);   
  ```
 #### 1.2- Creation of mutable json objects.
 ```
-JsObj _empty_ = JsObj._empty_();  
-   
-JsObj _x_ = JsObj._of_("a", JsInt.of(1), 
-                       "b", JsBool.TRUE, 
-                       "c", JsNull.NULL, 
-                       "d", JsStr.of("hi")
-                       );
-                       
-JsObj _y_ = _empty_.put("a",1)
-                   .put("b",true)
-                   .put("c",null)
-                   .put("d","hi");
-                   
-Assert.assertEquals(_x_, _y_);   
-Assert.assertEquals(_empty_, _y_); // something called _empty_ it's not empty anymore!  
+// from keys and associated elements
+JsObj x = JsObj._of_("a", JsInt.of(1), 
+                     "b", JsBool.TRUE, 
+                     "c", JsNull.NULL, 
+                     "d", JsStr.of("hi")
+                    );  
+JsObj empty = JsObj._empty_();               
+JsObj y = empty.put("a",1)
+               .put("b",true)
+               .put("c",null)
+               .put("d","hi");         
+Assert.assertEquals(x, y);   
+// something called _empty_ it's not empty anymore! 
+Assert.assertEquals(empty, y);  
   
-// from vargs of pairs
-JsObj _w_ = JsObj._of_( JsPair.of("a.b.0", 1),
-                        JsPair.of("a.b.1", 2)
-                      );
-                      
+// from vargs of json pairs
+JsObj w = JsObj._of_( JsPair.of("a.b.0", 1),
+                      JsPair.of("a.b.1", 2)
+                    );            
 // parsing a string, which returns a TryObj computation that may fail                  
-JsObj _z_ = JsObj._parse_("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+JsObj z = JsObj._parse_("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+Assert.assertEquals(w, z);   
 ```
-
 #### 1.3- Creation of immutable json arrays.
 ```
-JsArray a = JsArray.of(1,2,3);  // from varargs of ints
-
-JsArray b = JsArray.of("a","b","c"); // from varargs of strings
-
+// from varargs of ints
+JsArray a = JsArray.of(1,2,3);  
+ // from varargs of strings
+JsArray b = JsArray.of("a","b","c");
 // from varargs of JsElem
 JsArray c = JsArray.of(JsBool.TRUE, 
                        JsStr.of("a"), 
                        JsNull.NULL, 
                        JsDouble.of(1.5d)
-                       ) 
+                       );
+                       
 //from varargs of json pairs
 JsArray d = JsArray.of(JsPair.of("0.a.b.0", "a"),
                        JsPair.of("0.a.b.1", "b")
                        );
-
 //parsing a string, which returns a TryArr computation that may fail                      
 JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
+Assert.assertEquals(d, e);  
 
 JsArray empty = JsArray.empty();
-JsArray f = empty.append(JsInt.of(1))  
-                 .append(JsInt.of(2))           
-                 .prepend(JsInt.of(0));   
-
-Assert.assertNotEquals(empty, f); // empty  will never change      
+JsArray f = empty.append(1)  
+                 .append(2)           
+                 .prepend(0);   
+// empty will never change  
+Assert.assertNotEquals(empty, f);     
 ```               
 #### 1.4- Creation of mutable json arrays.
 ```
-JsArray _a_ = JsArray._of_(1,2,3);  // from varargs of ints
-
-JsArray _b_ = JsArray._of_("a","b","c"); // from varargs of strings
-
+// from varargs of ints
+JsArray a = JsArray._of_(1,2,3);  
+// from varargs of strings
+JsArray b = JsArray._of_("a","b","c"); 
 // from varargs of JsElem
-JsArray _c_ = JsArray._of_(JsBool.TRUE, 
-                           JsStr.of("a"), 
-                           JsNull.NULL, 
-                           JsDouble.of(1.5d)
-                           ) 
+JsArray c = JsArray._of_(JsBool.TRUE, 
+                         JsStr.of("a"), 
+                         JsNull.NULL, 
+                         JsDouble.of(1.5d)
+                         );
 
-//from varargs of json pairs
+// from varargs of json pairs
 JsArray d = JsArray._of_(JsPair.of("0.a.b.0", "a"),
                          JsPair.of("0.a.b.1", "b")
                          );
-
-//parsing a string, which returns a TryArr computation                        
+// parsing a string, which returns a TryArr computation that may fail                        
 JsArray e =  JsArray._parse_("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
+Assert.assertEquals(d, e);  
 
-JsArray _empty_ = JsArray._empty_();
-JsArray _f_ = _empty_.append(JsInt.of(1))  
-                     .append(JsInt.of(2))           
-                     .prepend(JsInt.of(0));   
-                     
-Assert.assertEquals(_empty_, _f_); //  _empty_ is not empty!, it's [0,1,2]   
+JsArray empty = JsArray._empty_();
+JsArray f = empty.append(1)  
+                 .append(2)           
+                 .prepend(0);   
+// empty is not empty!, it's [0,1,2] 
+Assert.assertEquals(empty, f);   
 ```               
 #### 2- Streams and Collectors.
 Stream methods returns sequences of JsPairs:
@@ -261,12 +266,17 @@ prints out the following sequence of five pairs:
 ("b.c", 4)
 ("b.d", "hi")
 ```
+You can get the stream back into a json object by a collector:
+```
+// the collector JsObj.collector() returns an immutable json object
+JsObj a = x.stream_().collector(JsObj.collector());
+Assert.assertEquals(x,a);
 
-What if you want to get the stream back into a mutable json. Well, taking into account the convention mentioned before, it only requires two underscores:
+// the collector JsObj._collector_() returns a mutable json object
+JsObj b = x.stream_().collector(JsObj._collector_());
+Assert.assertEquals(x,b);
+
 ```
-x.stream_().collector(JsObj._collector_());
-```
-As it was expected, JsObj.\_collector\_() returns a mutable object whereas JsObj.collector() returns an immutable one.
 
 For arrays, it's just the same:
 ```
@@ -296,8 +306,17 @@ prints out the following sequence of five pairs:
 ("2.c", "blue")
 ("2.d", "pink")
 ```
-By the way, the implemented collectors support parallel streams.
+You can get the stream back into a json array by a collector:
+```
+// the collector JsArray.collector() returns an immutable json array
+JsObj a = x.stream_().collector(JsArray.collector());
+Assert.assertEquals(x,a);
 
+// the collector JsArray._collector_() returns a mutable json array
+JsObj b = x.stream_().collector(JsArray._collector_());
+Assert.assertEquals(x,b);
+
+```
 #### 3- Filter, map and reduce.
 Every operation can be applied only to the first level of a json 
 ```
@@ -392,6 +411,9 @@ alternatively, multisets (not ordered and with duplicates) using the parameter _
 to be documented.
 
 #### 5- Putting data in and getting data out. 
+To be able to insert data in and pull data out in a simple way is a must for any API. That's why **json-values**
+has several overloaded methods that allows the client to work directly with the primitive types, without any kind
+of conversion.
 ```
 {
 "a": { "b": [ { "c": 1,
@@ -403,30 +425,44 @@ to be documented.
  "e": [[1,2], {}, [], null, 1.2]     
 }
 
-OptionalInt a = json.getInt("a.b.0.c")        // 1
-OptionalLong b = json.getLong("a.b.0.d.-1")   // 2
-Optional<String> c = json.getStr("a.b.0.e.0") // "a"
-Optional<JsArray> d = json.getArr("e.0")      // [1,2]
-Optional<JsObj> e = json.getObj("a.b.0")      // {"c":1, "d": [1,2], "e": ["a", "b"]}
-OptionalDouble f = json.getDouble("e.-1")     // 1.2
+// 1
+OptionalInt a = json.getInt("a.b.0.c");
+// 2   
+OptionalLong b = json.getLong("a.b.0.d.-1");  
+// "a" 
+Optional<String> c = json.getStr("a.b.0.e.0"); 
+// [1,2]
+Optional<JsArray> d = json.getArr("e.0");     
+// {"c":1, "d": [1,2], "e": ["a", "b"]}
+Optional<JsObj> e = json.getObj("a.b.0"); 
+// 1.2   
+OptionalDouble f = json.getDouble("e.-1");  
+// OptionalInt.empty() because the element doesn't exist
+OptionalInt f = json.getInt("h");  
+// OptionalInt.empty() because the element is not an integer
+OptionalInt f = json.getInt("e.-1");  
 
-//the get method returns a JsElem
-JsElem g = json.get("e.3")                    // null, 
+//the get method returns a JsElem (the singleton JsNull.NULL in this case)
+JsElem g = json.get("e.3")                    
 ```
-The following methods always create the specified element at the specified position, replacing any existing one.  
+The following methods always create the specified element at the specified position, replacing any existing element.  
 ```
-json.append("e.0", JsStr.of("a"))    // append 1 to the back of the array  
-json.prepend("e.0", JsStr.of("a"))   // prepend 1 to the front of the array
-json.put("d", "a")                   // put "a" at d
-JsObj.empty().put("a.2",1)           // {"a":[null,null,1]}, put always creates an element at the specifed position,
-                                     // filling with null if necessary
+// put "a" at d
+json.put("d", "a")   
+// prepend 2 to the front of the array
+json.append("e.0",1)    
+json.prepend("e.0", 2)   /
+           
+// {"a":[null,null,1]}, put always creates an element at the specifed position,  filling with null if necessary  
+JsObj.empty().put("a.2",1)           
+                                     
 ```
 There are declarative alternatives which require certain conditions to insert the element:
 ```                           
-json.putIfAbsent("e.0.2", ()-> JsInt.of(2)) 
-json.putIfPresent("a.b.0.d", e -> JsStr.of("a"))
-json.appendIfPresent("e.0", ()-> JsStr.of("a"))
-json.prependIfPresent("e.0", ()-> JsStr.of("a"))
+json.putIfAbsent("e.0.2", 2) 
+json.putIfPresent("a.b.0.d", "a")
+json.appendIfPresent("e.0", "a")
+json.prependIfPresent("e.0", "a")
 json.merge("a.b.0.c",
            JsInt.of(1),                                   // no element: puts default value
            (d,e)-> e.asJsInt().map(i-> i + d.asJsInt().x) // elem exists: puts existing + default 

@@ -89,6 +89,58 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    public JsArray append(final JsPath p_path,
+                          final JsElem elem
+                         )
+    {
+
+        Objects.requireNonNull(elem);
+        return requireNonNull(p_path).head()
+                                     .match(key -> this,
+                                            index ->
+                                            {
+                                                final JsPath tail = p_path.tail();
+                                                return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
+                                                                                                                         arr.append(elem)
+                                                                                                                        )),
+                                                                                                  $ -> of(nullPadding(index,
+                                                                                                                      array,
+                                                                                                                      emptyArray().append(elem)
+                                                                                                                     ))
+                                                                                                 )
+                                                                                       .apply(get(Index.of(index))),
+                                                                        () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
+                                                                                                                                 t
+                                                                                                                                ),
+                                                                                                   () -> of(nullPadding(index,
+                                                                                                                        array,
+                                                                                                                        tail.head()
+                                                                                                                            .match($ -> emptyObject().append(tail,
+                                                                                                                                                             elem
+                                                                                                                                                            ),
+                                                                                                                                   $ -> emptyArray().append(tail,
+                                                                                                                                                            elem
+                                                                                                                                                           )
+                                                                                                                                  )
+                                                                                                                       )),
+                                                                                                   () -> of(array.update(index,
+                                                                                                                         array.get(index)
+                                                                                                                              .asJson()
+                                                                                                                              .append(tail,
+                                                                                                                                      elem
+                                                                                                                                     )
+                                                                                                                        ))
+                                                                                                  )
+
+
+                                                                       );
+                                            }
+
+                                           );
+
+    }
+
+    @Override
     public JsArray appendAll(final JsArray array
                             )
     {
@@ -150,6 +202,59 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                                             .prependAll(tail,
                                                                                                                                         elems
                                                                                                                                        )
+                                                                                                                      ))
+                                                                                                )
+
+
+                                                                     );
+                                          }
+
+                                         );
+
+    }
+
+    @SuppressWarnings("Duplicates")
+    @Override
+    public JsArray prepend(final JsPath path,
+                           final JsElem elem
+                          )
+    {
+        Objects.requireNonNull(elem);
+        return requireNonNull(path).head()
+                                   .match(key -> this,
+                                          index ->
+                                          {
+                                              final JsPath tail = path.tail();
+                                              return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
+                                                                                                                       arr.prepend(elem)
+                                                                                                                      )),
+                                                                                                $ -> of(nullPadding(index,
+                                                                                                                    array,
+                                                                                                                    emptyArray().prepend(elem)
+                                                                                                                   ))
+                                                                                               )
+                                                                                     .apply(get(Index.of(index))),
+                                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
+                                                                                                                               t
+                                                                                                                              ),
+                                                                                                 () -> of(nullPadding(index,
+                                                                                                                      array,
+                                                                                                                      tail.head()
+                                                                                                                          .match($ -> emptyObject().prepend(tail,
+                                                                                                                                                            elem
+                                                                                                                                                           ),
+                                                                                                                                 $ -> emptyArray().prepend(tail,
+                                                                                                                                                           elem
+                                                                                                                                                          )
+                                                                                                                                )
+
+                                                                                                                     )),
+                                                                                                 () -> of(array.update(index,
+                                                                                                                       array.get(index)
+                                                                                                                            .asJson()
+                                                                                                                            .prepend(tail,
+                                                                                                                                     elem
+                                                                                                                                    )
                                                                                                                       ))
                                                                                                 )
 

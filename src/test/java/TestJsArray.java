@@ -1254,13 +1254,19 @@ class TestJsArray
                                     .orElseThrow();
 
         Assertions.assertEquals(arr1,
-                                arr1.intersection(arr1,LIST)
+                                arr1.intersection(arr1,
+                                                  LIST
+                                                 )
                                );
         Assertions.assertEquals(arr2,
-                                arr2.intersection(arr2,LIST)
+                                arr2.intersection(arr2,
+                                                  LIST
+                                                 )
                                );
         Assertions.assertEquals(JsArray.empty(),
-                                arr1.intersection(arr2,LIST)
+                                arr1.intersection(arr2,
+                                                  LIST
+                                                 )
                                );
 
         Assertions.assertEquals(JsArray.empty(),
@@ -2125,6 +2131,15 @@ class TestJsArray
                                );
 
     }
+
+    @Test
+    void test_parse_malformed_string_into_mutable_fails()
+    {
+
+        Assertions.assertTrue(Json._parse_("[")
+                                  .isFailure());
+    }
+
 
 
     @Test
