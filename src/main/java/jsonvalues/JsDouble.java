@@ -107,6 +107,32 @@ public final class JsDouble implements JsNumber, Comparable<JsDouble>
     }
 
     /**
+     adds up this long to the specified one
+     @param that the specified long
+     @return the sum of both longs
+     */
+    public JsDouble plus(JsDouble that){
+        return JsDouble.of(x+that.x);
+    }
+
+    /**
+     subtract this long from the specified one
+     @param that the specified long
+     @return this long minus the specified one
+     */
+    public JsDouble minus(JsDouble that){
+        return JsDouble.of(x-that.x);
+    }
+    /**
+     multiplies this long by the specified one
+     @param that the specified long
+     @return this long times the specified one
+     */
+    public JsDouble times(JsDouble that){
+        return JsDouble.of(x*that.x);
+    }
+
+    /**
      Tests the value of this json double on a predicate.
      @param predicate the predicate
      @return true if this double satisfies the predicate

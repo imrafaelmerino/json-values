@@ -411,9 +411,9 @@ alternatively, multisets (not ordered and with duplicates) using the parameter _
 to be documented.
 
 #### 5- Putting data in and getting data out. 
-To be able to insert data in and pull data out in a simple way is a must for any API. That's why **json-values**
-has several overloaded methods that allows the client to work directly with the primitive types, without any kind
-of conversion.
+To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
+has several overloaded methods that allows the client to work directly with the primitive types, avoiding any kind
+of conversion. 
 ```
 {
 "a": { "b": [ { "c": 1,
@@ -424,50 +424,110 @@ of conversion.
      },
  "e": [[1,2], {}, [], null, 1.2]     
 }
-
-// 1
 OptionalInt a = json.getInt("a.b.0.c");
-// 2   
+Assertions.assertEquals(OptionalInt.of(1), a);
+
 OptionalLong b = json.getLong("a.b.0.d.-1");  
-// "a" 
+Assertions.assertEquals(OptionalInt.of(2), b);
+ 
 Optional<String> c = json.getStr("a.b.0.e.0"); 
-// [1,2]
-Optional<JsArray> d = json.getArr("e.0");     
+Assertions.assertEquals(Optional.of("a"), c);
+
+Optional<JsArray> d = json.getArr("e.0");   
+Assertions.assertEquals(Optional.of(JsArray.of(1,2)), d);
+
 // {"c":1, "d": [1,2], "e": ["a", "b"]}
 Optional<JsObj> e = json.getObj("a.b.0"); 
-// 1.2   
-OptionalDouble f = json.getDouble("e.-1");  
-// OptionalInt.empty() because the element doesn't exist
-OptionalInt f = json.getInt("h");  
-// OptionalInt.empty() because the element is not an integer
-OptionalInt f = json.getInt("e.-1");  
+Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
+                                             "d",JsArray.of(1,2),
+                                             "e",JsArray.of("a","b"))
+                                             )), 
+                        e);
 
-//the get method returns a JsElem (the singleton JsNull.NULL in this case)
-JsElem g = json.get("e.3")                    
+OptionalDouble f = json.getDouble("e.-1");  
+Assertions.assertEquals(OptionalDouble.of(1.2), f);
+
+OptionalInt f = json.getInt("e.-1"); 
+Assertions.assertEquals(OptionalInt.empty(), f);
+
+OptionalInt f = json.getInt("h"); 
+Assertions.assertEquals(OptionalInt.empty(), f);
+ 
+//the get method returns a JsElem 
+JsElem g = json.get("e.3");
+Assertions.assertEquals(JsNull.NULL, g);
+
+// NOTHING is returned
+JsElem g = json.get("f");
+Assertions.assertEquals(JsNothing.NOTHING, g);
+
+                
 ```
-The following methods always create the specified element at the specified position, replacing any existing element.  
+The  _put_ method always put the specified element at the specified position:
 ```
-// put "a" at d
-json.put("d", "a")   
-// prepend 2 to the front of the array
-json.append("e.0",1)    
-json.prepend("e.0", 2)   /
-           
-// {"a":[null,null,1]}, put always creates an element at the specifed position,  filling with null if necessary  
-JsObj.empty().put("a.2",1)           
-                                     
+Jsobj a = JsObj.empty().put("a.b.c", 1);
+Assertions.assertEquals(JsInt.of(1), a.get("a.b.c") );
+Jsobj b = a.put("a.b", true);
+Assertions.assertEquals(JsBool.TRUE, a.get("a.b") );
+//a and b are immutable
+Assertions.assertNotEquals(a,b);
+
+JsArray c = JsArray.of(JsObj.of("a",JsArray.of(1,2)),
+                       JsObj.of("b",JsArray.of("a","b"))
+                       );
+JsArray d = c.put("0.a.0",true); 
+Assertions.assertEquals(JsBool.TRUE, d.get("0.a.0") );
+Assertions.assertEquals(JsInt.of(1), c.get("0.a.0") );
+
+JsArray e = c.put("0.b.3","c");
+// in arrays filling with null may be necessary to place an element at the specified index
+Assertions.assertEquals(JsArray.of(JsStr.of("a"),
+                                   JsStr.of("b"),
+                                   JsNull.NULL,   
+                                   JsStr.of("c")
+                                   ), 
+                        d.get("0.b") 
+                        );
 ```
-There are declarative alternatives which require certain conditions to insert the element:
-```                           
-json.putIfAbsent("e.0.2", 2) 
-json.putIfPresent("a.b.0.d", "a")
-json.appendIfPresent("e.0", "a")
-json.prependIfPresent("e.0", "a")
-json.merge("a.b.0.c",
-           JsInt.of(1),                                   // no element: puts default value
-           (d,e)-> e.asJsInt().map(i-> i + d.asJsInt().x) // elem exists: puts existing + default 
-          );                
+The _putIfAbsent_, _putIfPresent_ and _merge_ methods follow the principle ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) Instead
+of checking if an element is present or not and call the put method, you can use these methods:
 ```
+JsObj a = JsObj.empty().putIfPresent("a",1);
+Assertions.assertEquals(JsObj.empty(), a);
+
+JsObj b = JsObj.empty().putIfAbsent("a",1);
+Assertions.assertEquals(OptionalInt.of(1), 
+                        b.get("a")
+                        );
+//nothing is inserted                        
+JsObj c = b.putIfAbsent("a",2);
+Assertions.assertEquals(b,c)
+
+// it's possible to be lazy and not produce the element if it's not going to be inserted, just using a supplier:
+JsObj d = b.putIfAbsent("a", ()-> computed value);
+JsObj e = b.putIfPresent("a", ()-> computed value);
+
+//if no element exists, the default element is inserted
+JsInt defaultElem = JsInt.of(1);
+// in the function, d stands for the default element and e stands for the existing one
+Function<? super JsElem, ? extends JsElem> fn = (d,e)-> if(e.isInt()) e.asJsInt().plus(d.asJsInt()) else d;
+
+// no element exists at "a" -> defaultElement is inserted
+JsObj f = JsObj.empty().merge("a",
+                              defaultElem,                                   
+                              fn
+                              ); 
+Assertions.assertEquals(JsInt.of(1), f.get("a"));
+// the function is invoked and the default element is added to existing one: 1 + 1
+JsObj g = f.merge("a",
+                  defaultElem,                                   
+                  fn
+                  ); 
+Assertions.assertEquals(JsInt.of(2), f.get("a"));                     
+```
+To insert elements at the front of an array exist the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
+To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
+The same considerations above applies for all of them.
 #### 6- Equality. 
 The following objects
 ```
@@ -487,7 +547,7 @@ satisfy the property _x.equals(y) => x.hashCode == y.hashCode()_
 
 Both objects represent the same json, so they are equals, and therefore, they have the same hashcode.
 It doesn't matter that different primitive types and wrappers have been used to create them. That's a detail
-of the Java language and  **json-values** is data-centric.
+of the Java language and **json-values** is data-centric.
 
 There is a method to test if two objects are equals considering arrays sets or multisets.
 ```
@@ -502,10 +562,10 @@ JsArray a = JsArray.of(1,2,3)
 JsArray b = JsArray.of(1,2,3,2,3)
 JsArray c = JsArray.of(1,2,3,3,2)
 
-a.equals(b, TYPE.SET)      //true
-a.equals(b, TYPE.MULTISET) //false
-b.equals(c, TYPE.SET)      //true
-b.equals(c, TYPE.MULTISET) //false
+Assertions.assertTrue(a.equals(b, TYPE.SET));     
+Assertions.assertFalse(a.equals(b, TYPE.MULTISET));
+Assertions.assertTrue(b.equals(c, TYPE.SET));
+Assertions.assertFalse(b.equals(c, TYPE.MULTISET));
 ```
 
 #### 7- Exceptions and errors. 

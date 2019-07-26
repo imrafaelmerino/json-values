@@ -117,6 +117,32 @@ public final class JsInt implements JsNumber, Comparable<JsInt>
     }
 
     /**
+     adds up this integer to the specified one
+     @param that the specified integer
+     @return the sum of both integers
+     */
+    public JsInt plus(JsInt that){
+        return JsInt.of(x+that.x);
+    }
+
+    /**
+     subtract this integer from the specified one
+     @param that the specified integer
+     @return this integer minus the specified one
+     */
+    public JsInt minus(JsInt that){
+        return JsInt.of(x-that.x);
+    }
+    /**
+     multiplies this integer by the specified one
+     @param that the specified integer
+     @return this integer times the specified one
+     */
+    public JsInt times(JsInt that){
+        return JsInt.of(x*that.x);
+    }
+
+    /**
      Tests the value of this json integer on a predicate.
      @param predicate the predicate
      @return true if this integer satisfies the predicate

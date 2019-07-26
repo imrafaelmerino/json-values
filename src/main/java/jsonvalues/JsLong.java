@@ -102,6 +102,32 @@ public final class JsLong implements JsNumber, Comparable<JsLong>
     }
 
     /**
+     adds up this long to the specified one
+     @param that the specified long
+     @return the sum of both longs
+     */
+    public JsLong plus(JsLong that){
+        return JsLong.of(x+that.x);
+    }
+
+    /**
+     subtract this long from the specified one
+     @param that the specified long
+     @return this long minus the specified one
+     */
+    public JsLong minus(JsLong that){
+        return JsLong.of(x-that.x);
+    }
+    /**
+     multiplies this long by the specified one
+     @param that the specified long
+     @return this long times the specified one
+     */
+    public JsLong times(JsLong that){
+        return JsLong.of(x*that.x);
+    }
+
+    /**
      Tests the value of this json long on a predicate.
      @param predicate the predicate
      @return true if this long satisfies the predicate
