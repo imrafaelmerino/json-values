@@ -845,7 +845,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterElems_(Predicate) how to filter the pair of elements of the whole json and not only the first level
      */
-    T filterElems(final Predicate<JsPair> filter);
+    T filterElems(final Predicate<? super JsPair> filter);
 
     /**
      Filters all the pairs of elements of this json, removing those that don't match the predicate.
@@ -853,7 +853,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterElems(Predicate) how to filter the pairs of values parse only the first level
      */
-    T filterElems_(final Predicate<JsPair> filter);
+    T filterElems_(final Predicate<? super JsPair> filter);
 
     /**
      Filters the pair of jsons in the first level parse this json, removing those that don't match
@@ -864,7 +864,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
      @see #filterObjs_(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
      */
-    T filterObjs(final BiPredicate<JsPath, JsObj> filter
+    T filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter
                 );
 
     /**
@@ -873,7 +873,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterObjs(BiPredicate) how to filter the pair of jsons parse only the first level
      */
-    T filterObjs_(final BiPredicate<JsPath, JsObj> filter
+    T filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter
                  );
 
     /**
@@ -882,7 +882,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
      @see #filterKeys_(Predicate) how to filter the keys of the whole json and not only the first level
      */
-    T filterKeys(final Predicate<JsPair> filter);
+    T filterKeys(final Predicate<? super JsPair> filter);
 
     /**
      Filters all the keys parse this json, removing those that don't match the predicate.
@@ -890,7 +890,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
      @see #filterKeys(Predicate) how to filter the keys of only the first level
      */
-    T filterKeys_(final Predicate<JsPair> filter);
+    T filterKeys_(final Predicate<? super JsPair> filter);
 
     /**
      Returns the element located at the key or index specified by the given position or {@link JsNothing} if it
@@ -1262,7 +1262,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys(Function) to map keys parse json objects
      @see #mapElems_(Function) to map all the values and not only the first level
      */
-    T mapElems(final Function<JsPair, ? extends JsElem> fn);
+    T mapElems(final Function<? super JsPair, ? extends JsElem> fn);
 
 
     /**
@@ -1276,8 +1276,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys(Function, Predicate) to map keys parse json objects
      @see #mapElems_(Function, Predicate) to map all the values and not only the first level
      */
-    T mapElems(final Function<JsPair, ? extends JsElem> fn,
-               final Predicate<JsPair> predicate
+    T mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+               final Predicate<? super JsPair> predicate
               );
 
     /**
@@ -1288,7 +1288,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapElems(Function) to map only the first level
      */
-    T mapElems_(final Function<JsPair, ? extends JsElem> fn);
+    T mapElems_(final Function<? super JsPair, ? extends JsElem> fn);
 
 
     /**
@@ -1300,8 +1300,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapElems(Function, Predicate) to map only the first level
      */
-    T mapElems_(final Function<JsPair, ? extends JsElem> fn,
-                final Predicate<JsPair> predicate
+    T mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
+                final Predicate<? super JsPair> predicate
                );
 
     /**
@@ -1313,8 +1313,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys(Function, Predicate) to map keys parse json objects
      @see #mapObjs_(BiFunction, BiPredicate) to map all the jsons and not only the first level
      */
-    T mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn,
-              final BiPredicate<JsPath, JsObj> predicate
+    T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+              final BiPredicate<? super JsPath, ? super JsObj> predicate
              );
 
     /**
@@ -1325,7 +1325,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys(Function) to map keys parse json objects
      @see #mapObjs_(BiFunction) to map all the jsons and not only the first level
      */
-    T mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn
+    T mapObjs(final BiFunction<? super JsPath,? super  JsObj,JsObj> fn
              );
 
     /**
@@ -1337,8 +1337,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
      */
-    T mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
-               final BiPredicate<JsPath, JsObj> predicate
+    T mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+               final BiPredicate<? super JsPath, ? super JsObj> predicate
               );
 
     /**
@@ -1349,7 +1349,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapObjs(BiFunction) to map only the first level
      */
-    T mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn
+    T mapObjs_(final BiFunction<? super JsPath, ? super JsObj,JsObj> fn
               );
 
     /**
@@ -1360,7 +1360,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapObjs(BiFunction) to map jsons
      @see #mapKeys_(Function) to map all the keys and not only the first level
      */
-    T mapKeys(final Function<JsPair, String> fn);
+    T mapKeys(final Function<? super JsPair, String> fn);
 
     /**
      Maps the keys in the first level parse this json that satisfies a given predicate.
@@ -1371,8 +1371,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapElems(Function, Predicate) to map values
      @see #mapKeys_(Function, Predicate) to map all the keys and not only the first level
      */
-    T mapKeys(final Function<JsPair, String> fn,
-              final Predicate<JsPair> predicate
+    T mapKeys(final Function<? super JsPair, String> fn,
+              final Predicate<? super JsPair> predicate
              );
 
     /**
@@ -1383,7 +1383,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapObjs_(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
      */
-    T mapKeys_(final Function<JsPair, String> fn);
+    T mapKeys_(final Function<? super JsPair, String> fn);
 
     /**
      Maps all the keys parse this json that satisfies a given predicate.
@@ -1394,8 +1394,8 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapObjs_(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
      */
-    T mapKeys_(final Function<JsPair, String> fn,
-               final Predicate<JsPair> predicate
+    T mapKeys_(final Function<? super JsPair, String> fn,
+               final Predicate<? super JsPair> predicate
               );
 
     /**

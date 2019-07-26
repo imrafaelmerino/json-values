@@ -89,7 +89,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapElems(final Function<JsPair, ? extends JsElem> fn)
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn)
     {
 
         return Functions._mapValues_(this,
@@ -102,8 +102,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapElems(final Function<JsPair, ? extends JsElem> fn,
-                                final Predicate<JsPair> predicate
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+                                final Predicate<? super JsPair> predicate
                                )
     {
         return Functions._mapValues_(this,
@@ -116,7 +116,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapElems_(final Function<JsPair, ? extends JsElem> fn)
+    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn)
     {
         return Functions._mapValues__(this,
                                       this,
@@ -128,8 +128,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapElems_(final Function<JsPair, ? extends JsElem> fn,
-                                 final Predicate<JsPair> predicate
+    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
+                                 final Predicate<? super JsPair> predicate
                                 )
     {
         return Functions._mapValues__(this,
@@ -143,7 +143,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
 
 
     @Override
-    public final JsObj mapKeys(final Function<JsPair, String> fn)
+    public final JsObj mapKeys(final Function<? super JsPair, String> fn)
     {
         return Functions._mapKeys_(this,
                                    this,
@@ -155,8 +155,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapKeys(final Function<JsPair, String> fn,
-                               final Predicate<JsPair> predicate
+    public final JsObj mapKeys(final Function<? super JsPair, String> fn,
+                               final Predicate<? super JsPair> predicate
                               )
     {
         return Functions._mapKeys_(this,
@@ -169,7 +169,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapKeys_(final Function<JsPair, String> fn)
+    public final JsObj mapKeys_(final Function<? super JsPair, String> fn)
     {
         return Functions._mapKeys__(this,
                                     this,
@@ -182,8 +182,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapKeys_(final Function<JsPair, String> fn,
-                                final Predicate<JsPair> predicate
+    public final JsObj mapKeys_(final Function<? super JsPair, String> fn,
+                                final Predicate<? super JsPair> predicate
                                )
     {
         return Functions._mapKeys__(this,
@@ -196,8 +196,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn,
-                               final BiPredicate<JsPath, JsObj> predicate
+    public final JsObj mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                               final BiPredicate<? super JsPath, ? super JsObj> predicate
                               )
     {
 
@@ -211,7 +211,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn)
+    public final JsObj mapObjs(final BiFunction<? super JsPath, ? super  JsObj, JsObj> fn)
     {
         return Functions._mapJsObj_(this,
                                     this,
@@ -223,8 +223,8 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
-                                final BiPredicate<JsPath, JsObj> predicate
+    public final JsObj mapObjs_(final BiFunction<? super JsPath,? super  JsObj, JsObj> fn,
+                                final BiPredicate<? super JsPath, ? super JsObj> predicate
                                )
     {
         return Functions._mapJsObj__(this,
@@ -237,7 +237,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn)
+    public final JsObj mapObjs_(final BiFunction<? super JsPath,? super JsObj, JsObj> fn)
     {
         return Functions._mapJsObj__(this,
                                      this,
@@ -249,7 +249,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public JsObj filterElems(final Predicate<JsPair> filter)
+    public JsObj filterElems(final Predicate<? super JsPair> filter)
     {
         return Functions._filterValues_(this,
                                         requireNonNull(filter),
@@ -259,7 +259,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public JsObj filterElems_(final Predicate<JsPair> filter)
+    public JsObj filterElems_(final Predicate<? super JsPair> filter)
     {
         return Functions._filterValues__(this,
                                          requireNonNull(filter),
@@ -268,7 +268,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public JsObj filterObjs(final BiPredicate<JsPath, JsObj> filter)
+    public JsObj filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions._filterJsObj_(this,
                                        requireNonNull(filter),
@@ -277,7 +277,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public JsObj filterObjs_(final BiPredicate<JsPath, JsObj> filter)
+    public JsObj filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions._filterJsObj__(this,
                                         requireNonNull(filter),
@@ -286,7 +286,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj filterKeys(final Predicate<JsPair> filter)
+    public final JsObj filterKeys(final Predicate<? super JsPair> filter)
     {
         return Functions._filterKeys_(this,
                                       requireNonNull(filter),
@@ -295,7 +295,7 @@ class JsObjMutableImpl extends AbstractJsObj<MyJavaImpl.Map, JsArrayMutableImpl>
     }
 
     @Override
-    public final JsObj filterKeys_(final Predicate<JsPair> filter)
+    public final JsObj filterKeys_(final Predicate<? super JsPair> filter)
     {
         return Functions._filterKeys__(this,
                                        requireNonNull(filter),

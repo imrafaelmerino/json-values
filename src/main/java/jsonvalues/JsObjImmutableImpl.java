@@ -103,7 +103,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapElems(final Function<JsPair, ? extends JsElem> fn)
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn)
     {
 
         return Functions.mapValues(this,
@@ -115,8 +115,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapElems(final Function<JsPair, ? extends JsElem> fn,
-                                final Predicate<JsPair> predicate
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+                                final Predicate<? super JsPair> predicate
                                )
     {
         return Functions.mapValues(this,
@@ -128,7 +128,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapElems_(final Function<JsPair, ? extends JsElem> fn)
+    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn)
     {
         return Functions.mapValues_(this,
                                     requireNonNull(fn),
@@ -139,8 +139,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapElems_(final Function<JsPair, ? extends JsElem> fn,
-                                 final Predicate<JsPair> predicate
+    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
+                                 final Predicate<? super JsPair> predicate
                                 )
     {
         return Functions.mapValues_(this,
@@ -152,7 +152,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapKeys(final Function<JsPair, String> fn)
+    public final JsObj mapKeys(final Function<? super JsPair, String> fn)
     {
         return Functions.mapKeys(this,
                                  requireNonNull(fn),
@@ -163,8 +163,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapKeys(final Function<JsPair, String> fn,
-                               final Predicate<JsPair> predicate
+    public final JsObj mapKeys(final Function<? super JsPair, String> fn,
+                               final Predicate<? super JsPair> predicate
                               )
     {
         return Functions.mapKeys(this,
@@ -176,7 +176,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapKeys_(final Function<JsPair, String> fn)
+    public final JsObj mapKeys_(final Function<? super JsPair, String> fn)
     {
         return Functions.mapKeys_(this,
                                   requireNonNull(fn),
@@ -188,8 +188,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapKeys_(final Function<JsPair, String> fn,
-                                final Predicate<JsPair> predicate
+    public final JsObj mapKeys_(final Function<? super JsPair, String> fn,
+                                final Predicate<? super JsPair> predicate
                                )
     {
         return Functions.mapKeys_(this,
@@ -201,8 +201,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn,
-                               final BiPredicate<JsPath, JsObj> predicate
+    public final JsObj mapObjs(final BiFunction<? super JsPath,? super  JsObj, JsObj> fn,
+                               final BiPredicate<? super JsPath, ? super JsObj> predicate
                               )
     {
 
@@ -215,7 +215,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn)
+    public final JsObj mapObjs(final BiFunction<? super JsPath,? super JsObj, JsObj> fn)
     {
         return Functions.mapJsObj(this,
                                   requireNonNull(fn),
@@ -226,8 +226,8 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
-                                final BiPredicate<JsPath, JsObj> predicate
+    public final JsObj mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                final BiPredicate<? super JsPath, ? super JsObj> predicate
                                )
     {
 
@@ -241,7 +241,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn)
+    public final JsObj mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
     {
         return Functions.mapJsObj_(this,
                                    requireNonNull(fn),
@@ -252,7 +252,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterElems(final Predicate<JsPair> filter)
+    public final JsObj filterElems(final Predicate<? super JsPair> filter)
     {
         return Functions.filterValues(this,
                                       requireNonNull(filter),
@@ -262,7 +262,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterElems_(final Predicate<JsPair> filter)
+    public final JsObj filterElems_(final Predicate<? super JsPair> filter)
     {
 
 
@@ -275,7 +275,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterObjs(final BiPredicate<JsPath, JsObj> filter)
+    public final JsObj filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions.filterJsObjs(this,
                                       requireNonNull(filter),
@@ -285,7 +285,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterObjs_(final BiPredicate<JsPath, JsObj> filter)
+    public final JsObj filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions.filterJsObjs_(this,
                                        requireNonNull(filter),
@@ -296,7 +296,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterKeys(final Predicate<JsPair> filter)
+    public final JsObj filterKeys(final Predicate<? super JsPair> filter)
     {
         return Functions.filterKeys(this,
                                     requireNonNull(filter),
@@ -306,7 +306,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
-    public final JsObj filterKeys_(final Predicate<JsPair> filter)
+    public final JsObj filterKeys_(final Predicate<? super JsPair> filter)
     {
         return Functions.filterKeys_(this,
                                      requireNonNull(filter),

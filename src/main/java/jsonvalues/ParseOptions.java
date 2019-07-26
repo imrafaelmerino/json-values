@@ -9,8 +9,8 @@ import java.util.function.UnaryOperator;
  */
 public class ParseOptions
 {
-    private Function<JsPair, JsElem> map = pair -> pair.elem;
-    private Predicate<JsPair> filter = pair -> true;
+    private Function<? super JsPair,? extends JsElem> map = pair -> pair.elem;
+    private Predicate<? super JsPair> filter = pair -> true;
     private UnaryOperator<String> keyMap = k -> k;
     private Predicate<JsPath> keyFilter = k -> true;
 
@@ -38,7 +38,7 @@ public class ParseOptions
      @param filter the predicate to filter pair of elements.
      @return this ParseOptions builder
      */
-    public ParseOptions withElemFilter(final Predicate<JsPair> filter)
+    public ParseOptions withElemFilter(final Predicate<? super JsPair> filter)
     {
         this.filter = filter;
         return this;
@@ -80,15 +80,15 @@ public class ParseOptions
     static class Options
     {
 
-        final Function<JsPair, JsElem> elemMap;
-        final Predicate<JsPair> elemFilter;
+        final Function<? super JsPair, ? extends JsElem> elemMap;
+        final Predicate<? super JsPair> elemFilter;
         final UnaryOperator<String> keyMap;
-        final Predicate<JsPath> keyFilter;
+        final Predicate<? super JsPath> keyFilter;
 
-        Options(final Function<JsPair, JsElem> map,
-                final Predicate<JsPair> filter,
+        Options(final Function<? super JsPair, ? extends JsElem> map,
+                final Predicate<? super JsPair> filter,
                 final UnaryOperator<String> keyMap,
-                final Predicate<JsPath> keyFilter
+                final Predicate<? super JsPath> keyFilter
                )
         {
             this.elemMap = map;

@@ -150,7 +150,7 @@ class Functions
         return pair -> predicate.test(pair) ? ifTrue.apply(pair) : ifFalse.apply(pair);
     }
 
-    static <R> Function<JsPair, R> ifElse(Predicate<JsPair> predicate,
+    static <R> Function<JsPair, R> ifElse(Predicate<? super JsPair> predicate,
                                           Supplier<R> ifTrue,
                                           Supplier<R> ifFalse
                                          )
@@ -501,7 +501,7 @@ class Functions
     }
 
     static JsArray _filterJsObj_(final JsArray arr,
-                                 final BiPredicate<JsPath, JsObj> predicate,
+                                 final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                  final JsPath path
                                 )
     {
@@ -525,7 +525,7 @@ class Functions
     }
 
     static JsObj _filterJsObj_(final JsObj obj,
-                               final BiPredicate<JsPath, JsObj> predicate,
+                               final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                final JsPath path
                               )
     {
@@ -552,7 +552,7 @@ class Functions
 
     @SuppressWarnings("ReturnValueIgnored")
     private static void _filterJsObj__(final Json<?> json,
-                                       final BiPredicate<JsPath, JsObj> predicate,
+                                       final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                        final JsPath path
                                       )
     {
@@ -570,7 +570,7 @@ class Functions
     }
 
     static JsArray _filterJsObj__(final JsArray arr,
-                                  final BiPredicate<JsPath, JsObj> predicate,
+                                  final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                   final JsPath path
                                  )
     {
@@ -601,7 +601,7 @@ class Functions
     }
 
     static JsObj _filterJsObj__(final JsObj obj,
-                                final BiPredicate<JsPath, JsObj> predicate,
+                                final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                 final JsPath path
                                )
     {
@@ -635,7 +635,7 @@ class Functions
 
 
     static JsObj _filterKeys_(final JsObj obj,
-                              final Predicate<JsPair> predicate,
+                              final Predicate<? super JsPair> predicate,
                               final JsPath path
                              )
     {
@@ -656,7 +656,7 @@ class Functions
 
     @SuppressWarnings("ReturnValueIgnored")
     private static void _filterKeys__(final Json<?> json,
-                                      final Predicate<JsPair> predicate,
+                                      final Predicate<? super JsPair> predicate,
                                       final JsPath path
                                      )
 
@@ -673,7 +673,7 @@ class Functions
     }
 
     static JsArray _filterKeys__(final JsArray arr,
-                                 final Predicate<JsPair> predicate,
+                                 final Predicate<? super JsPair> predicate,
                                  final JsPath path
                                 )
     {
@@ -696,7 +696,7 @@ class Functions
     }
 
     static JsObj _filterKeys__(final JsObj obj,
-                               final Predicate<JsPair> predicate,
+                               final Predicate<? super JsPair> predicate,
                                final JsPath path
                               )
     {
@@ -725,7 +725,7 @@ class Functions
     }
 
     static JsArray _filterValues_(final JsArray arr,
-                                  final Predicate<JsPair> predicate,
+                                  final Predicate<? super JsPair> predicate,
                                   final JsPath path
                                  )
     {
@@ -748,7 +748,7 @@ class Functions
     }
 
     static JsObj _filterValues_(final JsObj obj,
-                                final Predicate<JsPair> predicate,
+                                final Predicate<? super JsPair> predicate,
                                 final JsPath path
                                )
     {
@@ -774,7 +774,7 @@ class Functions
 
     @SuppressWarnings("ReturnValueIgnored")
     private static void _filterValues__(final Json<?> json,
-                                        final Predicate<JsPair> predicate,
+                                        final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
@@ -794,7 +794,7 @@ class Functions
     }
 
     static JsArray _filterValues__(final JsArray arr,
-                                   final Predicate<JsPair> predicate,
+                                   final Predicate<? super JsPair> predicate,
                                    final JsPath path
                                   )
     {
@@ -826,7 +826,7 @@ class Functions
     }
 
     static JsObj _filterValues__(final JsObj obj,
-                                 final Predicate<JsPair> predicate,
+                                 final Predicate<? super JsPair> predicate,
                                  final JsPath path
                                 )
     {
@@ -857,8 +857,8 @@ class Functions
 
     static Trampoline<JsObj> _mapJsObj_(final JsObj acc,
                                         final JsObj remaining,
-                                        final BiFunction<JsPath, JsObj, JsObj> fn,
-                                        final BiPredicate<JsPath, JsObj> predicate,
+                                        final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                        final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                         final JsPath path
                                        )
     {
@@ -908,8 +908,8 @@ class Functions
 
     static Trampoline<JsArray> _mapJsObj_(final JsArray acc,
                                           final JsArray remaining,
-                                          final BiFunction<JsPath, JsObj, JsObj> fn,
-                                          final BiPredicate<JsPath, JsObj> predicate,
+                                          final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                          final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                           final JsPath path
                                          )
     {
@@ -953,8 +953,8 @@ class Functions
 
     static Trampoline<JsObj> _mapJsObj__(final JsObj acc,
                                          final JsObj remaining,
-                                         final BiFunction<JsPath, JsObj, JsObj> fn,
-                                         final BiPredicate<JsPath, JsObj> predicate,
+                                         final BiFunction<? super JsPath,? super JsObj, JsObj> fn,
+                                         final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                          final JsPath path
                                         )
     {
@@ -1023,8 +1023,8 @@ class Functions
 
     static Trampoline<JsArray> _mapJsObj__(final JsArray acc,
                                            final JsArray remaining,
-                                           final BiFunction<JsPath, JsObj, JsObj> fn,
-                                           final BiPredicate<JsPath, JsObj> predicate,
+                                           final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                           final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                            final JsPath path
                                           )
     {
@@ -1093,8 +1093,8 @@ class Functions
 
     static Trampoline<JsObj> _mapKeys_(final JsObj acc,
                                        final JsObj remaining,
-                                       final Function<JsPair, String> fn,
-                                       final Predicate<JsPair> predicate,
+                                       final Function<? super JsPair, String> fn,
+                                       final Predicate<? super JsPair> predicate,
                                        final JsPath path
                                       )
     {
@@ -1136,8 +1136,8 @@ class Functions
 
     static Trampoline<JsArray> _mapKeys__(final JsArray acc,
                                           final JsArray remaining,
-                                          final Function<JsPair, String> fn,
-                                          final Predicate<JsPair> predicate,
+                                          final Function<? super JsPair, String> fn,
+                                          final Predicate<? super JsPair> predicate,
                                           final JsPath path
                                          )
     {
@@ -1180,8 +1180,8 @@ class Functions
 
     static Trampoline<JsObj> _mapKeys__(final JsObj acc,
                                         final JsObj remaining,
-                                        final Function<JsPair, String> fn,
-                                        final Predicate<JsPair> predicate,
+                                        final Function<? super JsPair, String> fn,
+                                        final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
@@ -1243,8 +1243,8 @@ class Functions
 
     static Trampoline<JsArray> _mapValues_(final JsArray acc,
                                            final JsArray remaining,
-                                           final Function<JsPair, ? extends JsElem> fn,
-                                           final Predicate<JsPair> predicate,
+                                           final Function<? super JsPair, ? extends JsElem> fn,
+                                           final Predicate<? super JsPair> predicate,
                                            final JsPath path
                                           )
     {
@@ -1288,8 +1288,8 @@ class Functions
 
     static Trampoline<JsObj> _mapValues_(final JsObj acc,
                                          final JsObj remaining,
-                                         final Function<JsPair, ? extends JsElem> fn,
-                                         final Predicate<JsPair> predicate,
+                                         final Function<? super JsPair, ? extends JsElem> fn,
+                                         final Predicate<? super JsPair> predicate,
                                          final JsPath path
                                         )
     {
@@ -1322,8 +1322,8 @@ class Functions
 
     static Trampoline<JsArray> _mapValues__(final JsArray acc,
                                             final JsArray remaining,
-                                            final Function<JsPair, ? extends JsElem> fn,
-                                            final Predicate<JsPair> predicate,
+                                            final Function<? super JsPair, ? extends JsElem> fn,
+                                            final Predicate<? super JsPair> predicate,
                                             final JsPath path
                                            )
     {
@@ -1375,8 +1375,8 @@ class Functions
 
     static Trampoline<JsObj> _mapValues__(final JsObj acc,
                                           final JsObj remaining,
-                                          final Function<JsPair, ? extends JsElem> fn,
-                                          final Predicate<JsPair> predicate,
+                                          final Function<? super JsPair, ? extends JsElem> fn,
+                                          final Predicate<? super JsPair> predicate,
                                           final JsPath path
                                          )
     {
@@ -1438,7 +1438,7 @@ class Functions
     }
 
     static Trampoline<JsArray> filterJsObjs(final JsArray arr,
-                                            final BiPredicate<JsPath, JsObj> predicate,
+                                            final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                             final JsPath path
                                            )
     {
@@ -1478,7 +1478,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterJsObjs(final JsObj obj,
-                                          final BiPredicate<JsPath, JsObj> predicate,
+                                          final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                           final JsPath path
                                          )
     {
@@ -1521,7 +1521,7 @@ class Functions
 
 
     static Trampoline<JsArray> filterJsObjs_(final JsArray arr,
-                                             final BiPredicate<JsPath, JsObj> predicate,
+                                             final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                              final JsPath path
                                             )
     {
@@ -1572,7 +1572,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterJsObjs_(final JsObj obj,
-                                           final BiPredicate<JsPath, JsObj> predicate,
+                                           final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                            final JsPath path
                                           )
     {
@@ -1622,7 +1622,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterKeys(final JsObj obj,
-                                        final Predicate<JsPair> predicate,
+                                        final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
@@ -1658,7 +1658,7 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> filterKeys_(final Json<?> json,
-                                                             final Predicate<JsPair> predicate,
+                                                             final Predicate<? super JsPair> predicate,
                                                              final JsPath path
                                                             )
 
@@ -1676,7 +1676,7 @@ class Functions
     }
 
     static Trampoline<JsArray> filterKeys_(final JsArray arr,
-                                           final Predicate<JsPair> predicate,
+                                           final Predicate<? super JsPair> predicate,
                                            final JsPath path
                                           )
     {
@@ -1714,7 +1714,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterKeys_(final JsObj obj,
-                                         final Predicate<JsPair> predicate,
+                                         final Predicate<? super JsPair> predicate,
                                          final JsPath path
                                         )
     {
@@ -1757,7 +1757,7 @@ class Functions
     }
 
     static Trampoline<JsArray> filterValues(final JsArray arr,
-                                            final Predicate<JsPair> predicate,
+                                            final Predicate<? super JsPair> predicate,
                                             final JsPath path
                                            )
     {
@@ -1795,7 +1795,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterValues(final JsObj obj,
-                                          final Predicate<JsPair> predicate,
+                                          final Predicate<? super JsPair> predicate,
                                           final JsPath path
                                          )
     {
@@ -1834,7 +1834,7 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> filterValues_(final Json<?> json,
-                                                               final Predicate<JsPair> predicate,
+                                                               final Predicate<? super JsPair> predicate,
                                                                final JsPath path
                                                               )
     {
@@ -1853,7 +1853,7 @@ class Functions
     }
 
     static Trampoline<JsArray> filterValues_(final JsArray arr,
-                                             final Predicate<JsPair> predicate,
+                                             final Predicate<? super JsPair> predicate,
                                              final JsPath path
                                             )
     {
@@ -1894,7 +1894,7 @@ class Functions
     }
 
     static Trampoline<JsObj> filterValues_(final JsObj obj,
-                                           final Predicate<JsPair> predicate,
+                                           final Predicate<? super JsPair> predicate,
                                            final JsPath path
                                           )
     {
@@ -2209,8 +2209,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapJsObj(final JsObj obj,
-                                      final BiFunction<JsPath, jsonvalues.JsObj, jsonvalues.JsObj> fn,
-                                      final BiPredicate<JsPath, jsonvalues.JsObj> predicate,
+                                      final BiFunction<? super JsPath, ? super jsonvalues.JsObj,jsonvalues.JsObj> fn,
+                                      final BiPredicate<? super JsPath, ? super jsonvalues.JsObj> predicate,
                                       final JsPath path
                                      )
     {
@@ -2256,8 +2256,8 @@ class Functions
     }
 
     static Trampoline<JsArray> mapJsObj(final JsArray arr,
-                                        final BiFunction<JsPath, JsObj, JsObj> fn,
-                                        final BiPredicate<JsPath, JsObj> predicate,
+                                        final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                        final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                         final JsPath path
                                        )
     {
@@ -2298,8 +2298,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapJsObj_(final JsObj obj,
-                                       final BiFunction<JsPath, JsObj, JsObj> fn,
-                                       final BiPredicate<JsPath, JsObj> predicate,
+                                       final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                       final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                        final JsPath path
                                       )
     {
@@ -2359,8 +2359,8 @@ class Functions
     }
 
     static Trampoline<JsArray> mapJsObj_(final JsArray arr,
-                                         final BiFunction<JsPath, JsObj, JsObj> fn,
-                                         final BiPredicate<JsPath, JsObj> predicate,
+                                         final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                         final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                          final JsPath path
                                         )
     {
@@ -2417,8 +2417,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapKeys(final JsObj obj,
-                                     final Function<JsPair, String> fn,
-                                     final Predicate<JsPair> predicate,
+                                     final Function<? super JsPair, String> fn,
+                                     final Predicate<? super JsPair> predicate,
                                      final JsPath path
                                     )
     {
@@ -2459,8 +2459,8 @@ class Functions
     }
 
     static Trampoline<JsArray> mapKeys_(final JsArray array,
-                                        final Function<JsPair, String> fn,
-                                        final Predicate<JsPair> predicate,
+                                        final Function<? super JsPair, String> fn,
+                                        final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
@@ -2499,8 +2499,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapKeys_(final JsObj obj,
-                                      final Function<JsPair, String> fn,
-                                      final Predicate<JsPair> predicate,
+                                      final Function<? super JsPair, String> fn,
+                                      final Predicate<? super JsPair> predicate,
                                       final JsPath path
                                      )
     {
@@ -2558,8 +2558,8 @@ class Functions
     }
 
     static Trampoline<JsArray> mapValues(final JsArray array,
-                                         final Function<JsPair, ? extends JsElem> fn,
-                                         final Predicate<JsPair> predicate,
+                                         final Function<? super JsPair, ? extends JsElem> fn,
+                                         final Predicate<? super JsPair> predicate,
                                          final JsPath path
                                         )
     {
@@ -2598,8 +2598,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapValues(final JsObj obj,
-                                       final Function<JsPair, ? extends JsElem> fn,
-                                       final Predicate<JsPair> predicate,
+                                       final Function<? super JsPair, ? extends JsElem> fn,
+                                       final Predicate<? super JsPair> predicate,
                                        final JsPath path
                                       )
     {
@@ -2630,8 +2630,8 @@ class Functions
     }
 
     static Trampoline<JsArray> mapValues_(final JsArray array,
-                                          final Function<JsPair, ? extends JsElem> fn,
-                                          final Predicate<JsPair> predicate,
+                                          final Function<? super JsPair, ? extends JsElem> fn,
+                                          final Predicate<? super JsPair> predicate,
                                           final JsPath path
                                          )
     {
@@ -2676,8 +2676,8 @@ class Functions
     }
 
     static Trampoline<JsObj> mapValues_(final JsObj obj,
-                                        final Function<JsPair, ? extends JsElem> fn,
-                                        final Predicate<JsPair> predicate,
+                                        final Function<? super JsPair, ? extends JsElem> fn,
+                                        final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
@@ -2772,7 +2772,7 @@ class Functions
         Event elem;
         MyScalaImpl.Vector newRoot = root;
         JsPair pair;
-        final Predicate<JsPair> condition = options.elemFilter.and(p -> options.keyFilter.test(p.path));
+        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
         while ((elem = parser.next()) != END_ARRAY)
         {
             if (elem == null) throw unexpectedEventError(null);
@@ -2904,7 +2904,7 @@ class Functions
                      ) throws MalformedJson
     {
         Event elem;
-        final Predicate<JsPair> condition = options.elemFilter.and(p -> options.keyFilter.test(p.path));
+        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
         while ((elem = parser.next()) != END_ARRAY)
         {
             if (elem == null) throw unexpectedEventError(null);
@@ -3053,7 +3053,7 @@ class Functions
     {
 
         MyScalaImpl.Map newRoot = root;
-        final Predicate<JsPair> condition = options.elemFilter.and(p -> options.keyFilter.test(p.path));
+        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
         while (parser.next() != END_OBJECT)
         {
             final String key = options.keyMap.apply(parser.getString());
@@ -3217,7 +3217,7 @@ class Functions
                       final JsPath path
                      ) throws MalformedJson
     {
-        final Predicate<JsPair> condition = options.elemFilter.and(p -> options.keyFilter.test(p.path));
+        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
         while (parser.next() != END_OBJECT)
         {
             final String key = options.keyMap.apply(parser.getString());
@@ -3626,8 +3626,8 @@ class Functions
     }
 
 
-    private static Trampoline<JsObj> mapHead(final Function<JsPair, ? extends JsElem> fn,
-                                             final Predicate<JsPair> predicate,
+    private static Trampoline<JsObj> mapHead(final Function<? super JsPair, ? extends JsElem> fn,
+                                             final Predicate<? super JsPair> predicate,
                                              final Map.Entry<String, JsElem> head,
                                              final JsPath headPath,
                                              final Trampoline<JsObj> $tail
@@ -3653,8 +3653,8 @@ class Functions
                          ).apply(head.getValue());
     }
 
-    private static Trampoline<JsObj> mapHead_(final Function<JsPair, ? extends JsElem> fn,
-                                              final Predicate<JsPair> predicate,
+    private static Trampoline<JsObj> mapHead_(final Function<? super JsPair, ? extends JsElem> fn,
+                                              final Predicate<? super JsPair> predicate,
                                               final Map.Entry<String, JsElem> head,
                                               final JsPath headPath,
                                               final Trampoline<JsObj> $tail,
@@ -3933,8 +3933,8 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> _mapKeys__(final Json<?> json,
-                                                            final Function<JsPair, String> fn,
-                                                            final Predicate<JsPair> predicate,
+                                                            final Function<? super JsPair, String> fn,
+                                                            final Predicate<? super JsPair> predicate,
                                                             final JsPath path
                                                            )
 
@@ -3957,8 +3957,8 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> _mapValues__(Json<?> json,
-                                                              Function<JsPair, ? extends JsElem> fn,
-                                                              Predicate<JsPair> predicate,
+                                                              Function<? super JsPair, ? extends JsElem> fn,
+                                                              Predicate<? super JsPair> predicate,
                                                               JsPath path
                                                              )
 
@@ -3997,8 +3997,8 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> mapKeys_(final Json<?> json,
-                                                          final Function<JsPair, String> fn,
-                                                          final Predicate<JsPair> predicate,
+                                                          final Function<? super JsPair, String> fn,
+                                                          final Predicate<? super JsPair> predicate,
                                                           final JsPath path
                                                          )
 
@@ -4019,8 +4019,8 @@ class Functions
     }
 
     private static Trampoline<? extends Json<?>> mapValues_(Json<?> json,
-                                                            Function<JsPair, ? extends JsElem> fn,
-                                                            Predicate<JsPair> predicate,
+                                                            Function<? super JsPair, ? extends JsElem> fn,
+                                                            Predicate<? super JsPair> predicate,
                                                             JsPath path
                                                            )
 
@@ -4134,8 +4134,8 @@ class Functions
         return more(() -> $init);
     }
 
-    private static MyScalaImpl.Map updateIfCondition(Predicate<JsPair> condition,
-                                                     Function<JsPair, JsElem> elemMap,
+    private static MyScalaImpl.Map updateIfCondition(Predicate<? super JsPair> condition,
+                                                     Function<? super JsPair, ? extends JsElem> elemMap,
                                                      MyScalaImpl.Map map,
                                                      final JsPair pair,
                                                      final String key

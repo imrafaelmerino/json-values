@@ -54,7 +54,7 @@ There are two ways of creating paths:
 separated by dots. Keys are URL-encoded to escape special characters; therefore, 
 they could be part of an URL. When keys are numbers, they have to be single-quoted, 
 to distinguish them from indexes.
-* Using the _key_ and _index_ methods from the _JsPath_ class API, in which case, the keys aren't URL-encoded. This way is less readable and less concise. On the other hand,  it's more efficient because no string is parsed and sometimes more convenient because keys don't need to to be URL-encoded. I recommend using the path-like string approach at first and only
+* Using the _key_ and _index_ methods from the _JsPath_ class API. This way is less readable and less concise. On the other hand,  it's more efficient because no string is parsed and sometimes more convenient because keys don't need to to be URL-encoded. I recommend using the path-like string approach at first and only
 to change to the API way during optimization and if it's justified.
 ```
 { 
@@ -69,32 +69,40 @@ to change to the API way during optimization and if it's justified.
 // 1
 JsPath.of("a.0.b.0")                                
 JsPath.empty().key("a").index(0).key("b").index(0)
+
 // 2
 JsPath.of("a.0.b.1")                                
 JsPath.empty().key("a").index(0).key("b").index(1) 
+
 // 3
 JsPath.of("a.0.b.2")                                
 JsPath.empty().key("a").index(0).key("b").index(2)  
 // the index -1 points to the last element of the array (3 in this case)
 JsPath.of("a.0.b.-1")                               
 JsPath.empty().key("a").index(0).key("b").index(-1) 
+
 // "z"
 JsPath.of("+")                                       
 JsPath.empty().key(" ")                            
-JsPath.of("%20")                                    
+JsPath.of("%20")   
+                                 
 // false
 JsPath.of("'1'.0")                                  
-JsPath.empty().key("1").index(0)                    
+JsPath.empty().key("1").index(0)  
+                  
 // true
 JsPath.of("'1'.1")                                 
 JsPath.empty().key("1").index(1)
+
 // null
 JsPath.of("%27")                                  
-JsPath.empty().key("'")                             
+JsPath.empty().key("'")          
+                   
 // 1.2, empty string is a valid key!
 JsPath.of("")                                      
 JsPath.empty().key("")
 ```
+All the methods that accept a JsPath are overloaded so that a path-like string can be passed in instead.
 #### 0.2 - JsElem
 Every element in a Json is a _JsElem_. There is one for each json value described in [json.org](https://www.json.org):
 * _JsStr_ represents immutable strings.
@@ -109,17 +117,16 @@ Every element in a Json is a _JsElem_. There is one for each json value describe
     * _JsBigInt_
     * _JsBigDec_
 * The singleton _JsNothing.NOTHING_ represents nothing. It's not part on any specification. It's a convenient type
-that make certain functions that return a JsElem total on their arguments. For example the function _JsElem get(JsPath)_  is total
+that makes certain functions that return a JsElem total on their arguments. For example, the function _JsElem get(JsPath)_ is total
 because returns a JsElem for every JsPath. If there is no element located at a path, it returns _NOTHING_.
-In other functions like _Json putIfPresent(Function<JsElem,JsElem>)_, this type comes in handy as well because allows the function
-to insert nothing even if an element is present just returning _JsNothing.NOTHING_
+In other functions like _Json putIfPresent(Function<JsElem,JsElem>)_, this type comes in handy as well because it's
+possible, just returning _JsNothing.NOTHING_ , not to insert anything even if an element is present. 
 #### 0.3 - JsPair
 Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an 
 element of a _Json_ and the position where it's located at:
 
 JsPair = (JsPath, JsElem)
 
-A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_ (see section 2).
 #### 1- How to create a Json?
 **json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
@@ -237,8 +244,160 @@ JsArray f = empty.append(1)
                  .prepend(0);   
 // empty is not empty!, it's [0,1,2] 
 Assert.assertEquals(empty, f);   
-```               
-#### 2- Streams and Collectors.
+```
+#### 2- Putting data in and getting data out. 
+To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
+has several overloaded methods that allows the client to work directly with the primitive types, avoiding any kind
+of conversion. 
+```
+{
+"a": { "b": [ { "c": 1,
+                "d": [1,2],
+                "e": ["a","b"]
+              }  
+            ] 
+     },
+ "e": [[1,2], {}, [], null, 1.2]     
+}
+```
+##### 2-1 Obtaining primitive types.
+All the _getXXX_ by path methods, return an Optional or one of its specializations for the particular primitive type. 
+```
+Assertions.assertEquals(OptionalInt.of(1), 
+                        json.getInt("a.b.0.c")
+                        );
+Assertions.assertEquals(OptionalInt.of(2), 
+                        json.getLong("a.b.0.d.-1")
+                        );
+Assertions.assertEquals(Optional.of("a"), 
+                        json.getStr("a.b.0.e.0")
+                        );
+Assertions.assertEquals(Optional.of(JsArray.of(1,2)), 
+                        json.getArr("e.0")
+                        );
+Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
+                                             "d",JsArray.of(1,2),
+                                             "e",JsArray.of("a","b"))
+                                             )), 
+                        json.getObj("a.b.0")
+                        );
+Assertions.assertEquals(OptionalDouble.of(1.2), 
+                        json.getDouble("e.-1")
+                        );
+Assertions.assertEquals(OptionalInt.empty(), 
+                        json.getInt("e.-1")
+                        );
+Assertions.assertEquals(OptionalInt.empty(), 
+                        json.getInt("h")
+                        );        
+```
+##### 2-1 Obtaining json elements.
+Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element.
+The _get_ by path method returns a JsElem, and has the attractive property that is total. What does it mean? Well, it means that it returns a JsElem
+for every possible path passed in. Functional programmers strive for total functions. As I mentioned above, it's possible thanks to the _JsNothing_ type.
+```
+Assertions.assertEquals(JsNull.NULL, 
+                        json.get("e.3")
+                        );
+
+Assertions.assertEquals(JsNothing.NOTHING, 
+                        json.get("f")
+                        ); 
+```
+##### 2-3 Putting data at any arbitrary path.
+
+The _put_ method always inserts the specified element at the specified path:
+```
+Jsobj a = JsObj.empty().put("a.b.c", 1);
+Assertions.assertEquals(JsInt.of(1), a.get("a.b.c"));
+Assertions.assertEquals(1, a.getInt("a.b.c").getAsInt());
+
+Jsobj b = a.put("a.b", true);
+Assertions.assertEquals(JsBool.TRUE, a.get("a.b") );
+Assertions.assertEquals(true, a.getBool("a.b").get() );
+
+//a and b are immutable
+Assertions.assertNotEquals(a,b);
+
+JsArray c = JsArray.of(JsObj.of("a",JsArray.of(1,2)),
+                       JsObj.of("b",JsArray.of("a","b"))
+                       );
+Assertions.assertEquals(JsInt.of(1), c.get("0.a.0") );
+Assertions.assertEquals(1l, c.getLong("0.a.0").getAsLong() );
+                       
+JsArray d = c.put("0.a.0",true); 
+Assertions.assertEquals(JsBool.TRUE, d.get("0.a.0") );
+Assertions.assertEquals(true, d.getBool("0.a.0").get() );
+
+
+```
+The more natural way of adding data to arrays is with the methods append and prepend, however, when inserting data in arrays at certain positions, filling with null may be necessary:
+```
+JsArray e = c.put("0.b.3","c");
+Assertions.assertEquals(JsArray.of(JsStr.of("a"),
+                                   JsStr.of("b"),
+                                   JsNull.NULL,   
+                                   JsStr.of("c")
+                                   ), 
+                        d.get("0.b") 
+                        );
+```
+The point here is being honest. The string "c" has been inserted at the forth position of the array, and for that to happen, filling with null
+the third position is necessary.  
+##### 2-4 Being idiomatic: tell, don't ask.
+An attractive principle in OOP is the known as ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) It leads to more declarative
+APIs. The _putIfAbsent_, _putIfPresent_ and _merge_ methods follow that principle. The point is, instead of checking if an element is present or 
+not and call the put method in consequence, you can do the same thing, in just one call:
+```
+JsObj a = JsObj.empty().putIfPresent("a",1);
+Assertions.assertEquals(JsObj.empty(), a);
+
+JsObj b = JsObj.empty().putIfAbsent("a",1);
+Assertions.assertEquals(JsInt.of(1), 
+                        b.get("a")
+                        );
+
+JsObj c = b.putIfAbsent("a",2);
+Assertions.assertEquals(b,c)
+
+
+JsInt defaultElem = JsInt.of(1);
+// in the function, d stands for the default element and e stands for the existing one
+Function<? super JsElem, ? extends JsElem> fn = (d,e)-> if(e.isInt()) e.asJsInt().plus(d.asJsInt()) else d;
+
+// no element exists at "a" -> defaultElement is inserted
+JsObj f = JsObj.empty().merge("a",
+                              defaultElem,                                   
+                              fn
+                              ); 
+Assertions.assertEquals(JsInt.of(1), f.get("a"));
+// an element exists at "a" -> the function is invoked and the default element is added to existing one: 1 + 1
+JsObj g = f.merge("a",
+                  defaultElem,                                   
+                  fn
+                  ); 
+Assertions.assertEquals(JsInt.of(2), 
+                        f.get("a")
+                        );                     
+```
+##### 2-5 Being lazy.
+
+// it's possible to be lazy and not produce the element if it's not going to be inserted, just using a supplier:
+JsObj d = b.putIfAbsent("a", ()-> computed value);
+JsObj e = b.putIfPresent("a", ()-> computed value);
+
+##### 2-5 Adding data to arrays.
+
+To insert elements at the front of an array exist the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
+To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
+The same considerations above applies for all of them.               
+#### 3- Streams and Collectors.
+A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. bla bla bla
+
+##### 3.1 Streams.
+##### 3.2 Object collectors.
+##### 3.3 Array collectors.
+
 Stream methods returns sequences of JsPairs:
 ```
 JsObj x = JsObj.of("a", JsArray.of(1,2,3),
@@ -315,73 +474,78 @@ Assert.assertEquals(x,a);
 // the collector JsArray._collector_() returns a mutable json array
 JsObj b = x.stream_().collector(JsArray._collector_());
 Assert.assertEquals(x,b);
-
 ```
-#### 3- Filter, map and reduce.
-Every operation can be applied only to the first level of a json 
+#### 4- Filter, map and reduce.
+What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
+carefully in different ways taking into account the structure of a Json.
+As was mentioned before, methods which name ends with an underscore, are applied recursively and not only to the first level of the json.
+##### 4.1- Filter
+_filterKeys_ methods remove the keys from a JsObj which pairs satisfy a predicate: 
 ```
-Json filterKeys(final Predicate<JsPair> predicate);
-Json filterElems(final Predicate<JsPair> predicate);
-Json filterObjs(final BiPredicate<JsPath, JsObj> predicate); 
+Json filterKeys(Predicate<? super JsPair> predicate);
+Json filterKeys_(Predicate<? super JsPair> predicate);
+```
+_filterElems_ methods remove the elements from a Json **which are not containers** and which pairs satisfy a predicate:
+```
+Json filterElems(Predicate<? super JsPair> predicate);
+Json filterElems_(Predicate<? super JsPair> predicate);
+```
+_filterObjs_ methods remove the json objects from a Json which pairs satisfy a predicate:
+```
+Json filterObjs(BiPredicate<? super JsPath, ? super JsObj> predicate); 
+Json filterObjs_(BiPredicate<? super JsPath, ? super JsObj> predicate); 
+```
 
-Json mapElems(final Function<JsPair, ? extends JsElem> fn,
-              final Predicate<JsPair> predicate
+##### 4.2- Map
+_mapKeys_ methods map the keys from a JsObj which pairs satisfy a predicate. The map function takes as a parameter a pair and returns 
+the new key.
+```          
+Json mapKeys(Function<? super JsPair, String> fn,
+             Predicate<? super JsPair> predicate
+            );
+Json mapKeys_(Function<? super JsPair, String> fn,
+              Predicate<? super JsPair> predicate
+             );  
+```
+_mapElems_ methods map the elements from a Json **which are not containers** and which pairs satisfy a predicate. The map function takes
+as a parameter a pair and returns the new json element.
+```
+Json mapElems(Function<? super JsPair, ? extends JsElem> fn,
+              Predicate<? super JsPair> predicate
              );
-Json mapKeys(final Function<JsPair, String> fn,
-             final Predicate<JsPair> predicate
+Json mapElems_(Function<? super JsPair, ? extends JsElem> fn,
+               Predicate<? super JsPair> predicate
+              );   
+```
+_mapObjs_ methods map the json objects from a Json which pairs satisfy a predicate. The map function takes
+as a parameter a json object, its path location and returns the new json object:
+```          
+Json mapObjs(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+             BiPredicate<? super JsPath, ? super JsObj> predicate
             );
-Json mapObjs(final BiFunction<JsPath, JsObj, JsObj> fn,
-             final BiPredicate<JsPath, JsObj> predicate
-            );
-            
+Json mapObjs_(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+              BiPredicate<? super JsPath, ? super JsObj> predicate
+             );            
+``` 
+
+The map functions have been designed in such a way that they don't change the structure of the json, which reminds of _functors_, a concept that it may be familiar if you know _Haskell_.
+           
+
+##### 4.3- Reduce
+_reduce_ functions are a classic map-reduce over the elements **which are not containers** and which pairs satisfy a predicate.
+ The map function takes as a parameter a pair and returns an element that is reduced by an operator.
+```
 <R> Optional<R> reduce(BinaryOperator<R> op,
                        Function<? super JsPair, R> map,
                        Predicate<? super JsPair> predicate
-                       );          
-```
-or to the whole structure recursively, just adding an underscore to the name of the method:
-
-```
-Json filterElems_(final Predicate<JsPair> predicate);
-Json filterKeys_(final Predicate<JsPair> predicate);
-Json filterObjs_(final BiPredicate<JsPath, JsObj> predicate); 
-
-Json mapKeys_(final Function<JsPair, String> fn,
-              final Predicate<JsPair> predicate
-          );
-Json mapElems_(final Function<JsPair, ? extends JsElem> fn,
-               final Predicate<JsPair> predicate
-           );
-Json mapObjs_(final BiFunction<JsPath, JsObj, JsObj> fn,
-              final BiPredicate<JsPath, JsObj> predicate
-          );
-           
+                       );       
+                                  
 <R> Optional<R> reduce_(BinaryOperator<R> op,
                         Function<? super JsPair, R> map,
                         Predicate<? super JsPair> predicate
-                       );               
+                       );        
 ```
-
-_filterKeys_ methods remove keys from JsObj based on the full path of the key and its associated element.
-
-_filterElems_ methods remove keys from JsObj based on the full path of the key and its associated element.
-
-_filterObjs_ is a specialization of filterElems to remove json objects. 
-
-The same considerations apply for the map functions, except that they map the elements that satisfy 
-the specified predicate, instead of removing them.
-
-_reduce_ functions are a classic map-reduce over the elements (not containers) that satisfies the specified predicate
-
-Considering a Json a tree, we can conclude that the presented map and filter functions don't change the structure 
-of the tree, they transform their leaves (map) or cut them down (filter). They remind me of _functors_. If you know 
-_Haskell_, it must be familiar.
-
-
-#### 3.1- Examples.
-to be documented.
-
-#### 4- Union and intersection. 
+#### 5- Union and intersection. 
 Both operations can be applied to the first level of the jsons
 ```
 JsObj union(final JsObj that);
@@ -407,127 +571,9 @@ JsArray intersection_(final JsArray that);
 Arrays can be considered lists (ordered and with duplicates), sets(not ordered and without duplicated)
 alternatively, multisets (not ordered and with duplicates) using the parameter _ARRAY_AS_.
 
-#### 4.1- Examples.
+#### 5.1- Examples.
 to be documented.
 
-#### 5- Putting data in and getting data out. 
-To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
-has several overloaded methods that allows the client to work directly with the primitive types, avoiding any kind
-of conversion. 
-```
-{
-"a": { "b": [ { "c": 1,
-                "d": [1,2],
-                "e": ["a","b"]
-              }  
-            ] 
-     },
- "e": [[1,2], {}, [], null, 1.2]     
-}
-OptionalInt a = json.getInt("a.b.0.c");
-Assertions.assertEquals(OptionalInt.of(1), a);
-
-OptionalLong b = json.getLong("a.b.0.d.-1");  
-Assertions.assertEquals(OptionalInt.of(2), b);
- 
-Optional<String> c = json.getStr("a.b.0.e.0"); 
-Assertions.assertEquals(Optional.of("a"), c);
-
-Optional<JsArray> d = json.getArr("e.0");   
-Assertions.assertEquals(Optional.of(JsArray.of(1,2)), d);
-
-// {"c":1, "d": [1,2], "e": ["a", "b"]}
-Optional<JsObj> e = json.getObj("a.b.0"); 
-Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
-                                             "d",JsArray.of(1,2),
-                                             "e",JsArray.of("a","b"))
-                                             )), 
-                        e);
-
-OptionalDouble f = json.getDouble("e.-1");  
-Assertions.assertEquals(OptionalDouble.of(1.2), f);
-
-OptionalInt f = json.getInt("e.-1"); 
-Assertions.assertEquals(OptionalInt.empty(), f);
-
-OptionalInt f = json.getInt("h"); 
-Assertions.assertEquals(OptionalInt.empty(), f);
- 
-//the get method returns a JsElem 
-JsElem g = json.get("e.3");
-Assertions.assertEquals(JsNull.NULL, g);
-
-// NOTHING is returned
-JsElem g = json.get("f");
-Assertions.assertEquals(JsNothing.NOTHING, g);
-
-                
-```
-The  _put_ method always put the specified element at the specified position:
-```
-Jsobj a = JsObj.empty().put("a.b.c", 1);
-Assertions.assertEquals(JsInt.of(1), a.get("a.b.c") );
-Jsobj b = a.put("a.b", true);
-Assertions.assertEquals(JsBool.TRUE, a.get("a.b") );
-//a and b are immutable
-Assertions.assertNotEquals(a,b);
-
-JsArray c = JsArray.of(JsObj.of("a",JsArray.of(1,2)),
-                       JsObj.of("b",JsArray.of("a","b"))
-                       );
-JsArray d = c.put("0.a.0",true); 
-Assertions.assertEquals(JsBool.TRUE, d.get("0.a.0") );
-Assertions.assertEquals(JsInt.of(1), c.get("0.a.0") );
-
-JsArray e = c.put("0.b.3","c");
-// in arrays filling with null may be necessary to place an element at the specified index
-Assertions.assertEquals(JsArray.of(JsStr.of("a"),
-                                   JsStr.of("b"),
-                                   JsNull.NULL,   
-                                   JsStr.of("c")
-                                   ), 
-                        d.get("0.b") 
-                        );
-```
-The _putIfAbsent_, _putIfPresent_ and _merge_ methods follow the principle ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) Instead
-of checking if an element is present or not and call the put method, you can use these methods:
-```
-JsObj a = JsObj.empty().putIfPresent("a",1);
-Assertions.assertEquals(JsObj.empty(), a);
-
-JsObj b = JsObj.empty().putIfAbsent("a",1);
-Assertions.assertEquals(OptionalInt.of(1), 
-                        b.get("a")
-                        );
-//nothing is inserted                        
-JsObj c = b.putIfAbsent("a",2);
-Assertions.assertEquals(b,c)
-
-// it's possible to be lazy and not produce the element if it's not going to be inserted, just using a supplier:
-JsObj d = b.putIfAbsent("a", ()-> computed value);
-JsObj e = b.putIfPresent("a", ()-> computed value);
-
-//if no element exists, the default element is inserted
-JsInt defaultElem = JsInt.of(1);
-// in the function, d stands for the default element and e stands for the existing one
-Function<? super JsElem, ? extends JsElem> fn = (d,e)-> if(e.isInt()) e.asJsInt().plus(d.asJsInt()) else d;
-
-// no element exists at "a" -> defaultElement is inserted
-JsObj f = JsObj.empty().merge("a",
-                              defaultElem,                                   
-                              fn
-                              ); 
-Assertions.assertEquals(JsInt.of(1), f.get("a"));
-// the function is invoked and the default element is added to existing one: 1 + 1
-JsObj g = f.merge("a",
-                  defaultElem,                                   
-                  fn
-                  ); 
-Assertions.assertEquals(JsInt.of(2), f.get("a"));                     
-```
-To insert elements at the front of an array exist the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
-To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
-The same considerations above applies for all of them.
 #### 6- Equality. 
 The following objects
 ```
