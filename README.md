@@ -1,17 +1,17 @@
 #### INTRODUCTION
 Welcome to **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
-from _Scala_. _Java_ doesn't implement _persistent data structures_ natively, nevertheless, Scala does and 
+from _Scala_. _Java_ doesn't implement _persistent data structures_ natively; nevertheless, Scala does and 
 runs on the _JVM_; therefore, you can go from Java to Scala smoothly and without any impact on the performance. 
 
 I'm a big fan of [Clojure](https://clojure.org) among other functional languages, and with due respect to the
 apparent differences, **json-values** follows its philosophy: 
 
-* **immutability over mutability**. If you still have doubts about why, you should take 
+* **Immutability over mutability**. If you still have doubts about why, you should take 
 a look at one of my favorite talks ever, [_The value of values_](https://www.youtube.com/watch?v=-6BsiVyC1kM) 
 from **Rich Hickey**. **json-values** is _functional_ because you can take advantage of immutable data structures to represent a Json.
 
 * **Data over abstraction**. The API is declarative and data-centric. You only need values and functions to 
-manipulate them and not fancy abstractions, long enterprise names, setters or complex DSLs.[Narcissistic Design](https://www.youtube.com/watch?v=LEZv-kQUSi4) from **Stuart Halloway** is a 
+manipulate them and not fancy abstractions, long enterprise names, setters, or complex DSLs. [Narcissistic Design](https://www.youtube.com/watch?v=LEZv-kQUSi4) from **Stuart Halloway** is a 
 great talk that elaborates on this point.
 
 * _It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures_. —Alan Perlis. 
@@ -23,12 +23,12 @@ calls are turned into iterative loops by Trampolines. The API exposes a well-kno
 Trampoline in case you want to do some _head and tail_ programming, and you should! Because, first, it's 
 fun and second and more important, it makes the code more declarative, concise, and easy to reason about.
  My experience says that the more difficult the task is, the more benefit you'll get using this approach; 
- however, sometimes a simple loop is simpler and more transparent.
+ however, sometimes a simple loop is more straightforward and more transparent.
  
 #### REQUIREMENTS
 * Java 8 or greater.
 
-#### INSTALATION
+#### INSTALLATION
 Add the following dependency to your building tool:
 ```
 <dependency>
@@ -48,7 +48,7 @@ Before getting started, remember the great quote from **Venkat Subramaniam**:
 _By nature, we're wired to mistake familiar as simple and the unfamiliar as complex_.
 #### 0.1 - JsPath
 A JsPath represents a string syntax for identifying a specific value within a JSON. It's similar to the Json Pointer specification
-defined in [rfc6901](https://tools.ietf.org/html/rfc6901), but I'd argue it's more readable. 
+defined in [rfc6901](https://tools.ietf.org/html/rfc6901), but I'd argue that **json-values** implementation it's more readable. 
 There are two ways of creating paths:
 * From a path-like string using the method _JsPath.of(...)_. A path is made up of keys and indexes 
 separated by dots. Keys are URL-encoded to escape special characters; therefore, 
@@ -116,11 +116,11 @@ Every element in a Json is a _JsElem_. There is one for each json value describe
     * _JsDouble_
     * _JsBigInt_
     * _JsBigDec_
-* The singleton _JsNothing.NOTHING_ represents nothing. It's not part on any specification. It's a convenient type
+* The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
 that makes certain functions that return a JsElem total on their arguments. For example, the function _JsElem get(JsPath)_ is total
 because returns a JsElem for every JsPath. If there is no element located at a path, it returns _NOTHING_.
-In other functions like _Json putIfPresent(Function<JsElem,JsElem>)_, this type comes in handy as well because it's
-possible, just returning _JsNothing.NOTHING_ , not to insert anything even if an element is present. 
+In other functions like _Json putIfPresent(Function<JsElem, JsElem>)_, this type comes in handy as well because it's
+possible, just returning _JsNothing.NOTHING_, not to insert anything even if an element is present. 
 #### 0.3 - JsPair
 Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an 
 element of a _Json_ and the position where it's located at:
@@ -247,8 +247,7 @@ Assert.assertEquals(empty, f);
 ```
 #### 2- Putting data in and getting data out. 
 To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
-has several overloaded methods that allows the client to work directly with the primitive types, avoiding any kind
-of conversion. 
+has several overloaded methods that allow the client to work directly with the primitive types, avoiding any conversion. 
 ```
 {
 "a": { "b": [ { "c": 1,
@@ -293,7 +292,7 @@ Assertions.assertEquals(OptionalInt.empty(),
 ```
 ##### 2-1 Obtaining json elements.
 Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element.
-The _get_ by path method returns a JsElem, and has the attractive property that is total. What does it mean? Well, it means that it returns a JsElem
+The _get_ by path method returns a _JsElem_ and has the attractive property that is total. What does it mean? Well, it means that it returns a JsElem
 for every possible path passed in. Functional programmers strive for total functions. As I mentioned above, it's possible thanks to the _JsNothing_ type.
 ```
 Assertions.assertEquals(JsNull.NULL, 
@@ -345,9 +344,9 @@ Assertions.assertEquals(JsArray.of(JsStr.of("a"),
 The point here is being honest. The string "c" has been inserted at the forth position of the array, and for that to happen, filling with null
 the third position is necessary.  
 ##### 2-4 Being idiomatic: tell, don't ask.
-An attractive principle in OOP is the known as ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) It leads to more declarative
-APIs. The _putIfAbsent_, _putIfPresent_ and _merge_ methods follow that principle. The point is, instead of checking if an element is present or 
-not and call the put method in consequence, you can do the same thing, in just one call:
+An attractive principle in OOP is known as ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) It leads to more declarative
+APIs. The _putIfAbsent_, _putIfPresent_, and _merge_ methods follow that principle. The point is, instead of checking if an element is present 
+or not and, in consequence, to call or not the put method, you can do the same thing in just one call:
 ```
 JsObj a = JsObj.empty().putIfPresent("a",1);
 Assertions.assertEquals(JsObj.empty(), a);
@@ -390,13 +389,13 @@ JsObj e = b.putIfPresent("a", ()-> computed value);
 
 To insert elements at the front of an array exist the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
 To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
-The same considerations above applies for all of them.               
+The same considerations above apply for all of them.               
 #### 3- Streams and Collectors.
-After Java 8 was released, I can't imagine a data structure in Java without providing a stream and collector operations. They open the door
+After Oracle released Java 8, I can't imagine a data structure in Java without providing a stream and collector operations. They open the door
 to manipulate data in a very functional way.
-A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following set
+A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following set:
 ````
-{(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  wher _ means any other path
+{(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  where _ means any other path
 ````
 represents
 ```text
@@ -498,7 +497,7 @@ Assert.assertEquals(y,
 
 ```
 
-#### 4- Filter, map and reduce.
+#### 4- Filter, map, and reduce.
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
 carefully in different ways taking into account the structure of a Json.
 As was mentioned before, methods which name ends with an underscore, are applied recursively and not only to the first level of the json.
@@ -555,7 +554,7 @@ The map functions have been designed in such a way that they don't change the st
            
 
 ##### 4.3- Reduce
-_reduce_ functions are a classic map-reduce over the elements **which are not containers** and which pairs satisfy a predicate.
+Reduce methods are a classic map-reduce over the elements **which are not containers** and which pairs satisfy a predicate.
  The map function takes as a parameter a pair and returns an element that is reduced by an operator.
 ```
 <R> Optional<R> reduce(BinaryOperator<R> op,
@@ -616,7 +615,7 @@ satisfy the property _x.equals(y) => x.hashCode == y.hashCode()_
 
 Both objects represent the same json, so they are equals, and therefore, they have the same hashcode.
 It doesn't matter that different primitive types and wrappers have been used to create them. That's a detail
-of the Java language and **json-values** is data-centric.
+of the Java language, and **json-values** is data-centric.
 
 There is a method to test if two objects are equals considering arrays sets or multisets.
 ```
@@ -674,13 +673,13 @@ Different compiler plug-ins to find bugs at _compile time_ have been used:
 * [The Checker Framework Compiler](https://checkerframework.org), which found some NullPointerException.
 * [Google error-prone](https://errorprone.info), which found a bug related to [BigDecimalEquals](https://errorprone.info/bugpattern/BigDecimalEquals)
 
-Part of the testing has been carried out using [Scala Check](https://www.scalacheck.org/) and Property Based Testing. 
+Part of the testing has been carried out using [Scala Check](https://www.scalacheck.org/) and Property-Based Testing. 
 I developed a json generator for this purpose.
 
 #### 11- Release plan
 to be documented
 
-Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com
+Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com.
 
  
 
