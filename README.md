@@ -54,8 +54,9 @@ There are two ways of creating paths:
 separated by dots. Keys are URL-encoded to escape special characters; therefore, 
 they could be part of an URL. When keys are numbers, they have to be single-quoted, 
 to distinguish them from indexes.
-* Using the _key_ and _index_ methods from the _JsPath_ class API. This way is less readable and less concise. On the other hand,  it's more efficient because no string is parsed and sometimes more convenient because keys don't need to to be URL-encoded. I recommend using the path-like string approach at first and only
-to change to the API way during optimization and if it's justified.
+* Using the  _fromKey_, _fromIndex_, _key_ and _index_ methods from the _JsPath_ class API. In this case, keys don't need
+to be URL-encoded and no string is parsed.
+
 ```
 { 
 "a": [ {"b": [1,2,3]} ],
@@ -68,39 +69,39 @@ to change to the API way during optimization and if it's justified.
 
 // 1
 JsPath.of("a.0.b.0")                                
-JsPath.empty().key("a").index(0).key("b").index(0)
+JsPath.fromKey("a").index(0).key("b").index(0)
 
 // 2
 JsPath.of("a.0.b.1")                                
-JsPath.empty().key("a").index(0).key("b").index(1) 
+JsPath.fromKey("a").index(0).key("b").index(1) 
 
 // 3
 JsPath.of("a.0.b.2")                                
-JsPath.empty().key("a").index(0).key("b").index(2)  
+JsPath.fromKey("a").index(0).key("b").index(2)  
 // the index -1 points to the last element of the array (3 in this case)
 JsPath.of("a.0.b.-1")                               
-JsPath.empty().key("a").index(0).key("b").index(-1) 
+JsPath.fromKey("a").index(0).key("b").index(-1) 
 
 // "z"
 JsPath.of("+")                                       
-JsPath.empty().key(" ")                            
+JsPath.fromKey(" ")                            
 JsPath.of("%20")   
                                  
 // false
 JsPath.of("'1'.0")                                  
-JsPath.empty().key("1").index(0)  
+JsPath.fromKey("1").index(0)  
                   
 // true
 JsPath.of("'1'.1")                                 
-JsPath.empty().key("1").index(1)
+JsPath.fromKey("1").index(1)
 
 // null
 JsPath.of("%27")                                  
-JsPath.empty().key("'")          
+JsPath.fromKey("'")          
                    
 // 1.2, empty string is a valid key!
 JsPath.of("")                                      
-JsPath.empty().key("")
+JsPath.fromKey("")
 ```
 All the methods that accept a JsPath are overloaded so that a path-like string can be passed in instead.
 #### 0.2 - JsElem
@@ -117,16 +118,15 @@ Every element in a Json is a _JsElem_. There is one for each json value describe
     * _JsBigInt_
     * _JsBigDec_
 * The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
-that makes certain functions that return a JsElem total on their arguments. For example, the function _JsElem get(JsPath)_ is total
-because returns a JsElem for every JsPath. If there is no element located at a path, it returns _NOTHING_.
-In other functions like _Json putIfPresent(Function<JsElem, JsElem>)_, this type comes in handy as well because it's
-possible, just returning _JsNothing.NOTHING_, not to insert anything even if an element is present. 
+that makes certain functions that return a JsElem total on their arguments. For example, the function
+ _JsElem get(JsPath)_ is total because returns a JsElem for every JsPath. If there is no element located at the specified
+  path, it returns _NOTHING_. In other functions like _Json putIfPresent(Function<JsElem, JsElem>)_, this type comes in handy 
+ as well because it's possible, just returning _JsNothing.NOTHING_, not to insert anything even if an element is present. 
 #### 0.3 - JsPair
-Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an 
-element of a _Json_ and the position where it's located at:
+Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an element of a _Json_ and the position 
+where it's located at:
 
 JsPair = (JsPath, JsElem)
-
 #### 1- How to create a Json?
 **json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
@@ -146,7 +146,6 @@ JsObj x = JsObj.of("a", JsInt.of(1),
                    "c", JsNull.NULL, 
                    "d", JsStr.of("hi")
                    );
-// empty immutable instance is a singleton
 JsObj empty = JsObj.empty();                    
 JsObj y = empty.put("a", 1)
                .put("b", true)
@@ -193,7 +192,7 @@ Assert.assertEquals(w, z);
 ```
 // from varargs of ints
 JsArray a = JsArray.of(1,2,3);  
- // from varargs of strings
+// from varargs of strings
 JsArray b = JsArray.of("a","b","c");
 // from varargs of JsElem
 JsArray c = JsArray.of(JsBool.TRUE, 
@@ -330,7 +329,7 @@ Assertions.assertEquals(true, d.getBool("0.a.0").get() );
 
 
 ```
-The more natural way of adding data to arrays is with the methods append and prepend, however, when inserting data in arrays at certain positions, filling with null may be necessary:
+The more natural way of adding data to arrays is with the methods _append_ and _prepend_, however, when inserting data in arrays at certain positions, filling with null may be necessary:
 ```
 JsArray e = c.put("0.b.3","c");
 Assertions.assertEquals(JsArray.of(JsStr.of("a"),
@@ -351,6 +350,7 @@ or not and, in consequence, to call or not the put method, you can do the same t
 JsObj a = JsObj.empty().putIfPresent("a",1);
 Assertions.assertEquals(JsObj.empty(), a);
 
+
 JsObj b = JsObj.empty().putIfAbsent("a",1);
 Assertions.assertEquals(JsInt.of(1), 
                         b.get("a")
@@ -370,7 +370,7 @@ JsObj f = JsObj.empty().merge("a",
                               fn
                               ); 
 Assertions.assertEquals(JsInt.of(1), f.get("a"));
-// an element exists at "a" -> the function is invoked and the default element is added to existing one: 1 + 1
+// an element exists at "a" -> the function is invoked 
 JsObj g = f.merge("a",
                   defaultElem,                                   
                   fn
@@ -380,24 +380,26 @@ Assertions.assertEquals(JsInt.of(2),
                         );                     
 ```
 ##### 2-5 Being lazy.
+It's possible to be lazy and not produce any element if it's not going to be inserted, just passing a supplier:
 
-// it's possible to be lazy and not produce the element if it's not going to be inserted, just using a supplier:
 JsObj d = b.putIfAbsent("a", ()-> computed value);
+
 JsObj e = b.putIfPresent("a", ()-> computed value);
 
 ##### 2-5 Adding data to arrays.
 
-To insert elements at the front of an array exist the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
-To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
+To insert elements at the front of an array, it exists the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
+To insert elements at the back of an array, it exists the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
 The same considerations above apply for all of them.               
 #### 3- Streams and Collectors.
-After Oracle released Java 8, I can't imagine a data structure in Java without providing a stream and collector operations. They open the door
+After Oracle released Java 8, I can't imagine a data structure in Java without providing the stream and collector operations. They open the door
 to manipulate data in a very functional way.
+
 A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following set:
 ````
 {(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  where _ means any other path
 ````
-represents
+represents the json
 ```text
 {
     "a":1,
@@ -418,8 +420,8 @@ JsObj x = JsObj.of("a", JsArray.of(1,2,3),
                    "b", JsObj.of("c",JsInt.of(4),
                                  "d",JsStr.of("hi")
                                 )
-                   )
-x.stream().forEach(System.out::println)
+                   );
+x.stream().forEach(System.out::println);
 ```
 prints out the following sequence of two pairs:
 ```text
@@ -429,7 +431,7 @@ prints out the following sequence of two pairs:
 By convention, every method that ends with an underscore is applied recursively to every element that is a Json.
 Taking that into account:
 ```
-x.stream_().forEach(System.out::println)
+x.stream_().forEach(System.out::println);
 ```
 prints out the following sequence of five pairs:
 ```text
@@ -446,8 +448,8 @@ JsArray y = JsArray.of(JsArray.of(1,2),
                        JsObj.of("c","blue", 
                                 "d", "pink"
                                )
-                       )
-y.stream().forEach(System.out::println)
+                       );
+y.stream().forEach(System.out::println);
 ```
 prints out the following sequence of three pairs:
 ```text
@@ -500,7 +502,9 @@ Assert.assertEquals(y,
 #### 4- Filter, map, and reduce.
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
 carefully in different ways taking into account the structure of a Json.
-As was mentioned before, methods which name ends with an underscore, are applied recursively and not only to the first level of the json.
+
+Functions which name ends with an underscore, are applied recursively to every element and not only to the first level of the json. This is
+a naming convention in the API. As was mentioned before, names with symbols (except _ and $) are not valid in Java.
 ##### 4.1- Filter
 _filterKeys_ methods remove the keys from a JsObj which pairs satisfy a predicate: 
 ```
@@ -551,8 +555,7 @@ Json mapObjs_(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
 ``` 
 
 The map functions have been designed in such a way that they don't change the structure of the json, which reminds of _functors_, a concept that it may be familiar if you know _Haskell_.
-           
-
+        
 ##### 4.3- Reduce
 Reduce methods are a classic map-reduce over the elements **which are not containers** and which pairs satisfy a predicate.
  The map function takes as a parameter a pair and returns an element that is reduced by an operator.
@@ -567,34 +570,96 @@ Reduce methods are a classic map-reduce over the elements **which are not contai
                         Predicate<? super JsPair> predicate
                        );        
 ```
-#### 5- Union and intersection. 
-Both operations can be applied to the first level of the jsons
-```
-JsObj union(final JsObj that);
-JsObj intersection(final JsObj that,
-                   final TYPE ARRAY_AS
-                  );
-JsArray union(final JsArray that,
-              final TYPE ARRAY_AS
-             );    
-```
-or to the whole structure recursively
-```              
-JsObj union_(final JsObj that,
-             final TYPE ARRAY_AS
-            );
-JsObj intersection_(final JsObj that,
-                    final TYPE ARRAY_AS
-                   );               
-JsArray union_(final JsArray that);
-JsArray intersection_(final JsArray that);
-JsArray intersection_(final JsArray that);
-```             
-Arrays can be considered lists (ordered and with duplicates), sets(not ordered and without duplicated)
-alternatively, multisets (not ordered and with duplicates) using the parameter _ARRAY_AS_.
+#### 5- Union and intersection.
+Considering jsons set of pairs, it seems reasonable to implement set-theory operations like union and intersection.
+For certain operations, arrays can be considered sets, multisets or lists. For certain operations, arrays can be 
+considered sets, multisets or lists. In sets, the order of data items does not matter (or is undefined) but 
+duplicate data items are not permitted. In lists, the order of data matters and duplicate data items are permitted. 
+In multisets, the order of data items does not matter, but in this case, duplicate data items are permitted. 
 
-#### 5.1- Examples.
-to be documented.
+##### 5.1- Union 
+```   
+JsObj union(JsObj that);
+JsObj union_(JsObj that,
+             TYPE ARRAY_AS
+            );
+```     
+```
+a= {"a":1, "c": [{ "d":1 }] }
+b= {"b":2, "c": [{ "e":2 }] }
+c= {"a":1, "b":2, c": [{ "d":1 }, { "e":2 }] }
+d= {"a":1, "b":2, c": [{ "d":1, "e":2 }] }
+e= {"a":1, "b":2, c": [{ "d":1 }] }
+
+c = a.union_(b,SET)
+d = a.union_(b,LIST)
+e = a.union(b)
+
+f= {"a": [1, 2, {"b": {"b":1} } ] }  
+g= {"a": [3, [4,5], 6, 7], "b": [1, 2] }  
+h= {"a": [1, 2, {"b": {"b":1} }, 3, [4,5], 6, 7], "b":[1,2]}  
+i = {"a": [1, 2, {"b": {"b":1} }, 7], "b":[1,2]} 
+j = {"a": [1, 2, {"b": {"b":1} }], "b":[1,2]} 
+
+h = f.union_(g, SET)
+h = f.union_(g, MULTISET)
+i = f.union_(g, LIST)
+j = f.union(g)
+```
+  
+```            
+JsArray union(JsArray that,
+              TYPE ARRAY_AS
+             );    
+ 
+//arrays as list because op is recursive (to be recursive in an array requires order) 
+JsArray union_(JsArray that);
+```
+```
+a= [1, 2]
+b= [3, [4, 5] , 6]
+c= [1, 2, 3, [4, 5], 6]
+d= [1, 2, 6]
+e= [1, 2, 3, [4, 5], 6, 1, 2, 6]
+
+d= a.union(b,LIST)
+c= a.union(b,SET)
+c= c.union(d,SET)
+e= c.union(d,MULTISET)
+
+```
+##### 5.2- Intersection 
+
+```            
+JsObj intersection(JsObj that,
+                   TYPE ARRAY_AS
+                  );  
+JsObj intersection_(JsObj that,
+                    TYPE ARRAY_AS
+                   );               
+``` 
+``` 
+a = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1,2]}, {"b":2}, {"c":3}] } }
+b = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1]  }, {"b":2}] } }
+c = { "b": {"a":1, "b":2, "c": [{"b":2}] } }
+
+//the json object associated to the key "b", are different
+a.intersection(b,LIST) == JsObj.empty()
+a.intersection(b,SET) == JsObj.empty()
+a.intersection(b,MULTISET) == JsObj.empty()
+
+//the intersection is applied recursively between the json objects associated to the key "b"
+a.intersection_(b,LIST) == b
+a.intersection_(b,SET) == c
+a.intersection_(b,MULTISET) == c
+``` 
+
+```   
+JsArray intersection(JsArray that,
+                     TYPE ARRAY_AS);
+JsArray intersection_(JsArray that);
+```             
+
 
 #### 6- Equality. 
 The following objects
@@ -675,9 +740,6 @@ Different compiler plug-ins to find bugs at _compile time_ have been used:
 
 Part of the testing has been carried out using [Scala Check](https://www.scalacheck.org/) and Property-Based Testing. 
 I developed a json generator for this purpose.
-
-#### 11- Release plan
-to be documented
 
 Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com.
 

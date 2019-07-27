@@ -322,6 +322,23 @@ public final class JsPath implements Comparable<JsPath>
         return positions.length();
     }
 
+    /**
+     returns a path from a key
+     @param key the name of the key
+     @return a new JsPath
+     */
+    public static  JsPath fromKey(final String key){
+        return EMPTY.key(requireNonNull(key));
+    }
+
+    /**
+     returns a path from an index
+     @param i the index
+     @return a new JsPath
+     */
+    public static  JsPath fromIndex(final int i){
+        return EMPTY.index(i);
+    }
 
     public static JsPath of(final String path)
     {

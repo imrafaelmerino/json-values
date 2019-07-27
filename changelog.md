@@ -7,3 +7,4 @@
 - Implementation change in _prepend_ methods: don't use appendAll method internally, which avoid to allocate an array when it's not necessary.
 - Change signature of methods _appendAllIfPresent_ and _prependAllIfPresent_: supplier instead of function
 - Added plus, minus and times methods in JsInt, JsLong and JsDouble
+- Added fromKey and fromIndex static factory methods in JsPath
