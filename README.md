@@ -392,13 +392,28 @@ To insert elements at the front of an array exist the methods _prepend_, _prepen
 To insert elements at the back of an array exist the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
 The same considerations above applies for all of them.               
 #### 3- Streams and Collectors.
-A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. bla bla bla
-
+After Java 8 was released, I can't imagine a data structure in Java without providing a stream and collector operations. They open the door
+to manipulate data in a very functional way.
+A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following set
+````
+{(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  wher _ means any other path
+````
+represents
+```text
+{
+    "a":1,
+    "b":2,
+    "c":{
+        "d": "a"
+        "e": [1,2]
+        }
+}
+```
+On the other hand, to implement a collector in Java, a mutable data structure to accumulate the data in, is required. It's the real reason that
+there is a mutable implementation in **json-values**. At first, I had no intention of providing one, but sometimes you have to give in and be coherent with the
+language you are programming in. 
 ##### 3.1 Streams.
-##### 3.2 Object collectors.
-##### 3.3 Array collectors.
-
-Stream methods returns sequences of JsPairs:
+Stream methods return sequences of JsPairs on-demand:
 ```
 JsObj x = JsObj.of("a", JsArray.of(1,2,3),
                    "b", JsObj.of("c",JsInt.of(4),
@@ -425,27 +440,15 @@ prints out the following sequence of five pairs:
 ("b.c", 4)
 ("b.d", "hi")
 ```
-You can get the stream back into a json object by a collector:
-```
-// the collector JsObj.collector() returns an immutable json object
-JsObj a = x.stream_().collector(JsObj.collector());
-Assert.assertEquals(x,a);
-
-// the collector JsObj._collector_() returns a mutable json object
-JsObj b = x.stream_().collector(JsObj._collector_());
-Assert.assertEquals(x,b);
-
-```
-
 For arrays, it's just the same:
 ```
-JsArray x = JsArray.of(JsArray.of(1,2), 
+JsArray y = JsArray.of(JsArray.of(1,2), 
                        JsStr.of("red"), 
                        JsObj.of("c","blue", 
                                 "d", "pink"
                                )
                        )
-x.stream().forEach(System.out::println)
+y.stream().forEach(System.out::println)
 ```
 prints out the following sequence of three pairs:
 ```text
@@ -455,7 +458,7 @@ prints out the following sequence of three pairs:
 ```
 and
 ```
-x.stream_().forEach(System.out::println)
+y.stream_().forEach(System.out::println)
 ```
 prints out the following sequence of five pairs:
 ```text
@@ -465,16 +468,36 @@ prints out the following sequence of five pairs:
 ("2.c", "blue")
 ("2.d", "pink")
 ```
-You can get the stream back into a json array by a collector:
+##### 3.2 Object collectors.
+You can get the stream back into an immutable json object by the collector _JsObj.collector()_:
 ```
-// the collector JsArray.collector() returns an immutable json array
-JsObj a = x.stream_().collector(JsArray.collector());
-Assert.assertEquals(x,a);
+Assert.assertEquals(x,
+                    x.stream_().collector(JsObj.collector())
+                    );
+```
+or into a mutable json object by the collector _JsObj.\_collector\_()_:
+```
+Assert.assertEquals(x,
+                    x.stream_().collector(JsObj._collector_())
+                    );
+```
+##### 3.3 Array collectors.
 
-// the collector JsArray._collector_() returns a mutable json array
-JsObj b = x.stream_().collector(JsArray._collector_());
-Assert.assertEquals(x,b);
+You can get the stream back into an immutable json array by the collector _JsArray.collector()_:
 ```
+Assert.assertEquals(y,
+                    y.stream_().collector(JsArray.collector())
+                    );
+
+```
+or into a mutable json array by the collector _JsArray.\_collector\_()_:
+```
+Assert.assertEquals(y,
+                    y.stream_().collector(JsArray._collector_())
+                    );
+
+```
+
 #### 4- Filter, map and reduce.
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
 carefully in different ways taking into account the structure of a Json.
