@@ -42,7 +42,6 @@ You can play around with the library using the java _REPL_ (>= Java 9) just typi
 ```
 jshell --class-path ${PATH_TO_JAR}/json-values-X.Y.Z.jar
 ```
-
 Before getting started, remember the great quote from **Venkat Subramaniam**:
 
 _By nature, we're wired to mistake familiar as simple and the unfamiliar as complex_.
@@ -61,47 +60,35 @@ to be URL-encoded and no string is parsed.
 { 
 "a": [ {"b": [1,2,3]} ],
 " ": "z",
-".": "dot",
+"c.d": 4,
 "1": [false, true]
 "'": null,
 "": 1.2
 }
+JsPath.of("a.0.b.0") or JsPath.fromKey("a").index(0).key("b").index(0) -> 1
+                             
+JsPath.of("a.0.b.1") or JsPath.fromKey("a").index(0).key("b").index(1) -> 2
 
-// 1
-JsPath.of("a.0.b.0")                                
-JsPath.fromKey("a").index(0).key("b").index(0)
+JsPath.of("a.0.b.2") or JsPath.fromKey("a").index(0).key("b").index(2) -> 3 
+                               
+// the index -1 points to the last element of the array 
+JsPath.of("a.0.b.-1") or JsPath.fromKey("a").index(0).key("b").index(-1) -> 3
 
-// 2
-JsPath.of("a.0.b.1")                                
-JsPath.fromKey("a").index(0).key("b").index(1) 
+// whitespace is urlencoded to + or %20 (both are valid)
+JsPath.of("+") or JsPath.of("%20") or JsPath.fromKey(" ") -> z  
 
-// 3
-JsPath.of("a.0.b.2")                                
-JsPath.fromKey("a").index(0).key("b").index(2)  
-// the index -1 points to the last element of the array (3 in this case)
-JsPath.of("a.0.b.-1")                               
-JsPath.fromKey("a").index(0).key("b").index(-1) 
+// dot has to be escaped using of method
+JsPath.of("c%2Ed") or JsPath.fromKey("c.d") -> z                           
+    
+// notice how the key is single-qouted in _of_ method
+JsPath.of("'1'.0") or JsPath.fromKey("1").index(0) -> false
+JsPath.of("'1'.1") or JsPath.fromKey("1").index(1) -> true
 
-// "z"
-JsPath.of("+")                                       
-JsPath.fromKey(" ")                            
-JsPath.of("%20")   
-                                 
-// false
-JsPath.of("'1'.0")                                  
-JsPath.fromKey("1").index(0)  
-                  
-// true
-JsPath.of("'1'.1")                                 
-JsPath.fromKey("1").index(1)
-
-// null
-JsPath.of("%27")                                  
-JsPath.fromKey("'")          
-                   
-// 1.2, empty string is a valid key!
-JsPath.of("")                                      
-JsPath.fromKey("")
+// single quote is urlencoded to %27
+JsPath.of("%27") or JsPath.fromKey("'") -> null                              
+        
+// empty string is a valid key!
+JsPath.of("") or JsPath.fromKey("") -> 1.2
 ```
 All the methods that accept a JsPath are overloaded so that a path-like string can be passed in instead.
 #### 0.2 - JsElem
@@ -750,7 +737,7 @@ JsArray intersection_(JsArray that);
 #### 6- Equality. 
 The correctness of equals and hashcode methods are crucial for every Java application. As was mentioned before, **json-values**
 is data-centric, which means basically that the number one is the number one, and forgive the repetition. No matter if it's placed in a int, 
-a long or even a bigdecimal. According to that, the following objects:
+a long or even a BigDecimal. According to that, the following objects:
 ```
 JsObj x = JsObj.of("a", JsInt.of(1),
                    "b", JsLong.of(100)
