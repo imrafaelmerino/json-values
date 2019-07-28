@@ -114,6 +114,7 @@ Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents 
 where it's located at:
 
 JsPair = (JsPath, JsElem)
+
 To create pairs, there are different overloaded static factory methods:
 ```
 JsPair of(String path, int elem)
@@ -152,26 +153,20 @@ I prefer to use an exclamation as Ruby does, but I can't.
 #### 1.1- Creation of immutable json objects.
 ```
 // from keys and associated elements
-JsObj x = JsObj.of("a", JsInt.of(1), 
-                   "b", JsBool.TRUE, 
-                   "c", JsNull.NULL, 
-                   "d", JsStr.of("hi")
-                   );
-JsObj empty = JsObj.empty();                    
-JsObj y = empty.put("a", 1)
-               .put("b", true)
-               .put("c", null)
-               .put("d", "hi");
-Assert.assertEquals(x, y);   
-// empty will never change
-Assert.assertNotEquals(empty, y);  
+JsObj.of("a", JsInt.of(1), 
+         "b", JsBool.TRUE, 
+         "c", JsNull.NULL, 
+         "d", JsStr.of("hi")
+         );
 
 // from varargs of json pairs
-JsObj w = JsObj.of( JsPair.of("a.b.0", 1 ),
-                    JsPair.of("a.b.1", 2 )
-                  );             
+JsObj w = JsObj.of( JsPair.of("a.b.0", 1),
+                    JsPair.of("a.b.1", 2)
+                  );    
+                           
 //parsing a string, which returns a TryObj computation that may fail                       
 JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+
 Assert.assertEquals(w, z);   
  ```
 #### 1.2- Creation of mutable json objects.
@@ -182,29 +177,25 @@ JsObj x = JsObj._of_("a", JsInt.of(1),
                      "c", JsNull.NULL, 
                      "d", JsStr.of("hi")
                     );  
-JsObj empty = JsObj._empty_();               
-JsObj y = empty.put("a",1)
-               .put("b",true)
-               .put("c",null)
-               .put("d","hi");         
-Assert.assertEquals(x, y);   
-// something called _empty_ it's not empty anymore! 
-Assert.assertEquals(empty, y);  
-  
+
 // from vargs of json pairs
 JsObj w = JsObj._of_( JsPair.of("a.b.0", 1),
                       JsPair.of("a.b.1", 2)
-                    );            
+                    );    
+                            
 // parsing a string, which returns a TryObj computation that may fail                  
 JsObj z = JsObj._parse_("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+
 Assert.assertEquals(w, z);   
 ```
 #### 1.3- Creation of immutable json arrays.
 ```
 // from varargs of ints
 JsArray a = JsArray.of(1,2,3);  
+
 // from varargs of strings
 JsArray b = JsArray.of("a","b","c");
+
 // from varargs of JsElem
 JsArray c = JsArray.of(JsBool.TRUE, 
                        JsStr.of("a"), 
@@ -213,26 +204,22 @@ JsArray c = JsArray.of(JsBool.TRUE,
                        );
                        
 //from varargs of json pairs
-JsArray d = JsArray.of(JsPair.of("0.a.b.0", "a"),
-                       JsPair.of("0.a.b.1", "b")
+JsArray d = JsArray.of(JsPair.of("0.a.b.0", 1),
+                       JsPair.of("0.a.b.1", 2)
                        );
 //parsing a string, which returns a TryArr computation that may fail                      
 JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
-Assert.assertEquals(d, e);  
 
-JsArray empty = JsArray.empty();
-JsArray f = empty.append(1)  
-                 .append(2)           
-                 .prepend(0);   
-// empty will never change  
-Assert.assertNotEquals(empty, f);     
+Assert.assertEquals(d, e);  
 ```               
 #### 1.4- Creation of mutable json arrays.
 ```
 // from varargs of ints
 JsArray a = JsArray._of_(1,2,3);  
+
 // from varargs of strings
 JsArray b = JsArray._of_("a","b","c"); 
+
 // from varargs of JsElem
 JsArray c = JsArray._of_(JsBool.TRUE, 
                          JsStr.of("a"), 
@@ -241,19 +228,13 @@ JsArray c = JsArray._of_(JsBool.TRUE,
                          );
 
 // from varargs of json pairs
-JsArray d = JsArray._of_(JsPair.of("0.a.b.0", "a"),
-                         JsPair.of("0.a.b.1", "b")
+JsArray d = JsArray._of_(JsPair.of("0.a.b.0", 1),
+                         JsPair.of("0.a.b.1", 2)
                          );
 // parsing a string, which returns a TryArr computation that may fail                        
 JsArray e =  JsArray._parse_("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
-Assert.assertEquals(d, e);  
 
-JsArray empty = JsArray._empty_();
-JsArray f = empty.append(1)  
-                 .append(2)           
-                 .prepend(0);   
-// empty is not empty!, it's [0,1,2] 
-Assert.assertEquals(empty, f);   
+Assert.assertEquals(d, e);  
 ```
 #### 2- Putting data in and getting data out. 
 To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
@@ -281,15 +262,6 @@ Assertions.assertEquals(OptionalInt.of(2),
 Assertions.assertEquals(Optional.of("a"), 
                         json.getStr("a.b.0.e.0")
                         );
-Assertions.assertEquals(Optional.of(JsArray.of(1,2)), 
-                        json.getArr("e.0")
-                        );
-Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
-                                             "d",JsArray.of(1,2),
-                                             "e",JsArray.of("a","b"))
-                                             )), 
-                        json.getObj("a.b.0")
-                        );
 Assertions.assertEquals(OptionalDouble.of(1.2), 
                         json.getDouble("e.-1")
                         );
@@ -300,8 +272,20 @@ Assertions.assertEquals(OptionalInt.empty(),
                         json.getInt("h")
                         );        
 ```
-##### 2-1 Obtaining json elements.
-Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element.
+##### 2-1 Obtaining JsElems.
+To obtains JsObj or JsArray wrapped into an optional:
+```
+Assertions.assertEquals(Optional.of(JsArray.of(1,2)), 
+                        json.getArr("e.0")
+                        );
+Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
+                                             "d",JsArray.of(1,2),
+                                             "e",JsArray.of("a","b"))
+                                             )), 
+                        json.getObj("a.b.0")
+                        );
+```
+Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element located at a path.
 The _get_ by path method returns a _JsElem_ and has the attractive property that is total, as it was mentioned above. Just as a reminder, it means that it returns a JsElem
 for every possible path. Functional programmers strive for total functions. It's possible thanks to the _JsNothing_ type.
 ```
@@ -353,7 +337,7 @@ Assertions.assertEquals(JsArray.of(JsStr.of("a"),
 ```
 The point here is being honest. The string "c" has been inserted at the forth position of the array, and for that to happen, filling with null
 the third position is necessary.  
-##### 2-4 Being idiomatic: tell, don't ask.
+##### 2-4 Being idiomatic: _tell, don't ask_ principle.
 An attractive principle in OOP is known as ["tell, don't ask."](https://pragprog.com/articles/tell-dont-ask) It leads to more declarative
 APIs. The _putIfAbsent_, _putIfPresent_, and _merge_ methods follow that principle. The point is, instead of checking if an element is present 
 or not and, in consequence, to call or not the put method, you can do the same thing in just one call:
@@ -373,7 +357,7 @@ Assertions.assertEquals(b,c)
 
 JsInt defaultElem = JsInt.of(1);
 // in the function, d stands for the default element and e stands for the existing one
-Function<? super JsElem, ? extends JsElem> fn = (d,e)-> if(e.isInt()) e.asJsInt().plus(d.asJsInt()) else d;
+BiFunction<? super JsElem, ? super JsElem, ? extends JsElem> fn = (d, e)-> e.isInt() ?  e.asJsInt().plus(d.asJsInt()) : d;
 
 // no element exists at "a" -> defaultElement is inserted
 JsObj f = JsObj.empty().merge("a",
@@ -421,8 +405,8 @@ represents the json
         }
 }
 ```
-On the other hand, to implement a collector in Java, a mutable data structure to accumulate the data in, is required. It's the real reason that
-there is a mutable implementation in **json-values**. At first, I had no intention of providing one, but sometimes you have to give in and be coherent with the
+On the other hand, to implement a collector in Java, a mutable data structure to accumulate the pairs in, is required. It's the real reason that
+there is a mutable implementation of a Json in **json-values**. At first, I had no intention of providing one, but sometimes you have to give in and be coherent with the
 language you are programming in. 
 ##### 3.1 Streams.
 Stream methods return sequences of JsPairs on-demand:
@@ -583,37 +567,31 @@ Reduce methods are a classic map-reduce over the elements **which are not contai
 ```
 #### 5- Union and intersection.
 Considering jsons Set of pairs, it seems reasonable to implement Set-Theory operations like union and intersection.
-For certain operations, arrays can be considered Sets, MultiSets or Lists. For certain operations, arrays can be 
-considered Sets, MultiSets or Lists. In Sets, the order of data items does not matter (or is undefined) but 
-duplicate data items are not permitted. In Lists, the order of data matters and duplicate data items are permitted. 
+For certain operations, arrays can be considered Sets, MultiSets or Lists. In Sets, the order of data items does not 
+matter (or is undefined) but duplicate data items are not permitted. In Lists, the order of data matters and duplicate data items are permitted. 
 In MultiSets, the order of data items does not matter, but in this case, duplicate data items are permitted. 
 
 ##### 5.1- Union 
 Given two json objects _a_ and _b_:
  
 *  _a.union(b)_ returns _a_ plus those pairs from _b_  which keys don't exist in _a_.
-Taking that into account, _a.union(b) != b.union(a)_ unless the elements associated to the keys that exist in both
+Taking that into account, it's not a commutative operation unless the elements associated to the keys that exist in both
 objects are equals.
-* a.union_(b,ARRAY_AS) behaves like the union above but, for those keys that exits in a and b, which associated elements
-are **containers of the same type**, the result is their union. In this case, as arrays can be found, we can specify
-if they are considered Sets, Lists or MultiSets.
+* a.union_(b, ARRAY_AS) behaves like the union above but, for those keys that exits in _a_ and _b_ which associated elements
+are **containers of the same type**, the result is their union. In this case, we can specify if arrays are considered Sets, Lists or MultiSets.
+
+Examples:
 ```
-a = { "k": json1}  
-b = { "k": json2}
+a = { "a": 1, "c": json1}  
+b = { "b": 2, "c": json2}
 // json1 and json2 are either objecs or arrays
-a.union_(b) = { k: json1.union_(json2) }
-b.union_(a) = { k: json2.union_(json1) }
+a.union_(b) = { "a": 1, "b":2, "c": json1.union_(json2) }
+b.union_(a) = { "a": 1, "b":2, "c": json2.union_(json1) }
 // notice de difference
-a.union(b) = a
-b.union(a) = b
+a.union(b) = { "a": 1,  "b":2, "c": json1} 
+b.union(a) = { "a": 1,  "b":2, "c": json2} 
 ```
 
-```   
-JsObj union(JsObj that);
-JsObj union_(JsObj that,
-             TYPE ARRAY_AS
-            );
-```     
 ```
 a= {"a":1, "c": [{ "d":1 }] }
 b= {"b":2, "c": [{ "e":2 }] }
@@ -638,29 +616,24 @@ j = f.union(g)
 ```
 
 Given two arrays _c_ and _d_:
-* _c.union(d, SET)_ returns _c_ plus those elements from _d_ that don't exist in a. This operation is commutative.
-* _c.union(d, MULTISET)_ returns _c_ plus all the elements from _d_ appended to the back. This operation is commutative.
-* _c.union(d, LIST)_ returns _c_ plus those elements from d which position >= c.size(). This operation is not commutative.
-* _c.union\_(d)_ returns _c_ plus those elements from _d_ which position >= c.size(), and, at the positions.
+* _c.union(d, SET)_ returns _c_ plus those elements from _d_ that don't exist in a.
+* _c.union(d, MULTISET)_ returns _c_ plus all the elements from _d_ appended to the back.
+* _c.union(d, LIST)_ returns _c_ plus those elements from d which position >= c.size().
+* _c.union\_(d)_ returns _c_ plus those elements from _d_ which position >= c.size(), and, at the positions
 where a container of the same type exists in _c_ and _d_, the result is their union. This operations doesn't make
 any sense if arrays are not considered Lists.
 
 Notice that _c.union(d, SET)_ and _c.union(d, MULTISET)_ are commutative.
-```
-c=[ 1, json1, 2]
-d=[ 1, json2, 3, 2]
-c.union(d,SET)=[1, json1, 2, json2, 3]
-c.union(d,MULTISET)=[1, json1, 2, 1, json2, 3, 2]
-c.union(d,LIST)=[1, json1, 2, 2]
-c.union_(d)=[1, json1.union_(json2), 2, 2]
-```
 
-```            
-JsArray union(JsArray that,
-              TYPE ARRAY_AS
-             );    
- 
-JsArray union_(JsArray that);
+Examples:
+```
+c= [ 1, json1, 2]
+d= [ 1, json2, 3, 2]
+
+c.union(d,SET) = [1, json1, 2, json2, 3]
+c.union(d,MULTISET) = [1, json1, 2, 1, json2, 3, 2]
+c.union(d,LIST) = [1, json1, 2, 2]
+c.union_(d) = [1, json1.union_(json2), 2, 2]
 ```
 ```
 a= [1, 2]
@@ -673,7 +646,6 @@ d= a.union(b,LIST)
 c= a.union(b,SET)
 c= c.union(d,SET)
 e= c.union(d,MULTISET)
-
 ```
 ##### 5.2- Intersection 
 Given two json objects _a_ and _b_:
@@ -684,20 +656,12 @@ considering arrays Set of elements.
 considering arrays MultiSet of elements.
 * _a.intersection(b, LIST)_ returns an object with the keys that exist in both _a_ and _b_ which associated elements are equal,
 considering arrays List of elements.
-* _a.intersection\_(b, SET)_ behaves as _a.intersection(b, SET)_, but for those keys that exist in both _a_ and _b_ and
+* _a.intersection\_(b, SET)_ behaves as _a.intersection(b, SET)_, but for those keys that exist in both _a_ and _b_ 
 which associated elements are json objects, the result is their intersection.
-* _a.intersection\_(b, LIST)_ behaves as _a.intersection(b, LIST)_, but for those keys that exist in both _a_ and _b_ and
+* _a.intersection\_(b, LIST)_ behaves as _a.intersection(b, LIST)_, but for those keys that exist in both _a_ and _b_
 which associated elements are json of the same type (object or arrays), the result is their intersection.
-* _a.intersection\_(b, MULTISET)_ behaves as _a.intersection(b, MULTISET)_, but for those keys that exist in both _a_ and _b_ and
+* _a.intersection\_(b, MULTISET)_ behaves as _a.intersection(b, MULTISET)_, but for those keys that exist in both _a_ and _b_
 which associated elements are json objects, the result is their intersection.
-```            
-JsObj intersection(JsObj that,
-                   TYPE ARRAY_AS
-                  );  
-JsObj intersection_(JsObj that,
-                    TYPE ARRAY_AS
-                   );               
-``` 
 ``` 
 a = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1,2]}, {"b":2}, {"c":3}] } }
 b = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1]  }, {"b":2}] } }
@@ -713,7 +677,6 @@ a.intersection_(b,LIST) == b
 a.intersection_(b,SET) == c
 a.intersection_(b,MULTISET) == c
 
-
 d = { "b": [1, 2, {"a":1       }, true,  null, true ] }
 e = { "b": [1, 2, {"a":1, "c":2}, false, true, null, 1 ] }
 f = { "b": [1, 2, true, null] }
@@ -727,11 +690,16 @@ h = d.intersection(e,LIST)
 i = d.intersection_(e,LIST)
 ``` 
 
-```   
-JsArray intersection(JsArray that,
-                     TYPE ARRAY_AS);
-JsArray intersection_(JsArray that);
-```             
+Given two json arrays _c_ and _d_:
+* _c.intersection(d, SET)_ returns an array with the elements that exist in both _c_ and _d_
+* _c.intersection(d, MULTISET)_ returns an array with the elements that exist in both _c_ and _d_, being duplicates allowed.
+* _c.intersection(d, LIST)_ returns an array with the elements that exist in both _c_ and _d_ and are located at the same position.
+* _c.intersection\_(d)_ behaves as _a.intersection(b, LIST)_, but for those elements that are containers of the same type and are
+located at the same position, the result is their intersection.
+
+Examples:
+
+to be documented     
 
 
 #### 6- Equality. 
