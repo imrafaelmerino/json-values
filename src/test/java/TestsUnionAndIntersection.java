@@ -857,6 +857,31 @@ class TestsUnionAndIntersection
                                                 MULTISET
                                                )
                                );
+        JsObj d = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, true,  null, false    ] }")
+                       .orElseThrow();
+
+        JsObj e = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, false, true, null, 1 ] }")
+                       .orElseThrow();
+        JsObj f = JsObj.parse("{ \"a\": true }")
+                       .orElseThrow();
+
+        JsObj i = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1}] }")
+                       .orElseThrow();
+
+        Assertions.assertEquals(d,
+                                d.intersection(e,
+                                               SET));
+
+        Assertions.assertEquals(f,
+                                d.intersection(e,
+                                               MULTISET));
+        Assertions.assertEquals(f,
+                                d.intersection(e,
+                                               LIST));
+        Assertions.assertEquals(i,
+                                d.intersection_(e,
+                                                LIST));
+
 
     }
 }

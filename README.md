@@ -127,6 +127,30 @@ Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents 
 where it's located at:
 
 JsPair = (JsPath, JsElem)
+To create pairs, there are different overloaded static factory methods:
+```
+JsPair of(String path, int elem)
+JsPair of(String path, double elem)
+JsPair of(String path, long elem)
+...
+JsPair of(JsPath path, int elem)
+JsPair of(JsPath path, double elem)
+JsPair of(JsPath path, long elem)
+...
+JsPair of(JsPath path, JsElem elem)
+```
+Pairs are immutable. You can get the path or element of a pair by direct field access:
+```
+JsPair pair = JsPair.of("a.b.0", "a");
+JsPath path = pair.path;
+JsElem elem = pair.elem;
+```
+Pairs can be mapped using:
+```
+JsPair mapPath(UnaryOperator<JsPath> fn)
+JsPair mapElem(UnaryOperator<JsElem> fn)
+```
+
 #### 1- How to create a Json?
 **json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
@@ -291,8 +315,8 @@ Assertions.assertEquals(OptionalInt.empty(),
 ```
 ##### 2-1 Obtaining json elements.
 Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element.
-The _get_ by path method returns a _JsElem_ and has the attractive property that is total. What does it mean? Well, it means that it returns a JsElem
-for every possible path passed in. Functional programmers strive for total functions. As I mentioned above, it's possible thanks to the _JsNothing_ type.
+The _get_ by path method returns a _JsElem_ and has the attractive property that is total, as it was mentioned above. Just as a reminder, it means that it returns a JsElem
+for every possible path. Functional programmers strive for total functions. It's possible thanks to the _JsNothing_ type.
 ```
 Assertions.assertEquals(JsNull.NULL, 
                         json.get("e.3")
@@ -395,7 +419,7 @@ The same considerations above apply for all of them.
 After Oracle released Java 8, I can't imagine a data structure in Java without providing the stream and collector operations. They open the door
 to manipulate data in a very functional way.
 
-A set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following set:
+A Set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following Set:
 ````
 {(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  where _ means any other path
 ````
@@ -503,7 +527,7 @@ Assert.assertEquals(y,
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
 carefully in different ways taking into account the structure of a Json.
 
-Functions which name ends with an underscore, are applied recursively to every element and not only to the first level of the json. This is
+Functions which name ends with an underscore, are applied recursively to every element and not only to the first level of the json. It's
 a naming convention in the API. As was mentioned before, names with symbols (except _ and $) are not valid in Java.
 ##### 4.1- Filter
 _filterKeys_ methods remove the keys from a JsObj which pairs satisfy a predicate: 
@@ -571,13 +595,32 @@ Reduce methods are a classic map-reduce over the elements **which are not contai
                        );        
 ```
 #### 5- Union and intersection.
-Considering jsons set of pairs, it seems reasonable to implement set-theory operations like union and intersection.
-For certain operations, arrays can be considered sets, multisets or lists. For certain operations, arrays can be 
-considered sets, multisets or lists. In sets, the order of data items does not matter (or is undefined) but 
-duplicate data items are not permitted. In lists, the order of data matters and duplicate data items are permitted. 
-In multisets, the order of data items does not matter, but in this case, duplicate data items are permitted. 
+Considering jsons Set of pairs, it seems reasonable to implement Set-Theory operations like union and intersection.
+For certain operations, arrays can be considered Sets, MultiSets or Lists. For certain operations, arrays can be 
+considered Sets, MultiSets or Lists. In Sets, the order of data items does not matter (or is undefined) but 
+duplicate data items are not permitted. In Lists, the order of data matters and duplicate data items are permitted. 
+In MultiSets, the order of data items does not matter, but in this case, duplicate data items are permitted. 
 
 ##### 5.1- Union 
+Given two json objects _a_ and _b_:
+ 
+*  _a.union(b)_ returns _a_ plus those pairs from _b_  which keys don't exist in _a_.
+Taking that into account, _a.union(b) != b.union(a)_ unless the elements associated to the keys that exist in both
+objects are equals.
+* a.union_(b,ARRAY_AS) behaves like the union above but, for those keys that exits in a and b, which associated elements
+are **containers of the same type**, the result is their union. In this case, as arrays can be found, we can specify
+if they are considered Sets, Lists or MultiSets.
+```
+a = { "k": json1}  
+b = { "k": json2}
+// json1 and json2 are either objecs or arrays
+a.union_(b) = { k: json1.union_(json2) }
+b.union_(a) = { k: json2.union_(json1) }
+// notice de difference
+a.union(b) = a
+b.union(a) = b
+```
+
 ```   
 JsObj union(JsObj that);
 JsObj union_(JsObj that,
@@ -591,8 +634,8 @@ c= {"a":1, "b":2, c": [{ "d":1 }, { "e":2 }] }
 d= {"a":1, "b":2, c": [{ "d":1, "e":2 }] }
 e= {"a":1, "b":2, c": [{ "d":1 }] }
 
-c = a.union_(b,SET)
-d = a.union_(b,LIST)
+c = a.union_(b, SET)
+d = a.union_(b, LIST)
 e = a.union(b)
 
 f= {"a": [1, 2, {"b": {"b":1} } ] }  
@@ -601,18 +644,35 @@ h= {"a": [1, 2, {"b": {"b":1} }, 3, [4,5], 6, 7], "b":[1,2]}
 i = {"a": [1, 2, {"b": {"b":1} }, 7], "b":[1,2]} 
 j = {"a": [1, 2, {"b": {"b":1} }], "b":[1,2]} 
 
-h = f.union_(g, SET)
-h = f.union_(g, MULTISET)
-i = f.union_(g, LIST)
+h = f.union_(g,SET)
+h = f.union_(g,MULTISET)
+i = f.union_(g,LIST)
 j = f.union(g)
 ```
-  
+
+Given two arrays _c_ and _d_:
+* _c.union(d, SET)_ returns _c_ plus those elements from _d_ that don't exist in a. This operation is commutative.
+* _c.union(d, MULTISET)_ returns _c_ plus all the elements from _d_ appended to the back. This operation is commutative.
+* _c.union(d, LIST)_ returns _c_ plus those elements from d which position >= c.size(). This operation is not commutative.
+* _c.union\_(d)_ returns _c_ plus those elements from _d_ which position >= c.size(), and, at the positions.
+where a container of the same type exists in _c_ and _d_, the result is their union. This operations doesn't make
+any sense if arrays are not considered Lists.
+
+Notice that _c.union(d, SET)_ and _c.union(d, MULTISET)_ are commutative.
+```
+c=[ 1, json1, 2]
+d=[ 1, json2, 3, 2]
+c.union(d,SET)=[1, json1, 2, json2, 3]
+c.union(d,MULTISET)=[1, json1, 2, 1, json2, 3, 2]
+c.union(d,LIST)=[1, json1, 2, 2]
+c.union_(d)=[1, json1.union_(json2), 2, 2]
+```
+
 ```            
 JsArray union(JsArray that,
               TYPE ARRAY_AS
              );    
  
-//arrays as list because op is recursive (to be recursive in an array requires order) 
 JsArray union_(JsArray that);
 ```
 ```
@@ -629,7 +689,20 @@ e= c.union(d,MULTISET)
 
 ```
 ##### 5.2- Intersection 
+Given two json objects _a_ and _b_:
 
+* _a.intersection(b, SET)_ returns an object with the keys that exist in both _a_ and _b_ which associated elements are equal,
+considering arrays Set of elements. 
+* _a.intersection(b, MULTISET)_ returns an object with the keys that exist in both _a_ and _b_ which associated elements are equal,
+considering arrays MultiSet of elements.
+* _a.intersection(b, LIST)_ returns an object with the keys that exist in both _a_ and _b_ which associated elements are equal,
+considering arrays List of elements.
+* _a.intersection\_(b, SET)_ behaves as _a.intersection(b, SET)_, but for those keys that exist in both _a_ and _b_ and
+which associated elements are json objects, the result is their intersection.
+* _a.intersection\_(b, LIST)_ behaves as _a.intersection(b, LIST)_, but for those keys that exist in both _a_ and _b_ and
+which associated elements are json of the same type (object or arrays), the result is their intersection.
+* _a.intersection\_(b, MULTISET)_ behaves as _a.intersection(b, MULTISET)_, but for those keys that exist in both _a_ and _b_ and
+which associated elements are json objects, the result is their intersection.
 ```            
 JsObj intersection(JsObj that,
                    TYPE ARRAY_AS
@@ -661,10 +734,10 @@ g = { "b": [1, 2, true, null, true] }
 h = { "b": [1, 2]}
 h = { "b": [1, 2, {"a":1}] }
 
-f = a.intersection(b,SET)
-g = a.intersection(b,MULTISET)
-h = a.intersection(b,LIST)
-i = a.intersection_(b,LIST)
+f = d.intersection(e,SET)
+g = d.intersection(e,MULTISET)
+h = d.intersection(e,LIST)
+i = d.intersection_(e,LIST)
 ``` 
 
 ```   
@@ -697,7 +770,7 @@ Both objects represent the same piece of information, so they are equals, and th
 It doesn't matter that different primitive types and wrappers have been used to create both jsons. That's a detail
 of the Java language.
 
-There is a method to test if two objects are equals considering arrays sets or multisets:
+There is a method to test if two objects are equals considering arrays Sets or MultiSets:
 ```
 boolean equals(final JsElem elem,
                final TYPE ARRAY_AS
