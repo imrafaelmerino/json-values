@@ -115,7 +115,7 @@ where it's located at:
 
 JsPair = (JsPath, JsElem)
 
-To create pairs, there are different overloaded static factory methods:
+There are different overloaded static factory methods to create pairs:
 ```
 JsPair of(String path, int elem)
 JsPair of(String path, double elem)
@@ -575,10 +575,10 @@ In MultiSets, the order of data items does not matter, but in this case, duplica
 Given two json objects _a_ and _b_:
  
 *  _a.union(b)_ returns _a_ plus those pairs from _b_  which keys don't exist in _a_.
-Taking that into account, it's not a commutative operation unless the elements associated to the keys that exist in both
+Taking that into account, it's not a commutative operation unless the elements associated with the keys that exist in both
 objects are equals.
-* a.union_(b, ARRAY_AS) behaves like the union above but, for those keys that exits in _a_ and _b_ which associated elements
-are **containers of the same type**, the result is their union. In this case, we can specify if arrays are considered Sets, Lists or MultiSets.
+* a.union_(b, ARRAY_AS) behaves like the union above but, for those keys that exit in _a_ and _b_ which associated elements
+are **containers of the same type**, the result is their union. In this case, we can specify if arrays are considered Sets, Lists, or MultiSets.
 
 Examples:
 ```
@@ -667,12 +667,12 @@ a = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1,2]}, {"b":2}, {"c":3}] } }
 b = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1]  }, {"b":2}] } }
 c = { "b": {"a":1, "b":2, "c": [{"b":2}] } }
 
-//the json object associated to the key "b", are different
+//the json object associated with the key "b", are different
 a.intersection(b,LIST) == JsObj.empty()
 a.intersection(b,SET) == JsObj.empty()
 a.intersection(b,MULTISET) == JsObj.empty()
 
-//the intersection is applied recursively between the json objects associated to the key "b"
+//the intersection is applied recursively between the json objects associated with the key "b"
 a.intersection_(b,LIST) == b
 a.intersection_(b,SET) == c
 a.intersection_(b,MULTISET) == c
