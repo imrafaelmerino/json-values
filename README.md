@@ -652,6 +652,19 @@ a.intersection(b,MULTISET) == JsObj.empty()
 a.intersection_(b,LIST) == b
 a.intersection_(b,SET) == c
 a.intersection_(b,MULTISET) == c
+
+
+d = { "b": [1, 2, {"a":1       }, true,  null, true ] }
+e = { "b": [1, 2, {"a":1, "c":2}, false, true, null, 1 ] }
+f = { "b": [1, 2, true, null] }
+g = { "b": [1, 2, true, null, true] }
+h = { "b": [1, 2]}
+h = { "b": [1, 2, {"a":1}] }
+
+f = a.intersection(b,SET)
+g = a.intersection(b,MULTISET)
+h = a.intersection(b,LIST)
+i = a.intersection_(b,LIST)
 ``` 
 
 ```   
@@ -662,7 +675,9 @@ JsArray intersection_(JsArray that);
 
 
 #### 6- Equality. 
-The following objects
+The correctness of equals and hashcode methods are crucial for every Java application. As was mentioned before, **json-values**
+is data-centric, which means basically that the number one is the number one, and forgive the repetition. No matter if it's placed in a int, 
+a long or even a bigdecimal. According to that, the following objects:
 ```
 JsObj x = JsObj.of("a", JsInt.of(1),
                    "b", JsLong.of(100)
@@ -678,11 +693,11 @@ JsObj y = JsObj.of("a", JsBigInt.of(BigInteger.ONE),
 ```
 satisfy the property _x.equals(y) => x.hashCode == y.hashCode()_
 
-Both objects represent the same json, so they are equals, and therefore, they have the same hashcode.
-It doesn't matter that different primitive types and wrappers have been used to create them. That's a detail
-of the Java language, and **json-values** is data-centric.
+Both objects represent the same piece of information, so they are equals, and therefore, they have the same hashcode.
+It doesn't matter that different primitive types and wrappers have been used to create both jsons. That's a detail
+of the Java language.
 
-There is a method to test if two objects are equals considering arrays sets or multisets.
+There is a method to test if two objects are equals considering arrays sets or multisets:
 ```
 boolean equals(final JsElem elem,
                final TYPE ARRAY_AS
@@ -730,7 +745,7 @@ jackson_10000    1089908.830    23290.189   ns/op
 mutable_10000    1309524.154   276923.222   ns/op
 immutable_10000  2460901.909    66524.870   ns/op
 ```
-As expectd, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
+As expected, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
 defensive copies of objects are performed.
 
 #### 10- Tools. 

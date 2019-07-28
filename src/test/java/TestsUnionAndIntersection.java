@@ -125,14 +125,15 @@ class TestsUnionAndIntersection
                            .orElseThrow();
 
 
-
         Assertions.assertEquals(d,
                                 a.union_(b
                                         )
                                );
 
         Assertions.assertEquals(d,
-                                a.union(b,LIST)
+                                a.union(b,
+                                        LIST
+                                       )
                                );
 
         Assertions.assertEquals(e,
@@ -255,7 +256,8 @@ class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.intersection(b,LIST
+                                a.intersection(b,
+                                               LIST
                                               )
                                );
 
@@ -279,7 +281,8 @@ class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.intersection_(b,LIST
+                                a.intersection_(b,
+                                                LIST
                                                )
                                );
 
@@ -329,7 +332,7 @@ class TestsUnionAndIntersection
                                   );
 
         final JsArray newArray = array.mapElems(toLowerCaseFn,
-                                                 p -> p.elem.isStr()
+                                                p -> p.elem.isStr()
                                                );
 
         Assertions.assertNotEquals(array,
@@ -360,7 +363,7 @@ class TestsUnionAndIntersection
                                    );
 
         final JsArray newArray1 = array1.mapElems_(toLowerCaseFn,
-                                                    p -> p.elem.isStr()
+                                                   p -> p.elem.isStr()
                                                   );
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                                        .orElseThrow(),
@@ -673,13 +676,13 @@ class TestsUnionAndIntersection
 
         final JsObj obj = supplier.get();
         final JsObj newObj = obj.filterObjs_((p, o) ->
-                                               {
-                                                   Assertions.assertEquals(o,
-                                                                           supplier.get()
-                                                                                   .get(p)
-                                                                          );
-                                                   return o.isNotEmpty();
-                                               });
+                                             {
+                                                 Assertions.assertEquals(o,
+                                                                         supplier.get()
+                                                                                 .get(p)
+                                                                        );
+                                                 return o.isNotEmpty();
+                                             });
 
         Assertions.assertEquals(obj,
                                 newObj
@@ -724,13 +727,13 @@ class TestsUnionAndIntersection
 
         supplier.get()
                 .filterElems_(p ->
-                               {
-                                   Assertions.assertEquals(p.elem,
-                                                           supplier.get()
-                                                                   .get(p.path)
-                                                          );
-                                   return p.elem.isStr(s -> s.equals("A"));
-                               })
+                              {
+                                  Assertions.assertEquals(p.elem,
+                                                          supplier.get()
+                                                                  .get(p.path)
+                                                         );
+                                  return p.elem.isStr(s -> s.equals("A"));
+                              })
                 .stream_()
                 .filter(p -> p.elem.isNotJson())
                 .forEach(p -> Assertions.assertTrue(p.elem.isStr(s -> s.equals("A"))));
@@ -738,13 +741,13 @@ class TestsUnionAndIntersection
 
         supplier.get()
                 .filterObjs_((p, o) ->
-                               {
-                                   Assertions.assertEquals(o,
-                                                           supplier.get()
-                                                                   .get(p)
-                                                          );
-                                   return o.isNotEmpty();
-                               })
+                             {
+                                 Assertions.assertEquals(o,
+                                                         supplier.get()
+                                                                 .get(p)
+                                                        );
+                                 return o.isNotEmpty();
+                             })
                 .stream_()
                 .filter(p -> p.elem.isObj())
                 .forEach(p -> Assertions.assertTrue(p.elem.asJsObj()
@@ -752,5 +755,110 @@ class TestsUnionAndIntersection
 
     }
 
+    @Test
+    void test_readme_union() throws MalformedJson
+    {
+        JsObj a = JsObj.parse("{\"a\":1, \"c\": [{ \"d\":1 }] }")
+                       .orElseThrow();
+        JsObj b = JsObj.parse("{\"b\":2, \"c\": [{ \"e\":2 }] }")
+                       .orElseThrow();
+        JsObj c = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 }, { \"e\":2 }] }")
+                       .orElseThrow();
+        JsObj d = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 , \"e\":2 }] }")
+                       .orElseThrow();
+        JsObj e = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1  }] }")
+                       .orElseThrow();
 
+        Assertions.assertEquals(c,
+                                a.union_(b,
+                                         SET
+                                        )
+                               );
+        Assertions.assertEquals(d,
+                                a.union_(b,
+                                         LIST
+                                        )
+                               );
+        Assertions.assertEquals(e,
+                                a.union(b)
+                               );
+
+        JsObj f = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} } ] }")
+                       .orElseThrow();
+        JsObj g = JsObj.parse("{\"a\": [3, [4,5], 6, 7], \"b\": [1, 2] }")
+                       .orElseThrow();
+        JsObj h = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 3, [4,5], 6, 7], \"b\":[1,2]}")
+                       .orElseThrow();
+        JsObj i = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 7], \"b\":[1,2]}")
+                       .orElseThrow();
+        JsObj j = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }], \"b\":[1,2]}")
+                       .orElseThrow();
+
+
+        Assertions.assertEquals(h,
+                                f.union_(g,
+                                         SET
+                                        )
+                               );
+        Assertions.assertEquals(h,
+                                f.union_(g,
+                                         MULTISET
+                                        )
+                               );
+        Assertions.assertEquals(i,
+                                f.union_(g,
+                                         LIST
+                                        )
+                               );
+        Assertions.assertEquals(j,
+                                f.union(g)
+                               );
+
+    }
+
+    @Test
+    void test_readme_intersection() throws MalformedJson
+    {
+
+        JsObj a = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1,2]}, {\"b\":2}, {\"c\":3}] } }")
+                       .orElseThrow();
+        JsObj b = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1]  }, {\"b\":2}] } }")
+                       .orElseThrow();
+        JsObj c = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"b\":2}] } }")
+                       .orElseThrow();
+
+        Assertions.assertEquals(JsObj.empty(),
+                                a.intersection(b,
+                                               LIST
+                                              )
+                               );
+        Assertions.assertEquals(b,
+                                a.intersection_(b,
+                                                LIST
+                                               )
+                               );
+        Assertions.assertEquals(JsObj.empty(),
+                                a.intersection(b,
+                                               SET
+                                              )
+                               );
+        Assertions.assertEquals(c,
+                                a.intersection_(b,
+                                                SET
+                                               )
+                               );
+        Assertions.assertEquals(JsObj.empty(),
+                                a.intersection(b,
+                                               MULTISET
+                                              )
+                               );
+        Assertions.assertEquals(c,
+                                a.intersection_(b,
+                                                MULTISET
+                                               )
+                               );
+
+    }
 }
+
+

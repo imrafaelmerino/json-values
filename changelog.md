@@ -8,3 +8,4 @@
 - Change signature of methods _appendAllIfPresent_ and _prependAllIfPresent_: supplier instead of function
 - Added plus, minus and times methods in JsInt, JsLong and JsDouble
 - Added fromKey and fromIndex static factory methods in JsPath
+- bug fixed in intersection_ of arrays

@@ -953,7 +953,7 @@ class Functions
 
     static Trampoline<JsObj> _mapJsObj__(final JsObj acc,
                                          final JsObj remaining,
-                                         final BiFunction<? super JsPath,? super JsObj, JsObj> fn,
+                                         final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                                          final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                          final JsPath path
                                         )
@@ -2166,16 +2166,19 @@ class Functions
                                                          b.asJsObj(),
                                                          ARRAY_AS
                                                         );
-        return intersection_(a.asJsArray(),
-                             b.asJsArray()
-                            );
+        if (ARRAY_AS == TYPE.LIST) return intersection_(a.asJsArray(),
+                                                        b.asJsArray()
+                                                       );
+        return intersection(a.asJsArray(),
+                            b.asJsArray(),
+                            ARRAY_AS
+                           );
 
 
     }
 
     static Trampoline<JsArray> intersection_(final JsArray a,
                                              final JsArray b
-
                                             )
     {
         if (a.isEmpty()) return done(a);
@@ -2209,7 +2212,7 @@ class Functions
     }
 
     static Trampoline<JsObj> mapJsObj(final JsObj obj,
-                                      final BiFunction<? super JsPath, ? super jsonvalues.JsObj,jsonvalues.JsObj> fn,
+                                      final BiFunction<? super JsPath, ? super jsonvalues.JsObj, jsonvalues.JsObj> fn,
                                       final BiPredicate<? super JsPath, ? super jsonvalues.JsObj> predicate,
                                       final JsPath path
                                      )
@@ -2772,7 +2775,7 @@ class Functions
         Event elem;
         MyScalaImpl.Vector newRoot = root;
         JsPair pair;
-        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while ((elem = parser.next()) != END_ARRAY)
         {
             if (elem == null) throw unexpectedEventError(null);
@@ -2904,7 +2907,7 @@ class Functions
                      ) throws MalformedJson
     {
         Event elem;
-        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while ((elem = parser.next()) != END_ARRAY)
         {
             if (elem == null) throw unexpectedEventError(null);
@@ -3053,7 +3056,7 @@ class Functions
     {
 
         MyScalaImpl.Map newRoot = root;
-        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while (parser.next() != END_OBJECT)
         {
             final String key = options.keyMap.apply(parser.getString());
@@ -3217,7 +3220,7 @@ class Functions
                       final JsPath path
                      ) throws MalformedJson
     {
-        final Predicate<JsPair> condition = p-> options.elemFilter.test(p) &&  options.keyFilter.test(p.path);
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while (parser.next() != END_OBJECT)
         {
             final String key = options.keyMap.apply(parser.getString());
