@@ -1,3 +1,4 @@
+Reading time: 19 minutes.
 #### INTRODUCTION
 Welcome to **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
 from _Scala_. _Java_ doesn't implement _persistent data structures_ natively; nevertheless, Scala does and 
@@ -15,15 +16,21 @@ manipulate them and not fancy abstractions, long enterprise names, setters, or c
 great talk that elaborates on this point.
 
 * _It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures_. —Alan Perlis. 
-It's a one-package library with two main classes: JsObj and JsArray, that's all you need. I'd argue that it makes **json-values** 
-a simple to use library and simplicity matters!
+It's a one-package library with two main classes: JsObj and JsArray, that's all you need.
  
-**Json-values**, naturally, uses recursion all the time. To not blow up the stack, tail-recursive method 
-calls are turned into iterative loops by Trampolines. The API exposes a well-known implementation of a 
-Trampoline in case you want to do some _head and tail_ programming, and you should! Because, first, it's 
-fun and second and more important, it makes the code more declarative, concise, and easy to reason about.
- My experience says that the more difficult the task is, the more benefit you'll get using this approach; 
- however, sometimes a simple loop is more straightforward and more transparent.
+##### Why use json-values?
+Let me enumerate four reasons:
+
+* You need to deal with Jsons, and you want to program following a functional style, but you can't benefit from
+all the advantages that immutability brings to your code because Java doesn't provide Persistent Data Structures.
+The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, streams... but, without immutability, 
+something is still missing, and as Pat Helland said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
+* You also need a straightforward and declarative API to manipulate Json, which takes advantages of all
+new features that were introduced in Java 8, like streams and collectors.
+* You care about all the described above, but, you still may need a mutable object as you are programming in Java. 
+With **json-values**, you can go from a mutable json to an immutable one, back and forth, and the API to manipulate them is the same, being both implementations
+hidden to the user.
+* Simplicity matters and I'd argue that **json-values** is simple.
  
 #### REQUIREMENTS
 * Java 8 or greater.
@@ -80,7 +87,7 @@ JsPath.of("+") or JsPath.of("%20") or JsPath.fromKey(" ") -> z
 // dot has to be escaped using of method
 JsPath.of("c%2Ed") or JsPath.fromKey("c.d") -> z                           
     
-// notice how the key is single-qouted in _of_ method
+// notice how the key is single-qouted in of method
 JsPath.of("'1'.0") or JsPath.fromKey("1").index(0) -> false
 JsPath.of("'1'.1") or JsPath.fromKey("1").index(1) -> true
 
@@ -95,20 +102,20 @@ All the methods that accept a JsPath are overloaded so that a path-like string c
 Every element in a Json is a _JsElem_. There is one for each json value described in [json.org](https://www.json.org):
 * _JsStr_ represents immutable strings.
 * The singletons _JsBool.TRUE_ and _JsBool.FALSE_ represent true and false.
-* The singleton _JsNull.NULL_ represents null.
-* _JsObj_ represents a json object, which is an unordered set of name/value pairs.
-* _JsArray_ represents a json array, which is an ordered collection of values.
+* The singleton _NULL_ of type _JsNull_ represents null.
+* _JsObj_ is a _Json_ that represents an object, which is an unordered set of name/value pairs.
+* _JsArray_ is a _Json_ that represents an array, which is an ordered collection of values.
 * _JsNumber_ represents immutable numbers. There are five different specializations: 
     * _JsInt_
     * _JsLong_
     * _JsDouble_
     * _JsBigInt_
     * _JsBigDec_
-* The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
+* The singleton _NOTHING_ of type _JsNothing_ represents nothing. It's not part of any specification. It's a convenient type
 that makes certain functions that return a JsElem total on their arguments. For example, the function
  _JsElem get(JsPath)_ is total because returns a JsElem for every JsPath. If there is no element located at the specified
   path, it returns _NOTHING_. In other functions like _Json putIfPresent(Function<JsElem, JsElem>)_, this type comes in handy 
- as well because it's possible, just returning _JsNothing.NOTHING_, not to insert anything even if an element is present. 
+ as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present. 
 #### 0.3 - JsPair
 Unfortunately, there are no tuples in Java. _JsPair_ is a pair which represents an element of a _Json_ and the position 
 where it's located at:
@@ -140,7 +147,7 @@ JsPair mapElem(UnaryOperator<JsElem> fn)
 ```
 
 #### 1- How to create a Json?
-**json-values** uses _static factory methods_ to create objects, just like the ones introduced by Java 9 to 
+**json-values** uses _static factory methods_ to create objects, just like the ones introduced by _Java 9_ to 
 create small unmodifiable collections. There is a naming convention to emphasize what kind of object is created:
 * **of** and **parse** methods return **immutable** jsons or values.
 * **\_of\_** and **\_parse\_** methods return **mutable** jsons. 
@@ -381,7 +388,7 @@ JsObj d = b.putIfAbsent("a", ()-> computed value);
 
 JsObj e = b.putIfPresent("a", ()-> computed value);
 
-##### 2-5 Adding data to arrays.
+##### 2-6 Adding data to arrays.
 
 To insert elements at the front of an array, it exists the methods _prepend_, _prependAll_, _prependIfPresent_, and _prependAllIfPresent_.
 To insert elements at the back of an array, it exists the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
@@ -750,14 +757,166 @@ file could be deleted anytime by any other process, and the only thing you can d
 **json-values** use the native unchecked exception _UnsupportedException_ when the client of the library makes an error,
 for example, getting the head of an empty array, which means that the programmer needs to change something, 
 for example, adding a guard condition. Another error could be to pass in null to a method, in which case it throws a  NullPointerException. No method in the library accepts null as a parameter.
-The only exception in the API is the checked MalformedJson, which occurs when a not well-formed string is parsed into a Json.
+The only exception in the API is the checked MalformedJson, which occurs when parsing a not well-formed string into a Json.
 
 #### 8- Trampolines
-to be documented
+**Json-values**, naturally, uses recursion all the time. To not blow up the stack, tail-recursive method 
+calls are turned into iterative loops by Trampolines. The API exposes a well-known implementation of a 
+Trampoline in case you want to do some _head and tail_ programming, and you should! Because, first, it's 
+fun and second and more important, it makes the code more declarative, concise, and easy to reason about.
+ My experience says that the more difficult the task is, the more benefit you'll get using this approach; 
+ however, sometimes a simple loop is more straightforward and more transparent.
+ Example: 
+ 
+ Let's create a function named _schema_ that, given a Json, it returns a new Json describing the types of its elements. Let's 
+ only consider strings, numbers, booleans, and null. Find below an example:
 
+```
+JsObj obj = JsObj.of("a",JsInt.of(1),
+                     "b",JsStr.of("a"),
+                     "c",TRUE,
+                     "d",NULL,
+                     "e",JsDouble.of(1.3)
+                    );
+System.out.println( a.schema() );
+
+{
+  "e": { "type": "decimal"},
+  "a": { "type": "integral"},
+  "b": { "type": "string"},
+  "c": { "type": "boolean"},
+  "d": { "type": "null"}
+}
+```
+
+A possible recursive implementation is:
+```
+ 
+    public JsObj schema()
+    {
+
+        return schema(this,
+                      JsObj.empty()
+                     );
+    }
+
+    private JsObj schema(JsObj obj,
+                         JsObj acc
+                        )
+    {
+        if (obj.isEmpty()) return acc;
+        Map.Entry<String, JsElem> head = obj.head();
+        String keyName = head.getKey();
+        JsElem headElem = head.getValue();
+        JsObj tail = obj.tail(keyName); 
+        if (headElem..isStr()) return schema(tail,
+                                             acc.put(keyName,
+                                                     JsObj.of("type",
+                                                              JsStr.of("string")
+                                                             )
+                                                     )
+                                             );
+        if (headElem.isIntegral()) return schema(tail,
+                                                 acc.put(keyName,
+                                                         JsObj.of("type",
+                                                                  JsStr.of("integral")
+                                                                 )
+                                                        )
+                                                );
+        if (headElem.isDecimal()) return schema(tail,
+                                                acc.put(keyName,
+                                                        JsObj.of("type",
+                                                                  JsStr.of("decimal")
+                                                                )
+                                                        )
+                                                );
+        if (headElem.isBool()) return schema(tail,
+                                             acc.put(keyName,
+                                                     JsObj.of("type",
+                                                              JsStr.of("boolean")
+                                                             )
+                                                    )
+                                            );
+        if (headElem.isNull()) return schema(tail,
+                                             acc.put(keyName,
+                                                     JsStr.of("null")
+                                                    )
+                                            );
+        if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet");
+
+        throw new RuntimeException("Unexpected type of JsElem: " + headElem.getClass());
+    }
+```
+
+However, it blows up the stack when the size of the json is 2033 or greater ( test executed in Java 8). 
+Java compiler doesn't optimize tail-recursive calls as Scala or Clojure
+compilers do. Nevertheless, we can still make use of Trampolines to turn recursion into an iteration. The following implementation does the trick:
+
+```
+
+    public JsObj schema()
+    {
+
+        return schema(this,
+                      JsObj.empty()
+                     ).get();
+    }
+
+    private Trampoline<JsObj> schema(JsObj obj,
+                                     JsObj acc
+                                    )
+    {
+        if (obj.isEmpty()) return Trampoline.done(acc);
+        Map.Entry<String, JsElem> head = obj.head();
+        String keyName = head.getKey();
+        JsElem headElem = head.getValue();
+        JsObj tail = obj.tail(keyName);
+        if (headElem.isStr()) return Trampoline.more(() -> schema(tail,
+                                                                  acc.put(keyName,
+                                                                          JsObj.of("type",
+                                                                                   JsStr.of("string")
+                                                                                  )
+                                                                         )
+                                                                 ));
+        if (headElem.isIntegral()) return Trampoline.more(() -> schema(tail,
+                                                                       acc.put(keyName,
+                                                                               JsObj.of("type",
+                                                                                        JsStr.of("integral")
+                                                                                       )
+                                                                              )
+                                                                      ));
+        if (headElem.isDecimal()) return Trampoline.more(() -> schema(tail,
+                                                                      acc.put(keyName,
+                                                                              JsObj.of("type",
+                                                                                       JsStr.of("decimal")
+                                                                                      )
+                                                                             )
+                                                                     ));
+        if (headElem.isBool()) return Trampoline.more(() -> schema(tail,
+                                                                   acc.put(keyName,
+                                                                           JsObj.of("type",
+                                                                                    JsStr.of("boolean")
+                                                                                   )
+                                                                          )
+                                                                  ));
+        if (headElem.isNull()) return Trampoline.more(() -> schema(tail,
+                                                                   acc.put(keyName,
+                                                                           JsStr.of("null")
+                                                                          )
+                                                                  ));
+
+
+        if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet");
+
+        throw new RuntimeException("Unexpected type of JsElem: " + headElem.getClass());
+    }
+```
+A Trampoline is a type that has two concrete implementations: _more_ and _done_. _more_ accepts as a parameter 
+a supplier, which is lazy, so no operation is performed when it's returned and therefore, no call is piled-up on the stack. 
+It's when _done_ is returned when the iteration fires up, and then all the suppliers are computed in order.
 #### 9- Performance
 A benchmark using [jmh](https://openjdk.java.net/projects/code-tools/jmh/) has been carried out on my computer.
-The following results have been obtained parsing a string into a json of size 100,1000 and 10000,
+Find below the results parsing a string into a json of size 100,1000 and 10000,
 using Jackson and json-values (both mutable an immutable implementations):
 ```
 Benchmark          Mean        Mean error   Units
@@ -774,17 +933,17 @@ mutable_10000    1309524.154   276923.222   ns/op
 immutable_10000  2460901.909    66524.870   ns/op
 ```
 As expected, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
-defensive copies of objects are performed.
+defensive copies of objects are made.
 
 #### 10- Tools. 
-Different compiler plug-ins to find bugs at _compile time_ have been used:
+I've used different compiler plug-ins to find bugs at _compile time_:
 * [The Checker Framework Compiler](https://checkerframework.org), which found some NullPointerException.
 * [Google error-prone](https://errorprone.info), which found a bug related to [BigDecimalEquals](https://errorprone.info/bugpattern/BigDecimalEquals)
 
 Part of the testing has been carried out using [Scala Check](https://www.scalacheck.org/) and Property-Based Testing. 
 I developed a json generator for this purpose.
 
-Any doubt, feedback or suggestion, please,  drop out an email to imrafael.merino@gmail.com.
+Any doubt, feedback or suggestion, please, drop out an email to imrafael.merino@gmail.com.
 
 
 

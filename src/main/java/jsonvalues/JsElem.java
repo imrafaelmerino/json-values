@@ -562,6 +562,14 @@ public interface JsElem
     {
         return isInt() || isLong() || isBigInt();
     }
+    /**
+
+     @return true if this element is an decimal number (JsDouble or JsBigDec)
+     */
+    default boolean isDecimal()
+    {
+        return isDouble() || isBigDec();
+    }
 
     /**
      @return true if this element is null

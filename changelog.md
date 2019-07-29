@@ -9,3 +9,5 @@
 - Added plus, minus and times methods in JsInt, JsLong and JsDouble
 - Added fromKey and fromIndex static factory methods in JsPath
 - bug fixed in intersection_ of arrays
+###### version 0.1.3
+- added isDecimal method in JsElem 
