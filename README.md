@@ -25,10 +25,10 @@ Let me enumerate four reasons:
 all the advantages that immutability brings to your code because Java doesn't provide Persistent Data Structures.
 The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, streams... but, without immutability, 
 something is still missing, and as Pat Helland said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
-* You also need a straightforward and declarative API to manipulate Json, which takes advantages of all
+* You also need a straightforward and declarative API to manipulate Json, which takes advantages of all the
 new features that were introduced in Java 8, like streams and collectors.
-* You care about all the described above, but, you still may need a mutable object as you are programming in Java. 
-With **json-values**, you can go from a mutable json to an immutable one, back and forth, and the API to manipulate them is the same, being both implementations
+* You care about all the described above, but, you may still need a mutable object as you are programming in Java. 
+With **json-values**, you can go from a mutable Json to an immutable one, back and forth, and the API to manipulate them is the same, being both implementations
 hidden to the user.
 * Simplicity matters and I'd argue that **json-values** is simple.
  
@@ -806,40 +806,42 @@ A possible recursive implementation is:
     {
         if (obj.isEmpty()) return acc;
         Map.Entry<String, JsElem> head = obj.head();
-        String keyName = head.getKey();
+        String headName = head.getKey();
         JsElem headElem = head.getValue();
-        JsObj tail = obj.tail(keyName); 
-        if (headElem..isStr()) return schema(tail,
-                                             acc.put(keyName,
+        JsObj tail = obj.tail(headName); 
+        if (headElem.isStr()) return schema(tail,
+                                             acc.put(headName,
                                                      JsObj.of("type",
                                                               JsStr.of("string")
                                                              )
                                                      )
                                              );
         if (headElem.isIntegral()) return schema(tail,
-                                                 acc.put(keyName,
+                                                 acc.put(headName,
                                                          JsObj.of("type",
                                                                   JsStr.of("integral")
                                                                  )
                                                         )
                                                 );
         if (headElem.isDecimal()) return schema(tail,
-                                                acc.put(keyName,
+                                                acc.put(headName,
                                                         JsObj.of("type",
                                                                   JsStr.of("decimal")
                                                                 )
                                                         )
                                                 );
         if (headElem.isBool()) return schema(tail,
-                                             acc.put(keyName,
+                                             acc.put(headName,
                                                      JsObj.of("type",
                                                               JsStr.of("boolean")
                                                              )
                                                     )
                                             );
         if (headElem.isNull()) return schema(tail,
-                                             acc.put(keyName,
-                                                     JsStr.of("null")
+                                             acc.put(headName,
+                                                     JsObj.of("type",
+                                                              JsStr.of("null")
+                                                             )
                                                     )
                                             );
         if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet");
@@ -868,42 +870,42 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
     {
         if (obj.isEmpty()) return Trampoline.done(acc);
         Map.Entry<String, JsElem> head = obj.head();
-        String keyName = head.getKey();
+        String headName = head.getKey();
         JsElem headElem = head.getValue();
-        JsObj tail = obj.tail(keyName);
+        JsObj tail = obj.tail(headName);
         if (headElem.isStr()) return Trampoline.more(() -> schema(tail,
-                                                                  acc.put(keyName,
+                                                                  acc.put(headName,
                                                                           JsObj.of("type",
                                                                                    JsStr.of("string")
                                                                                   )
                                                                          )
                                                                  ));
         if (headElem.isIntegral()) return Trampoline.more(() -> schema(tail,
-                                                                       acc.put(keyName,
+                                                                       acc.put(headName,
                                                                                JsObj.of("type",
                                                                                         JsStr.of("integral")
                                                                                        )
                                                                               )
                                                                       ));
         if (headElem.isDecimal()) return Trampoline.more(() -> schema(tail,
-                                                                      acc.put(keyName,
+                                                                      acc.put(headName,
                                                                               JsObj.of("type",
                                                                                        JsStr.of("decimal")
                                                                                       )
                                                                              )
                                                                      ));
         if (headElem.isBool()) return Trampoline.more(() -> schema(tail,
-                                                                   acc.put(keyName,
+                                                                   acc.put(headName,
                                                                            JsObj.of("type",
                                                                                     JsStr.of("boolean")
                                                                                    )
                                                                           )
                                                                   ));
         if (headElem.isNull()) return Trampoline.more(() -> schema(tail,
-                                                                   acc.put(keyName,
-                                                                           JsStr.of("null")
-                                                                          )
-                                                                  ));
+                                                                   JsObj.of("type",
+                                                                            JsStr.of("null")
+                                                                           )
+                                                                   ));
 
 
         if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet");
@@ -913,7 +915,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
 ```
 A Trampoline is a type that has two concrete implementations: _more_ and _done_. _more_ accepts as a parameter 
 a supplier, which is lazy, so no operation is performed when it's returned and therefore, no call is piled-up on the stack. 
-It's when _done_ is returned when the iteration fires up, and then all the suppliers are computed in order.
+It's when _done_ is returned when the iteration is fired up, and then all the suppliers are computed in order.
 #### 9- Performance
 A benchmark using [jmh](https://openjdk.java.net/projects/code-tools/jmh/) has been carried out on my computer.
 Find below the results parsing a string into a json of size 100,1000 and 10000,
