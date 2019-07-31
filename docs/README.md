@@ -1,14 +1,8 @@
-<img src="https://img.shields.io/badge/code%20quality-A-success"/>
-<img src="https://img.shields.io/badge/coverage-88-green"/>
-<img src="https://img.shields.io/badge/LOC-19682-blue"/>
-<img src="https://img.shields.io/badge/HOC-34200-blue"/>
+<img src="https://img.shields.io/badge/code%20quality-A-success"/>  <img src="https://img.shields.io/badge/coverage-88-green"/> <img src="https://img.shields.io/badge/LOC-19682-blue"/>  <img src="https://img.shields.io/badge/HOC-34200-blue"/>
 
-<img src="https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/0.1.2"/>
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/0.1.2)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/0.1.2/jar)
 <img src="https://img.shields.io/github/last-commit/imrafaelmerino/json-values"/>
 <img src="https://img.shields.io/github/release-date-pre/imrafaelmerino/json-values"/>
-
-<img src="https://img.shields.io/github/repo-size/imrafaelmerino/json-values"/>
-<img src="https://img.shields.io/github/languages/code-size/imrafaelmerino/json-values"/>
 
 #### INTRODUCTION
 Welcome to **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
