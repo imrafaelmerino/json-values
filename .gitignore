@@ -5,7 +5,6 @@ dependency-reduced-pom.xml
 .idea/
 javadoc
 data
-coverage-report
 benchmarking
 scripts/.tmp
 scripts/libs
