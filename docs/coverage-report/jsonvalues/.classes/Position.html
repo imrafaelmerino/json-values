@@ -1,0 +1,170 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Position</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Position (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Position</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (3/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (9/ 9)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.Objects;
+<i>4</i>&nbsp;import java.util.function.Function;
+<i>5</i>&nbsp;import java.util.function.IntFunction;
+<i>6</i>&nbsp;import java.util.function.IntPredicate;
+<i>7</i>&nbsp;import java.util.function.Predicate;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; Represents the location of a first-level element in a json, either a Key in a JsObj or an Index in
+<i>11</i>&nbsp; a JsArray.
+<i>12</i>&nbsp; */
+<i>13</i>&nbsp;public interface Position extends Comparable&lt;Position&gt;
+<i>14</i>&nbsp;{
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    /**
+<i>17</i>&nbsp;     {@inheritDoc}
+<i>18</i>&nbsp;     */
+<i>19</i>&nbsp;    int compareTo(final Position o);
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    /**
+<i>22</i>&nbsp;     Casts this position into a Key, throwing an exception if it&#39;s an index.
+<i>23</i>&nbsp;     @return this position as a Key
+<i>24</i>&nbsp;     @throws UnsupportedOperationException if this position is an Index
+<i>25</i>&nbsp;     */
+<i>26</i>&nbsp;    Key asKey();
+<i>27</i>&nbsp;
+<i>28</i>&nbsp;    /**
+<i>29</i>&nbsp;     Casts this position into an Index, throwing an exception if it&#39;s a Key.
+<i>30</i>&nbsp;     @return this position as an Index
+<i>31</i>&nbsp;     @throws UnsupportedOperationException if this position is an Key
+<i>32</i>&nbsp;     */
+<i>33</i>&nbsp;    Index asIndex();
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     Returns true if this position is an index.
+<i>37</i>&nbsp;     @return true if this position is an index
+<i>38</i>&nbsp;     */
+<i>39</i>&nbsp;    boolean isIndex();
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;    /**
+<i>42</i>&nbsp;     Returns true if this position is an key.
+<i>43</i>&nbsp;     @return true if this position is an key
+<i>44</i>&nbsp;     */
+<i>45</i>&nbsp;    boolean isKey();
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     Returns true if this position is a key and its name tested on a given predicate is true.
+<i>49</i>&nbsp;     @param predicate the give predicate
+<i>50</i>&nbsp;     @return true if this position is a key and its name tested on a given predicate is true
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    default boolean isKey(final Predicate&lt;String&gt; predicate)
+<i>53</i>&nbsp;    {
+<b class="fc"><i>54</i>&nbsp;        if (isIndex()) return false;</b>
+<b class="fc"><i>55</i>&nbsp;        return Objects.requireNonNull(predicate)</b>
+<b class="fc"><i>56</i>&nbsp;                      .test(this.asKey().name);</b>
+<i>57</i>&nbsp;    }
+<i>58</i>&nbsp;
+<i>59</i>&nbsp;    /**
+<i>60</i>&nbsp;     Returns true if this position is an index and its index tested on a given predicate is true.
+<i>61</i>&nbsp;     @param predicate the give predicate
+<i>62</i>&nbsp;     @return true if this position is an index and its index tested on a given predicate is true
+<i>63</i>&nbsp;     */
+<i>64</i>&nbsp;    default boolean isIndex(final IntPredicate predicate)
+<i>65</i>&nbsp;    {
+<b class="fc"><i>66</i>&nbsp;        if (isKey()) return false;</b>
+<b class="fc"><i>67</i>&nbsp;        return Objects.requireNonNull(predicate)</b>
+<b class="fc"><i>68</i>&nbsp;                      .test(this.asIndex().n);</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;    /**
+<i>72</i>&nbsp;     Returns a new value applying pattern matching on the Position type.
+<i>73</i>&nbsp;     @param keyFn function to apply if this Position is a key
+<i>74</i>&nbsp;     @param indexFn function to apply if this Position is an index
+<i>75</i>&nbsp;     @param &lt;T&gt; the type of the object returned
+<i>76</i>&nbsp;     @return an object of type T
+<i>77</i>&nbsp;     */
+<i>78</i>&nbsp;    default &lt;T&gt; T match(final Function&lt;String, T&gt; keyFn,
+<i>79</i>&nbsp;                        final IntFunction&lt;T&gt; indexFn
+<i>80</i>&nbsp;                       )
+<i>81</i>&nbsp;    {
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;        return isKey() ? Objects.requireNonNull(keyFn)</b>
+<b class="fc"><i>84</i>&nbsp;                                .apply(((Key) this).name) : Objects.requireNonNull(indexFn)</b>
+<b class="fc"><i>85</i>&nbsp;                                                                   .apply(((Index) this).n);</b>
+<i>86</i>&nbsp;    }
+<i>87</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

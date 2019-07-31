@@ -1,0 +1,223 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Try</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Try (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Try</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.9%
+  </span>
+  <span class="absValue">
+    (10/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    75.9%
+  </span>
+  <span class="absValue">
+    (22/ 29)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.checkerframework.checker.nullness.qual.EnsuresNonNull;
+<i>4</i>&nbsp;import org.checkerframework.checker.nullness.qual.Nullable;
+<i>5</i>&nbsp;
+<i>6</i>&nbsp;import java.util.Optional;
+<i>7</i>&nbsp;import java.util.function.Supplier;
+<i>8</i>&nbsp;
+<i>9</i>&nbsp;/**
+<i>10</i>&nbsp; *Computation that parses a string into a Json and may either result in a MalformedJson exception
+<i>11</i>&nbsp; *or a successfully parsed json.
+<i>12</i>&nbsp; */
+<i>13</i>&nbsp;public final class Try
+<i>14</i>&nbsp;{
+<i>15</i>&nbsp;
+<i>16</i>&nbsp;    private @Nullable JsObj obj;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    private @Nullable JsArray arr;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    private @Nullable MalformedJson error;
+<i>21</i>&nbsp;
+<i>22</i>&nbsp;    @EnsuresNonNull(&quot;#1&quot;)
+<i>23</i>&nbsp;    Try(final JsObj obj)
+<i>24</i>&nbsp;
+<b class="fc"><i>25</i>&nbsp;    {</b>
+<b class="fc"><i>26</i>&nbsp;        this.obj = obj;</b>
+<i>27</i>&nbsp;
+<b class="fc"><i>28</i>&nbsp;    }</b>
+<i>29</i>&nbsp;
+<i>30</i>&nbsp;    @EnsuresNonNull(&quot;#1&quot;)
+<i>31</i>&nbsp;    Try(final JsArray arr)
+<b class="fc"><i>32</i>&nbsp;    {</b>
+<b class="fc"><i>33</i>&nbsp;        this.arr = arr;</b>
+<i>34</i>&nbsp;
+<b class="fc"><i>35</i>&nbsp;    }</b>
+<i>36</i>&nbsp;
+<i>37</i>&nbsp;    @EnsuresNonNull(&quot;#1&quot;)
+<i>38</i>&nbsp;    Try(MalformedJson error)
+<b class="fc"><i>39</i>&nbsp;    {</b>
+<b class="fc"><i>40</i>&nbsp;        this.error = error;</b>
+<b class="fc"><i>41</i>&nbsp;    }</b>
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     Returns true if the parsed string is a malformed json.
+<i>45</i>&nbsp;     @return true if the parsed string is a malformed json
+<i>46</i>&nbsp;     */
+<i>47</i>&nbsp;    public boolean isFailure()
+<i>48</i>&nbsp;    {
+<b class="fc"><i>49</i>&nbsp;        return error != null;</b>
+<i>50</i>&nbsp;    }
+<i>51</i>&nbsp;
+<i>52</i>&nbsp;    /**
+<i>53</i>&nbsp;     Returns true if the parsed string is a well-formed json.
+<i>54</i>&nbsp;     @return true if the parsed string is a well-formed json
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    public boolean isSuccess()
+<i>57</i>&nbsp;    {
+<b class="fc"><i>58</i>&nbsp;        return arr != null;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     Returns the computed JsObj if the parsed string is a well-formed json object, throwing a
+<i>63</i>&nbsp;     MalformedJson exception otherwise.
+<i>64</i>&nbsp;     @return a JsObj
+<i>65</i>&nbsp;     @throws MalformedJson if the parsed string is not a well-formed json object
+<i>66</i>&nbsp;     */
+<i>67</i>&nbsp;    public JsObj objOrElseThrow() throws MalformedJson
+<i>68</i>&nbsp;    {
+<b class="fc"><i>69</i>&nbsp;        if (obj != null) return obj;</b>
+<b class="fc"><i>70</i>&nbsp;        if (arr != null) throw MalformedJson.expectedObj(arr.toString());</b>
+<b class="fc"><i>71</i>&nbsp;        if (error != null) throw error;</b>
+<b class="nc"><i>72</i>&nbsp;        throw new Error(&quot;Try.objOrElseThrow without an arr nor obj nor exception&quot;);</b>
+<i>73</i>&nbsp;    }
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    /**
+<i>76</i>&nbsp;     Returns the computed JsArray if the parsed string is a well-formed json array, throwing a
+<i>77</i>&nbsp;     MalformedJson exception otherwise.
+<i>78</i>&nbsp;     @return a JsArray
+<i>79</i>&nbsp;     @throws MalformedJson if the parsed string is not a well-formed json array
+<i>80</i>&nbsp;     */
+<i>81</i>&nbsp;    public JsArray arrOrElseThrow() throws MalformedJson
+<i>82</i>&nbsp;    {
+<b class="fc"><i>83</i>&nbsp;        if (arr != null) return arr;</b>
+<b class="fc"><i>84</i>&nbsp;        if (obj != null) throw MalformedJson.expectedArray(obj.toString());</b>
+<b class="fc"><i>85</i>&nbsp;        if (error != null) throw error;</b>
+<b class="nc"><i>86</i>&nbsp;        throw new Error(&quot;Try.arrOrElseThrow without an arr nor obj nor exception&quot;);</b>
+<i>87</i>&nbsp;    }
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    /**
+<i>90</i>&nbsp;     Returns the computed Json if the parsed string is a well-formed json, throwing a MalformedJson
+<i>91</i>&nbsp;     exception otherwise.
+<i>92</i>&nbsp;     @return a Json
+<i>93</i>&nbsp;     @throws MalformedJson if the parsed string is not a well-formed json
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    public Json&lt;?&gt; orElseThrow() throws MalformedJson
+<i>96</i>&nbsp;    {
+<b class="fc"><i>97</i>&nbsp;        if (arr != null) return arr;</b>
+<b class="fc"><i>98</i>&nbsp;        if (obj != null) return obj;</b>
+<b class="fc"><i>99</i>&nbsp;        if (error != null) throw error;</b>
+<b class="nc"><i>100</i>&nbsp;        throw new Error(&quot;Try.orElseThrow without an arr nor obj nor exception&quot;);</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     Returns the computed JsArray if the parsed string is a well-formed json array, returning the JsArray
+<i>105</i>&nbsp;     given by the supplier otherwise.
+<i>106</i>&nbsp;     @param  other the supplier
+<i>107</i>&nbsp;     @return a JsArray
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    public JsArray arrOrElse(Supplier&lt;JsArray&gt; other)
+<i>110</i>&nbsp;    {
+<b class="fc"><i>111</i>&nbsp;        return arr != null ? arr : other.get();</b>
+<i>112</i>&nbsp;    }
+<i>113</i>&nbsp;
+<i>114</i>&nbsp;    /**
+<i>115</i>&nbsp;     Returns the computed JsObj if the parsed string is a well-formed json object, returning the JsObj
+<i>116</i>&nbsp;     given by the supplier otherwise.
+<i>117</i>&nbsp;     @param  other the supplier
+<i>118</i>&nbsp;     @return a JsArray
+<i>119</i>&nbsp;     */
+<i>120</i>&nbsp;    public JsObj objOrElse(Supplier&lt;JsObj&gt; other)
+<i>121</i>&nbsp;    {
+<b class="fc"><i>122</i>&nbsp;        return obj != null ? obj : other.get();</b>
+<i>123</i>&nbsp;    }
+<i>124</i>&nbsp;
+<i>125</i>&nbsp;    /**
+<i>126</i>&nbsp;     Returns the computed Json wrapped in an optional if the parsed string is a well-formed json,
+<i>127</i>&nbsp;     returning an empty optional otherwise.
+<i>128</i>&nbsp;     @return  Optional.empty() if the parsed string is not a well-formed json, returning an
+<i>129</i>&nbsp;     Optional containing the computed Json otherwise.
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public Optional&lt;Json&lt;?&gt;&gt; toOptional()
+<i>132</i>&nbsp;    {
+<b class="nc"><i>133</i>&nbsp;        if (arr != null) return Optional.of(arr);</b>
+<b class="nc"><i>134</i>&nbsp;        if (obj != null) return Optional.of(obj);</b>
+<b class="nc"><i>135</i>&nbsp;        if (error != null) return Optional.empty();</b>
+<b class="nc"><i>136</i>&nbsp;        throw new Error(&quot;Try.toOptional without an arr nor obj nor exception&quot;);</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;}
+<i>140</i>&nbsp;
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

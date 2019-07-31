@@ -1,0 +1,175 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MalformedJson</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MalformedJson (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MalformedJson</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (14/ 14)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.text.MessageFormat;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;/**
+<i>6</i>&nbsp; Exception returned when a string can not be parsed into a Json or the json parsed has a different
+<i>7</i>&nbsp; type than the expected.
+<i>8</i>&nbsp; */
+<i>9</i>&nbsp;public final class MalformedJson extends Exception
+<i>10</i>&nbsp;{
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;    MalformedJson(final String message)
+<i>13</i>&nbsp;    {
+<b class="fc"><i>14</i>&nbsp;        super(message);</b>
+<b class="fc"><i>15</i>&nbsp;    }</b>
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    private static final long serialVersionUID = 1L;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;
+<i>20</i>&nbsp;    static MalformedJson expectedArray(String str)
+<i>21</i>&nbsp;    {
+<b class="fc"><i>22</i>&nbsp;        return new MalformedJson(String.format(&quot;Expected a json array [...]. Received: %s&quot;,</b>
+<i>23</i>&nbsp;                                               str
+<i>24</i>&nbsp;                                              ));
+<i>25</i>&nbsp;    }
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    static MalformedJson expectedObj(String str)
+<i>28</i>&nbsp;    {
+<b class="fc"><i>29</i>&nbsp;        return new MalformedJson(String.format(&quot;Expected a json object {...}. Received: %s&quot;,</b>
+<i>30</i>&nbsp;                                               str
+<i>31</i>&nbsp;                                              ));
+<i>32</i>&nbsp;    }
+<i>33</i>&nbsp;
+<i>34</i>&nbsp;    static MalformedJson invalidToken(JsParser.Tokenizer.Token token,
+<i>35</i>&nbsp;                                      JsParser.Location location,
+<i>36</i>&nbsp;                                      String expectedTokens
+<i>37</i>&nbsp;                                     )
+<i>38</i>&nbsp;    {
+<i>39</i>&nbsp;
+<b class="fc"><i>40</i>&nbsp;        return new MalformedJson(MessageFormat.format(&quot;Invalid token={0} at {1}. Expected tokens are: {2}&quot;,</b>
+<i>41</i>&nbsp;                                                      token,
+<i>42</i>&nbsp;                                                      location,
+<i>43</i>&nbsp;                                                      expectedTokens
+<i>44</i>&nbsp;                                                     )
+<i>45</i>&nbsp;        );
+<i>46</i>&nbsp;    }
+<i>47</i>&nbsp;
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    static MalformedJson unexpectedChar(int unexpected,
+<i>50</i>&nbsp;                                        JsParser.Location location
+<i>51</i>&nbsp;                                       )
+<i>52</i>&nbsp;    {
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;
+<b class="fc"><i>55</i>&nbsp;        return new MalformedJson(MessageFormat.format(&quot;Unexpected char {0} at {1}&quot;,</b>
+<b class="fc"><i>56</i>&nbsp;                                                       unexpected,</b>
+<i>57</i>&nbsp;                                                       location
+<i>58</i>&nbsp;                                                      )
+<i>59</i>&nbsp;        );
+<i>60</i>&nbsp;    }
+<i>61</i>&nbsp;
+<i>62</i>&nbsp;    static MalformedJson expectedChar(int unexpected,
+<i>63</i>&nbsp;                                      JsParser.Location location,
+<i>64</i>&nbsp;                                      char expected
+<i>65</i>&nbsp;                                     )
+<i>66</i>&nbsp;    {
+<i>67</i>&nbsp;
+<b class="fc"><i>68</i>&nbsp;        return new MalformedJson(MessageFormat.format(&quot;Unexpected char {0} at {1}, expecting &#39;&#39;{2}&#39;&#39;&quot;,</b>
+<b class="fc"><i>69</i>&nbsp;                                                      String.valueOf(unexpected),</b>
+<i>70</i>&nbsp;                                                      location,
+<b class="fc"><i>71</i>&nbsp;                                                      expected</b>
+<i>72</i>&nbsp;                                                     )
+<i>73</i>&nbsp;        );
+<i>74</i>&nbsp;    }
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;    static MalformedJson expectedChar(int unexpected,
+<i>77</i>&nbsp;                                      JsParser.Location location,
+<i>78</i>&nbsp;                                      char expected,
+<i>79</i>&nbsp;                                      char expected1
+<i>80</i>&nbsp;                                     )
+<i>81</i>&nbsp;    {
+<i>82</i>&nbsp;
+<b class="fc"><i>83</i>&nbsp;        return new MalformedJson(MessageFormat.format(&quot;Unexpected char {0} at {1}, expecting &#39;&#39;{2}&#39;&#39; or &#39;&#39;{3}&#39;&#39;&quot;,</b>
+<b class="fc"><i>84</i>&nbsp;                                                      String.valueOf(unexpected),</b>
+<i>85</i>&nbsp;                                                      location,
+<b class="fc"><i>86</i>&nbsp;                                                      expected,</b>
+<b class="fc"><i>87</i>&nbsp;                                                      expected1</b>
+<i>88</i>&nbsp;                                                     )
+<i>89</i>&nbsp;        );
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

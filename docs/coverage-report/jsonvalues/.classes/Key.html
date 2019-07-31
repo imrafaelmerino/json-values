@@ -1,0 +1,210 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Key</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Key (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Key</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    90%
+  </span>
+  <span class="absValue">
+    (9/ 10)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    88.2%
+  </span>
+  <span class="absValue">
+    (15/ 17)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.checkerframework.checker.nullness.qual.Nullable;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.util.Objects;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; Represents the Key of a JsElem in a JsObj.
+<i>9</i>&nbsp; */
+<i>10</i>&nbsp;public final class Key implements Position
+<i>11</i>&nbsp;{
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;    /**
+<i>14</i>&nbsp;     * name of the key.
+<i>15</i>&nbsp;     */
+<i>16</i>&nbsp;    public final String name;
+<i>17</i>&nbsp;
+<i>18</i>&nbsp;    private Key(final String name)
+<b class="fc"><i>19</i>&nbsp;    {</b>
+<b class="fc"><i>20</i>&nbsp;        this.name = name;</b>
+<b class="fc"><i>21</i>&nbsp;    }</b>
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;    /**
+<i>24</i>&nbsp;     * Returns a new instance which represents a key with the given name in a json object. Any string,
+<i>25</i>&nbsp;     * but null, can represent a key in a json object, even the empty string.
+<i>26</i>&nbsp;     *
+<i>27</i>&nbsp;     * @param key the given name of the key
+<i>28</i>&nbsp;     * @return a new Key object
+<i>29</i>&nbsp;     */
+<i>30</i>&nbsp;    public static Key of(String key)
+<i>31</i>&nbsp;    {
+<b class="fc"><i>32</i>&nbsp;        return new Key(Objects.requireNonNull(key));</b>
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     compares this key with another given position. If the given position is a key, both are compared
+<i>38</i>&nbsp;     lexicographically, if it&#39;s an index, both are compared numerically.
+<i>39</i>&nbsp;     @param o the given position
+<i>40</i>&nbsp;     @return 0 if they are equal, +1 if this is greater, -1 otherwise
+<i>41</i>&nbsp;     */
+<i>42</i>&nbsp;    @Override
+<i>43</i>&nbsp;    public int compareTo(final Position o)
+<i>44</i>&nbsp;    {
+<b class="fc"><i>45</i>&nbsp;        if (Objects.requireNonNull(o)</b>
+<b class="fc"><i>46</i>&nbsp;                   .isKey()) return name.compareTo(o.asKey().name);</b>
+<b class="nc"><i>47</i>&nbsp;        return name.compareTo(o.asIndex().toString());</b>
+<i>48</i>&nbsp;
+<i>49</i>&nbsp;    }
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    /**
+<i>52</i>&nbsp;     * Returns this key.
+<i>53</i>&nbsp;     * @return this object
+<i>54</i>&nbsp;     */
+<i>55</i>&nbsp;    @Override
+<i>56</i>&nbsp;    public Key asKey()
+<i>57</i>&nbsp;    {
+<b class="fc"><i>58</i>&nbsp;        return this;</b>
+<i>59</i>&nbsp;    }
+<i>60</i>&nbsp;
+<i>61</i>&nbsp;    /**
+<i>62</i>&nbsp;     throws UnsupportedOperationException.
+<i>63</i>&nbsp;     * @throws UnsupportedOperationException a Key can&#39;t be casted into an Index
+<i>64</i>&nbsp;     */
+<i>65</i>&nbsp;    @Override
+<i>66</i>&nbsp;    public Index asIndex()
+<i>67</i>&nbsp;    {
+<b class="fc"><i>68</i>&nbsp;        throw new UnsupportedOperationException(&quot;key.asIndex&quot;);</b>
+<i>69</i>&nbsp;    }
+<i>70</i>&nbsp;
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;    /**
+<i>73</i>&nbsp;     * Returns false.
+<i>74</i>&nbsp;     * @return false
+<i>75</i>&nbsp;     */
+<i>76</i>&nbsp;    @Override
+<i>77</i>&nbsp;    public boolean isIndex()
+<i>78</i>&nbsp;    {
+<b class="fc"><i>79</i>&nbsp;        return false;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     * Returns true.
+<i>84</i>&nbsp;     * @return true
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    @Override
+<i>87</i>&nbsp;    public boolean isKey()
+<i>88</i>&nbsp;    {
+<b class="fc"><i>89</i>&nbsp;        return true;</b>
+<i>90</i>&nbsp;    }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;    /**
+<i>93</i>&nbsp;     *
+<i>94</i>&nbsp;     * Returns the name of the key.
+<i>95</i>&nbsp;     * @return the name of the key
+<i>96</i>&nbsp;     */
+<i>97</i>&nbsp;    @Override
+<i>98</i>&nbsp;    public String toString()
+<i>99</i>&nbsp;    {
+<b class="nc"><i>100</i>&nbsp;        return name;</b>
+<i>101</i>&nbsp;    }
+<i>102</i>&nbsp;
+<i>103</i>&nbsp;    /**
+<i>104</i>&nbsp;     *
+<i>105</i>&nbsp;     * Returns true if that is a key and both have the same name.
+<i>106</i>&nbsp;     * @param that other object
+<i>107</i>&nbsp;     * @return true if both object are Keys with the same name
+<i>108</i>&nbsp;     */
+<i>109</i>&nbsp;    @Override
+<i>110</i>&nbsp;    public boolean equals(final @Nullable Object that)
+<i>111</i>&nbsp;    {
+<b class="fc"><i>112</i>&nbsp;        if (that == null || getClass() != that.getClass()) return false;</b>
+<b class="fc"><i>113</i>&nbsp;        if (this == that) return true;</b>
+<b class="fc"><i>114</i>&nbsp;        final Key thatObj = (Key) that;</b>
+<b class="fc"><i>115</i>&nbsp;        return name.equals(thatObj.name);</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     * Returns the hashcode of this key.
+<i>120</i>&nbsp;     * @return the hashcode of the name.
+<i>121</i>&nbsp;     */
+<i>122</i>&nbsp;    @Override
+<i>123</i>&nbsp;    public int hashCode()
+<i>124</i>&nbsp;    {
+<b class="fc"><i>125</i>&nbsp;        return name.hashCode();</b>
+<i>126</i>&nbsp;    }
+<i>127</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

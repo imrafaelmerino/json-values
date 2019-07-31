@@ -1,0 +1,3064 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: Json</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: Json (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">Json</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    38.6%
+  </span>
+  <span class="absValue">
+    (64/ 166)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    42.5%
+  </span>
+  <span class="absValue">
+    (153/ 360)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import jsonvalues.JsArray.TYPE;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.io.Serializable;
+<i>6</i>&nbsp;import java.io.StringReader;
+<i>7</i>&nbsp;import java.math.BigDecimal;
+<i>8</i>&nbsp;import java.math.BigInteger;
+<i>9</i>&nbsp;import java.util.*;
+<i>10</i>&nbsp;import java.util.function.*;
+<i>11</i>&nbsp;import java.util.stream.Stream;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;import static java.util.Objects.requireNonNull;
+<i>14</i>&nbsp;import static jsonvalues.Functions.MINUS_ONE_INDEX;
+<i>15</i>&nbsp;import static jsonvalues.JsParser.Event.START_ARRAY;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;/**
+<i>18</i>&nbsp; &lt;pre&gt;
+<i>19</i>&nbsp; Represents a json of type T, where T is the type of the container, either a JsObj or a JsArray.
+<i>20</i>&nbsp;
+<i>21</i>&nbsp; A json of any type can be modeled as a set of pairs {@link JsPair}=({@link JsPath}, {@link JsElem}), where:
+<i>22</i>&nbsp;
+<i>23</i>&nbsp; - a JsElem is a {@link JsBool} or {@link JsStr} or {@link JsNumber} or {@link JsNull}, or another {@link Json} like {@link JsObj} or {@link JsArray},
+<i>24</i>&nbsp; what makes the data structure recursive.
+<i>25</i>&nbsp;
+<i>26</i>&nbsp; - a JsPath represents the location of the element in the json.
+<i>27</i>&nbsp;
+<i>28</i>&nbsp; For example, the json
+<i>29</i>&nbsp; {
+<i>30</i>&nbsp; &quot;a&quot;:1, &quot;x&quot;:{ &quot;c&quot;: true, &quot;d&quot;:null, e: [false, 1, &quot;hi&quot;] }
+<i>31</i>&nbsp; }
+<i>32</i>&nbsp;
+<i>33</i>&nbsp; can be seen as the following set:
+<i>34</i>&nbsp;
+<i>35</i>&nbsp; Set[(a,1), (x.c,true), (x.d,null), (x.e.0,false), (x.e.1,1), (x.e.2,&quot;hi&quot;), (_,NOTHING)]
+<i>36</i>&nbsp;
+<i>37</i>&nbsp; where _, which means any other JsPath, and the special element {@link JsNothing#NOTHING}, makes the
+<i>38</i>&nbsp; function {@link #get(JsPath)} total (defined for every possible path). Moreover, inserting JsNothing
+<i>39</i>&nbsp; in a json doesn&#39;t change the json, which is very convenient when passing functions as parameters to
+<i>40</i>&nbsp; put data in:
+<i>41</i>&nbsp;
+<i>42</i>&nbsp; //all the logic goes into the supplier{@code
+<i>43</i>&nbsp;Supplier&lt;JsElem&gt; supplier = ()-&gt; (doesnt-put-anything-condition) ? JsNothing.NOTHING : JsInt.of(2);
+<i>44</i>&nbsp;json.putIfAbsent(path,supplier)
+<i>45</i>&nbsp;}
+<i>46</i>&nbsp; Another way to see a json is like a stream of pairs, which opens the door to doing all the operations
+<i>47</i>&nbsp; that were introduced in Java 8 (map, filter, reduce, etc). For this purpose the methods {@link #stream_()}
+<i>48</i>&nbsp; or {@link #stream()} are provided. To put the stream back into an &lt;b&gt;immutable&lt;/b&gt; json the collectors {@link JsObj#collector()}
+<i>49</i>&nbsp; and {@link JsArray#collector()} can be used, whereas the collectors {@link JsObj#_collector_()} and {@link JsArray#_collector_()}
+<i>50</i>&nbsp; would put the stream back into a &lt;b&gt;mutable&lt;/b&gt; json.
+<i>51</i>&nbsp;
+<i>52</i>&nbsp; All the methods that accept a {@link JsPath} are overloaded and accept also a path-like string instead.
+<i>53</i>&nbsp;
+<i>54</i>&nbsp; There are two types of conventions on method names:
+<i>55</i>&nbsp;
+<i>56</i>&nbsp; -Static factory methods that are prefixed and suffixed with underscore return mutable instances.
+<i>57</i>&nbsp; -Methods that are suffixed with underscore traverse the whole json recursively.
+<i>58</i>&nbsp;
+<i>59</i>&nbsp; All the methods throw a NullPointerException when any of the params passed in is null. The exception
+<i>60</i>&nbsp; &lt;code&gt;UnsupportedOperationException&lt;/code&gt; is thrown when the user calls a method inappropriately:
+<i>61</i>&nbsp; for example calling the method &lt;code&gt;asJsStr&lt;/code&gt; in a &lt;code&gt;JsNull&lt;/code&gt; instance or calling the
+<i>62</i>&nbsp; method head in an empty array, etc. Normally, when that happens, a previous check is missing.
+<i>63</i>&nbsp; &lt;/pre&gt;
+<i>64</i>&nbsp;
+<i>65</i>&nbsp; @param &lt;T&gt; Type of container: either an object or an array
+<i>66</i>&nbsp; @see JsObj to work with jsons that are objects
+<i>67</i>&nbsp; @see JsArray to work with jsons that are arrays
+<i>68</i>&nbsp;
+<i>69</i>&nbsp; @author Rafael Merino Garcia */
+<i>70</i>&nbsp;public interface Json&lt;T extends Json&lt;T&gt;&gt; extends JsElem, Serializable
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;{
+<i>73</i>&nbsp;
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;    long serialVersionUID = 1L;
+<i>76</i>&nbsp;
+<i>77</i>&nbsp;    /**
+<i>78</i>&nbsp;     Tries to parse the string into a mutable json.
+<i>79</i>&nbsp;     @param str the string to be parsed
+<i>80</i>&nbsp;     @return a {@link Try} computation
+<i>81</i>&nbsp;     */
+<i>82</i>&nbsp;    static Try _parse_(final String str)
+<i>83</i>&nbsp;    {
+<i>84</i>&nbsp;
+<b class="fc"><i>85</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>86</i>&nbsp;        {
+<i>87</i>&nbsp;
+<b class="fc"><i>88</i>&nbsp;            final JsParser.Event event = parser.next();</b>
+<i>89</i>&nbsp;
+<b class="fc"><i>90</i>&nbsp;            if (event == START_ARRAY)</b>
+<i>91</i>&nbsp;            {
+<b class="fc"><i>92</i>&nbsp;                final MyJavaImpl.Vector array = new MyJavaImpl.Vector();</b>
+<b class="fc"><i>93</i>&nbsp;                Functions.parse(array,</b>
+<i>94</i>&nbsp;                                parser
+<i>95</i>&nbsp;                               );
+<b class="fc"><i>96</i>&nbsp;                return new Try(new JsArrayMutableImpl(array));</b>
+<i>97</i>&nbsp;            }
+<i>98</i>&nbsp;
+<b class="fc"><i>99</i>&nbsp;            final MyJavaImpl.Map obj = new MyJavaImpl.Map();</b>
+<b class="fc"><i>100</i>&nbsp;            Functions.parse(obj,</b>
+<i>101</i>&nbsp;                            parser
+<i>102</i>&nbsp;                           );
+<b class="fc"><i>103</i>&nbsp;            return new Try(new JsObjMutableImpl(obj));</b>
+<i>104</i>&nbsp;
+<i>105</i>&nbsp;
+<b class="fc"><i>106</i>&nbsp;        }</b>
+<i>107</i>&nbsp;
+<b class="fc"><i>108</i>&nbsp;        catch (MalformedJson e)</b>
+<i>109</i>&nbsp;        {
+<i>110</i>&nbsp;
+<b class="fc"><i>111</i>&nbsp;            return new Try(e);</b>
+<i>112</i>&nbsp;
+<i>113</i>&nbsp;        }
+<i>114</i>&nbsp;
+<i>115</i>&nbsp;    }
+<i>116</i>&nbsp;
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     Tries to parse the string into a mutable json, performing some operations while the parsing.
+<i>120</i>&nbsp;     It&#39;s faster to do certain operations right while the parsing instead of doing the parsing and
+<i>121</i>&nbsp;     applying them later.
+<i>122</i>&nbsp;     @param str     the string that will be parsed.
+<i>123</i>&nbsp;     @param options a builder with the filters and maps that, if specified, will be applied during the parsing
+<i>124</i>&nbsp;     @return a {@link Try} computation
+<i>125</i>&nbsp;     */
+<i>126</i>&nbsp;    static Try _parse_(final String str,
+<i>127</i>&nbsp;                       final ParseOptions options
+<i>128</i>&nbsp;                      )
+<i>129</i>&nbsp;    {
+<b class="fc"><i>130</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>131</i>&nbsp;        {
+<i>132</i>&nbsp;
+<b class="fc"><i>133</i>&nbsp;            final JsParser.Event event = parser.next();</b>
+<i>134</i>&nbsp;
+<b class="fc"><i>135</i>&nbsp;            if (event == START_ARRAY)</b>
+<i>136</i>&nbsp;            {
+<b class="fc"><i>137</i>&nbsp;                final MyJavaImpl.Vector array = new MyJavaImpl.Vector();</b>
+<b class="fc"><i>138</i>&nbsp;                Functions.parse(array,</b>
+<i>139</i>&nbsp;                                parser,
+<b class="fc"><i>140</i>&nbsp;                                options.create(),</b>
+<i>141</i>&nbsp;                                MINUS_ONE_INDEX
+<i>142</i>&nbsp;                               );
+<b class="fc"><i>143</i>&nbsp;                return new Try(new JsArrayMutableImpl(array));</b>
+<i>144</i>&nbsp;            }
+<i>145</i>&nbsp;
+<b class="fc"><i>146</i>&nbsp;            final MyJavaImpl.Map obj = new MyJavaImpl.Map();</b>
+<b class="fc"><i>147</i>&nbsp;            Functions.parse(obj,</b>
+<i>148</i>&nbsp;                            parser,
+<b class="fc"><i>149</i>&nbsp;                            options.create(),</b>
+<b class="fc"><i>150</i>&nbsp;                            JsPath.empty()</b>
+<i>151</i>&nbsp;                           );
+<b class="fc"><i>152</i>&nbsp;            return new Try(new JsObjMutableImpl(obj));</b>
+<i>153</i>&nbsp;
+<i>154</i>&nbsp;
+<b class="fc"><i>155</i>&nbsp;        }</b>
+<i>156</i>&nbsp;
+<b class="nc"><i>157</i>&nbsp;        catch (MalformedJson e)</b>
+<i>158</i>&nbsp;        {
+<i>159</i>&nbsp;
+<b class="nc"><i>160</i>&nbsp;            return new Try(e);</b>
+<i>161</i>&nbsp;
+<i>162</i>&nbsp;        }
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;    }
+<i>165</i>&nbsp;
+<i>166</i>&nbsp;
+<i>167</i>&nbsp;    /**
+<i>168</i>&nbsp;     Appends all the elements of the array, starting from the head, to the array located at the given
+<i>169</i>&nbsp;     path in this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>170</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>171</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>172</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>173</i>&nbsp;     @param path  the given JsPath pointing to the array in which all the elements will be appended
+<i>174</i>&nbsp;     @param elems the JsArray of elements to be appended
+<i>175</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>176</i>&nbsp;     */
+<i>177</i>&nbsp;    T appendAll(final JsPath path,
+<i>178</i>&nbsp;                final JsArray elems
+<i>179</i>&nbsp;               );
+<i>180</i>&nbsp;
+<i>181</i>&nbsp;    /**
+<i>182</i>&nbsp;     Appends all the elements of the array, starting from the head, to the array located at the given
+<i>183</i>&nbsp;     path in this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>184</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>185</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>186</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>187</i>&nbsp;     @param path  the given path-like string pointing to the array in which all the elements will be appended
+<i>188</i>&nbsp;     @param elems the JsArray of elements to be appended to the existing or created array
+<i>189</i>&nbsp;
+<i>190</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>191</i>&nbsp;     */
+<i>192</i>&nbsp;    default T appendAll(final String path,
+<i>193</i>&nbsp;                        final JsArray elems
+<i>194</i>&nbsp;                       )
+<i>195</i>&nbsp;    {
+<b class="nc"><i>196</i>&nbsp;        return appendAll(JsPath.of(path),</b>
+<i>197</i>&nbsp;                         elems
+<i>198</i>&nbsp;                        );
+<i>199</i>&nbsp;    }
+<i>200</i>&nbsp;
+<i>201</i>&nbsp;
+<i>202</i>&nbsp;    /**
+<i>203</i>&nbsp;     Appends one or more elements, starting from the first, to the array located at the given path in
+<i>204</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>205</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>206</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>207</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>208</i>&nbsp;     @param path   the given JsPath pointing to the array in which all the elements will be appended
+<i>209</i>&nbsp;     @param elem   the first JsElem to be appended to the existing or created array
+<i>210</i>&nbsp;     @param others more optional JsElem to be appended
+<i>211</i>&nbsp;
+<i>212</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    default T append(final JsPath path,
+<i>215</i>&nbsp;                     final JsElem elem,
+<i>216</i>&nbsp;                     final JsElem... others
+<i>217</i>&nbsp;                    )
+<i>218</i>&nbsp;    {
+<i>219</i>&nbsp;
+<i>220</i>&nbsp;
+<b class="fc"><i>221</i>&nbsp;        T result = append(path,</b>
+<i>222</i>&nbsp;                          elem
+<i>223</i>&nbsp;                         );
+<b class="fc"><i>224</i>&nbsp;        for (final JsElem other : Objects.requireNonNull(others))</b>
+<i>225</i>&nbsp;        {
+<b class="fc"><i>226</i>&nbsp;            result = result.append(path,</b>
+<b class="fc"><i>227</i>&nbsp;                                   Objects.requireNonNull(other)</b>
+<i>228</i>&nbsp;                                  );
+<i>229</i>&nbsp;        }
+<b class="fc"><i>230</i>&nbsp;        return result;</b>
+<i>231</i>&nbsp;
+<i>232</i>&nbsp;    }
+<i>233</i>&nbsp;
+<i>234</i>&nbsp;    /**
+<i>235</i>&nbsp;     Appends one or more elements, starting from the first, to the array located at the given path in
+<i>236</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>237</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>238</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>239</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>240</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the elements will be appended
+<i>241</i>&nbsp;     @param elem   the first JsElem to be appended to the existing or created array
+<i>242</i>&nbsp;     @param others more optional JsElem to be appended
+<i>243</i>&nbsp;
+<i>244</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>245</i>&nbsp;     */
+<i>246</i>&nbsp;    default T append(final String path,
+<i>247</i>&nbsp;                     final JsElem elem,
+<i>248</i>&nbsp;                     final JsElem... others
+<i>249</i>&nbsp;                    )
+<i>250</i>&nbsp;    {
+<b class="nc"><i>251</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>252</i>&nbsp;                      elem,
+<i>253</i>&nbsp;                      others
+<i>254</i>&nbsp;                     );
+<i>255</i>&nbsp;    }
+<i>256</i>&nbsp;
+<i>257</i>&nbsp;    /**
+<i>258</i>&nbsp;     Appends one element to the array located at the given path in this json. If the array doesn&#39;t exist,
+<i>259</i>&nbsp;     a new one is created, replacing any existing element in the path and filling empty indexes in arrays
+<i>260</i>&nbsp;     with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it&#39;s an array
+<i>261</i>&nbsp;     and the head of the path is a key or when it&#39;s an object and the head of the path is an index.
+<i>262</i>&nbsp;     @param path   the given path-like string pointing to the array in which the element will be appended
+<i>263</i>&nbsp;     @param elem   the JsElem to be appended to the existing or created array
+<i>264</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>265</i>&nbsp;     */
+<i>266</i>&nbsp;    default T append(final String path,
+<i>267</i>&nbsp;                     final JsElem elem
+<i>268</i>&nbsp;                    )
+<i>269</i>&nbsp;    {
+<b class="nc"><i>270</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>271</i>&nbsp;                      elem
+<i>272</i>&nbsp;                     );
+<i>273</i>&nbsp;    }
+<i>274</i>&nbsp;
+<i>275</i>&nbsp;    /**
+<i>276</i>&nbsp;     Appends one element to the array located at the given path in this json. If the array doesn&#39;t exist,
+<i>277</i>&nbsp;     a new one is created, replacing any existing element in the path and filling empty indexes in arrays
+<i>278</i>&nbsp;     with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it&#39;s an array
+<i>279</i>&nbsp;     and the head of the path is a key or when it&#39;s an object and the head of the path is an index.
+<i>280</i>&nbsp;     @param path   the path pointing to the array in which the element will be appended
+<i>281</i>&nbsp;     @param elem   the JsElem to be appended to the existing or created array
+<i>282</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>283</i>&nbsp;     */
+<i>284</i>&nbsp;    T append(final JsPath path,
+<i>285</i>&nbsp;             final JsElem elem
+<i>286</i>&nbsp;            );
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    /**
+<i>290</i>&nbsp;     Appends the element given by the supplier, to the array located at the given path in this json,
+<i>291</i>&nbsp;     returning the same this instance if the array is not present. The supplier is not applied if
+<i>292</i>&nbsp;     there&#39;s no array at the specified path.
+<i>293</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the element will be appended
+<i>294</i>&nbsp;     @param supplier   the given supplier
+<i>295</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>296</i>&nbsp;     */
+<i>297</i>&nbsp;    default T appendIfPresent(final String path,
+<i>298</i>&nbsp;                              final Supplier&lt;? extends JsElem&gt; supplier
+<i>299</i>&nbsp;                             )
+<i>300</i>&nbsp;    {
+<b class="nc"><i>301</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>302</i>&nbsp;                               supplier
+<i>303</i>&nbsp;                              );
+<i>304</i>&nbsp;    }
+<i>305</i>&nbsp;
+<i>306</i>&nbsp;    /**
+<i>307</i>&nbsp;     Appends the element given by the supplier, to the array located at the given path in this json,
+<i>308</i>&nbsp;     returning the same this instance if the array is not present. The supplier is not applied if
+<i>309</i>&nbsp;     there&#39;s no array at the specified path.
+<i>310</i>&nbsp;     @param path   the JsPath pointing to the existing array in which the element will be appended
+<i>311</i>&nbsp;     @param supplier   the given supplier
+<i>312</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>313</i>&nbsp;     */
+<i>314</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>315</i>&nbsp;                              final Supplier&lt;? extends JsElem&gt; supplier
+<i>316</i>&nbsp;                             )
+<i>317</i>&nbsp;    {
+<b class="fc"><i>318</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<b class="fc"><i>319</i>&nbsp;                                                Objects.requireNonNull(supplier)</b>
+<b class="fc"><i>320</i>&nbsp;                                                       .get()</b>
+<i>321</i>&nbsp;                                               ),
+<i>322</i>&nbsp;                                   it -&gt;
+<i>323</i>&nbsp;                                   {
+<i>324</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="fc"><i>325</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="fc"><i>326</i>&nbsp;                                       return t;</b>
+<i>327</i>&nbsp;                                   }
+<i>328</i>&nbsp;                                  )
+<b class="fc"><i>329</i>&nbsp;                        .apply(get(requireNonNull(path)));</b>
+<i>330</i>&nbsp;    }
+<i>331</i>&nbsp;
+<i>332</i>&nbsp;    /**
+<i>333</i>&nbsp;     Appends all the elements of the array computed by the supplier, starting from the head, to an
+<i>334</i>&nbsp;     array located at the given path in this json, returning the same this instance if the array is 
+<i>335</i>&nbsp;     not present, in which case, the supplier is not invoked.
+<i>336</i>&nbsp;     @param path the given JsPath object pointing to the existing array in which all the elements will be appended
+<i>337</i>&nbsp;     @param supplier   the supplier of the array of elements that will be appended
+<i>338</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>339</i>&nbsp;     */
+<i>340</i>&nbsp;    default T appendAllIfPresent(final JsPath path,
+<i>341</i>&nbsp;                                 final Supplier&lt;JsArray&gt; supplier
+<i>342</i>&nbsp;
+<i>343</i>&nbsp;
+<i>344</i>&nbsp;                                )
+<i>345</i>&nbsp;    {
+<b class="fc"><i>346</i>&nbsp;        return Functions.ifArrElse(it -&gt; appendAll(path,</b>
+<b class="fc"><i>347</i>&nbsp;                                                   requireNonNull(supplier).get()</b>
+<i>348</i>&nbsp;                                                  ),
+<i>349</i>&nbsp;                                   it -&gt;
+<i>350</i>&nbsp;                                   {
+<i>351</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="fc"><i>352</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="fc"><i>353</i>&nbsp;                                       return t;</b>
+<i>354</i>&nbsp;                                   }
+<i>355</i>&nbsp;                                  )
+<b class="fc"><i>356</i>&nbsp;                        .apply(get(requireNonNull(path)));</b>
+<i>357</i>&nbsp;
+<i>358</i>&nbsp;    }
+<i>359</i>&nbsp;
+<i>360</i>&nbsp;    /**
+<i>361</i>&nbsp;     Appends all the elements of the array computed by the supplier, starting from the head, to an array
+<i>362</i>&nbsp;     located at the path in this json, returning the same this instance if the array is not present,
+<i>363</i>&nbsp;     in which case, the supplier is not invoked.
+<i>364</i>&nbsp;     @param path the path-like string pointing to the existing array in which all the elements will be appended
+<i>365</i>&nbsp;     @param supplier the supplier of the array of elements that will be appended
+<i>366</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>367</i>&nbsp;     */
+<i>368</i>&nbsp;    default T appendAllIfPresent(final String path,
+<i>369</i>&nbsp;                                 final Supplier&lt;JsArray&gt; supplier
+<i>370</i>&nbsp;
+<i>371</i>&nbsp;                                )
+<i>372</i>&nbsp;    {
+<b class="nc"><i>373</i>&nbsp;        return appendAllIfPresent(JsPath.of(path),</b>
+<i>374</i>&nbsp;                                  supplier
+<i>375</i>&nbsp;                                 );
+<i>376</i>&nbsp;    }
+<i>377</i>&nbsp;
+<i>378</i>&nbsp;
+<i>379</i>&nbsp;    /**
+<i>380</i>&nbsp;     prepends all the elements of the array, starting from the head, to the array located at the path
+<i>381</i>&nbsp;     in this json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing 
+<i>382</i>&nbsp;     element in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when 
+<i>383</i>&nbsp;     necessary. The same this instance is returned when it&#39;s an array and the head of the path is 
+<i>384</i>&nbsp;     a key or when it&#39;s an object and the head of the path is an index.
+<i>385</i>&nbsp;     @param path  the JsPath pointing to the array in which all the elements will be prepended
+<i>386</i>&nbsp;     @param elems the JsArray of elements to be prepended to the existing or created array
+<i>387</i>&nbsp;
+<i>388</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>389</i>&nbsp;     */
+<i>390</i>&nbsp;    T prependAll(final JsPath path,
+<i>391</i>&nbsp;                 final JsArray elems
+<i>392</i>&nbsp;                );
+<i>393</i>&nbsp;
+<i>394</i>&nbsp;    /**
+<i>395</i>&nbsp;     prepends all the elements of the array, starting from the head, to the array located at the path
+<i>396</i>&nbsp;     in this json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing 
+<i>397</i>&nbsp;     element in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when 
+<i>398</i>&nbsp;     necessary. The same this instance is returned when it&#39;s an array and the head of the path is 
+<i>399</i>&nbsp;     a key or when it&#39;s an object and the head of the path is an index.
+<i>400</i>&nbsp;     @param path  the path-like string pointing to the array in which all the elements will be prepended
+<i>401</i>&nbsp;     @param elems the JsArray of elements to be prepended to the existing or created array
+<i>402</i>&nbsp;
+<i>403</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>404</i>&nbsp;     */
+<i>405</i>&nbsp;    default T prependAll(final String path,
+<i>406</i>&nbsp;                         final JsArray elems
+<i>407</i>&nbsp;                        )
+<i>408</i>&nbsp;    {
+<b class="nc"><i>409</i>&nbsp;        return prependAll(JsPath.of(path),</b>
+<i>410</i>&nbsp;                          elems
+<i>411</i>&nbsp;                         );
+<i>412</i>&nbsp;    }
+<i>413</i>&nbsp;
+<i>414</i>&nbsp;    /**
+<i>415</i>&nbsp;     prepends one or more elements, starting from the first, to the array located at the path in this
+<i>416</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element 
+<i>417</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary. 
+<i>418</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when 
+<i>419</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>420</i>&nbsp;     @param path   the JsPath pointing to the array in which all the elements will be prepended
+<i>421</i>&nbsp;     @param elem   the first JsElem to be prepended to the existing or created array
+<i>422</i>&nbsp;     @param others more optional JsElem to be prepended
+<i>423</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>424</i>&nbsp;     */
+<i>425</i>&nbsp;    default T prepend(final JsPath path,
+<i>426</i>&nbsp;                      final JsElem elem,
+<i>427</i>&nbsp;                      final JsElem... others
+<i>428</i>&nbsp;                     )
+<i>429</i>&nbsp;    {
+<i>430</i>&nbsp;        // T recursive type, this is an instance of T
+<i>431</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="fc"><i>432</i>&nbsp;        T result = (T) this;</b>
+<b class="fc"><i>433</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>434</i>&nbsp;        {
+<b class="fc"><i>435</i>&nbsp;            result = result.prepend(path,</b>
+<b class="fc"><i>436</i>&nbsp;                                    Objects.requireNonNull(others[i - 1])</b>
+<i>437</i>&nbsp;                                   );
+<i>438</i>&nbsp;        }
+<b class="fc"><i>439</i>&nbsp;        return result.prepend(path,</b>
+<i>440</i>&nbsp;                              elem
+<i>441</i>&nbsp;                             );
+<i>442</i>&nbsp;    }
+<i>443</i>&nbsp;
+<i>444</i>&nbsp;    /**
+<i>445</i>&nbsp;     prepends one element to the array located at the path in this json. If the array at the path doesn&#39;t
+<i>446</i>&nbsp;     exist, a new one is created, replacing any existing element in the path and filling empty indexes in
+<i>447</i>&nbsp;     arrays with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it&#39;s
+<i>448</i>&nbsp;     an array and the head of the path is a key or when it&#39;s an object and the head of the path is an index.
+<i>449</i>&nbsp;     @param path   the JsPath pointing to the array in which the element will be prepended
+<i>450</i>&nbsp;     @param elem   the JsElem to be prepended to the existing or created array
+<i>451</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>452</i>&nbsp;     */
+<i>453</i>&nbsp;    T prepend(final JsPath path,
+<i>454</i>&nbsp;              final JsElem elem
+<i>455</i>&nbsp;             );
+<i>456</i>&nbsp;
+<i>457</i>&nbsp;    /**
+<i>458</i>&nbsp;     prepends one element to the array located at the path in this json. If the array at the path doesn&#39;t
+<i>459</i>&nbsp;     exist, a new one is created, replacing any existing element in the path and filling empty indexes in
+<i>460</i>&nbsp;     arrays with {@link jsonvalues.JsNull} when necessary. The same this instance is returned when it&#39;s
+<i>461</i>&nbsp;     an array and the head of the path is a key or when it&#39;s an object and the head of the path is an index.
+<i>462</i>&nbsp;     @param path   the path-like string pointing to the array in which the element will be prepended
+<i>463</i>&nbsp;     @param elem   the JsElem to be prepended to the existing or created array
+<i>464</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>465</i>&nbsp;     */
+<i>466</i>&nbsp;    default T prepend(final String path,
+<i>467</i>&nbsp;                      final JsElem elem
+<i>468</i>&nbsp;                     )
+<i>469</i>&nbsp;    {
+<b class="nc"><i>470</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>471</i>&nbsp;                       elem
+<i>472</i>&nbsp;                      );
+<i>473</i>&nbsp;    }
+<i>474</i>&nbsp;
+<i>475</i>&nbsp;    /**
+<i>476</i>&nbsp;     Prepends one or more elements, starting from the first, to the array located at the path in this
+<i>477</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>478</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>479</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>480</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>481</i>&nbsp;     @param path   the path-like string pointing to the array in which all the elements will be prepended
+<i>482</i>&nbsp;     @param elem   the first JsElem to be prepended to the existing or created array
+<i>483</i>&nbsp;     @param others more optional JsElem to be prepended
+<i>484</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>485</i>&nbsp;     */
+<i>486</i>&nbsp;    default T prepend(final String path,
+<i>487</i>&nbsp;                      final JsElem elem,
+<i>488</i>&nbsp;                      final JsElem... others
+<i>489</i>&nbsp;                     )
+<i>490</i>&nbsp;    {
+<i>491</i>&nbsp;
+<b class="nc"><i>492</i>&nbsp;        return prepend(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>493</i>&nbsp;                       requireNonNull(elem),</b>
+<b class="nc"><i>494</i>&nbsp;                       requireNonNull(others)</b>
+<i>495</i>&nbsp;                      );
+<i>496</i>&nbsp;    }
+<i>497</i>&nbsp;
+<i>498</i>&nbsp;
+<i>499</i>&nbsp;    /**
+<i>500</i>&nbsp;     Prepends all the elements of the array computed by the supplier, starting from the head, to the
+<i>501</i>&nbsp;     array located at the path in this json, returning the same this instance if the array is not present,
+<i>502</i>&nbsp;     in which case, the supplier is not invoked.
+<i>503</i>&nbsp;     @param path the JsPath object pointing to the existing array in which all the elements will be prepended
+<i>504</i>&nbsp;     @param supplier   the supplier of the array of elements that will be prepended
+<i>505</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>506</i>&nbsp;     */
+<i>507</i>&nbsp;    default T prependAllIfPresent(final JsPath path,
+<i>508</i>&nbsp;                                  final Supplier&lt;JsArray&gt; supplier
+<i>509</i>&nbsp;                                 )
+<i>510</i>&nbsp;    {
+<i>511</i>&nbsp;
+<b class="fc"><i>512</i>&nbsp;        requireNonNull(supplier);</b>
+<b class="fc"><i>513</i>&nbsp;        return Functions.ifArrElse(it -&gt; prependAll(path,</b>
+<b class="fc"><i>514</i>&nbsp;                                                    supplier.get()</b>
+<i>515</i>&nbsp;                                                   ),
+<i>516</i>&nbsp;                                   it -&gt;
+<i>517</i>&nbsp;                                   {
+<i>518</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="fc"><i>519</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="fc"><i>520</i>&nbsp;                                       return t;</b>
+<i>521</i>&nbsp;                                   }
+<i>522</i>&nbsp;                                  )
+<b class="fc"><i>523</i>&nbsp;                        .apply(get(requireNonNull(path)));</b>
+<i>524</i>&nbsp;    }
+<i>525</i>&nbsp;
+<i>526</i>&nbsp;    /**
+<i>527</i>&nbsp;     Prepends all the elements of the array computed by the supplier, starting from the head, to the
+<i>528</i>&nbsp;     array located at the path in this json, returning the same this instance if the array is not present,
+<i>529</i>&nbsp;     in which case, the supplier is not invoked.
+<i>530</i>&nbsp;     @param path the path-like string pointing  to the existing array in which all the elements will be prepended
+<i>531</i>&nbsp;     @param supplier   the supplier of the array of elements that will be prepended
+<i>532</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>533</i>&nbsp;     */
+<i>534</i>&nbsp;    default T prependAllIfPresent(final String path,
+<i>535</i>&nbsp;                                  final Supplier&lt;JsArray&gt; supplier
+<i>536</i>&nbsp;                                 )
+<i>537</i>&nbsp;    {
+<b class="nc"><i>538</i>&nbsp;        return prependAllIfPresent(JsPath.of(path),</b>
+<i>539</i>&nbsp;                                   supplier
+<i>540</i>&nbsp;                                  );
+<i>541</i>&nbsp;    }
+<i>542</i>&nbsp;
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    /**
+<i>545</i>&nbsp;     Prepends one element given by a supplier, to the array located at the given path in this json,
+<i>546</i>&nbsp;     returning the same this instance if the array is not present. The supplier is not applied if
+<i>547</i>&nbsp;     there&#39;s no array at the specified path.
+<i>548</i>&nbsp;     @param path   the JsPath pointing to the existing array in which all the elements will be appended
+<i>549</i>&nbsp;     @param supplier   the given supplier
+<i>550</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>551</i>&nbsp;     */
+<i>552</i>&nbsp;    default T prependIfPresent(final String path,
+<i>553</i>&nbsp;                               final Supplier&lt;JsElem&gt; supplier
+<i>554</i>&nbsp;                              )
+<i>555</i>&nbsp;    {
+<i>556</i>&nbsp;
+<b class="nc"><i>557</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>558</i>&nbsp;                                requireNonNull(supplier)</b>
+<i>559</i>&nbsp;                               );
+<i>560</i>&nbsp;    }
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;    /**
+<i>563</i>&nbsp;     Prepends one or more strings to the array located at the given path in this json in the following
+<i>564</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>565</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the strings will be prepended
+<i>566</i>&nbsp;     @param str   the string to be prepended
+<i>567</i>&nbsp;     @param  others more optional strings to be prepended
+<i>568</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>569</i>&nbsp;     */
+<i>570</i>&nbsp;    default T prependIfPresent(final String path,
+<i>571</i>&nbsp;                               final String str,
+<i>572</i>&nbsp;                               final String... others
+<i>573</i>&nbsp;                              )
+<i>574</i>&nbsp;    {
+<i>575</i>&nbsp;
+<b class="nc"><i>576</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>577</i>&nbsp;                                requireNonNull(str),</b>
+<b class="nc"><i>578</i>&nbsp;                                requireNonNull(others)</b>
+<i>579</i>&nbsp;                               );
+<i>580</i>&nbsp;    }
+<i>581</i>&nbsp;
+<i>582</i>&nbsp;    /**
+<i>583</i>&nbsp;     Prepends one or more integers to the array located at the given path in this json in the following
+<i>584</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>585</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the integers will be prepended
+<i>586</i>&nbsp;     @param number   the integer to be prepended
+<i>587</i>&nbsp;     @param  others more optional integers to be prepended
+<i>588</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>589</i>&nbsp;     */
+<i>590</i>&nbsp;    default T prependIfPresent(final String path,
+<i>591</i>&nbsp;                               final int number,
+<i>592</i>&nbsp;                               final int... others
+<i>593</i>&nbsp;                              )
+<i>594</i>&nbsp;    {
+<i>595</i>&nbsp;
+<b class="nc"><i>596</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<i>597</i>&nbsp;                                number,
+<i>598</i>&nbsp;                                others
+<i>599</i>&nbsp;                               );
+<i>600</i>&nbsp;    }
+<i>601</i>&nbsp;
+<i>602</i>&nbsp;    /**
+<i>603</i>&nbsp;     Prepends one or more strings to the array located at the given path in this json in the following
+<i>604</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>605</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the strings will be prepended
+<i>606</i>&nbsp;     @param number   the string to be prepended
+<i>607</i>&nbsp;     @param  others more optional strings to be prepended
+<i>608</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>609</i>&nbsp;     */
+<i>610</i>&nbsp;    default T prependIfPresent(final String path,
+<i>611</i>&nbsp;                               final long number,
+<i>612</i>&nbsp;                               final long... others
+<i>613</i>&nbsp;                              )
+<i>614</i>&nbsp;    {
+<i>615</i>&nbsp;
+<b class="nc"><i>616</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<i>617</i>&nbsp;                                number,
+<i>618</i>&nbsp;                                others
+<i>619</i>&nbsp;                               );
+<i>620</i>&nbsp;    }
+<i>621</i>&nbsp;
+<i>622</i>&nbsp;    /**
+<i>623</i>&nbsp;     Prepends one or more doubles to the array located at the given path in this json in the following
+<i>624</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>625</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the doubles will be prepended
+<i>626</i>&nbsp;     @param number   the double to be prepended
+<i>627</i>&nbsp;     @param  others more optional doubles to be prepended
+<i>628</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>629</i>&nbsp;     */
+<i>630</i>&nbsp;    default T prependIfPresent(final String path,
+<i>631</i>&nbsp;                               final double number,
+<i>632</i>&nbsp;                               final double... others
+<i>633</i>&nbsp;                              )
+<i>634</i>&nbsp;    {
+<i>635</i>&nbsp;
+<b class="nc"><i>636</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<i>637</i>&nbsp;                                number,
+<i>638</i>&nbsp;                                others
+<i>639</i>&nbsp;                               );
+<i>640</i>&nbsp;    }
+<i>641</i>&nbsp;
+<i>642</i>&nbsp;    /**
+<i>643</i>&nbsp;     Prepends one or more booleans to the array located at the given path in this json in the following
+<i>644</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>645</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the booleans will be prepended
+<i>646</i>&nbsp;     @param bool   the boolean to be prepended
+<i>647</i>&nbsp;     @param  others more optional booleans to be prepended
+<i>648</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>649</i>&nbsp;     */
+<i>650</i>&nbsp;    default T prependIfPresent(final String path,
+<i>651</i>&nbsp;                               final boolean bool,
+<i>652</i>&nbsp;                               final boolean... others
+<i>653</i>&nbsp;                              )
+<i>654</i>&nbsp;    {
+<i>655</i>&nbsp;
+<b class="nc"><i>656</i>&nbsp;        return prependIfPresent(JsPath.of(requireNonNull(path)),</b>
+<i>657</i>&nbsp;                                bool,
+<i>658</i>&nbsp;                                others
+<i>659</i>&nbsp;                               );
+<i>660</i>&nbsp;    }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    /**
+<i>663</i>&nbsp;     Prepends one element given by a supplier, to the array located at the given path in this json,
+<i>664</i>&nbsp;     returning the same this instance if the array is not present. The supplier is not applied if
+<i>665</i>&nbsp;     there&#39;s no array at the specified path.
+<i>666</i>&nbsp;     @param path   the JsPath pointing to the existing array in which all the elements will be appended
+<i>667</i>&nbsp;     @param supplier   the given supplier
+<i>668</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>669</i>&nbsp;     */
+<i>670</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>671</i>&nbsp;                               final Supplier&lt;JsElem&gt; supplier
+<i>672</i>&nbsp;                              )
+<i>673</i>&nbsp;    {
+<i>674</i>&nbsp;
+<b class="fc"><i>675</i>&nbsp;        requireNonNull(path);</b>
+<b class="fc"><i>676</i>&nbsp;        requireNonNull(supplier);</b>
+<b class="fc"><i>677</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<b class="fc"><i>678</i>&nbsp;                                                 supplier.get()</b>
+<i>679</i>&nbsp;                                                ),
+<i>680</i>&nbsp;                                   it -&gt;
+<i>681</i>&nbsp;                                   {
+<i>682</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="fc"><i>683</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="fc"><i>684</i>&nbsp;                                       return t;</b>
+<i>685</i>&nbsp;                                   }
+<i>686</i>&nbsp;                                  )
+<b class="fc"><i>687</i>&nbsp;                        .apply(get(path));</b>
+<i>688</i>&nbsp;
+<i>689</i>&nbsp;    }
+<i>690</i>&nbsp;
+<i>691</i>&nbsp;    /**
+<i>692</i>&nbsp;     Prepends one or more integers to the array located at the given path in this json in the following
+<i>693</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>694</i>&nbsp;     @param path   the path pointing to the existing array in which the integers will be prepended
+<i>695</i>&nbsp;     @param number   the integer to be prepended
+<i>696</i>&nbsp;     @param  others more optional integers to be prepended
+<i>697</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>698</i>&nbsp;     */
+<i>699</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>700</i>&nbsp;                               final int number,
+<i>701</i>&nbsp;                               final int... others
+<i>702</i>&nbsp;                              )
+<i>703</i>&nbsp;    {
+<i>704</i>&nbsp;
+<b class="nc"><i>705</i>&nbsp;        requireNonNull(path);</b>
+<b class="nc"><i>706</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<i>707</i>&nbsp;                                                 number,
+<i>708</i>&nbsp;                                                 others
+<i>709</i>&nbsp;                                                ),
+<i>710</i>&nbsp;                                   it -&gt;
+<i>711</i>&nbsp;                                   {
+<i>712</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>713</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>714</i>&nbsp;                                       return t;</b>
+<i>715</i>&nbsp;                                   }
+<i>716</i>&nbsp;                                  )
+<b class="nc"><i>717</i>&nbsp;                        .apply(get(path));</b>
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    }
+<i>720</i>&nbsp;
+<i>721</i>&nbsp;    /**
+<i>722</i>&nbsp;     Prepends one or more longs to the array located at the given path in this json in the following
+<i>723</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>724</i>&nbsp;     @param path   the path pointing to the existing array in which the longs will be prepended
+<i>725</i>&nbsp;     @param number   the long to be prepended
+<i>726</i>&nbsp;     @param  others more optional longs to be prepended
+<i>727</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>728</i>&nbsp;     */
+<i>729</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>730</i>&nbsp;                               final long number,
+<i>731</i>&nbsp;                               final long... others
+<i>732</i>&nbsp;                              )
+<i>733</i>&nbsp;    {
+<i>734</i>&nbsp;
+<b class="nc"><i>735</i>&nbsp;        requireNonNull(path);</b>
+<b class="nc"><i>736</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<i>737</i>&nbsp;                                                 number,
+<i>738</i>&nbsp;                                                 others
+<i>739</i>&nbsp;                                                ),
+<i>740</i>&nbsp;                                   it -&gt;
+<i>741</i>&nbsp;                                   {
+<i>742</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>743</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>744</i>&nbsp;                                       return t;</b>
+<i>745</i>&nbsp;                                   }
+<i>746</i>&nbsp;                                  )
+<b class="nc"><i>747</i>&nbsp;                        .apply(get(path));</b>
+<i>748</i>&nbsp;
+<i>749</i>&nbsp;    }
+<i>750</i>&nbsp;
+<i>751</i>&nbsp;    /**
+<i>752</i>&nbsp;     Prepends one or more doubles to the array located at the given path in this json in the following
+<i>753</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>754</i>&nbsp;     @param path   the path pointing to the existing array in which the doubles will be prepended
+<i>755</i>&nbsp;     @param number   the double to be prepended
+<i>756</i>&nbsp;     @param  others more optional doubles to be prepended
+<i>757</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>758</i>&nbsp;     */
+<i>759</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>760</i>&nbsp;                               final double number,
+<i>761</i>&nbsp;                               final double... others
+<i>762</i>&nbsp;                              )
+<i>763</i>&nbsp;    {
+<i>764</i>&nbsp;
+<b class="nc"><i>765</i>&nbsp;        requireNonNull(path);</b>
+<b class="nc"><i>766</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<i>767</i>&nbsp;                                                 number,
+<i>768</i>&nbsp;                                                 others
+<i>769</i>&nbsp;                                                ),
+<i>770</i>&nbsp;                                   it -&gt;
+<i>771</i>&nbsp;                                   {
+<i>772</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>773</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>774</i>&nbsp;                                       return t;</b>
+<i>775</i>&nbsp;                                   }
+<i>776</i>&nbsp;                                  )
+<b class="nc"><i>777</i>&nbsp;                        .apply(get(path));</b>
+<i>778</i>&nbsp;
+<i>779</i>&nbsp;    }
+<i>780</i>&nbsp;
+<i>781</i>&nbsp;    /**
+<i>782</i>&nbsp;     Prepends one or more strings to the array located at the given path in this json in the following
+<i>783</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>784</i>&nbsp;     @param path   the path pointing to the existing array in which the strings will be prepended
+<i>785</i>&nbsp;     @param str   the string to be prepended
+<i>786</i>&nbsp;     @param  others more optional strings to be prepended
+<i>787</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>788</i>&nbsp;     */
+<i>789</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>790</i>&nbsp;                               final String str,
+<i>791</i>&nbsp;                               final String... others
+<i>792</i>&nbsp;                              )
+<i>793</i>&nbsp;    {
+<i>794</i>&nbsp;
+<b class="nc"><i>795</i>&nbsp;        requireNonNull(path);</b>
+<b class="nc"><i>796</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<i>797</i>&nbsp;                                                 str,
+<i>798</i>&nbsp;                                                 others
+<i>799</i>&nbsp;                                                ),
+<i>800</i>&nbsp;                                   it -&gt;
+<i>801</i>&nbsp;                                   {
+<i>802</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>803</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>804</i>&nbsp;                                       return t;</b>
+<i>805</i>&nbsp;                                   }
+<i>806</i>&nbsp;                                  )
+<b class="nc"><i>807</i>&nbsp;                        .apply(get(path));</b>
+<i>808</i>&nbsp;
+<i>809</i>&nbsp;    }
+<i>810</i>&nbsp;
+<i>811</i>&nbsp;    /**
+<i>812</i>&nbsp;     Prepends one or more booleans to the array located at the given path in this json in the following
+<i>813</i>&nbsp;     order [number, others, existing elements], returning the same this instance if the array is not present.
+<i>814</i>&nbsp;     @param path   the path pointing to the existing array in which the booleans will be prepended
+<i>815</i>&nbsp;     @param bool   the boolean to be prepended
+<i>816</i>&nbsp;     @param  others more optional booleans to be prepended
+<i>817</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>818</i>&nbsp;     */
+<i>819</i>&nbsp;    default T prependIfPresent(final JsPath path,
+<i>820</i>&nbsp;                               final boolean bool,
+<i>821</i>&nbsp;                               final boolean... others
+<i>822</i>&nbsp;                              )
+<i>823</i>&nbsp;    {
+<i>824</i>&nbsp;
+<b class="nc"><i>825</i>&nbsp;        requireNonNull(path);</b>
+<b class="nc"><i>826</i>&nbsp;        return Functions.ifArrElse(it -&gt; prepend(path,</b>
+<i>827</i>&nbsp;                                                 bool,
+<i>828</i>&nbsp;                                                 others
+<i>829</i>&nbsp;                                                ),
+<i>830</i>&nbsp;                                   it -&gt;
+<i>831</i>&nbsp;                                   {
+<i>832</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>833</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>834</i>&nbsp;                                       return t;</b>
+<i>835</i>&nbsp;                                   }
+<i>836</i>&nbsp;                                  )
+<b class="nc"><i>837</i>&nbsp;                        .apply(get(path));</b>
+<i>838</i>&nbsp;
+<i>839</i>&nbsp;    }
+<i>840</i>&nbsp;
+<i>841</i>&nbsp;    /**
+<i>842</i>&nbsp;     Filters the pairs of elements in the first level of this json, removing those that don&#39;t match
+<i>843</i>&nbsp;     the predicate.
+<i>844</i>&nbsp;     @param filter the predicate which takes as the input every JsPair in the first level parse this json
+<i>845</i>&nbsp;     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
+<i>846</i>&nbsp;     @see #filterElems_(Predicate) how to filter the pair of elements of the whole json and not only the first level
+<i>847</i>&nbsp;     */
+<i>848</i>&nbsp;    T filterElems(final Predicate&lt;? super JsPair&gt; filter);
+<i>849</i>&nbsp;
+<i>850</i>&nbsp;    /**
+<i>851</i>&nbsp;     Filters all the pairs of elements of this json, removing those that don&#39;t match the predicate.
+<i>852</i>&nbsp;     @param filter the predicate which takes as the input every JsPair of this json
+<i>853</i>&nbsp;     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
+<i>854</i>&nbsp;     @see #filterElems(Predicate) how to filter the pairs of values parse only the first level
+<i>855</i>&nbsp;     */
+<i>856</i>&nbsp;    T filterElems_(final Predicate&lt;? super JsPair&gt; filter);
+<i>857</i>&nbsp;
+<i>858</i>&nbsp;    /**
+<i>859</i>&nbsp;     Filters the pair of jsons in the first level parse this json, removing those that don&#39;t match
+<i>860</i>&nbsp;     the predicate.
+<i>861</i>&nbsp;     @param filter the predicate which takes as the input every JsPair in the first level parse this json
+<i>862</i>&nbsp;
+<i>863</i>&nbsp;     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
+<i>864</i>&nbsp;
+<i>865</i>&nbsp;     @see #filterObjs_(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
+<i>866</i>&nbsp;     */
+<i>867</i>&nbsp;    T filterObjs(final BiPredicate&lt;? super JsPath, ? super JsObj&gt; filter
+<i>868</i>&nbsp;                );
+<i>869</i>&nbsp;
+<i>870</i>&nbsp;    /**
+<i>871</i>&nbsp;     Filters all the pair of jsons parse this json, removing those that don&#39;t match the predicate.
+<i>872</i>&nbsp;     @param filter the predicate which takes as the input every JsPair of this json
+<i>873</i>&nbsp;     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
+<i>874</i>&nbsp;     @see #filterObjs(BiPredicate) how to filter the pair of jsons parse only the first level
+<i>875</i>&nbsp;     */
+<i>876</i>&nbsp;    T filterObjs_(final BiPredicate&lt;? super JsPath, ? super JsObj&gt; filter
+<i>877</i>&nbsp;                 );
+<i>878</i>&nbsp;
+<i>879</i>&nbsp;    /**
+<i>880</i>&nbsp;     Filters the keys in the first level parse this json, removing those that don&#39;t match the predicate.
+<i>881</i>&nbsp;     @param filter the predicate which takes as the input every JsPair in the first level parse this json
+<i>882</i>&nbsp;     @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
+<i>883</i>&nbsp;     @see #filterKeys_(Predicate) how to filter the keys of the whole json and not only the first level
+<i>884</i>&nbsp;     */
+<i>885</i>&nbsp;    T filterKeys(final Predicate&lt;? super JsPair&gt; filter);
+<i>886</i>&nbsp;
+<i>887</i>&nbsp;    /**
+<i>888</i>&nbsp;     Filters all the keys parse this json, removing those that don&#39;t match the predicate.
+<i>889</i>&nbsp;     @param filter the predicate which takes as the input every JsPair of this json
+<i>890</i>&nbsp;     @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
+<i>891</i>&nbsp;     @see #filterKeys(Predicate) how to filter the keys of only the first level
+<i>892</i>&nbsp;     */
+<i>893</i>&nbsp;    T filterKeys_(final Predicate&lt;? super JsPair&gt; filter);
+<i>894</i>&nbsp;
+<i>895</i>&nbsp;    /**
+<i>896</i>&nbsp;     Returns the element located at the key or index specified by the given position or {@link JsNothing} if it
+<i>897</i>&nbsp;     doesn&#39;t exist.
+<i>898</i>&nbsp;     @param position key or index of the element
+<i>899</i>&nbsp;     @return the JsElem located at the given Position or JsNothing if it doesn&#39;t exist
+<i>900</i>&nbsp;     */
+<i>901</i>&nbsp;    JsElem get(final Position position);
+<i>902</i>&nbsp;
+<i>903</i>&nbsp;    /**
+<i>904</i>&nbsp;     Returns the element located at the given path or {@link JsNothing} if it doesn&#39;t exist.
+<i>905</i>&nbsp;     @param path the JsPath object of the element that will be returned
+<i>906</i>&nbsp;     @return the JsElem located at the given JsPath or JsNothing if it doesn&#39;t exist
+<i>907</i>&nbsp;     */
+<i>908</i>&nbsp;    default JsElem get(final JsPath path)
+<i>909</i>&nbsp;    {
+<b class="fc"><i>910</i>&nbsp;        return Functions.get(this,</b>
+<b class="fc"><i>911</i>&nbsp;                             requireNonNull(path)</b>
+<i>912</i>&nbsp;                            );
+<i>913</i>&nbsp;    }
+<i>914</i>&nbsp;
+<i>915</i>&nbsp;    /**
+<i>916</i>&nbsp;     Returns the element located at the given path or {@link JsNothing} if it doesn&#39;t exist.
+<i>917</i>&nbsp;     @param path the path-like string of the element that will be returned
+<i>918</i>&nbsp;     @return the JsElem located at the given JsPath or JsNothing if it doesn&#39;t exist
+<i>919</i>&nbsp;     */
+<i>920</i>&nbsp;    default JsElem get(final String path)
+<i>921</i>&nbsp;    {
+<b class="fc"><i>922</i>&nbsp;        return get(JsPath.of(path));</b>
+<i>923</i>&nbsp;    }
+<i>924</i>&nbsp;
+<i>925</i>&nbsp;
+<i>926</i>&nbsp;    /**
+<i>927</i>&nbsp;     Returns the array located at the given path or {@link Optional#empty()} if it doesn&#39;t exist or
+<i>928</i>&nbsp;     it&#39;s not an array.
+<i>929</i>&nbsp;     @param path the JsPath object of the JsArray that will be returned
+<i>930</i>&nbsp;     @return the JsArray located at the given JsPath wrapped in an Optional
+<i>931</i>&nbsp;
+<i>932</i>&nbsp;     */
+<i>933</i>&nbsp;    default Optional&lt;JsArray&gt; getArray(final JsPath path)
+<i>934</i>&nbsp;    {
+<b class="fc"><i>935</i>&nbsp;        final Function&lt;JsElem, Optional&lt;JsArray&gt;&gt; ifElse = Functions.ifArrElse(Optional::of,</b>
+<b class="fc"><i>936</i>&nbsp;                                                                               it -&gt; Optional.empty()</b>
+<i>937</i>&nbsp;                                                                              );
+<b class="fc"><i>938</i>&nbsp;        return ifElse.apply(Functions.get(this,</b>
+<b class="fc"><i>939</i>&nbsp;                                          requireNonNull(path)</b>
+<i>940</i>&nbsp;                                         ));
+<i>941</i>&nbsp;    }
+<i>942</i>&nbsp;
+<i>943</i>&nbsp;    /**
+<i>944</i>&nbsp;     Returns the array located at the given path as a big decimal or {@link Optional#empty()} if it
+<i>945</i>&nbsp;     doesn&#39;t exist or it&#39;s not an array.
+<i>946</i>&nbsp;     @param path the path-like string of the JsArray that will be returned
+<i>947</i>&nbsp;     @return the JsArray located at the given path wrapped in an Optional
+<i>948</i>&nbsp;     */
+<i>949</i>&nbsp;    default Optional&lt;JsArray&gt; getArray(final String path)
+<i>950</i>&nbsp;    {
+<b class="nc"><i>951</i>&nbsp;        return getArray(JsPath.of(path));</b>
+<i>952</i>&nbsp;    }
+<i>953</i>&nbsp;
+<i>954</i>&nbsp;
+<i>955</i>&nbsp;    /**
+<i>956</i>&nbsp;     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if
+<i>957</i>&nbsp;     it doesn&#39;t exist or it&#39;s not a decimal number.
+<i>958</i>&nbsp;     @param path the JsPath object of the BigDecimal that will be returned
+<i>959</i>&nbsp;     @return the BigDecimal located at the given JsPath wrapped in an Optional
+<i>960</i>&nbsp;     */
+<i>961</i>&nbsp;    default Optional&lt;BigDecimal&gt; getBigDecimal(final JsPath path)
+<i>962</i>&nbsp;    {
+<b class="fc"><i>963</i>&nbsp;        final Function&lt;JsElem, Optional&lt;BigDecimal&gt;&gt; ifElse = Functions.ifDecimalElse(it -&gt; Optional.of(BigDecimal.valueOf(it)),</b>
+<i>964</i>&nbsp;                                                                                      Optional::of,
+<b class="fc"><i>965</i>&nbsp;                                                                                      it -&gt; Optional.empty()</b>
+<i>966</i>&nbsp;                                                                                     );
+<b class="fc"><i>967</i>&nbsp;        return ifElse.apply(Functions.get(this,</b>
+<b class="fc"><i>968</i>&nbsp;                                          requireNonNull(path)</b>
+<i>969</i>&nbsp;                                         ));
+<i>970</i>&nbsp;    }
+<i>971</i>&nbsp;
+<i>972</i>&nbsp;    /**
+<i>973</i>&nbsp;     Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if it
+<i>974</i>&nbsp;     doesn&#39;t exist or it&#39;s not a decimal number.
+<i>975</i>&nbsp;     @param path the path-like string of the BigDecimal that will be returned
+<i>976</i>&nbsp;     @return the BigDecimal located at the given path wrapped in an Optional
+<i>977</i>&nbsp;     */
+<i>978</i>&nbsp;    default Optional&lt;BigDecimal&gt; getBigDecimal(final String path)
+<i>979</i>&nbsp;    {
+<b class="fc"><i>980</i>&nbsp;        return getBigDecimal(JsPath.of(path));</b>
+<i>981</i>&nbsp;    }
+<i>982</i>&nbsp;
+<i>983</i>&nbsp;    /**
+<i>984</i>&nbsp;     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it doesn&#39;t
+<i>985</i>&nbsp;     exist or it&#39;s not an integral number.
+<i>986</i>&nbsp;     @param path the JsPath object of the BigInteger that will be returned
+<i>987</i>&nbsp;     @return the BigInteger located at the given JsPath wrapped in an Optional
+<i>988</i>&nbsp;     */
+<i>989</i>&nbsp;    default Optional&lt;BigInteger&gt; getBigInt(final JsPath path)
+<i>990</i>&nbsp;    {
+<b class="fc"><i>991</i>&nbsp;        final Function&lt;JsElem, Optional&lt;BigInteger&gt;&gt; ifElse = Functions.ifIntegralElse(it -&gt; Optional.of(BigInteger.valueOf(it)),</b>
+<b class="fc"><i>992</i>&nbsp;                                                                                       it -&gt; Optional.of(BigInteger.valueOf(it)),</b>
+<i>993</i>&nbsp;                                                                                       Optional::of,
+<b class="fc"><i>994</i>&nbsp;                                                                                       $ -&gt; Optional.empty()</b>
+<i>995</i>&nbsp;                                                                                      );
+<b class="fc"><i>996</i>&nbsp;        return ifElse.apply(Functions.get(this,</b>
+<b class="fc"><i>997</i>&nbsp;                                          requireNonNull(path)</b>
+<i>998</i>&nbsp;                                         ));
+<i>999</i>&nbsp;    }
+<i>1000</i>&nbsp;
+<i>1001</i>&nbsp;    /**
+<i>1002</i>&nbsp;     Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it
+<i>1003</i>&nbsp;     doesn&#39;t exist  or it&#39;s not an integral number.
+<i>1004</i>&nbsp;     @param path the path-like string of the BigInteger that will be returned
+<i>1005</i>&nbsp;     @return the BigInteger located at the given path wrapped in an Optional
+<i>1006</i>&nbsp;     */
+<i>1007</i>&nbsp;    default Optional&lt;BigInteger&gt; getBigInt(final String path)
+<i>1008</i>&nbsp;    {
+<b class="nc"><i>1009</i>&nbsp;        return getBigInt(JsPath.of(path));</b>
+<i>1010</i>&nbsp;    }
+<i>1011</i>&nbsp;
+<i>1012</i>&nbsp;
+<i>1013</i>&nbsp;    /**
+<i>1014</i>&nbsp;     Returns the boolean located at the given path or {@link Optional#empty()} if it doesn&#39;t exist.
+<i>1015</i>&nbsp;     @param path the JsPath object of the Boolean that will be returned
+<i>1016</i>&nbsp;     @return the Boolean located at the given JsPath wrapped in an Optional
+<i>1017</i>&nbsp;     */
+<i>1018</i>&nbsp;    default Optional&lt;Boolean&gt; getBool(final JsPath path)
+<i>1019</i>&nbsp;    {
+<b class="fc"><i>1020</i>&nbsp;        final Function&lt;JsElem, Optional&lt;Boolean&gt;&gt; fn = Functions.ifBoolElse(Optional::of,</b>
+<b class="fc"><i>1021</i>&nbsp;                                                                            it -&gt; Optional.empty()</b>
+<i>1022</i>&nbsp;                                                                           );
+<b class="fc"><i>1023</i>&nbsp;        return fn.apply(Functions.get(this,</b>
+<b class="fc"><i>1024</i>&nbsp;                                      requireNonNull(path)</b>
+<i>1025</i>&nbsp;                                     ));
+<i>1026</i>&nbsp;    }
+<i>1027</i>&nbsp;
+<i>1028</i>&nbsp;    /**
+<i>1029</i>&nbsp;     Returns the boolean located at the given path or {@link Optional#empty()} if it doesn&#39;t exist.
+<i>1030</i>&nbsp;     @param path the path-like string of the Boolean that will be returned
+<i>1031</i>&nbsp;     @return the Boolean located at the given JsPath wrapped in an Optional
+<i>1032</i>&nbsp;     */
+<i>1033</i>&nbsp;    default Optional&lt;Boolean&gt; getBool(final String path)
+<i>1034</i>&nbsp;    {
+<b class="nc"><i>1035</i>&nbsp;        return getBool(JsPath.of(path));</b>
+<i>1036</i>&nbsp;    }
+<i>1037</i>&nbsp;
+<i>1038</i>&nbsp;
+<i>1039</i>&nbsp;    /**
+<i>1040</i>&nbsp;     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it
+<i>1041</i>&nbsp;     doesn&#39;t exist or it&#39;s not a decimal number. If the number is a BigDecimal, the conversion is identical
+<i>1042</i>&nbsp;     to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
+<i>1043</i>&nbsp;     the precision of the BigDecimal
+<i>1044</i>&nbsp;     @param path the JsPath object of the double that will be returned
+<i>1045</i>&nbsp;     @return the decimal number located at the given JsPath wrapped in an OptionalDouble
+<i>1046</i>&nbsp;     */
+<i>1047</i>&nbsp;    default OptionalDouble getDouble(final JsPath path)
+<i>1048</i>&nbsp;    {
+<b class="fc"><i>1049</i>&nbsp;        return Functions.ifDecimalElse(OptionalDouble::of,</b>
+<i>1050</i>&nbsp;                                       Functions::bigDecimalToDouble,
+<b class="fc"><i>1051</i>&nbsp;                                       $ -&gt; OptionalDouble.empty()</b>
+<i>1052</i>&nbsp;                                      )
+<b class="fc"><i>1053</i>&nbsp;                        .apply(Functions.get(this,</b>
+<b class="fc"><i>1054</i>&nbsp;                                             requireNonNull(path)</b>
+<i>1055</i>&nbsp;                                            ));
+<i>1056</i>&nbsp;    }
+<i>1057</i>&nbsp;
+<i>1058</i>&nbsp;
+<i>1059</i>&nbsp;    /**
+<i>1060</i>&nbsp;     Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it
+<i>1061</i>&nbsp;     doesn&#39;t exist or it&#39;s not a decimal number. If the number is a BigDecimal, the conversion is
+<i>1062</i>&nbsp;     identical to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information
+<i>1063</i>&nbsp;     about the precision of the BigDecimal
+<i>1064</i>&nbsp;     @param path the path-like string of the decimal number that will be returned
+<i>1065</i>&nbsp;     @return the decimal number located at the given path wrapped in an OptionalDouble
+<i>1066</i>&nbsp;     */
+<i>1067</i>&nbsp;    default OptionalDouble getDouble(final String path)
+<i>1068</i>&nbsp;    {
+<b class="fc"><i>1069</i>&nbsp;        return getDouble(JsPath.of(path));</b>
+<i>1070</i>&nbsp;    }
+<i>1071</i>&nbsp;
+<i>1072</i>&nbsp;
+<i>1073</i>&nbsp;    /**
+<i>1074</i>&nbsp;     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it
+<i>1075</i>&nbsp;     doesn&#39;t exist or it&#39;s not an integral number or it&#39;s an integral number but doesn&#39;t fit in an integer.
+<i>1076</i>&nbsp;     @param path the JsPath object of the integral number that will be returned
+<i>1077</i>&nbsp;     @return the integral number located at the given JsPath wrapped in an OptionalInt
+<i>1078</i>&nbsp;     */
+<i>1079</i>&nbsp;    default OptionalInt getInt(final JsPath path)
+<i>1080</i>&nbsp;    {
+<b class="fc"><i>1081</i>&nbsp;        return Functions.ifIntegralElse(OptionalInt::of,</b>
+<i>1082</i>&nbsp;                                        Functions::longToInt,
+<i>1083</i>&nbsp;                                        Functions::bigIntToInt,
+<b class="fc"><i>1084</i>&nbsp;                                        $ -&gt; OptionalInt.empty()</b>
+<i>1085</i>&nbsp;                                       )
+<b class="fc"><i>1086</i>&nbsp;                        .apply(Functions.get(this,</b>
+<b class="fc"><i>1087</i>&nbsp;                                             requireNonNull(path)</b>
+<i>1088</i>&nbsp;                                            ));
+<i>1089</i>&nbsp;    }
+<i>1090</i>&nbsp;
+<i>1091</i>&nbsp;
+<i>1092</i>&nbsp;    /**
+<i>1093</i>&nbsp;     Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it
+<i>1094</i>&nbsp;     doesn&#39;t exist or it&#39;s not an integral number or it&#39;s an integral number but doesn&#39;t fit in an integer.
+<i>1095</i>&nbsp;     @param path the path-like string of the integral number that will be returned
+<i>1096</i>&nbsp;     @return the integral number located at the given path wrapped in an OptionalInt
+<i>1097</i>&nbsp;     */
+<i>1098</i>&nbsp;    default OptionalInt getInt(final String path)
+<i>1099</i>&nbsp;    {
+<b class="fc"><i>1100</i>&nbsp;        return getInt(JsPath.of(path));</b>
+<i>1101</i>&nbsp;    }
+<i>1102</i>&nbsp;
+<i>1103</i>&nbsp;
+<i>1104</i>&nbsp;    /**
+<i>1105</i>&nbsp;     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it
+<i>1106</i>&nbsp;     doesn&#39;t exist or it&#39;s not an integral number or it&#39;s an integral number but doesn&#39;t fit in a long.
+<i>1107</i>&nbsp;     @param path the JsPath object of the integral number that will be returned
+<i>1108</i>&nbsp;     @return the integral number located at the given JsPath wrapped in an OptionalLong
+<i>1109</i>&nbsp;     */
+<i>1110</i>&nbsp;    default OptionalLong getLong(final JsPath path)
+<i>1111</i>&nbsp;    {
+<b class="fc"><i>1112</i>&nbsp;        return Functions.ifIntegralElse(OptionalLong::of,</b>
+<i>1113</i>&nbsp;                                        OptionalLong::of,
+<i>1114</i>&nbsp;                                        Functions::bigIntToLong,
+<b class="fc"><i>1115</i>&nbsp;                                        $ -&gt; OptionalLong.empty()</b>
+<i>1116</i>&nbsp;                                       )
+<b class="fc"><i>1117</i>&nbsp;                        .apply(Functions.get(this,</b>
+<b class="fc"><i>1118</i>&nbsp;                                             requireNonNull(path)</b>
+<i>1119</i>&nbsp;                                            ));
+<i>1120</i>&nbsp;
+<i>1121</i>&nbsp;    }
+<i>1122</i>&nbsp;
+<i>1123</i>&nbsp;    /**
+<i>1124</i>&nbsp;     Returns the integral number located at the given path as a long or {@link OptionalLong#empty()} if it
+<i>1125</i>&nbsp;     doesn&#39;t exist or it&#39;s not an integral number or it&#39;s an integral number but doesn&#39;t fit in a long.
+<i>1126</i>&nbsp;     @param path the path-like string of the integral number that will be returned
+<i>1127</i>&nbsp;     @return the integral number located at the given path wrapped in an OptionalLong
+<i>1128</i>&nbsp;     */
+<i>1129</i>&nbsp;    default OptionalLong getLong(final String path)
+<i>1130</i>&nbsp;    {
+<b class="nc"><i>1131</i>&nbsp;        return getLong(JsPath.of(path));</b>
+<i>1132</i>&nbsp;    }
+<i>1133</i>&nbsp;
+<i>1134</i>&nbsp;
+<i>1135</i>&nbsp;    /**
+<i>1136</i>&nbsp;     Returns the object located at the given path or {@link Optional#empty()} if it doesn&#39;t exist or it&#39;s
+<i>1137</i>&nbsp;     not an object.
+<i>1138</i>&nbsp;     @param path the JsPath object of the JsObj that will be returned
+<i>1139</i>&nbsp;     @return the JsObj located at the given JsPath wrapped in an Optional
+<i>1140</i>&nbsp;     */
+<i>1141</i>&nbsp;    default Optional&lt;JsObj&gt; getObj(final JsPath path)
+<i>1142</i>&nbsp;    {
+<b class="fc"><i>1143</i>&nbsp;        final Function&lt;JsElem, Optional&lt;JsObj&gt;&gt; ifElse = Functions.ifObjElse(Optional::of,</b>
+<b class="fc"><i>1144</i>&nbsp;                                                                             it -&gt; Optional.empty()</b>
+<i>1145</i>&nbsp;                                                                            );
+<b class="fc"><i>1146</i>&nbsp;        return ifElse.apply(Functions.get(this,</b>
+<b class="fc"><i>1147</i>&nbsp;                                          requireNonNull(path)</b>
+<i>1148</i>&nbsp;                                         ));
+<i>1149</i>&nbsp;    }
+<i>1150</i>&nbsp;
+<i>1151</i>&nbsp;    /**
+<i>1152</i>&nbsp;     Returns the object located at the given path or {@link Optional#empty()} if it doesn&#39;t exist or it&#39;s
+<i>1153</i>&nbsp;     not an object.
+<i>1154</i>&nbsp;     @param path the path-like string of the JsObj that will be returned
+<i>1155</i>&nbsp;     @return the JsObj located at the given path wrapped in an Optional
+<i>1156</i>&nbsp;     */
+<i>1157</i>&nbsp;    default Optional&lt;JsObj&gt; getObj(final String path)
+<i>1158</i>&nbsp;    {
+<b class="nc"><i>1159</i>&nbsp;        return getObj(JsPath.of(path));</b>
+<i>1160</i>&nbsp;    }
+<i>1161</i>&nbsp;
+<i>1162</i>&nbsp;
+<i>1163</i>&nbsp;    /**
+<i>1164</i>&nbsp;     Returns the string located at the given path or {@link Optional#empty()} if it doesn&#39;t exist or it&#39;s
+<i>1165</i>&nbsp;     not an string.
+<i>1166</i>&nbsp;     @param path the JsPath object of the JsStr that will be returned
+<i>1167</i>&nbsp;     @return the JsStr located at the given path wrapped in an Optional
+<i>1168</i>&nbsp;     */
+<i>1169</i>&nbsp;    default Optional&lt;String&gt; getStr(final JsPath path)
+<i>1170</i>&nbsp;    {
+<b class="fc"><i>1171</i>&nbsp;        final Function&lt;JsElem, Optional&lt;String&gt;&gt; ifStrElseFn = Functions.ifStrElse(Optional::of,</b>
+<b class="fc"><i>1172</i>&nbsp;                                                                                   it -&gt; Optional.empty()</b>
+<i>1173</i>&nbsp;                                                                                  );
+<b class="fc"><i>1174</i>&nbsp;        return ifStrElseFn.apply(Functions.get(this,</b>
+<b class="fc"><i>1175</i>&nbsp;                                               requireNonNull(path)</b>
+<i>1176</i>&nbsp;                                              ));
+<i>1177</i>&nbsp;
+<i>1178</i>&nbsp;    }
+<i>1179</i>&nbsp;
+<i>1180</i>&nbsp;    /**
+<i>1181</i>&nbsp;     Returns the string located at the given path or {@link Optional#empty()} if it doesn&#39;t exist or it&#39;s
+<i>1182</i>&nbsp;     not an string.
+<i>1183</i>&nbsp;     @param path the path-like string of the JsStr that will be returned
+<i>1184</i>&nbsp;     @return the JsStr located at the given path wrapped in an Optional
+<i>1185</i>&nbsp;     */
+<i>1186</i>&nbsp;    default Optional&lt;String&gt; getStr(final String path)
+<i>1187</i>&nbsp;    {
+<b class="nc"><i>1188</i>&nbsp;        return getStr(JsPath.of(path));</b>
+<i>1189</i>&nbsp;    }
+<i>1190</i>&nbsp;
+<i>1191</i>&nbsp;
+<i>1192</i>&nbsp;    /**
+<i>1193</i>&nbsp;     Declarative way parse implementing if(this.isEmpty()) return emptySupplier.get() else return
+<i>1194</i>&nbsp;     nonEmptySupplier.get()
+<i>1195</i>&nbsp;     @param emptySupplier    Supplier that will produce the result if this json is empty
+<i>1196</i>&nbsp;     @param nonemptySupplier Supplier that will produce the result if this json is not empty
+<i>1197</i>&nbsp;     @param &lt;A&gt;      the type of the result
+<i>1198</i>&nbsp;     @return an object parse type A
+<i>1199</i>&nbsp;
+<i>1200</i>&nbsp;     */
+<i>1201</i>&nbsp;    default &lt;A&gt; A ifEmptyElse(Supplier&lt;A&gt; emptySupplier,
+<i>1202</i>&nbsp;                              Supplier&lt;A&gt; nonemptySupplier
+<i>1203</i>&nbsp;                             )
+<i>1204</i>&nbsp;    {
+<i>1205</i>&nbsp;
+<b class="fc"><i>1206</i>&nbsp;        return this.isEmpty() ? requireNonNull(emptySupplier).get() : requireNonNull(nonemptySupplier).get();</b>
+<i>1207</i>&nbsp;    }
+<i>1208</i>&nbsp;
+<i>1209</i>&nbsp;
+<i>1210</i>&nbsp;    default long times(JsElem e)
+<i>1211</i>&nbsp;    {
+<b class="fc"><i>1212</i>&nbsp;        return stream().filter(p -&gt; p.elem.equals(Objects.requireNonNull(e)))</b>
+<b class="fc"><i>1213</i>&nbsp;                       .count();</b>
+<i>1214</i>&nbsp;    }
+<i>1215</i>&nbsp;
+<i>1216</i>&nbsp;    default long times_(JsElem e)
+<i>1217</i>&nbsp;    {
+<b class="nc"><i>1218</i>&nbsp;        return stream_().filter(p -&gt; p.elem.equals(Objects.requireNonNull(e)))</b>
+<b class="nc"><i>1219</i>&nbsp;                        .count();</b>
+<i>1220</i>&nbsp;    }
+<i>1221</i>&nbsp;
+<i>1222</i>&nbsp;
+<i>1223</i>&nbsp;    default boolean equals(final JsElem elem,
+<i>1224</i>&nbsp;                           final TYPE ARRAY_AS
+<i>1225</i>&nbsp;                          )
+<i>1226</i>&nbsp;    {
+<b class="fc"><i>1227</i>&nbsp;        if (elem == null || getClass() != elem.getClass()) return false;</b>
+<b class="fc"><i>1228</i>&nbsp;        if (isObj()) return asJsObj().equals(elem.asJsObj(),</b>
+<i>1229</i>&nbsp;                                             ARRAY_AS
+<i>1230</i>&nbsp;                                            );
+<b class="fc"><i>1231</i>&nbsp;        if (isArray()) return asJsArray().equals(elem.asJsArray(),</b>
+<i>1232</i>&nbsp;                                                 ARRAY_AS
+<i>1233</i>&nbsp;                                                );
+<b class="nc"><i>1234</i>&nbsp;        return false;</b>
+<i>1235</i>&nbsp;
+<i>1236</i>&nbsp;    }
+<i>1237</i>&nbsp;
+<i>1238</i>&nbsp;
+<i>1239</i>&nbsp;    /**
+<i>1240</i>&nbsp;     return true if there&#39;s no element in this json
+<i>1241</i>&nbsp;     @return true if empty, false otherwise
+<i>1242</i>&nbsp;     */
+<i>1243</i>&nbsp;    boolean isEmpty();
+<i>1244</i>&nbsp;
+<i>1245</i>&nbsp;
+<i>1246</i>&nbsp;    /**
+<i>1247</i>&nbsp;     return true if this json it not empty
+<i>1248</i>&nbsp;     @return false if empty, true otherwise
+<i>1249</i>&nbsp;     */
+<i>1250</i>&nbsp;    default boolean isNotEmpty()
+<i>1251</i>&nbsp;    {
+<b class="fc"><i>1252</i>&nbsp;        return !isEmpty();</b>
+<i>1253</i>&nbsp;    }
+<i>1254</i>&nbsp;
+<i>1255</i>&nbsp;
+<i>1256</i>&nbsp;    /**
+<i>1257</i>&nbsp;     Maps the values in the first level parse this json.
+<i>1258</i>&nbsp;     @param fn the mapping function
+<i>1259</i>&nbsp;
+<i>1260</i>&nbsp;     @return a new mapped json of the same type T
+<i>1261</i>&nbsp;     @see #mapObjs(BiFunction) to map jsons
+<i>1262</i>&nbsp;     @see #mapKeys(Function) to map keys parse json objects
+<i>1263</i>&nbsp;     @see #mapElems_(Function) to map all the values and not only the first level
+<i>1264</i>&nbsp;     */
+<i>1265</i>&nbsp;    T mapElems(final Function&lt;? super JsPair, ? extends JsElem&gt; fn);
+<i>1266</i>&nbsp;
+<i>1267</i>&nbsp;
+<i>1268</i>&nbsp;    /**
+<i>1269</i>&nbsp;     Maps the values in the first level parse this json that satisfies a given predicate.
+<i>1270</i>&nbsp;     @param fn the mapping function
+<i>1271</i>&nbsp;     @param predicate the given predicate that determines what JsValues will be mapped
+<i>1272</i>&nbsp;     @return same this instance or a new mapped json of the same type T
+<i>1273</i>&nbsp;
+<i>1274</i>&nbsp;
+<i>1275</i>&nbsp;     @see #mapObjs(BiFunction, BiPredicate) to map jsons
+<i>1276</i>&nbsp;     @see #mapKeys(Function, Predicate) to map keys parse json objects
+<i>1277</i>&nbsp;     @see #mapElems_(Function, Predicate) to map all the values and not only the first level
+<i>1278</i>&nbsp;     */
+<i>1279</i>&nbsp;    T mapElems(final Function&lt;? super JsPair, ? extends JsElem&gt; fn,
+<i>1280</i>&nbsp;               final Predicate&lt;? super JsPair&gt; predicate
+<i>1281</i>&nbsp;              );
+<i>1282</i>&nbsp;
+<i>1283</i>&nbsp;    /**
+<i>1284</i>&nbsp;     Maps all the values parse this json.
+<i>1285</i>&nbsp;     @param fn the mapping function
+<i>1286</i>&nbsp;     @return a new mapped json of the same type T
+<i>1287</i>&nbsp;     @see #mapObjs_(BiFunction) to map jsons
+<i>1288</i>&nbsp;     @see #mapKeys_(Function) to map keys parse json objects
+<i>1289</i>&nbsp;     @see #mapElems(Function) to map only the first level
+<i>1290</i>&nbsp;     */
+<i>1291</i>&nbsp;    T mapElems_(final Function&lt;? super JsPair, ? extends JsElem&gt; fn);
+<i>1292</i>&nbsp;
+<i>1293</i>&nbsp;
+<i>1294</i>&nbsp;    /**
+<i>1295</i>&nbsp;     Maps all the values parse this json that satisfies a given predicate.
+<i>1296</i>&nbsp;     @param fn the  mapping function
+<i>1297</i>&nbsp;     @param predicate the given predicate that determines what JsValues will be mapped
+<i>1298</i>&nbsp;     @return same this instance or a new mapped json of the same type TT
+<i>1299</i>&nbsp;     @see #mapObjs_(BiFunction, BiPredicate) to map jsons
+<i>1300</i>&nbsp;     @see #mapKeys_(Function, Predicate) to map keys parse json objects
+<i>1301</i>&nbsp;     @see #mapElems(Function, Predicate) to map only the first level
+<i>1302</i>&nbsp;     */
+<i>1303</i>&nbsp;    T mapElems_(final Function&lt;? super JsPair, ? extends JsElem&gt; fn,
+<i>1304</i>&nbsp;                final Predicate&lt;? super JsPair&gt; predicate
+<i>1305</i>&nbsp;               );
+<i>1306</i>&nbsp;
+<i>1307</i>&nbsp;    /**
+<i>1308</i>&nbsp;     Maps the jsons in the first level parse this json that satisfies a given predicate.
+<i>1309</i>&nbsp;     @param fn the mapping function
+<i>1310</i>&nbsp;     @param predicate the given predicate that determines what Jsons will be mapped
+<i>1311</i>&nbsp;     @return same this instance or a new mapped json of the same type T
+<i>1312</i>&nbsp;     @see #mapElems(Function, Predicate) to map values
+<i>1313</i>&nbsp;     @see #mapKeys(Function, Predicate) to map keys parse json objects
+<i>1314</i>&nbsp;     @see #mapObjs_(BiFunction, BiPredicate) to map all the jsons and not only the first level
+<i>1315</i>&nbsp;     */
+<i>1316</i>&nbsp;    T mapObjs(final BiFunction&lt;? super JsPath, ? super JsObj, JsObj&gt; fn,
+<i>1317</i>&nbsp;              final BiPredicate&lt;? super JsPath, ? super JsObj&gt; predicate
+<i>1318</i>&nbsp;             );
+<i>1319</i>&nbsp;
+<i>1320</i>&nbsp;    /**
+<i>1321</i>&nbsp;     Maps the jsons in the first level parse this json.
+<i>1322</i>&nbsp;     @param fn the  mapping function
+<i>1323</i>&nbsp;     @return a new mapped json of the same type T
+<i>1324</i>&nbsp;     @see #mapElems(Function) to map values
+<i>1325</i>&nbsp;     @see #mapKeys(Function) to map keys parse json objects
+<i>1326</i>&nbsp;     @see #mapObjs_(BiFunction) to map all the jsons and not only the first level
+<i>1327</i>&nbsp;     */
+<i>1328</i>&nbsp;    T mapObjs(final BiFunction&lt;? super JsPath,? super  JsObj,JsObj&gt; fn
+<i>1329</i>&nbsp;             );
+<i>1330</i>&nbsp;
+<i>1331</i>&nbsp;    /**
+<i>1332</i>&nbsp;     Maps all the jsons parse this json that satisfies a given predicate.
+<i>1333</i>&nbsp;     @param fn the  mapping function
+<i>1334</i>&nbsp;     @param predicate the given predicate that determines what Jsons will be mapped
+<i>1335</i>&nbsp;     @return same this instance or a new mapped json of the same type T
+<i>1336</i>&nbsp;     @see #mapElems_(Function, Predicate) to map values
+<i>1337</i>&nbsp;     @see #mapKeys_(Function, Predicate) to map keys parse json objects
+<i>1338</i>&nbsp;     @see #mapObjs(BiFunction, BiPredicate) to map only the first level
+<i>1339</i>&nbsp;     */
+<i>1340</i>&nbsp;    T mapObjs_(final BiFunction&lt;? super JsPath, ? super JsObj, JsObj&gt; fn,
+<i>1341</i>&nbsp;               final BiPredicate&lt;? super JsPath, ? super JsObj&gt; predicate
+<i>1342</i>&nbsp;              );
+<i>1343</i>&nbsp;
+<i>1344</i>&nbsp;    /**
+<i>1345</i>&nbsp;     Maps all the jsons parse this json.
+<i>1346</i>&nbsp;     @param fn the mapping function
+<i>1347</i>&nbsp;     @return a new mapped json of the same type T
+<i>1348</i>&nbsp;     @see #mapElems_(Function) to map values
+<i>1349</i>&nbsp;     @see #mapKeys_(Function) to map keys parse json objects
+<i>1350</i>&nbsp;     @see #mapObjs(BiFunction) to map only the first level
+<i>1351</i>&nbsp;     */
+<i>1352</i>&nbsp;    T mapObjs_(final BiFunction&lt;? super JsPath, ? super JsObj,JsObj&gt; fn
+<i>1353</i>&nbsp;              );
+<i>1354</i>&nbsp;
+<i>1355</i>&nbsp;    /**
+<i>1356</i>&nbsp;     Maps the keys in the first level parse this json.
+<i>1357</i>&nbsp;     @param fn the mapping function
+<i>1358</i>&nbsp;     @return a new mapped json of the same type T
+<i>1359</i>&nbsp;     @see #mapElems(Function) to map values
+<i>1360</i>&nbsp;     @see #mapObjs(BiFunction) to map jsons
+<i>1361</i>&nbsp;     @see #mapKeys_(Function) to map all the keys and not only the first level
+<i>1362</i>&nbsp;     */
+<i>1363</i>&nbsp;    T mapKeys(final Function&lt;? super JsPair, String&gt; fn);
+<i>1364</i>&nbsp;
+<i>1365</i>&nbsp;    /**
+<i>1366</i>&nbsp;     Maps the keys in the first level parse this json that satisfies a given predicate.
+<i>1367</i>&nbsp;     @param fn the mapping function
+<i>1368</i>&nbsp;     @param predicate the given predicate that determines what keys will be mapped
+<i>1369</i>&nbsp;     @return same this instance or a new mapped json of the same type T
+<i>1370</i>&nbsp;     @see #mapObjs(BiFunction, BiPredicate) to map jsons
+<i>1371</i>&nbsp;     @see #mapElems(Function, Predicate) to map values
+<i>1372</i>&nbsp;     @see #mapKeys_(Function, Predicate) to map all the keys and not only the first level
+<i>1373</i>&nbsp;     */
+<i>1374</i>&nbsp;    T mapKeys(final Function&lt;? super JsPair, String&gt; fn,
+<i>1375</i>&nbsp;              final Predicate&lt;? super JsPair&gt; predicate
+<i>1376</i>&nbsp;             );
+<i>1377</i>&nbsp;
+<i>1378</i>&nbsp;    /**
+<i>1379</i>&nbsp;     Maps all the keys parse this json.
+<i>1380</i>&nbsp;     @param fn the mapping function
+<i>1381</i>&nbsp;     @return a new mapped json of the same type T
+<i>1382</i>&nbsp;     @see #mapElems_(Function) to map values
+<i>1383</i>&nbsp;     @see #mapObjs_(BiFunction) to map jsons
+<i>1384</i>&nbsp;     @see #mapKeys(Function) to map only the first level
+<i>1385</i>&nbsp;     */
+<i>1386</i>&nbsp;    T mapKeys_(final Function&lt;? super JsPair, String&gt; fn);
+<i>1387</i>&nbsp;
+<i>1388</i>&nbsp;    /**
+<i>1389</i>&nbsp;     Maps all the keys parse this json that satisfies a given predicate.
+<i>1390</i>&nbsp;     @param fn the mapping function
+<i>1391</i>&nbsp;     @param predicate the given predicate that determines what keys will be mapped
+<i>1392</i>&nbsp;     @return same this instance or a new mapped json of the same type T
+<i>1393</i>&nbsp;     @see #mapElems_(Function, Predicate) to map values
+<i>1394</i>&nbsp;     @see #mapObjs_(BiFunction, BiPredicate) to map jsons
+<i>1395</i>&nbsp;     @see #mapKeys(Function, Predicate) to map only the first level
+<i>1396</i>&nbsp;     */
+<i>1397</i>&nbsp;    T mapKeys_(final Function&lt;? super JsPair, String&gt; fn,
+<i>1398</i>&nbsp;               final Predicate&lt;? super JsPair&gt; predicate
+<i>1399</i>&nbsp;              );
+<i>1400</i>&nbsp;
+<i>1401</i>&nbsp;    /**
+<i>1402</i>&nbsp;     If the given path is not already associated with a value or is associated with null, associates it with the given value. Otherwise,
+<i>1403</i>&nbsp;     replaces the associated value with the results of the given remapping function. This method may be of use when combining multiple mapped
+<i>1404</i>&nbsp;     values for a key.For example, to either create or append a String msg to a value mapping:
+<i>1405</i>&nbsp;     {@code
+<i>1406</i>&nbsp;     map.merge(key, msg, String::concat)
+<i>1407</i>&nbsp;     }
+<i>1408</i>&nbsp;     @param path the given JsPath object which the resulting value is to be associated
+<i>1409</i>&nbsp;     @param value the given value to be merged with the existing value associated with the path or, if no existing value or a null value is
+<i>1410</i>&nbsp;     associated with the path, to be associated with the path
+<i>1411</i>&nbsp;     @param fn the given function to recompute a value if present
+<i>1412</i>&nbsp;     @return a new json of the same type T
+<i>1413</i>&nbsp;     */
+<i>1414</i>&nbsp;    default T merge(final JsPath path,
+<i>1415</i>&nbsp;                    final JsElem value,
+<i>1416</i>&nbsp;                    final BiFunction&lt;? super JsElem, ? super JsElem, ? extends JsElem&gt; fn
+<i>1417</i>&nbsp;                   )
+<i>1418</i>&nbsp;    {
+<b class="fc"><i>1419</i>&nbsp;        requireNonNull(fn);</b>
+<b class="fc"><i>1420</i>&nbsp;        requireNonNull(value);</b>
+<b class="fc"><i>1421</i>&nbsp;        return put(requireNonNull(path),</b>
+<i>1422</i>&nbsp;                   elem -&gt;
+<i>1423</i>&nbsp;                   {
+<b class="fc"><i>1424</i>&nbsp;                       if (elem.isNothing() || elem.isNull()) return value;</b>
+<b class="fc"><i>1425</i>&nbsp;                       return fn.apply(value,</b>
+<i>1426</i>&nbsp;                                       elem
+<i>1427</i>&nbsp;                                      );
+<i>1428</i>&nbsp;                   }
+<i>1429</i>&nbsp;                  );
+<i>1430</i>&nbsp;    }
+<i>1431</i>&nbsp;
+<i>1432</i>&nbsp;    /**
+<i>1433</i>&nbsp;     If the given path is not already associated with a value or is associated with null, associates it with the given value. Otherwise,
+<i>1434</i>&nbsp;     replaces the associated value with the results of the given remapping function. This method may be of use when combining multiple mapped
+<i>1435</i>&nbsp;     values for a key.For example, to either create or append a String msg to a value mapping:
+<i>1436</i>&nbsp;     {@code
+<i>1437</i>&nbsp;     map.merge(key, msg, String::concat)
+<i>1438</i>&nbsp;     }
+<i>1439</i>&nbsp;     @param path the given path-like string which the resulting value is to be associated
+<i>1440</i>&nbsp;     @param value the given value to be merged with the existing value associated with the path or, if no existing value or a null value is
+<i>1441</i>&nbsp;     associated with the path, to be associated with the path
+<i>1442</i>&nbsp;     @param fn the given function to recompute a value if present
+<i>1443</i>&nbsp;     @return a new json of the same type T
+<i>1444</i>&nbsp;     */
+<i>1445</i>&nbsp;    default T merge(final String path,
+<i>1446</i>&nbsp;                    final JsElem value,
+<i>1447</i>&nbsp;                    final BiFunction&lt;? super JsElem, ? super JsElem, ? extends JsElem&gt; fn
+<i>1448</i>&nbsp;                   )
+<i>1449</i>&nbsp;    {
+<b class="nc"><i>1450</i>&nbsp;        return merge(JsPath.of(path),</b>
+<i>1451</i>&nbsp;                     value,
+<i>1452</i>&nbsp;                     fn
+<i>1453</i>&nbsp;                    );
+<i>1454</i>&nbsp;    }
+<i>1455</i>&nbsp;
+<i>1456</i>&nbsp;    /**
+<i>1457</i>&nbsp;     Tries to parse the string into an immutable json.
+<i>1458</i>&nbsp;     @param str the string that will be parsed
+<i>1459</i>&nbsp;     @return a {@link Try} computation
+<i>1460</i>&nbsp;     */
+<i>1461</i>&nbsp;    static Try parse(String str)
+<i>1462</i>&nbsp;    {
+<b class="fc"><i>1463</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>1464</i>&nbsp;        {
+<i>1465</i>&nbsp;
+<b class="fc"><i>1466</i>&nbsp;            final JsParser.Event event = parser.next();</b>
+<b class="fc"><i>1467</i>&nbsp;            if (event == START_ARRAY) return new Try(new JsArrayImmutableImpl(Functions.parse(MyScalaImpl.Vector.EMPTY,</b>
+<i>1468</i>&nbsp;                                                                                              parser
+<i>1469</i>&nbsp;                                                                                             )
+<i>1470</i>&nbsp;            ));
+<b class="fc"><i>1471</i>&nbsp;            return new Try(new JsObjImmutableImpl(Functions.parse(MyScalaImpl.Map.EMPTY,</b>
+<i>1472</i>&nbsp;                                                                  parser
+<i>1473</i>&nbsp;
+<i>1474</i>&nbsp;                                                                 )));
+<b class="fc"><i>1475</i>&nbsp;        }</b>
+<i>1476</i>&nbsp;
+<b class="fc"><i>1477</i>&nbsp;        catch (MalformedJson e)</b>
+<i>1478</i>&nbsp;        {
+<i>1479</i>&nbsp;
+<b class="fc"><i>1480</i>&nbsp;            return new Try(e);</b>
+<i>1481</i>&nbsp;
+<i>1482</i>&nbsp;        }
+<i>1483</i>&nbsp;
+<i>1484</i>&nbsp;
+<i>1485</i>&nbsp;    }
+<i>1486</i>&nbsp;
+<i>1487</i>&nbsp;    /**
+<i>1488</i>&nbsp;     Tries to parse the string into an immutable json, performing some operations while the parsing.
+<i>1489</i>&nbsp;     @param str     the string that will be parsed
+<i>1490</i>&nbsp;     @param options a Options with the filters and maps that will be applied during the parsing
+<i>1491</i>&nbsp;     @return a {@link Try} computation
+<i>1492</i>&nbsp;     */
+<i>1493</i>&nbsp;    static Try parse(String str,
+<i>1494</i>&nbsp;                     ParseOptions options
+<i>1495</i>&nbsp;                    )
+<i>1496</i>&nbsp;    {
+<b class="nc"><i>1497</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>1498</i>&nbsp;        {
+<i>1499</i>&nbsp;
+<b class="nc"><i>1500</i>&nbsp;            final JsParser.Event event = parser.next();</b>
+<b class="nc"><i>1501</i>&nbsp;            if (event == START_ARRAY) return new Try(new JsArrayImmutableImpl(Functions.parse(MyScalaImpl.Vector.EMPTY,</b>
+<i>1502</i>&nbsp;                                                                                              parser,
+<b class="nc"><i>1503</i>&nbsp;                                                                                              options.create(),</b>
+<i>1504</i>&nbsp;                                                                                              MINUS_ONE_INDEX
+<i>1505</i>&nbsp;
+<i>1506</i>&nbsp;                                                                                             )));
+<b class="nc"><i>1507</i>&nbsp;            return new Try(new JsObjImmutableImpl(Functions.parse(MyScalaImpl.Map.EMPTY,</b>
+<i>1508</i>&nbsp;                                                                  parser,
+<b class="nc"><i>1509</i>&nbsp;                                                                  options.create(),</b>
+<b class="nc"><i>1510</i>&nbsp;                                                                  JsPath.empty()</b>
+<i>1511</i>&nbsp;
+<i>1512</i>&nbsp;                                                                 )));
+<b class="nc"><i>1513</i>&nbsp;        }</b>
+<i>1514</i>&nbsp;
+<b class="nc"><i>1515</i>&nbsp;        catch (MalformedJson e)</b>
+<i>1516</i>&nbsp;        {
+<i>1517</i>&nbsp;
+<b class="nc"><i>1518</i>&nbsp;            return new Try(e);</b>
+<i>1519</i>&nbsp;
+<i>1520</i>&nbsp;        }
+<i>1521</i>&nbsp;
+<i>1522</i>&nbsp;
+<i>1523</i>&nbsp;    }
+<i>1524</i>&nbsp;
+<i>1525</i>&nbsp;    /**
+<i>1526</i>&nbsp;     Inserts the element returned by the function at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary.
+<i>1527</i>&nbsp;     The same instance is returned when the head of the path is a key and this is an array or the head of the path is an index and this is an object. In both cases the function is not invoked.
+<i>1528</i>&nbsp;     The same instance is returned as well when the element returned by the function is {@link JsNothing}
+<i>1529</i>&nbsp;     @param path    the JsPath object where the JsElem will be inserted at
+<i>1530</i>&nbsp;     @param fn the function that takes as an input the JsElem at the path and produces the JsElem to be inserted at the path
+<i>1531</i>&nbsp;
+<i>1532</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1533</i>&nbsp;     */
+<i>1534</i>&nbsp;    T put(final JsPath path,
+<i>1535</i>&nbsp;          final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>1536</i>&nbsp;         );
+<i>1537</i>&nbsp;
+<i>1538</i>&nbsp;    /**
+<i>1539</i>&nbsp;     Inserts the element returned by the function at the path in this json, replacing any existing
+<i>1540</i>&nbsp;     element in the path and filling with {@link jsonvalues.JsNull} empty indexes in arrays when
+<i>1541</i>&nbsp;     necessary. The same instance is returned if the  path doesn&#39;t exist. In both cases the function
+<i>1542</i>&nbsp;     is not invoked. The same instance is returned when the element returned by the function is
+<i>1543</i>&nbsp;     {@link JsNothing}
+<i>1544</i>&nbsp;     @param path    the path-like string where the JsElem will be inserted at
+<i>1545</i>&nbsp;     @param fn the function that takes as an input the JsElem at the path and produces the JsElem to be inserted at the path
+<i>1546</i>&nbsp;
+<i>1547</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1548</i>&nbsp;     */
+<i>1549</i>&nbsp;    default T put(final String path,
+<i>1550</i>&nbsp;                  final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>1551</i>&nbsp;                 )
+<i>1552</i>&nbsp;    {
+<b class="fc"><i>1553</i>&nbsp;        return put(JsPath.of(path),</b>
+<i>1554</i>&nbsp;                   fn
+<i>1555</i>&nbsp;                  );
+<i>1556</i>&nbsp;    }
+<i>1557</i>&nbsp;
+<i>1558</i>&nbsp;    /**
+<i>1559</i>&nbsp;     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty
+<i>1560</i>&nbsp;     indexes in arrays when necessary.
+<i>1561</i>&nbsp;     &lt;p&gt;
+<i>1562</i>&nbsp;     The same instance is returned when the head of the path is a key and this is an array or the head
+<i>1563</i>&nbsp;     of the path is an index and this is an object or the element is {@link JsNothing}
+<i>1564</i>&nbsp;     @param path    the JsPath object where the element will be inserted at
+<i>1565</i>&nbsp;     @param element the JsElem that will be inserted
+<i>1566</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1567</i>&nbsp;     */
+<i>1568</i>&nbsp;    default T put(final JsPath path,
+<i>1569</i>&nbsp;                  final JsElem element
+<i>1570</i>&nbsp;                 )
+<i>1571</i>&nbsp;    {
+<b class="fc"><i>1572</i>&nbsp;        requireNonNull(path);</b>
+<b class="fc"><i>1573</i>&nbsp;        requireNonNull(element);</b>
+<b class="fc"><i>1574</i>&nbsp;        if (element.isNothing())</b>
+<i>1575</i>&nbsp;        {
+<i>1576</i>&nbsp;            //this is an instance of T (recursive type)
+<b class="nc"><i>1577</i>&nbsp;            @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>1578</i>&nbsp;            return t;</b>
+<i>1579</i>&nbsp;        }
+<i>1580</i>&nbsp;
+<b class="fc"><i>1581</i>&nbsp;        return put(path,</b>
+<b class="fc"><i>1582</i>&nbsp;                   $ -&gt; element</b>
+<i>1583</i>&nbsp;                  );
+<i>1584</i>&nbsp;    }
+<i>1585</i>&nbsp;
+<i>1586</i>&nbsp;    /**
+<i>1587</i>&nbsp;     Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty
+<i>1588</i>&nbsp;     indexes in arrays when necessary.
+<i>1589</i>&nbsp;     &lt;p&gt;
+<i>1590</i>&nbsp;     The same instance is returned when the head of the path is a key and this is an array or the
+<i>1591</i>&nbsp;     head of the path is an index and this is an object or the element is {@link JsNothing}
+<i>1592</i>&nbsp;     @param path    the path-like string where the element will be inserted at
+<i>1593</i>&nbsp;     @param element the JsElem that will be inserted
+<i>1594</i>&nbsp;
+<i>1595</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1596</i>&nbsp;     */
+<i>1597</i>&nbsp;    default T put(final String path,
+<i>1598</i>&nbsp;                  final JsElem element
+<i>1599</i>&nbsp;                 )
+<i>1600</i>&nbsp;    {
+<b class="fc"><i>1601</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<i>1602</i>&nbsp;                   element
+<i>1603</i>&nbsp;                  );
+<i>1604</i>&nbsp;    }
+<i>1605</i>&nbsp;
+<i>1606</i>&nbsp;    /**
+<i>1607</i>&nbsp;     Inserts the integer number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull}
+<i>1608</i>&nbsp;     empty indexes in arrays when necessary. The same instance is returned when the head of the path
+<i>1609</i>&nbsp;     is a key and this is an array or the head of the path is an index and this is an object or the
+<i>1610</i>&nbsp;     element is {@link JsNothing}
+<i>1611</i>&nbsp;     @param path    the path-like string where the integer number will be inserted at
+<i>1612</i>&nbsp;     @param n the integer that will be inserted
+<i>1613</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1614</i>&nbsp;     */
+<i>1615</i>&nbsp;    default T put(final String path,
+<i>1616</i>&nbsp;                  final int n
+<i>1617</i>&nbsp;                 )
+<i>1618</i>&nbsp;    {
+<b class="fc"><i>1619</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="fc"><i>1620</i>&nbsp;                   JsInt.of(n)</b>
+<i>1621</i>&nbsp;                  );
+<i>1622</i>&nbsp;    }
+<i>1623</i>&nbsp;
+<i>1624</i>&nbsp;
+<i>1625</i>&nbsp;    /**
+<i>1626</i>&nbsp;     Inserts the long number at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull}
+<i>1627</i>&nbsp;     empty indexes in arrays when necessary. The same instance is returned when the head of the path
+<i>1628</i>&nbsp;     is a key and this is an array or the head of the path is an index and this is an object or the
+<i>1629</i>&nbsp;     element is {@link JsNothing}
+<i>1630</i>&nbsp;     @param path    the path-like string where the long number will be inserted at
+<i>1631</i>&nbsp;     @param n the long number that will be inserted
+<i>1632</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1633</i>&nbsp;     */
+<i>1634</i>&nbsp;    default T put(final String path,
+<i>1635</i>&nbsp;                  final long n
+<i>1636</i>&nbsp;                 )
+<i>1637</i>&nbsp;    {
+<b class="nc"><i>1638</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>1639</i>&nbsp;                   JsLong.of(n)</b>
+<i>1640</i>&nbsp;                  );
+<i>1641</i>&nbsp;    }
+<i>1642</i>&nbsp;
+<i>1643</i>&nbsp;
+<i>1644</i>&nbsp;    /**
+<i>1645</i>&nbsp;     Inserts the string at the given path in this json, replacing any existing element in the path
+<i>1646</i>&nbsp;     and filling with {@link jsonvalues.JsNull} empty positions in arrays when necessary.
+<i>1647</i>&nbsp;     @param path    the path-like string where the string will be inserted at
+<i>1648</i>&nbsp;     @param str the string that will be inserted
+<i>1649</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1650</i>&nbsp;     */
+<i>1651</i>&nbsp;    default T put(final String path,
+<i>1652</i>&nbsp;                  final String str
+<i>1653</i>&nbsp;                 )
+<i>1654</i>&nbsp;    {
+<b class="fc"><i>1655</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="fc"><i>1656</i>&nbsp;                   JsStr.of(str)</b>
+<i>1657</i>&nbsp;                  );
+<i>1658</i>&nbsp;    }
+<i>1659</i>&nbsp;
+<i>1660</i>&nbsp;
+<i>1661</i>&nbsp;    /**
+<i>1662</i>&nbsp;     Inserts the big integer number at the given path in this json, replacing any existing element
+<i>1663</i>&nbsp;     in teh path and filling with {@link jsonvalues.JsNull} empty positions in arrays when necessary.
+<i>1664</i>&nbsp;     @param path    the given path-like string where the big integer number will be inserted at
+<i>1665</i>&nbsp;     @param bigint the big integer number that will be inserted
+<i>1666</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1667</i>&nbsp;     */
+<i>1668</i>&nbsp;    default T put(final String path,
+<i>1669</i>&nbsp;                  final BigInteger bigint
+<i>1670</i>&nbsp;                 )
+<i>1671</i>&nbsp;    {
+<b class="nc"><i>1672</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>1673</i>&nbsp;                   JsBigInt.of(bigint)</b>
+<i>1674</i>&nbsp;                  );
+<i>1675</i>&nbsp;    }
+<i>1676</i>&nbsp;
+<i>1677</i>&nbsp;    /**
+<i>1678</i>&nbsp;     Inserts the big decimal number at the given path in this json, replacing any existing element in
+<i>1679</i>&nbsp;     the path and filling with {@link jsonvalues.JsNull} empty positions in arrays when necessary.
+<i>1680</i>&nbsp;     @param path    the given path-like string where the big decimal number will be inserted at
+<i>1681</i>&nbsp;     @param bigdecimal the big decimal number that will be inserted
+<i>1682</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1683</i>&nbsp;     */
+<i>1684</i>&nbsp;    default T put(final String path,
+<i>1685</i>&nbsp;                  final BigDecimal bigdecimal
+<i>1686</i>&nbsp;                 )
+<i>1687</i>&nbsp;    {
+<b class="nc"><i>1688</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>1689</i>&nbsp;                   JsBigDec.of(bigdecimal)</b>
+<i>1690</i>&nbsp;                  );
+<i>1691</i>&nbsp;    }
+<i>1692</i>&nbsp;
+<i>1693</i>&nbsp;    /**
+<i>1694</i>&nbsp;     Inserts the boolean at the given path in this json, replacing any existing element in the path
+<i>1695</i>&nbsp;     and filling with {@link jsonvalues.JsNull} empty positions in arrays when necessary.
+<i>1696</i>&nbsp;     @param path  the given path-like string where the boolean will be inserted at
+<i>1697</i>&nbsp;     @param bool the boolean that will be inserted
+<i>1698</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1699</i>&nbsp;     */
+<i>1700</i>&nbsp;    default T put(final String path,
+<i>1701</i>&nbsp;                  final boolean bool
+<i>1702</i>&nbsp;                 )
+<i>1703</i>&nbsp;    {
+<b class="nc"><i>1704</i>&nbsp;        return put(JsPath.of(requireNonNull(path)),</b>
+<b class="nc"><i>1705</i>&nbsp;                   JsBool.of(bool)</b>
+<i>1706</i>&nbsp;                  );
+<i>1707</i>&nbsp;    }
+<i>1708</i>&nbsp;
+<i>1709</i>&nbsp;    /**
+<i>1710</i>&nbsp;     Inserts at the given path in this json, if the existing element satisfies the predicate, a new
+<i>1711</i>&nbsp;     element returned by the function.
+<i>1712</i>&nbsp;     If the predicate evaluates to false, the function is not computed. If the function returns {@link JsNothing},
+<i>1713</i>&nbsp;     the same this instance is returned.
+<i>1714</i>&nbsp;     @param predicate the predicate on which the existing element is tested on
+<i>1715</i>&nbsp;     @param path the JsPath object
+<i>1716</i>&nbsp;     @param fn the function witch computes the new element if the existing one satisfies the given predicate
+<i>1717</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1718</i>&nbsp;     */
+<i>1719</i>&nbsp;    default T putIf(final Predicate&lt;? super JsElem&gt; predicate,
+<i>1720</i>&nbsp;                    final JsPath path,
+<i>1721</i>&nbsp;                    final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>1722</i>&nbsp;                   )
+<i>1723</i>&nbsp;    {
+<b class="fc"><i>1724</i>&nbsp;        final JsElem elem = get(requireNonNull(path));</b>
+<b class="fc"><i>1725</i>&nbsp;        if (requireNonNull(predicate).test(elem)) return put(path,</b>
+<b class="fc"><i>1726</i>&nbsp;                                                             requireNonNull(fn).apply(elem)</b>
+<i>1727</i>&nbsp;                                                            );
+<i>1728</i>&nbsp;
+<i>1729</i>&nbsp;        //this is an instance of T (recursive type));
+<b class="fc"><i>1730</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="fc"><i>1731</i>&nbsp;        return t;</b>
+<i>1732</i>&nbsp;
+<i>1733</i>&nbsp;    }
+<i>1734</i>&nbsp;
+<i>1735</i>&nbsp;    /**
+<i>1736</i>&nbsp;     Inserts at the given path in this json, if the existing element satisfies the predicate, a new
+<i>1737</i>&nbsp;     element returned by the function.
+<i>1738</i>&nbsp;     If the predicate evaluates to false, the function is not computed. If the function returns {@link JsNothing},
+<i>1739</i>&nbsp;     the same this instance is returned.
+<i>1740</i>&nbsp;     @param predicate the predicate on which the existing element is tested on
+<i>1741</i>&nbsp;     @param path      the path-like string
+<i>1742</i>&nbsp;     @param fn        the function witch computes the new element if the existing satisfies the given predicate
+<i>1743</i>&nbsp;
+<i>1744</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1745</i>&nbsp;     */
+<i>1746</i>&nbsp;    default T putIf(final Predicate&lt;? super JsElem&gt; predicate,
+<i>1747</i>&nbsp;                    final String path,
+<i>1748</i>&nbsp;                    final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>1749</i>&nbsp;                   )
+<i>1750</i>&nbsp;    {
+<b class="nc"><i>1751</i>&nbsp;        return putIf(predicate,</b>
+<b class="nc"><i>1752</i>&nbsp;                     JsPath.of(path),</b>
+<i>1753</i>&nbsp;                     fn
+<i>1754</i>&nbsp;                    );
+<i>1755</i>&nbsp;    }
+<i>1756</i>&nbsp;
+<i>1757</i>&nbsp;    /**
+<i>1758</i>&nbsp;     Inserts at the given path in this json, if no element is present, the element returned by the
+<i>1759</i>&nbsp;     supplier, replacing any existing element in the path and filling with {@link jsonvalues.JsNull}
+<i>1760</i>&nbsp;     empty positions in arrays when necessary. The supplier is not invoked if the element is present.
+<i>1761</i>&nbsp;     @param path the given JsPath object
+<i>1762</i>&nbsp;     @param supplier the supplier which computes the new JsElem if absent
+<i>1763</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1764</i>&nbsp;     */
+<i>1765</i>&nbsp;    default T putIfAbsent(final JsPath path,
+<i>1766</i>&nbsp;                          final Supplier&lt;? extends JsElem&gt; supplier
+<i>1767</i>&nbsp;                         )
+<i>1768</i>&nbsp;    {
+<b class="fc"><i>1769</i>&nbsp;        requireNonNull(supplier);</b>
+<b class="fc"><i>1770</i>&nbsp;        return putIf(JsElem::isNothing,</b>
+<b class="fc"><i>1771</i>&nbsp;                     requireNonNull(path),</b>
+<b class="fc"><i>1772</i>&nbsp;                     $ -&gt; supplier.get()</b>
+<i>1773</i>&nbsp;                    );
+<i>1774</i>&nbsp;    }
+<i>1775</i>&nbsp;
+<i>1776</i>&nbsp;    /**
+<i>1777</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified integer, replacing
+<i>1778</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1779</i>&nbsp;     arrays when necessary.
+<i>1780</i>&nbsp;     @param path the given JsPath object
+<i>1781</i>&nbsp;     @param number the specified integer
+<i>1782</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1783</i>&nbsp;     */
+<i>1784</i>&nbsp;    default T putIfAbsent(final JsPath path,
+<i>1785</i>&nbsp;                          final int number
+<i>1786</i>&nbsp;                         )
+<i>1787</i>&nbsp;    {
+<b class="nc"><i>1788</i>&nbsp;        return putIf(JsElem::isNothing,</b>
+<b class="nc"><i>1789</i>&nbsp;                     requireNonNull(path),</b>
+<b class="nc"><i>1790</i>&nbsp;                     $ -&gt; JsInt.of(number)</b>
+<i>1791</i>&nbsp;                    );
+<i>1792</i>&nbsp;    }
+<i>1793</i>&nbsp;
+<i>1794</i>&nbsp;    /**
+<i>1795</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified long, replacing
+<i>1796</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1797</i>&nbsp;     arrays when necessary.
+<i>1798</i>&nbsp;     @param path the given JsPath object
+<i>1799</i>&nbsp;     @param number the specified long
+<i>1800</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1801</i>&nbsp;     */
+<i>1802</i>&nbsp;    default T putIfAbsent(final JsPath path,
+<i>1803</i>&nbsp;                          final long number
+<i>1804</i>&nbsp;                         )
+<i>1805</i>&nbsp;    {
+<b class="nc"><i>1806</i>&nbsp;        return putIf(JsElem::isNothing,</b>
+<b class="nc"><i>1807</i>&nbsp;                     requireNonNull(path),</b>
+<b class="nc"><i>1808</i>&nbsp;                     $ -&gt; JsLong.of(number)</b>
+<i>1809</i>&nbsp;                    );
+<i>1810</i>&nbsp;    }
+<i>1811</i>&nbsp;
+<i>1812</i>&nbsp;    /**
+<i>1813</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified double, replacing
+<i>1814</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1815</i>&nbsp;     arrays when necessary.
+<i>1816</i>&nbsp;     @param path the given JsPath object
+<i>1817</i>&nbsp;     @param number the specified double
+<i>1818</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1819</i>&nbsp;     */
+<i>1820</i>&nbsp;    default T putIfAbsent(final JsPath path,
+<i>1821</i>&nbsp;                          final double number
+<i>1822</i>&nbsp;                         )
+<i>1823</i>&nbsp;    {
+<b class="nc"><i>1824</i>&nbsp;        return putIf(JsElem::isNothing,</b>
+<b class="nc"><i>1825</i>&nbsp;                     requireNonNull(path),</b>
+<b class="nc"><i>1826</i>&nbsp;                     $ -&gt; JsDouble.of(number)</b>
+<i>1827</i>&nbsp;                    );
+<i>1828</i>&nbsp;    }
+<i>1829</i>&nbsp;
+<i>1830</i>&nbsp;    /**
+<i>1831</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified integer, replacing
+<i>1832</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1833</i>&nbsp;     arrays when necessary.
+<i>1834</i>&nbsp;     @param path  the path-like string
+<i>1835</i>&nbsp;     @param number the specified integer
+<i>1836</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1837</i>&nbsp;     */
+<i>1838</i>&nbsp;    default T putIfAbsent(final String path,
+<i>1839</i>&nbsp;                          final int number
+<i>1840</i>&nbsp;                         )
+<i>1841</i>&nbsp;    {
+<b class="nc"><i>1842</i>&nbsp;        return putIfAbsent(JsPath.of(path),</b>
+<i>1843</i>&nbsp;                           number
+<i>1844</i>&nbsp;                          );
+<i>1845</i>&nbsp;    }
+<i>1846</i>&nbsp;
+<i>1847</i>&nbsp;    /**
+<i>1848</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified long, replacing
+<i>1849</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1850</i>&nbsp;     arrays when necessary.
+<i>1851</i>&nbsp;     @param path  the path-like string
+<i>1852</i>&nbsp;     @param number the specified long
+<i>1853</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1854</i>&nbsp;     */
+<i>1855</i>&nbsp;    default T putIfAbsent(final String path,
+<i>1856</i>&nbsp;                          final long number
+<i>1857</i>&nbsp;                         )
+<i>1858</i>&nbsp;    {
+<b class="nc"><i>1859</i>&nbsp;        return putIfAbsent(JsPath.of(path),</b>
+<i>1860</i>&nbsp;                           number
+<i>1861</i>&nbsp;                          );
+<i>1862</i>&nbsp;    }
+<i>1863</i>&nbsp;
+<i>1864</i>&nbsp;    /**
+<i>1865</i>&nbsp;     Inserts at the given path in this json, if no element is present, the specified double, replacing
+<i>1866</i>&nbsp;     any existing element in the path and filling with {@link jsonvalues.JsNull} empty positions in
+<i>1867</i>&nbsp;     arrays when necessary.
+<i>1868</i>&nbsp;     @param path  the path-like string
+<i>1869</i>&nbsp;     @param number the specified double
+<i>1870</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1871</i>&nbsp;     */
+<i>1872</i>&nbsp;    default T putIfAbsent(final String path,
+<i>1873</i>&nbsp;                          final double number
+<i>1874</i>&nbsp;                         )
+<i>1875</i>&nbsp;    {
+<b class="nc"><i>1876</i>&nbsp;        return putIfAbsent(JsPath.of(path),</b>
+<i>1877</i>&nbsp;                           number
+<i>1878</i>&nbsp;                          );
+<i>1879</i>&nbsp;    }
+<i>1880</i>&nbsp;
+<i>1881</i>&nbsp;    /**
+<i>1882</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified integer.
+<i>1883</i>&nbsp;     @param path the given path
+<i>1884</i>&nbsp;     @param number the specified integer
+<i>1885</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1886</i>&nbsp;     */
+<i>1887</i>&nbsp;    default T putIfPresent(final JsPath path,
+<i>1888</i>&nbsp;                           final int number
+<i>1889</i>&nbsp;                          )
+<i>1890</i>&nbsp;    {
+<b class="nc"><i>1891</i>&nbsp;        return putIfPresent(path,</b>
+<b class="nc"><i>1892</i>&nbsp;                            e -&gt; JsInt.of(number)</b>
+<i>1893</i>&nbsp;                           );
+<i>1894</i>&nbsp;    }
+<i>1895</i>&nbsp;
+<i>1896</i>&nbsp;    /**
+<i>1897</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified long.
+<i>1898</i>&nbsp;     @param path the given path
+<i>1899</i>&nbsp;     @param number the specified long
+<i>1900</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1901</i>&nbsp;     */
+<i>1902</i>&nbsp;    default T putIfPresent(final JsPath path,
+<i>1903</i>&nbsp;                           final long number
+<i>1904</i>&nbsp;                          )
+<i>1905</i>&nbsp;    {
+<b class="nc"><i>1906</i>&nbsp;        return putIfPresent(path,</b>
+<b class="nc"><i>1907</i>&nbsp;                            e -&gt; JsLong.of(number)</b>
+<i>1908</i>&nbsp;                           );
+<i>1909</i>&nbsp;    }
+<i>1910</i>&nbsp;
+<i>1911</i>&nbsp;    /**
+<i>1912</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified double.
+<i>1913</i>&nbsp;     @param path the given path
+<i>1914</i>&nbsp;     @param number the specified double
+<i>1915</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1916</i>&nbsp;     */
+<i>1917</i>&nbsp;    default T putIfPresent(final JsPath path,
+<i>1918</i>&nbsp;                           final double number
+<i>1919</i>&nbsp;                          )
+<i>1920</i>&nbsp;    {
+<b class="nc"><i>1921</i>&nbsp;        return putIfPresent(path,</b>
+<b class="nc"><i>1922</i>&nbsp;                            e -&gt; JsDouble.of(number)</b>
+<i>1923</i>&nbsp;                           );
+<i>1924</i>&nbsp;    }
+<i>1925</i>&nbsp;
+<i>1926</i>&nbsp;    /**
+<i>1927</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified integer.
+<i>1928</i>&nbsp;     @param path the given path-like string
+<i>1929</i>&nbsp;     @param number the specified integer
+<i>1930</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1931</i>&nbsp;     */
+<i>1932</i>&nbsp;    default T putIfPresent(final String path,
+<i>1933</i>&nbsp;                           final int number
+<i>1934</i>&nbsp;                          )
+<i>1935</i>&nbsp;    {
+<b class="nc"><i>1936</i>&nbsp;        return putIfPresent(JsPath.of(path),</b>
+<b class="nc"><i>1937</i>&nbsp;                            e -&gt; JsInt.of(number)</b>
+<i>1938</i>&nbsp;                           );
+<i>1939</i>&nbsp;    }
+<i>1940</i>&nbsp;
+<i>1941</i>&nbsp;    /**
+<i>1942</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified long.
+<i>1943</i>&nbsp;     @param path the given path-like string
+<i>1944</i>&nbsp;     @param number the specified long
+<i>1945</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1946</i>&nbsp;     */
+<i>1947</i>&nbsp;    default T putIfPresent(final String path,
+<i>1948</i>&nbsp;                           final long number
+<i>1949</i>&nbsp;                          )
+<i>1950</i>&nbsp;    {
+<b class="nc"><i>1951</i>&nbsp;        return putIfPresent(JsPath.of(path),</b>
+<b class="nc"><i>1952</i>&nbsp;                            e -&gt; JsLong.of(number)</b>
+<i>1953</i>&nbsp;                           );
+<i>1954</i>&nbsp;    }
+<i>1955</i>&nbsp;
+<i>1956</i>&nbsp;    /**
+<i>1957</i>&nbsp;     Inserts at the given path in this json, if some element is present, the specified double.
+<i>1958</i>&nbsp;     @param path the given path-like string
+<i>1959</i>&nbsp;     @param number the specified double
+<i>1960</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>1961</i>&nbsp;     */
+<i>1962</i>&nbsp;    default T putIfPresent(final String path,
+<i>1963</i>&nbsp;                           final double number
+<i>1964</i>&nbsp;                          )
+<i>1965</i>&nbsp;    {
+<b class="nc"><i>1966</i>&nbsp;        return putIfPresent(JsPath.of(path),</b>
+<b class="nc"><i>1967</i>&nbsp;                            e -&gt; JsDouble.of(number)</b>
+<i>1968</i>&nbsp;                           );
+<i>1969</i>&nbsp;    }
+<i>1970</i>&nbsp;
+<i>1971</i>&nbsp;    /**
+<i>1972</i>&nbsp;     Appends one or more integers to the array located at the given path in this json, returning the
+<i>1973</i>&nbsp;     same this instance if the array is not present.
+<i>1974</i>&nbsp;     @param path   the path pointing to the existing array in which the integers will be appended
+<i>1975</i>&nbsp;     @param number   the integer to be appended
+<i>1976</i>&nbsp;     @param  others more optional integers to be appended
+<i>1977</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>1978</i>&nbsp;     */
+<i>1979</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>1980</i>&nbsp;                              final int number,
+<i>1981</i>&nbsp;                              final int... others
+<i>1982</i>&nbsp;                             )
+<i>1983</i>&nbsp;    {
+<b class="nc"><i>1984</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<i>1985</i>&nbsp;                                                number,
+<i>1986</i>&nbsp;                                                others
+<i>1987</i>&nbsp;                                               ),
+<i>1988</i>&nbsp;                                   it -&gt;
+<i>1989</i>&nbsp;                                   {
+<i>1990</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>1991</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>1992</i>&nbsp;                                       return t;</b>
+<i>1993</i>&nbsp;                                   }
+<i>1994</i>&nbsp;                                  )
+<b class="nc"><i>1995</i>&nbsp;                        .apply(get(Objects.requireNonNull(path)));</b>
+<i>1996</i>&nbsp;    }
+<i>1997</i>&nbsp;
+<i>1998</i>&nbsp;    /**
+<i>1999</i>&nbsp;     Appends one or more longs to the array located at the given path in this json, returning the
+<i>2000</i>&nbsp;     same this instance if the array is not present.
+<i>2001</i>&nbsp;     @param path   the path pointing to the existing array in which the longs will be appended
+<i>2002</i>&nbsp;     @param number   the long to be appended
+<i>2003</i>&nbsp;     @param  others more optional longs to be appended
+<i>2004</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2005</i>&nbsp;     */
+<i>2006</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>2007</i>&nbsp;                              final long number,
+<i>2008</i>&nbsp;                              final long... others
+<i>2009</i>&nbsp;                             )
+<i>2010</i>&nbsp;    {
+<b class="nc"><i>2011</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<i>2012</i>&nbsp;                                                number,
+<i>2013</i>&nbsp;                                                others
+<i>2014</i>&nbsp;                                               ),
+<i>2015</i>&nbsp;                                   it -&gt;
+<i>2016</i>&nbsp;                                   {
+<i>2017</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>2018</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>2019</i>&nbsp;                                       return t;</b>
+<i>2020</i>&nbsp;                                   }
+<i>2021</i>&nbsp;                                  )
+<b class="nc"><i>2022</i>&nbsp;                        .apply(get(Objects.requireNonNull(path)));</b>
+<i>2023</i>&nbsp;
+<i>2024</i>&nbsp;    }
+<i>2025</i>&nbsp;
+<i>2026</i>&nbsp;    /**
+<i>2027</i>&nbsp;     Appends one or more strings to the array located at the given path in this json, returning the
+<i>2028</i>&nbsp;     same this instance if the array is not present.
+<i>2029</i>&nbsp;     @param path   the path pointing to the existing array in which the strings will be appended
+<i>2030</i>&nbsp;     @param str   the string to be appended
+<i>2031</i>&nbsp;     @param  others more optional strings to be appended
+<i>2032</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2033</i>&nbsp;     */
+<i>2034</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>2035</i>&nbsp;                              final String str,
+<i>2036</i>&nbsp;                              final String... others
+<i>2037</i>&nbsp;                             )
+<i>2038</i>&nbsp;    {
+<b class="nc"><i>2039</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<i>2040</i>&nbsp;                                                str,
+<i>2041</i>&nbsp;                                                others
+<i>2042</i>&nbsp;                                               ),
+<i>2043</i>&nbsp;                                   it -&gt;
+<i>2044</i>&nbsp;                                   {
+<i>2045</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>2046</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>2047</i>&nbsp;                                       return t;</b>
+<i>2048</i>&nbsp;                                   }
+<i>2049</i>&nbsp;                                  )
+<b class="nc"><i>2050</i>&nbsp;                        .apply(get(Objects.requireNonNull(path)));</b>
+<i>2051</i>&nbsp;
+<i>2052</i>&nbsp;    }
+<i>2053</i>&nbsp;
+<i>2054</i>&nbsp;    /**
+<i>2055</i>&nbsp;     Appends one or more booleans to the array located at the given path in this json, returning the
+<i>2056</i>&nbsp;     same this instance if the array is not present.
+<i>2057</i>&nbsp;     @param path   the path pointing to the existing array in which the booleans will be appended
+<i>2058</i>&nbsp;     @param number   the boolean to be appended
+<i>2059</i>&nbsp;     @param  others more optional booleans to be appended
+<i>2060</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2061</i>&nbsp;     */
+<i>2062</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>2063</i>&nbsp;                              final boolean number,
+<i>2064</i>&nbsp;                              final boolean... others
+<i>2065</i>&nbsp;                             )
+<i>2066</i>&nbsp;    {
+<b class="nc"><i>2067</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<i>2068</i>&nbsp;                                                number,
+<i>2069</i>&nbsp;                                                others
+<i>2070</i>&nbsp;                                               ),
+<i>2071</i>&nbsp;                                   it -&gt;
+<i>2072</i>&nbsp;                                   {
+<i>2073</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>2074</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>2075</i>&nbsp;                                       return t;</b>
+<i>2076</i>&nbsp;                                   }
+<i>2077</i>&nbsp;                                  )
+<b class="nc"><i>2078</i>&nbsp;                        .apply(get(Objects.requireNonNull(path)));</b>
+<i>2079</i>&nbsp;
+<i>2080</i>&nbsp;    }
+<i>2081</i>&nbsp;
+<i>2082</i>&nbsp;    /**
+<i>2083</i>&nbsp;     Appends one or more doubles to the array located at the given path in this json, returning the
+<i>2084</i>&nbsp;     same this instance if the array is not present.
+<i>2085</i>&nbsp;     @param path   the path pointing to the existing array in which the doubles will be appended
+<i>2086</i>&nbsp;     @param number   the double to be appended
+<i>2087</i>&nbsp;     @param  others more optional doubles to be appended
+<i>2088</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2089</i>&nbsp;     */
+<i>2090</i>&nbsp;    default T appendIfPresent(final JsPath path,
+<i>2091</i>&nbsp;                              final double number,
+<i>2092</i>&nbsp;                              final double... others
+<i>2093</i>&nbsp;                             )
+<i>2094</i>&nbsp;    {
+<b class="nc"><i>2095</i>&nbsp;        return Functions.ifArrElse(it -&gt; append(path,</b>
+<i>2096</i>&nbsp;                                                number,
+<i>2097</i>&nbsp;                                                others
+<i>2098</i>&nbsp;                                               ),
+<i>2099</i>&nbsp;                                   it -&gt;
+<i>2100</i>&nbsp;                                   {
+<i>2101</i>&nbsp;                                       //this is an instance of T (recursive type)
+<b class="nc"><i>2102</i>&nbsp;                                       @SuppressWarnings(&quot;unchecked&quot;) final T t = (T) this;</b>
+<b class="nc"><i>2103</i>&nbsp;                                       return t;</b>
+<i>2104</i>&nbsp;                                   }
+<i>2105</i>&nbsp;                                  )
+<b class="nc"><i>2106</i>&nbsp;                        .apply(get(Objects.requireNonNull(path)));</b>
+<i>2107</i>&nbsp;
+<i>2108</i>&nbsp;    }
+<i>2109</i>&nbsp;
+<i>2110</i>&nbsp;    /**
+<i>2111</i>&nbsp;     Appends one or more integers to the array located at the given path in this json, returning the
+<i>2112</i>&nbsp;     same this instance if the array is not present.
+<i>2113</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the integers will be appended
+<i>2114</i>&nbsp;     @param number   the integer to be appended
+<i>2115</i>&nbsp;     @param  others more optional integers to be appended
+<i>2116</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2117</i>&nbsp;     */
+<i>2118</i>&nbsp;    default T appendIfPresent(final String path,
+<i>2119</i>&nbsp;                              final int number,
+<i>2120</i>&nbsp;                              final int... others
+<i>2121</i>&nbsp;                             )
+<i>2122</i>&nbsp;    {
+<b class="nc"><i>2123</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>2124</i>&nbsp;                               number,
+<i>2125</i>&nbsp;                               others
+<i>2126</i>&nbsp;                              );
+<i>2127</i>&nbsp;
+<i>2128</i>&nbsp;    }
+<i>2129</i>&nbsp;
+<i>2130</i>&nbsp;    /**
+<i>2131</i>&nbsp;     Appends one or more longs to the array located at the given path in this json, returning the
+<i>2132</i>&nbsp;     same this instance if the array is not present.
+<i>2133</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the longs will be appended
+<i>2134</i>&nbsp;     @param number   the long to be appended
+<i>2135</i>&nbsp;     @param  others more optional longs to be appended
+<i>2136</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2137</i>&nbsp;     */
+<i>2138</i>&nbsp;    default T appendIfPresent(final String path,
+<i>2139</i>&nbsp;                              final long number,
+<i>2140</i>&nbsp;                              final long... others
+<i>2141</i>&nbsp;                             )
+<i>2142</i>&nbsp;    {
+<b class="nc"><i>2143</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>2144</i>&nbsp;                               number,
+<i>2145</i>&nbsp;                               others
+<i>2146</i>&nbsp;                              );
+<i>2147</i>&nbsp;
+<i>2148</i>&nbsp;    }
+<i>2149</i>&nbsp;
+<i>2150</i>&nbsp;    /**
+<i>2151</i>&nbsp;     Appends one or more strings to the array located at the given path in this json, returning the
+<i>2152</i>&nbsp;     same this instance if the array is not present.
+<i>2153</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the strings will be appended
+<i>2154</i>&nbsp;     @param str   the string to be appended
+<i>2155</i>&nbsp;     @param  others more optional strings to be appended
+<i>2156</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2157</i>&nbsp;     */
+<i>2158</i>&nbsp;    default T appendIfPresent(final String path,
+<i>2159</i>&nbsp;                              final String str,
+<i>2160</i>&nbsp;                              final String... others
+<i>2161</i>&nbsp;                             )
+<i>2162</i>&nbsp;    {
+<b class="nc"><i>2163</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>2164</i>&nbsp;                               str,
+<i>2165</i>&nbsp;                               others
+<i>2166</i>&nbsp;                              );
+<i>2167</i>&nbsp;
+<i>2168</i>&nbsp;    }
+<i>2169</i>&nbsp;
+<i>2170</i>&nbsp;    /**
+<i>2171</i>&nbsp;     Appends one or more booleans to the array located at the given path in this json, returning the
+<i>2172</i>&nbsp;     same this instance if the array is not present.
+<i>2173</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the booleans will be appended
+<i>2174</i>&nbsp;     @param bool   the boolean to be appended
+<i>2175</i>&nbsp;     @param  others more optional booleans to be appended
+<i>2176</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2177</i>&nbsp;     */
+<i>2178</i>&nbsp;    default T appendIfPresent(final String path,
+<i>2179</i>&nbsp;                              final boolean bool,
+<i>2180</i>&nbsp;                              final boolean... others
+<i>2181</i>&nbsp;                             )
+<i>2182</i>&nbsp;    {
+<b class="nc"><i>2183</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>2184</i>&nbsp;                               bool,
+<i>2185</i>&nbsp;                               others
+<i>2186</i>&nbsp;                              );
+<i>2187</i>&nbsp;    }
+<i>2188</i>&nbsp;
+<i>2189</i>&nbsp;    /**
+<i>2190</i>&nbsp;     Appends one or more doubles to the array located at the given path in this json, returning the
+<i>2191</i>&nbsp;     same this instance if the array is not present.
+<i>2192</i>&nbsp;     @param path   the path-like string pointing to the existing array in which the doubles will be appended
+<i>2193</i>&nbsp;     @param number   the double to be appended
+<i>2194</i>&nbsp;     @param  others more optional doubles to be appended
+<i>2195</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2196</i>&nbsp;     */
+<i>2197</i>&nbsp;    default T appendIfPresent(final String path,
+<i>2198</i>&nbsp;                              final double number,
+<i>2199</i>&nbsp;                              final double... others
+<i>2200</i>&nbsp;                             )
+<i>2201</i>&nbsp;    {
+<b class="nc"><i>2202</i>&nbsp;        return appendIfPresent(JsPath.of(path),</b>
+<i>2203</i>&nbsp;                               number,
+<i>2204</i>&nbsp;                               others
+<i>2205</i>&nbsp;                              );
+<i>2206</i>&nbsp;
+<i>2207</i>&nbsp;    }
+<i>2208</i>&nbsp;
+<i>2209</i>&nbsp;    /**
+<i>2210</i>&nbsp;     Appends one or more strings, starting from the first, to the array located at the given path in
+<i>2211</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2212</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2213</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2214</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2215</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the strings will be appended
+<i>2216</i>&nbsp;     @param elem   the first string to be appended to the existing or created array
+<i>2217</i>&nbsp;     @param others more optional strings to be appended
+<i>2218</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2219</i>&nbsp;     */
+<i>2220</i>&nbsp;    default T append(final String path,
+<i>2221</i>&nbsp;                     final String elem,
+<i>2222</i>&nbsp;                     final String... others
+<i>2223</i>&nbsp;                    )
+<i>2224</i>&nbsp;    {
+<b class="nc"><i>2225</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>2226</i>&nbsp;                      elem,
+<i>2227</i>&nbsp;                      others
+<i>2228</i>&nbsp;                     );
+<i>2229</i>&nbsp;    }
+<i>2230</i>&nbsp;
+<i>2231</i>&nbsp;    /**
+<i>2232</i>&nbsp;     Appends one or more integers, starting from the first, to the array located at the given path in
+<i>2233</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2234</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2235</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2236</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2237</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the integers will be appended
+<i>2238</i>&nbsp;     @param elem   the first integer to be appended to the existing or created array
+<i>2239</i>&nbsp;     @param others more optional integers to be appended
+<i>2240</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2241</i>&nbsp;     */
+<i>2242</i>&nbsp;    default T append(final String path,
+<i>2243</i>&nbsp;                     final int elem,
+<i>2244</i>&nbsp;                     final int... others
+<i>2245</i>&nbsp;                    )
+<i>2246</i>&nbsp;    {
+<b class="nc"><i>2247</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>2248</i>&nbsp;                      elem,
+<i>2249</i>&nbsp;                      others
+<i>2250</i>&nbsp;                     );
+<i>2251</i>&nbsp;    }
+<i>2252</i>&nbsp;
+<i>2253</i>&nbsp;    /**
+<i>2254</i>&nbsp;     Appends one or more longs, starting from the first, to the array located at the given path in
+<i>2255</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2256</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2257</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2258</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2259</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the longs will be appended
+<i>2260</i>&nbsp;     @param elem   the first long to be appended to the existing or created array
+<i>2261</i>&nbsp;     @param others more optional longs to be appended
+<i>2262</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2263</i>&nbsp;     */
+<i>2264</i>&nbsp;    default T append(final String path,
+<i>2265</i>&nbsp;                     final long elem,
+<i>2266</i>&nbsp;                     final long... others
+<i>2267</i>&nbsp;                    )
+<i>2268</i>&nbsp;    {
+<b class="nc"><i>2269</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>2270</i>&nbsp;                      elem,
+<i>2271</i>&nbsp;                      others
+<i>2272</i>&nbsp;                     );
+<i>2273</i>&nbsp;    }
+<i>2274</i>&nbsp;
+<i>2275</i>&nbsp;    /**
+<i>2276</i>&nbsp;     Appends one or more booleans, starting from the first, to the array located at the given path in
+<i>2277</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2278</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2279</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2280</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2281</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the booleans will be appended
+<i>2282</i>&nbsp;     @param elem   the first boolean to be appended to the existing or created array
+<i>2283</i>&nbsp;     @param others more optional booleans to be appended
+<i>2284</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2285</i>&nbsp;     */
+<i>2286</i>&nbsp;    default T append(final String path,
+<i>2287</i>&nbsp;                     final boolean elem,
+<i>2288</i>&nbsp;                     final boolean... others
+<i>2289</i>&nbsp;                    )
+<i>2290</i>&nbsp;    {
+<b class="nc"><i>2291</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>2292</i>&nbsp;                      elem,
+<i>2293</i>&nbsp;                      others
+<i>2294</i>&nbsp;                     );
+<i>2295</i>&nbsp;    }
+<i>2296</i>&nbsp;
+<i>2297</i>&nbsp;    /**
+<i>2298</i>&nbsp;     Appends one or more doubles, starting from the first, to the array located at the given path in
+<i>2299</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2300</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2301</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2302</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2303</i>&nbsp;     @param path   the given path-like string pointing to the array in which all the doubles will be appended
+<i>2304</i>&nbsp;     @param elem   the first double to be appended to the existing or created array
+<i>2305</i>&nbsp;     @param others more optional doubles to be appended
+<i>2306</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2307</i>&nbsp;     */
+<i>2308</i>&nbsp;    default T append(final String path,
+<i>2309</i>&nbsp;                     final double elem,
+<i>2310</i>&nbsp;                     final double... others
+<i>2311</i>&nbsp;                    )
+<i>2312</i>&nbsp;    {
+<b class="nc"><i>2313</i>&nbsp;        return append(JsPath.of(path),</b>
+<i>2314</i>&nbsp;                      elem,
+<i>2315</i>&nbsp;                      others
+<i>2316</i>&nbsp;                     );
+<i>2317</i>&nbsp;    }
+<i>2318</i>&nbsp;
+<i>2319</i>&nbsp;    /**
+<i>2320</i>&nbsp;     Appends one or more strings, starting from the first, to the array located at the given path in
+<i>2321</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2322</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2323</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2324</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2325</i>&nbsp;     @param path   the given path pointing to the array in which all the strings will be appended
+<i>2326</i>&nbsp;     @param elem   the first string to be appended to the existing or created array
+<i>2327</i>&nbsp;     @param others more optional strings to be appended
+<i>2328</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2329</i>&nbsp;     */
+<i>2330</i>&nbsp;    default T append(final JsPath path,
+<i>2331</i>&nbsp;                     final String elem,
+<i>2332</i>&nbsp;                     final String... others
+<i>2333</i>&nbsp;                    )
+<i>2334</i>&nbsp;    {
+<b class="nc"><i>2335</i>&nbsp;        T result = append(path,</b>
+<b class="nc"><i>2336</i>&nbsp;                          JsStr.of(elem)</b>
+<i>2337</i>&nbsp;                         );
+<b class="nc"><i>2338</i>&nbsp;        for (final String other : others)</b>
+<i>2339</i>&nbsp;        {
+<b class="nc"><i>2340</i>&nbsp;            result = result.append(path,</b>
+<b class="nc"><i>2341</i>&nbsp;                                   JsStr.of(other)</b>
+<i>2342</i>&nbsp;                                  );
+<i>2343</i>&nbsp;        }
+<b class="nc"><i>2344</i>&nbsp;        return result;</b>
+<i>2345</i>&nbsp;
+<i>2346</i>&nbsp;    }
+<i>2347</i>&nbsp;
+<i>2348</i>&nbsp;    /**
+<i>2349</i>&nbsp;     Appends one or more integers, starting from the first, to the array located at the given path in
+<i>2350</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2351</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2352</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2353</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2354</i>&nbsp;     @param path   the given path pointing to the array in which all the integers will be appended
+<i>2355</i>&nbsp;     @param elem   the first integer to be appended to the existing or created array
+<i>2356</i>&nbsp;     @param others more optional integers to be appended
+<i>2357</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2358</i>&nbsp;     */
+<i>2359</i>&nbsp;    default T append(final JsPath path,
+<i>2360</i>&nbsp;                     final int elem,
+<i>2361</i>&nbsp;                     final int... others
+<i>2362</i>&nbsp;                    )
+<i>2363</i>&nbsp;    {
+<b class="nc"><i>2364</i>&nbsp;        T result = append(path,</b>
+<b class="nc"><i>2365</i>&nbsp;                          JsInt.of(elem)</b>
+<i>2366</i>&nbsp;                         );
+<b class="nc"><i>2367</i>&nbsp;        for (final int other : others)</b>
+<i>2368</i>&nbsp;        {
+<b class="nc"><i>2369</i>&nbsp;            result = result.append(path,</b>
+<b class="nc"><i>2370</i>&nbsp;                                   JsInt.of(other)</b>
+<i>2371</i>&nbsp;                                  );
+<i>2372</i>&nbsp;        }
+<b class="nc"><i>2373</i>&nbsp;        return result;</b>
+<i>2374</i>&nbsp;    }
+<i>2375</i>&nbsp;
+<i>2376</i>&nbsp;    /**
+<i>2377</i>&nbsp;     Appends one or more longs, starting from the first, to the array located at the given path in
+<i>2378</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2379</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2380</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2381</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2382</i>&nbsp;     @param path   the given path pointing to the array in which all the longs will be appended
+<i>2383</i>&nbsp;     @param elem   the first long to be appended to the existing or created array
+<i>2384</i>&nbsp;     @param others more optional longs to be appended
+<i>2385</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2386</i>&nbsp;     */
+<i>2387</i>&nbsp;    default T append(final JsPath path,
+<i>2388</i>&nbsp;                     final long elem,
+<i>2389</i>&nbsp;                     final long... others
+<i>2390</i>&nbsp;                    )
+<i>2391</i>&nbsp;    {
+<b class="nc"><i>2392</i>&nbsp;        T result = append(path,</b>
+<b class="nc"><i>2393</i>&nbsp;                          JsLong.of(elem)</b>
+<i>2394</i>&nbsp;                         );
+<b class="nc"><i>2395</i>&nbsp;        for (final long other : others)</b>
+<i>2396</i>&nbsp;        {
+<b class="nc"><i>2397</i>&nbsp;            result = result.append(path,</b>
+<b class="nc"><i>2398</i>&nbsp;                                   JsLong.of(other)</b>
+<i>2399</i>&nbsp;                                  );
+<i>2400</i>&nbsp;        }
+<b class="nc"><i>2401</i>&nbsp;        return result;</b>
+<i>2402</i>&nbsp;    }
+<i>2403</i>&nbsp;
+<i>2404</i>&nbsp;    /**
+<i>2405</i>&nbsp;     Appends one or more booleans, starting from the first, to the array located at the given path in
+<i>2406</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2407</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2408</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2409</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2410</i>&nbsp;     @param path   the given path pointing to the array in which all the booleans will be appended
+<i>2411</i>&nbsp;     @param elem   the first boolean to be appended to the existing or created array
+<i>2412</i>&nbsp;     @param others more optional booleans to be appended
+<i>2413</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2414</i>&nbsp;     */
+<i>2415</i>&nbsp;    default T append(final JsPath path,
+<i>2416</i>&nbsp;                     final boolean elem,
+<i>2417</i>&nbsp;                     final boolean... others
+<i>2418</i>&nbsp;                    )
+<i>2419</i>&nbsp;    {
+<b class="nc"><i>2420</i>&nbsp;        T result = append(path,</b>
+<b class="nc"><i>2421</i>&nbsp;                          JsBool.of(elem)</b>
+<i>2422</i>&nbsp;                         );
+<b class="nc"><i>2423</i>&nbsp;        for (final boolean other : others)</b>
+<i>2424</i>&nbsp;        {
+<b class="nc"><i>2425</i>&nbsp;            result = result.append(path,</b>
+<b class="nc"><i>2426</i>&nbsp;                                   JsBool.of(other)</b>
+<i>2427</i>&nbsp;                                  );
+<i>2428</i>&nbsp;        }
+<b class="nc"><i>2429</i>&nbsp;        return result;</b>
+<i>2430</i>&nbsp;    }
+<i>2431</i>&nbsp;
+<i>2432</i>&nbsp;    /**
+<i>2433</i>&nbsp;     Appends one or more doubles, starting from the first, to the array located at the given path in
+<i>2434</i>&nbsp;     this json. If the array doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2435</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2436</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2437</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2438</i>&nbsp;     @param path   the given path pointing to the array in which all the doubles will be appended
+<i>2439</i>&nbsp;     @param elem   the first double to be appended to the existing or created array
+<i>2440</i>&nbsp;     @param others more optional doubles to be appended
+<i>2441</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2442</i>&nbsp;     */
+<i>2443</i>&nbsp;    default T append(final JsPath path,
+<i>2444</i>&nbsp;                     final double elem,
+<i>2445</i>&nbsp;                     final double... others
+<i>2446</i>&nbsp;                    )
+<i>2447</i>&nbsp;    {
+<b class="nc"><i>2448</i>&nbsp;        T result = append(path,</b>
+<b class="nc"><i>2449</i>&nbsp;                          JsDouble.of(elem)</b>
+<i>2450</i>&nbsp;                         );
+<b class="nc"><i>2451</i>&nbsp;        for (final double other : others)</b>
+<i>2452</i>&nbsp;        {
+<b class="nc"><i>2453</i>&nbsp;            result = result.append(path,</b>
+<b class="nc"><i>2454</i>&nbsp;                                   JsDouble.of(other)</b>
+<i>2455</i>&nbsp;                                  );
+<i>2456</i>&nbsp;        }
+<b class="nc"><i>2457</i>&nbsp;        return result;</b>
+<i>2458</i>&nbsp;    }
+<i>2459</i>&nbsp;
+<i>2460</i>&nbsp;    /**
+<i>2461</i>&nbsp;     Prepends one or more strings, starting from the first, to the array located at the path in this
+<i>2462</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2463</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2464</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2465</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2466</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2467</i>&nbsp;     @param elem   the first string to be prepended to the existing or created array
+<i>2468</i>&nbsp;     @param others more optional strings to be prepended
+<i>2469</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2470</i>&nbsp;     */
+<i>2471</i>&nbsp;    default T prepend(final String path,
+<i>2472</i>&nbsp;                      final String elem,
+<i>2473</i>&nbsp;                      final String... others
+<i>2474</i>&nbsp;                     )
+<i>2475</i>&nbsp;    {
+<b class="nc"><i>2476</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>2477</i>&nbsp;                       elem,
+<i>2478</i>&nbsp;                       others
+<i>2479</i>&nbsp;                      );
+<i>2480</i>&nbsp;    }
+<i>2481</i>&nbsp;
+<i>2482</i>&nbsp;    /**
+<i>2483</i>&nbsp;     Prepends one or more integers, starting from the first, to the array located at the path in this
+<i>2484</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2485</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2486</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2487</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2488</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2489</i>&nbsp;     @param elem   the first integer to be prepended to the existing or created array
+<i>2490</i>&nbsp;     @param others more optional integers to be prepended
+<i>2491</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2492</i>&nbsp;     */
+<i>2493</i>&nbsp;    default T prepend(final String path,
+<i>2494</i>&nbsp;                      final int elem,
+<i>2495</i>&nbsp;                      final int... others
+<i>2496</i>&nbsp;                     )
+<i>2497</i>&nbsp;    {
+<b class="nc"><i>2498</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>2499</i>&nbsp;                       elem,
+<i>2500</i>&nbsp;                       others
+<i>2501</i>&nbsp;                      );
+<i>2502</i>&nbsp;    }
+<i>2503</i>&nbsp;
+<i>2504</i>&nbsp;    /**
+<i>2505</i>&nbsp;     Prepends one or more longs, starting from the first, to the array located at the path in this
+<i>2506</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2507</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2508</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2509</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2510</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2511</i>&nbsp;     @param elem   the first long to be prepended to the existing or created array
+<i>2512</i>&nbsp;     @param others more optional longs to be prepended
+<i>2513</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2514</i>&nbsp;     */
+<i>2515</i>&nbsp;    default T prepend(final String path,
+<i>2516</i>&nbsp;                      final long elem,
+<i>2517</i>&nbsp;                      final long... others
+<i>2518</i>&nbsp;                     )
+<i>2519</i>&nbsp;    {
+<b class="nc"><i>2520</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>2521</i>&nbsp;                       elem,
+<i>2522</i>&nbsp;                       others
+<i>2523</i>&nbsp;                      );
+<i>2524</i>&nbsp;    }
+<i>2525</i>&nbsp;
+<i>2526</i>&nbsp;    /**
+<i>2527</i>&nbsp;     Prepends one or more booleans, starting from the first, to the array located at the path in this
+<i>2528</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2529</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2530</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2531</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2532</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2533</i>&nbsp;     @param elem   the first boolean to be prepended to the existing or created array
+<i>2534</i>&nbsp;     @param others more optional booleans to be prepended
+<i>2535</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2536</i>&nbsp;     */
+<i>2537</i>&nbsp;    default T prepend(final String path,
+<i>2538</i>&nbsp;                      final boolean elem,
+<i>2539</i>&nbsp;                      final boolean... others
+<i>2540</i>&nbsp;                     )
+<i>2541</i>&nbsp;    {
+<b class="nc"><i>2542</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>2543</i>&nbsp;                       elem,
+<i>2544</i>&nbsp;                       others
+<i>2545</i>&nbsp;                      );
+<i>2546</i>&nbsp;    }
+<i>2547</i>&nbsp;
+<i>2548</i>&nbsp;    /**
+<i>2549</i>&nbsp;     Prepends one or more doubles, starting from the first, to the array located at the path in this
+<i>2550</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2551</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2552</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2553</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2554</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2555</i>&nbsp;     @param elem   the first double to be prepended to the existing or created array
+<i>2556</i>&nbsp;     @param others more optional doubles to be prepended
+<i>2557</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2558</i>&nbsp;     */
+<i>2559</i>&nbsp;    default T prepend(final String path,
+<i>2560</i>&nbsp;                      final double elem,
+<i>2561</i>&nbsp;                      final double... others
+<i>2562</i>&nbsp;                     )
+<i>2563</i>&nbsp;    {
+<b class="nc"><i>2564</i>&nbsp;        return prepend(JsPath.of(path),</b>
+<i>2565</i>&nbsp;                       elem,
+<i>2566</i>&nbsp;                       others
+<i>2567</i>&nbsp;                      );
+<i>2568</i>&nbsp;    }
+<i>2569</i>&nbsp;
+<i>2570</i>&nbsp;    /**
+<i>2571</i>&nbsp;     Prepends one or more strings, starting from the first, to the array located at the path in this
+<i>2572</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2573</i>&nbsp;     and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2574</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2575</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2576</i>&nbsp;     @param path   the path-like string pointing to the array in which all the string will be prepended
+<i>2577</i>&nbsp;     @param elem   the first string to be prepended to the existing or created array
+<i>2578</i>&nbsp;     @param others more optional strings to be prepended
+<i>2579</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2580</i>&nbsp;     */
+<i>2581</i>&nbsp;    default T prepend(final JsPath path,
+<i>2582</i>&nbsp;                      final String elem,
+<i>2583</i>&nbsp;                      final String... others
+<i>2584</i>&nbsp;                     )
+<i>2585</i>&nbsp;    {
+<i>2586</i>&nbsp;        // T recursive type, this is an instance of T
+<i>2587</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="nc"><i>2588</i>&nbsp;        T result = (T) this;</b>
+<b class="nc"><i>2589</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>2590</i>&nbsp;        {
+<b class="nc"><i>2591</i>&nbsp;            result = result.prepend(path,</b>
+<b class="nc"><i>2592</i>&nbsp;                                    JsStr.of(Objects.requireNonNull(others[i - 1]))</b>
+<i>2593</i>&nbsp;                                   );
+<i>2594</i>&nbsp;        }
+<b class="nc"><i>2595</i>&nbsp;        return result.prepend(path,</b>
+<b class="nc"><i>2596</i>&nbsp;                              JsStr.of(elem)</b>
+<i>2597</i>&nbsp;                             );
+<i>2598</i>&nbsp;    }
+<i>2599</i>&nbsp;
+<i>2600</i>&nbsp;    /**
+<i>2601</i>&nbsp;     prepends one or more integers, starting from the first, to the array located at the path in this
+<i>2602</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2603</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2604</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2605</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2606</i>&nbsp;     @param path   the JsPath pointing to the array in which all the integers will be prepended
+<i>2607</i>&nbsp;     @param elem   the first integer to be prepended to the existing or created array
+<i>2608</i>&nbsp;     @param others more optional integers to be prepended
+<i>2609</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2610</i>&nbsp;     */
+<i>2611</i>&nbsp;    default T prepend(final JsPath path,
+<i>2612</i>&nbsp;                      final int elem,
+<i>2613</i>&nbsp;                      final int... others
+<i>2614</i>&nbsp;                     )
+<i>2615</i>&nbsp;    {
+<i>2616</i>&nbsp;// T recursive type, this is an instance of T
+<i>2617</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="nc"><i>2618</i>&nbsp;        T result = (T) this;</b>
+<b class="nc"><i>2619</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>2620</i>&nbsp;        {
+<b class="nc"><i>2621</i>&nbsp;            result = result.prepend(path,</b>
+<b class="nc"><i>2622</i>&nbsp;                                    JsInt.of(others[i - 1])</b>
+<i>2623</i>&nbsp;                                   );
+<i>2624</i>&nbsp;        }
+<b class="nc"><i>2625</i>&nbsp;        return result.prepend(path,</b>
+<b class="nc"><i>2626</i>&nbsp;                              JsInt.of(elem)</b>
+<i>2627</i>&nbsp;                             );
+<i>2628</i>&nbsp;    }
+<i>2629</i>&nbsp;
+<i>2630</i>&nbsp;    /**
+<i>2631</i>&nbsp;     prepends one or more longs, starting from the first, to the array located at the path in this
+<i>2632</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2633</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2634</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2635</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2636</i>&nbsp;     @param path   the JsPath pointing to the array in which all the longs will be prepended
+<i>2637</i>&nbsp;     @param elem   the first long to be prepended to the existing or created array
+<i>2638</i>&nbsp;     @param others more optional longs to be prepended
+<i>2639</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2640</i>&nbsp;     */
+<i>2641</i>&nbsp;    default T prepend(final JsPath path,
+<i>2642</i>&nbsp;                      final long elem,
+<i>2643</i>&nbsp;                      final long... others
+<i>2644</i>&nbsp;                     )
+<i>2645</i>&nbsp;    {
+<i>2646</i>&nbsp;// T recursive type, this is an instance of T
+<i>2647</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="nc"><i>2648</i>&nbsp;        T result = (T) this;</b>
+<b class="nc"><i>2649</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>2650</i>&nbsp;        {
+<b class="nc"><i>2651</i>&nbsp;            result = result.prepend(path,</b>
+<b class="nc"><i>2652</i>&nbsp;                                    JsLong.of(others[i - 1])</b>
+<i>2653</i>&nbsp;                                   );
+<i>2654</i>&nbsp;        }
+<b class="nc"><i>2655</i>&nbsp;        return result.prepend(path,</b>
+<b class="nc"><i>2656</i>&nbsp;                              JsLong.of(elem)</b>
+<i>2657</i>&nbsp;                             );
+<i>2658</i>&nbsp;    }
+<i>2659</i>&nbsp;
+<i>2660</i>&nbsp;    /**
+<i>2661</i>&nbsp;     prepends one or more booleans, starting from the first, to the array located at the path in this
+<i>2662</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2663</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2664</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2665</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2666</i>&nbsp;     @param path   the JsPath pointing to the array in which all the booleans will be prepended
+<i>2667</i>&nbsp;     @param elem   the first boolean to be prepended to the existing or created array
+<i>2668</i>&nbsp;     @param others more optional booleans to be prepended
+<i>2669</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2670</i>&nbsp;     */
+<i>2671</i>&nbsp;    default T prepend(final JsPath path,
+<i>2672</i>&nbsp;                      final boolean elem,
+<i>2673</i>&nbsp;                      final boolean... others
+<i>2674</i>&nbsp;                     )
+<i>2675</i>&nbsp;    {
+<i>2676</i>&nbsp;        // T recursive type, this is an instance of T
+<i>2677</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="nc"><i>2678</i>&nbsp;        T result = (T) this;</b>
+<b class="nc"><i>2679</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>2680</i>&nbsp;        {
+<b class="nc"><i>2681</i>&nbsp;            result = result.prepend(path,</b>
+<b class="nc"><i>2682</i>&nbsp;                                    JsBool.of(others[i - 1])</b>
+<i>2683</i>&nbsp;                                   );
+<i>2684</i>&nbsp;        }
+<b class="nc"><i>2685</i>&nbsp;        return result.prepend(path,</b>
+<b class="nc"><i>2686</i>&nbsp;                              JsBool.of(elem)</b>
+<i>2687</i>&nbsp;                             );
+<i>2688</i>&nbsp;    }
+<i>2689</i>&nbsp;
+<i>2690</i>&nbsp;    /**
+<i>2691</i>&nbsp;     prepends one or more doubles, starting from the first, to the array located at the path in this
+<i>2692</i>&nbsp;     json. If the array at the path doesn&#39;t exist, a new one is created, replacing any existing element
+<i>2693</i>&nbsp;     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+<i>2694</i>&nbsp;     The same this instance is returned when it&#39;s an array and the head of the path is a key or when
+<i>2695</i>&nbsp;     it&#39;s an object and the head of the path is an index.
+<i>2696</i>&nbsp;     @param path   the JsPath pointing to the array in which all the doubles will be prepended
+<i>2697</i>&nbsp;     @param elem   the first double to be prepended to the existing or created array
+<i>2698</i>&nbsp;     @param others more optional doubles to be prepended
+<i>2699</i>&nbsp;     @return same this instance or a new json of the same type T
+<i>2700</i>&nbsp;     */
+<i>2701</i>&nbsp;    default T prepend(final JsPath path,
+<i>2702</i>&nbsp;                      final double elem,
+<i>2703</i>&nbsp;                      final double... others
+<i>2704</i>&nbsp;                     )
+<i>2705</i>&nbsp;    {
+<i>2706</i>&nbsp;        // T recursive type, this is an instance of T
+<i>2707</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;)
+<b class="nc"><i>2708</i>&nbsp;        T result = (T) this;</b>
+<b class="nc"><i>2709</i>&nbsp;        for (int i = Objects.requireNonNull(others).length; i &gt; 0; i--)</b>
+<i>2710</i>&nbsp;        {
+<b class="nc"><i>2711</i>&nbsp;            result = result.prepend(path,</b>
+<b class="nc"><i>2712</i>&nbsp;                                    JsDouble.of(others[i - 1])</b>
+<i>2713</i>&nbsp;                                   );
+<i>2714</i>&nbsp;        }
+<b class="nc"><i>2715</i>&nbsp;        return result.prepend(path,</b>
+<b class="nc"><i>2716</i>&nbsp;                              JsDouble.of(elem)</b>
+<i>2717</i>&nbsp;                             );
+<i>2718</i>&nbsp;    }
+<i>2719</i>&nbsp;
+<i>2720</i>&nbsp;    /**
+<i>2721</i>&nbsp;     Inserts at the given path in this json, if no element is present, the element returned by the
+<i>2722</i>&nbsp;     supplier, replacing any existing element in the path and filling with {@link jsonvalues.JsNull}
+<i>2723</i>&nbsp;     empty positions in arrays when necessary. The supplier is not invoked if the element is present.
+<i>2724</i>&nbsp;     @param path  the path-like string
+<i>2725</i>&nbsp;     @param supplier the supplier which computes the new JsElem if absent
+<i>2726</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>2727</i>&nbsp;     */
+<i>2728</i>&nbsp;    default T putIfAbsent(final String path,
+<i>2729</i>&nbsp;                          final Supplier&lt;? extends JsElem&gt; supplier
+<i>2730</i>&nbsp;                         )
+<i>2731</i>&nbsp;    {
+<b class="nc"><i>2732</i>&nbsp;        return putIfAbsent(JsPath.of(path),</b>
+<i>2733</i>&nbsp;                           supplier
+<i>2734</i>&nbsp;                          );
+<i>2735</i>&nbsp;    }
+<i>2736</i>&nbsp;
+<i>2737</i>&nbsp;    /**
+<i>2738</i>&nbsp;     Inserts at the given path in this json, if some element is present, the element returned by the
+<i>2739</i>&nbsp;     function.
+<i>2740</i>&nbsp;     @param path the given JsPath object
+<i>2741</i>&nbsp;     @param fn the function which computes the new JsElem from the existing one
+<i>2742</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>2743</i>&nbsp;     */
+<i>2744</i>&nbsp;    default T putIfPresent(final JsPath path,
+<i>2745</i>&nbsp;                           final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>2746</i>&nbsp;                          )
+<i>2747</i>&nbsp;    {
+<b class="fc"><i>2748</i>&nbsp;        return putIf(JsElem::isNotNothing,</b>
+<b class="fc"><i>2749</i>&nbsp;                     requireNonNull(path),</b>
+<b class="fc"><i>2750</i>&nbsp;                     requireNonNull(fn)</b>
+<i>2751</i>&nbsp;
+<i>2752</i>&nbsp;                    );
+<i>2753</i>&nbsp;    }
+<i>2754</i>&nbsp;
+<i>2755</i>&nbsp;    /**
+<i>2756</i>&nbsp;     Inserts at the given path in this json, if some element is present, the element returned by the
+<i>2757</i>&nbsp;     function.
+<i>2758</i>&nbsp;     @param path the given path-like string
+<i>2759</i>&nbsp;     @param fn the function which computes the new JsElem from the existing one
+<i>2760</i>&nbsp;     @return the same instance or a new json of the same type T
+<i>2761</i>&nbsp;     */
+<i>2762</i>&nbsp;    default T putIfPresent(final String path,
+<i>2763</i>&nbsp;                           final Function&lt;? super JsElem, ? extends JsElem&gt; fn
+<i>2764</i>&nbsp;                          )
+<i>2765</i>&nbsp;    {
+<b class="nc"><i>2766</i>&nbsp;        return putIfPresent(JsPath.of(path),</b>
+<i>2767</i>&nbsp;                            fn
+<i>2768</i>&nbsp;                           );
+<i>2769</i>&nbsp;    }
+<i>2770</i>&nbsp;
+<i>2771</i>&nbsp;
+<i>2772</i>&nbsp;    /**
+<i>2773</i>&nbsp;     Performs a reduction on the values that satisfy the predicate in the first level of this json. The reduction is performed mapping
+<i>2774</i>&nbsp;     each value with the mapping function and then applying the operator
+<i>2775</i>&nbsp;     @param op the operator upon two objects of type R
+<i>2776</i>&nbsp;     @param map the mapping function which produces an object of type R from a JsValue
+<i>2777</i>&nbsp;     @param predicate the predicate that determines what JsValue will be mapped and reduced
+<i>2778</i>&nbsp;     @param &lt;R&gt; the type of the operands of the operator
+<i>2779</i>&nbsp;     @return an {@link Optional} describing the of of the reduction
+<i>2780</i>&nbsp;     @see #reduce_(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
+<i>2781</i>&nbsp;     */
+<i>2782</i>&nbsp;    &lt;R&gt; Optional&lt;R&gt; reduce(BinaryOperator&lt;R&gt; op,
+<i>2783</i>&nbsp;                           Function&lt;? super JsPair, R&gt; map,
+<i>2784</i>&nbsp;                           Predicate&lt;? super JsPair&gt; predicate
+<i>2785</i>&nbsp;                          );
+<i>2786</i>&nbsp;
+<i>2787</i>&nbsp;    /**
+<i>2788</i>&nbsp;     Performs a reduction on the values of this json that satisfy the predicate. The reduction is performed mapping
+<i>2789</i>&nbsp;     each value with the mapping function and then applying the operator
+<i>2790</i>&nbsp;     @param op the operator upon two objects of type R
+<i>2791</i>&nbsp;     @param map the mapping function which produces an object of type R from a JsValue
+<i>2792</i>&nbsp;     @param predicate the predicate that determines what JsValue will be mapped and reduced
+<i>2793</i>&nbsp;     @param &lt;R&gt; the type of the operands of the operator
+<i>2794</i>&nbsp;     @return an {@link Optional} describing the result of the reduction
+<i>2795</i>&nbsp;
+<i>2796</i>&nbsp;     @see #reduce(BinaryOperator, Function, Predicate) to apply the reduction only in the first level
+<i>2797</i>&nbsp;     */
+<i>2798</i>&nbsp;    &lt;R&gt; Optional&lt;R&gt; reduce_(BinaryOperator&lt;R&gt; op,
+<i>2799</i>&nbsp;                            Function&lt;? super JsPair, R&gt; map,
+<i>2800</i>&nbsp;                            Predicate&lt;? super JsPair&gt; predicate
+<i>2801</i>&nbsp;                           );
+<i>2802</i>&nbsp;
+<i>2803</i>&nbsp;    /**
+<i>2804</i>&nbsp;     Removes the element in this json located at the given path, if it exists, returning the same this
+<i>2805</i>&nbsp;     instance otherwise
+<i>2806</i>&nbsp;     @param path the given JsPath object
+<i>2807</i>&nbsp;     @return a json of the same type T
+<i>2808</i>&nbsp;     */
+<i>2809</i>&nbsp;    T remove(final JsPath path);
+<i>2810</i>&nbsp;
+<i>2811</i>&nbsp;    /**
+<i>2812</i>&nbsp;     Removes the element in this json located at the given path, if it exists, returning the same this
+<i>2813</i>&nbsp;     instance otherwise
+<i>2814</i>&nbsp;     @param path the given path-like string
+<i>2815</i>&nbsp;     @return a json of the same type T
+<i>2816</i>&nbsp;     */
+<i>2817</i>&nbsp;    default T remove(final String path)
+<i>2818</i>&nbsp;    {
+<b class="fc"><i>2819</i>&nbsp;        return remove(JsPath.of(path));</b>
+<i>2820</i>&nbsp;    }
+<i>2821</i>&nbsp;
+<i>2822</i>&nbsp;    /**
+<i>2823</i>&nbsp;     Returns the number of elements in the first level of this json
+<i>2824</i>&nbsp;     @return the number of elements in the first level of this json
+<i>2825</i>&nbsp;     */
+<i>2826</i>&nbsp;    int size();
+<i>2827</i>&nbsp;
+<i>2828</i>&nbsp;    /**
+<i>2829</i>&nbsp;     Returns the number of all the elements in this json
+<i>2830</i>&nbsp;     @return the number of all the elements in this json
+<i>2831</i>&nbsp;     */
+<i>2832</i>&nbsp;    default int size_()
+<i>2833</i>&nbsp;    {
+<b class="fc"><i>2834</i>&nbsp;        return stream_().mapToInt(p -&gt; 1)</b>
+<b class="fc"><i>2835</i>&nbsp;                        .reduce(0,</b>
+<i>2836</i>&nbsp;                                Integer::sum
+<i>2837</i>&nbsp;                               );
+<i>2838</i>&nbsp;    }
+<i>2839</i>&nbsp;
+<i>2840</i>&nbsp;    /**
+<i>2841</i>&nbsp;     Returns the size of the json located at the given path in this json or OptionalInt.empty() if it
+<i>2842</i>&nbsp;     doesn&#39;t exist or it&#39;s not a Json
+<i>2843</i>&nbsp;     @param path the given JsPath object
+<i>2844</i>&nbsp;     @return an OptionalInt
+<i>2845</i>&nbsp;     */
+<i>2846</i>&nbsp;    default OptionalInt size(final JsPath path)
+<i>2847</i>&nbsp;    {
+<i>2848</i>&nbsp;
+<b class="fc"><i>2849</i>&nbsp;        return Functions.ifJsonElse(it -&gt; OptionalInt.of(it.size()),</b>
+<b class="nc"><i>2850</i>&nbsp;                                    it -&gt; OptionalInt.empty()</b>
+<i>2851</i>&nbsp;                                   )
+<b class="fc"><i>2852</i>&nbsp;                        .apply(get(requireNonNull(path)));</b>
+<i>2853</i>&nbsp;
+<i>2854</i>&nbsp;
+<i>2855</i>&nbsp;    }
+<i>2856</i>&nbsp;
+<i>2857</i>&nbsp;    /**
+<i>2858</i>&nbsp;     Returns the size of the json located at the given path in this json or OptionalInt.empty() if it
+<i>2859</i>&nbsp;     doesn&#39;t exist or it&#39;s not a Json
+<i>2860</i>&nbsp;     @param path the given JsPath object
+<i>2861</i>&nbsp;     @return an OptionalInt
+<i>2862</i>&nbsp;     */
+<i>2863</i>&nbsp;    default OptionalInt size_(final JsPath path)
+<i>2864</i>&nbsp;    {
+<i>2865</i>&nbsp;
+<b class="nc"><i>2866</i>&nbsp;        return Functions.ifJsonElse(it -&gt; OptionalInt.of(it.size_()),</b>
+<b class="nc"><i>2867</i>&nbsp;                                    it -&gt; OptionalInt.empty()</b>
+<i>2868</i>&nbsp;                                   )
+<b class="nc"><i>2869</i>&nbsp;                        .apply(get(requireNonNull(path)));</b>
+<i>2870</i>&nbsp;
+<i>2871</i>&nbsp;
+<i>2872</i>&nbsp;    }
+<i>2873</i>&nbsp;
+<i>2874</i>&nbsp;    /**
+<i>2875</i>&nbsp;     Returns the size of the json located at the given path in this json or OptionalInt.empty() if it
+<i>2876</i>&nbsp;     doesn&#39;t exist or it&#39;s not a Json
+<i>2877</i>&nbsp;     @param path the given path-like string
+<i>2878</i>&nbsp;     @return an OptionalInt
+<i>2879</i>&nbsp;     */
+<i>2880</i>&nbsp;    default OptionalInt size(final String path)
+<i>2881</i>&nbsp;    {
+<b class="fc"><i>2882</i>&nbsp;        return size(JsPath.of(path));</b>
+<i>2883</i>&nbsp;    }
+<i>2884</i>&nbsp;
+<i>2885</i>&nbsp;    /**
+<i>2886</i>&nbsp;     Returns the size of the Json located at the given path in this json or OptionalInt.empty() if it
+<i>2887</i>&nbsp;     doesn&#39;t exist or it&#39;s not a Json
+<i>2888</i>&nbsp;     @param path the given path-like string
+<i>2889</i>&nbsp;     @return an OptionalInt
+<i>2890</i>&nbsp;     */
+<i>2891</i>&nbsp;    default OptionalInt size_(final String path)
+<i>2892</i>&nbsp;    {
+<i>2893</i>&nbsp;
+<b class="nc"><i>2894</i>&nbsp;        return size_(JsPath.of(path));</b>
+<i>2895</i>&nbsp;
+<i>2896</i>&nbsp;
+<i>2897</i>&nbsp;    }
+<i>2898</i>&nbsp;
+<i>2899</i>&nbsp;    /**
+<i>2900</i>&nbsp;     Returns a stream over all the pairs of elements in this json object.
+<i>2901</i>&nbsp;     @return a {@code Stream} over all the JsPairs in this json
+<i>2902</i>&nbsp;     */
+<i>2903</i>&nbsp;    Stream&lt;JsPair&gt; stream_();
+<i>2904</i>&nbsp;
+<i>2905</i>&nbsp;    /**
+<i>2906</i>&nbsp;     Returns a stream over the pairs of elements in the first level of this json object.
+<i>2907</i>&nbsp;     @return a {@code Stream} over all the JsPairs in the first level of this json
+<i>2908</i>&nbsp;     */
+<i>2909</i>&nbsp;    Stream&lt;JsPair&gt; stream();
+<i>2910</i>&nbsp;
+<i>2911</i>&nbsp;
+<i>2912</i>&nbsp;    /**
+<i>2913</i>&nbsp;     Converts this json into immutable if it&#39;s mutable, returning this same instance otherwise.
+<i>2914</i>&nbsp;     @return an immutable Json
+<i>2915</i>&nbsp;     */
+<i>2916</i>&nbsp;    T toImmutable();
+<i>2917</i>&nbsp;
+<i>2918</i>&nbsp;    /**
+<i>2919</i>&nbsp;     Converts this json into mutable if it&#39;s immutable, returning this same instance otherwise.
+<i>2920</i>&nbsp;     @return an mutable Json
+<i>2921</i>&nbsp;     */
+<i>2922</i>&nbsp;    T toMutable();
+<i>2923</i>&nbsp;
+<i>2924</i>&nbsp;    /**
+<i>2925</i>&nbsp;     Returns true if an element exists in this json at the given path.
+<i>2926</i>&nbsp;     @param path the given path-like string
+<i>2927</i>&nbsp;     @return true if a JsElem exists at the path
+<i>2928</i>&nbsp;     */
+<i>2929</i>&nbsp;    default boolean containsPath(final String path)
+<i>2930</i>&nbsp;    {
+<b class="fc"><i>2931</i>&nbsp;        return containsPath(JsPath.of(requireNonNull(path)));</b>
+<i>2932</i>&nbsp;    }
+<i>2933</i>&nbsp;
+<i>2934</i>&nbsp;    /**
+<i>2935</i>&nbsp;     Returns true if an element exists in this json at the given path.
+<i>2936</i>&nbsp;     @param path the JsPath
+<i>2937</i>&nbsp;     @return true if a JsElem exists at the JsPath
+<i>2938</i>&nbsp;     */
+<i>2939</i>&nbsp;    default boolean containsPath(final JsPath path)
+<i>2940</i>&nbsp;    {
+<b class="fc"><i>2941</i>&nbsp;        return get(requireNonNull(path)).isNotNothing();</b>
+<i>2942</i>&nbsp;
+<i>2943</i>&nbsp;    }
+<i>2944</i>&nbsp;
+<i>2945</i>&nbsp;    /**
+<i>2946</i>&nbsp;     Returns true if this json contains the given element in the first level.
+<i>2947</i>&nbsp;     @param element the give element JsElem whose presence in this JsArray is to be tested
+<i>2948</i>&nbsp;     @return true if this JsArray contains the  JsElem
+<i>2949</i>&nbsp;     */
+<i>2950</i>&nbsp;    boolean containsElem(JsElem element);
+<i>2951</i>&nbsp;
+<i>2952</i>&nbsp;    /**
+<i>2953</i>&nbsp;     Returns true if this json or any of its elements, contains the given element.
+<i>2954</i>&nbsp;     @param element the give JsElem whose presence in this JsArray is to be tested
+<i>2955</i>&nbsp;     @return true if this JsArray contains the JsElem
+<i>2956</i>&nbsp;     */
+<i>2957</i>&nbsp;    default boolean containsElem_(final JsElem element)
+<i>2958</i>&nbsp;    {
+<b class="fc"><i>2959</i>&nbsp;        return stream_().anyMatch(p -&gt; p.elem.equals(Objects.requireNonNull(element)));</b>
+<i>2960</i>&nbsp;    }
+<i>2961</i>&nbsp;
+<i>2962</i>&nbsp;
+<i>2963</i>&nbsp;    default T map(Function&lt;T, T&gt; fn)
+<i>2964</i>&nbsp;    {
+<i>2965</i>&nbsp;        //this is an instance of T (recursive type)
+<b class="nc"><i>2966</i>&nbsp;        @SuppressWarnings(&quot;unchecked&quot;) T o = fn.apply((T) this);</b>
+<b class="nc"><i>2967</i>&nbsp;        return o;</b>
+<i>2968</i>&nbsp;    }
+<i>2969</i>&nbsp;
+<i>2970</i>&nbsp;    /**
+<i>2971</i>&nbsp;     @return true if the implementation is mutable
+<i>2972</i>&nbsp;     */
+<i>2973</i>&nbsp;    boolean isMutable();
+<i>2974</i>&nbsp;
+<i>2975</i>&nbsp;    /**
+<i>2976</i>&nbsp;     @return true if the implementation is immutable
+<i>2977</i>&nbsp;     */
+<i>2978</i>&nbsp;    boolean isImmutable();
+<i>2979</i>&nbsp;
+<i>2980</i>&nbsp;
+<i>2981</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

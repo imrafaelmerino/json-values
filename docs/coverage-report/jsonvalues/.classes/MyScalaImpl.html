@@ -1,0 +1,521 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: MyScalaImpl</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: MyScalaImpl (jsonvalues)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">MyScalaImpl</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    0%
+  </span>
+  <span class="absValue">
+    (0/ 2)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">MyScalaImpl$Map</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (20/ 20)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (38/ 38)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MyScalaImpl$Map$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MyScalaImpl$Vector</td>
+<td class="coverageStat">
+  <span class="percent">
+    90.5%
+  </span>
+  <span class="absValue">
+    (19/ 21)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.4%
+  </span>
+  <span class="absValue">
+    (28/ 34)
+  </span>
+</td>
+  </tr>
+  <tr>
+    <td class="name">MyScalaImpl$Vector$1</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    33.3%
+  </span>
+  <span class="absValue">
+    (1/ 3)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    89.4%
+  </span>
+  <span class="absValue">
+    (42/ 47)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.3%
+  </span>
+  <span class="absValue">
+    (69/ 79)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.checkerframework.checker.nullness.qual.Nullable;
+<i>4</i>&nbsp;import scala.Tuple2;
+<i>5</i>&nbsp;import scala.collection.Iterator;
+<i>6</i>&nbsp;import scala.collection.JavaConverters;
+<i>7</i>&nbsp;import scala.collection.generic.CanBuildFrom;
+<i>8</i>&nbsp;import scala.collection.immutable.HashMap;
+<i>9</i>&nbsp;import scala.collection.mutable.Builder;
+<i>10</i>&nbsp;import scala.runtime.AbstractFunction1;
+<i>11</i>&nbsp;
+<i>12</i>&nbsp;import java.util.AbstractMap;
+<i>13</i>&nbsp;import java.util.Collection;
+<i>14</i>&nbsp;import java.util.Optional;
+<i>15</i>&nbsp;import java.util.Set;
+<i>16</i>&nbsp;import java.util.function.UnaryOperator;
+<i>17</i>&nbsp;import java.util.stream.Stream;
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;class MyScalaImpl
+<i>20</i>&nbsp;{
+<i>21</i>&nbsp;    private MyScalaImpl()
+<b class="nc"><i>22</i>&nbsp;    {</b>
+<b class="nc"><i>23</i>&nbsp;    }</b>
+<i>24</i>&nbsp;
+<i>25</i>&nbsp;    static final class Map implements MyMap&lt;Map&gt;
+<i>26</i>&nbsp;    {
+<b class="fc"><i>27</i>&nbsp;        static final HashMap&lt;String, JsElem&gt; EMPTY_HASH_MAP = new HashMap&lt;&gt;();</b>
+<b class="fc"><i>28</i>&nbsp;        static final Map EMPTY = new Map();</b>
+<i>29</i>&nbsp;        private final scala.collection.immutable.Map&lt;String, JsElem&gt; map;
+<i>30</i>&nbsp;
+<i>31</i>&nbsp;        Map()
+<b class="fc"><i>32</i>&nbsp;        {</b>
+<b class="fc"><i>33</i>&nbsp;            this.map = EMPTY_HASH_MAP;</b>
+<b class="fc"><i>34</i>&nbsp;        }</b>
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;        Map(final scala.collection.immutable.Map&lt;String, JsElem&gt; map)
+<b class="fc"><i>37</i>&nbsp;        {</b>
+<b class="fc"><i>38</i>&nbsp;            this.map = map;</b>
+<b class="fc"><i>39</i>&nbsp;        }</b>
+<i>40</i>&nbsp;
+<i>41</i>&nbsp;        static AbstractFunction1&lt;String, String&gt; af1(UnaryOperator&lt;String&gt; uo)
+<i>42</i>&nbsp;        {
+<b class="fc"><i>43</i>&nbsp;            return new AbstractFunction1&lt;String, String&gt;()</b>
+<b class="fc"><i>44</i>&nbsp;            {</b>
+<i>45</i>&nbsp;                @Override
+<i>46</i>&nbsp;                public String apply(final String str)
+<i>47</i>&nbsp;                {
+<b class="fc"><i>48</i>&nbsp;                    return uo.apply(str);</b>
+<i>49</i>&nbsp;                }
+<i>50</i>&nbsp;            };
+<i>51</i>&nbsp;        }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;        @Override
+<i>54</i>&nbsp;        public java.util.Iterator&lt;java.util.Map.Entry&lt;String, JsElem&gt;&gt; iterator()
+<i>55</i>&nbsp;        {
+<b class="fc"><i>56</i>&nbsp;            final Iterator&lt;Tuple2&lt;String, JsElem&gt;&gt; iterator = map.iterator();</b>
+<b class="fc"><i>57</i>&nbsp;            return JavaConverters.asJavaIterator(iterator.map(it -&gt; new AbstractMap.SimpleEntry&lt;&gt;(it._1,</b>
+<i>58</i>&nbsp;                                                                                                  it._2
+<i>59</i>&nbsp;                                                              )
+<i>60</i>&nbsp;                                                             ));
+<i>61</i>&nbsp;        }
+<i>62</i>&nbsp;
+<i>63</i>&nbsp;        @Override
+<i>64</i>&nbsp;        public boolean contains(final String key)
+<i>65</i>&nbsp;        {
+<b class="fc"><i>66</i>&nbsp;            return map.contains(key);</b>
+<i>67</i>&nbsp;        }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<i>70</i>&nbsp;        @Override
+<i>71</i>&nbsp;        public final Set&lt;String&gt; fields()
+<i>72</i>&nbsp;        {
+<b class="fc"><i>73</i>&nbsp;            return JavaConverters.setAsJavaSet(map.keys()</b>
+<b class="fc"><i>74</i>&nbsp;                                                  .toSet());</b>
+<i>75</i>&nbsp;
+<i>76</i>&nbsp;        }
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;        @Override
+<i>79</i>&nbsp;        public JsElem get(final String key)
+<i>80</i>&nbsp;        {
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;            return map.apply(key);</b>
+<i>83</i>&nbsp;        }
+<i>84</i>&nbsp;
+<i>85</i>&nbsp;        @Override
+<i>86</i>&nbsp;        public Optional&lt;JsElem&gt; getOptional(final String key)
+<i>87</i>&nbsp;        {
+<b class="fc"><i>88</i>&nbsp;            return map.contains(key) ? Optional.of(map.get(key)</b>
+<b class="fc"><i>89</i>&nbsp;                                                      .get()) : Optional.empty();</b>
+<i>90</i>&nbsp;        }
+<i>91</i>&nbsp;
+<i>92</i>&nbsp;        @Override
+<i>93</i>&nbsp;        public int hashCode()
+<i>94</i>&nbsp;        {
+<b class="fc"><i>95</i>&nbsp;            return ((HashMap&lt;String, JsElem&gt;) map).hashCode();</b>
+<i>96</i>&nbsp;        }
+<i>97</i>&nbsp;
+<i>98</i>&nbsp;        @Override
+<i>99</i>&nbsp;        public java.util.Map.Entry&lt;String, JsElem&gt; head()
+<i>100</i>&nbsp;        {
+<b class="fc"><i>101</i>&nbsp;            if (this.isEmpty()) throw new UnsupportedOperationException(&quot;head parse empty map&quot;);</b>
+<i>102</i>&nbsp;
+<b class="fc"><i>103</i>&nbsp;            final Tuple2&lt;String, JsElem&gt; head = map.head();</b>
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;            return new AbstractMap.SimpleEntry&lt;&gt;(head._1,</b>
+<i>106</i>&nbsp;                                                 head._2
+<i>107</i>&nbsp;            );
+<i>108</i>&nbsp;        }
+<i>109</i>&nbsp;
+<i>110</i>&nbsp;        @Override
+<i>111</i>&nbsp;        public boolean isEmpty()
+<i>112</i>&nbsp;        {
+<b class="fc"><i>113</i>&nbsp;            return map.isEmpty();</b>
+<i>114</i>&nbsp;        }
+<i>115</i>&nbsp;
+<i>116</i>&nbsp;        @Override
+<i>117</i>&nbsp;        public Map remove(final String key)
+<i>118</i>&nbsp;        {
+<b class="fc"><i>119</i>&nbsp;            return new Map(((HashMap&lt;String, JsElem&gt;) map).$minus(key));</b>
+<i>120</i>&nbsp;        }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;        @Override
+<i>123</i>&nbsp;        public int size()
+<i>124</i>&nbsp;        {
+<b class="fc"><i>125</i>&nbsp;            return map.size();</b>
+<i>126</i>&nbsp;        }
+<i>127</i>&nbsp;
+<i>128</i>&nbsp;        @Override
+<i>129</i>&nbsp;        public Map tail(String head)
+<i>130</i>&nbsp;        {
+<b class="fc"><i>131</i>&nbsp;            if (this.isEmpty()) throw new UnsupportedOperationException(&quot;tail of empty map&quot;);</b>
+<i>132</i>&nbsp;
+<b class="fc"><i>133</i>&nbsp;            return new Map(((HashMap&lt;String, JsElem&gt;) map).$minus(head));</b>
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;        }
+<i>136</i>&nbsp;
+<i>137</i>&nbsp;        @Override
+<i>138</i>&nbsp;        public String toString()
+<i>139</i>&nbsp;        {
+<b class="fc"><i>140</i>&nbsp;            if (map.isEmpty()) return EMPTY_OBJ_AS_STR;</b>
+<i>141</i>&nbsp;
+<i>142</i>&nbsp;
+<b class="fc"><i>143</i>&nbsp;            return map.keysIterator()</b>
+<b class="fc"><i>144</i>&nbsp;                      .map(af1(key -&gt; MAP_PAIR_TO_STR.apply(key,</b>
+<b class="fc"><i>145</i>&nbsp;                                                            map.apply(key)</b>
+<i>146</i>&nbsp;                                                           )))
+<b class="fc"><i>147</i>&nbsp;                      .mkString(OPEN_BRACKET,</b>
+<i>148</i>&nbsp;                                COMMA,
+<i>149</i>&nbsp;                                CLOSE_BRACKET
+<i>150</i>&nbsp;                               );
+<i>151</i>&nbsp;        }
+<i>152</i>&nbsp;
+<i>153</i>&nbsp;        @Override
+<i>154</i>&nbsp;        public Map update(final String key,
+<i>155</i>&nbsp;                          final JsElem je
+<i>156</i>&nbsp;                         )
+<i>157</i>&nbsp;        {
+<b class="fc"><i>158</i>&nbsp;            return new Map(map.updated(key,</b>
+<i>159</i>&nbsp;                                       je
+<i>160</i>&nbsp;                                      ));
+<i>161</i>&nbsp;        }
+<i>162</i>&nbsp;
+<i>163</i>&nbsp;
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;        @Override
+<i>166</i>&nbsp;        public Map updateAll(final java.util.Map&lt;String, JsElem&gt; map)
+<i>167</i>&nbsp;        {
+<b class="fc"><i>168</i>&nbsp;            scala.collection.immutable.Map&lt;String, JsElem&gt; immap = this.map;</b>
+<b class="fc"><i>169</i>&nbsp;            for (java.util.Map.Entry&lt;String, JsElem&gt; entry : map.entrySet())</b>
+<b class="fc"><i>170</i>&nbsp;                immap = immap.updated(entry.getKey(),</b>
+<b class="fc"><i>171</i>&nbsp;                                      entry.getValue()</b>
+<i>172</i>&nbsp;                                     );
+<b class="fc"><i>173</i>&nbsp;            return new Map(immap);</b>
+<i>174</i>&nbsp;        }
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;        @Override
+<i>177</i>&nbsp;        public boolean equals(@Nullable Object obj)
+<i>178</i>&nbsp;        {
+<b class="fc"><i>179</i>&nbsp;            return this.eq(obj);</b>
+<i>180</i>&nbsp;        }
+<i>181</i>&nbsp;    }
+<i>182</i>&nbsp;
+<i>183</i>&nbsp;    static final class Vector implements MyVector&lt;Vector&gt;
+<i>184</i>&nbsp;    {
+<i>185</i>&nbsp;
+<b class="fc"><i>186</i>&nbsp;        static final scala.collection.immutable.Vector&lt;JsElem&gt; EMPTY_VECTOR = new scala.collection.immutable.Vector&lt;&gt;(0,</b>
+<i>187</i>&nbsp;                                                                                                                      0,
+<i>188</i>&nbsp;                                                                                                                      0
+<i>189</i>&nbsp;        );
+<b class="fc"><i>190</i>&nbsp;        static final CanBuildFrom&lt;scala.collection.immutable.Vector&lt;JsElem&gt;, JsElem, scala.collection.immutable.Vector&lt;JsElem&gt;&gt; bf = new CanBuildFrom&lt;scala.collection.immutable.Vector&lt;JsElem&gt;, JsElem, scala.collection.immutable.Vector&lt;JsElem&gt;&gt;()</b>
+<b class="fc"><i>191</i>&nbsp;        {</b>
+<i>192</i>&nbsp;            @Override
+<i>193</i>&nbsp;            public Builder&lt;JsElem, scala.collection.immutable.Vector&lt;JsElem&gt;&gt; apply()
+<i>194</i>&nbsp;            {
+<b class="nc"><i>195</i>&nbsp;                return scala.collection.immutable.Vector.&lt;JsElem&gt;canBuildFrom().apply();</b>
+<i>196</i>&nbsp;            }
+<i>197</i>&nbsp;
+<i>198</i>&nbsp;            @Override
+<i>199</i>&nbsp;            public Builder&lt;JsElem, scala.collection.immutable.Vector&lt;JsElem&gt;&gt; apply(final scala.collection.immutable.Vector&lt;JsElem&gt; v)
+<i>200</i>&nbsp;            {
+<b class="nc"><i>201</i>&nbsp;                return scala.collection.immutable.Vector.&lt;JsElem&gt;canBuildFrom().apply();</b>
+<i>202</i>&nbsp;            }
+<i>203</i>&nbsp;        };
+<i>204</i>&nbsp;
+<b class="fc"><i>205</i>&nbsp;        static final Vector EMPTY = new Vector(EMPTY_VECTOR);</b>
+<i>206</i>&nbsp;        private final scala.collection.immutable.Vector&lt;JsElem&gt; vector;
+<i>207</i>&nbsp;
+<i>208</i>&nbsp;
+<i>209</i>&nbsp;        Vector(final scala.collection.immutable.Vector&lt;JsElem&gt; vector)
+<b class="fc"><i>210</i>&nbsp;        {</b>
+<b class="fc"><i>211</i>&nbsp;            this.vector = vector;</b>
+<b class="fc"><i>212</i>&nbsp;        }</b>
+<i>213</i>&nbsp;
+<i>214</i>&nbsp;        @Override
+<i>215</i>&nbsp;        public Vector add(final Collection&lt;? extends JsElem&gt; list)
+<i>216</i>&nbsp;        {
+<b class="fc"><i>217</i>&nbsp;            scala.collection.immutable.Vector&lt;JsElem&gt; r = this.vector;</b>
+<b class="fc"><i>218</i>&nbsp;            for (final JsElem jsElem : list) r = r.appendBack(jsElem);</b>
+<b class="fc"><i>219</i>&nbsp;            return new Vector(r);</b>
+<i>220</i>&nbsp;        }
+<i>221</i>&nbsp;
+<i>222</i>&nbsp;
+<i>223</i>&nbsp;        @Override
+<i>224</i>&nbsp;        public Vector add(final Vector that)
+<i>225</i>&nbsp;        {
+<b class="nc"><i>226</i>&nbsp;            return new Vector(vector.$plus$plus(that.vector,</b>
+<i>227</i>&nbsp;                                                bf
+<i>228</i>&nbsp;                                               ));
+<i>229</i>&nbsp;        }
+<i>230</i>&nbsp;
+<i>231</i>&nbsp;        @Override
+<i>232</i>&nbsp;        public Vector appendBack(final JsElem elem)
+<i>233</i>&nbsp;        {
+<b class="fc"><i>234</i>&nbsp;            return new Vector(vector.appendBack(elem));</b>
+<i>235</i>&nbsp;        }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;        @Override
+<i>238</i>&nbsp;        public Vector appendFront(final JsElem elem)
+<i>239</i>&nbsp;        {
+<b class="fc"><i>240</i>&nbsp;            return new Vector(vector.appendFront(elem));</b>
+<i>241</i>&nbsp;        }
+<i>242</i>&nbsp;
+<i>243</i>&nbsp;        @Override
+<i>244</i>&nbsp;        public boolean contains(final JsElem e)
+<i>245</i>&nbsp;        {
+<b class="fc"><i>246</i>&nbsp;            return vector.contains(e);</b>
+<i>247</i>&nbsp;        }
+<i>248</i>&nbsp;
+<i>249</i>&nbsp;        @Override
+<i>250</i>&nbsp;        public JsElem get(final int index)
+<i>251</i>&nbsp;        {
+<b class="fc"><i>252</i>&nbsp;            return vector.apply(index);</b>
+<i>253</i>&nbsp;        }
+<i>254</i>&nbsp;
+<i>255</i>&nbsp;        @Override
+<i>256</i>&nbsp;        public int hashCode()
+<i>257</i>&nbsp;        {
+<b class="fc"><i>258</i>&nbsp;            return vector.hashCode();</b>
+<i>259</i>&nbsp;        }
+<i>260</i>&nbsp;
+<i>261</i>&nbsp;        @Override
+<i>262</i>&nbsp;        public JsElem head()
+<i>263</i>&nbsp;        {
+<b class="fc"><i>264</i>&nbsp;            return vector.head();</b>
+<i>265</i>&nbsp;        }
+<i>266</i>&nbsp;
+<i>267</i>&nbsp;        @Override
+<i>268</i>&nbsp;        public Vector init()
+<i>269</i>&nbsp;        {
+<b class="fc"><i>270</i>&nbsp;            return new Vector(vector.init());</b>
+<i>271</i>&nbsp;        }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;        @Override
+<i>274</i>&nbsp;        public boolean isEmpty()
+<i>275</i>&nbsp;        {
+<b class="fc"><i>276</i>&nbsp;            return vector.isEmpty();</b>
+<i>277</i>&nbsp;        }
+<i>278</i>&nbsp;
+<i>279</i>&nbsp;        @Override
+<i>280</i>&nbsp;        public java.util.Iterator&lt;JsElem&gt; iterator()
+<i>281</i>&nbsp;        {
+<b class="fc"><i>282</i>&nbsp;            return JavaConverters.asJavaIterator(vector.iterator()</b>
+<b class="fc"><i>283</i>&nbsp;                                                       .toIterator());</b>
+<i>284</i>&nbsp;        }
+<i>285</i>&nbsp;
+<i>286</i>&nbsp;        @Override
+<i>287</i>&nbsp;        public JsElem last()
+<i>288</i>&nbsp;        {
+<b class="fc"><i>289</i>&nbsp;            return vector.last();</b>
+<i>290</i>&nbsp;        }
+<i>291</i>&nbsp;
+<i>292</i>&nbsp;        @Override
+<i>293</i>&nbsp;        public String toString()
+<i>294</i>&nbsp;        {
+<b class="fc"><i>295</i>&nbsp;            if (vector.isEmpty()) return EMPTY_ARR_AS_STR;</b>
+<i>296</i>&nbsp;
+<b class="fc"><i>297</i>&nbsp;            return vector.mkString(OPEN_BRACKET,</b>
+<i>298</i>&nbsp;                                   COMMA,
+<i>299</i>&nbsp;                                   CLOSE_BRACKET
+<i>300</i>&nbsp;                                  );
+<i>301</i>&nbsp;        }
+<i>302</i>&nbsp;
+<i>303</i>&nbsp;        @Override
+<i>304</i>&nbsp;        public Vector remove(final int index)
+<i>305</i>&nbsp;        {
+<i>306</i>&nbsp;
+<i>307</i>&nbsp;
+<b class="fc"><i>308</i>&nbsp;            if (index == 0) return new Vector(vector.tail());</b>
+<b class="fc"><i>309</i>&nbsp;            if (index == vector.size() - 1) return new Vector(vector.init());</b>
+<i>310</i>&nbsp;
+<b class="nc"><i>311</i>&nbsp;            Tuple2&lt;scala.collection.immutable.Vector&lt;JsElem&gt;, scala.collection.immutable.Vector&lt;JsElem&gt;&gt; tuple = vector.splitAt(index);</b>
+<i>312</i>&nbsp;
+<i>313</i>&nbsp;
+<b class="nc"><i>314</i>&nbsp;            return new Vector(tuple._1.init()</b>
+<b class="nc"><i>315</i>&nbsp;                                      .$plus$plus(tuple._2,</b>
+<i>316</i>&nbsp;                                                  bf
+<i>317</i>&nbsp;                                                 ));
+<i>318</i>&nbsp;        }
+<i>319</i>&nbsp;
+<i>320</i>&nbsp;        @Override
+<i>321</i>&nbsp;        public int size()
+<i>322</i>&nbsp;        {
+<b class="fc"><i>323</i>&nbsp;            return vector.size();</b>
+<i>324</i>&nbsp;        }
+<i>325</i>&nbsp;
+<i>326</i>&nbsp;        @Override
+<i>327</i>&nbsp;        public Stream&lt;JsElem&gt; stream()
+<i>328</i>&nbsp;        {
+<b class="nc"><i>329</i>&nbsp;            return JavaConverters.seqAsJavaList(vector)</b>
+<b class="nc"><i>330</i>&nbsp;                                 .stream();</b>
+<i>331</i>&nbsp;        }
+<i>332</i>&nbsp;
+<i>333</i>&nbsp;        @Override
+<i>334</i>&nbsp;        public Vector tail()
+<i>335</i>&nbsp;        {
+<b class="fc"><i>336</i>&nbsp;            return new Vector(vector.tail());</b>
+<i>337</i>&nbsp;        }
+<i>338</i>&nbsp;
+<i>339</i>&nbsp;        @Override
+<i>340</i>&nbsp;        public Vector update(final int index,
+<i>341</i>&nbsp;                             final JsElem ele
+<i>342</i>&nbsp;                            )
+<i>343</i>&nbsp;        {
+<b class="fc"><i>344</i>&nbsp;            return new Vector(vector.updateAt(index,</b>
+<i>345</i>&nbsp;                                              ele
+<i>346</i>&nbsp;                                             ));
+<i>347</i>&nbsp;        }
+<i>348</i>&nbsp;
+<i>349</i>&nbsp;        @Override
+<i>350</i>&nbsp;        public boolean equals(final @Nullable Object that)
+<i>351</i>&nbsp;        {
+<b class="fc"><i>352</i>&nbsp;            return this.eq(that);</b>
+<i>353</i>&nbsp;        }
+<i>354</i>&nbsp;    }
+<i>355</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

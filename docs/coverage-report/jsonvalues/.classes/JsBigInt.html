@@ -1,0 +1,233 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JsBigInt</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JsBigInt (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JsBigInt</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    87.5%
+  </span>
+  <span class="absValue">
+    (7/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    93.5%
+  </span>
+  <span class="absValue">
+    (29/ 31)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.checkerframework.checker.nullness.qual.Nullable;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.math.BigInteger;
+<i>6</i>&nbsp;import java.util.OptionalInt;
+<i>7</i>&nbsp;import java.util.OptionalLong;
+<i>8</i>&nbsp;import java.util.function.Predicate;
+<i>9</i>&nbsp;import java.util.function.UnaryOperator;
+<i>10</i>&nbsp;
+<i>11</i>&nbsp;import static java.util.Objects.requireNonNull;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;/**
+<i>14</i>&nbsp; Represents an immutable json number of type BigInteger.
+<i>15</i>&nbsp; */
+<i>16</i>&nbsp;public final class JsBigInt implements JsNumber, Comparable&lt;JsBigInt&gt;
+<i>17</i>&nbsp;{
+<i>18</i>&nbsp;
+<i>19</i>&nbsp;    /**
+<i>20</i>&nbsp;     the big integer value.
+<i>21</i>&nbsp;     */
+<i>22</i>&nbsp;    public final BigInteger x;
+<i>23</i>&nbsp;
+<i>24</i>&nbsp;    private JsBigInt(final BigInteger x)
+<b class="fc"><i>25</i>&nbsp;    {</b>
+<b class="fc"><i>26</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>27</i>&nbsp;    }</b>
+<i>28</i>&nbsp;
+<i>29</i>&nbsp;    /**
+<i>30</i>&nbsp;     Compares two {@code JsBigInt} objects numerically.
+<i>31</i>&nbsp;     @see JsBigInt#compareTo(JsBigInt)
+<i>32</i>&nbsp;     */
+<i>33</i>&nbsp;    @Override
+<i>34</i>&nbsp;    public int compareTo(final JsBigInt o)
+<i>35</i>&nbsp;    {
+<b class="nc"><i>36</i>&nbsp;        return x.compareTo(requireNonNull(o).x);</b>
+<i>37</i>&nbsp;    }
+<i>38</i>&nbsp;
+<i>39</i>&nbsp;
+<i>40</i>&nbsp;    /**
+<i>41</i>&nbsp;     Indicates whether some other object is &quot;equal to&quot; this json big integer. Numbers of different
+<i>42</i>&nbsp;     types are equals if the have the same value:
+<i>43</i>&nbsp;     {@code
+<i>44</i>&nbsp;     JsBigInt.parse(BigInteger.ONE).equals(JsBigInt.parse(BigInteger.ONE))
+<i>45</i>&nbsp;     JsBigInt.parse(BigInteger.ONE).equals(JsInt.parse(1))
+<i>46</i>&nbsp;     JsBigInt.parse(BigInteger.ONE).equals(JsDouble.parse(1.0))
+<i>47</i>&nbsp;     JsBigInt.parse(BigInteger.ONE).equals(JsBigDec.parse(BigDecimal.valueOf(1.0)))
+<i>48</i>&nbsp;     JsBigInt.parse(BigInteger.ONE).equals(JsLong.parse(1))
+<i>49</i>&nbsp;     }
+<i>50</i>&nbsp;     @param that the reference object with which to compare.
+<i>51</i>&nbsp;     @return true if that is a JsNumber with the same value as this
+<i>52</i>&nbsp;     */
+<i>53</i>&nbsp;    @Override
+<i>54</i>&nbsp;    public boolean equals(@Nullable Object that)
+<i>55</i>&nbsp;    {
+<i>56</i>&nbsp;
+<b class="fc"><i>57</i>&nbsp;        if (this == that) return true;</b>
+<b class="fc"><i>58</i>&nbsp;        if (that == null) return false;</b>
+<b class="fc"><i>59</i>&nbsp;        if (!(that instanceof JsNumber)) return false;</b>
+<b class="fc"><i>60</i>&nbsp;        final JsNumber number = (JsNumber) that;</b>
+<i>61</i>&nbsp;
+<b class="fc"><i>62</i>&nbsp;        if (number.isBigInt()) return x.equals(number.asJsBigInt().x);</b>
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;        if (number.isInt())</b>
+<b class="fc"><i>65</i>&nbsp;            return Functions.equals(x,</b>
+<b class="fc"><i>66</i>&nbsp;                                    number.asJsInt().x</b>
+<i>67</i>&nbsp;                                   );
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;
+<b class="fc"><i>70</i>&nbsp;        if (number.isLong())</b>
+<b class="fc"><i>71</i>&nbsp;            return Functions.equals(x,</b>
+<b class="fc"><i>72</i>&nbsp;                                    number.asJsLong().x</b>
+<i>73</i>&nbsp;                                   );
+<i>74</i>&nbsp;
+<i>75</i>&nbsp;
+<b class="fc"><i>76</i>&nbsp;        if (number.isBigDec())</b>
+<b class="fc"><i>77</i>&nbsp;            return Functions.equals(x,</b>
+<b class="fc"><i>78</i>&nbsp;                                    number.asJsBigDec().x</b>
+<i>79</i>&nbsp;                                   );
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;
+<b class="fc"><i>82</i>&nbsp;        if (number.isDouble())</b>
+<b class="fc"><i>83</i>&nbsp;            return Functions.equals(number.asJsDouble().x,</b>
+<i>84</i>&nbsp;                                    x
+<i>85</i>&nbsp;                                   );
+<i>86</i>&nbsp;
+<b class="nc"><i>87</i>&nbsp;        return false;</b>
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;    }
+<i>90</i>&nbsp;
+<i>91</i>&nbsp;    /**
+<i>92</i>&nbsp;     Returns the hashcode of this json big integer.
+<i>93</i>&nbsp;     @return the hashcode of this JsBigInt
+<i>94</i>&nbsp;     */
+<i>95</i>&nbsp;    @Override
+<i>96</i>&nbsp;    public int hashCode()
+<i>97</i>&nbsp;    {
+<b class="fc"><i>98</i>&nbsp;        final OptionalInt optInt = Functions.bigIntToInt(x);</b>
+<b class="fc"><i>99</i>&nbsp;        if (optInt.isPresent()) return Functions.hashCode(optInt.getAsInt());</b>
+<i>100</i>&nbsp;
+<b class="fc"><i>101</i>&nbsp;        final OptionalLong optLong = Functions.bigIntToLong(x);</b>
+<b class="fc"><i>102</i>&nbsp;        if (optLong.isPresent())</b>
+<b class="fc"><i>103</i>&nbsp;            return Functions.hashCode(optLong.getAsLong());</b>
+<i>104</i>&nbsp;
+<b class="fc"><i>105</i>&nbsp;        return Functions.hashCode(x);</b>
+<i>106</i>&nbsp;
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     Maps this json bigint into another one.
+<i>111</i>&nbsp;     @param fn the mapping function
+<i>112</i>&nbsp;     @return a new JsBigInt
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public JsBigInt map(UnaryOperator&lt;BigInteger&gt; fn)
+<i>115</i>&nbsp;    {
+<b class="fc"><i>116</i>&nbsp;        return JsBigInt.of(requireNonNull(fn).apply(x));</b>
+<i>117</i>&nbsp;    }
+<i>118</i>&nbsp;
+<i>119</i>&nbsp;    /**
+<i>120</i>&nbsp;     Tests the value of this json bigint on a predicate.
+<i>121</i>&nbsp;     @param predicate the predicate
+<i>122</i>&nbsp;     @return true if this big integer satisfies the predicate
+<i>123</i>&nbsp;     */
+<i>124</i>&nbsp;    public boolean test(Predicate&lt;BigInteger&gt; predicate)
+<i>125</i>&nbsp;    {
+<b class="fc"><i>126</i>&nbsp;        return predicate.test(x);</b>
+<i>127</i>&nbsp;    }
+<i>128</i>&nbsp;
+<i>129</i>&nbsp;    /**
+<i>130</i>&nbsp;     * Static factory method to create a JsBigInt from BigInteger objects.
+<i>131</i>&nbsp;     * @param n the big integer
+<i>132</i>&nbsp;     * @return a new JsBigInt
+<i>133</i>&nbsp;     */
+<i>134</i>&nbsp;    public static JsBigInt of(BigInteger n)
+<i>135</i>&nbsp;    {
+<b class="fc"><i>136</i>&nbsp;        return new JsBigInt(requireNonNull(n));</b>
+<i>137</i>&nbsp;    }
+<i>138</i>&nbsp;
+<i>139</i>&nbsp;    /**
+<i>140</i>&nbsp;     * @return a string representation of the bigint value.
+<i>141</i>&nbsp;     * @see BigInteger#toString() BigInteger.toString
+<i>142</i>&nbsp;     */
+<i>143</i>&nbsp;    @Override
+<i>144</i>&nbsp;    public String toString()
+<i>145</i>&nbsp;    {
+<b class="fc"><i>146</i>&nbsp;        return x.toString();</b>
+<i>147</i>&nbsp;    }
+<i>148</i>&nbsp;
+<i>149</i>&nbsp;
+<i>150</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

@@ -1,0 +1,248 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JsDouble</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JsDouble (jsonvalues)</h1>
+
+<table class="coverageStats">
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Class, %
+</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JsDouble</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    63.6%
+  </span>
+  <span class="absValue">
+    (7/ 11)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    82.4%
+  </span>
+  <span class="absValue">
+    (28/ 34)
+  </span>
+</td>
+</tr>
+
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import org.checkerframework.checker.nullness.qual.Nullable;
+<i>4</i>&nbsp;
+<i>5</i>&nbsp;import java.math.BigDecimal;
+<i>6</i>&nbsp;import java.math.BigInteger;
+<i>7</i>&nbsp;import java.util.Optional;
+<i>8</i>&nbsp;import java.util.OptionalInt;
+<i>9</i>&nbsp;import java.util.OptionalLong;
+<i>10</i>&nbsp;import java.util.function.DoublePredicate;
+<i>11</i>&nbsp;import java.util.function.DoubleUnaryOperator;
+<i>12</i>&nbsp;
+<i>13</i>&nbsp;import static java.util.Objects.requireNonNull;
+<i>14</i>&nbsp;
+<i>15</i>&nbsp;/**
+<i>16</i>&nbsp; Represents an immutable json number of type double.
+<i>17</i>&nbsp; */
+<i>18</i>&nbsp;public final class JsDouble implements JsNumber, Comparable&lt;JsDouble&gt;
+<i>19</i>&nbsp;{
+<i>20</i>&nbsp;
+<i>21</i>&nbsp;    /**
+<i>22</i>&nbsp;     The double value.
+<i>23</i>&nbsp;     */
+<i>24</i>&nbsp;    public final double x;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    private JsDouble(final double x)
+<b class="fc"><i>28</i>&nbsp;    {</b>
+<b class="fc"><i>29</i>&nbsp;        this.x = x;</b>
+<b class="fc"><i>30</i>&nbsp;    }</b>
+<i>31</i>&nbsp;
+<i>32</i>&nbsp;    /**
+<i>33</i>&nbsp;     Compares two {@code JsDouble} objects numerically.
+<i>34</i>&nbsp;     @see Double#compareTo(Double)
+<i>35</i>&nbsp;     */
+<i>36</i>&nbsp;    @Override
+<i>37</i>&nbsp;    public int compareTo(final JsDouble o)
+<i>38</i>&nbsp;    {
+<b class="nc"><i>39</i>&nbsp;        return Double.compare(x,</b>
+<b class="nc"><i>40</i>&nbsp;                              requireNonNull(o).x);</b>
+<i>41</i>&nbsp;    }
+<i>42</i>&nbsp;
+<i>43</i>&nbsp;    /**
+<i>44</i>&nbsp;     Indicates whether some other object is &quot;equal to&quot; this json double. Numbers parse different of
+<i>45</i>&nbsp;     are equals if the have the same value:
+<i>46</i>&nbsp;     {@code
+<i>47</i>&nbsp;     JsDouble.of(1.0).equals(JsDouble.of(1))
+<i>48</i>&nbsp;     JsDouble.of(1).equals(JsInt.of(1))
+<i>49</i>&nbsp;     JsDouble.of(1).equals(JsBigInt.of(BigInteger.ONE))
+<i>50</i>&nbsp;     JsDouble.of(1).equals(JsBigDec.of(BigDecimal.valueOf(1.0)))
+<i>51</i>&nbsp;     JsDouble.of(1).equals(JsLong.of(1))
+<i>52</i>&nbsp;     }
+<i>53</i>&nbsp;     @param that the reference object with which to compare.
+<i>54</i>&nbsp;     @return true if that is a JsNumber with the same value as this JsDouble
+<i>55</i>&nbsp;     */
+<i>56</i>&nbsp;    @Override
+<i>57</i>&nbsp;    public boolean equals(final @Nullable Object that)
+<i>58</i>&nbsp;    {
+<i>59</i>&nbsp;
+<b class="fc"><i>60</i>&nbsp;        if (this == that) return true;</b>
+<b class="fc"><i>61</i>&nbsp;        if (that == null) return false;</b>
+<b class="fc"><i>62</i>&nbsp;        if (!(that instanceof JsNumber)) return false;</b>
+<i>63</i>&nbsp;
+<b class="fc"><i>64</i>&nbsp;        final JsNumber number = (JsNumber) that;</b>
+<b class="fc"><i>65</i>&nbsp;        if (number.isDouble()) return x == number.asJsDouble().x;</b>
+<b class="fc"><i>66</i>&nbsp;        if (number.isLong()) return x == (double) number.asJsLong().x;</b>
+<b class="fc"><i>67</i>&nbsp;        if (number.isInt()) return x == (double) number.asJsInt().x;</b>
+<b class="fc"><i>68</i>&nbsp;        if (number.isBigInt())</b>
+<b class="fc"><i>69</i>&nbsp;            return Functions.equals(x,</b>
+<b class="fc"><i>70</i>&nbsp;                                    number.asJsBigInt().x</b>
+<i>71</i>&nbsp;                                   );
+<i>72</i>&nbsp;
+<b class="fc"><i>73</i>&nbsp;        if (number.isBigDec())</b>
+<b class="fc"><i>74</i>&nbsp;            return Functions.equals(x,</b>
+<b class="fc"><i>75</i>&nbsp;                                    number.asJsBigDec().x</b>
+<i>76</i>&nbsp;                                   );
+<i>77</i>&nbsp;
+<i>78</i>&nbsp;
+<b class="nc"><i>79</i>&nbsp;        return false;</b>
+<i>80</i>&nbsp;    }
+<i>81</i>&nbsp;
+<i>82</i>&nbsp;    /**
+<i>83</i>&nbsp;     Returns the hashcode of this json double.
+<i>84</i>&nbsp;     @return the hashcode of this JsDouble
+<i>85</i>&nbsp;     */
+<i>86</i>&nbsp;    @Override
+<i>87</i>&nbsp;    public int hashCode()
+<i>88</i>&nbsp;    {
+<b class="fc"><i>89</i>&nbsp;        final BigDecimal bigDecimal = BigDecimal.valueOf(this.x);</b>
+<b class="fc"><i>90</i>&nbsp;        final OptionalInt optionalInt = Functions.bigDecimalToInt(bigDecimal);</b>
+<b class="fc"><i>91</i>&nbsp;        if (optionalInt.isPresent()) return Functions.hashCode(optionalInt.getAsInt());</b>
+<b class="fc"><i>92</i>&nbsp;        final OptionalLong optionalLong = Functions.bigDecimalToLong(bigDecimal);</b>
+<b class="fc"><i>93</i>&nbsp;        if (optionalLong.isPresent()) return Functions.hashCode(optionalLong.getAsLong());</b>
+<b class="fc"><i>94</i>&nbsp;        final Optional&lt;BigInteger&gt; optionalBigInteger = Functions.bigDecimalToBigInteger(bigDecimal);</b>
+<b class="fc"><i>95</i>&nbsp;        return optionalBigInteger.map(Functions::hashCode)</b>
+<b class="fc"><i>96</i>&nbsp;                                 .orElseGet(() -&gt; Functions.hashCode(bigDecimal));</b>
+<i>97</i>&nbsp;    }
+<i>98</i>&nbsp;
+<i>99</i>&nbsp;    /**
+<i>100</i>&nbsp;     Maps this json double into another one.
+<i>101</i>&nbsp;     @param fn the mapping function
+<i>102</i>&nbsp;     @return a new JsDouble
+<i>103</i>&nbsp;     */
+<i>104</i>&nbsp;    public JsDouble map(DoubleUnaryOperator fn)
+<i>105</i>&nbsp;    {
+<b class="fc"><i>106</i>&nbsp;        return JsDouble.of(requireNonNull(fn).applyAsDouble(x));</b>
+<i>107</i>&nbsp;    }
+<i>108</i>&nbsp;
+<i>109</i>&nbsp;    /**
+<i>110</i>&nbsp;     adds up this long to the specified one
+<i>111</i>&nbsp;     @param that the specified long
+<i>112</i>&nbsp;     @return the sum of both longs
+<i>113</i>&nbsp;     */
+<i>114</i>&nbsp;    public JsDouble plus(JsDouble that){
+<b class="nc"><i>115</i>&nbsp;        return JsDouble.of(x+that.x);</b>
+<i>116</i>&nbsp;    }
+<i>117</i>&nbsp;
+<i>118</i>&nbsp;    /**
+<i>119</i>&nbsp;     subtract this long from the specified one
+<i>120</i>&nbsp;     @param that the specified long
+<i>121</i>&nbsp;     @return this long minus the specified one
+<i>122</i>&nbsp;     */
+<i>123</i>&nbsp;    public JsDouble minus(JsDouble that){
+<b class="nc"><i>124</i>&nbsp;        return JsDouble.of(x-that.x);</b>
+<i>125</i>&nbsp;    }
+<i>126</i>&nbsp;    /**
+<i>127</i>&nbsp;     multiplies this long by the specified one
+<i>128</i>&nbsp;     @param that the specified long
+<i>129</i>&nbsp;     @return this long times the specified one
+<i>130</i>&nbsp;     */
+<i>131</i>&nbsp;    public JsDouble times(JsDouble that){
+<b class="nc"><i>132</i>&nbsp;        return JsDouble.of(x*that.x);</b>
+<i>133</i>&nbsp;    }
+<i>134</i>&nbsp;
+<i>135</i>&nbsp;    /**
+<i>136</i>&nbsp;     Tests the value of this json double on a predicate.
+<i>137</i>&nbsp;     @param predicate the predicate
+<i>138</i>&nbsp;     @return true if this double satisfies the predicate
+<i>139</i>&nbsp;     */
+<i>140</i>&nbsp;    public boolean test(DoublePredicate predicate)
+<i>141</i>&nbsp;    {
+<b class="fc"><i>142</i>&nbsp;        return predicate.test(x);</b>
+<i>143</i>&nbsp;    }
+<i>144</i>&nbsp;
+<i>145</i>&nbsp;    /**
+<i>146</i>&nbsp;     * Static factory method to create a JsDouble from a double primitive type.
+<i>147</i>&nbsp;     * @param n the double primitive type
+<i>148</i>&nbsp;     * @return a new JsDouble
+<i>149</i>&nbsp;     */
+<i>150</i>&nbsp;    public static JsDouble of(double n)
+<i>151</i>&nbsp;    {
+<b class="fc"><i>152</i>&nbsp;        return new JsDouble(n);</b>
+<i>153</i>&nbsp;    }
+<i>154</i>&nbsp;
+<i>155</i>&nbsp;    /**
+<i>156</i>&nbsp;     * @return a string representation of this object.
+<i>157</i>&nbsp;     * @see Double#toString() Double.toString
+<i>158</i>&nbsp;     */
+<i>159</i>&nbsp;    @Override
+<i>160</i>&nbsp;    public String toString()
+<i>161</i>&nbsp;    {
+<b class="fc"><i>162</i>&nbsp;        return Double.toString(x);</b>
+<i>163</i>&nbsp;    }
+<i>164</i>&nbsp;
+<i>165</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

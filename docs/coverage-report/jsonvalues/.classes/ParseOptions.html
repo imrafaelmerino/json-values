@@ -1,0 +1,209 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: ParseOptions</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: ParseOptions (jsonvalues)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">ParseOptions</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (7/ 7)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (15/ 15)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">ParseOptions$Options</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (1/ 1)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (6/ 6)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (8/ 8)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (21/ 21)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;import java.util.function.Function;
+<i>4</i>&nbsp;import java.util.function.Predicate;
+<i>5</i>&nbsp;import java.util.function.UnaryOperator;
+<i>6</i>&nbsp;
+<i>7</i>&nbsp;/**
+<i>8</i>&nbsp; Builder with different options to customize the parsing of a string into a json.
+<i>9</i>&nbsp; */
+<b class="fc"><i>10</i>&nbsp;public class ParseOptions</b>
+<i>11</i>&nbsp;{
+<b class="fc"><i>12</i>&nbsp;    private Function&lt;? super JsPair,? extends JsElem&gt; map = pair -&gt; pair.elem;</b>
+<b class="fc"><i>13</i>&nbsp;    private Predicate&lt;? super JsPair&gt; filter = pair -&gt; true;</b>
+<b class="fc"><i>14</i>&nbsp;    private UnaryOperator&lt;String&gt; keyMap = k -&gt; k;</b>
+<b class="fc"><i>15</i>&nbsp;    private Predicate&lt;JsPath&gt; keyFilter = k -&gt; true;</b>
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;    /**
+<i>18</i>&nbsp;     static factory method to create a builder to customize the parsing of a string into a json.
+<i>19</i>&nbsp;     @return a new builder instance
+<i>20</i>&nbsp;     */
+<i>21</i>&nbsp;    public static ParseOptions builder()
+<i>22</i>&nbsp;    {
+<b class="fc"><i>23</i>&nbsp;        return new ParseOptions();</b>
+<i>24</i>&nbsp;    }
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;    Options create()
+<i>27</i>&nbsp;    {
+<b class="fc"><i>28</i>&nbsp;        return new Options(map,</b>
+<i>29</i>&nbsp;                           filter,
+<i>30</i>&nbsp;                           keyMap,
+<i>31</i>&nbsp;                           keyFilter
+<i>32</i>&nbsp;        );
+<i>33</i>&nbsp;    }
+<i>34</i>&nbsp;
+<i>35</i>&nbsp;    /**
+<i>36</i>&nbsp;     adds a predicate to this builder to filter the elements of the json to be parsed, removing those
+<i>37</i>&nbsp;     pairs that are evaluated to false on the predicate.
+<i>38</i>&nbsp;     @param filter the predicate to filter pair of elements.
+<i>39</i>&nbsp;     @return this ParseOptions builder
+<i>40</i>&nbsp;     */
+<i>41</i>&nbsp;    public ParseOptions withElemFilter(final Predicate&lt;? super JsPair&gt; filter)
+<i>42</i>&nbsp;    {
+<b class="fc"><i>43</i>&nbsp;        this.filter = filter;</b>
+<b class="fc"><i>44</i>&nbsp;        return this;</b>
+<i>45</i>&nbsp;    }
+<i>46</i>&nbsp;
+<i>47</i>&nbsp;    /**
+<i>48</i>&nbsp;     adds a function to this builder to filter the keys of the json to be parsed.
+<i>49</i>&nbsp;     @param keyFilter the predicate to filter
+<i>50</i>&nbsp;     @return this ParseOptions builder
+<i>51</i>&nbsp;     */
+<i>52</i>&nbsp;    public ParseOptions withKeyFilter(final Predicate&lt;JsPath&gt; keyFilter)
+<i>53</i>&nbsp;    {
+<b class="fc"><i>54</i>&nbsp;        this.keyFilter = keyFilter;</b>
+<b class="fc"><i>55</i>&nbsp;        return this;</b>
+<i>56</i>&nbsp;    }
+<i>57</i>&nbsp;
+<i>58</i>&nbsp;    /**
+<i>59</i>&nbsp;     adds a function to this builder to map the keys of the json to be parsed.
+<i>60</i>&nbsp;     @param keyMap the map function which takes as input the name of the key and returns the new key name
+<i>61</i>&nbsp;     @return this ParseOptions builder
+<i>62</i>&nbsp;     */
+<i>63</i>&nbsp;    public ParseOptions withKeyMap(final UnaryOperator&lt;String&gt; keyMap)
+<i>64</i>&nbsp;    {
+<b class="fc"><i>65</i>&nbsp;        this.keyMap = keyMap;</b>
+<b class="fc"><i>66</i>&nbsp;        return this;</b>
+<i>67</i>&nbsp;    }
+<i>68</i>&nbsp;
+<i>69</i>&nbsp;    /**
+<i>70</i>&nbsp;     adds a function to this builder to map the elements of the json to be parsed
+<i>71</i>&nbsp;     @param map the map function which takes as input a JsPair and returns the new JsElem
+<i>72</i>&nbsp;     @return this ParseOptions builder
+<i>73</i>&nbsp;     */
+<i>74</i>&nbsp;    public ParseOptions withElemMap(final Function&lt;JsPair, JsElem&gt; map)
+<i>75</i>&nbsp;    {
+<b class="fc"><i>76</i>&nbsp;        this.map = map;</b>
+<b class="fc"><i>77</i>&nbsp;        return this;</b>
+<i>78</i>&nbsp;    }
+<i>79</i>&nbsp;
+<i>80</i>&nbsp;    static class Options
+<i>81</i>&nbsp;    {
+<i>82</i>&nbsp;
+<i>83</i>&nbsp;        final Function&lt;? super JsPair, ? extends JsElem&gt; elemMap;
+<i>84</i>&nbsp;        final Predicate&lt;? super JsPair&gt; elemFilter;
+<i>85</i>&nbsp;        final UnaryOperator&lt;String&gt; keyMap;
+<i>86</i>&nbsp;        final Predicate&lt;? super JsPath&gt; keyFilter;
+<i>87</i>&nbsp;
+<i>88</i>&nbsp;        Options(final Function&lt;? super JsPair, ? extends JsElem&gt; map,
+<i>89</i>&nbsp;                final Predicate&lt;? super JsPair&gt; filter,
+<i>90</i>&nbsp;                final UnaryOperator&lt;String&gt; keyMap,
+<i>91</i>&nbsp;                final Predicate&lt;? super JsPath&gt; keyFilter
+<i>92</i>&nbsp;               )
+<b class="fc"><i>93</i>&nbsp;        {</b>
+<b class="fc"><i>94</i>&nbsp;            this.elemMap = map;</b>
+<b class="fc"><i>95</i>&nbsp;            this.elemFilter = filter;</b>
+<b class="fc"><i>96</i>&nbsp;            this.keyMap = keyMap;</b>
+<b class="fc"><i>97</i>&nbsp;            this.keyFilter = keyFilter;</b>
+<b class="fc"><i>98</i>&nbsp;        }</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>

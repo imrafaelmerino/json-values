@@ -1,0 +1,1004 @@
+
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html id="htmlId">
+<head>
+  <title>Coverage Report :: JsArray</title>
+  <style type="text/css">
+    @import "../../.css/coverage.css";
+  </style>
+</head>
+
+<body>
+<div class="header"></div>
+
+<div class="content">
+<div class="breadCrumbs">
+    [ <a href="../../index.html">all classes</a> ]
+    [ <a href="../index.html">jsonvalues</a> ]
+</div>
+
+<h1>Coverage Summary for Class: JsArray (jsonvalues)</h1>
+
+<table class="coverageStats">
+
+<tr>
+  <th class="name">Class</th>
+<th class="coverageStat 
+">
+  Method, %
+</th>
+<th class="coverageStat 
+">
+  Line, %
+</th>
+</tr>
+<tr>
+  <td class="name">JsArray</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (40/ 40)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.5%
+  </span>
+  <span class="absValue">
+    (159/ 163)
+  </span>
+</td>
+</tr>
+  <tr>
+    <td class="name">JsArray$TYPE</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (2/ 2)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (4/ 4)
+  </span>
+</td>
+  </tr>
+<tr>
+  <td class="name"><strong>total</strong></td>
+<td class="coverageStat">
+  <span class="percent">
+    100%
+  </span>
+  <span class="absValue">
+    (42/ 42)
+  </span>
+</td>
+<td class="coverageStat">
+  <span class="percent">
+    97.6%
+  </span>
+  <span class="absValue">
+    (163/ 167)
+  </span>
+</td>
+</tr>
+</table>
+
+<br/>
+<br/>
+
+
+<div class="sourceCode"><i>1</i>&nbsp;package jsonvalues;
+<i>2</i>&nbsp;
+<i>3</i>&nbsp;
+<i>4</i>&nbsp;import java.io.StringReader;
+<i>5</i>&nbsp;import java.util.Collection;
+<i>6</i>&nbsp;import java.util.List;
+<i>7</i>&nbsp;import java.util.stream.Collector;
+<i>8</i>&nbsp;import java.util.stream.IntStream;
+<i>9</i>&nbsp;
+<i>10</i>&nbsp;import static java.util.Objects.requireNonNull;
+<i>11</i>&nbsp;import static jsonvalues.Functions.*;
+<i>12</i>&nbsp;import static jsonvalues.JsArray.TYPE.LIST;
+<i>13</i>&nbsp;import static jsonvalues.JsArray.TYPE.MULTISET;
+<i>14</i>&nbsp;import static jsonvalues.JsParser.Event.START_ARRAY;
+<i>15</i>&nbsp;import static jsonvalues.MyScalaImpl.Vector.EMPTY;
+<i>16</i>&nbsp;
+<i>17</i>&nbsp;/**
+<i>18</i>&nbsp; Represents a json array, which is an ordered list of elements. Two implementations are provided, an
+<i>19</i>&nbsp; immutable which uses the persistent Scala Vector and a mutable which uses the conventional Java ArrayList.
+<i>20</i>&nbsp; */
+<i>21</i>&nbsp;public interface JsArray extends Json&lt;JsArray&gt;, Iterable&lt;JsElem&gt;
+<i>22</i>&nbsp;
+<i>23</i>&nbsp;{
+<i>24</i>&nbsp;    long serialVersionUID = 1L;
+<i>25</i>&nbsp;
+<i>26</i>&nbsp;
+<i>27</i>&nbsp;    /**
+<i>28</i>&nbsp;     Returns a mutable empty array.
+<i>29</i>&nbsp;     @return mutable empty JsArray
+<i>30</i>&nbsp;     */
+<i>31</i>&nbsp;    static JsArray _empty_()
+<i>32</i>&nbsp;    {
+<b class="fc"><i>33</i>&nbsp;        return new JsArrayMutableImpl();</b>
+<i>34</i>&nbsp;    }
+<i>35</i>&nbsp;
+<i>36</i>&nbsp;    /**
+<i>37</i>&nbsp;     Returns a mutable array copying the reference of the collection of elements. Since the reference
+<i>38</i>&nbsp;     is copied, changes in the array are reflected in the list and vice versa. If the collection is
+<i>39</i>&nbsp;     immutable (created using List.of or Arrays.asList factory methods for example), every modification
+<i>40</i>&nbsp;     in the array will throw an UnsupportedOperationException.
+<i>41</i>&nbsp;     @param list the Collection of JsElem from which reference the JsArray will be created
+<i>42</i>&nbsp;     @return a mutable JsArray
+<i>43</i>&nbsp;     @throws UnsupportedOperationException if an elem of the list is an immutable Json
+<i>44</i>&nbsp;
+<i>45</i>&nbsp;     */
+<i>46</i>&nbsp;    static JsArray _of_(final List&lt;JsElem&gt; list)
+<i>47</i>&nbsp;    {
+<b class="fc"><i>48</i>&nbsp;        throwErrorIfImmutableElemFound(requireNonNull(list));</b>
+<b class="fc"><i>49</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector(list));</b>
+<i>50</i>&nbsp;
+<i>51</i>&nbsp;    }
+<i>52</i>&nbsp;
+<i>53</i>&nbsp;
+<i>54</i>&nbsp;    /**
+<i>55</i>&nbsp;     Returns a mutable one-element array.
+<i>56</i>&nbsp;     @param e the JsElem
+<i>57</i>&nbsp;     @return a mutable one-element JsArray
+<i>58</i>&nbsp;     @throws UnsupportedOperationException if the elem is an immutable Json
+<i>59</i>&nbsp;     */
+<i>60</i>&nbsp;    static JsArray _of_(final JsElem e)
+<i>61</i>&nbsp;    {
+<b class="fc"><i>62</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e)));</b>
+<i>63</i>&nbsp;    }
+<i>64</i>&nbsp;
+<i>65</i>&nbsp;    /**
+<i>66</i>&nbsp;     Returns a mutable two-element array.
+<i>67</i>&nbsp;     @param e a JsElem
+<i>68</i>&nbsp;     @param e1 a JsElem
+<i>69</i>&nbsp;     @return a mutable two-element JsArray
+<i>70</i>&nbsp;     @throws UnsupportedOperationException if an elem is an immutable Json
+<i>71</i>&nbsp;
+<i>72</i>&nbsp;     */
+<i>73</i>&nbsp;    static JsArray _of_(final JsElem e,
+<i>74</i>&nbsp;                        final JsElem e1
+<i>75</i>&nbsp;                       )
+<i>76</i>&nbsp;    {
+<b class="fc"><i>77</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e1))</b>
+<b class="fc"><i>78</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e)));</b>
+<i>79</i>&nbsp;    }
+<i>80</i>&nbsp;
+<i>81</i>&nbsp;    /**
+<i>82</i>&nbsp;     Returns a mutable three-element array.
+<i>83</i>&nbsp;     @param e a JsElem
+<i>84</i>&nbsp;     @param e1 a JsElem
+<i>85</i>&nbsp;     @param e2 a JsElem
+<i>86</i>&nbsp;     @return a mutable three-element JsArray
+<i>87</i>&nbsp;     @throws UnsupportedOperationException if an elem is an immutable Json
+<i>88</i>&nbsp;
+<i>89</i>&nbsp;     */
+<i>90</i>&nbsp;    static JsArray _of_(final JsElem e,
+<i>91</i>&nbsp;                        final JsElem e1,
+<i>92</i>&nbsp;                        final JsElem e2
+<i>93</i>&nbsp;                       )
+<i>94</i>&nbsp;    {
+<i>95</i>&nbsp;
+<b class="fc"><i>96</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e2))</b>
+<b class="fc"><i>97</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e1))</b>
+<b class="fc"><i>98</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e)));</b>
+<i>99</i>&nbsp;    }
+<i>100</i>&nbsp;
+<i>101</i>&nbsp;    /**
+<i>102</i>&nbsp;     Returns a mutable four-element array.
+<i>103</i>&nbsp;     @param e a JsElem
+<i>104</i>&nbsp;     @param e1 a JsElem
+<i>105</i>&nbsp;     @param e2 a JsElem
+<i>106</i>&nbsp;     @param e3 a JsElem
+<i>107</i>&nbsp;     @return a mutable four-element JsArray
+<i>108</i>&nbsp;     @throws UnsupportedOperationException if an elem is an immutable Json
+<i>109</i>&nbsp;     */
+<i>110</i>&nbsp;    static JsArray _of_(final JsElem e,
+<i>111</i>&nbsp;                        final JsElem e1,
+<i>112</i>&nbsp;                        final JsElem e2,
+<i>113</i>&nbsp;                        final JsElem e3
+<i>114</i>&nbsp;                       )
+<i>115</i>&nbsp;    {
+<b class="fc"><i>116</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e3))</b>
+<b class="fc"><i>117</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e2))</b>
+<b class="fc"><i>118</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e1))</b>
+<b class="fc"><i>119</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e)));</b>
+<i>120</i>&nbsp;    }
+<i>121</i>&nbsp;
+<i>122</i>&nbsp;    /**
+<i>123</i>&nbsp;     Returns a mutable five-element array.
+<i>124</i>&nbsp;     @param e a JsElem
+<i>125</i>&nbsp;     @param e1 a JsElem
+<i>126</i>&nbsp;     @param e2 a JsElem
+<i>127</i>&nbsp;     @param e3 a JsElem
+<i>128</i>&nbsp;     @param e4 a JsElem
+<i>129</i>&nbsp;     @return a mutable five-element JsArray
+<i>130</i>&nbsp;     @throws UnsupportedOperationException if an elem is an immutable Json
+<i>131</i>&nbsp;
+<i>132</i>&nbsp;     */
+<i>133</i>&nbsp;    static JsArray _of_(final JsElem e,
+<i>134</i>&nbsp;                        final JsElem e1,
+<i>135</i>&nbsp;                        final JsElem e2,
+<i>136</i>&nbsp;                        final JsElem e3,
+<i>137</i>&nbsp;                        final JsElem e4
+<i>138</i>&nbsp;                       )
+<i>139</i>&nbsp;    {
+<b class="fc"><i>140</i>&nbsp;        return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e4))</b>
+<b class="fc"><i>141</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e3))</b>
+<b class="fc"><i>142</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e2))</b>
+<b class="fc"><i>143</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e1))</b>
+<b class="fc"><i>144</i>&nbsp;                                                             .appendFront(throwErrorIfImmutableElem(e)));</b>
+<i>145</i>&nbsp;    }
+<i>146</i>&nbsp;
+<i>147</i>&nbsp;    /**
+<i>148</i>&nbsp;     Returns a mutable array containing an arbitrary number of elements.
+<i>149</i>&nbsp;     @param e a JsElem
+<i>150</i>&nbsp;     @param e1 a JsElem
+<i>151</i>&nbsp;     @param e2 a JsElem
+<i>152</i>&nbsp;     @param e3 a JsElem
+<i>153</i>&nbsp;     @param e4 a JsElem
+<i>154</i>&nbsp;     @param rest more optional JsElem
+<i>155</i>&nbsp;     @return a mutable  JsArray
+<i>156</i>&nbsp;     @throws UnsupportedOperationException if an elem is an immutable Json
+<i>157</i>&nbsp;
+<i>158</i>&nbsp;     */
+<i>159</i>&nbsp;    static JsArray _of_(final JsElem e,
+<i>160</i>&nbsp;                        final JsElem e1,
+<i>161</i>&nbsp;                        final JsElem e2,
+<i>162</i>&nbsp;                        final JsElem e3,
+<i>163</i>&nbsp;                        final JsElem e4,
+<i>164</i>&nbsp;                        final JsElem... rest
+<i>165</i>&nbsp;                       )
+<i>166</i>&nbsp;    {
+<b class="fc"><i>167</i>&nbsp;        JsArray empty = _empty_();</b>
+<b class="fc"><i>168</i>&nbsp;        for (JsElem other : requireNonNull(rest)) empty = empty.append(throwErrorIfImmutableElem(other));</b>
+<i>169</i>&nbsp;
+<b class="fc"><i>170</i>&nbsp;        return empty.prepend(throwErrorIfImmutableElem(e4))</b>
+<b class="fc"><i>171</i>&nbsp;                    .prepend(throwErrorIfImmutableElem(e3))</b>
+<b class="fc"><i>172</i>&nbsp;                    .prepend(throwErrorIfImmutableElem(e2))</b>
+<b class="fc"><i>173</i>&nbsp;                    .prepend(throwErrorIfImmutableElem(e1))</b>
+<b class="fc"><i>174</i>&nbsp;                    .prepend(throwErrorIfImmutableElem(e));</b>
+<i>175</i>&nbsp;
+<i>176</i>&nbsp;
+<i>177</i>&nbsp;    }
+<i>178</i>&nbsp;
+<i>179</i>&nbsp;    /**
+<i>180</i>&nbsp;     Tries to parse the string into a mutable json array.
+<i>181</i>&nbsp;     @param str the string to be parsed
+<i>182</i>&nbsp;     @return a {@link TryArr} computation
+<i>183</i>&nbsp;     */
+<i>184</i>&nbsp;    static TryArr _parse_(final String str)
+<i>185</i>&nbsp;    {
+<b class="fc"><i>186</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))</b>
+<i>187</i>&nbsp;        )
+<i>188</i>&nbsp;        )
+<i>189</i>&nbsp;        {
+<b class="fc"><i>190</i>&nbsp;            JsParser.Event keyEvent = parser.next();</b>
+<b class="fc"><i>191</i>&nbsp;            if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));</b>
+<b class="fc"><i>192</i>&nbsp;            MyJavaImpl.Vector array = new MyJavaImpl.Vector();</b>
+<b class="fc"><i>193</i>&nbsp;            Functions.parse(array,</b>
+<i>194</i>&nbsp;                            parser
+<i>195</i>&nbsp;                           );
+<b class="fc"><i>196</i>&nbsp;            return new TryArr(new JsArrayMutableImpl(array));</b>
+<b class="fc"><i>197</i>&nbsp;        }</b>
+<i>198</i>&nbsp;
+<b class="fc"><i>199</i>&nbsp;        catch (MalformedJson e)</b>
+<i>200</i>&nbsp;        {
+<i>201</i>&nbsp;
+<b class="fc"><i>202</i>&nbsp;            return new TryArr(e);</b>
+<i>203</i>&nbsp;        }
+<i>204</i>&nbsp;
+<i>205</i>&nbsp;    }
+<i>206</i>&nbsp;
+<i>207</i>&nbsp;    /**
+<i>208</i>&nbsp;     Returns true if this array is equal to the given as a parameter. In the case of ARRAY_AS=LIST,
+<i>209</i>&nbsp;     this method is equivalent to JsArray.equals(Object).
+<i>210</i>&nbsp;     @param array the given array
+<i>211</i>&nbsp;     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+<i>212</i>&nbsp;     @return true if both arrays are equals according to ARRAY_AS parameter
+<i>213</i>&nbsp;     */
+<i>214</i>&nbsp;    default boolean equals(final JsArray array,
+<i>215</i>&nbsp;                           final TYPE ARRAY_AS
+<i>216</i>&nbsp;                          )
+<i>217</i>&nbsp;    {
+<b class="fc"><i>218</i>&nbsp;        if (ARRAY_AS == LIST) return this.equals(array);</b>
+<b class="fc"><i>219</i>&nbsp;        if (isEmpty()) return array.isEmpty();</b>
+<b class="fc"><i>220</i>&nbsp;        if (array.isEmpty()) return isEmpty();</b>
+<b class="fc"><i>221</i>&nbsp;        return IntStream.range(0,</b>
+<b class="fc"><i>222</i>&nbsp;                               size()</b>
+<i>223</i>&nbsp;                              )
+<b class="fc"><i>224</i>&nbsp;                        .mapToObj(i -&gt; get(Index.of(i)))</b>
+<b class="fc"><i>225</i>&nbsp;                        .allMatch(elem -&gt;</b>
+<i>226</i>&nbsp;                                  {
+<b class="fc"><i>227</i>&nbsp;                                      if (!array.containsElem(elem)) return false;</b>
+<b class="fc"><i>228</i>&nbsp;                                      if (ARRAY_AS == MULTISET) return times(elem) == array.times(elem);</b>
+<b class="fc"><i>229</i>&nbsp;                                      return true;</b>
+<b class="fc"><i>230</i>&nbsp;                                  }) &amp;&amp; IntStream.range(0,</b>
+<b class="fc"><i>231</i>&nbsp;                                                        array.size()</b>
+<i>232</i>&nbsp;                                                       )
+<b class="fc"><i>233</i>&nbsp;                                                 .mapToObj(i -&gt; array.get(Index.of(i)))</b>
+<b class="fc"><i>234</i>&nbsp;                                                 .allMatch(this::containsElem);</b>
+<i>235</i>&nbsp;    }
+<i>236</i>&nbsp;
+<i>237</i>&nbsp;    /**
+<i>238</i>&nbsp;     Tries to parse the string into a mutable array, performing some operations while the parsing.
+<i>239</i>&nbsp;     It&#39;s faster to do certain operations right while the parsing instead of doing the parsing and
+<i>240</i>&nbsp;     apply them later.
+<i>241</i>&nbsp;     @param str     the string that will be parsed.
+<i>242</i>&nbsp;     @param options a builder with the filters and maps that, if specified, will be applied during the parsing
+<i>243</i>&nbsp;     @return a {@link TryArr} computation
+<i>244</i>&nbsp;     */
+<i>245</i>&nbsp;    static TryArr _parse_(final String str,
+<i>246</i>&nbsp;                          final ParseOptions options
+<i>247</i>&nbsp;                         )
+<i>248</i>&nbsp;    {
+<i>249</i>&nbsp;
+<i>250</i>&nbsp;
+<b class="fc"><i>251</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>252</i>&nbsp;        {
+<b class="fc"><i>253</i>&nbsp;            JsParser.Event keyEvent = parser.next();</b>
+<b class="fc"><i>254</i>&nbsp;            if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));</b>
+<b class="fc"><i>255</i>&nbsp;            MyJavaImpl.Vector array = new MyJavaImpl.Vector();</b>
+<b class="fc"><i>256</i>&nbsp;            Functions.parse(array,</b>
+<i>257</i>&nbsp;                            parser,
+<b class="fc"><i>258</i>&nbsp;                            options.create(),</b>
+<i>259</i>&nbsp;                            MINUS_ONE_INDEX
+<i>260</i>&nbsp;                           );
+<b class="fc"><i>261</i>&nbsp;            return new TryArr(new JsArrayMutableImpl(array));</b>
+<b class="fc"><i>262</i>&nbsp;        }</b>
+<i>263</i>&nbsp;
+<b class="nc"><i>264</i>&nbsp;        catch (MalformedJson e)</b>
+<i>265</i>&nbsp;        {
+<i>266</i>&nbsp;
+<b class="nc"><i>267</i>&nbsp;            return new TryArr(e);</b>
+<i>268</i>&nbsp;        }
+<i>269</i>&nbsp;
+<i>270</i>&nbsp;
+<i>271</i>&nbsp;    }
+<i>272</i>&nbsp;
+<i>273</i>&nbsp;    /**
+<i>274</i>&nbsp;     Adds all the elements of the given array, starting from the head, to the back of this array.
+<i>275</i>&nbsp;     @param array the JsArray of elements to be added to the back
+<i>276</i>&nbsp;     @return a new JsArray
+<i>277</i>&nbsp;     */
+<i>278</i>&nbsp;    JsArray appendAll(JsArray array
+<i>279</i>&nbsp;                     );
+<i>280</i>&nbsp;
+<i>281</i>&nbsp;    /**
+<i>282</i>&nbsp;     Adds all the elements of the array, starting from the last, to the front of this array.
+<i>283</i>&nbsp;     @param array the JsArray of elements to be added to the front
+<i>284</i>&nbsp;     @return a new JsArray
+<i>285</i>&nbsp;     */
+<i>286</i>&nbsp;    JsArray prependAll(JsArray array);
+<i>287</i>&nbsp;
+<i>288</i>&nbsp;
+<i>289</i>&nbsp;    /**
+<i>290</i>&nbsp;     Adds one or more elements, starting from the first, to the back of this array.
+<i>291</i>&nbsp;     @param elem   the JsElem to be added to the back.
+<i>292</i>&nbsp;     @param others more optional JsElem to be added to the back
+<i>293</i>&nbsp;     @return a new JsArray
+<i>294</i>&nbsp;     */
+<i>295</i>&nbsp;    JsArray append(final JsElem elem,
+<i>296</i>&nbsp;                   final JsElem... others
+<i>297</i>&nbsp;                  );
+<i>298</i>&nbsp;
+<i>299</i>&nbsp;    /**
+<i>300</i>&nbsp;     Adds one or more elements, starting from the last, to the front of this array.
+<i>301</i>&nbsp;     @param elem   the JsElem to be added to the front.
+<i>302</i>&nbsp;     @param others more optional JsElem to be added to the front
+<i>303</i>&nbsp;     @return a new JsArray
+<i>304</i>&nbsp;     */
+<i>305</i>&nbsp;    JsArray prepend(final JsElem elem,
+<i>306</i>&nbsp;                    final JsElem... others
+<i>307</i>&nbsp;                   );
+<i>308</i>&nbsp;
+<i>309</i>&nbsp;
+<i>310</i>&nbsp;    /**
+<i>311</i>&nbsp;     Returns a collector that accumulates the pairs from a stream into an immutable array.
+<i>312</i>&nbsp;     @return a Collector which collects all the pairs of elements into an immutable JsArray, in encounter order
+<i>313</i>&nbsp;     */
+<i>314</i>&nbsp;    static Collector&lt;JsPair, JsArray, JsArray&gt; collector()
+<i>315</i>&nbsp;    {
+<i>316</i>&nbsp;
+<b class="fc"><i>317</i>&nbsp;        return Collector.of(jsonvalues.JsArray::_empty_,</b>
+<b class="fc"><i>318</i>&nbsp;                            (arr, pair) -&gt; arr.put(pair.path,</b>
+<b class="fc"><i>319</i>&nbsp;                                                   pair.elem.isJson() ? pair.elem.asJson()</b>
+<b class="fc"><i>320</i>&nbsp;                                                                                 .toImmutable() : pair.elem</b>
+<i>321</i>&nbsp;                                                  ),
+<b class="fc"><i>322</i>&nbsp;                            (a, b) -&gt; Functions.combiner_(a,</b>
+<i>323</i>&nbsp;                                                          b
+<i>324</i>&nbsp;                                                         )
+<b class="fc"><i>325</i>&nbsp;                                               .get(),</b>
+<i>326</i>&nbsp;                            jsonvalues.JsArray::toImmutable
+<i>327</i>&nbsp;                           );
+<i>328</i>&nbsp;
+<i>329</i>&nbsp;    }
+<i>330</i>&nbsp;
+<i>331</i>&nbsp;    /**
+<i>332</i>&nbsp;     Returns a collector that accumulates the pairs from a stream into a mutable array.
+<i>333</i>&nbsp;     @return a Collector which collects all the pairs of elements into a mutable JsArray, in encounter order
+<i>334</i>&nbsp;     */
+<i>335</i>&nbsp;    static Collector&lt;JsPair, JsArray, JsArray&gt; _collector_()
+<i>336</i>&nbsp;    {
+<i>337</i>&nbsp;
+<b class="fc"><i>338</i>&nbsp;        return Collector.of(jsonvalues.JsArray::_empty_,</b>
+<b class="fc"><i>339</i>&nbsp;                            (arr, pair) -&gt; arr.put(pair.path,</b>
+<i>340</i>&nbsp;                                                   //could be immutable empty vector or array
+<b class="fc"><i>341</i>&nbsp;                                                   pair.elem.isJson() ? pair.elem.asJson()</b>
+<b class="fc"><i>342</i>&nbsp;                                                                                 .toMutable() : pair.elem</b>
+<i>343</i>&nbsp;                                                  ),
+<b class="fc"><i>344</i>&nbsp;                            (a, b) -&gt; Functions.combiner_(a,</b>
+<i>345</i>&nbsp;                                                          b
+<i>346</i>&nbsp;                                                         )
+<b class="fc"><i>347</i>&nbsp;                                               .get()</b>
+<i>348</i>&nbsp;                           );
+<i>349</i>&nbsp;
+<i>350</i>&nbsp;    }
+<i>351</i>&nbsp;
+<i>352</i>&nbsp;
+<i>353</i>&nbsp;    /**
+<i>354</i>&nbsp;     Type of arrays: SET, MULTISET or LIST.
+<i>355</i>&nbsp;     */
+<b class="fc"><i>356</i>&nbsp;    enum TYPE</b>
+<i>357</i>&nbsp;    {
+<i>358</i>&nbsp;        /**
+<i>359</i>&nbsp;         The order of data items does not matter (or is undefined) but duplicate data items are not
+<i>360</i>&nbsp;         permitted.
+<i>361</i>&nbsp;         */
+<b class="fc"><i>362</i>&nbsp;        SET,</b>
+<i>363</i>&nbsp;        /**
+<i>364</i>&nbsp;         The order of data matters and duplicate data items are permitted.
+<i>365</i>&nbsp;         */
+<b class="fc"><i>366</i>&nbsp;        LIST,</b>
+<i>367</i>&nbsp;        /**
+<i>368</i>&nbsp;         The order of data items does not matter, but in this
+<i>369</i>&nbsp;         case duplicate data items are permitted.
+<i>370</i>&nbsp;         */
+<b class="fc"><i>371</i>&nbsp;        MULTISET</b>
+<i>372</i>&nbsp;    }
+<i>373</i>&nbsp;
+<i>374</i>&nbsp;
+<i>375</i>&nbsp;    /**
+<i>376</i>&nbsp;     Returns the immutable empty array. The same instance is always returned.
+<i>377</i>&nbsp;     @return the singleton immutable empty JsArray.
+<i>378</i>&nbsp;     */
+<i>379</i>&nbsp;    static JsArray empty()
+<i>380</i>&nbsp;    {
+<b class="fc"><i>381</i>&nbsp;        return JsArrayImmutableImpl.EMPTY;</b>
+<i>382</i>&nbsp;    }
+<i>383</i>&nbsp;
+<i>384</i>&nbsp;    /**
+<i>385</i>&nbsp;     Returns the first element of this array.
+<i>386</i>&nbsp;     @return the first JsElem of this JsArray
+<i>387</i>&nbsp;     @throws UnsupportedOperationException if this JsArray is empty
+<i>388</i>&nbsp;     */
+<i>389</i>&nbsp;    JsElem head();
+<i>390</i>&nbsp;
+<i>391</i>&nbsp;    /**
+<i>392</i>&nbsp;     Returns all the elements of this array except the last one.
+<i>393</i>&nbsp;     @return JsArray with all the JsElem except the last one
+<i>394</i>&nbsp;     @throws UnsupportedOperationException if this JsArray is empty
+<i>395</i>&nbsp;     */
+<i>396</i>&nbsp;    JsArray init();
+<i>397</i>&nbsp;
+<i>398</i>&nbsp;
+<i>399</i>&nbsp;    /**
+<i>400</i>&nbsp;     Returns the last element of this array.
+<i>401</i>&nbsp;     @return the last JsElem of this JsArray
+<i>402</i>&nbsp;     @throws UnsupportedOperationException if this JsArray is empty
+<i>403</i>&nbsp;     */
+<i>404</i>&nbsp;    JsElem last();
+<i>405</i>&nbsp;
+<i>406</i>&nbsp;    /**
+<i>407</i>&nbsp;     Returns an immutable array from the collection of elements.
+<i>408</i>&nbsp;     @param list the Collection of JsElem from which the JsArray will be created
+<i>409</i>&nbsp;     @return an immutable JsArray
+<i>410</i>&nbsp;     @throws UnsupportedOperationException if an elem of the list is a mutable Json
+<i>411</i>&nbsp;
+<i>412</i>&nbsp;     */
+<i>413</i>&nbsp;    static JsArray of(final Collection&lt;? extends JsElem&gt; list)
+<i>414</i>&nbsp;    {
+<b class="fc"><i>415</i>&nbsp;        if (requireNonNull(list).isEmpty()) return empty();</b>
+<b class="fc"><i>416</i>&nbsp;        Functions.throwErrorIfMutableElemFound(list);</b>
+<b class="fc"><i>417</i>&nbsp;        return new JsArrayImmutableImpl(EMPTY.add(list));</b>
+<i>418</i>&nbsp;
+<i>419</i>&nbsp;    }
+<i>420</i>&nbsp;
+<i>421</i>&nbsp;    /**
+<i>422</i>&nbsp;     Returns an immutable one-element array.
+<i>423</i>&nbsp;     @param e the JsElem
+<i>424</i>&nbsp;     @return a mutable JsArray
+<i>425</i>&nbsp;     @throws UnsupportedOperationException if the elem is a mutable Json
+<i>426</i>&nbsp;
+<i>427</i>&nbsp;     */
+<i>428</i>&nbsp;    static JsArray of(JsElem e)
+<i>429</i>&nbsp;    {
+<b class="fc"><i>430</i>&nbsp;        return empty().prepend(throwErrorIfMutableElem(e));</b>
+<i>431</i>&nbsp;    }
+<i>432</i>&nbsp;
+<i>433</i>&nbsp;    /**
+<i>434</i>&nbsp;     Returns an immutable two-element array.
+<i>435</i>&nbsp;     @param e a JsElem
+<i>436</i>&nbsp;     @param e1 a JsElem
+<i>437</i>&nbsp;     @return an immutable two-element JsArray
+<i>438</i>&nbsp;     @throws UnsupportedOperationException if an elem is a mutable Json
+<i>439</i>&nbsp;     */
+<i>440</i>&nbsp;    static JsArray of(final JsElem e,
+<i>441</i>&nbsp;                      final JsElem e1
+<i>442</i>&nbsp;                     )
+<i>443</i>&nbsp;    {
+<b class="fc"><i>444</i>&nbsp;        return empty().prepend(throwErrorIfMutableElem(e1))</b>
+<b class="fc"><i>445</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e));</b>
+<i>446</i>&nbsp;
+<i>447</i>&nbsp;    }
+<i>448</i>&nbsp;
+<i>449</i>&nbsp;    /**
+<i>450</i>&nbsp;     Returns an immutable three-element array.
+<i>451</i>&nbsp;     @param e  a JsElem
+<i>452</i>&nbsp;     @param e1 a JsElem
+<i>453</i>&nbsp;     @param e2 a JsElem
+<i>454</i>&nbsp;     @return an immutable three-element JsArray
+<i>455</i>&nbsp;     @throws UnsupportedOperationException if an elem is a mutable Json
+<i>456</i>&nbsp;     */
+<i>457</i>&nbsp;    static JsArray of(final JsElem e,
+<i>458</i>&nbsp;                      final JsElem e1,
+<i>459</i>&nbsp;                      final JsElem e2
+<i>460</i>&nbsp;                     )
+<i>461</i>&nbsp;    {
+<i>462</i>&nbsp;
+<b class="fc"><i>463</i>&nbsp;        return empty().prepend(throwErrorIfMutableElem(e2))</b>
+<b class="fc"><i>464</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e1))</b>
+<b class="fc"><i>465</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e));</b>
+<i>466</i>&nbsp;    }
+<i>467</i>&nbsp;
+<i>468</i>&nbsp;    /**
+<i>469</i>&nbsp;     Returns an immutable four-element array.
+<i>470</i>&nbsp;     @param e a JsElem
+<i>471</i>&nbsp;     @param e1 a JsElem
+<i>472</i>&nbsp;     @param e2 a JsElem
+<i>473</i>&nbsp;     @param e3 a JsElem
+<i>474</i>&nbsp;     @return an immutable four-element JsArray
+<i>475</i>&nbsp;     @throws UnsupportedOperationException if an elem is a mutable Json
+<i>476</i>&nbsp;     */
+<i>477</i>&nbsp;    static JsArray of(final JsElem e,
+<i>478</i>&nbsp;                      final JsElem e1,
+<i>479</i>&nbsp;                      final JsElem e2,
+<i>480</i>&nbsp;                      final JsElem e3
+<i>481</i>&nbsp;                     )
+<i>482</i>&nbsp;    {
+<b class="fc"><i>483</i>&nbsp;        return empty().prepend(throwErrorIfMutableElem(e3))</b>
+<b class="fc"><i>484</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e2))</b>
+<b class="fc"><i>485</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e1))</b>
+<b class="fc"><i>486</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e));</b>
+<i>487</i>&nbsp;    }
+<i>488</i>&nbsp;
+<i>489</i>&nbsp;    /**
+<i>490</i>&nbsp;     Returns an immutable five-element array.
+<i>491</i>&nbsp;     @param e a JsElem
+<i>492</i>&nbsp;     @param e1 a JsElem
+<i>493</i>&nbsp;     @param e2 a JsElem
+<i>494</i>&nbsp;     @param e3 a JsElem
+<i>495</i>&nbsp;     @param e4 a JsElem
+<i>496</i>&nbsp;     @return an immutable five-element JsArray
+<i>497</i>&nbsp;     @throws UnsupportedOperationException if an elem is a mutable Json
+<i>498</i>&nbsp;     */
+<i>499</i>&nbsp;    static JsArray of(final JsElem e,
+<i>500</i>&nbsp;                      final JsElem e1,
+<i>501</i>&nbsp;                      final JsElem e2,
+<i>502</i>&nbsp;                      final JsElem e3,
+<i>503</i>&nbsp;                      final JsElem e4
+<i>504</i>&nbsp;                     )
+<i>505</i>&nbsp;    {
+<b class="fc"><i>506</i>&nbsp;        return empty().prepend(throwErrorIfMutableElem(e4))</b>
+<b class="fc"><i>507</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e3))</b>
+<b class="fc"><i>508</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e2))</b>
+<b class="fc"><i>509</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e1))</b>
+<b class="fc"><i>510</i>&nbsp;                      .prepend(throwErrorIfMutableElem(e));</b>
+<i>511</i>&nbsp;    }
+<i>512</i>&nbsp;
+<i>513</i>&nbsp;    /**
+<i>514</i>&nbsp;     Returns an immutable array.
+<i>515</i>&nbsp;     @param e a JsElem
+<i>516</i>&nbsp;     @param e1 a JsElem
+<i>517</i>&nbsp;     @param e2 a JsElem
+<i>518</i>&nbsp;     @param e3 a JsElem
+<i>519</i>&nbsp;     @param e4 a JsElem
+<i>520</i>&nbsp;     @param rest more optional JsElem
+<i>521</i>&nbsp;     @return an immutable JsArray
+<i>522</i>&nbsp;     @throws UnsupportedOperationException if an elem is a mutable Json
+<i>523</i>&nbsp;     */
+<i>524</i>&nbsp;    static JsArray of(final JsElem e,
+<i>525</i>&nbsp;                      final JsElem e1,
+<i>526</i>&nbsp;                      final JsElem e2,
+<i>527</i>&nbsp;                      final JsElem e3,
+<i>528</i>&nbsp;                      final JsElem e4,
+<i>529</i>&nbsp;                      final JsElem... rest
+<i>530</i>&nbsp;                     )
+<i>531</i>&nbsp;    {
+<b class="fc"><i>532</i>&nbsp;        JsArray empty = empty();</b>
+<b class="fc"><i>533</i>&nbsp;        for (JsElem other : requireNonNull(rest)) empty = empty.append(throwErrorIfMutableElem(other));</b>
+<i>534</i>&nbsp;
+<b class="fc"><i>535</i>&nbsp;        return empty.prepend(throwErrorIfMutableElem(e4))</b>
+<b class="fc"><i>536</i>&nbsp;                    .prepend(throwErrorIfMutableElem(e3))</b>
+<b class="fc"><i>537</i>&nbsp;                    .prepend(throwErrorIfMutableElem(e2))</b>
+<b class="fc"><i>538</i>&nbsp;                    .prepend(throwErrorIfMutableElem(e1))</b>
+<b class="fc"><i>539</i>&nbsp;                    .prepend(throwErrorIfMutableElem(e));</b>
+<i>540</i>&nbsp;
+<i>541</i>&nbsp;
+<i>542</i>&nbsp;    }
+<i>543</i>&nbsp;
+<i>544</i>&nbsp;    /**
+<i>545</i>&nbsp;     Tries to parse the string into an immutable array.
+<i>546</i>&nbsp;     @param str the string to be parsed
+<i>547</i>&nbsp;     @return a {@link TryArr} computation
+<i>548</i>&nbsp;     */
+<i>549</i>&nbsp;    static TryArr parse(final String str)
+<i>550</i>&nbsp;    {
+<i>551</i>&nbsp;
+<b class="fc"><i>552</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))</b>
+<i>553</i>&nbsp;        )
+<i>554</i>&nbsp;        )
+<i>555</i>&nbsp;        {
+<b class="fc"><i>556</i>&nbsp;            JsParser.Event keyEvent = parser.next();</b>
+<b class="fc"><i>557</i>&nbsp;            if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));</b>
+<i>558</i>&nbsp;
+<b class="fc"><i>559</i>&nbsp;            return new TryArr(new JsArrayImmutableImpl(Functions.parse(EMPTY,</b>
+<i>560</i>&nbsp;                                                                       parser
+<i>561</i>&nbsp;
+<i>562</i>&nbsp;                                                                      )));
+<b class="fc"><i>563</i>&nbsp;        }</b>
+<i>564</i>&nbsp;
+<b class="fc"><i>565</i>&nbsp;        catch (MalformedJson e)</b>
+<i>566</i>&nbsp;        {
+<i>567</i>&nbsp;
+<b class="fc"><i>568</i>&nbsp;            return new TryArr(e);</b>
+<i>569</i>&nbsp;        }
+<i>570</i>&nbsp;
+<i>571</i>&nbsp;    }
+<i>572</i>&nbsp;
+<i>573</i>&nbsp;    /**
+<i>574</i>&nbsp;     Tries to parse the string into an immutable array, performing some operations during the parsing.
+<i>575</i>&nbsp;     It&#39;s faster to do certain operations right while the parsing instead of doing the parsing and applying them later.
+<i>576</i>&nbsp;     @param str string to be parsed
+<i>577</i>&nbsp;     @param options a Options with the filters and maps that will be applied during the parsing
+<i>578</i>&nbsp;     @return a {@link TryArr} computation
+<i>579</i>&nbsp;     */
+<i>580</i>&nbsp;    static TryArr parse(final String str,
+<i>581</i>&nbsp;                        final ParseOptions options
+<i>582</i>&nbsp;                       )
+<i>583</i>&nbsp;    {
+<i>584</i>&nbsp;
+<b class="fc"><i>585</i>&nbsp;        try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))</b>
+<i>586</i>&nbsp;        {
+<b class="fc"><i>587</i>&nbsp;            JsParser.Event keyEvent = parser.next();</b>
+<b class="fc"><i>588</i>&nbsp;            if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));</b>
+<i>589</i>&nbsp;
+<b class="fc"><i>590</i>&nbsp;            return new TryArr(new JsArrayImmutableImpl(Functions.parse(MyScalaImpl.Vector.EMPTY,</b>
+<i>591</i>&nbsp;                                                                       parser,
+<b class="fc"><i>592</i>&nbsp;                                                                       options.create(),</b>
+<i>593</i>&nbsp;                                                                       MINUS_ONE_INDEX
+<i>594</i>&nbsp;                                                                      )));
+<b class="fc"><i>595</i>&nbsp;        }</b>
+<i>596</i>&nbsp;
+<b class="nc"><i>597</i>&nbsp;        catch (MalformedJson e)</b>
+<i>598</i>&nbsp;        {
+<i>599</i>&nbsp;
+<b class="nc"><i>600</i>&nbsp;            return new TryArr(e);</b>
+<i>601</i>&nbsp;        }
+<i>602</i>&nbsp;
+<i>603</i>&nbsp;    }
+<i>604</i>&nbsp;
+<i>605</i>&nbsp;    /**
+<i>606</i>&nbsp;     Returns an immutable array from one or more strings.
+<i>607</i>&nbsp;     @param str a string
+<i>608</i>&nbsp;     @param others more optional strings
+<i>609</i>&nbsp;     @return an immutable JsArray
+<i>610</i>&nbsp;     */
+<i>611</i>&nbsp;    static JsArray of(String str,
+<i>612</i>&nbsp;                      String... others
+<i>613</i>&nbsp;                     )
+<i>614</i>&nbsp;    {
+<i>615</i>&nbsp;
+<b class="fc"><i>616</i>&nbsp;        MyScalaImpl.Vector vector = EMPTY.appendBack(JsStr.of(str));</b>
+<b class="fc"><i>617</i>&nbsp;        for (String a : others)</b>
+<i>618</i>&nbsp;        {
+<b class="fc"><i>619</i>&nbsp;            vector = vector.appendBack(JsStr.of(a));</b>
+<i>620</i>&nbsp;        }
+<b class="fc"><i>621</i>&nbsp;        return new JsArrayImmutableImpl(vector);</b>
+<i>622</i>&nbsp;    }
+<i>623</i>&nbsp;
+<i>624</i>&nbsp;    /**
+<i>625</i>&nbsp;     Returns a mutable array from one or more strings.
+<i>626</i>&nbsp;     @param str a string
+<i>627</i>&nbsp;     @param others more optional strings
+<i>628</i>&nbsp;     @return a mutable JsArray
+<i>629</i>&nbsp;     */
+<i>630</i>&nbsp;    static JsArray _of_(String str,
+<i>631</i>&nbsp;                        String... others
+<i>632</i>&nbsp;                       )
+<i>633</i>&nbsp;    {
+<i>634</i>&nbsp;
+<b class="fc"><i>635</i>&nbsp;        MyJavaImpl.Vector vector = new MyJavaImpl.Vector().appendBack(JsStr.of(str));</b>
+<b class="fc"><i>636</i>&nbsp;        for (String a : others)</b>
+<i>637</i>&nbsp;        {
+<b class="fc"><i>638</i>&nbsp;            vector = vector.appendBack(JsStr.of(a));</b>
+<i>639</i>&nbsp;        }
+<b class="fc"><i>640</i>&nbsp;        return new JsArrayMutableImpl(vector);</b>
+<i>641</i>&nbsp;    }
+<i>642</i>&nbsp;
+<i>643</i>&nbsp;    /**
+<i>644</i>&nbsp;     Returns an immutable array from one or more integers.
+<i>645</i>&nbsp;     @param number an integer
+<i>646</i>&nbsp;     @param others more optional integers
+<i>647</i>&nbsp;     @return an immutable JsArray
+<i>648</i>&nbsp;     */
+<i>649</i>&nbsp;    static JsArray of(int number,
+<i>650</i>&nbsp;                      int... others
+<i>651</i>&nbsp;                     )
+<i>652</i>&nbsp;    {
+<i>653</i>&nbsp;
+<b class="fc"><i>654</i>&nbsp;        MyScalaImpl.Vector vector = EMPTY.appendBack(JsInt.of(number));</b>
+<b class="fc"><i>655</i>&nbsp;        for (int a : others)</b>
+<i>656</i>&nbsp;        {
+<b class="fc"><i>657</i>&nbsp;            vector = vector.appendBack(JsInt.of(a));</b>
+<i>658</i>&nbsp;        }
+<b class="fc"><i>659</i>&nbsp;        return new JsArrayImmutableImpl(vector);</b>
+<i>660</i>&nbsp;    }
+<i>661</i>&nbsp;
+<i>662</i>&nbsp;    /**
+<i>663</i>&nbsp;     Returns a mutable array from one or more integers
+<i>664</i>&nbsp;     @param number an integer
+<i>665</i>&nbsp;     @param others more optional integers
+<i>666</i>&nbsp;     @return an mutable JsArray
+<i>667</i>&nbsp;     */
+<i>668</i>&nbsp;    static JsArray _of_(int number,
+<i>669</i>&nbsp;                        int... others
+<i>670</i>&nbsp;                       )
+<i>671</i>&nbsp;    {
+<i>672</i>&nbsp;
+<b class="fc"><i>673</i>&nbsp;        MyJavaImpl.Vector vector = new MyJavaImpl.Vector().appendBack(JsInt.of(number));</b>
+<b class="fc"><i>674</i>&nbsp;        for (int a : others)</b>
+<i>675</i>&nbsp;        {
+<b class="fc"><i>676</i>&nbsp;            vector = vector.appendBack(JsInt.of(a));</b>
+<i>677</i>&nbsp;        }
+<b class="fc"><i>678</i>&nbsp;        return new JsArrayMutableImpl(vector);</b>
+<i>679</i>&nbsp;    }
+<i>680</i>&nbsp;
+<i>681</i>&nbsp;    /**
+<i>682</i>&nbsp;     Returns an immutable array from one or more longs.
+<i>683</i>&nbsp;     @param number a long
+<i>684</i>&nbsp;     @param others more optional longs
+<i>685</i>&nbsp;     @return an immutable JsArray
+<i>686</i>&nbsp;     */
+<i>687</i>&nbsp;    static JsArray of(long number,
+<i>688</i>&nbsp;                      long... others
+<i>689</i>&nbsp;                     )
+<i>690</i>&nbsp;    {
+<i>691</i>&nbsp;
+<b class="fc"><i>692</i>&nbsp;        MyScalaImpl.Vector vector = EMPTY.appendBack(JsLong.of(number));</b>
+<b class="fc"><i>693</i>&nbsp;        for (long a : others)</b>
+<i>694</i>&nbsp;        {
+<b class="fc"><i>695</i>&nbsp;            vector = vector.appendBack(JsLong.of(a));</b>
+<i>696</i>&nbsp;        }
+<b class="fc"><i>697</i>&nbsp;        return new JsArrayImmutableImpl(vector);</b>
+<i>698</i>&nbsp;    }
+<i>699</i>&nbsp;
+<i>700</i>&nbsp;    /**
+<i>701</i>&nbsp;     Returns an immutable array from one or more booleans.
+<i>702</i>&nbsp;     @param bool a boolean
+<i>703</i>&nbsp;     @param others more optional booleans
+<i>704</i>&nbsp;     @return an immutable JsArray
+<i>705</i>&nbsp;     */
+<i>706</i>&nbsp;    static JsArray of(boolean bool,
+<i>707</i>&nbsp;                      boolean... others
+<i>708</i>&nbsp;                     )
+<i>709</i>&nbsp;    {
+<i>710</i>&nbsp;
+<b class="fc"><i>711</i>&nbsp;        MyScalaImpl.Vector vector = EMPTY.appendBack(JsBool.of(bool));</b>
+<b class="fc"><i>712</i>&nbsp;        for (boolean a : others)</b>
+<i>713</i>&nbsp;        {
+<b class="fc"><i>714</i>&nbsp;            vector = vector.appendBack(JsBool.of(a));</b>
+<i>715</i>&nbsp;        }
+<b class="fc"><i>716</i>&nbsp;        return new JsArrayImmutableImpl(vector);</b>
+<i>717</i>&nbsp;    }
+<i>718</i>&nbsp;
+<i>719</i>&nbsp;    /**
+<i>720</i>&nbsp;     Returns an immutable array from one or more doubles.
+<i>721</i>&nbsp;     @param number a double
+<i>722</i>&nbsp;     @param others more optional doubles
+<i>723</i>&nbsp;     @return an immutable JsArray
+<i>724</i>&nbsp;     */
+<i>725</i>&nbsp;    static JsArray of(double number,
+<i>726</i>&nbsp;                      double... others
+<i>727</i>&nbsp;                     )
+<i>728</i>&nbsp;    {
+<i>729</i>&nbsp;
+<b class="fc"><i>730</i>&nbsp;        MyScalaImpl.Vector vector = EMPTY.appendBack(JsDouble.of(number));</b>
+<b class="fc"><i>731</i>&nbsp;        for (double a : others)</b>
+<i>732</i>&nbsp;        {
+<b class="fc"><i>733</i>&nbsp;            vector = vector.appendBack(JsDouble.of(a));</b>
+<i>734</i>&nbsp;        }
+<b class="fc"><i>735</i>&nbsp;        return new JsArrayImmutableImpl(vector);</b>
+<i>736</i>&nbsp;    }
+<i>737</i>&nbsp;
+<i>738</i>&nbsp;    /**
+<i>739</i>&nbsp;     Returns a mutable array from one or more longs.
+<i>740</i>&nbsp;     @param number a long
+<i>741</i>&nbsp;     @param others more optional longs
+<i>742</i>&nbsp;     @return a mutable JsArray
+<i>743</i>&nbsp;     */
+<i>744</i>&nbsp;    static JsArray _of_(long number,
+<i>745</i>&nbsp;                        long... others
+<i>746</i>&nbsp;                       )
+<i>747</i>&nbsp;    {
+<i>748</i>&nbsp;
+<b class="fc"><i>749</i>&nbsp;        MyJavaImpl.Vector vector = new MyJavaImpl.Vector().appendBack(JsLong.of(number));</b>
+<b class="fc"><i>750</i>&nbsp;        for (long a : others)</b>
+<i>751</i>&nbsp;        {
+<b class="fc"><i>752</i>&nbsp;            vector = vector.appendBack(JsLong.of(a));</b>
+<i>753</i>&nbsp;        }
+<b class="fc"><i>754</i>&nbsp;        return new JsArrayMutableImpl(vector);</b>
+<i>755</i>&nbsp;    }
+<i>756</i>&nbsp;
+<i>757</i>&nbsp;    /**
+<i>758</i>&nbsp;     Returns a mutable array from one or more booleans.
+<i>759</i>&nbsp;     @param bool a boolean
+<i>760</i>&nbsp;     @param others more optional booleans
+<i>761</i>&nbsp;     @return a mutable JsArray
+<i>762</i>&nbsp;     */
+<i>763</i>&nbsp;    static JsArray _of_(boolean bool,
+<i>764</i>&nbsp;                        boolean... others
+<i>765</i>&nbsp;                       )
+<i>766</i>&nbsp;    {
+<i>767</i>&nbsp;
+<b class="fc"><i>768</i>&nbsp;        MyJavaImpl.Vector vector = new MyJavaImpl.Vector().appendBack(JsBool.of(bool));</b>
+<b class="fc"><i>769</i>&nbsp;        for (boolean a : others)</b>
+<i>770</i>&nbsp;        {
+<b class="fc"><i>771</i>&nbsp;            vector = vector.appendBack(JsBool.of(a));</b>
+<i>772</i>&nbsp;        }
+<b class="fc"><i>773</i>&nbsp;        return new JsArrayMutableImpl(vector);</b>
+<i>774</i>&nbsp;    }
+<i>775</i>&nbsp;
+<i>776</i>&nbsp;    /**
+<i>777</i>&nbsp;     Returns a mutable array from one or more doubles.
+<i>778</i>&nbsp;     @param number a double
+<i>779</i>&nbsp;     @param others more optional doubles
+<i>780</i>&nbsp;     @return a mutable JsArray
+<i>781</i>&nbsp;     */
+<i>782</i>&nbsp;    static JsArray _of_(double number,
+<i>783</i>&nbsp;                        double... others
+<i>784</i>&nbsp;                       )
+<i>785</i>&nbsp;    {
+<i>786</i>&nbsp;
+<b class="fc"><i>787</i>&nbsp;        MyJavaImpl.Vector vector = new MyJavaImpl.Vector().appendBack(JsDouble.of(number));</b>
+<b class="fc"><i>788</i>&nbsp;        for (double a : others)</b>
+<i>789</i>&nbsp;        {
+<b class="fc"><i>790</i>&nbsp;            vector = vector.appendBack(JsDouble.of(a));</b>
+<i>791</i>&nbsp;        }
+<b class="fc"><i>792</i>&nbsp;        return new JsArrayMutableImpl(vector);</b>
+<i>793</i>&nbsp;    }
+<i>794</i>&nbsp;
+<i>795</i>&nbsp;
+<i>796</i>&nbsp;    /**
+<i>797</i>&nbsp;     Returns a json array consisting of all elements of this array except the first one.
+<i>798</i>&nbsp;     @return a JsArray consisting of all the elements of this JsArray except the head
+<i>799</i>&nbsp;     @throws UnsupportedOperationException if this JsArray is empty.
+<i>800</i>&nbsp;     */
+<i>801</i>&nbsp;    JsArray tail();
+<i>802</i>&nbsp;
+<i>803</i>&nbsp;    /**
+<i>804</i>&nbsp;     Returns the intersection of this array and another given as a parameter, defining characteristics
+<i>805</i>&nbsp;     like order and duplicates occurrence with the given ARRAY_AS parameter.
+<i>806</i>&nbsp;     @param that the other array
+<i>807</i>&nbsp;     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+<i>808</i>&nbsp;     @return a new JsArray of the same type as the inputs (mutable or immutable)
+<i>809</i>&nbsp;     */
+<i>810</i>&nbsp;    JsArray intersection(final JsArray that,
+<i>811</i>&nbsp;                         final TYPE ARRAY_AS
+<i>812</i>&nbsp;                        );
+<i>813</i>&nbsp;
+<i>814</i>&nbsp;    /**
+<i>815</i>&nbsp;     Returns the intersection of this array and another given as parameter considering both {@link TYPE#LIST}lists
+<i>816</i>&nbsp;     and applying recursively the intersection to those elements which are Json of the same type and
+<i>817</i>&nbsp;     are located at the same position.
+<i>818</i>&nbsp;     @param that the other array
+<i>819</i>&nbsp;     @return a JsArray of the same type as the inputs (mutable or immutable)
+<i>820</i>&nbsp;     */
+<i>821</i>&nbsp;    JsArray intersection_(final JsArray that);
+<i>822</i>&nbsp;
+<i>823</i>&nbsp;    /**
+<i>824</i>&nbsp;     Returns the union of this array and another, defining characteristics like order and duplicates
+<i>825</i>&nbsp;     occurrence with the given ARRAY_AS parameter.
+<i>826</i>&nbsp;     @param that the other array
+<i>827</i>&nbsp;     @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
+<i>828</i>&nbsp;     @return a new json array of the same type as the inputs (mutable or immutable)
+<i>829</i>&nbsp;     */
+<i>830</i>&nbsp;    JsArray union(final JsArray that,
+<i>831</i>&nbsp;                  final TYPE ARRAY_AS
+<i>832</i>&nbsp;                 );
+<i>833</i>&nbsp;
+<i>834</i>&nbsp;
+<i>835</i>&nbsp;    /**
+<i>836</i>&nbsp;     Returns the union of this array and another given as parameter considering both {@link TYPE#LIST}lists
+<i>837</i>&nbsp;     and applying recursively the union to those elements which are Json of the same type and are located
+<i>838</i>&nbsp;     at the same position.
+<i>839</i>&nbsp;     @param that the other array
+<i>840</i>&nbsp;     @return a new JsArray of the same type as the inputs (mutable or immutable)
+<i>841</i>&nbsp;     */
+<i>842</i>&nbsp;    JsArray union_(final JsArray that);
+<i>843</i>&nbsp;
+<i>844</i>&nbsp;
+<i>845</i>&nbsp;    /**
+<i>846</i>&nbsp;     Returns an immutable array from one or more pairs.
+<i>847</i>&nbsp;     @param pair a pair
+<i>848</i>&nbsp;     @param pairs more optional pairs
+<i>849</i>&nbsp;     @return an immutable JsArray
+<i>850</i>&nbsp;     @throws UnsupportedOperationException if an elem of a pair is mutable
+<i>851</i>&nbsp;
+<i>852</i>&nbsp;     */
+<i>853</i>&nbsp;    static JsArray of(JsPair pair,
+<i>854</i>&nbsp;                      JsPair... pairs
+<i>855</i>&nbsp;                     )
+<i>856</i>&nbsp;    {
+<i>857</i>&nbsp;
+<b class="fc"><i>858</i>&nbsp;        JsArray arr = empty().put(pair.path,</b>
+<b class="fc"><i>859</i>&nbsp;                                  throwErrorIfMutableElem(pair.elem)</b>
+<i>860</i>&nbsp;                                 );
+<b class="fc"><i>861</i>&nbsp;        for (final JsPair p : pairs)</b>
+<i>862</i>&nbsp;        {
+<b class="fc"><i>863</i>&nbsp;            arr = arr.put(p.path,</b>
+<b class="fc"><i>864</i>&nbsp;                          throwErrorIfMutableElem(p.elem)</b>
+<i>865</i>&nbsp;                         );
+<i>866</i>&nbsp;        }
+<i>867</i>&nbsp;
+<b class="fc"><i>868</i>&nbsp;        return arr;</b>
+<i>869</i>&nbsp;    }
+<i>870</i>&nbsp;
+<i>871</i>&nbsp;    /**
+<i>872</i>&nbsp;     Returns a mutable array from one or more pairs.
+<i>873</i>&nbsp;     @param pair a pair
+<i>874</i>&nbsp;     @param pairs more optional pairs
+<i>875</i>&nbsp;     @return a mutable JsArray
+<i>876</i>&nbsp;     @throws UnsupportedOperationException if an elem of a pair is immutable
+<i>877</i>&nbsp;     */
+<i>878</i>&nbsp;    static JsArray _of_(JsPair pair,
+<i>879</i>&nbsp;                        JsPair... pairs
+<i>880</i>&nbsp;                       )
+<i>881</i>&nbsp;    {
+<i>882</i>&nbsp;
+<b class="fc"><i>883</i>&nbsp;        JsArray arr = _empty_().put(pair.path,</b>
+<b class="fc"><i>884</i>&nbsp;                                    throwErrorIfImmutableElem(pair.elem)</b>
+<i>885</i>&nbsp;                                   );
+<b class="fc"><i>886</i>&nbsp;        for (final JsPair p : pairs)</b>
+<i>887</i>&nbsp;        {
+<b class="fc"><i>888</i>&nbsp;            arr.put(p.path,</b>
+<b class="fc"><i>889</i>&nbsp;                    throwErrorIfImmutableElem(p.elem)</b>
+<i>890</i>&nbsp;                   );
+<i>891</i>&nbsp;        }
+<i>892</i>&nbsp;
+<b class="fc"><i>893</i>&nbsp;        return arr;</b>
+<i>894</i>&nbsp;    }
+<i>895</i>&nbsp;}
+</div>
+</div>
+
+<div class="footer">
+    
+    <div style="float:right;">generated on 2019-07-31 10:50</div>
+</div>
+</body>
+</html>
