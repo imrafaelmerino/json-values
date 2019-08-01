@@ -44,47 +44,47 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
         Objects.requireNonNull(elems);
         return requireNonNull(path).head()
-                                     .match(key -> this,
-                                            index ->
-                                            {
-                                                final JsPath tail = path.tail();
-                                                return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
-                                                                                                                         arr.appendAll(elems)
-                                                                                                                        )),
-                                                                                                  e -> of(nullPadding(index,
+                                   .match(key -> this,
+                                          index ->
+                                          {
+                                              final JsPath tail = path.tail();
+                                              return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
+                                                                                                                       arr.appendAll(elems)
+                                                                                                                      )),
+                                                                                                e -> of(nullPadding(index,
+                                                                                                                    array,
+                                                                                                                    emptyArray().appendAll(elems)
+                                                                                                                   ))
+                                                                                               )
+                                                                                     .apply(get(Index.of(index))),
+                                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
+                                                                                                                               t
+                                                                                                                              ),
+                                                                                                 () -> of(nullPadding(index,
                                                                                                                       array,
-                                                                                                                      emptyArray().appendAll(elems)
-                                                                                                                     ))
-                                                                                                 )
-                                                                                       .apply(get(Index.of(index))),
-                                                                        () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
-                                                                                                                                 t
-                                                                                                                                ),
-                                                                                                   () -> of(nullPadding(index,
-                                                                                                                        array,
-                                                                                                                        tail.head()
-                                                                                                                            .match(o -> emptyObject().appendAll(tail,
-                                                                                                                                                                elems
-                                                                                                                                                               ),
-                                                                                                                                   a -> emptyArray().appendAll(tail,
-                                                                                                                                                               elems
-                                                                                                                                                              )
-                                                                                                                                  )
-                                                                                                                       )),
-                                                                                                   () -> of(array.update(index,
-                                                                                                                         array.get(index)
-                                                                                                                              .asJson()
-                                                                                                                              .appendAll(tail,
-                                                                                                                                         elems
-                                                                                                                                        )
-                                                                                                                        ))
-                                                                                                  )
+                                                                                                                      tail.head()
+                                                                                                                          .match(o -> emptyObject().appendAll(tail,
+                                                                                                                                                              elems
+                                                                                                                                                             ),
+                                                                                                                                 a -> emptyArray().appendAll(tail,
+                                                                                                                                                             elems
+                                                                                                                                                            )
+                                                                                                                                )
+                                                                                                                     )),
+                                                                                                 () -> of(array.update(index,
+                                                                                                                       array.get(index)
+                                                                                                                            .asJson()
+                                                                                                                            .appendAll(tail,
+                                                                                                                                       elems
+                                                                                                                                      )
+                                                                                                                      ))
+                                                                                                )
 
 
-                                                                       );
-                                            }
+                                                                     );
+                                          }
 
-                                           );
+                                         );
 
     }
 
@@ -96,47 +96,47 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
         Objects.requireNonNull(elem);
         return requireNonNull(path).head()
-                                     .match(key -> this,
-                                            index ->
-                                            {
-                                                final JsPath tail = path.tail();
-                                                return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
-                                                                                                                         arr.append(elem)
-                                                                                                                        )),
-                                                                                                  e -> of(nullPadding(index,
+                                   .match(key -> this,
+                                          index ->
+                                          {
+                                              final JsPath tail = path.tail();
+                                              return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
+                                                                                                                       arr.append(elem)
+                                                                                                                      )),
+                                                                                                e -> of(nullPadding(index,
+                                                                                                                    array,
+                                                                                                                    emptyArray().append(elem)
+                                                                                                                   ))
+                                                                                               )
+                                                                                     .apply(get(Index.of(index))),
+                                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
+                                                                                                                               t
+                                                                                                                              ),
+                                                                                                 () -> of(nullPadding(index,
                                                                                                                       array,
-                                                                                                                      emptyArray().append(elem)
-                                                                                                                     ))
-                                                                                                 )
-                                                                                       .apply(get(Index.of(index))),
-                                                                        () -> tail.ifPredicateElse(t -> putEmptyJson(array).test(index,
-                                                                                                                                 t
-                                                                                                                                ),
-                                                                                                   () -> of(nullPadding(index,
-                                                                                                                        array,
-                                                                                                                        tail.head()
-                                                                                                                            .match(o -> emptyObject().append(tail,
-                                                                                                                                                             elem
-                                                                                                                                                            ),
-                                                                                                                                   a -> emptyArray().append(tail,
-                                                                                                                                                            elem
-                                                                                                                                                           )
-                                                                                                                                  )
-                                                                                                                       )),
-                                                                                                   () -> of(array.update(index,
-                                                                                                                         array.get(index)
-                                                                                                                              .asJson()
-                                                                                                                              .append(tail,
-                                                                                                                                      elem
-                                                                                                                                     )
-                                                                                                                        ))
-                                                                                                  )
+                                                                                                                      tail.head()
+                                                                                                                          .match(o -> emptyObject().append(tail,
+                                                                                                                                                           elem
+                                                                                                                                                          ),
+                                                                                                                                 a -> emptyArray().append(tail,
+                                                                                                                                                          elem
+                                                                                                                                                         )
+                                                                                                                                )
+                                                                                                                     )),
+                                                                                                 () -> of(array.update(index,
+                                                                                                                       array.get(index)
+                                                                                                                            .asJson()
+                                                                                                                            .append(tail,
+                                                                                                                                    elem
+                                                                                                                                   )
+                                                                                                                      ))
+                                                                                                )
 
 
-                                                                       );
-                                            }
+                                                                     );
+                                          }
 
-                                           );
+                                         );
 
     }
 
@@ -680,17 +680,24 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                           ));
     }
 
+    @SuppressWarnings("squid:S1602") // curly braces makes IntelliJ to format the code in a more legible way
     private BiPredicate<Integer, JsPath> putEmptyJson(final MyVector<?> parray)
     {
 
         return (index, tail) ->
         {
-            return index > (parray.size() - 1) || parray.isEmpty() || parray.get(index)
-                                                                         .isNotJson() || (tail.head()
-                                                                                              .isKey() && parray.get(index)
-                                                                                                               .isArray()) || (tail.head()
-                                                                                                                                   .isIndex() && parray.get(index)
-                                                                                                                                                        .isObj());
+            return index > parray.size() - 1 || parray.isEmpty() || parray.get(index)
+                                                                          .isNotJson()
+            ||
+            (tail.head()
+                 .isKey() && parray.get(index)
+                                   .isArray()
+            )
+            ||
+            (tail.head()
+                 .isIndex() && parray.get(index)
+                                     .isObj()
+            );
 
 
         };

@@ -289,7 +289,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
-    @SuppressWarnings("squid:S00117") //  perfectly fine _
+    @SuppressWarnings({"squid:S00117","squid:S00100"}) //  ARRAY_AS should be a valid name, naming convention: _xx_ returns immutable object
     public final JsObj intersection_(final JsObj that,
                                      final TYPE ARRAY_AS
                                     )
@@ -379,6 +379,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
                                          final Function<? super JsPair, R> map,
                                          final Predicate<? super JsPair> predicate
@@ -425,6 +426,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public Stream<JsPair> stream_()
     {
         return streamOfObj(this,
@@ -503,7 +505,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
-    @SuppressWarnings("squid:S00117") //  perfectly fine _
+    @SuppressWarnings({"squid:S00117", "squid:S00100"}) // ARRAY_AS  should be a valid name, naming convention: xx_ traverses the whole json
     public final JsObj union_(final JsObj that,
                               final TYPE ARRAY_AS
                              )
@@ -522,18 +524,26 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
 
     }
 
-
+    @SuppressWarnings("squid:S1602") // curly braces makes IntelliJ to format the code in a more legible way
     private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final MyMap<?> pmap)
     {
 
         return (head, tail) ->
         {
             return (!pmap.contains(head) || pmap.get(head)
-                                                  .isNotJson()) || ((tail.head()
-                                                                         .isKey() && pmap.get(head)
-                                                                                          .isArray()) || (tail.head()
-                                                                                                              .isIndex() && pmap.get(head)
-                                                                                                                                 .isObj()));
+                                                .isNotJson())
+            ||
+            (
+            (tail.head()
+                 .isKey() && pmap.get(head)
+                                 .isArray()
+            )
+            ||
+            (tail.head()
+                 .isIndex() && pmap.get(head)
+                                   .isObj()
+            )
+            );
 
 
         };

@@ -165,6 +165,7 @@ class JsArrayImmutableImpl extends AbstractJsArray<MyScalaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapKeys_(final Function<? super JsPair, String> fn)
     {
         return Functions.mapKeys_(this,
@@ -177,6 +178,7 @@ class JsArrayImmutableImpl extends AbstractJsArray<MyScalaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsArray mapKeys_(final Function<? super JsPair, String> fn,
                                   final Predicate<? super JsPair> predicate
                                  )
@@ -286,6 +288,7 @@ class JsArrayImmutableImpl extends AbstractJsArray<MyScalaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsArray filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions.filterJsObjs_(this,

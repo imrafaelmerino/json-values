@@ -1082,7 +1082,7 @@ class Functions
 
                              );
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Trampoline<JsObj> _mapKeys_(final JsObj acc,
                                        final JsObj remaining,
                                        final Function<? super JsPair, String> fn,
@@ -1516,6 +1516,7 @@ class Functions
                              );
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
 
     static Trampoline<JsArray> filterJsObjs_(final JsArray arr,
                                              final BiPredicate<? super JsPath, ? super JsObj> predicate,
@@ -1654,7 +1655,8 @@ class Functions
 
 
     }
-
+    //private method not exposed to the user. the wildcard allows to refactor some code, and Json<?> has only two possible types: JsObj or JsArr
+    @SuppressWarnings("squid:S1452")
     private static Trampoline<? extends Json<?>> filterKeys_(final Json<?> json,
                                                              final Predicate<? super JsPair> predicate,
                                                              final JsPath path
@@ -1832,7 +1834,8 @@ class Functions
                              );
 
     }
-
+    //private method not exposed to the user. the wildcard allows to refactor some code, and Json<?> has only two possible types: JsObj or JsArr
+    @SuppressWarnings("squid:S1452")
     private static Trampoline<? extends Json<?>> filterValues_(final Json<?> json,
                                                                final Predicate<? super JsPair> predicate,
                                                                final JsPath path
@@ -2155,7 +2158,10 @@ class Functions
 
 
     }
-    @SuppressWarnings("squid:S00100") //  perfectly fine _
+    //squid:S1452 -> private method not exposed to the user. the wildcard allows to refactor some code, and Json<?> has only two possible types: JsObj or JsArr
+    //squid:S00100 ->  naming convention: xx_ traverses the whole json
+    //squid:S00117 -> ARRAY_AS should be a valid name
+    @SuppressWarnings({"squid:S00100","squid:S1452","squid:S00117"})
     private static Trampoline<? extends Json<?>> intersection_(final Json<?> a,
                                                                final Json<?> b,
                                                                final JsArray.TYPE ARRAY_AS
@@ -2460,7 +2466,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static Trampoline<JsArray> mapKeys_(final JsArray array,
                                         final Function<? super JsPair, String> fn,
                                         final Predicate<? super JsPair> predicate,
@@ -2500,7 +2506,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     static Trampoline<JsObj> mapKeys_(final JsObj obj,
                                       final Function<? super JsPair, String> fn,
                                       final Predicate<? super JsPair> predicate,
@@ -2631,7 +2637,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static Trampoline<JsArray> mapValues_(final JsArray array,
                                           final Function<? super JsPair, ? extends JsElem> fn,
                                           final Predicate<? super JsPair> predicate,
@@ -3390,7 +3396,7 @@ class Functions
                                                );
                               });
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     private static Trampoline<JsObj> removeOldKeyAndPutNew_(final String oldKey,
                                                             final String newKey,
                                                             final Trampoline<Trampoline<? extends Json<?>>> head,
@@ -3731,7 +3737,7 @@ class Functions
                                          head::getValue
                                         ));
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public static Trampoline<JsObj> combiner_(final JsObj a,
                                               final JsObj b
                                              )
@@ -3828,7 +3834,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     private static Trampoline<? extends Json<?>> combiner_(final Json<?> a,
                                                            final Json<?> b
                                                           )
@@ -3998,7 +4004,7 @@ class Functions
         return Optional.ofNullable(mapped);
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     private static Trampoline<? extends Json<?>> mapKeys_(final Json<?> json,
                                                           final Function<? super JsPair, String> fn,
                                                           final Predicate<? super JsPair> predicate,
@@ -4020,7 +4026,7 @@ class Functions
         .apply(json);
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     private static Trampoline<? extends Json<?>> mapValues_(Json<?> json,
                                                             Function<? super JsPair, ? extends JsElem> fn,
                                                             Predicate<? super JsPair> predicate,
@@ -4060,7 +4066,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public static Trampoline<JsArray> combiner_(final JsArray a,
                                                 final JsArray b
                                                )

@@ -21,7 +21,8 @@ import static jsonvalues.MyScalaImpl.Vector.EMPTY;
 public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
 {
-    long serialVersionUID = 1L;
+     @SuppressWarnings("squid:S1214") //serializable class, explicit declaration of serialVersionUID is fine
+     long serialVersionUID = 1L;
 
 
     /**
@@ -133,7 +134,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return a mutable five-element JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2,
@@ -159,7 +162,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return a mutable  JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2,
@@ -185,6 +190,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param str the string to be parsed
      @return a {@link TryArr} computation
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static TryArr _parse_(final String str)
     {
         try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))
@@ -338,6 +344,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      Returns a collector that accumulates the pairs from a stream into a mutable array.
      @return a Collector which collects all the pairs of elements into a mutable JsArray, in encounter order
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Collector<JsPair, JsArray, JsArray> _collector_()
     {
 
@@ -502,6 +509,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return an immutable five-element JsArray
      @throws UnsupportedOperationException if an elem is a mutable Json
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsArray of(final JsElem e,
                       final JsElem e1,
                       final JsElem e2,
@@ -527,6 +536,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return an immutable JsArray
      @throws UnsupportedOperationException if an elem is a mutable Json
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsArray of(final JsElem e,
                       final JsElem e1,
                       final JsElem e2,
@@ -830,6 +841,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param that the other array
      @return a JsArray of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     JsArray intersection_(final JsArray that);
 
     /**
@@ -852,6 +864,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param that the other array
      @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     JsArray union_(final JsArray that);
 
 

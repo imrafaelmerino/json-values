@@ -22,12 +22,14 @@ import static jsonvalues.MyScalaImpl.Map.EMPTY;
 public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
 {
 
+    @SuppressWarnings("squid:S1214") //serializable class, explicit declaration of serialVersionUID is fine
     long serialVersionUID = 1L;
 
     /**
      Returns a mutable empty object.
      @return a mutable empty JsObj
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static JsObj _empty_()
     {
         return new JsObjMutableImpl();
@@ -88,7 +90,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @return a three-pair mutable JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -120,7 +124,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @return a mutable four-pair JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -159,7 +165,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem is an immutable Json
 
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -203,7 +211,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @return a mutable six-element JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
-    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    // squid:S00100: naming convention: _xx_ returns immutable object
+    @SuppressWarnings({"squid:S00100","squid:S00107"})
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -319,6 +329,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param options a Options with the filters and maps that will be applied during the parsing
      @return a {@link TryObj} computation
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static TryObj _parse_(final String str,
                           final ParseOptions options
                          )
@@ -371,6 +382,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      Returns a collector that accumulates the pairs from a stream into an mutable object.
      @return a Collector which collects all the pairs of elements into an mutable JsObj, in encounter order
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Collector<JsPair, JsObj, JsObj> _collector_()
     {
 
@@ -466,6 +478,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @return an immutable three-element JsObj
      @throws UnsupportedOperationException if an elem is a mutable Json
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
                     final JsElem el1,
                     final String key2,
@@ -498,6 +512,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem is a mutable Json
 
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
                     final JsElem el1,
                     final String key2,
@@ -536,6 +552,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem is a mutable Json
 
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
                     final JsElem el1,
                     final String key2,
@@ -580,6 +598,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem is a mutable Json
 
      */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
                     final JsElem el1,
                     final String key2,

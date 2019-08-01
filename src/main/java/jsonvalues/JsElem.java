@@ -216,6 +216,9 @@ public interface JsElem
      @return this JsElem as a Json
      @throws UnsupportedOperationException if this JsElem is not a JsObj or a JsArray
      */
+    //Nobody but who calls this method knows if the element is a json or not.
+    // They  usually should call the method is Json before
+    @SuppressWarnings("squid:S1452")
     default Json<?> asJson()
     {
 

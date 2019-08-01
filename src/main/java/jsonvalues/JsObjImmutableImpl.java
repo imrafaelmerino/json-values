@@ -179,6 +179,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsObj mapKeys_(final Function<? super JsPair, String> fn)
     {
         return Functions.mapKeys_(this,
@@ -191,6 +192,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") // xx_ traverses the whole json
     public final JsObj mapKeys_(final Function<? super JsPair, String> fn,
                                 final Predicate<? super JsPair> predicate
                                )
@@ -288,6 +290,7 @@ class JsObjImmutableImpl extends AbstractJsObj<MyScalaImpl.Map, JsArray>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsObj filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions.filterJsObjs_(this,
