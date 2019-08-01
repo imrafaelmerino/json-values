@@ -1,4 +1,4 @@
-<img src="https://img.shields.io/badge/code%20quality-A-success"/>  [![Coverage](https://img.shields.io/badge/coverage-88-green)](https://imrafaelmerino.github.io/json-values/coverage-report/index.html) <img src="https://img.shields.io/badge/LOC-19682-blue"/>  <img src="https://img.shields.io/badge/HOC-34200-blue"/>
+<img src="https://img.shields.io/badge/code%20quality-A-success"/>  [![Coverage](https://img.shields.io/badge/coverage-88-green)](https://imrafaelmerino.github.io/json-values/coverage-report/index.html) <img src="https://img.shields.io/badge/LOC-19797-blue"/>  <img src="https://img.shields.io/badge/HOC-67770-blue"/>
 
 [![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/0.1.2)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/0.1.2/jar)
 <img src="https://img.shields.io/github/last-commit/imrafaelmerino/json-values"/>
