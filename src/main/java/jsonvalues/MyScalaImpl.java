@@ -114,6 +114,7 @@ class MyScalaImpl
         }
 
         @Override
+        @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
         public Map remove(final String key)
         {
             return new Map(((HashMap<String, JsElem>) map).$minus(key));
@@ -126,6 +127,7 @@ class MyScalaImpl
         }
 
         @Override
+        @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
         public Map tail(String head)
         {
             if (this.isEmpty()) throw new UnsupportedOperationException("tail of empty map");
@@ -221,6 +223,7 @@ class MyScalaImpl
 
 
         @Override
+        @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
         public Vector add(final Vector that)
         {
             return new Vector(vector.$plus$plus(that.vector,
@@ -301,6 +304,7 @@ class MyScalaImpl
         }
 
         @Override
+        @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
         public Vector remove(final int index)
         {
 

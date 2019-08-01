@@ -11,7 +11,6 @@ import java.util.stream.Collector;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.Functions.throwErrorIfImmutableElem;
 import static jsonvalues.Functions.throwErrorIfMutableElem;
-import static jsonvalues.JsArray.TYPE.LIST;
 import static jsonvalues.JsParser.Event.START_OBJECT;
 import static jsonvalues.MyScalaImpl.Map.EMPTY;
 
@@ -42,6 +41,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if the elem is an immutable Json
 
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key,
                       final JsElem el
                      )
@@ -60,8 +60,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param el2 JsElem to be associated to the key2
      @return a two-pair mutable JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -87,8 +87,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param el3  JsElem to be associated to the key3
      @return a three-pair mutable JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -119,8 +119,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param el4  JsElem to be associated to the key4
      @return a mutable four-pair JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -159,6 +159,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem is an immutable Json
 
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -201,8 +202,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param el6  JsElem to be associated to the key6
      @return a mutable six-element JsObj
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final String key1,
                       final JsElem el1,
                       final String key2,
@@ -241,6 +242,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @throws UnsupportedOperationException if an elem of the map is an immutable Json
 
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(final java.util.Map<String,JsElem> map)
     {
         Functions.throwErrorIfImmutableElemFound(Objects.requireNonNull(map)
@@ -254,6 +256,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @return a {@link TryObj} computation
 
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static TryObj _parse_(final String str)
     {
         try (JsParser parser = new JsParser(new StringReader(requireNonNull(str))))
@@ -283,6 +286,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param ARRAY_AS enum to specify if arrays are considered as lists or sets or multisets
      @return true if both objs are equals
      */
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     default boolean equals(JsObj that,
                            TYPE ARRAY_AS
                           )
@@ -723,7 +727,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
-    JsObj intersection_(final JsObj that,
+     @SuppressWarnings("squid:S00117") //  perfectly fine _
+     JsObj intersection_(final JsObj that,
                         final TYPE ARRAY_AS
                        );
 
@@ -745,6 +750,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     JsObj union_(final JsObj that,
                  final TYPE ARRAY_AS
                 );
@@ -782,8 +788,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
      @param others more optional pairs
      @return a mutable JsObject
      @throws UnsupportedOperationException if an elem of a pair is immutable
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsObj _of_(JsPair pair,
                       JsPair... others
                      )

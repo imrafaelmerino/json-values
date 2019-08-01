@@ -273,6 +273,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     public final JsObj intersection(final JsObj that,
                                     final TYPE ARRAY_AS
                                    )
@@ -288,6 +289,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     public final JsObj intersection_(final JsObj that,
                                      final TYPE ARRAY_AS
                                     )
@@ -456,13 +458,13 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
                                                         .map(key -> JsPair.of(path.key(key),
                                                                               obj.get(Key.of(key))
                                                                              ))
-                                                        .flatMap(pair -> Functions.ifValueElse($ -> Stream.of(pair),
-                                                                                               _obj -> streamOfObj(_obj,
-                                                                                                                   pair.path
-                                                                                                                  ),
-                                                                                               _arr -> streamOfArr(_arr,
-                                                                                                                   pair.path
-                                                                                                                  )
+                                                        .flatMap(pair -> Functions.ifValueElse(e -> Stream.of(pair),
+                                                                                               o -> streamOfObj(o,
+                                                                                                                pair.path
+                                                                                                               ),
+                                                                                               a -> streamOfArr(a,
+                                                                                                                pair.path
+                                                                                                               )
                                                                                               )
                                                                                   .apply(pair.elem))
                                               );
@@ -501,6 +503,7 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
     @Override
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     public final JsObj union_(final JsObj that,
                               final TYPE ARRAY_AS
                              )
@@ -520,16 +523,16 @@ abstract class AbstractJsObj<T extends MyMap<T>, A extends JsArray> implements J
     }
 
 
-    private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final MyMap<?> p_map)
+    private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final MyMap<?> pmap)
     {
 
         return (head, tail) ->
         {
-            return (!p_map.contains(head) || p_map.get(head)
+            return (!pmap.contains(head) || pmap.get(head)
                                                   .isNotJson()) || ((tail.head()
-                                                                         .isKey() && p_map.get(head)
+                                                                         .isKey() && pmap.get(head)
                                                                                           .isArray()) || (tail.head()
-                                                                                                              .isIndex() && p_map.get(head)
+                                                                                                              .isIndex() && pmap.get(head)
                                                                                                                                  .isObj()));
 
 

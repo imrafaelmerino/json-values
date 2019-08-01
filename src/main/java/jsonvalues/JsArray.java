@@ -28,6 +28,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      Returns a mutable empty array.
      @return mutable empty JsArray
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _empty_()
     {
         return new JsArrayMutableImpl();
@@ -41,8 +42,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param list the Collection of JsElem from which reference the JsArray will be created
      @return a mutable JsArray
      @throws UnsupportedOperationException if an elem of the list is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final List<JsElem> list)
     {
         throwErrorIfImmutableElemFound(requireNonNull(list));
@@ -57,6 +58,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return a mutable one-element JsArray
      @throws UnsupportedOperationException if the elem is an immutable Json
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e)
     {
         return new JsArrayMutableImpl(new MyJavaImpl.Vector().appendFront(throwErrorIfImmutableElem(e)));
@@ -68,8 +70,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param e1 a JsElem
      @return a mutable two-element JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e,
                         final JsElem e1
                        )
@@ -87,6 +89,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @throws UnsupportedOperationException if an elem is an immutable Json
 
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2
@@ -107,6 +110,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return a mutable four-element JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2,
@@ -128,8 +132,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param e4 a JsElem
      @return a mutable five-element JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2,
@@ -154,8 +158,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param rest more optional JsElem
      @return a mutable  JsArray
      @throws UnsupportedOperationException if an elem is an immutable Json
-
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(final JsElem e,
                         final JsElem e1,
                         final JsElem e2,
@@ -211,6 +215,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return true if both arrays are equals according to ARRAY_AS parameter
      */
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     default boolean equals(final JsArray array,
                            final TYPE ARRAY_AS
                           )
@@ -242,6 +247,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param options a builder with the filters and maps that, if specified, will be applied during the parsing
      @return a {@link TryArr} computation
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static TryArr _parse_(final String str,
                           final ParseOptions options
                          )
@@ -627,6 +633,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional strings
      @return a mutable JsArray
      */
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
     static JsArray _of_(String str,
                         String... others
                        )
@@ -665,8 +672,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional integers
      @return an mutable JsArray
      */
-    static JsArray _of_(int number,
-                        int... others
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    static JsArray _of_(final int number,
+                        final int... others
                        )
     {
 
@@ -741,8 +749,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional longs
      @return a mutable JsArray
      */
-    static JsArray _of_(long number,
-                        long... others
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    static JsArray _of_(final long number,
+                        final long... others
                        )
     {
 
@@ -760,8 +769,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional booleans
      @return a mutable JsArray
      */
-    static JsArray _of_(boolean bool,
-                        boolean... others
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    static JsArray _of_(final boolean bool,
+                        final boolean... others
                        )
     {
 
@@ -779,8 +789,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional doubles
      @return a mutable JsArray
      */
-    static JsArray _of_(double number,
-                        double... others
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    static JsArray _of_(final double number,
+                        final double... others
                        )
     {
 
@@ -807,6 +818,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     JsArray intersection(final JsArray that,
                          final TYPE ARRAY_AS
                         );
@@ -827,6 +839,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new json array of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     JsArray union(final JsArray that,
                   final TYPE ARRAY_AS
                  );
@@ -875,8 +888,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return a mutable JsArray
      @throws UnsupportedOperationException if an elem of a pair is immutable
      */
-    static JsArray _of_(JsPair pair,
-                        JsPair... pairs
+    @SuppressWarnings("squid:S00100")//  naming convention: _xx_ returns immutable object
+    static JsArray _of_(final JsPair pair,
+                        final JsPair... pairs
                        )
     {
 

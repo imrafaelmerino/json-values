@@ -1,7 +1,6 @@
 package jsonvalues;
 
 
-import jsonvalues.JsArray.TYPE;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Iterator;
@@ -24,6 +23,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 {
     public static final long serialVersionUID = 1L;
 
+    @SuppressWarnings("squid:S00116") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private final transient JsPath MINUS_ONE_PATH = JsPath.empty()
                                                           .index(-1);
 
@@ -36,22 +36,22 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
     @SuppressWarnings("Duplicates")
     @Override
-    public JsArray appendAll(final JsPath p_path,
+    public JsArray appendAll(final JsPath path,
                              final JsArray elems
 
                             )
     {
 
         Objects.requireNonNull(elems);
-        return requireNonNull(p_path).head()
+        return requireNonNull(path).head()
                                      .match(key -> this,
                                             index ->
                                             {
-                                                final JsPath tail = p_path.tail();
+                                                final JsPath tail = path.tail();
                                                 return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
                                                                                                                          arr.appendAll(elems)
                                                                                                                         )),
-                                                                                                  $ -> of(nullPadding(index,
+                                                                                                  e -> of(nullPadding(index,
                                                                                                                       array,
                                                                                                                       emptyArray().appendAll(elems)
                                                                                                                      ))
@@ -63,10 +63,10 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                    () -> of(nullPadding(index,
                                                                                                                         array,
                                                                                                                         tail.head()
-                                                                                                                            .match($ -> emptyObject().appendAll(tail,
+                                                                                                                            .match(o -> emptyObject().appendAll(tail,
                                                                                                                                                                 elems
                                                                                                                                                                ),
-                                                                                                                                   $ -> emptyArray().appendAll(tail,
+                                                                                                                                   a -> emptyArray().appendAll(tail,
                                                                                                                                                                elems
                                                                                                                                                               )
                                                                                                                                   )
@@ -89,21 +89,21 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
-    public JsArray append(final JsPath p_path,
+    public JsArray append(final JsPath path,
                           final JsElem elem
                          )
     {
 
         Objects.requireNonNull(elem);
-        return requireNonNull(p_path).head()
+        return requireNonNull(path).head()
                                      .match(key -> this,
                                             index ->
                                             {
-                                                final JsPath tail = p_path.tail();
+                                                final JsPath tail = path.tail();
                                                 return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
                                                                                                                          arr.append(elem)
                                                                                                                         )),
-                                                                                                  $ -> of(nullPadding(index,
+                                                                                                  e -> of(nullPadding(index,
                                                                                                                       array,
                                                                                                                       emptyArray().append(elem)
                                                                                                                      ))
@@ -115,10 +115,10 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                    () -> of(nullPadding(index,
                                                                                                                         array,
                                                                                                                         tail.head()
-                                                                                                                            .match($ -> emptyObject().append(tail,
+                                                                                                                            .match(o -> emptyObject().append(tail,
                                                                                                                                                              elem
                                                                                                                                                             ),
-                                                                                                                                   $ -> emptyArray().append(tail,
+                                                                                                                                   a -> emptyArray().append(tail,
                                                                                                                                                             elem
                                                                                                                                                            )
                                                                                                                                   )
@@ -175,7 +175,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                               return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
                                                                                                                        arr.prependAll(elems)
                                                                                                                       )),
-                                                                                                $ -> of(nullPadding(index,
+                                                                                                e -> of(nullPadding(index,
                                                                                                                     array,
                                                                                                                     emptyArray().prependAll(elems)
                                                                                                                    ))
@@ -187,10 +187,10 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                  () -> of(nullPadding(index,
                                                                                                                       array,
                                                                                                                       tail.head()
-                                                                                                                          .match($ -> emptyObject().prependAll(tail,
+                                                                                                                          .match(o -> emptyObject().prependAll(tail,
                                                                                                                                                                elems
                                                                                                                                                               ),
-                                                                                                                                 $ -> emptyArray().prependAll(tail,
+                                                                                                                                 a -> emptyArray().prependAll(tail,
                                                                                                                                                               elems
                                                                                                                                                              )
                                                                                                                                 )
@@ -228,7 +228,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                               return tail.ifEmptyElse(() -> Functions.ifArrElse(arr -> of(array.update(index,
                                                                                                                        arr.prepend(elem)
                                                                                                                       )),
-                                                                                                $ -> of(nullPadding(index,
+                                                                                                e -> of(nullPadding(index,
                                                                                                                     array,
                                                                                                                     emptyArray().prepend(elem)
                                                                                                                    ))
@@ -240,10 +240,10 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                  () -> of(nullPadding(index,
                                                                                                                       array,
                                                                                                                       tail.head()
-                                                                                                                          .match($ -> emptyObject().prepend(tail,
+                                                                                                                          .match(o -> emptyObject().prepend(tail,
                                                                                                                                                             elem
                                                                                                                                                            ),
-                                                                                                                                 $ -> emptyArray().prepend(tail,
+                                                                                                                                 a -> emptyArray().prepend(tail,
                                                                                                                                                            elem
                                                                                                                                                           )
                                                                                                                                 )
@@ -350,6 +350,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     public final JsArray intersection(final JsArray that,
                                       final TYPE ARRAY_AS
                                      )
@@ -364,6 +365,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public JsArray intersection_(final JsArray that)
     {
         return Functions.intersection_(this,
@@ -424,7 +426,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                                                                 .match(key -> emptyObject().put(tail,
                                                                                                                                                                 fn
                                                                                                                                                                ),
-                                                                                                                                       $ -> emptyArray().put(tail,
+                                                                                                                                       i -> emptyArray().put(tail,
                                                                                                                                                              fn
                                                                                                                                                             )
                                                                                                                                       );
@@ -469,6 +471,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
                                          final Function<? super JsPair, R> map,
                                          final Predicate<? super JsPair> predicate
@@ -518,6 +521,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public Stream<JsPair> stream_()
     {
         return streamOfArr(this,
@@ -554,13 +558,13 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                                                          array.get(Index.of(pair))
 
                                                                                         ))
-                                                             .flatMap(pair -> Functions.ifValueElse($ -> Stream.of(pair),
-                                                                                                    _obj -> streamOfObj(_obj,
-                                                                                                                        pair.path
-                                                                                                                       ),
-                                                                                                    _arr -> streamOfArr(_arr,
-                                                                                                                        pair.path
-                                                                                                                       )
+                                                             .flatMap(pair -> Functions.ifValueElse(e -> Stream.of(pair),
+                                                                                                    o -> streamOfObj(o,
+                                                                                                                     pair.path
+                                                                                                                    ),
+                                                                                                    a -> streamOfArr(a,
+                                                                                                                     pair.path
+                                                                                                                    )
                                                                                                    )
                                                                                        .apply(pair.elem)
                                                                      )
@@ -587,6 +591,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
     }
 
     @Override
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     public final JsArray union(final JsArray that,
                                final TYPE ARRAY_AS
                               )
@@ -601,6 +606,7 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
 
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsArray union_(final JsArray that
                                )
     {
@@ -674,16 +680,16 @@ abstract class AbstractJsArray<T extends MyVector<T>, O extends JsObj> implement
                                                           ));
     }
 
-    private BiPredicate<Integer, JsPath> putEmptyJson(final MyVector<?> p_array)
+    private BiPredicate<Integer, JsPath> putEmptyJson(final MyVector<?> parray)
     {
 
         return (index, tail) ->
         {
-            return index > (array.size() - 1) || array.isEmpty() || array.get(index)
+            return index > (parray.size() - 1) || parray.isEmpty() || parray.get(index)
                                                                          .isNotJson() || (tail.head()
-                                                                                              .isKey() && array.get(index)
+                                                                                              .isKey() && parray.get(index)
                                                                                                                .isArray()) || (tail.head()
-                                                                                                                                   .isIndex() && p_array.get(index)
+                                                                                                                                   .isIndex() && parray.get(index)
                                                                                                                                                         .isObj());
 
 

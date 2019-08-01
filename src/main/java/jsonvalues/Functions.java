@@ -22,6 +22,7 @@ import static jsonvalues.Trampoline.more;
 class Functions
 {
 
+    @SuppressWarnings("squid:S00117") //  perfectly fine using _ to name constant
     static final JsPath MINUS_ONE_INDEX = JsPath.empty()
                                                 .index(-1);
 
@@ -54,12 +55,12 @@ class Functions
     }
 
     static UnsupportedOperationException castingError(String method,
-                                                      Class<?> _class
+                                                      Class<?> pclass
                                                      )
     {
         return new UnsupportedOperationException(String.format("%s of %s",
                                                                method,
-                                                               _class.getName()
+                                                               pclass.getName()
                                                               ));
     }
 
@@ -378,7 +379,7 @@ class Functions
                              );
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static <T> Trampoline<Optional<T>> reduce_(final JsArray arr,
                                                final BinaryOperator<T> op,
                                                final Function<? super JsPair, T> fn,
@@ -440,7 +441,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static <T> Trampoline<Optional<T>> reduce_(final JsObj obj,
                                                final BinaryOperator<T> op,
                                                final Function<? super JsPair, T> fn,
@@ -499,7 +500,7 @@ class Functions
                              );
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsArray _filterJsObj_(final JsArray arr,
                                  final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                  final JsPath path
@@ -523,7 +524,7 @@ class Functions
         return arr;
 
     }
-
+    @SuppressWarnings("squid:S00100") // naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsObj _filterJsObj_(final JsObj obj,
                                final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                final JsPath path
@@ -549,8 +550,7 @@ class Functions
 
 
     }
-
-    @SuppressWarnings("ReturnValueIgnored")
+    @SuppressWarnings({"ReturnValueIgnored","squid:S00100"}) //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private static void _filterJsObj__(final Json<?> json,
                                        final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                        final JsPath path
@@ -568,7 +568,7 @@ class Functions
                  )
         .apply(json);
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsArray _filterJsObj__(final JsArray arr,
                                   final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                   final JsPath path
@@ -599,7 +599,7 @@ class Functions
         }
         return arr;
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsObj _filterJsObj__(final JsObj obj,
                                 final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                 final JsPath path
@@ -653,8 +653,7 @@ class Functions
         }
         return obj;
     }
-
-    @SuppressWarnings("ReturnValueIgnored")
+    @SuppressWarnings({"ReturnValueIgnored","squid:S00100"})//  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private static void _filterKeys__(final Json<?> json,
                                       final Predicate<? super JsPair> predicate,
                                       final JsPath path
@@ -671,7 +670,7 @@ class Functions
                                      )
                  ).apply(json);
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsArray _filterKeys__(final JsArray arr,
                                  final Predicate<? super JsPair> predicate,
                                  final JsPath path
@@ -694,14 +693,12 @@ class Functions
         return arr;
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsObj _filterKeys__(final JsObj obj,
                                final Predicate<? super JsPair> predicate,
                                final JsPath path
                               )
     {
-
-
         final Iterator<Map.Entry<String, JsElem>> iterator = obj.iterator();
         while (iterator.hasNext())
         {
@@ -752,8 +749,6 @@ class Functions
                                 final JsPath path
                                )
     {
-
-
         final Iterator<Map.Entry<String, JsElem>> iterator = obj.iterator();
         while (iterator.hasNext())
         {
@@ -771,14 +766,12 @@ class Functions
         return obj;
 
     }
-
-    @SuppressWarnings("ReturnValueIgnored")
+    @SuppressWarnings({"ReturnValueIgnored","squid:S00100"})//  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private static void _filterValues__(final Json<?> json,
                                         final Predicate<? super JsPair> predicate,
                                         final JsPath path
                                        )
     {
-
         ifObjElse(it -> _filterValues__(it,
                                         predicate,
                                         path
@@ -792,13 +785,12 @@ class Functions
         .apply(json);
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsArray _filterValues__(final JsArray arr,
                                    final Predicate<? super JsPair> predicate,
                                    final JsPath path
                                   )
     {
-
         JsPath currentPath = path;
         final Iterator<JsElem> iterator = arr.iterator();
         while (iterator.hasNext())
@@ -824,7 +816,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static JsObj _filterValues__(final JsObj obj,
                                  final Predicate<? super JsPair> predicate,
                                  final JsPath path
@@ -868,12 +860,12 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapJsObj_(acc,
-                                                                                        tail,
-                                                                                        fn,
-                                                                                        predicate,
-                                                                                        path
-                                                                                       ));
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapJsObj_(acc,
+                                                                                           tail,
+                                                                                           fn,
+                                                                                           predicate,
+                                                                                           path
+                                                                                          ));
                                   return ifObjElse(obj -> ifElse(p -> predicate.test(p.path,
                                                                                      obj
                                                                                     ),
@@ -884,21 +876,21 @@ class Functions
                                                                                 fn.apply(p.path,
                                                                                          obj
                                                                                         ),
-                                                                                () -> $tail
+                                                                                () -> tailCall
                                                                                );
                                                                  }
 
                                   ,
                                                                  p -> put(head.getKey(),
                                                                           p.elem,
-                                                                          () -> $tail
+                                                                          () -> tailCall
                                                                          )
                                                                 ).apply(JsPair.of(headPath,
                                                                                   obj
                                                                                  )),
                                                    value -> put(head.getKey(),
                                                                 value,
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                )
                                                   ).apply(head.getValue());
                               }
@@ -919,12 +911,12 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = more(() -> _mapJsObj_(acc,
-                                                                                          tail,
-                                                                                          fn,
-                                                                                          predicate,
-                                                                                          headPath
-                                                                                         ));
+                                  final Trampoline<JsArray> tailCall = more(() -> _mapJsObj_(acc,
+                                                                                             tail,
+                                                                                             fn,
+                                                                                             predicate,
+                                                                                             headPath
+                                                                                            ));
                                   return ifObjElse(obj -> ifElse(p -> predicate.test(p.path,
                                                                                      obj
                                                                                     ),
@@ -932,25 +924,25 @@ class Functions
                                                                           fn.apply(p.path,
                                                                                    obj
                                                                                   ),
-                                                                          () -> $tail
+                                                                          () -> tailCall
                                                                          ),
                                                                  p -> put(new JsPath(headPath.last()),
                                                                           p.elem,
-                                                                          () -> $tail
+                                                                          () -> tailCall
                                                                          )
                                                                 ).apply(JsPair.of(headPath,
                                                                                   obj
                                                                                  )),
                                                    value -> put(new JsPath(headPath.last()),
                                                                 value,
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                )
                                                   ).apply(head);
                               }
 
                              );
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsObj> _mapJsObj__(final JsObj acc,
                                          final JsObj remaining,
                                          final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
@@ -964,12 +956,12 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapJsObj__(acc,
-                                                                                         tail,
-                                                                                         fn,
-                                                                                         predicate,
-                                                                                         path
-                                                                                        ));
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapJsObj__(acc,
+                                                                                            tail,
+                                                                                            fn,
+                                                                                            predicate,
+                                                                                            path
+                                                                                           ));
                                   return ifJsonElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                        json
                                                                                       ),
@@ -987,7 +979,7 @@ class Functions
                                                                                                     headPath
                                                                                                    );
                                                                              },
-                                                                             () -> $tail
+                                                                             () -> tailCall
                                                                             ),
                                                                    p -> put_(JsPath.of(head.getKey()),
                                                                              () -> _mapJsObj__(json,
@@ -996,7 +988,7 @@ class Functions
                                                                                                predicate,
                                                                                                headPath
                                                                                               ),
-                                                                             () -> $tail
+                                                                             () -> tailCall
                                                                             )
                                                                   ).apply(JsPair.of(headPath,
                                                                                     json
@@ -1009,18 +1001,18 @@ class Functions
                                                                                   predicate,
                                                                                   headPath.index(-1)
                                                                                  ),
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                ),
                                                     value -> put(head.getKey(),
                                                                  value,
-                                                                 () -> $tail
+                                                                 () -> tailCall
                                                                 )
                                                    ).apply(head.getValue());
                               }
 
                              );
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsArray> _mapJsObj__(final JsArray acc,
                                            final JsArray remaining,
                                            final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
@@ -1034,12 +1026,12 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = more(() -> _mapJsObj__(acc,
-                                                                                           tail,
-                                                                                           fn,
-                                                                                           predicate,
-                                                                                           headPath
-                                                                                          ));
+                                  final Trampoline<JsArray> tailCall = more(() -> _mapJsObj__(acc,
+                                                                                              tail,
+                                                                                              fn,
+                                                                                              predicate,
+                                                                                              headPath
+                                                                                             ));
                                   return ifJsonElse(obj -> ifElse(p -> predicate.test(p.path,
                                                                                       obj
                                                                                      ),
@@ -1056,7 +1048,7 @@ class Functions
                                                                                                           headPath
                                                                                                          );
                                                                                    },
-                                                                                   () -> $tail
+                                                                                   () -> tailCall
                                                                                   ),
                                                                   p -> putInArray_(new JsPath(headPath.last()),
                                                                                    () -> _mapJsObj__(obj,
@@ -1065,7 +1057,7 @@ class Functions
                                                                                                      predicate,
                                                                                                      headPath
                                                                                                     ),
-                                                                                   () -> $tail
+                                                                                   () -> tailCall
                                                                                   )
                                                                  ).apply(JsPair.of(headPath,
                                                                                    obj
@@ -1078,11 +1070,11 @@ class Functions
                                                                                          predicate,
                                                                                          headPath.index(-1)
                                                                                         ),
-                                                                       () -> $tail
+                                                                       () -> tailCall
                                                                       ),
                                                     value -> put(new JsPath(headPath.last()),
                                                                  value,
-                                                                 () -> $tail
+                                                                 () -> tailCall
                                                                 )
                                                    )
                                   .apply(head);
@@ -1105,23 +1097,23 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapKeys_(acc,
-                                                                                       remaining.tail(head.getKey()),
-                                                                                       fn,
-                                                                                       predicate,
-                                                                                       path
-                                                                                      ));
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapKeys_(acc,
+                                                                                          remaining.tail(head.getKey()),
+                                                                                          fn,
+                                                                                          predicate,
+                                                                                          path
+                                                                                         ));
 
                                   return ifElse(predicate,
                                                 p -> removeOldKeyAndPutNew(head.getKey(),
                                                                            fn.apply(p),
                                                                            p.elem,
-                                                                           () -> $tail
+                                                                           () -> tailCall
 
                                                                           ),
                                                 p -> put(head.getKey(),
                                                          p.elem,
-                                                         () -> $tail
+                                                         () -> tailCall
                                                         )
                                                ).apply(JsPair.of(headPath,
                                                                  head.getValue()
@@ -1134,6 +1126,7 @@ class Functions
 
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsArray> _mapKeys__(final JsArray acc,
                                           final JsArray remaining,
                                           final Function<? super JsPair, String> fn,
@@ -1150,12 +1143,12 @@ class Functions
 
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = more(() -> _mapKeys__(acc,
-                                                                                          remaining.tail(),
-                                                                                          fn,
-                                                                                          predicate,
-                                                                                          headPath
-                                                                                         ));
+                                  final Trampoline<JsArray> tailCall = more(() -> _mapKeys__(acc,
+                                                                                             remaining.tail(),
+                                                                                             fn,
+                                                                                             predicate,
+                                                                                             headPath
+                                                                                            ));
 
                                   return ifJsonElse(json -> putInArray_(new JsPath(headPath.last()),
                                                                         () -> _mapKeys__(json,
@@ -1163,11 +1156,11 @@ class Functions
                                                                                          predicate,
                                                                                          headPath
                                                                                         ),
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        ),
-                                                    $ -> put(new JsPath(headPath.last()),
+                                                    e -> put(new JsPath(headPath.last()),
                                                              head,
-                                                             () -> $tail
+                                                             () -> tailCall
                                                             )
                                                    )
                                   .apply(head);
@@ -1177,7 +1170,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsObj> _mapKeys__(final JsObj acc,
                                         final JsObj remaining,
                                         final Function<? super JsPair, String> fn,
@@ -1192,43 +1185,43 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapKeys__(acc,
-                                                                                        remaining.tail(head.getKey()),
-                                                                                        fn,
-                                                                                        predicate,
-                                                                                        path
-                                                                                       ));
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapKeys__(acc,
+                                                                                           remaining.tail(head.getKey()),
+                                                                                           fn,
+                                                                                           predicate,
+                                                                                           path
+                                                                                          ));
 
                                   final JsPair pair = JsPair.of(headPath,
                                                                 head.getValue()
                                                                );
                                   return ifElse(predicate,
-                                                ifJsonElse((_path, json) -> removeOldKeyAndPutNew_(head.getKey(),
+                                                ifJsonElse((ppath, json) -> removeOldKeyAndPutNew_(head.getKey(),
                                                                                                    fn.apply(pair),
                                                                                                    () -> _mapKeys__(json,
                                                                                                                     fn,
                                                                                                                     predicate,
-                                                                                                                    _path
+                                                                                                                    ppath
                                                                                                                    ),
-                                                                                                   () -> $tail
+                                                                                                   () -> tailCall
                                                                                                   ),
-                                                           (_path, elem) -> removeOldKeyAndPutNew(head.getKey(),
+                                                           (p, elem) -> removeOldKeyAndPutNew(head.getKey(),
                                                                                                   fn.apply(pair),
                                                                                                   elem,
-                                                                                                  () -> $tail
+                                                                                                  () -> tailCall
                                                                                                  )
                                                           ),
-                                                ifJsonElse((_path, json) -> put_(JsPath.of(head.getKey()),
+                                                ifJsonElse((ppath, json) -> put_(JsPath.of(head.getKey()),
                                                                                  () -> _mapKeys__(json,
                                                                                                   fn,
                                                                                                   predicate,
-                                                                                                  _path
+                                                                                                  ppath
                                                                                                  ),
-                                                                                 () -> $tail
+                                                                                 () -> tailCall
                                                                                 ),
-                                                           (_path, elem) -> put(head.getKey(),
+                                                           (p, elem) -> put(head.getKey(),
                                                                                 elem,
-                                                                                () -> $tail
+                                                                                () -> tailCall
                                                                                )
 
                                                           )
@@ -1241,6 +1234,7 @@ class Functions
 
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Trampoline<JsArray> _mapValues_(final JsArray acc,
                                            final JsArray remaining,
                                            final Function<? super JsPair, ? extends JsElem> fn,
@@ -1256,25 +1250,25 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = more(() -> _mapValues_(acc,
-                                                                                           tail,
-                                                                                           fn,
-                                                                                           predicate,
-                                                                                           headPath
-                                                                                          ));
+                                  final Trampoline<JsArray> tailCall = more(() -> _mapValues_(acc,
+                                                                                              tail,
+                                                                                              fn,
+                                                                                              predicate,
+                                                                                              headPath
+                                                                                             ));
 
                                   return ifJsonElse(elem -> put(new JsPath(headPath.last()),
                                                                 elem,
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                ),
                                                     elem -> ifElse(predicate,
                                                                    p -> put(new JsPath(headPath.last()),
                                                                             fn.apply(p),
-                                                                            () -> $tail
+                                                                            () -> tailCall
                                                                            ),
                                                                    p -> put(new JsPath(headPath.last()),
                                                                             elem,
-                                                                            () -> $tail
+                                                                            () -> tailCall
                                                                            )
                                                                   ).apply(JsPair.of(headPath,
                                                                                     elem
@@ -1286,6 +1280,7 @@ class Functions
                              );
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Trampoline<JsObj> _mapValues_(final JsObj acc,
                                          final JsObj remaining,
                                          final Function<? super JsPair, ? extends JsElem> fn,
@@ -1300,18 +1295,18 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapValues_(acc,
-                                                                                         tail,
-                                                                                         fn,
-                                                                                         predicate,
-                                                                                         path
-                                                                                        ));
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapValues_(acc,
+                                                                                            tail,
+                                                                                            fn,
+                                                                                            predicate,
+                                                                                            path
+                                                                                           ));
 
                                   return mapHead(fn,
                                                  predicate,
                                                  head,
                                                  headPath,
-                                                 $tail
+                                                 tailCall
                                                 );
 
                               }
@@ -1320,6 +1315,7 @@ class Functions
 
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsArray> _mapValues__(final JsArray acc,
                                             final JsArray remaining,
                                             final Function<? super JsPair, ? extends JsElem> fn,
@@ -1335,12 +1331,12 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = more(() -> _mapValues__(acc,
-                                                                                            tail,
-                                                                                            fn,
-                                                                                            predicate,
-                                                                                            headPath
-                                                                                           ));
+                                  final Trampoline<JsArray> tailCall = more(() -> _mapValues__(acc,
+                                                                                               tail,
+                                                                                               fn,
+                                                                                               predicate,
+                                                                                               headPath
+                                                                                              ));
 
 
                                   return ifJsonElse(json -> putInArray_(new JsPath(headPath.last()),
@@ -1349,17 +1345,17 @@ class Functions
                                                                                            predicate,
                                                                                            headPath
                                                                                           ),
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        ),
                                                     elem ->
                                                     ifElse(predicate,
                                                            p -> put(new JsPath(headPath.last()),
                                                                     fn.apply(p),
-                                                                    () -> $tail
+                                                                    () -> tailCall
                                                                    ),
                                                            p -> put(new JsPath(headPath.last()),
                                                                     elem,
-                                                                    () -> $tail
+                                                                    () -> tailCall
                                                                    )
                                                           )
                                                     .apply(JsPair.of(headPath,
@@ -1373,6 +1369,7 @@ class Functions
                              );
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     static Trampoline<JsObj> _mapValues__(final JsObj acc,
                                           final JsObj remaining,
                                           final Function<? super JsPair, ? extends JsElem> fn,
@@ -1387,19 +1384,19 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = more(() -> _mapValues__(acc,
-                                                                                          tail,
-                                                                                          fn,
-                                                                                          predicate,
-                                                                                          path
+                                  final Trampoline<JsObj> tailCall = more(() -> _mapValues__(acc,
+                                                                                             tail,
+                                                                                             fn,
+                                                                                             predicate,
+                                                                                             path
 
-                                                                                         ));
+                                                                                            ));
 
                                   return mapHead_(fn,
                                                   predicate,
                                                   head,
                                                   headPath,
-                                                  $tail,
+                                                  tailCall,
                                                   json -> () -> _mapValues__(json,
                                                                              fn,
                                                                              predicate,
@@ -1414,27 +1411,27 @@ class Functions
     }
 
     private static Trampoline<JsArray> appendBack(final JsElem head,
-                                                  final Trampoline<Trampoline<JsArray>> $$tail
+                                                  final Trampoline<Trampoline<JsArray>> tail
                                                  )
     {
-        return more($$tail).map(it -> it.append(head));
+        return more(tail).map(it -> it.append(head));
     }
 
 
     private static Trampoline<JsArray> appendFront(final JsElem head,
-                                                   final Trampoline<Trampoline<JsArray>> $$tail
+                                                   final Trampoline<Trampoline<JsArray>> tail
                                                   )
     {
-        return more($$tail).map(it -> it.prepend(head));
+        return more(tail).map(it -> it.prepend(head));
     }
 
-    private static Trampoline<JsArray> appendFront_(final Trampoline<Trampoline<? extends Json<?>>> $$head,
-                                                    final Trampoline<Trampoline<JsArray>> $$tail
+    private static Trampoline<JsArray> appendFront_(final Trampoline<Trampoline<? extends Json<?>>> head,
+                                                    final Trampoline<Trampoline<JsArray>> tail
                                                    )
 
     {
-        return more($$tail).flatMap(json -> $$head.get()
-                                                  .map(json::prepend));
+        return more(tail).flatMap(json -> head.get()
+                                              .map(json::prepend));
     }
 
     static Trampoline<JsArray> filterJsObjs(final JsArray arr,
@@ -1450,23 +1447,23 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> filterJsObjs(tail,
-                                                                                                       predicate,
-                                                                                                       headPath
-                                                                                                      ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> filterJsObjs(tail,
+                                                                                                          predicate,
+                                                                                                          headPath
+                                                                                                         ));
                                   return ifObjElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                       json
                                                                                      ),
                                                                   p -> appendFront(json,
-                                                                                   () -> $tail
+                                                                                   () -> tailCall
                                                                                   ),
-                                                                  p -> $tail
+                                                                  p -> tailCall
                                                                  )
                                                    .apply(JsPair.of(headPath,
                                                                     json
                                                                    )),
                                                    value -> appendFront(value,
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        )
                                                   )
                                   .apply(head);
@@ -1490,27 +1487,27 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterJsObjs(tail,
-                                                                                                     predicate,
-                                                                                                     path
-                                                                                                    ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterJsObjs(tail,
+                                                                                                        predicate,
+                                                                                                        path
+                                                                                                       ));
                                   return ifObjElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                       json
                                                                                      ),
                                                                   p -> put(head.getKey(),
                                                                            json,
-                                                                           () -> $tail
+                                                                           () -> tailCall
                                                                           )
 
                                   ,
-                                                                  p -> $tail
+                                                                  p -> tailCall
                                                                  )
                                                    .apply(JsPair.of(headPath,
                                                                     json
                                                                    )),
                                                    value -> put(head.getKey(),
                                                                 value,
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                )
                                                   )
                                   .apply(head.getValue());
@@ -1533,10 +1530,10 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> filterJsObjs_(tail,
-                                                                                                        predicate,
-                                                                                                        headPath
-                                                                                                       ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> filterJsObjs_(tail,
+                                                                                                           predicate,
+                                                                                                           headPath
+                                                                                                          ));
                                   return ifJsonElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                        json
                                                                                       ),
@@ -1544,10 +1541,10 @@ class Functions
                                                                                                          predicate,
                                                                                                          headPath
                                                                                                         ),
-                                                                                     () -> $tail
+                                                                                     () -> tailCall
 
                                                                                     ),
-                                                                   p -> $tail
+                                                                   p -> tailCall
 
                                                                   )
                                                     .apply(JsPair.of(headPath,
@@ -1557,10 +1554,10 @@ class Functions
                                                                                              predicate,
                                                                                              headPath.index(-1)
                                                                                             ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
                                                     value -> appendFront(value,
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         )
                                                    )
                                   .apply(head);
@@ -1571,6 +1568,7 @@ class Functions
 
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static Trampoline<JsObj> filterJsObjs_(final JsObj obj,
                                            final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                            final JsPath path
@@ -1584,10 +1582,10 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterJsObjs_(tail,
-                                                                                                      predicate,
-                                                                                                      path
-                                                                                                     ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterJsObjs_(tail,
+                                                                                                         predicate,
+                                                                                                         path
+                                                                                                        ));
                                   return ifJsonElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                        json
                                                                                       ),
@@ -1596,9 +1594,9 @@ class Functions
                                                                                                  predicate,
                                                                                                  headPath
                                                                                                 ),
-                                                                             () -> $tail
+                                                                             () -> tailCall
                                                                             ),
-                                                                   p -> $tail
+                                                                   p -> tailCall
                                                                   ).apply(JsPair.of(headPath,
                                                                                     json
                                                                                    )),
@@ -1607,11 +1605,11 @@ class Functions
                                                                                     predicate,
                                                                                     headPath.index(-1)
                                                                                    ),
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                ),
                                                     value -> put(head.getKey(),
                                                                  value,
-                                                                 () -> $tail
+                                                                 () -> tailCall
                                                                 )
                                                    )
                                   .apply(head.getValue());
@@ -1634,19 +1632,19 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterKeys(tail,
-                                                                                                   predicate,
-                                                                                                   path
-                                                                                                  ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterKeys(tail,
+                                                                                                      predicate,
+                                                                                                      path
+                                                                                                     ));
 
                                   return ifElse(predicate,
                                                 () -> put(head.getKey(),
                                                           head.getValue(),
-                                                          () -> $tail
+                                                          () -> tailCall
                                                          ),
 
 
-                                                () -> $tail
+                                                () -> tailCall
                                                )
                                   .apply(JsPair.of(headPath,
                                                    head.getValue()
@@ -1675,6 +1673,7 @@ class Functions
         .apply(json);
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static Trampoline<JsArray> filterKeys_(final JsArray arr,
                                            final Predicate<? super JsPair> predicate,
                                            final JsPath path
@@ -1689,20 +1688,20 @@ class Functions
 
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> filterKeys_(tail,
-                                                                                                      predicate,
-                                                                                                      headPath
-                                                                                                     ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> filterKeys_(tail,
+                                                                                                         predicate,
+                                                                                                         headPath
+                                                                                                        ));
 
 
                                   return ifJsonElse(elem -> appendFront_(() -> filterKeys_(elem,
                                                                                            predicate,
                                                                                            headPath
                                                                                           ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
                                                     elem -> appendFront(elem,
-                                                                        () -> $tail
+                                                                        () -> tailCall
 
                                                                        )
                                                    )
@@ -1713,6 +1712,7 @@ class Functions
 
     }
 
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     static Trampoline<JsObj> filterKeys_(final JsObj obj,
                                          final Predicate<? super JsPair> predicate,
                                          final JsPath path
@@ -1726,10 +1726,10 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterKeys_(tail,
-                                                                                                    predicate,
-                                                                                                    path
-                                                                                                   ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterKeys_(tail,
+                                                                                                       predicate,
+                                                                                                       path
+                                                                                                      ));
                                   return ifElse(predicate,
                                                 () -> ifJsonElse(json -> put_(JsPath.of(head.getKey()),
                                                                               () -> filterKeys_(json,
@@ -1737,16 +1737,16 @@ class Functions
                                                                                                 headPath
 
                                                                                                ),
-                                                                              () -> $tail
+                                                                              () -> tailCall
                                                                              ),
                                                                  value -> put(head.getKey(),
                                                                               value,
-                                                                              () -> $tail
+                                                                              () -> tailCall
                                                                              )
 
                                                                 )
                                                 .apply(head.getValue()),
-                                                () -> $tail
+                                                () -> tailCall
                                                ).apply(JsPair.of(headPath,
                                                                  head.getValue()
                                                                 ));
@@ -1770,18 +1770,18 @@ class Functions
 
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> filterValues(tail,
-                                                                                                       predicate,
-                                                                                                       headPath
-                                                                                                      ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> filterValues(tail,
+                                                                                                          predicate,
+                                                                                                          headPath
+                                                                                                         ));
                                   return ifJsonElse(elem -> appendFront(elem,
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        ),
                                                     elem -> ifElse(predicate,
                                                                    () -> appendFront(elem,
-                                                                                     () -> $tail
+                                                                                     () -> tailCall
                                                                                     ),
-                                                                   () -> $tail
+                                                                   () -> tailCall
                                                                   )
                                                     .apply(JsPair.of(headPath,
                                                                      elem
@@ -1807,20 +1807,20 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterValues(tail,
-                                                                                                     predicate,
-                                                                                                     path
-                                                                                                    ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterValues(tail,
+                                                                                                        predicate,
+                                                                                                        path
+                                                                                                       ));
                                   return ifJsonElse(headElem -> put(head.getKey(),
                                                                     headElem,
-                                                                    () -> $tail
+                                                                    () -> tailCall
                                                                    ),
                                                     headElem -> ifElse(predicate,
                                                                        () -> put(head.getKey(),
                                                                                  headElem,
-                                                                                 () -> $tail
+                                                                                 () -> tailCall
                                                                                 ),
-                                                                       () -> $tail
+                                                                       () -> tailCall
                                                                       )
                                                     .apply(JsPair.of(headPath,
                                                                      headElem
@@ -1866,21 +1866,21 @@ class Functions
 
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> filterValues_(tail,
-                                                                                                        predicate,
-                                                                                                        headPath
-                                                                                                       ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> filterValues_(tail,
+                                                                                                           predicate,
+                                                                                                           headPath
+                                                                                                          ));
                                   return ifJsonElse(elem -> appendFront_(() -> filterValues_(elem,
                                                                                              predicate,
                                                                                              headPath
                                                                                             ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
                                                     elem -> ifElse(predicate,
                                                                    () -> appendFront(elem,
-                                                                                     () -> $tail
+                                                                                     () -> tailCall
                                                                                     ),
-                                                                   () -> $tail
+                                                                   () -> tailCall
                                                                   )
                                                     .apply(JsPair.of(headPath,
                                                                      elem
@@ -1906,23 +1906,23 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> filterValues_(tail,
-                                                                                                      predicate,
-                                                                                                      path
-                                                                                                     ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> filterValues_(tail,
+                                                                                                         predicate,
+                                                                                                         path
+                                                                                                        ));
                                   return ifJsonElse(headElem -> put_(JsPath.of(head.getKey()),
                                                                      () -> filterValues_(headElem,
                                                                                          predicate,
                                                                                          headPath
                                                                                         ),
-                                                                     () -> $tail
+                                                                     () -> tailCall
                                                                     ),
                                                     headElem -> ifElse(predicate,
                                                                        () -> put(head.getKey(),
                                                                                  headElem,
-                                                                                 () -> $tail
+                                                                                 () -> tailCall
                                                                                 ),
-                                                                       () -> $tail
+                                                                       () -> tailCall
                                                                       )
                                                     .apply(JsPair.of(headPath,
                                                                      headElem
@@ -1973,7 +1973,7 @@ class Functions
                        );
 
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     static Trampoline<JsArray> intersection(JsArray a,
                                             JsArray b,
                                             JsArray.TYPE ARRAY_AS
@@ -1999,7 +1999,7 @@ class Functions
 
         throw new IllegalArgumentException(ARRAY_AS.name() + " option not supported");
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     static Trampoline<JsObj> intersection(final JsObj a,
                                           final JsObj b,
                                           final JsArray.TYPE ARRAY_AS
@@ -2012,10 +2012,10 @@ class Functions
 
         JsObj tail = a.tail(head.getKey());
 
-        final Trampoline<Trampoline<JsObj>> $tail = () -> intersection(tail,
-                                                                       b,
-                                                                       ARRAY_AS
-                                                                      );
+        final Trampoline<Trampoline<JsObj>> tailCall = () -> intersection(tail,
+                                                                          b,
+                                                                          ARRAY_AS
+                                                                         );
 
         final JsElem bElem = b.get(head.getKey());
 
@@ -2025,10 +2025,10 @@ class Functions
                                             ARRAY_AS
                                            )) || bElem.equals(head.getValue())) return put(head.getKey(),
                                                                                            head.getValue(),
-                                                                                           $tail
+                                                                                           tailCall
                                                                                           );
 
-        return more($tail);
+        return more(tailCall);
 
 
     }
@@ -2047,14 +2047,14 @@ class Functions
         final JsElem otherHead = b.head();
         final JsArray otherTail = b.tail();
 
-        final Trampoline<Trampoline<JsArray>> $tail = () -> intersectionAsList(tail,
-                                                                               otherTail
-                                                                              );
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsList(tail,
+                                                                                  otherTail
+                                                                                 );
 
         if (head.equals(otherHead)) return appendFront(head,
-                                                       $tail
+                                                       tailCall
                                                       );
-        return more($tail);
+        return more(tailCall);
 
 
     }
@@ -2071,14 +2071,14 @@ class Functions
         final JsElem head = a.head();
         final JsArray tail = a.tail();
 
-        final Trampoline<Trampoline<JsArray>> $tail = () -> intersectionAsMultiSet(tail,
-                                                                                   b
-                                                                                  );
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsMultiSet(tail,
+                                                                                      b
+                                                                                     );
 
         if (b.containsElem(head)) return appendFront(head,
-                                                     $tail
+                                                     tailCall
                                                     );
-        return more($tail);
+        return more(tailCall);
     }
 
     private static Trampoline<JsArray> intersectionAsSet(JsArray a,
@@ -2091,18 +2091,18 @@ class Functions
         final JsElem head = a.head();
         final JsArray tail = a.tail();
 
-        final Trampoline<Trampoline<JsArray>> $tail = () -> intersectionAsSet(tail,
-                                                                              b
-                                                                             );
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsSet(tail,
+                                                                                 b
+                                                                                );
 
         if (b.containsElem(head) && !tail.containsElem(head)) return appendFront(head,
-                                                                                 $tail
+                                                                                 tailCall
                                                                                 );
-        return more($tail);
+        return more(tailCall);
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     static Trampoline<JsObj> intersection_(final JsObj a,
                                            final JsObj b,
                                            final JsArray.TYPE ARRAY_AS
@@ -2114,10 +2114,10 @@ class Functions
 
         JsObj tail = a.tail(head.getKey());
 
-        final Trampoline<JsObj> $tail = more(() -> intersection_(tail,
-                                                                 b,
-                                                                 ARRAY_AS
-                                                                ));
+        final Trampoline<JsObj> tailCall = more(() -> intersection_(tail,
+                                                                    b,
+                                                                    ARRAY_AS
+                                                                   ));
         if (b.containsPath(head.getKey()))
         {
 
@@ -2138,24 +2138,24 @@ class Functions
                                   .asJson();
                 Json<?> obj1 = headOtherElement.asJson();
 
-                Trampoline<? extends Json<?>> $head = more(() -> intersection_(obj,
-                                                                               obj1,
-                                                                               ARRAY_AS
-                                                                              ));
+                Trampoline<? extends Json<?>> headCall = more(() -> intersection_(obj,
+                                                                                  obj1,
+                                                                                  ARRAY_AS
+                                                                                 ));
 
                 return put_(JsPath.of(head.getKey()),
-                            () -> $head,
-                            () -> $tail
+                            () -> headCall,
+                            () -> tailCall
                            );
             }
 
         }
 
-        return $tail;
+        return tailCall;
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     private static Trampoline<? extends Json<?>> intersection_(final Json<?> a,
                                                                final Json<?> b,
                                                                final JsArray.TYPE ARRAY_AS
@@ -2187,26 +2187,26 @@ class Functions
         final JsElem head = a.head();
         final JsElem otherHead = b.head();
 
-        final Trampoline<JsArray> $tail = intersectionAsList(a.tail(),
-                                                             b.tail()
-                                                            );
+        final Trampoline<JsArray> tailCall = intersectionAsList(a.tail(),
+                                                                b.tail()
+                                                               );
 
         if (head.isJson() && isSameType(otherHead).test(head))
         {
             final Json<?> obj = head.asJson();
             final Json<?> obj1 = otherHead.asJson();
 
-            Trampoline<? extends Json<?>> $head = more(() -> intersection_(obj,
-                                                                           obj1,
-                                                                           JsArray.TYPE.LIST
-                                                                          ));
-            return appendFront_(() -> $head,
-                                () -> $tail
+            Trampoline<? extends Json<?>> headCall = more(() -> intersection_(obj,
+                                                                              obj1,
+                                                                              JsArray.TYPE.LIST
+                                                                             ));
+            return appendFront_(() -> headCall,
+                                () -> tailCall
                                );
         } else if (head.equals(otherHead)) return appendFront(head,
-                                                              () -> $tail
+                                                              () -> tailCall
                                                              );
-        else return more(() -> $tail);
+        else return more(() -> tailCall);
 
 
     }
@@ -2223,11 +2223,11 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapJsObj(tail,
-                                                                                                 fn,
-                                                                                                 predicate,
-                                                                                                 path
-                                                                                                ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapJsObj(tail,
+                                                                                                    fn,
+                                                                                                    predicate,
+                                                                                                    path
+                                                                                                   ));
                                   return ifObjElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                       json
                                                                                      ),
@@ -2235,13 +2235,13 @@ class Functions
                                                                            fn.apply(p.path,
                                                                                     json
                                                                                    ),
-                                                                           () -> $tail
+                                                                           () -> tailCall
                                                                           )
 
                                   ,
                                                                   p -> put(head.getKey(),
                                                                            p.elem,
-                                                                           () -> $tail
+                                                                           () -> tailCall
                                                                           )
                                                                  )
                                                    .apply(JsPair.of(headPath,
@@ -2249,7 +2249,7 @@ class Functions
                                                                    )),
                                                    value -> put(head.getKey(),
                                                                 value,
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                )
                                                   )
                                   .apply(head.getValue());
@@ -2270,28 +2270,28 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> mapJsObj(tail,
-                                                                                                   fn,
-                                                                                                   predicate,
-                                                                                                   headPath
-                                                                                                  ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> mapJsObj(tail,
+                                                                                                      fn,
+                                                                                                      predicate,
+                                                                                                      headPath
+                                                                                                     ));
                                   return ifObjElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                       json
                                                                                      ),
                                                                   p -> appendFront(fn.apply(p.path,
                                                                                             json
                                                                                            ),
-                                                                                   () -> $tail
+                                                                                   () -> tailCall
                                                                                   ),
                                                                   p -> appendFront(p.elem,
-                                                                                   () -> $tail
+                                                                                   () -> tailCall
                                                                                   )
                                                                  )
                                                    .apply(JsPair.of(headPath,
                                                                     json
                                                                    )),
                                                    value -> appendFront(value,
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        )
                                                   )
                                   .apply(head);
@@ -2312,11 +2312,11 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapJsObj_(tail,
-                                                                                                  fn,
-                                                                                                  predicate,
-                                                                                                  path
-                                                                                                 ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapJsObj_(tail,
+                                                                                                     fn,
+                                                                                                     predicate,
+                                                                                                     path
+                                                                                                    ));
                                   return ifJsonElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                        json
                                                                                       ),
@@ -2328,7 +2328,7 @@ class Functions
                                                                                              predicate,
                                                                                              headPath
                                                                                             ),
-                                                                             () -> $tail
+                                                                             () -> tailCall
                                                                             ),
                                                                    p -> put_(JsPath.of(head.getKey()),
                                                                              () -> mapJsObj_(json,
@@ -2336,7 +2336,7 @@ class Functions
                                                                                              predicate,
                                                                                              headPath
                                                                                             ),
-                                                                             () -> $tail
+                                                                             () -> tailCall
                                                                             )
                                                                   )
                                                     .apply(JsPair.of(headPath,
@@ -2348,11 +2348,11 @@ class Functions
                                                                                 predicate,
                                                                                 headPath.index(-1)
                                                                                ),
-                                                                () -> $tail
+                                                                () -> tailCall
                                                                ),
                                                     value -> put(head.getKey(),
                                                                  value,
-                                                                 () -> $tail
+                                                                 () -> tailCall
                                                                 )
                                                    )
                                   .apply(head.getValue());
@@ -2373,11 +2373,11 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> mapJsObj_(tail,
-                                                                                                    fn,
-                                                                                                    predicate,
-                                                                                                    headPath
-                                                                                                   ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> mapJsObj_(tail,
+                                                                                                       fn,
+                                                                                                       predicate,
+                                                                                                       headPath
+                                                                                                      ));
                                   return ifJsonElse(json -> ifElse(p -> predicate.test(p.path,
                                                                                        json
                                                                                       ),
@@ -2388,7 +2388,7 @@ class Functions
                                                                                                      predicate,
                                                                                                      headPath
                                                                                                     ),
-                                                                                     () -> $tail
+                                                                                     () -> tailCall
 
                                                                                     ),
                                                                    p -> appendFront_(() -> mapJsObj_(json,
@@ -2396,7 +2396,7 @@ class Functions
                                                                                                      predicate,
                                                                                                      headPath
                                                                                                     ),
-                                                                                     () -> $tail
+                                                                                     () -> tailCall
                                                                                     )
                                                                   )
                                                     .apply(JsPair.of(headPath,
@@ -2407,10 +2407,10 @@ class Functions
                                                                                          predicate,
                                                                                          headPath.index(-1)
                                                                                         ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
                                                     value -> appendFront(value,
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         )
                                                    )
                                   .apply(head);
@@ -2432,21 +2432,21 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapKeys(obj.tail(head.getKey()),
-                                                                                                fn,
-                                                                                                predicate,
-                                                                                                path
-                                                                                               ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapKeys(obj.tail(head.getKey()),
+                                                                                                   fn,
+                                                                                                   predicate,
+                                                                                                   path
+                                                                                                  ));
 
                                   return ifElse(predicate,
                                                 p -> put(fn.apply(p),
                                                          p.elem,
-                                                         () -> $tail
+                                                         () -> tailCall
 
                                                         ),
                                                 p -> put(head.getKey(),
                                                          p.elem,
-                                                         () -> $tail
+                                                         () -> tailCall
                                                         )
 
 
@@ -2476,21 +2476,21 @@ class Functions
 
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> mapKeys_(array.tail(),
-                                                                                                   fn,
-                                                                                                   predicate,
-                                                                                                   headPath
-                                                                                                  ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> mapKeys_(array.tail(),
+                                                                                                      fn,
+                                                                                                      predicate,
+                                                                                                      headPath
+                                                                                                     ));
 
                                   return ifJsonElse(json -> appendFront_(() -> mapKeys_(json,
                                                                                         fn,
                                                                                         predicate,
                                                                                         headPath
                                                                                        ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
-                                                    $ -> appendFront(head,
-                                                                     () -> $tail
+                                                    e -> appendFront(head,
+                                                                     () -> tailCall
                                                                     )
                                                    )
                                   .apply(head);
@@ -2514,39 +2514,39 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapKeys_(obj.tail(head.getKey()),
-                                                                                                 fn,
-                                                                                                 predicate,
-                                                                                                 path
-                                                                                                ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapKeys_(obj.tail(head.getKey()),
+                                                                                                    fn,
+                                                                                                    predicate,
+                                                                                                    path
+                                                                                                   ));
                                   JsPair pair = JsPair.of(headPath,
                                                           head.getValue()
                                                          );
                                   return ifElse(predicate,
-                                                ifJsonElse((_path, json) -> put_(JsPath.of(fn.apply(pair)),
+                                                ifJsonElse((ppath, json) -> put_(JsPath.of(fn.apply(pair)),
                                                                                  () -> mapKeys_(json,
                                                                                                 fn,
                                                                                                 predicate,
-                                                                                                _path
+                                                                                                ppath
                                                                                                ),
-                                                                                 () -> $tail
+                                                                                 () -> tailCall
                                                                                 ),
-                                                           (_path, elem) -> put(fn.apply(pair),
+                                                           (p, elem) -> put(fn.apply(pair),
                                                                                 elem,
-                                                                                () -> $tail
+                                                                                () -> tailCall
                                                                                )
                                                           ),
-                                                ifJsonElse((_path, json) -> put_(JsPath.of(head.getKey()),
+                                                ifJsonElse((ppath, json) -> put_(JsPath.of(head.getKey()),
                                                                                  () -> mapKeys_(json,
                                                                                                 fn,
                                                                                                 predicate,
-                                                                                                _path
+                                                                                                ppath
                                                                                                ),
-                                                                                 () -> $tail
+                                                                                 () -> tailCall
                                                                                 ),
-                                                           (_path, elem) -> put(head.getKey(),
+                                                           (p, elem) -> put(head.getKey(),
                                                                                 elem,
-                                                                                () -> $tail
+                                                                                () -> tailCall
                                                                                )
 
                                                           )
@@ -2574,21 +2574,21 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> mapValues(tail,
-                                                                                                    fn,
-                                                                                                    predicate,
-                                                                                                    headPath
-                                                                                                   ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> mapValues(tail,
+                                                                                                       fn,
+                                                                                                       predicate,
+                                                                                                       headPath
+                                                                                                      ));
 
                                   return ifJsonElse(elem -> appendFront(elem,
-                                                                        () -> $tail
+                                                                        () -> tailCall
                                                                        ),
                                                     elem -> ifElse(predicate,
                                                                    p -> appendFront(fn.apply(p),
-                                                                                    () -> $tail
+                                                                                    () -> tailCall
                                                                                    ),
                                                                    p -> appendFront(elem,
-                                                                                    () -> $tail
+                                                                                    () -> tailCall
                                                                                    )
                                                                   ).apply(JsPair.of(headPath,
                                                                                     elem
@@ -2613,17 +2613,17 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapValues(tail,
-                                                                                                  fn,
-                                                                                                  predicate,
-                                                                                                  path
-                                                                                                 ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapValues(tail,
+                                                                                                     fn,
+                                                                                                     predicate,
+                                                                                                     path
+                                                                                                    ));
 
                                   return mapHead(fn,
                                                  predicate,
                                                  head,
                                                  headPath,
-                                                 $tail
+                                                 tailCall
                                                 );
 
                               }
@@ -2646,11 +2646,11 @@ class Functions
                               {
                                   final JsPath headPath = path.inc();
 
-                                  final Trampoline<JsArray> $tail = Trampoline.more(() -> mapValues_(tail,
-                                                                                                     fn,
-                                                                                                     predicate,
-                                                                                                     headPath
-                                                                                                    ));
+                                  final Trampoline<JsArray> tailCall = Trampoline.more(() -> mapValues_(tail,
+                                                                                                        fn,
+                                                                                                        predicate,
+                                                                                                        headPath
+                                                                                                       ));
 
 
                                   return ifJsonElse(json -> appendFront_(() -> mapValues_(json,
@@ -2658,14 +2658,14 @@ class Functions
                                                                                           predicate,
                                                                                           headPath
                                                                                          ),
-                                                                         () -> $tail
+                                                                         () -> tailCall
                                                                         ),
                                                     elem -> ifElse(predicate,
                                                                    p -> appendFront(fn.apply(p),
-                                                                                    () -> $tail
+                                                                                    () -> tailCall
                                                                                    ),
                                                                    p -> appendFront(elem,
-                                                                                    () -> $tail
+                                                                                    () -> tailCall
                                                                                    )
                                                                   ).apply(JsPair.of(headPath,
                                                                                     elem
@@ -2691,17 +2691,17 @@ class Functions
                               {
                                   final JsPath headPath = path.key(head.getKey());
 
-                                  final Trampoline<JsObj> $tail = Trampoline.more(() -> mapValues_(tail,
-                                                                                                   fn,
-                                                                                                   predicate,
-                                                                                                   path
-                                                                                                  ));
+                                  final Trampoline<JsObj> tailCall = Trampoline.more(() -> mapValues_(tail,
+                                                                                                      fn,
+                                                                                                      predicate,
+                                                                                                      path
+                                                                                                     ));
 
                                   return mapHead_(fn,
                                                   predicate,
                                                   head,
                                                   headPath,
-                                                  $tail,
+                                                  tailCall,
                                                   json -> () -> mapValues_(json,
                                                                            fn,
                                                                            predicate,
@@ -3327,88 +3327,88 @@ class Functions
 
     static Trampoline<JsObj> put(final String key,
                                  final JsElem elem,
-                                 final Trampoline<Trampoline<JsObj>> $$tail
+                                 final Trampoline<Trampoline<JsObj>> tail
 
                                 )
     {
-        return more($$tail).map(it -> it.put(JsPath.of(key),
-                                             elem
-                                            ));
+        return more(tail).map(it -> it.put(JsPath.of(key),
+                                           elem
+                                          ));
     }
 
     static Trampoline<JsArray> put(final JsPath path,
                                    final JsElem head,
-                                   final Trampoline<Trampoline<JsArray>> $$tail
+                                   final Trampoline<Trampoline<JsArray>> tail
                                   )
     {
-        return more($$tail).map(it -> it.put(path,
-                                             head
-                                            ));
+        return more(tail).map(it -> it.put(path,
+                                           head
+                                          ));
     }
 
     static Trampoline<JsArray> putInArray_(final JsPath path,
-                                           final Trampoline<Trampoline<? extends Json<?>>> $$head,
-                                           final Trampoline<Trampoline<JsArray>> $$tail
+                                           final Trampoline<Trampoline<? extends Json<?>>> head,
+                                           final Trampoline<Trampoline<JsArray>> tail
                                           )
 
     {
-        return more($$tail).flatMap(json -> $$head.get()
-                                                  .map(it ->
-                                                       json.put(path,
-                                                                it
-                                                               )));
+        return more(tail).flatMap(json -> head.get()
+                                              .map(it ->
+                                                   json.put(path,
+                                                            it
+                                                           )));
     }
 
     static Trampoline<JsObj> put_(final JsPath path,
-                                  final Trampoline<Trampoline<? extends Json<?>>> $$head,
-                                  final Trampoline<Trampoline<JsObj>> $$tail
+                                  final Trampoline<Trampoline<? extends Json<?>>> head,
+                                  final Trampoline<Trampoline<JsObj>> tail
 
                                  )
 
     {
-        return more($$tail).flatMap(json -> $$head.get()
-                                                  .map(it ->
-                                                       json.put(path,
-                                                                it
-                                                               )
-                                                      )
-                                   );
+        return more(tail).flatMap(json -> head.get()
+                                              .map(it ->
+                                                   json.put(path,
+                                                            it
+                                                           )
+                                                  )
+                                 );
     }
 
     private static Trampoline<JsObj> removeOldKeyAndPutNew(final String oldKey,
                                                            final String newKey,
                                                            final JsElem elem,
-                                                           final Trampoline<Trampoline<JsObj>> $$tail
+                                                           final Trampoline<Trampoline<JsObj>> tail
 
                                                           )
     {
-        return more($$tail).map(it ->
-                                {
-                                    it.remove(oldKey);
-                                    return it.put(newKey,
-                                                  elem
-                                                 );
-                                });
+        return more(tail).map(it ->
+                              {
+                                  it.remove(oldKey);
+                                  return it.put(newKey,
+                                                elem
+                                               );
+                              });
     }
 
     private static Trampoline<JsObj> removeOldKeyAndPutNew_(final String oldKey,
                                                             final String newKey,
-                                                            final Trampoline<Trampoline<? extends Json<?>>> $$head,
-                                                            final Trampoline<Trampoline<JsObj>> $$tail
+                                                            final Trampoline<Trampoline<? extends Json<?>>> head,
+                                                            final Trampoline<Trampoline<JsObj>> tail
 
                                                            )
 
     {
-        return more($$tail).flatMap(json -> $$head.get()
-                                                  .map(it ->
-                                                       {
-                                                           json.remove(oldKey);
-                                                           return json.put(JsPath.of(newKey),
-                                                                           it
-                                                                          );
-                                                       }
-                                                      )
-                                   );
+        return more(tail).flatMap(json -> head.get()
+                                              .map(it ->
+                                                   {
+                                                       json.remove(oldKey);
+                                                       return json.put(JsPath.of(newKey),
+                                                                       it
+                                                                      );
+                                                   }
+                                                  )
+                                 );
     }
 
 
@@ -3633,21 +3633,21 @@ class Functions
                                              final Predicate<? super JsPair> predicate,
                                              final Map.Entry<String, JsElem> head,
                                              final JsPath headPath,
-                                             final Trampoline<JsObj> $tail
+                                             final Trampoline<JsObj> tailCall
                                             )
     {
         return ifJsonElse(elem -> put(head.getKey(),
                                       elem,
-                                      () -> $tail
+                                      () -> tailCall
                                      ),
                           elem -> ifElse(predicate,
                                          p -> put(head.getKey(),
                                                   fn.apply(p),
-                                                  () -> $tail
+                                                  () -> tailCall
                                                  ),
                                          p -> put(head.getKey(),
                                                   elem,
-                                                  () -> $tail
+                                                  () -> tailCall
                                                  )
                                         )
                           .apply(JsPair.of(headPath,
@@ -3660,22 +3660,22 @@ class Functions
                                               final Predicate<? super JsPair> predicate,
                                               final Map.Entry<String, JsElem> head,
                                               final JsPath headPath,
-                                              final Trampoline<JsObj> $tail,
+                                              final Trampoline<JsObj> tailCall,
                                               final Function<Json<?>, Trampoline<Trampoline<? extends Json<?>>>> headTrampoline
                                              )
     {
         return ifJsonElse(elem -> put_(JsPath.of(head.getKey()),
                                        headTrampoline.apply(elem),
-                                       () -> $tail
+                                       () -> tailCall
                                       ),
                           elem -> ifElse(predicate,
                                          p -> put(head.getKey(),
                                                   fn.apply(p),
-                                                  () -> $tail
+                                                  () -> tailCall
                                                  ),
                                          p -> put(head.getKey(),
                                                   elem,
-                                                  () -> $tail
+                                                  () -> tailCall
                                                  )
                                         ).apply(JsPair.of(headPath,
                                                           elem
@@ -3743,13 +3743,13 @@ class Functions
 
         JsObj tail = b.tail(head.getKey());
 
-        Trampoline<JsObj> $tail = more(() -> combiner_(a,
-                                                       tail
-                                                      ));
+        Trampoline<JsObj> tailCall = more(() -> combiner_(a,
+                                                          tail
+                                                         ));
 
         return ifNothingElse(() -> put(head.getKey(),
                                        head.getValue(),
-                                       () -> $tail
+                                       () -> tailCall
                                       ),
                              ifPredicateElse(e -> e.isJson() && isSameType(head.getValue()).test(e),
                                              it ->
@@ -3760,17 +3760,17 @@ class Functions
                                                  Json<?> obj1 = head.getValue()
                                                                     .asJson();
 
-                                                 Trampoline<? extends Json<?>> $head = more(() -> combiner_(obj,
-                                                                                                            obj1
-                                                                                                           )
-                                                                                           );
+                                                 Trampoline<? extends Json<?>> headCall = more(() -> combiner_(obj,
+                                                                                                               obj1
+                                                                                                              )
+                                                                                              );
 
                                                  return put_(JsPath.of(head.getKey()),
-                                                             () -> $head,
-                                                             () -> $tail
+                                                             () -> headCall,
+                                                             () -> tailCall
                                                             );
                                              },
-                                             it -> $tail
+                                             it -> tailCall
                                             )
 
                             ).apply(a.get(JsPath.empty()
@@ -3778,7 +3778,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     static Trampoline<JsObj> union_(final JsObj a,
                                     final JsObj b,
                                     final TYPE ARRAY_AS
@@ -3791,14 +3791,14 @@ class Functions
 
         JsObj tail = b.tail(head.getKey());
 
-        Trampoline<JsObj> $tail = more(() -> union_(a,
-                                                    tail,
-                                                    ARRAY_AS
-                                                   ));
+        Trampoline<JsObj> tailCall = more(() -> union_(a,
+                                                       tail,
+                                                       ARRAY_AS
+                                                      ));
 
         return ifNothingElse(() -> put(head.getKey(),
                                        head.getValue(),
-                                       () -> $tail
+                                       () -> tailCall
                                       ),
                              ifPredicateElse(e -> e.isJson() && isSameType(head.getValue()).test(e),
                                              it ->
@@ -3809,18 +3809,18 @@ class Functions
                                                  Json<?> obj1 = head.getValue()
                                                                     .asJson();
 
-                                                 Trampoline<? extends Json<?>> $head = more(() -> union_(obj,
-                                                                                                         obj1,
-                                                                                                         ARRAY_AS
-                                                                                                        )
-                                                                                           );
+                                                 Trampoline<? extends Json<?>> headCall = more(() -> union_(obj,
+                                                                                                            obj1,
+                                                                                                            ARRAY_AS
+                                                                                                           )
+                                                                                              );
 
                                                  return put_(JsPath.of(head.getKey()),
-                                                             () -> $head,
-                                                             () -> $tail
+                                                             () -> headCall,
+                                                             () -> tailCall
                                                             );
                                              },
-                                             it -> $tail
+                                             it -> tailCall
                                             )
 
                             ).apply(a.get(JsPath.empty()
@@ -3843,7 +3843,7 @@ class Functions
 
 
     }
-
+    @SuppressWarnings("squid:S00100") //  perfectly fine _
     private static Trampoline<? extends Json<?>> union_(final Json<?> a,
                                                         final Json<?> b,
                                                         final JsArray.TYPE ARRAY_AS
@@ -3879,9 +3879,9 @@ class Functions
         final JsElem head = a.head();
         final JsElem otherHead = b.head();
 
-        final Trampoline<JsArray> $tail = union_(a.tail(),
-                                                 b.tail()
-                                                );
+        final Trampoline<JsArray> tailCall = union_(a.tail(),
+                                                    b.tail()
+                                                   );
 
 
         if (head.isJson() && isSameType(otherHead).test(head))
@@ -3891,19 +3891,19 @@ class Functions
             final Json<?> obj = head.asJson();
             final Json<?> obj1 = otherHead.asJson();
 
-            Trampoline<? extends Json<?>> $head = more(() -> union_(obj,
-                                                                    obj1,
-                                                                    JsArray.TYPE.LIST
-                                                                   ));
+            Trampoline<? extends Json<?>> headCall = more(() -> union_(obj,
+                                                                       obj1,
+                                                                       JsArray.TYPE.LIST
+                                                                      ));
 
 
-            return appendFront_(() -> $head,
-                                () -> $tail
+            return appendFront_(() -> headCall,
+                                () -> tailCall
                                );
         }
 
         return appendFront(head,
-                           () -> $tail
+                           () -> tailCall
                           );
 
 
@@ -3934,7 +3934,7 @@ class Functions
                             result
                            );
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private static Trampoline<? extends Json<?>> _mapKeys__(final Json<?> json,
                                                             final Function<? super JsPair, String> fn,
                                                             final Predicate<? super JsPair> predicate,
@@ -3958,7 +3958,7 @@ class Functions
         .apply(json);
 
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object, xx_ traverses the whole json
     private static Trampoline<? extends Json<?>> _mapValues__(Json<?> json,
                                                               Function<? super JsPair, ? extends JsElem> fn,
                                                               Predicate<? super JsPair> predicate,
@@ -4051,11 +4051,11 @@ class Functions
 
         if (a.isEmpty()) return done(b);
 
-        final Trampoline<JsArray> $tail = unionAsList(a.tail(),
-                                                      b.tail()
-                                                     );
+        final Trampoline<JsArray> tailCall = unionAsList(a.tail(),
+                                                         b.tail()
+                                                        );
         return appendFront(a.head(),
-                           () -> $tail
+                           () -> tailCall
                           );
 
 
@@ -4073,9 +4073,9 @@ class Functions
         final JsElem head = a.head();
         final JsElem otherHead = b.head();
 
-        final Trampoline<JsArray> $tail = combiner_(a.tail(),
-                                                    b.tail()
-                                                   );
+        final Trampoline<JsArray> tailCall = combiner_(a.tail(),
+                                                       b.tail()
+                                                      );
 
 
         if (head.isJson() && isSameType(otherHead).test(head))
@@ -4085,18 +4085,18 @@ class Functions
             final Json<?> obj = head.asJson();
             final Json<?> obj1 = otherHead.asJson();
 
-            Trampoline<? extends Json<?>> $head = more(() -> combiner_(obj,
-                                                                       obj1
-                                                                      ));
+            Trampoline<? extends Json<?>> headCall = more(() -> combiner_(obj,
+                                                                          obj1
+                                                                         ));
 
 
-            return appendFront_(() -> $head,
-                                () -> $tail
+            return appendFront_(() -> headCall,
+                                () -> tailCall
                                );
         }
 
         return appendFront(head.isNull() ? otherHead : head,
-                           () -> $tail
+                           () -> tailCall
                           );
 
 
@@ -4125,16 +4125,16 @@ class Functions
 
         JsElem last = b.last();
 
-        final Trampoline<JsArray> $init = unionAsSet(a,
-                                                     b.init()
-                                                    );
+        final Trampoline<JsArray> initCall = unionAsSet(a,
+                                                        b.init()
+                                                       );
 
         if (!a.containsElem(last)) return appendBack(last,
-                                                     () -> $init
+                                                     () -> initCall
                                                     );
 
 
-        return more(() -> $init);
+        return more(() -> initCall);
     }
 
     private static MyScalaImpl.Map updateIfCondition(Predicate<? super JsPair> condition,

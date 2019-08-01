@@ -76,6 +76,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public JsArray mapElems_(final Function<? super JsPair, ? extends JsElem> fn)
     {
         return Functions._mapValues__(this,
@@ -89,6 +90,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public JsArray mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
                              final Predicate<? super JsPair> predicate
                             )
@@ -135,6 +137,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapKeys_(final Function<? super JsPair, String> fn)
     {
         return Functions._mapKeys__(this,
@@ -148,6 +151,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapKeys_(final Function<? super JsPair, String> fn,
                                   final Predicate<? super JsPair> predicate
                                  )
@@ -195,6 +199,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                                   final BiPredicate<? super JsPath, ? super JsObj> predicate
                                  )
@@ -212,6 +217,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
     {
         return Functions._mapJsObj__(this,
@@ -239,6 +245,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray filterElems_(final Predicate<? super JsPair> filter)
     {
         return Functions._filterValues__(this,
@@ -260,6 +267,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return Functions._filterJsObj__(this,
@@ -278,6 +286,7 @@ class JsArrayMutableImpl extends AbstractJsArray<MyJavaImpl.Vector, JsObj>
     }
 
     @Override
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray filterKeys_(final Predicate<? super JsPair> filter)
     {
         return Functions._filterKeys__(this,

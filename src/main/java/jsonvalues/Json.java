@@ -79,6 +79,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param str the string to be parsed
      @return a {@link Try} computation
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Try _parse_(final String str)
     {
 
@@ -123,6 +124,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param options a builder with the filters and maps that, if specified, will be applied during the parsing
      @return a {@link Try} computation
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: _xx_ returns immutable object
     static Try _parse_(final String str,
                        final ParseOptions options
                       )
@@ -853,6 +855,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterElems(Predicate) how to filter the pairs of values parse only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T filterElems_(final Predicate<? super JsPair> filter);
 
     /**
@@ -873,6 +876,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterObjs(BiPredicate) how to filter the pair of jsons parse only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter
                  );
 
@@ -890,6 +894,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
      @see #filterKeys(Predicate) how to filter the keys of only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T filterKeys_(final Predicate<? super JsPair> filter);
 
     /**
@@ -991,7 +996,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         final Function<JsElem, Optional<BigInteger>> ifElse = Functions.ifIntegralElse(it -> Optional.of(BigInteger.valueOf(it)),
                                                                                        it -> Optional.of(BigInteger.valueOf(it)),
                                                                                        Optional::of,
-                                                                                       $ -> Optional.empty()
+                                                                                       e -> Optional.empty()
                                                                                       );
         return ifElse.apply(Functions.get(this,
                                           requireNonNull(path)
@@ -1048,7 +1053,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     {
         return Functions.ifDecimalElse(OptionalDouble::of,
                                        Functions::bigDecimalToDouble,
-                                       $ -> OptionalDouble.empty()
+                                       elem -> OptionalDouble.empty()
                                       )
                         .apply(Functions.get(this,
                                              requireNonNull(path)
@@ -1081,7 +1086,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         return Functions.ifIntegralElse(OptionalInt::of,
                                         Functions::longToInt,
                                         Functions::bigIntToInt,
-                                        $ -> OptionalInt.empty()
+                                        elem -> OptionalInt.empty()
                                        )
                         .apply(Functions.get(this,
                                              requireNonNull(path)
@@ -1112,7 +1117,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         return Functions.ifIntegralElse(OptionalLong::of,
                                         OptionalLong::of,
                                         Functions::bigIntToLong,
-                                        $ -> OptionalLong.empty()
+                                        elem -> OptionalLong.empty()
                                        )
                         .apply(Functions.get(this,
                                              requireNonNull(path)
@@ -1212,14 +1217,14 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         return stream().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
                        .count();
     }
-
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default long times_(JsElem e)
     {
         return stream_().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
                         .count();
     }
 
-
+    @SuppressWarnings("squid:S00117") //  perfectly fine _
     default boolean equals(final JsElem elem,
                            final TYPE ARRAY_AS
                           )
@@ -1288,6 +1293,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapElems(Function) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapElems_(final Function<? super JsPair, ? extends JsElem> fn);
 
 
@@ -1300,6 +1306,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapElems(Function, Predicate) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
                 final Predicate<? super JsPair> predicate
                );
@@ -1337,6 +1344,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function, Predicate) to map keys parse json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                final BiPredicate<? super JsPath, ? super JsObj> predicate
               );
@@ -1349,6 +1357,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapKeys_(Function) to map keys parse json objects
      @see #mapObjs(BiFunction) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapObjs_(final BiFunction<? super JsPath, ? super JsObj,JsObj> fn
               );
 
@@ -1371,6 +1380,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapElems(Function, Predicate) to map values
      @see #mapKeys_(Function, Predicate) to map all the keys and not only the first level
      */
+
     T mapKeys(final Function<? super JsPair, String> fn,
               final Predicate<? super JsPair> predicate
              );
@@ -1383,6 +1393,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapObjs_(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapKeys_(final Function<? super JsPair, String> fn);
 
     /**
@@ -1394,6 +1405,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @see #mapObjs_(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     T mapKeys_(final Function<? super JsPair, String> fn,
                final Predicate<? super JsPair> predicate
               );
@@ -1579,7 +1591,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         }
 
         return put(path,
-                   $ -> element
+                   e -> element
                   );
     }
 
@@ -1769,7 +1781,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
         requireNonNull(supplier);
         return putIf(JsElem::isNothing,
                      requireNonNull(path),
-                     $ -> supplier.get()
+                     elem -> supplier.get()
                     );
     }
 
@@ -1787,7 +1799,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     {
         return putIf(JsElem::isNothing,
                      requireNonNull(path),
-                     $ -> JsInt.of(number)
+                     elem -> JsInt.of(number)
                     );
     }
 
@@ -1805,7 +1817,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     {
         return putIf(JsElem::isNothing,
                      requireNonNull(path),
-                     $ -> JsLong.of(number)
+                     elem -> JsLong.of(number)
                     );
     }
 
@@ -1823,7 +1835,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
     {
         return putIf(JsElem::isNothing,
                      requireNonNull(path),
-                     $ -> JsDouble.of(number)
+                     elem -> JsDouble.of(number)
                     );
     }
 
@@ -2795,6 +2807,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
 
      @see #reduce(BinaryOperator, Function, Predicate) to apply the reduction only in the first level
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     <R> Optional<R> reduce_(BinaryOperator<R> op,
                             Function<? super JsPair, R> map,
                             Predicate<? super JsPair> predicate
@@ -2829,6 +2842,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      Returns the number of all the elements in this json
      @return the number of all the elements in this json
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default int size_()
     {
         return stream_().mapToInt(p -> 1)
@@ -2860,6 +2874,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param path the given JsPath object
      @return an OptionalInt
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default OptionalInt size_(final JsPath path)
     {
 
@@ -2888,6 +2903,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param path the given path-like string
      @return an OptionalInt
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default OptionalInt size_(final String path)
     {
 
@@ -2900,6 +2916,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      Returns a stream over all the pairs of elements in this json object.
      @return a {@code Stream} over all the JsPairs in this json
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     Stream<JsPair> stream_();
 
     /**
@@ -2954,6 +2971,7 @@ public interface Json<T extends Json<T>> extends JsElem, Serializable
      @param element the give JsElem whose presence in this JsArray is to be tested
      @return true if this JsArray contains the JsElem
      */
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default boolean containsElem_(final JsElem element)
     {
         return stream_().anyMatch(p -> p.elem.equals(Objects.requireNonNull(element)));

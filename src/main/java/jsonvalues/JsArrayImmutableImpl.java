@@ -41,6 +41,9 @@ class JsArrayImmutableImpl extends AbstractJsArray<MyScalaImpl.Vector, JsObj>
         return JsObjImmutableImpl.EMPTY;
     }
 
+    //equals method is inherited, so it's implemented. The purpose of this method is to cache
+    //the hashcode once calculated. the object is immutable and it won't change
+    @SuppressWarnings("squid:S1206")
     @Override
     public final int hashCode()
     {
