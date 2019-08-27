@@ -3,7 +3,7 @@
 - [Why some methods have a well-documented javadoc and others not?](#javadoc)
 - [Has json-values been developed using TDD?](#tests)
 
-##<a name="tests"><a/> Why json-values is a one-package library?
+## <a name="tests"><a/> Why json-values is a one-package library?
 I don't want the user to get drowned in hundred of classes that they don't have to know about after hitting the 
 autocomplete shortcut of their IDE. 
 Before java 9, it's not possible to do that and having several packages at the same time, mainly when one package 
@@ -12,7 +12,7 @@ depends on another. From my point of view, the access modifier public in Java, i
 At this moment, json-values is compiled in Java 8 and for now (10-28-2019) I have no intention of implementing a 
 new version in Java 9, at least not before I implement the library in Scala and implement the Json Schema specification. 
 
-##<a name="javadoc"><a/> Why some methods have a well-documented Javadoc and others not?
+## <a name="javadoc"><a/> Why some methods have a well-documented Javadoc and others not?
 Writing comments and Javadoc is a polarizing issue in our industry. 
 The way I go about it  in json-values is the following:
     
@@ -26,7 +26,7 @@ interpreted by the JIT compiler and running on a JVM.
    they will appreciate good implementations and quality code. Developers don't pay as much attention to 
    the Javadoc as to the source code they are developing.
  
-##<a name="opl"><a/> Has json-values been developed using TDD?
+## <a name="opl"><a/> Has json-values been developed using TDD?
 No, it doesn't. I don't like TDD. I know, shame on me! I care about testing, but I usually write the tests
 after coding for a while (even after a week sometimes!). It helps me be in the user's shoes and focus on aspects
 like how good is an interface, how easy it is to use the API etc. It's while I'm writing documentation and 
