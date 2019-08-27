@@ -58,18 +58,18 @@ obj.stream().parallel().map(toSneakCase).collect(JsObj.collector())
 
 json.mapElems(trim, ifStr)
 
-json.filterKeys(key.startsWith(JsPath.fromKey("_field")))
+json.filterKeys(key.startsWith("_field"))
 
 json.filterElems(isNotNull)
 
 json.reduce(plus, ifInt)
 
 //RFC 6901
-json.putIfAbsent(JsPath.of("/a/b"), ()-> getElem)
+json.putIfAbsent(path("/a/b"), ()-> getElem)
 
-json.appendIfPresent(JsPath.of("/c/d"), ()-> getElem)
+json.appendIfPresent(path("/c/d"), ()-> getElem)
 
-json.prependAll(JsPath.of("/a/b"), list)
+json.prependAll(path("/a/b"), list)
 
 a.union(b, JsArray.TYPE.SET)
 a.union(b, JsArray.TYPE.LIST)
@@ -78,12 +78,12 @@ a.union(b, JsArray.TYPE.MULTISET)
 a.intersection(b)
 
 //RFC 6902
-a.patch(Patch.ops().add("/a/b",
-                        JsInt.of(1)
-                       )
-                   .remove("/c/0")
-                   .toArray()
-       )
+json.patch(Patch.ops().add("/a/b",
+                           JsInt.of(1)
+                          )
+                      .remove("/c/0")
+                      .toArray()
+          )
 
 ```
 I'd argue that it's very simple, expressive and concise. And that plus the fact that it's a persistent
