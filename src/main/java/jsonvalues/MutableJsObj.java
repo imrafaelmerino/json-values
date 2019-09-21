@@ -11,7 +11,7 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.MatchExp.ifNothingElse;
 
-final class MutableJsObj extends AbstractJsObj<MutableMap, MutableSeq>
+final class MutableJsObj extends AbstractJsObj<MutableMap>
 {
     private MutableJsons factory;
 

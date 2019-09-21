@@ -1,6 +1,6 @@
 package jsonvalues;
 
-interface MySeq<V extends MySeq<V, M>, M extends MyMap<M, V>> extends Iterable<JsElem>
+interface MySeq<V extends MySeq<V>> extends Iterable<JsElem>
 {
     /**
      returns the first element of the seq. It's called by the library only if the seq is not empty

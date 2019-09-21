@@ -5,29 +5,6 @@ package jsonvalues;
  */
 public interface JsNumber extends JsElem
 {
-    @Override
-    default boolean isObj()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isArray()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isNothing()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isNull()
-    {
-        return false;
-    }
 
     @Override
     default boolean isNumber()
@@ -35,27 +12,4 @@ public interface JsNumber extends JsElem
         return true;
     }
 
-    @Override
-    default boolean isBool()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isStr()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isTrue()
-    {
-        return false;
-    }
-
-    @Override
-    default boolean isFalse()
-    {
-        return false;
-    }
 }

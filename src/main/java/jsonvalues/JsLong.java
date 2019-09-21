@@ -200,32 +200,9 @@ public final class JsLong implements JsNumber, Comparable<JsLong>
     }
 
     @Override
-    public boolean isInt()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isDouble()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigDec()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isLong()
     {
         return true;
     }
 
-    @Override
-    public boolean isBigInt()
-    {
-        return false;
-    }
 }

@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.MatchExp.ifNothingElse;
 
-final class MutableJsArray extends AbstractJsArray<MutableSeq, MutableMap>
+final class MutableJsArray extends AbstractJsArray<MutableSeq>
 {
 
     private MutableJsons factory;

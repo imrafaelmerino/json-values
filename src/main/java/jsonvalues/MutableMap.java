@@ -5,7 +5,7 @@ package jsonvalues;
  implementation of this interface, that can be defined using the method {@link jsonvalues.MutableJsons#withMap(Class)}.
  The default mutable implementation that {@link Jsons#mutable} uses is the Java {@link java.util.HashMap}
  */
-public interface MutableMap extends MyMap<MutableMap, MutableSeq>
+public interface MutableMap extends MyMap<MutableMap>
 
 {
 

@@ -188,27 +188,4 @@ public final class JsInt implements JsNumber, Comparable<JsInt>
         return true;
     }
 
-    @Override
-    public boolean isDouble()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigDec()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isLong()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigInt()
-    {
-        return false;
-    }
 }

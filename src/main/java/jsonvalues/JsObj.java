@@ -150,12 +150,6 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
         return true;
     }
 
-    @Override
-    default boolean isArray()
-    {
-        return false;
-    }
-
     boolean same(JsObj other);
 }
 

@@ -5,8 +5,10 @@ package jsonvalues;
  implementation of this interface, that can be defined using the method {@link jsonvalues.ImmutableJsons#withSeq(Class)}.
  The default immutable implementation that {@link Jsons#immutable} uses is the <a href="https://www.scala-lang.org/api/2.12.0/scala/collection/immutable/Vector.html">immutable Scala Vector</a>.
  */
-public interface ImmutableSeq extends MySeq<ImmutableSeq, ImmutableMap>
+public interface ImmutableSeq extends MySeq<ImmutableSeq>
 {
+
+
 
     /**
      appends the element to the front of the seq

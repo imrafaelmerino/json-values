@@ -54,12 +54,12 @@ final class JavaList implements MutableSeq
 
     }
 
-    @Override
-    public JsElem head()
-    {
-        if (isEmpty()) throw UserError.headOfEmptyArr();
-        return elements.get(0);
-    }
+//    @Override
+//    public JsElem head()
+//    {
+//        if (isEmpty()) throw UserError.headOfEmptyArr();
+//        return elements.get(0);
+//    }
 
     @Override
     public JavaList init()

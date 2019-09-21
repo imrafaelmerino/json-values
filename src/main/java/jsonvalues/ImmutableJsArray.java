@@ -14,7 +14,7 @@ import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.MatchExp.ifNothingElse;
 
 
-final class ImmutableJsArray extends AbstractJsArray<ImmutableSeq, ImmutableMap>
+final class ImmutableJsArray extends AbstractJsArray<ImmutableSeq>
 {
 
     private ImmutableJsons factory;

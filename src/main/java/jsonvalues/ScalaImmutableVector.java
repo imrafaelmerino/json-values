@@ -13,7 +13,7 @@ final class ScalaImmutableVector implements ImmutableSeq
                                                                                                0,
                                                                                                0
     );
-    static final CanBuildFrom<Vector<JsElem>, JsElem, Vector<JsElem>> bf = new CanBuildFrom<Vector<JsElem>, JsElem, Vector<JsElem>>()
+    private static final CanBuildFrom<Vector<JsElem>, JsElem, Vector<JsElem>> bf = new CanBuildFrom<Vector<JsElem>, JsElem, Vector<JsElem>>()
     {
         @Override
         public Builder<JsElem, Vector<JsElem>> apply()
@@ -29,7 +29,6 @@ final class ScalaImmutableVector implements ImmutableSeq
     };
 
     private final Vector<JsElem> vector;
-    static final ScalaImmutableVector EMPTY = new ScalaImmutableVector(EMPTY_VECTOR);
 
     ScalaImmutableVector()
     {

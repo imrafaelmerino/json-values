@@ -83,36 +83,6 @@ public final class JsBool implements JsElem
     }
 
     @Override
-    public boolean isObj()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isArray()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isNothing()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isNull()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isNumber()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isBool()
     {
         return true;
@@ -130,39 +100,5 @@ public final class JsBool implements JsElem
         return !x;
     }
 
-    @Override
-    public boolean isInt()
-    {
-        return false;
-    }
 
-    @Override
-    public boolean isDouble()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigDec()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isLong()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isStr()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigInt()
-    {
-        return false;
-    }
 }

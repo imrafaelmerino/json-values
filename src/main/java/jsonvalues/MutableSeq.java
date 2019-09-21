@@ -6,8 +6,10 @@ package jsonvalues;
  The default mutable implementation that {@link Jsons#mutable} uses is the Java {@link java.util.ArrayList}
 
  */
-public interface MutableSeq extends MySeq<MutableSeq, MutableMap>
+public interface MutableSeq extends MySeq<MutableSeq>
 {
+
+
     /**
      creates and returns a copy of this sequence
      @return a new instance

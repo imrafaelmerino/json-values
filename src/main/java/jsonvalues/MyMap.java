@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
-interface MyMap<M extends MyMap<M, V>, V extends MySeq<V, M>>
+interface MyMap<M extends MyMap<M>>
 {
     /**
      returns true if the map contains the key

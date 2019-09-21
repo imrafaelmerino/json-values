@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.MatchExp.ifNothingElse;
 
 
-final class ImmutableJsObj extends AbstractJsObj<ImmutableMap, ImmutableSeq>
+final class ImmutableJsObj extends AbstractJsObj<ImmutableMap>
 {
 
     private ImmutableJsons factory;

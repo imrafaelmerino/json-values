@@ -203,12 +203,6 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
     }
 
     @Override
-    default boolean isObj()
-    {
-        return false;
-    }
-
-    @Override
     default boolean isArray()
     {
         return true;

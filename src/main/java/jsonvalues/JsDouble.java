@@ -215,32 +215,9 @@ public final class JsDouble implements JsNumber, Comparable<JsDouble>
     }
 
     @Override
-    public boolean isInt()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isDouble()
     {
         return true;
     }
 
-    @Override
-    public boolean isBigDec()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isLong()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigInt()
-    {
-        return false;
-    }
 }

@@ -22,11 +22,9 @@ import static jsonvalues.Trampoline.more;
 
 /**
  Explicit instantiation of JsObj interface to reduce class file size in subclasses.
-
- @param <V> type of the seq implementation to hold json arrays
  @param <M> type of the map implementation to hold json objects
  */
-abstract class AbstractJsObj<M extends MyMap<M, V>, V extends MySeq<V, M>> implements JsObj
+abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
 {
 
     protected M map;
@@ -41,20 +39,20 @@ abstract class AbstractJsObj<M extends MyMap<M, V>, V extends MySeq<V, M>> imple
     @Override
     public final boolean equals(final @Nullable Object that)
     {
-        if (!(that instanceof AbstractJsObj<?, ?>)) return false;
+        if (!(that instanceof AbstractJsObj<?>)) return false;
         if (this == that) return true;
         if (getClass() != that.getClass()) return false;
-        final AbstractJsObj<?, ?> thatObj = (AbstractJsObj) that;
+        final AbstractJsObj<?> thatMap = (AbstractJsObj) that;
         final boolean thisEmpty = isEmpty();
-        final boolean thatEmpty = thatObj.isEmpty();
+        final boolean thatEmpty = thatMap.isEmpty();
         if (thisEmpty && thatEmpty) return true;
         if (thisEmpty != thatEmpty) return false;
 
         return fields().stream()
                        .allMatch(f ->
-                                 thatObj.map.getOptional(f)
+                                 thatMap.map.getOptional(f)
                                             .map(it -> it.equals(map.get(f)))
-                                            .orElse(false) && thatObj.fields()
+                                            .orElse(false) && thatMap.fields()
                                                                      .stream()
                                                                      .allMatch(it -> map.contains(it)));
     }
@@ -408,7 +406,7 @@ abstract class AbstractJsObj<M extends MyMap<M, V>, V extends MySeq<V, M>> imple
     @Override
     public final boolean same(final JsObj obj)
     {
-        final MyMap<?, ?> other = ((AbstractJsObj) obj).map;
+        final MyMap<?> other = ((AbstractJsObj) obj).map;
         final boolean thisEmpty = isEmpty();
         final boolean thatEmpty = other.isEmpty();
         if (thisEmpty && thatEmpty) return true;
@@ -433,7 +431,7 @@ abstract class AbstractJsObj<M extends MyMap<M, V>, V extends MySeq<V, M>> imple
 
 
     @SuppressWarnings("squid:S1602")
-        // curly braces makes IntelliJ to format the code in a more legible way
+    // curly braces makes IntelliJ to format the code in a more legible way
     BiPredicate<String, JsPath> isReplaceWithEmptyJson(final M pmap)
     {
         return (head, tail) ->

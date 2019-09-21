@@ -23,9 +23,8 @@ import static jsonvalues.Trampoline.more;
  Explicit instantiation of JsArray interface to reduce class file size in subclasses.
 
  @param <V> type of the seq implementation to hold json arrays
- @param <M> type of the map implementation to hold json objects
  */
-abstract class AbstractJsArray<V extends MySeq<V, M>, M extends MyMap<M, V>> implements JsArray
+abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
 
 {
 
@@ -67,24 +66,24 @@ abstract class AbstractJsArray<V extends MySeq<V, M>, M extends MyMap<M, V>> imp
     @Override
     public final boolean equals(final @Nullable Object that)
     {
-        if (!(that instanceof AbstractJsArray<?, ?>)) return false;
+        if (!(that instanceof AbstractJsArray<?>)) return false;
         if (this == that) return true;
-        final MySeq<?, ?> thatArray = ((AbstractJsArray<?, ?>) that).seq;
-        final boolean thatEmpty = thatArray.isEmpty();
+        final MySeq<?> thatSeq = ((AbstractJsArray<?>) that).seq;
+        final boolean thatEmpty = thatSeq.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
-        if (this.size() != thatArray.size()) return false;
+        if (this.size() != thatSeq.size()) return false;
         return yContainsX(seq,
-                          thatArray
-                         ) && yContainsX(thatArray,
+                          thatSeq
+                         ) && yContainsX(thatSeq,
                                          seq
                                         );
 
     }
 
 
-    private boolean yContainsX(final MySeq<?, ?> x,
-                               final MySeq<?, ?> y
+    private boolean yContainsX(final MySeq<?> x,
+                               final MySeq<?> y
                               )
     {
         for (int i = 0; i < x.size(); i++)
@@ -99,8 +98,8 @@ abstract class AbstractJsArray<V extends MySeq<V, M>, M extends MyMap<M, V>> imp
 
     }
 
-    private boolean yContainsSameX(MySeq<?, ?> x,
-                                   MySeq<?, ?> y
+    private boolean yContainsSameX(MySeq<?> x,
+                                   MySeq<?> y
                                   )
     {
         for (int i = 0; i < x.size(); i++)
@@ -131,7 +130,7 @@ abstract class AbstractJsArray<V extends MySeq<V, M>, M extends MyMap<M, V>> imp
     public final boolean same(final JsArray that)
     {
         if (this == that) return true;
-        final MySeq<?, ?> other = ((AbstractJsArray<?, ?>) that).seq;
+        final MySeq<?> other = ((AbstractJsArray<?>) that).seq;
         final boolean thatEmpty = that.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
@@ -593,16 +592,16 @@ abstract class AbstractJsArray<V extends MySeq<V, M>, M extends MyMap<M, V>> imp
         return (index, tail) ->
         {
             return index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
-                                                                          .isNotJson()
+                                                                    .isNotJson()
             ||
             (tail.head()
                  .isKey() && pseq.get(index)
-                                   .isArray()
+                                 .isArray()
             )
             ||
             (tail.head()
                  .isIndex() && pseq.get(index)
-                                     .isObj()
+                                   .isObj()
             );
         };
     }

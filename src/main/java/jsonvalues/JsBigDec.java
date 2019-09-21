@@ -234,33 +234,9 @@ public final class JsBigDec implements JsNumber, Comparable<JsBigDec>
     }
 
     @Override
-    public boolean isInt()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isDouble()
-    {
-        return false;
-    }
-
-    @Override
     public boolean isBigDec()
     {
         return true;
-    }
-
-    @Override
-    public boolean isLong()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isBigInt()
-    {
-        return false;
     }
 
 }

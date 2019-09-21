@@ -16,7 +16,7 @@ final class ScalaImmutableMap implements ImmutableMap
 {
     private static final HashMap<String, JsElem> EMPTY_HASH_MAP = new HashMap<>();
     private final scala.collection.immutable.Map<String, JsElem> persistentMap;
-    static final ScalaImmutableMap EMPTY = new ScalaImmutableMap();
+
 
     ScalaImmutableMap()
     {
@@ -53,8 +53,8 @@ final class ScalaImmutableMap implements ImmutableMap
         return JavaConverters.setAsJavaSet(persistentMap.keys()
                                                         .toSet());
 
-    }
 
+    }
     @Override
     public JsElem get(final String key)
     {
@@ -149,11 +149,11 @@ final class ScalaImmutableMap implements ImmutableMap
 
     @Override
     public ScalaImmutableMap update(final String key,
-                                    final JsElem je
+                                    final JsElem e
                                    )
     {
         return new ScalaImmutableMap(persistentMap.updated(key,
-                                                           je
+                                                           e
                                                           ));
     }
 }
