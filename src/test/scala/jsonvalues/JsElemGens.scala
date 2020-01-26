@@ -255,11 +255,6 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
                                                  jsArrGen
                                                  )
 
-  val _jsObjGen_ = jsObjGen.map(it => Jsons.mutable.`object`.parse(it.toString).orElseThrow())
-  val _jsArrGen_ = jsArrGen.map(it => Jsons.mutable.array.parse(it.toString).orElseThrow())
-  val _jsonContainerGen_ = Gen.oneOf(_jsObjGen_,
-                                     _jsArrGen_
-                                     )
 
 
 }

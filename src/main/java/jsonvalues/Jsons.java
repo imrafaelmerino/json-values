@@ -17,9 +17,5 @@ public final class Jsons
      */
     public static final ImmutableJsons immutable = new ImmutableJsons();
 
-    /**
-     Default factory of mutable jsons.
-     */
-    public static final MutableJsons mutable = new MutableJsons();
 
 }

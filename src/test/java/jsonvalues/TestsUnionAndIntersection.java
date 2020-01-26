@@ -288,34 +288,7 @@ public class TestsUnionAndIntersection
 
     }
 
-    @Test
-    public void test_map_values_mutable_array()
-    {
 
-        final Function<JsPair, JsElem> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
-        JsArray array = Jsons.mutable.array.of(JsStr.of("A"),
-                                               JsStr.of("B")
-                                              );
-
-        Assertions.assertEquals(array,
-                                array.mapElems(toLowerCaseFn)
-                               );
-
-        JsArray array1 = Jsons.mutable.array.of(JsStr.of("A"),
-                                                JsStr.of("B"),
-                                                Jsons.mutable.object.of("a",
-                                                                        JsStr.of("A"),
-                                                                        "b",
-                                                                        JsStr.of("B")
-                                                                       )
-                                               );
-
-        Assertions.assertEquals(array1,
-                                array1.mapElems_(toLowerCaseFn)
-                               );
-
-
-    }
 
     @Test
     public void test_map_values_immutable_array() throws MalformedJson
@@ -369,39 +342,7 @@ public class TestsUnionAndIntersection
 
     }
 
-    @Test
-    public void test_map_values_mutable_obj()
-    {
-        final Function<JsPair, JsElem> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
 
-        JsObj obj = Jsons.mutable.object.of("a",
-                                            JsStr.of("A"),
-                                            "b",
-                                            JsStr.of("B")
-                                           );
-
-        final JsObj newObj = obj.mapElems(toLowerCaseFn);
-
-        Assertions.assertEquals(obj,
-                                newObj
-                               );
-
-        JsObj obj1 = Jsons.mutable.object.of("a",
-                                             JsStr.of("A"),
-                                             "b",
-                                             JsStr.of("B"),
-                                             "c",
-                                             Jsons.mutable.array.of(JsStr.of("A"),
-                                                                    JsStr.of("B")
-                                                                   )
-                                            );
-
-        final JsObj newObj1 = obj1.mapElems_(toLowerCaseFn);
-
-        Assertions.assertEquals(obj1,
-                                newObj1
-                               );
-    }
 
     @Test
     public void test_map_values_immutable_obj()
@@ -483,51 +424,7 @@ public class TestsUnionAndIntersection
 
     }
 
-    @Test
-    public void test_map_keys_mutable_obj()
-    {
 
-        JsObj obj = Jsons.mutable.object.of("a",
-                                            JsStr.of("A"),
-                                            "b",
-                                            JsStr.of("B")
-                                           );
-
-        final JsObj newObj = obj.mapKeys(p -> p.path.last()
-                                                    .asKey().name.toUpperCase());
-
-        Assertions.assertEquals(newObj,
-                                obj
-                               );
-
-
-        JsObj obj1 = Jsons.mutable.object.of("a",
-                                             JsStr.of("A"),
-                                             "b",
-                                             JsStr.of("B"),
-                                             "h",
-                                             Jsons.mutable.array.of(Jsons.mutable.object.of("c",
-                                                                                            JsStr.of("C"),
-                                                                                            "d",
-                                                                                            JsStr.of("D")
-                                                                                           ),
-                                                                    Jsons.mutable.object.of("d",
-                                                                                            JsStr.of("D"),
-                                                                                            "e",
-                                                                                            JsStr.of("E")
-                                                                                           )
-                                                                   )
-                                            );
-
-        final JsObj newObj1 = obj1.mapKeys_(p -> p.path.last()
-                                                       .asKey().name.toUpperCase());
-
-        Assertions.assertEquals(newObj1,
-                                obj1
-                               );
-
-
-    }
 
     @Test
     public void test_map_keys_immutable_array() throws MalformedJson
@@ -587,168 +484,6 @@ public class TestsUnionAndIntersection
 
     }
 
-    @Test
-    public void test_map_keys_mutable_array() throws MalformedJson
-    {
-        Supplier<JsArray> supplier = () -> Jsons.mutable.array.of(Jsons.mutable.object.of("a",
-                                                                                          JsStr.of("A"),
-                                                                                          "b",
-                                                                                          JsStr.of("B")
-                                                                                         ),
-                                                                  Jsons.mutable.object.of("c",
-                                                                                          JsStr.of("C"),
-                                                                                          "d",
-                                                                                          JsStr.of("D")
-                                                                                         ),
-                                                                  Jsons.mutable.array.of(Jsons.mutable.object.of("e",
-                                                                                                                 JsStr.of("E"),
-                                                                                                                 "f",
-                                                                                                                 JsStr.of("F")
-                                                                                                                ))
-                                                                 );
-
-        final JsArray arr = supplier.get();
-        final Function<JsPair, String> toUpperCase = p -> p.path.last()
-                                                                .asKey().name.toUpperCase();
-        Assertions.assertSame(arr,
-                              arr.mapKeys(toUpperCase)
-                             );
-
-        Assertions.assertSame(arr,
-                              arr.mapKeys(toUpperCase,
-                                          p -> false
-                                         )
-                             );
-
-        final JsArray arr1 = supplier.get();
-        arr1.mapKeys_(toUpperCase,
-                      p -> !p.path.last()
-                                  .asKey().name.equals("e")
-                     );
-
-        Assertions.assertEquals(Jsons.mutable.array.parse("[{\"A\":\"A\",\"B\":\"B\"},{\"C\":\"C\",\"D\":\"D\"},[{\"e\":\"E\",\"F\":\"F\"}]]\n")
-                                                   .orElseThrow(),
-                                arr1
-                               );
-        final JsArray arr2 = supplier.get();
-        arr2.mapKeys_(toUpperCase
-                     );
-        Assertions.assertEquals(Jsons.mutable.array.parse("[{\"A\":\"A\",\"B\":\"B\"},{\"C\":\"C\",\"D\":\"D\"},[{\"E\":\"E\",\"F\":\"F\"}]]\n")
-                                                   .orElseThrow(),
-                                arr2
-                               );
-    }
-
-    @Test
-    public void test_filter_empty_mutable_jsons()
-    {
-
-        Supplier<JsObj> supplier = () -> Jsons.mutable.object.of("a",
-                                                                 JsStr.of("A"),
-                                                                 "b",
-                                                                 Jsons.mutable.object.empty(),
-                                                                 "c",
-                                                                 JsStr.of("C"),
-                                                                 "d",
-                                                                 Jsons.mutable.object.of("e",
-                                                                                         Jsons.mutable.array.of("A",
-                                                                                                                "g",
-                                                                                                                "h"
-                                                                                                               )
-                                                                                                            .prepend(Jsons.mutable.object.empty())
-                                                                                                            .prepend(Jsons.mutable.object.empty()),
-                                                                                         "b",
-                                                                                         Jsons.mutable.object.empty(),
-                                                                                         "h",
-                                                                                         Jsons.mutable.object.empty(),
-                                                                                         "i",
-                                                                                         TRUE,
-                                                                                         "j",
-                                                                                         JsStr.of("A")
-                                                                                        )
-                                                                );
-
-
-        final JsObj obj = supplier.get();
-        final JsObj newObj = obj.filterObjs_((p, o) ->
-                                             {
-                                                 Assertions.assertEquals(o,
-                                                                         supplier.get()
-                                                                                 .get(p)
-                                                                        );
-                                                 return o.isNotEmpty();
-                                             });
-
-        Assertions.assertEquals(obj,
-                                newObj
-                               );
-
-        Assertions.assertEquals(Optional.empty(),
-                                obj.stream_()
-                                   .filter(p -> p.elem.isObj(JsObj::isEmpty))
-                                   .findFirst()
-                               );
-
-
-    }
-
-    @Test
-    public void test_filter_values_mutable()
-    {
-        Supplier<JsObj> supplier = () -> Jsons.mutable.object.of("a",
-                                                                 JsStr.of("A"),
-                                                                 "b",
-                                                                 Jsons.mutable.object.empty(),
-                                                                 "c",
-                                                                 JsStr.of("C"),
-                                                                 "d",
-                                                                 Jsons.mutable.object.of("e",
-                                                                                         Jsons.mutable.array.of("A",
-                                                                                                                "g",
-                                                                                                                "h"
-                                                                                                               )
-                                                                                                            .prepend(Jsons.mutable.object.empty())
-                                                                                                            .prepend(Jsons.mutable.object.empty()),
-                                                                                         "b",
-                                                                                         Jsons.mutable.object.empty(),
-                                                                                         "h",
-                                                                                         Jsons.mutable.object.empty(),
-                                                                                         "i",
-                                                                                         TRUE,
-                                                                                         "j",
-                                                                                         JsStr.of("A")
-                                                                                        )
-                                                                );
-
-        supplier.get()
-                .filterElems_(p ->
-                              {
-                                  Assertions.assertEquals(p.elem,
-                                                          supplier.get()
-                                                                  .get(p.path)
-                                                         );
-                                  return p.elem.isStr(s -> s.equals("A"));
-                              })
-                .stream_()
-                .filter(p -> p.elem.isNotJson())
-                .forEach(p -> Assertions.assertTrue(p.elem.isStr(s -> s.equals("A"))));
-
-
-        supplier.get()
-                .filterObjs_((p, o) ->
-                             {
-                                 Assertions.assertEquals(o,
-                                                         supplier.get()
-                                                                 .get(p)
-                                                        );
-                                 return o.isNotEmpty();
-                             })
-                .stream_()
-                .filter(p -> p.elem.isObj())
-                .forEach(p -> Assertions.assertTrue(p.elem.asJsObj()
-                                                          .isNotEmpty()));
-
-    }
 
     @Test
     public void test_readme_union() throws MalformedJson

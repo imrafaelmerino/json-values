@@ -1,0 +1,6 @@
+dsl-json deserializer mapea enteros to long aunque sea un int
+
+dsl-json serializer serializando los doubles, se convierten a bigdecimal antes, de lo contrario
+falla algun test the obj.equals(parse(obj.toString)) haciendo el equals de bigdecimal con doubles...
+
+reutilizar jsonreader (thread local)

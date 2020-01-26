@@ -27,7 +27,7 @@ public final class Patch<T extends Json<T>>
 
     final List<OpPatch<T>> ops;
 
-     Patch(JsArray array) throws PatchMalformed
+    Patch(JsArray array) throws PatchMalformed
     {
         ops = new ArrayList<>();
         for (JsElem elem : array)
@@ -88,7 +88,7 @@ public final class Patch<T extends Json<T>>
         {
         }
 
-        private JsArray ops = Jsons.mutable.array.empty();
+        private JsArray ops = Jsons.immutable.array.empty();
 
         /**
          ADD operation.
@@ -100,13 +100,13 @@ public final class Patch<T extends Json<T>>
                            final JsElem value
                           )
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(path)),
-                                               OP_FIELD,
-                                               JsStr.of(OP.ADD.name()),
-                                               VALUE_FIELD,
-                                               requireNonNull(value)
-                                              ));
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(path)),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.ADD.name()),
+                                                 VALUE_FIELD,
+                                                 requireNonNull(value)
+                                                ));
             return this;
         }
 
@@ -120,13 +120,13 @@ public final class Patch<T extends Json<T>>
                                final JsElem value
                               )
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(path)),
-                                               VALUE_FIELD,
-                                               requireNonNull(value),
-                                               OP_FIELD,
-                                               JsStr.of(OP.REPLACE.name())
-                                              ));
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(path)),
+                                                 VALUE_FIELD,
+                                                 requireNonNull(value),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.REPLACE.name())
+                                                ));
             return this;
 
         }
@@ -138,11 +138,11 @@ public final class Patch<T extends Json<T>>
          */
         public Builder remove(final String path)
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(path)),
-                                               OP_FIELD,
-                                               JsStr.of(OP.REMOVE.name())
-                                              ));
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(path)),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.REMOVE.name())
+                                                ));
             return this;
         }
 
@@ -156,13 +156,13 @@ public final class Patch<T extends Json<T>>
                             final JsElem value
                            )
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(path)),
-                                               VALUE_FIELD,
-                                               requireNonNull(value),
-                                               OP_FIELD,
-                                               JsStr.of(OP.TEST.name())
-                                              ));
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(path)),
+                                                 VALUE_FIELD,
+                                                 requireNonNull(value),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.TEST.name())
+                                                ));
             return this;
 
         }
@@ -177,13 +177,13 @@ public final class Patch<T extends Json<T>>
                             final String to
                            )
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(to)),
-                                               FROM_FIELD,
-                                               JsStr.of(requireNonNull(from)),
-                                               OP_FIELD,
-                                               JsStr.of(OP.MOVE.name())
-                                              ));
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(to)),
+                                                 FROM_FIELD,
+                                                 JsStr.of(requireNonNull(from)),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.MOVE.name())
+                                                ));
             return this;
         }
 
@@ -197,13 +197,13 @@ public final class Patch<T extends Json<T>>
                             final String to
                            )
         {
-            ops.append(Jsons.mutable.object.of(PATH_FIELD,
-                                               JsStr.of(requireNonNull(to)),
-                                               FROM_FIELD,
-                                               JsStr.of(requireNonNull(from)),
-                                               OP_FIELD,
-                                               JsStr.of(OP.COPY.name())
-                                              )
+            ops.append(Jsons.immutable.object.of(PATH_FIELD,
+                                                 JsStr.of(requireNonNull(to)),
+                                                 FROM_FIELD,
+                                                 JsStr.of(requireNonNull(from)),
+                                                 OP_FIELD,
+                                                 JsStr.of(OP.COPY.name())
+                                                )
                       );
             return this;
         }

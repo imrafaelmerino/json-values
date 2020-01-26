@@ -5,7 +5,7 @@ import java.util.function.Function
 import java.util.stream
 
 import jsonvalues.specifications.BasePropSpec
-import jsonvalues.{JsObj, JsPair, Jsons, ScalaToJava}
+import jsonvalues.{JsObj, JsPair}
 import org.scalacheck.Prop.forAll
 
 class StreamCollectorSpec extends BasePropSpec
@@ -70,48 +70,8 @@ class StreamCollectorSpec extends BasePropSpec
   }
 
 
-  property("object collector reduces an stream_ back to the same object")
-  {
-    check(forAll(jsGen.jsObjGen)
-          { js =>
-            val obj = js.stream_().collect(Jsons.mutable.`object`.collector())
-            obj.same(js)
-
-          }
-          )
-  }
 
 
-  property("maps a stream in parallel and not in parallel and returns the same json object")
-  {
-    check(forAll(jsGen.jsObjGen)
-          { js =>
-
-            val function: (JsPair => JsPair) = (pair: JsPair) => pair.mapIfStr(_.toUpperCase)
-
-            val a: stream.Stream[JsPair] = js.stream_().map(ScalaToJava.function(function))
-
-            val b: stream.Stream[JsPair] = js.stream_().parallel().map(ScalaToJava.function(function))
-
-            a.collect(Jsons.mutable.`object`.collector()).equals(b.collect(Jsons.mutable.`object`.collector()))
-          }
-          )
-  }
-
-  property("filters a stream in parallel and not in parallel and returns the same json object")
-  {
-    check(forAll(jsGen.jsObjGen)
-          { js =>
-
-            val a: stream.Stream[JsPair] = js.stream_().filter(p => p.elem.isNotNull && !p.elem.isBool())
-
-            val b: stream.Stream[JsPair] = js.stream_().parallel().filter(p => p.elem.isNotNull && !p.elem.isBool())
-
-            a.collect(Jsons.mutable.`object`.collector()).equals(b.collect(Jsons.mutable.`object`.collector()))
-
-          }
-          )
-  }
 
   property("reduces a stream in parallel and not in parallel and returns the same result")
   {
