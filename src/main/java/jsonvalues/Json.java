@@ -19,7 +19,7 @@ import static jsonvalues.JsNothing.NOTHING;
  <pre>
  Represents a json of type T, where T is the type of the container, either a JsObj or a JsArray.
 
- A json of any type can be modeled as a set of pairs {@link JsPair}=({@link JsPath}, {@link JsElem}), where:
+ A json of any type can be modeled as a set of pairs {@link JsPair}=({@link JsPath}, {@link JsValue}), where:
 
  - a JsElem is a {@link JsBool} or {@link JsStr} or {@link JsNumber} or {@link JsNull}, or another {@link Json} like {@link JsObj} or {@link JsArray},
  what makes the data structure recursive.
@@ -45,7 +45,7 @@ Supplier<JsElem> supplier = ()-> (doesnt-put-anything-condition) ? JsNothing.NOT
 json.putIfAbsent(path,supplier)
 }
  Another way to see a json is like a stream of pairs, which opens the door to doing all the operations
- that were introduced in Java 8 (map, filter, reduce, etc). For this purpose the methods {@link #stream_()}
+ that were introduced in Java 8 (map, filter, reduce, etc). For this purpose the methods {@link #streamAll()}
  or {@link #stream()} are provided.
 
  There are one convention on method names:
@@ -62,7 +62,7 @@ json.putIfAbsent(path,supplier)
  @see JsArray to work with jsons that are arrays
 
  @author Rafael Merino Garcia */
-public interface Json<T extends Json<T>> extends JsElem
+public interface Json<T extends Json<T>> extends JsValue
 
 
 {
@@ -81,8 +81,8 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     default T append(final JsPath path,
-                     final JsElem elem,
-                     final JsElem... others
+                     final JsValue elem,
+                     final JsValue... others
                     )
     {
 
@@ -90,7 +90,7 @@ public interface Json<T extends Json<T>> extends JsElem
         T result = append(path,
                           elem
                          );
-        for (final JsElem other : Objects.requireNonNull(others))
+        for (final JsValue other : Objects.requireNonNull(others))
         {
             result = result.append(path,
                                    Objects.requireNonNull(other)
@@ -110,7 +110,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     T append(final JsPath path,
-             final JsElem elem
+             final JsValue elem
             );
 
     /**
@@ -305,7 +305,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     default T appendIfPresent(final JsPath path,
-                              final Supplier<? extends JsElem> supplier
+                              final Supplier<? extends JsValue> supplier
                              )
     {
         return MatchExp.ifArrElse(it -> append(path,
@@ -465,18 +465,8 @@ public interface Json<T extends Json<T>> extends JsElem
      @param element the give element JsElem whose presence in this JsArray is to be tested
      @return true if this JsArray contains the  JsElem
      */
-    boolean containsElem(JsElem element);
+    boolean containsElem(JsValue element);
 
-    /**
-     Returns true if this json or any of its elements, contains the given element.
-     @param element the give JsElem whose presence in this JsArray is to be tested
-     @return true if this JsArray contains the JsElem
-     */
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    default boolean containsElem_(final JsElem element)
-    {
-        return stream_().anyMatch(p -> p.elem.equals(Objects.requireNonNull(element)));
-    }
 
     /**
      Returns true if an element exists in this json at the given path.
@@ -490,7 +480,7 @@ public interface Json<T extends Json<T>> extends JsElem
     }
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    default boolean equals(final JsElem elem,
+    default boolean equals(final JsValue elem,
                            final TYPE ARRAY_AS
                           )
     {
@@ -510,7 +500,7 @@ public interface Json<T extends Json<T>> extends JsElem
      the predicate.
      @param filter the predicate which takes as the input every JsPair in the first level of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterElems_(Predicate) how to filter the pair of elements of the whole json and not only the first level
+     @see #filterAllElems(Predicate) how to filter the pair of elements of the whole json and not only the first level
      */
     T filterElems(final Predicate<? super JsPair> filter);
 
@@ -522,13 +512,13 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T filterElems_(final Predicate<? super JsPair> filter);
+    T filterAllElems(final Predicate<? super JsPair> filter);
 
     /**
      Filters the keys in the first level of this json, removing those that don't ifPredicateElse the predicate.
      @param filter the predicate which takes as the input every JsPair in the first level of this json
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
-     @see #filterKeys_(Predicate) how to filter the keys of the whole json and not only the first level
+     @see #filterAllKeys(Predicate) how to filter the keys of the whole json and not only the first level
      */
     T filterKeys(final Predicate<? super JsPair> filter);
 
@@ -540,7 +530,7 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T filterKeys_(final Predicate<? super JsPair> filter);
+    T filterAllKeys(final Predicate<? super JsPair> filter);
 
     /**
      Filters the pair of jsons in the first level of this json, removing those that don't ifPredicateElse
@@ -549,7 +539,7 @@ public interface Json<T extends Json<T>> extends JsElem
 
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
 
-     @see #filterObjs_(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
+     @see #filterAllObjs(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
      */
     T filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter
                 );
@@ -562,8 +552,8 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter
-                 );
+    T filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter
+                   );
 
     /**
      Returns the element located at the key or index specified by the given position or {@link JsNothing} if it
@@ -571,17 +561,17 @@ public interface Json<T extends Json<T>> extends JsElem
      @param position key or index of the element
      @return the JsElem located at the given Position or JsNothing if it doesn't exist
      */
-    JsElem get(final Position position);
+    JsValue get(final Position position);
 
     /**
      Returns the element located at the given path or {@link JsNothing} if it doesn't exist.
      @param path the JsPath object of the element that will be returned
      @return the JsElem located at the given JsPath or JsNothing if it doesn't exist
      */
-    default JsElem get(final JsPath path)
+    default JsValue get(final JsPath path)
     {
         if (path.isEmpty()) return this;
-        final JsElem e = get(path.head());
+        final JsValue e = get(path.head());
         final JsPath tail = path.tail();
         if (tail.isEmpty()) return e;
         if (e.isNotJson()) return NOTHING;
@@ -598,9 +588,9 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<JsArray> getArray(final JsPath path)
     {
-        final Function<JsElem, Optional<JsArray>> ifElse = MatchExp.ifArrElse(Optional::of,
+        final Function<JsValue, Optional<JsArray>> ifElse = MatchExp.ifArrElse(Optional::of,
                                                                               it -> Optional.empty()
-                                                                             );
+                                                                              );
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
@@ -612,10 +602,10 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<BigDecimal> getBigDecimal(final JsPath path)
     {
-        final Function<JsElem, Optional<BigDecimal>> ifElse = MatchExp.ifDecimalElse(it -> Optional.of(BigDecimal.valueOf(it)),
-                                                                                     Optional::of,
+        final Function<JsValue, Optional<BigDecimal>> ifElse = MatchExp.ifDecimalElse(it -> Optional.of(BigDecimal.valueOf(it)),
+                                                                                      Optional::of,
                                                                                      it -> Optional.empty()
-                                                                                    );
+                                                                                     );
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
@@ -627,11 +617,11 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<BigInteger> getBigInt(final JsPath path)
     {
-        final Function<JsElem, Optional<BigInteger>> ifElse = MatchExp.ifIntegralElse(it -> Optional.of(BigInteger.valueOf(it)),
+        final Function<JsValue, Optional<BigInteger>> ifElse = MatchExp.ifIntegralElse(it -> Optional.of(BigInteger.valueOf(it)),
                                                                                       it -> Optional.of(BigInteger.valueOf(it)),
-                                                                                      Optional::of,
+                                                                                       Optional::of,
                                                                                       e -> Optional.empty()
-                                                                                     );
+                                                                                      );
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
@@ -642,9 +632,9 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<Boolean> getBool(final JsPath path)
     {
-        final Function<JsElem, Optional<Boolean>> fn = MatchExp.ifBoolElse(Optional::of,
+        final Function<JsValue, Optional<Boolean>> fn = MatchExp.ifBoolElse(Optional::of,
                                                                            it -> Optional.empty()
-                                                                          );
+                                                                           );
         return fn.apply(this.get(requireNonNull(path)));
     }
 
@@ -710,9 +700,9 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<JsObj> getObj(final JsPath path)
     {
-        final Function<JsElem, Optional<JsObj>> ifElse = MatchExp.ifObjElse(Optional::of,
+        final Function<JsValue, Optional<JsObj>> ifElse = MatchExp.ifObjElse(Optional::of,
                                                                             it -> Optional.empty()
-                                                                           );
+                                                                            );
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
@@ -724,9 +714,9 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     default Optional<String> getStr(final JsPath path)
     {
-        final Function<JsElem, Optional<String>> ifStrElseFn = MatchExp.ifStrElse(Optional::of,
+        final Function<JsValue, Optional<String>> ifStrElseFn = MatchExp.ifStrElse(Optional::of,
                                                                                   it -> Optional.empty()
-                                                                                 );
+                                                                                  );
         return ifStrElseFn.apply(this.get(requireNonNull(path)));
 
     }
@@ -777,9 +767,9 @@ public interface Json<T extends Json<T>> extends JsElem
      @return a new mapped json of the same type T
      @see #mapObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map keys of json objects
-     @see #mapElems_(Function) to map all the values and not only the first level
+     @see #mapAllElems(Function) to map all the values and not only the first level
      */
-    T mapElems(final Function<? super JsPair, ? extends JsElem> fn);
+    T mapElems(final Function<? super JsPair, ? extends JsValue> fn);
 
     /**
      Maps the values in the first level of this json that satisfies a given predicate.
@@ -790,9 +780,9 @@ public interface Json<T extends Json<T>> extends JsElem
 
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map keys of json objects
-     @see #mapElems_(Function, Predicate) to map all the values and not only the first level
+     @see #mapAllElems(Function, Predicate) to map all the values and not only the first level
      */
-    T mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+    T mapElems(final Function<? super JsPair, ? extends JsValue> fn,
                final Predicate<? super JsPair> predicate
               );
 
@@ -800,28 +790,28 @@ public interface Json<T extends Json<T>> extends JsElem
      Maps all the values of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapObjs_(BiFunction) to map jsons
-     @see #mapKeys_(Function) to map keys of json objects
+     @see #mapAllObjs(BiFunction) to map jsons
+     @see #mapAllKeys(Function) to map keys of json objects
      @see #mapElems(Function) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapElems_(final Function<? super JsPair, ? extends JsElem> fn);
+    T mapAllElems(final Function<? super JsPair, ? extends JsValue> fn);
 
     /**
      Maps all the values of this json that satisfies a given predicate.
      @param fn the  mapping function
      @param predicate the given predicate that determines what JsValues will be mapped
      @return same this instance or a new mapped json of the same type TT
-     @see #mapObjs_(BiFunction, BiPredicate) to map jsons
-     @see #mapKeys_(Function, Predicate) to map keys of json objects
+     @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
+     @see #mapAllKeys(Function, Predicate) to map keys of json objects
      @see #mapElems(Function, Predicate) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
-                final Predicate<? super JsPair> predicate
-               );
+    T mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
+                  final Predicate<? super JsPair> predicate
+                 );
 
     /**
      Maps the keys in the first level of this json.
@@ -829,7 +819,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return a new mapped json of the same type T
      @see #mapElems(Function) to map values
      @see #mapObjs(BiFunction) to map jsons
-     @see #mapKeys_(Function) to map all the keys and not only the first level
+     @see #mapAllKeys(Function) to map all the keys and not only the first level
      */
     T mapKeys(final Function<? super JsPair, String> fn);
 
@@ -840,7 +830,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new mapped json of the same type T
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
      @see #mapElems(Function, Predicate) to map values
-     @see #mapKeys_(Function, Predicate) to map all the keys and not only the first level
+     @see #mapAllKeys(Function, Predicate) to map all the keys and not only the first level
      */
 
     T mapKeys(final Function<? super JsPair, String> fn,
@@ -851,28 +841,28 @@ public interface Json<T extends Json<T>> extends JsElem
      Maps all the keys of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapElems_(Function) to map values
-     @see #mapObjs_(BiFunction) to map jsons
+     @see #mapAllElems(Function) to map values
+     @see #mapAllObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapKeys_(final Function<? super JsPair, String> fn);
+    T mapAllKeys(final Function<? super JsPair, String> fn);
 
     /**
      Maps all the keys of this json that satisfies a given predicate.
      @param fn the mapping function
      @param predicate the given predicate that determines what keys will be mapped
      @return same this instance or a new mapped json of the same type T
-     @see #mapElems_(Function, Predicate) to map values
-     @see #mapObjs_(BiFunction, BiPredicate) to map jsons
+     @see #mapAllElems(Function, Predicate) to map values
+     @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapKeys_(final Function<? super JsPair, String> fn,
-               final Predicate<? super JsPair> predicate
-              );
+    T mapAllKeys(final Function<? super JsPair, String> fn,
+                 final Predicate<? super JsPair> predicate
+                );
 
     /**
      Maps the jsons in the first level of this json that satisfies a given predicate.
@@ -881,7 +871,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new mapped json of the same type T
      @see #mapElems(Function, Predicate) to map values
      @see #mapKeys(Function, Predicate) to map keys of json objects
-     @see #mapObjs_(BiFunction, BiPredicate) to map all the jsons and not only the first level
+     @see #mapAllObjs(BiFunction, BiPredicate) to map all the jsons and not only the first level
      */
     T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
               final BiPredicate<? super JsPath, ? super JsObj> predicate
@@ -893,7 +883,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return a new mapped json of the same type T
      @see #mapElems(Function) to map values
      @see #mapKeys(Function) to map keys of json objects
-     @see #mapObjs_(BiFunction) to map all the jsons and not only the first level
+     @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
      */
     T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn
              );
@@ -903,28 +893,28 @@ public interface Json<T extends Json<T>> extends JsElem
      @param fn the  mapping function
      @param predicate the given predicate that determines what Jsons will be mapped
      @return same this instance or a new mapped json of the same type T
-     @see #mapElems_(Function, Predicate) to map values
-     @see #mapKeys_(Function, Predicate) to map keys of json objects
+     @see #mapAllElems(Function, Predicate) to map values
+     @see #mapAllKeys(Function, Predicate) to map keys of json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-               final BiPredicate<? super JsPath, ? super JsObj> predicate
-              );
+    T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                 final BiPredicate<? super JsPath, ? super JsObj> predicate
+                );
 
     /**
      Maps all the jsons of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapElems_(Function) to map values
-     @see #mapKeys_(Function) to map keys of json objects
+     @see #mapAllElems(Function) to map values
+     @see #mapAllKeys(Function) to map keys of json objects
      @see #mapObjs(BiFunction) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn
-              );
+    T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn
+                );
 
     /**
      Tries to parse the string into an immutable json.
@@ -1012,8 +1002,8 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     default T prepend(final JsPath path,
-                      final JsElem elem,
-                      final JsElem... others
+                      final JsValue elem,
+                      final JsValue... others
                      )
     {
         // T recursive type, this is an instance of T
@@ -1040,7 +1030,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     T prepend(final JsPath path,
-              final JsElem elem
+              final JsValue elem
              );
 
     /**
@@ -1244,7 +1234,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return same this instance or a new json of the same type T
      */
     default T prependIfPresent(final JsPath path,
-                               final Supplier<JsElem> supplier
+                               final Supplier<JsValue> supplier
                               )
     {
 
@@ -1426,7 +1416,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return the same instance or a new json of the same type T
      */
     T put(final JsPath path,
-          final Function<? super JsElem, ? extends JsElem> fn
+          final Function<? super JsValue, ? extends JsValue> fn
          );
 
     /**
@@ -1440,7 +1430,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @return the same instance or a new json of the same type T
      */
     default T put(final JsPath path,
-                  final JsElem element
+                  final JsValue element
                  )
     {
         requireNonNull(path);
@@ -1567,12 +1557,12 @@ public interface Json<T extends Json<T>> extends JsElem
      @param fn the function witch computes the new element if the existing one satisfies the given predicate
      @return the same instance or a new json of the same type T
      */
-    default T putIf(final Predicate<? super JsElem> predicate,
+    default T putIf(final Predicate<? super JsValue> predicate,
                     final JsPath path,
-                    final Function<? super JsElem, ? extends JsElem> fn
+                    final Function<? super JsValue, ? extends JsValue> fn
                    )
     {
-        final JsElem elem = get(requireNonNull(path));
+        final JsValue elem = get(requireNonNull(path));
         if (requireNonNull(predicate).test(elem)) return put(path,
                                                              requireNonNull(fn).apply(elem)
                                                             );
@@ -1592,11 +1582,11 @@ public interface Json<T extends Json<T>> extends JsElem
      @return the same instance or a new json of the same type T
      */
     default T putIfAbsent(final JsPath path,
-                          final Supplier<? extends JsElem> supplier
+                          final Supplier<? extends JsValue> supplier
                          )
     {
         requireNonNull(supplier);
-        return putIf(JsElem::isNothing,
+        return putIf(JsValue::isNothing,
                      requireNonNull(path),
                      elem -> supplier.get()
                     );
@@ -1614,7 +1604,7 @@ public interface Json<T extends Json<T>> extends JsElem
                           final int number
                          )
     {
-        return putIf(JsElem::isNothing,
+        return putIf(JsValue::isNothing,
                      requireNonNull(path),
                      elem -> JsInt.of(number)
                     );
@@ -1632,7 +1622,7 @@ public interface Json<T extends Json<T>> extends JsElem
                           final long number
                          )
     {
-        return putIf(JsElem::isNothing,
+        return putIf(JsValue::isNothing,
                      requireNonNull(path),
                      elem -> JsLong.of(number)
                     );
@@ -1650,7 +1640,7 @@ public interface Json<T extends Json<T>> extends JsElem
                           final double number
                          )
     {
-        return putIf(JsElem::isNothing,
+        return putIf(JsValue::isNothing,
                      requireNonNull(path),
                      elem -> JsDouble.of(number)
                     );
@@ -1709,10 +1699,10 @@ public interface Json<T extends Json<T>> extends JsElem
      @return the same instance or a new json of the same type T
      */
     default T putIfPresent(final JsPath path,
-                           final Function<? super JsElem, ? extends JsElem> fn
+                           final Function<? super JsValue, ? extends JsValue> fn
                           )
     {
-        return putIf(JsElem::isNotNothing,
+        return putIf(JsValue::isNotNothing,
                      requireNonNull(path),
                      requireNonNull(fn)
 
@@ -1727,7 +1717,7 @@ public interface Json<T extends Json<T>> extends JsElem
      @param predicate the predicate that determines what JsValue will be mapped and reduced
      @param <R> the type of the operands of the operator
      @return an {@link Optional} describing the of of the reduction
-     @see #reduce_(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
+     @see #reduceAll(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
      */
     <R> Optional<R> reduce(BinaryOperator<R> op,
                            Function<? super JsPair, R> map,
@@ -1747,10 +1737,10 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    <R> Optional<R> reduce_(BinaryOperator<R> op,
-                            Function<? super JsPair, R> map,
-                            Predicate<? super JsPair> predicate
-                           );
+    <R> Optional<R> reduceAll(BinaryOperator<R> op,
+                              Function<? super JsPair, R> map,
+                              Predicate<? super JsPair> predicate
+                             );
 
     /**
      Removes the element in this json located at the given path, if it exists, returning the same this
@@ -1788,10 +1778,10 @@ public interface Json<T extends Json<T>> extends JsElem
      @return the number of all the elements in this json
      */
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    default int size_()
+    default int sizeAll()
     {
-        return stream_().mapToInt(p -> 1)
-                        .reduce(0,
+        return streamAll().mapToInt(p -> 1)
+                          .reduce(0,
                                 Integer::sum
                                );
     }
@@ -1803,10 +1793,10 @@ public interface Json<T extends Json<T>> extends JsElem
      @return an OptionalInt
      */
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    default OptionalInt size_(final JsPath path)
+    default OptionalInt sizeAll(final JsPath path)
     {
 
-        return MatchExp.ifJsonElse(it -> OptionalInt.of(it.size_()),
+        return MatchExp.ifJsonElse(it -> OptionalInt.of(it.sizeAll()),
                                    it -> OptionalInt.empty()
                                   )
                        .apply(get(requireNonNull(path)));
@@ -1826,19 +1816,19 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    Stream<JsPair> stream_();
+    Stream<JsPair> streamAll();
 
-    default long times(JsElem e)
+    default long times(JsValue e)
     {
         return stream().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
                        .count();
     }
 
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    default long times_(JsElem e)
+    default long timesAll(JsValue e)
     {
-        return stream_().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
-                        .count();
+        return streamAll().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
+                          .count();
     }
 
 

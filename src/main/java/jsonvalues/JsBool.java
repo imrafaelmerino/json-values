@@ -5,7 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  Represents an immutable json boolean. Only two instances are created: {@link #FALSE} and {@link #TRUE}
  */
-public final class JsBool implements JsElem
+public final class JsBool implements JsValue
 {
 
     /**

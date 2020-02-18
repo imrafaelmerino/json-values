@@ -49,35 +49,35 @@ final class OpFilterArrObjs extends OpFilterObjs<JsArray>
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    Trampoline<JsArray> filter_(final JsPath startingPath,
-                                final BiPredicate<? super JsPath, ? super JsObj> predicate
+    Trampoline<JsArray> filterAll(final JsPath startingPath,
+                                  final BiPredicate<? super JsPath, ? super JsObj> predicate
 
-                               )
+                                 )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrObjs(tail).filter_(headPath,
-                                                                                                                                 predicate
-                                                                                                                                ));
+                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrObjs(tail).filterAll(headPath,
+                                                                                                                                   predicate
+                                                                                                                                  ));
                                     return ifJsonElse(headObj -> JsPair.of(headPath,
                                                                            headObj
                                                                           )
                                                                        .ifElse(p -> predicate.test(p.path,
                                                                                                    headObj
                                                                                                   ),
-                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filter_(headPath,
-                                                                                                                                                                    predicate
-                                                                                                                                                                   )
+                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filterAll(headPath,
+                                                                                                                                                                      predicate
+                                                                                                                                                                     )
                                                                                                                                                            .map(tailResult::prepend)),
                                                                                p -> tailCall
 
                                                                               ),
-                                                      headArr -> more(() -> tailCall).flatMap(json -> new OpFilterArrObjs(headArr).filter_(headPath.index(-1),
-                                                                                                                                           predicate
-                                                                                                                                          )
+                                                      headArr -> more(() -> tailCall).flatMap(json -> new OpFilterArrObjs(headArr).filterAll(headPath.index(-1),
+                                                                                                                                             predicate
+                                                                                                                                            )
                                                                                                                                   .map(json::prepend)),
                                                       headElem -> more(() -> tailCall).map(it -> it.prepend(headElem))
                                                      )

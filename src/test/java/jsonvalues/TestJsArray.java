@@ -294,22 +294,22 @@ public class TestJsArray
                                );
 
 
-        final int result2 = arr.mapElems_(p -> p.mapIfInt(i -> i + 100).elem
-                                         )
-                               .reduce_(Integer::sum,
+        final int result2 = arr.mapAllElems(p -> p.mapIfInt(i -> i + 100).elem
+                                           )
+                               .reduceAll(Integer::sum,
                                         pair -> pair.elem.asJsInt().x,
                                         p -> p.elem.isInt()
-                                       )
+                                         )
                                .orElse(-1);
 
-        final int result3 = arr.mapElems_(p -> p.elem.asJsInt()
-                                                     .map(i -> i + 100),
+        final int result3 = arr.mapAllElems(p -> p.elem.asJsInt()
+                                                       .map(i -> i + 100),
                                           p -> p.elem.isInt()
-                                         )
-                               .reduce_(Integer::sum,
+                                           )
+                               .reduceAll(Integer::sum,
                                         pair -> pair.elem.asJsInt().x,
                                         p -> p.elem.isInt()
-                                       )
+                                         )
                                .orElse(-1);
         Assertions.assertEquals(406,
                                 result2
@@ -383,7 +383,7 @@ public class TestJsArray
                                 );
 
 
-        final JsArray arr1 = arr.filterObjs_((p, o) ->
+        final JsArray arr1 = arr.filterAllObjs((p, o) ->
                                              {
                                                  Assertions.assertEquals(o,
                                                                          arr.get(p)
@@ -479,13 +479,13 @@ public class TestJsArray
                                );
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection_(arr2)
+                                arr1.intersectionAll(arr2)
                                );
 
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection_(arr2
-                                                  )
+                                arr1.intersectionAll(arr2
+                                                    )
                                );
 
 
@@ -538,7 +538,7 @@ public class TestJsArray
                                          )
                                 );
 
-        final JsArray a_ = arr.mapObjs_((path, obj) ->
+        final JsArray a_ = arr.mapAllObjs((path, obj) ->
                                         {
                                             Assertions.assertEquals(obj,
                                                                     arr.get(path)
@@ -642,7 +642,7 @@ public class TestJsArray
                                                 )
                                        );
 
-        final JsArray newArr1 = arr1.mapObjs_((p, o) ->
+        final JsArray newArr1 = arr1.mapAllObjs((p, o) ->
                                               {
                                                   Assertions.assertEquals(o,
                                                                           arr1.get(p)
@@ -651,8 +651,8 @@ public class TestJsArray
                                                                          o
                                                                         );
                                               },
-                                              (p, o) -> o.isNotEmpty()
-                                             );
+                                                (p, o) -> o.isNotEmpty()
+                                               );
 
 
         Assertions.assertNotEquals(arr1,
@@ -689,7 +689,7 @@ public class TestJsArray
                                          )
                                 );
 
-        final JsArray a = arr.mapObjs_((path, obj) ->
+        final JsArray a = arr.mapAllObjs((path, obj) ->
                                        {
                                            Assertions.assertEquals(obj,
                                                                    arr.get(path)
@@ -698,8 +698,8 @@ public class TestJsArray
                                                           obj.size()
                                                          );
                                        },
-                                       (p, obj) -> obj.isNotEmpty()
-                                      );
+                                         (p, obj) -> obj.isNotEmpty()
+                                        );
 
 
         Assertions.assertEquals(JsArray.parse("[\n"
@@ -807,7 +807,7 @@ public class TestJsArray
                                                    ),
                                          NULL
                                         );
-        Assertions.assertEquals(array.filterElems_(p ->
+        Assertions.assertEquals(array.filterAllElems(p ->
                                                    {
                                                        Assertions.assertEquals(p.elem,
                                                                                array.get(p.path)
@@ -901,10 +901,10 @@ public class TestJsArray
                                          of
                                         );
 
-        final Optional<String> result = array.reduce_(String::concat,
+        final Optional<String> result = array.reduceAll(String::concat,
                                                       p -> p.elem.asJsStr().x,
                                                       p -> p.elem.isStr()
-                                                     );
+                                                       );
 
         final char[] chars = result.get()
                                    .toCharArray();

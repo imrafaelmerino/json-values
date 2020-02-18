@@ -1,20 +1,15 @@
 package jsonvalues;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
-import io.vavr.control.Try;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.io.IOException;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.MatchExp.ifNothingElse;
 
@@ -36,7 +31,7 @@ final class ImmutableJsObj extends AbstractJsObj
     private volatile String str;
 
 
-    ImmutableJsObj(final HashMap<String, JsElem> myMap
+    ImmutableJsObj(final HashMap<String, JsValue> myMap
                   )
     {
         super(myMap);
@@ -59,7 +54,7 @@ final class ImmutableJsObj extends AbstractJsObj
     }
 
     @Override
-    public Iterator<Tuple2<String, JsElem>> iterator()
+    public Iterator<Tuple2<String, JsValue>> iterator()
     {
         return map.iterator();
     }
@@ -78,7 +73,7 @@ final class ImmutableJsObj extends AbstractJsObj
     }
 
     @Override
-    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn)
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsValue> fn)
     {
 
         return new OpMapObjElems(this).map(requireNonNull(fn),
@@ -89,7 +84,7 @@ final class ImmutableJsObj extends AbstractJsObj
     }
 
     @Override
-    public final JsObj mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+    public final JsObj mapElems(final Function<? super JsPair, ? extends JsValue> fn,
                                 final Predicate<? super JsPair> predicate
                                )
     {
@@ -101,25 +96,25 @@ final class ImmutableJsObj extends AbstractJsObj
     }
 
     @Override
-    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn)
+    public final JsObj mapAllElems(final Function<? super JsPair, ? extends JsValue> fn)
     {
-        return new OpMapObjElems(this).map_(requireNonNull(fn),
+        return new OpMapObjElems(this).mapAll(requireNonNull(fn),
                                             p -> true,
-                                            EMPTY_PATH
-                                           )
+                                              EMPTY_PATH
+                                             )
                                       .get();
     }
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    public final JsObj mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
-                                 final Predicate<? super JsPair> predicate
-                                )
+    public final JsObj mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
+                                   final Predicate<? super JsPair> predicate
+                                  )
     {
-        return new OpMapObjElems(this).map_(requireNonNull(fn),
-                                            requireNonNull(predicate),
-                                            EMPTY_PATH
-                                           )
+        return new OpMapObjElems(this).mapAll(requireNonNull(fn),
+                                              requireNonNull(predicate),
+                                              EMPTY_PATH
+                                             )
                                       .get();
     }
 
@@ -148,26 +143,26 @@ final class ImmutableJsObj extends AbstractJsObj
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final JsObj mapKeys_(final Function<? super JsPair, String> fn)
+    public final JsObj mapAllKeys(final Function<? super JsPair, String> fn)
     {
-        return new OpMapObjKeys(this).map_(requireNonNull(fn),
+        return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
                                            it -> true,
-                                           EMPTY_PATH
-                                          )
+                                             EMPTY_PATH
+                                            )
                                      .get();
 
     }
 
     @Override
     @SuppressWarnings("squid:S00100") // xx_ traverses the whole json
-    public final JsObj mapKeys_(final Function<? super JsPair, String> fn,
-                                final Predicate<? super JsPair> predicate
-                               )
+    public final JsObj mapAllKeys(final Function<? super JsPair, String> fn,
+                                  final Predicate<? super JsPair> predicate
+                                 )
     {
-        return new OpMapObjKeys(this).map_(requireNonNull(fn),
-                                           requireNonNull(predicate),
-                                           EMPTY_PATH
-                                          )
+        return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             EMPTY_PATH
+                                            )
                                      .get();
     }
 
@@ -198,25 +193,25 @@ final class ImmutableJsObj extends AbstractJsObj
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    public final JsObj mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                                final BiPredicate<? super JsPath, ? super JsObj> predicate
-                               )
+    public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                  final BiPredicate<? super JsPath, ? super JsObj> predicate
+                                 )
     {
-        return new OpMapObjObjs(this).map_(requireNonNull(fn),
-                                           requireNonNull(predicate),
-                                           JsPath.empty()
-                                          )
+        return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             JsPath.empty()
+                                            )
                                      .get();
     }
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    public final JsObj mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
+    public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
     {
-        return new OpMapObjObjs(this).map_(requireNonNull(fn),
-                                           (p, o) -> true,
-                                           JsPath.empty()
-                                          )
+        return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
+                                             (p, o) -> true,
+                                             JsPath.empty()
+                                            )
                                      .get();
     }
 
@@ -233,11 +228,11 @@ final class ImmutableJsObj extends AbstractJsObj
 
 
     @Override
-    public final JsObj filterElems_(final Predicate<? super JsPair> filter)
+    public final JsObj filterAllElems(final Predicate<? super JsPair> filter)
     {
-        return new OpFilterObjElems(this).filter_(JsPath.empty(),
-                                                  requireNonNull(filter)
-                                                 )
+        return new OpFilterObjElems(this).filterAll(JsPath.empty(),
+                                                    requireNonNull(filter)
+                                                   )
 
                                          .get();
 
@@ -256,11 +251,11 @@ final class ImmutableJsObj extends AbstractJsObj
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final JsObj filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
+    public final JsObj filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
-        return new OpFilterObjObjs(this).filter_(JsPath.empty(),
-                                                 requireNonNull(filter)
-                                                )
+        return new OpFilterObjObjs(this).filterAll(JsPath.empty(),
+                                                   requireNonNull(filter)
+                                                  )
 
                                         .get();
 
@@ -275,11 +270,11 @@ final class ImmutableJsObj extends AbstractJsObj
     }
 
     @Override
-    public JsObj filterKeys_(final Predicate<? super JsPair> filter)
+    public JsObj filterAllKeys(final Predicate<? super JsPair> filter)
     {
-        return new OpFilterObjKeys(this).filter_(JsPath.empty(),
-                                                 filter
-                                                )
+        return new OpFilterObjKeys(this).filterAll(JsPath.empty(),
+                                                   filter
+                                                  )
                                         .get();
     }
 
@@ -340,7 +335,7 @@ final class ImmutableJsObj extends AbstractJsObj
 
     @Override
     public final JsObj append(final JsPath path,
-                              final JsElem elem
+                              final JsValue elem
                              )
     {
         requireNonNull(elem);
@@ -449,7 +444,7 @@ final class ImmutableJsObj extends AbstractJsObj
     @SuppressWarnings("Duplicates")
     @Override
     public final JsObj prepend(final JsPath path,
-                               final JsElem elem
+                               final JsValue elem
                               )
     {
         requireNonNull(elem);
@@ -502,7 +497,7 @@ final class ImmutableJsObj extends AbstractJsObj
 
     @Override
     public final JsObj put(final JsPath path,
-                           final Function<? super JsElem, ? extends JsElem> fn
+                           final Function<? super JsValue, ? extends JsValue> fn
                           )
     {
         requireNonNull(fn);

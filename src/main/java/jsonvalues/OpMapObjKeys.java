@@ -47,20 +47,20 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    Trampoline<JsObj> map_(final Function<? super JsPair, String> fn,
-                           final Predicate<? super JsPair> predicate,
-                           final JsPath startingPath
-                          )
+    Trampoline<JsObj> mapAll(final Function<? super JsPair, String> fn,
+                             final Predicate<? super JsPair> predicate,
+                             final JsPath startingPath
+                            )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.key(head._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjKeys(tail).map_(fn,
-                                                                                                                         predicate,
-                                                                                                                         startingPath
-                                                                                                                        )
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjKeys(tail).mapAll(fn,
+                                                                                                                           predicate,
+                                                                                                                           startingPath
+                                                                                                                          )
                                                                                       );
                                     JsPair pair = JsPair.of(headPath,
                                                             head._2
@@ -68,10 +68,10 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
 
                                     return pair.ifElse(predicate,
                                                        headTrue -> headTrue.ifJsonElse((path, headObj) ->
-                                                                                       more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(headObj).map_(fn,
-                                                                                                                                                                 predicate,
-                                                                                                                                                                 headPath
-                                                                                                                                                                )
+                                                                                       more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(headObj).mapAll(fn,
+                                                                                                                                                                   predicate,
+                                                                                                                                                                   headPath
+                                                                                                                                                                  )
                                                                                                                                                            .map(headObjResult ->
                                                                                                                                                                          tailResult.put(JsPath.fromKey(fn.apply(pair)),
                                                                                                                                                                                         headObjResult
@@ -79,10 +79,10 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
                                                                                                                                                                         )
                                                                                                                    ),
                                                                                        (path, headArr) ->
-                                                                                       more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(headArr).map_(fn,
-                                                                                                                                                                 predicate,
-                                                                                                                                                                 headPath.index(-1)
-                                                                                                                                                                )
+                                                                                       more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(headArr).mapAll(fn,
+                                                                                                                                                                   predicate,
+                                                                                                                                                                   headPath.index(-1)
+                                                                                                                                                                  )
                                                                                                                                                            .map(headArrResult ->
                                                                                                                                                                          tailResult.put(JsPath.fromKey(fn.apply(pair)),
                                                                                                                                                                                         headArrResult
@@ -94,10 +94,10 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
                                                                                                                                                                 ))
                                                                                       ),
                                                        headFalse -> headFalse.ifJsonElse((path, headObj) ->
-                                                                                         more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(headObj).map_(fn,
-                                                                                                                                                                   predicate,
-                                                                                                                                                                   headPath
-                                                                                                                                                                  )
+                                                                                         more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(headObj).mapAll(fn,
+                                                                                                                                                                     predicate,
+                                                                                                                                                                     headPath
+                                                                                                                                                                    )
                                                                                                                                                              .map(headObjResult ->
                                                                                                                                                                            tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                                           headObjResult
@@ -105,10 +105,10 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
                                                                                                                                                                           )
                                                                                                                      ),
                                                                                          (path, headArr) ->
-                                                                                         more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(headArr).map_(fn,
-                                                                                                                                                                   predicate,
-                                                                                                                                                                   headPath.index(-1)
-                                                                                                                                                                  )
+                                                                                         more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(headArr).mapAll(fn,
+                                                                                                                                                                     predicate,
+                                                                                                                                                                     headPath.index(-1)
+                                                                                                                                                                    )
                                                                                                                                                              .map(headArrResult ->
                                                                                                                                                                            tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                                           headArrResult

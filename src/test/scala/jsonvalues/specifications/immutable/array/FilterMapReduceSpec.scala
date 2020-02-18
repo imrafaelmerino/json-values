@@ -17,8 +17,8 @@ class FilterMapReduceSpec extends BasePropSpec
       forAll(jsGen.jsArrGen)
       {
         js =>
-          val arr = js.filterElems_(p => p.elem.isStr)
-          arr.stream_().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isStr)
+          val arr = js.filterAllElems(p => p.elem.isStr)
+          arr.streamAll().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isStr)
       }
       )
   }
@@ -30,7 +30,7 @@ class FilterMapReduceSpec extends BasePropSpec
       {
         js =>
           val arr = js.filterElems(p => p.elem.isStr)
-          arr.stream_().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isStr)
+          arr.streamAll().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isStr)
       }
       )
   }
@@ -42,8 +42,8 @@ class FilterMapReduceSpec extends BasePropSpec
       forAll(jsGen.jsArrGen)
       {
         js =>
-          val arr = js.filterElems_(p => p.elem.isIntegral)
-          arr.stream_().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isIntegral)
+          val arr = js.filterAllElems(p => p.elem.isIntegral)
+          arr.streamAll().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isIntegral)
       }
       )
   }
@@ -55,8 +55,8 @@ class FilterMapReduceSpec extends BasePropSpec
       forAll(jsGen.jsArrGen)
       {
         js =>
-          val arr = js.filterElems_(p => p.elem.isIntegral)
-          arr.stream_().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isIntegral)
+          val arr = js.filterAllElems(p => p.elem.isIntegral)
+          arr.streamAll().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isIntegral)
       }
       )
   }
@@ -67,8 +67,8 @@ class FilterMapReduceSpec extends BasePropSpec
       forAll(jsGen.jsArrGen)
       {
         js =>
-          val arr = js.filterElems_(p => p.elem.isNotNull)
-          arr.stream_().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isNotNull)
+          val arr = js.filterAllElems(p => p.elem.isNotNull)
+          arr.streamAll().filter(p => p.elem.isNotJson).allMatch(p => p.elem.isNotNull)
       }
       )
   }
@@ -81,7 +81,7 @@ class FilterMapReduceSpec extends BasePropSpec
         js =>
 
           val arr = js.filterElems(p => p.elem.isNotNull)
-          arr.stream_().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isNotNull)
+          arr.streamAll().filter(p => p.elem.isNotJson && p.path.tail().isEmpty).allMatch(p => p.elem.isNotNull)
       }
       )
   }
@@ -133,8 +133,8 @@ class FilterMapReduceSpec extends BasePropSpec
       {
         js =>
           val predicate: Predicate[JsPair] = p => p.path.stream().filter(it => it.isKey).allMatch(it => it.asKey().name != "a")
-          val arr = js.filterKeys_(predicate)
-          arr.stream_().allMatch(predicate)
+          val arr = js.filterAllKeys(predicate)
+          arr.streamAll().allMatch(predicate)
       }
       )
   }

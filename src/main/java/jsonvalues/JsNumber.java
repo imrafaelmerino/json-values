@@ -8,7 +8,7 @@ import java.io.IOException;
 /**
  Represents an immutable json number. It's a marker interface for the types {@link JsInt}, {@link JsLong}, {@link JsDouble}, {@link JsBigInt} and {@link JsBigDec}
  */
-abstract class JsNumber implements JsElem
+abstract class JsNumber implements JsValue
 {
     @Override
     public boolean isNumber()

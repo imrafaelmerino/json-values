@@ -24,10 +24,10 @@ public final class MatchExp
      @param ifArray the consumer to be invoked if this JsElem is a JsArray
      @return consumer of a json element
      */
-    public static Consumer<JsElem> accept(final Consumer<JsElem> ifValue,
-                                          final Consumer<JsObj> ifObj,
-                                          final Consumer<JsArray> ifArray
-                                         )
+    public static Consumer<JsValue> accept(final Consumer<JsValue> ifValue,
+                                           final Consumer<JsObj> ifObj,
+                                           final Consumer<JsArray> ifArray
+                                          )
     {
         requireNonNull(ifValue);
         requireNonNull(ifObj);
@@ -48,10 +48,10 @@ public final class MatchExp
      @param <T> the type of the object returned
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifArrElse(final Function<? super JsArray, T> ifArr,
-                                                    final Function<? super JsElem, T> ifNotArr
+    public static <T> Function<JsValue, T> ifArrElse(final Function<? super JsArray, T> ifArr,
+                                                     final Function<? super JsValue, T> ifNotArr
 
-                                                   )
+                                                    )
     {
 
         return elem -> elem.isArray() ? requireNonNull(ifArr).apply(elem.asJsArray()) : requireNonNull(ifNotArr).apply(elem);
@@ -64,9 +64,9 @@ public final class MatchExp
      @param <T> the type of the object returned
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifBoolElse(final Function<? super Boolean, T> ifBoolean,
-                                                     final Function<? super JsElem, T> ifNotBoolean
-                                                    )
+    public static <T> Function<JsValue, T> ifBoolElse(final Function<? super Boolean, T> ifBoolean,
+                                                      final Function<? super JsValue, T> ifNotBoolean
+                                                     )
     {
         return e -> e.isBool() ? requireNonNull(ifBoolean).apply(e.asJsBool().x) : requireNonNull(ifNotBoolean).apply(e);
     }
@@ -79,10 +79,10 @@ public final class MatchExp
      @param <T> the type of the object returned
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifDecimalElse(final DoubleFunction<T> ifDouble,
-                                                        final Function<BigDecimal, T> ifBigDecimal,
-                                                        final Function<? super JsElem, T> ifOther
-                                                       )
+    public static <T> Function<JsValue, T> ifDecimalElse(final DoubleFunction<T> ifDouble,
+                                                         final Function<BigDecimal, T> ifBigDecimal,
+                                                         final Function<? super JsValue, T> ifOther
+                                                        )
     {
         return elem ->
         {
@@ -102,11 +102,11 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifIntegralElse(final IntFunction<T> ifInt,
-                                                         final LongFunction<T> ifLong,
-                                                         final Function<BigInteger, T> ifBigInt,
-                                                         final Function<? super JsElem, T> ifOther
-                                                        )
+    public static <T> Function<JsValue, T> ifIntegralElse(final IntFunction<T> ifInt,
+                                                          final LongFunction<T> ifLong,
+                                                          final Function<BigInteger, T> ifBigInt,
+                                                          final Function<? super JsValue, T> ifOther
+                                                         )
     {
         return elem ->
         {
@@ -126,10 +126,10 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifJsonElse(final Function<? super JsObj, T> ifObj,
-                                                     final Function<? super JsArray, T> ifArr,
-                                                     final Function<? super JsElem, T> ifValue
-                                                    )
+    public static <T> Function<JsValue, T> ifJsonElse(final Function<? super JsObj, T> ifObj,
+                                                      final Function<? super JsArray, T> ifArr,
+                                                      final Function<? super JsValue, T> ifValue
+                                                     )
     {
 
         return elem ->
@@ -149,9 +149,9 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifJsonElse(final Function<Json<?>, T> ifJson,
-                                                     final Function<JsElem, T> ifNotJson
-                                                    )
+    public static <T> Function<JsValue, T> ifJsonElse(final Function<Json<?>, T> ifJson,
+                                                      final Function<JsValue, T> ifNotJson
+                                                     )
     {
 
         return elem -> requireNonNull(elem).isJson() ? requireNonNull(ifJson).apply(elem.asJson()) : requireNonNull(ifNotJson).apply(elem);
@@ -164,9 +164,9 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifNothingElse(final Supplier<T> nothingSupplier,
-                                                        final Function<JsElem, T> elseFn
-                                                       )
+    public static <T> Function<JsValue, T> ifNothingElse(final Supplier<T> nothingSupplier,
+                                                         final Function<JsValue, T> elseFn
+                                                        )
     {
 
         return elem -> elem.isNothing() ? requireNonNull(nothingSupplier).get() : requireNonNull(elseFn).apply(elem);
@@ -179,9 +179,9 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifObjElse(final Function<? super JsObj, T> ifObj,
-                                                    final Function<? super JsElem, T> ifNotObj
-                                                   )
+    public static <T> Function<JsValue, T> ifObjElse(final Function<? super JsObj, T> ifObj,
+                                                     final Function<? super JsValue, T> ifNotObj
+                                                    )
     {
         return elem ->
         {
@@ -198,10 +198,10 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifPredicateElse(final Predicate<JsElem> predicate,
-                                                          final Function<JsElem, T> ifTrue,
-                                                          final Function<JsElem, T> ifFalse
-                                                         )
+    public static <T> Function<JsValue, T> ifPredicateElse(final Predicate<JsValue> predicate,
+                                                           final Function<JsValue, T> ifTrue,
+                                                           final Function<JsValue, T> ifFalse
+                                                          )
     {
 
         return elem ->
@@ -218,9 +218,9 @@ public final class MatchExp
      @param <T> the type of the result
      @return a function that takes a JsElem and returns an object of type T
      */
-    public static <T> Function<JsElem, T> ifStrElse(final Function<? super String, T> ifStr,
-                                                    final Function<? super JsElem, T> ifNotStr
-                                                   )
+    public static <T> Function<JsValue, T> ifStrElse(final Function<? super String, T> ifStr,
+                                                     final Function<? super JsValue, T> ifNotStr
+                                                    )
     {
         return elem -> elem.isStr() ? requireNonNull(ifStr).apply(elem.asJsStr().x) : requireNonNull(ifNotStr).apply(elem);
     }

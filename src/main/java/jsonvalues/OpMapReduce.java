@@ -32,7 +32,7 @@ final class OpMapReduce<T>
 
     @SuppressWarnings("squid:S00100")
         //  naming convention, _ -> traverses the whole json recursively
-    Optional<T> reduce_(JsObj obj)
+    Optional<T> reduceAll(JsObj obj)
     {
         return reduceObj(JsPath.empty(),
                          reduceHeadJsonAndObjTail_()
@@ -54,7 +54,7 @@ final class OpMapReduce<T>
 
     @SuppressWarnings("squid:S00100")
         //  naming convention, _ -> traverses the whole json recursively
-    Optional<T> reduce_(JsArray arr)
+    Optional<T> reduceAll(JsArray arr)
     {
         return reduceArr(JsPath.empty()
                                .index(-1),

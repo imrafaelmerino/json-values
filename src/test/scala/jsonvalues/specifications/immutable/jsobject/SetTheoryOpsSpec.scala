@@ -23,11 +23,11 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.union_(js,
-                      SET
-                      ).equals(js) && js.union_(js,
-                                                SET
-                                                ).hashCode() == js.hashCode()
+            js.unionAll(js,
+                        SET
+                        ).equals(js) && js.unionAll(js,
+                                                    SET
+                                                    ).hashCode() == js.hashCode()
           }
           )
   }
@@ -78,17 +78,17 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.union_(b,
-                                 SET
-                                 ).fields().containsAll(b.union_(a,
-                                                                                      SET
-                                                                                      ).fields()
+            a.unionAll(b,
+                       SET
+                       ).fields().containsAll(b.unionAll(a,
+                                                         SET
+                                                         ).fields()
                                             ) &&
-            b.union_(a,
-                                 SET
-                                 ).fields().containsAll(a.union_(b,
-                                                                                      SET
-                                                                                      ).fields()
+            b.unionAll(a,
+                       SET
+                       ).fields().containsAll(a.unionAll(b,
+                                                         SET
+                                                         ).fields()
                                             )
 
           }
@@ -120,12 +120,12 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            val obj = a.intersection_(b,
-                                      SET
-                                      )
-            val obj1 = b.intersection_(a,
-                                       SET
-                                       )
+            val obj = a.intersectionAll(b,
+                                        SET
+                                        )
+            val obj1 = b.intersectionAll(a,
+                                         SET
+                                         )
             obj.equals(obj1,
                        SET
                        )
@@ -151,9 +151,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection_(JsObj.empty(),
-                             SET
-                             ).equals(JsObj.empty()
+            js.intersectionAll(JsObj.empty(),
+                               SET
+                               ).equals(JsObj.empty()
                                       )
           }
           )
@@ -189,21 +189,21 @@ class SetTheoryOpsSpec extends BasePropSpec
     check(forAll(gen)
           {
             obj =>
-              obj.union_(obj,
-                         SET
-                         ).equals(obj)
+              obj.unionAll(obj,
+                           SET
+                           ).equals(obj)
 
-              val result = obj.union_(b,
-                                      TYPE.MULTISET
-                                      )
+              val result = obj.unionAll(b,
+                                        TYPE.MULTISET
+                                        )
 
-              val result1 = obj.union_(b,
-                                       SET
-                                       )
+              val result1 = obj.unionAll(b,
+                                         SET
+                                         )
 
-              val result2 = obj.union_(b,
-                                       TYPE.LIST
-                                       )
+              val result2 = obj.unionAll(b,
+                                         TYPE.LIST
+                                         )
 
               val a = JsPath.fromKey("a")
               result.size(a).orElse(0) == 6 && result1.size(a).orElse(0) == 5 && result2.size(a).orElse(0) == 3

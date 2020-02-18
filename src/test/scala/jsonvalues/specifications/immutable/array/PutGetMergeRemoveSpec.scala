@@ -15,10 +15,10 @@ class PutGetMergeRemoveSpec extends BasePropSpec
 {
 
 
-  val doubleInt: BiFunction[JsElem, JsElem, JsInt] = ScalaToJava.bifunction((a,
-                                                                             b
+  val doubleInt: BiFunction[JsValue, JsValue, JsInt] = ScalaToJava.bifunction((a,
+                                                                               b
                                                                             ) => JsInt.of(a.asJsInt().x + b.asJsInt().x)
-                                                                            )
+                                                                              )
 
 
   property("inserted string in an empty array has to be returned by getStr function")
@@ -163,10 +163,10 @@ class PutGetMergeRemoveSpec extends BasePropSpec
     check(forAll(jsGen.jsArrGen)
           { js =>
 
-            js.stream_().allMatch(
+            js.streamAll().allMatch(
                                    it =>
                                    {
-                                     val elemToNull: function.Function[_ >: JsElem, _ <: JsElem] = _ => JsNull.NULL
+                                     val elemToNull: function.Function[_ >: JsValue, _ <: JsValue] = _ => JsNull.NULL
                                      js.putIfPresent(it.path,
                                                      elemToNull
                                                      ).get(it.path).equals(JsNull.NULL)
@@ -183,7 +183,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
     check(forAll(jsGen.jsArrGen)
           { js =>
 
-            js.stream_().allMatch(
+            js.streamAll().allMatch(
                                    it => js.putIfAbsent(it.path,
                                                         ScalaToJava.supplier(() => JsNull.NULL)
                                                         ).get(it.path) == it.elem

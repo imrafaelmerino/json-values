@@ -89,7 +89,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withKeyMap(it => it + "!")
                                                      )
             val allKeysEndsWithExclamation: Predicate[_ >: JsPair] = p => p.path.stream().filter(pos => pos.isKey).allMatch(pos => pos.asKey().name.endsWith("!"))
-            parsed.stream_().allMatch(allKeysEndsWithExclamation)
+            parsed.streamAll().allMatch(allKeysEndsWithExclamation)
           }
           )
   }
@@ -104,7 +104,7 @@ class FactoryMethodsSpec extends BasePropSpec
             val parsed = JsArray.parse(js.toString,
                                                      ParseBuilder.builder().withElemFilter(ScalaToJava.predicate(predicate))
                                                      )
-            parsed.stream_().filter(p => p.elem.isNotJson && p.path.last().isIndex).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.elem.isNotJson && p.path.last().isIndex).findFirst().equals(Optional.empty)
 
           }
           )
@@ -118,7 +118,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemFilter(p => p.elem.isNotNull)
                                                      )
 
-            val value = parsed.stream_().filter(p => p.elem.isNull).findFirst()
+            val value = parsed.streamAll().filter(p => p.elem.isNull).findFirst()
 
             value.equals(Optional.empty)
           }
@@ -135,7 +135,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                                                            )
                                                      )
 
-            parsed.stream_().filter(p => p.elem.isStr).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.elem.isStr).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -150,7 +150,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemFilter(predicate)
                                                      )
 
-            parsed.stream_().filter(p => p.elem.isNumber).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.elem.isNumber).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -163,7 +163,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemMap(p => JsElems.mapIfStr(_ => "hi").apply(p.elem))
                                                      )
 
-            parsed.stream_().filter(p => p.elem.isStr).allMatch(p => p.elem.isStr(a => a.equals("hi")))
+            parsed.streamAll().filter(p => p.elem.isStr).allMatch(p => p.elem.isStr(a => a.equals("hi")))
           }
           )
   }

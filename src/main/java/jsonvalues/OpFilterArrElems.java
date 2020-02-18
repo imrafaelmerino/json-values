@@ -45,9 +45,9 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    Trampoline<JsArray> filter_(final JsPath startingPath,
-                                final Predicate<? super JsPair> predicate
-                               )
+    Trampoline<JsArray> filterAll(final JsPath startingPath,
+                                  final Predicate<? super JsPair> predicate
+                                 )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
@@ -55,18 +55,18 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
 
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrElems(tail).filter_(headPath,
-                                                                                                                                  predicate
-                                                                                                                                 ));
-                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjElems(headObj).filter_(headPath,
-                                                                                                                                                  predicate
-                                                                                                                                                 )
+                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrElems(tail).filterAll(headPath,
+                                                                                                                                    predicate
+                                                                                                                                   ));
+                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjElems(headObj).filterAll(headPath,
+                                                                                                                                                    predicate
+                                                                                                                                                   )
                                                                                                                                          .map(tailResult::prepend)
                                                                                              )
                                     ,
-                                                      headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrElems(headArray).filter_(headPath.index(-1),
-                                                                                                                                                      predicate
-                                                                                                                                                     )
+                                                      headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrElems(headArray).filterAll(headPath.index(-1),
+                                                                                                                                                        predicate
+                                                                                                                                                       )
                                                                                                                                              .map(tailResult::prepend)
                                                                                                ),
                                                       headElem -> JsPair.of(headPath,

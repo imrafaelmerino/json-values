@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  Represents an immutable json string.
  */
-public final class JsStr implements JsElem, Comparable<JsStr>
+public final class JsStr implements JsValue, Comparable<JsStr>
 {
 
 

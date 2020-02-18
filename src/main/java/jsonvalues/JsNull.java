@@ -5,7 +5,7 @@ import org.checkerframework.checker.nullness.qual.Nullable;
 /**
  Represents null, which a valid json value. It's a singleton, only the instance JsNull.NULL exists.
  */
-public final class JsNull implements JsElem
+public final class JsNull implements JsValue
 {
     /**
      * The singleton null value.

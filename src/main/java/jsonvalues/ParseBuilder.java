@@ -9,7 +9,7 @@ import java.util.function.UnaryOperator;
  */
 public final class ParseBuilder
 {
-    private Function<? super JsPair, ? extends JsElem> map = pair -> pair.elem;
+    private Function<? super JsPair, ? extends JsValue> map = pair -> pair.elem;
     private Predicate<? super JsPair> filter = pair -> true;
     private UnaryOperator<String> keyMap = k -> k;
     private Predicate<? super JsPath> keyFilter = k -> true;
@@ -72,7 +72,7 @@ public final class ParseBuilder
      @param map the map function which takes as input a JsPair and returns the new JsElem
      @return this ParseOptions builder
      */
-    public ParseBuilder withElemMap(final Function<? super JsPair, ? extends JsElem> map)
+    public ParseBuilder withElemMap(final Function<? super JsPair, ? extends JsValue> map)
     {
         this.map = map;
         return this;
@@ -81,12 +81,12 @@ public final class ParseBuilder
     static class Options
     {
 
-        final Function<? super JsPair, ? extends JsElem> elemMap;
+        final Function<? super JsPair, ? extends JsValue> elemMap;
         final Predicate<? super JsPair> elemFilter;
         final UnaryOperator<String> keyMap;
         final Predicate<? super JsPath> keyFilter;
 
-        Options(final Function<? super JsPair, ? extends JsElem> map,
+        Options(final Function<? super JsPair, ? extends JsValue> map,
                 final Predicate<? super JsPair> filter,
                 final UnaryOperator<String> keyMap,
                 final Predicate<? super JsPath> keyFilter

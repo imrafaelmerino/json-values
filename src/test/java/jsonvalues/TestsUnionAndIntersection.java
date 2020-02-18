@@ -33,21 +33,21 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
+                                a.unionAll(b,
+                                           SET
+                                          )
                                );
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         MULTISET
-                                        )
+                                a.unionAll(b,
+                                           MULTISET
+                                          )
                                );
 
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
+                                a.unionAll(b,
+                                           LIST
+                                          )
                                );
 
         Assertions.assertEquals(e,
@@ -75,21 +75,21 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
+                                a.unionAll(b,
+                                           SET
+                                          )
                                );
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         MULTISET
-                                        )
+                                a.unionAll(b,
+                                           MULTISET
+                                          )
                                );
 
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
+                                a.unionAll(b,
+                                           LIST
+                                          )
                                );
 
         Assertions.assertEquals(a,
@@ -123,8 +123,8 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(d,
-                                a.union_(b
-                                        )
+                                a.unionAll(b
+                                          )
                                );
 
         Assertions.assertEquals(d,
@@ -169,21 +169,21 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
+                                a.unionAll(b,
+                                           SET
+                                          )
                                );
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         MULTISET
-                                        )
+                                a.unionAll(b,
+                                           MULTISET
+                                          )
                                );
 
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
+                                a.unionAll(b,
+                                           LIST
+                                          )
                                );
 
         Assertions.assertEquals(e,
@@ -212,21 +212,21 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
+                                a.unionAll(b,
+                                           SET
+                                          )
                                );
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         MULTISET
-                                        )
+                                a.unionAll(b,
+                                           MULTISET
+                                          )
                                );
 
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
+                                a.unionAll(b,
+                                           LIST
+                                          )
                                );
 
         Assertions.assertEquals(a,
@@ -276,9 +276,9 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(c,
-                                a.intersection_(b,
-                                                LIST
-                                               )
+                                a.intersectionAll(b,
+                                                  LIST
+                                                 )
                                );
 
 
@@ -289,7 +289,7 @@ public class TestsUnionAndIntersection
     @Test
     public void test_map_values_immutable_array() throws MalformedJson
     {
-        final Function<JsPair, JsElem> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
 
 
         JsArray array = JsArray.of(JsStr.of("A"),
@@ -328,9 +328,9 @@ public class TestsUnionAndIntersection
                                                                            )
                                                  );
 
-        final JsArray newArray1 = array1.mapElems_(toLowerCaseFn,
+        final JsArray newArray1 = array1.mapAllElems(toLowerCaseFn,
                                                    p -> p.elem.isStr()
-                                                  );
+                                                    );
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                                                      ,
                                 newArray1
@@ -343,7 +343,7 @@ public class TestsUnionAndIntersection
     @Test
     public void test_map_values_immutable_obj()
     {
-        final Function<JsPair, JsElem> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
 
         JsObj obj = JsObj.of("a",
                                               JsStr.of("A"),
@@ -367,7 +367,7 @@ public class TestsUnionAndIntersection
                                                                        )
                                               );
 
-        final JsObj newObj1 = obj1.mapElems_(toLowerCaseFn);
+        final JsObj newObj1 = obj1.mapAllElems(toLowerCaseFn);
 
         Assertions.assertNotEquals(obj1,
                                    newObj1
@@ -410,8 +410,8 @@ public class TestsUnionAndIntersection
                                                                        )
                                               );
 
-        final JsObj newObj1 = obj1.mapKeys_(p -> p.path.last()
-                                                       .asKey().name.toUpperCase());
+        final JsObj newObj1 = obj1.mapAllKeys(p -> p.path.last()
+                                                         .asKey().name.toUpperCase());
 
         Assertions.assertNotEquals(newObj1,
                                    obj1
@@ -453,10 +453,10 @@ public class TestsUnionAndIntersection
                              );
 
 
-        final JsArray arr1 = arr.mapKeys_(p -> p.path.last()
-                                                     .asKey().name.toUpperCase(),
+        final JsArray arr1 = arr.mapAllKeys(p -> p.path.last()
+                                                       .asKey().name.toUpperCase(),
                                           p -> p.elem.isStr()
-                                         );
+                                           );
 
 
         Assertions.assertNotEquals(arr1,
@@ -468,9 +468,9 @@ public class TestsUnionAndIntersection
                                 arr1
                                );
 
-        final JsArray arr2 = arr.mapKeys_(p -> p.path.last()
-                                                     .asKey().name.toUpperCase()
-                                         );
+        final JsArray arr2 = arr.mapAllKeys(p -> p.path.last()
+                                                       .asKey().name.toUpperCase()
+                                           );
 
         Assertions.assertEquals(JsArray.parse("[{\"A\":1,\"B\":\"B\",\"C\":{}},null,{\"C\":1,\"D\":\"D\"},true,[{\"E\":1,\"F\":\"F\"}]]\n")
                                                      ,
@@ -496,14 +496,14 @@ public class TestsUnionAndIntersection
                                         ;
 
         Assertions.assertEquals(c,
-                                a.union_(b,
-                                         SET
-                                        )
+                                a.unionAll(b,
+                                           SET
+                                          )
                                );
         Assertions.assertEquals(d,
-                                a.union_(b,
-                                         LIST
-                                        )
+                                a.unionAll(b,
+                                           LIST
+                                          )
                                );
         Assertions.assertEquals(e,
                                 a.union(b)
@@ -522,19 +522,19 @@ public class TestsUnionAndIntersection
 
 
         Assertions.assertEquals(h,
-                                f.union_(g,
-                                         SET
-                                        )
+                                f.unionAll(g,
+                                           SET
+                                          )
                                );
         Assertions.assertEquals(h,
-                                f.union_(g,
-                                         MULTISET
-                                        )
+                                f.unionAll(g,
+                                           MULTISET
+                                          )
                                );
         Assertions.assertEquals(i,
-                                f.union_(g,
-                                         LIST
-                                        )
+                                f.unionAll(g,
+                                           LIST
+                                          )
                                );
         Assertions.assertEquals(j,
                                 f.union(g)
@@ -559,9 +559,9 @@ public class TestsUnionAndIntersection
                                               )
                                );
         Assertions.assertEquals(b,
-                                a.intersection_(b,
-                                                LIST
-                                               )
+                                a.intersectionAll(b,
+                                                  LIST
+                                                 )
                                );
         Assertions.assertEquals(JsObj.empty(),
                                 a.intersection(b,
@@ -569,9 +569,9 @@ public class TestsUnionAndIntersection
                                               )
                                );
         Assertions.assertEquals(c,
-                                a.intersection_(b,
-                                                SET
-                                               )
+                                a.intersectionAll(b,
+                                                  SET
+                                                 )
                                );
         Assertions.assertEquals(JsObj.empty(),
                                 a.intersection(b,
@@ -579,9 +579,9 @@ public class TestsUnionAndIntersection
                                               )
                                );
         Assertions.assertEquals(c,
-                                a.intersection_(b,
-                                                MULTISET
-                                               )
+                                a.intersectionAll(b,
+                                                  MULTISET
+                                                 )
                                );
         JsObj d = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, true,  null, false    ] }")
                                         ;
@@ -611,9 +611,9 @@ public class TestsUnionAndIntersection
                                               )
                                );
         Assertions.assertEquals(i,
-                                d.intersection_(e,
-                                                LIST
-                                               )
+                                d.intersectionAll(e,
+                                                  LIST
+                                                 )
                                );
 
 

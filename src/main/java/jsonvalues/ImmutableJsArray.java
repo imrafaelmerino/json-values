@@ -26,7 +26,7 @@ final class ImmutableJsArray extends AbstractJsArray
     @Nullable
     private volatile String str;
 
-    ImmutableJsArray(final Vector<JsElem> array
+    ImmutableJsArray(final Vector<JsValue> array
                     )
     {
         super(array);
@@ -60,7 +60,7 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public final JsArray mapElems(final Function<? super JsPair, ? extends JsElem> fn)
+    public final JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn)
     {
         return new OpMapArrElems(this).map(requireNonNull(fn),
                                            p -> true,
@@ -72,7 +72,7 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public JsArray mapElems(final Function<? super JsPair, ? extends JsElem> fn,
+    public JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn,
                             final Predicate<? super JsPair> predicate
                            )
     {
@@ -85,26 +85,26 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public JsArray mapElems_(final Function<? super JsPair, ? extends JsElem> fn)
+    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn)
     {
-        return new OpMapArrElems(this).map_(requireNonNull(fn),
+        return new OpMapArrElems(this).mapAll(requireNonNull(fn),
                                             p -> true,
-                                            JsPath.empty()
+                                              JsPath.empty()
                                                   .index(-1)
-                                           )
+                                             )
                                       .get();
     }
 
     @Override
-    public JsArray mapElems_(final Function<? super JsPair, ? extends JsElem> fn,
-                             final Predicate<? super JsPair> predicate
-                            )
+    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
+                               final Predicate<? super JsPair> predicate
+                              )
     {
-        return new OpMapArrElems(this).map_(requireNonNull(fn),
-                                            requireNonNull(predicate),
-                                            JsPath.empty()
+        return new OpMapArrElems(this).mapAll(requireNonNull(fn),
+                                              requireNonNull(predicate),
+                                              JsPath.empty()
                                                   .index(-1)
-                                           )
+                                             )
                                       .get();
     }
 
@@ -124,27 +124,27 @@ final class ImmutableJsArray extends AbstractJsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
-    public final JsArray mapKeys_(final Function<? super JsPair, String> fn)
+    public final JsArray mapAllKeys(final Function<? super JsPair, String> fn)
     {
-        return new OpMapArrKeys(this).map_(requireNonNull(fn),
+        return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
                                            it -> true,
-                                           JsPath.empty()
+                                             JsPath.empty()
                                                  .index(-1)
-                                          )
+                                            )
                                      .get();
     }
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final JsArray mapKeys_(final Function<? super JsPair, String> fn,
-                                  final Predicate<? super JsPair> predicate
-                                 )
+    public final JsArray mapAllKeys(final Function<? super JsPair, String> fn,
+                                    final Predicate<? super JsPair> predicate
+                                   )
     {
-        return new OpMapArrKeys(this).map_(requireNonNull(fn),
-                                           requireNonNull(predicate),
-                                           JsPath.empty()
+        return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             JsPath.empty()
                                                  .index(-1)
-                                          )
+                                            )
                                      .get();
 
     }
@@ -178,26 +178,26 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public final JsArray mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                                  final BiPredicate<? super JsPath, ? super JsObj> predicate
-                                 )
+    public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                    final BiPredicate<? super JsPath, ? super JsObj> predicate
+                                   )
     {
-        return new OpMapArrObjs(this).map_(requireNonNull(fn),
-                                           requireNonNull(predicate),
-                                           JsPath.empty()
+        return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             JsPath.empty()
                                                  .index(-1)
-                                          )
+                                            )
                                      .get();
     }
 
     @Override
-    public final JsArray mapObjs_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
+    public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
     {
-        return new OpMapArrObjs(this).map_(requireNonNull(fn),
-                                           (p, o) -> true,
-                                           JsPath.empty()
+        return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
+                                             (p, o) -> true,
+                                             JsPath.empty()
                                                  .index(-1)
-                                          )
+                                            )
                                      .get();
     }
 
@@ -216,12 +216,12 @@ final class ImmutableJsArray extends AbstractJsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
-    public final JsArray filterElems_(final Predicate<? super JsPair> filter)
+    public final JsArray filterAllElems(final Predicate<? super JsPair> filter)
     {
-        return new OpFilterArrElems(this).filter_(JsPath.empty()
-                                                        .index(-1),
-                                                  requireNonNull(filter)
-                                                 )
+        return new OpFilterArrElems(this).filterAll(JsPath.empty()
+                                                          .index(-1),
+                                                    requireNonNull(filter)
+                                                   )
 
                                          .get();
     }
@@ -240,12 +240,12 @@ final class ImmutableJsArray extends AbstractJsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final JsArray filterObjs_(final BiPredicate<? super JsPath, ? super JsObj> filter)
+    public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
-        return new OpFilterArrObjs(this).filter_(JsPath.empty()
-                                                       .index(-1),
-                                                 requireNonNull(filter)
-                                                )
+        return new OpFilterArrObjs(this).filterAll(JsPath.empty()
+                                                         .index(-1),
+                                                   requireNonNull(filter)
+                                                  )
                                         .get();
     }
 
@@ -257,12 +257,12 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public final JsArray filterKeys_(final Predicate<? super JsPair> filter)
+    public final JsArray filterAllKeys(final Predicate<? super JsPair> filter)
     {
-        return new OpFilterArrKeys(this).filter_(JsPath.empty()
-                                                       .index(-1),
-                                                 filter
-                                                )
+        return new OpFilterArrKeys(this).filterAll(JsPath.empty()
+                                                         .index(-1),
+                                                   filter
+                                                  )
                                         .get();
     }
 
@@ -325,7 +325,7 @@ final class ImmutableJsArray extends AbstractJsArray
 
     @Override
     public final JsArray append(final JsPath path,
-                                final JsElem elem
+                                final JsValue elem
                                )
     {
         if (requireNonNull(path).isEmpty()) return this;
@@ -437,7 +437,7 @@ final class ImmutableJsArray extends AbstractJsArray
     @SuppressWarnings("Duplicates")
     @Override
     public final JsArray prepend(final JsPath path,
-                                 final JsElem elem
+                                 final JsValue elem
                                 )
     {
         Objects.requireNonNull(elem);
@@ -493,7 +493,7 @@ final class ImmutableJsArray extends AbstractJsArray
 
     @Override
     public final JsArray put(final JsPath path,
-                             final Function<? super JsElem, ? extends JsElem> fn
+                             final Function<? super JsValue, ? extends JsValue> fn
                             )
     {
 
@@ -517,8 +517,8 @@ final class ImmutableJsArray extends AbstractJsArray
                                                                                                             ),
                                                                                  () ->
                                                                                  {
-                                                                                     final JsElem newElem = tail.head()
-                                                                                                                .match(key -> ImmutableJsObj.EMPTY
+                                                                                     final JsValue newElem = tail.head()
+                                                                                                                 .match(key -> ImmutableJsObj.EMPTY
                                                                                                                                             .put(tail,
                                                                                                                                                  fn
                                                                                                                                                 ),
@@ -550,24 +550,24 @@ final class ImmutableJsArray extends AbstractJsArray
     }
 
     @Override
-    public final JsArray append(final JsElem e,
-                                final JsElem... others
+    public final JsArray append(final JsValue e,
+                                final JsValue... others
                                )
     {
-        Vector<JsElem> acc = this.seq.append(requireNonNull(e));
-        for (JsElem other : requireNonNull(others)) acc = acc.append(requireNonNull(other));
+        Vector<JsValue> acc = this.seq.append(requireNonNull(e));
+        for (JsValue other : requireNonNull(others)) acc = acc.append(requireNonNull(other));
         return new ImmutableJsArray(acc);
     }
 
     @Override
-    public final JsArray prepend(final JsElem e,
-                                 final JsElem... others
+    public final JsArray prepend(final JsValue e,
+                                 final JsValue... others
                                 )
     {
-        Vector<JsElem> acc = seq;
+        Vector<JsValue> acc = seq;
         for (int i = 0, othersLength = requireNonNull(others).length; i < othersLength; i++)
         {
-            final JsElem other = others[othersLength - 1 - i];
+            final JsValue other = others[othersLength - 1 - i];
             acc = acc.prepend(requireNonNull(other));
         }
         return new ImmutableJsArray(acc.prepend(requireNonNull(e)));
@@ -602,10 +602,10 @@ final class ImmutableJsArray extends AbstractJsArray
 
     }
 
-    private Trampoline<Vector<JsElem>> nullPaddingTrampoline(final int i,
-                                                             final Vector<JsElem> arr,
-                                                             final JsElem e
-                                                            )
+    private Trampoline<Vector<JsValue>> nullPaddingTrampoline(final int i,
+                                                              final Vector<JsValue> arr,
+                                                              final JsValue e
+                                                             )
     {
 
         if (i == arr.size()) return Trampoline.done(arr.append(e));
@@ -623,10 +623,10 @@ final class ImmutableJsArray extends AbstractJsArray
                                                           ));
     }
 
-    private Vector<JsElem> nullPadding(final int index,
-                                       final Vector<JsElem> arr,
-                                       final JsElem e
-                                      )
+    private Vector<JsValue> nullPadding(final int index,
+                                        final Vector<JsValue> arr,
+                                        final JsValue e
+                                       )
     {
         assert arr != null;
         assert e != null;

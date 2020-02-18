@@ -31,10 +31,10 @@ final class OpMapObjObjs extends OpMapObjs<JsObj>
                                                                                                                        ));
                                     return ifObjElse(headObj -> more(() -> tailCall).map(tailResult ->
                                                                                          {
-                                                                                             final JsElem headMapped = JsPair.of(headPath,
-                                                                                                                                 headObj
-                                                                                                                                )
-                                                                                                                             .ifElse(p -> predicate.test(p.path,
+                                                                                             final JsValue headMapped = JsPair.of(headPath,
+                                                                                                                                  headObj
+                                                                                                                                 )
+                                                                                                                              .ifElse(p -> predicate.test(p.path,
                                                                                                                                                          headObj
                                                                                                                                                         ),
                                                                                                                                      p -> fn.apply(p.path,
@@ -56,19 +56,19 @@ final class OpMapObjObjs extends OpMapObjs<JsObj>
     }
 
     @Override
-    Trampoline<JsObj> map_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                           final BiPredicate<? super JsPath, ? super JsObj> predicate,
-                           final JsPath startingPath
-                          )
+    Trampoline<JsObj> mapAll(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                             final BiPredicate<? super JsPath, ? super JsObj> predicate,
+                             final JsPath startingPath
+                            )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.key(head._1);
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjObjs(tail).map_(fn,
-                                                                                                                         predicate,
-                                                                                                                         startingPath
-                                                                                                                        )
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjObjs(tail).mapAll(fn,
+                                                                                                                           predicate,
+                                                                                                                           startingPath
+                                                                                                                          )
                                                                                       );
                                     return ifJsonElse(headObj ->
                                                       {
@@ -83,10 +83,10 @@ final class OpMapObjObjs extends OpMapObjs<JsObj>
                                                                                                         ),
                                                                                            p -> headObj
                                                                                           );
-                                                          return more(() -> tailCall).flatMap(tailResult -> new OpMapObjObjs(headMapped).map_(fn,
-                                                                                                                                              predicate,
-                                                                                                                                              headPath
-                                                                                                                                             )
+                                                          return more(() -> tailCall).flatMap(tailResult -> new OpMapObjObjs(headMapped).mapAll(fn,
+                                                                                                                                                predicate,
+                                                                                                                                                headPath
+                                                                                                                                               )
                                                                                                                                         .map(headMappedResult ->
                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                      headMappedResult
@@ -94,10 +94,10 @@ final class OpMapObjObjs extends OpMapObjs<JsObj>
                                                                                                                                                      )
                                                                                              );
                                                       },
-                                                      headArray -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArray).map_(fn,
-                                                                                                                                               predicate,
-                                                                                                                                               headPath.index(-1)
-                                                                                                                                              )
+                                                      headArray -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArray).mapAll(fn,
+                                                                                                                                                 predicate,
+                                                                                                                                                 headPath.index(-1)
+                                                                                                                                                )
                                                                                                                                          .map(headResult ->
                                                                                                                                                        tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                       headResult

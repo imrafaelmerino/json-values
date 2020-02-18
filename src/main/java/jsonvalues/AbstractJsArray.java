@@ -35,9 +35,9 @@ abstract class AbstractJsArray implements JsArray
 
 {
 
-    protected Vector<JsElem> seq;
+    protected Vector<JsValue> seq;
 
-    AbstractJsArray(Vector<JsElem> seq)
+    AbstractJsArray(Vector<JsValue> seq)
     {
         this.seq = seq;
     }
@@ -65,7 +65,7 @@ abstract class AbstractJsArray implements JsArray
 
 
     @Override
-    public final boolean containsElem(final JsElem el)
+    public final boolean containsElem(final JsValue el)
     {
         return seq.contains(requireNonNull(el));
     }
@@ -75,7 +75,7 @@ abstract class AbstractJsArray implements JsArray
     {
         if (!(that instanceof AbstractJsArray)) return false;
         if (this == that) return true;
-        final Vector<JsElem> thatSeq = ((AbstractJsArray) that).seq;
+        final Vector<JsValue> thatSeq = ((AbstractJsArray) that).seq;
         final boolean thatEmpty = thatSeq.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
@@ -89,8 +89,8 @@ abstract class AbstractJsArray implements JsArray
     }
 
 
-    private boolean yContainsX(final Vector<JsElem> x,
-                               final Vector<JsElem> y
+    private boolean yContainsX(final Vector<JsValue> x,
+                               final Vector<JsValue> y
                               )
     {
         for (int i = 0; i < x.size(); i++)
@@ -105,15 +105,15 @@ abstract class AbstractJsArray implements JsArray
 
     }
 
-    private boolean yContainsSameX(Vector<JsElem> x,
-                                   Vector<JsElem> y
+    private boolean yContainsSameX(Vector<JsValue> x,
+                                   Vector<JsValue> y
                                   )
     {
         for (int i = 0; i < x.size(); i++)
         {
 
-            final JsElem a = x.get(i);
-            final JsElem b = y.get(i);
+            final JsValue a = x.get(i);
+            final JsValue b = y.get(i);
             if (a.isObj() && b.isObj())
             {
                 if (!a.asJsObj()
@@ -137,7 +137,7 @@ abstract class AbstractJsArray implements JsArray
     public final boolean same(final JsArray that)
     {
         if (this == that) return true;
-        final Vector<JsElem> other = ((AbstractJsArray) that).seq;
+        final Vector<JsValue> other = ((AbstractJsArray) that).seq;
         final boolean thatEmpty = that.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
@@ -150,7 +150,7 @@ abstract class AbstractJsArray implements JsArray
     }
 
     @Override
-    public final JsElem get(final Position pos)
+    public final JsValue get(final Position pos)
     {
 
 
@@ -173,7 +173,7 @@ abstract class AbstractJsArray implements JsArray
     }
 
     @Override
-    public final JsElem head()
+    public final JsValue head()
     {
         return seq.head();
     }
@@ -230,10 +230,10 @@ abstract class AbstractJsArray implements JsArray
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
 
-        final JsElem head = a.head();
+        final JsValue head = a.head();
         final JsArray tail = a.tail();
 
-        final JsElem otherHead = b.head();
+        final JsValue otherHead = b.head();
         final JsArray otherTail = b.tail();
 
         final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsList(tail,
@@ -256,7 +256,7 @@ abstract class AbstractJsArray implements JsArray
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
 
-        final JsElem head = a.head();
+        final JsValue head = a.head();
         final JsArray tail = a.tail();
 
         final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsMultiSet(tail,
@@ -275,7 +275,7 @@ abstract class AbstractJsArray implements JsArray
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
 
-        final JsElem head = a.head();
+        final JsValue head = a.head();
         final JsArray tail = a.tail();
 
         final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsSet(tail,
@@ -290,23 +290,23 @@ abstract class AbstractJsArray implements JsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public JsArray intersection_(final JsArray that)
+    public JsArray intersectionAll(final JsArray that)
     {
-        return intersection_(this,
-                             requireNonNull(that)
-                            ).get();
+        return intersectionAll(this,
+                               requireNonNull(that)
+                              ).get();
     }
 
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
-    private Trampoline<JsArray> intersection_(final JsArray a,
-                                              final JsArray b
-                                             )
+    private Trampoline<JsArray> intersectionAll(final JsArray a,
+                                                final JsArray b
+                                               )
     {
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
 
-        final JsElem head = a.head();
-        final JsElem otherHead = b.head();
+        final JsValue head = a.head();
+        final JsValue otherHead = b.head();
 
         final Trampoline<JsArray> tailCall = intersectionAsList(a.tail(),
                                                                 b.tail()
@@ -317,10 +317,10 @@ abstract class AbstractJsArray implements JsArray
             final Json<?> obj = head.asJson();
             final Json<?> obj1 = otherHead.asJson();
 
-            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersection_(obj,
-                                                                                                              obj1,
-                                                                                                              JsArray.TYPE.LIST
-                                                                                                             ));
+            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
+                                                                                                                obj1,
+                                                                                                                JsArray.TYPE.LIST
+                                                                                                               ));
 
             return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
 
@@ -337,13 +337,13 @@ abstract class AbstractJsArray implements JsArray
     }
 
     @Override
-    public final Iterator<JsElem> iterator()
+    public final Iterator<JsValue> iterator()
     {
         return seq.iterator();
     }
 
     @Override
-    public final JsElem last()
+    public final JsValue last()
     {
 
         return seq.last();
@@ -367,15 +367,15 @@ abstract class AbstractJsArray implements JsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
-                                         final Function<? super JsPair, R> map,
-                                         final Predicate<? super JsPair> predicate
-                                        )
+    public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                                           final Function<? super JsPair, R> map,
+                                           final Predicate<? super JsPair> predicate
+                                          )
     {
         return new OpMapReduce<>(predicate,
                                  map,
                                  op
-        ).reduce_(this);
+        ).reduceAll(this);
 
     }
 
@@ -388,7 +388,7 @@ abstract class AbstractJsArray implements JsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public Stream<JsPair> stream_()
+    public Stream<JsPair> streamAll()
     {
         return streamOfArr(this,
                            JsPath.empty()
@@ -520,7 +520,7 @@ abstract class AbstractJsArray implements JsArray
     {
         if (b.isEmpty()) return done(a);
         if (a.isEmpty()) return done(b);
-        JsElem last = b.last();
+        JsValue last = b.last();
         final Trampoline<JsArray> initCall = unionAsSet(a,
                                                         b.init()
                                                        );
@@ -530,35 +530,35 @@ abstract class AbstractJsArray implements JsArray
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final JsArray union_(final JsArray that
-                               )
+    public final JsArray unionAll(final JsArray that
+                                 )
     {
-        return union_(this,
-                      requireNonNull(that)
-                     )
+        return unionAll(this,
+                        requireNonNull(that)
+                       )
         .get();
     }
 
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
-    private Trampoline<JsArray> union_(final JsArray a,
-                                       final JsArray b
-                                      )
+    private Trampoline<JsArray> unionAll(final JsArray a,
+                                         final JsArray b
+                                        )
     {
         if (b.isEmpty()) return done(a);
         if (a.isEmpty()) return done(b);
-        final JsElem head = a.head();
-        final JsElem otherHead = b.head();
-        final Trampoline<JsArray> tailCall = union_(a.tail(),
-                                                    b.tail()
-                                                   );
+        final JsValue head = a.head();
+        final JsValue otherHead = b.head();
+        final Trampoline<JsArray> tailCall = unionAll(a.tail(),
+                                                      b.tail()
+                                                     );
         if (head.isJson() && head.isSameType(otherHead))
         {
             final Json<?> obj = head.asJson();
             final Json<?> obj1 = otherHead.asJson();
-            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().union_(obj,
-                                                                                                obj1,
-                                                                                                JsArray.TYPE.LIST
-                                                                                               ));
+            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
+                                                                                                  obj1,
+                                                                                                  JsArray.TYPE.LIST
+                                                                                                 ));
             return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
 
         }
@@ -594,7 +594,7 @@ abstract class AbstractJsArray implements JsArray
 
     @SuppressWarnings("squid:S1602")
         // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsElem> pseq)
+    BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsValue> pseq)
     {
         return (index, tail) ->
         {
@@ -613,14 +613,14 @@ abstract class AbstractJsArray implements JsArray
         };
     }
 
-    static Vector<JsElem> parse(final JsonParser parser
-                               ) throws IOException
+    static Vector<JsValue> parse(final JsonParser parser
+                                ) throws IOException
     {
-        Vector<JsElem> root = Vector.empty();
+        Vector<JsValue> root = Vector.empty();
         while (true)
         {
             JsonToken token = parser.nextToken();
-            JsElem elem;
+            JsValue elem;
             switch (token.id())
             {
                 case JsonTokenId.ID_END_ARRAY:
@@ -659,14 +659,14 @@ abstract class AbstractJsArray implements JsArray
         }
     }
 
-    static Vector<JsElem> parse(final JsonParser parser,
-                                final ParseBuilder.Options options,
-                                final JsPath path
-                               ) throws IOException
+    static Vector<JsValue> parse(final JsonParser parser,
+                                 final ParseBuilder.Options options,
+                                 final JsPath path
+                                ) throws IOException
     {
         JsonToken elem;
         JsPair pair;
-        Vector<JsElem> root = Vector.empty();
+        Vector<JsValue> root = Vector.empty();
         final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while ((elem = parser.nextToken()) != JsonToken.END_ARRAY)
         {

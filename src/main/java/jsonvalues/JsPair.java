@@ -18,7 +18,7 @@ public final class JsPair
     /**
      the json element.
      */
-    public final JsElem elem;
+    public final JsValue elem;
 
 
     /**
@@ -28,7 +28,7 @@ public final class JsPair
 
 
     private JsPair(final JsPath path,
-                   final JsElem elem
+                   final JsValue elem
                   )
     {
         this.path = path;
@@ -75,7 +75,7 @@ public final class JsPair
      @return an immutable JsPair
      */
     public static JsPair of(final JsPath path,
-                            final JsElem elem
+                            final JsValue elem
                            )
     {
         return new JsPair(requireNonNull(requireNonNull(path)),
@@ -239,7 +239,7 @@ public final class JsPair
      @param map the mapping function which maps the JsElem
      @return a new JsPair
      */
-    public JsPair mapElem(final UnaryOperator<JsElem> map)
+    public JsPair mapElem(final UnaryOperator<JsValue> map)
     {
         return JsPair.of(this.path,
                          requireNonNull(map).apply(this.elem)
@@ -267,7 +267,7 @@ public final class JsPair
      @return object of type T
      */
     public <T> T ifJsonElse(final BiFunction<JsPath, Json<?>, T> ifJson,
-                            final BiFunction<JsPath, JsElem, T> ifNotJson
+                            final BiFunction<JsPath, JsValue, T> ifNotJson
                            )
     {
 
@@ -289,7 +289,7 @@ public final class JsPair
      */
     public <T> T ifJsonElse(final BiFunction<JsPath, JsObj, T> ifJsOb,
                             final BiFunction<JsPath, JsArray, T> ifJsArr,
-                            final BiFunction<JsPath, JsElem, T> ifNotJson
+                            final BiFunction<JsPath, JsValue, T> ifNotJson
                            )
     {
         if (elem.isObj()) return requireNonNull(ifJsOb).apply(path,

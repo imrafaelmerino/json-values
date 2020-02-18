@@ -14,7 +14,7 @@ final class OpMapObjElems extends OpMapElems<JsObj>
     }
 
     @Override
-    Trampoline<JsObj> map(final Function<? super JsPair, ? extends JsElem> fn,
+    Trampoline<JsObj> map(final Function<? super JsPair, ? extends JsValue> fn,
                           final Predicate<? super JsPair> predicate,
                           final JsPath startingPath
                          )
@@ -33,10 +33,10 @@ final class OpMapObjElems extends OpMapElems<JsObj>
                                                                                                                        )),
                                                       headElem ->
                                                       {
-                                                          JsElem headMapped = JsPair.of(headPath,
-                                                                                        headElem
-                                                                                       )
-                                                                                    .ifElse(predicate,
+                                                          JsValue headMapped = JsPair.of(headPath,
+                                                                                         headElem
+                                                                                        )
+                                                                                     .ifElse(predicate,
                                                                                             fn::apply,
                                                                                             p -> headElem
                                                                                            );
@@ -52,34 +52,34 @@ final class OpMapObjElems extends OpMapElems<JsObj>
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    Trampoline<JsObj> map_(final Function<? super JsPair, ? extends JsElem> fn,
-                           final Predicate<? super JsPair> predicate,
-                           final JsPath startingPath
-                          )
+    Trampoline<JsObj> mapAll(final Function<? super JsPair, ? extends JsValue> fn,
+                             final Predicate<? super JsPair> predicate,
+                             final JsPath startingPath
+                            )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.key(head._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjElems(tail).map_(fn,
-                                                                                                                          predicate,
-                                                                                                                          startingPath
-                                                                                                                         ));
-                                    return ifJsonElse(headJson -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjElems(headJson).map_(fn,
-                                                                                                                                              predicate,
-                                                                                                                                              headPath
-                                                                                                                                             )
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpMapObjElems(tail).mapAll(fn,
+                                                                                                                            predicate,
+                                                                                                                            startingPath
+                                                                                                                           ));
+                                    return ifJsonElse(headJson -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjElems(headJson).mapAll(fn,
+                                                                                                                                                predicate,
+                                                                                                                                                headPath
+                                                                                                                                               )
                                                                                                                                         .map(headMapped ->
                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                      headMapped
                                                                                                                                                                     )
                                                                                                                                                      )
                                                                                               ),
-                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrElems(headArr).map_(fn,
-                                                                                                                                            predicate,
-                                                                                                                                            headPath.index(-1)
-                                                                                                                                           )
+                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrElems(headArr).mapAll(fn,
+                                                                                                                                              predicate,
+                                                                                                                                              headPath.index(-1)
+                                                                                                                                             )
                                                                                                                                       .map(headMapped ->
                                                                                                                                                     tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                    headMapped
@@ -88,10 +88,10 @@ final class OpMapObjElems extends OpMapElems<JsObj>
                                                                                              ),
                                                       headElem ->
                                                       {
-                                                          JsElem headMapped = JsPair.of(headPath,
-                                                                                        headElem
-                                                                                       )
-                                                                                    .ifElse(predicate,
+                                                          JsValue headMapped = JsPair.of(headPath,
+                                                                                         headElem
+                                                                                        )
+                                                                                     .ifElse(predicate,
                                                                                             fn::apply,
                                                                                             p -> headElem
                                                                                            );

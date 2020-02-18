@@ -35,9 +35,9 @@ import static jsonvalues.Trampoline.more;
 abstract class AbstractJsObj implements JsObj
 {
 
-    protected HashMap<String, JsElem> map;
+    protected HashMap<String, JsValue> map;
 
-    AbstractJsObj(final HashMap<String, JsElem> myMap)
+    AbstractJsObj(final HashMap<String, JsValue> myMap)
     {
         assert myMap != null;
         this.map = myMap;
@@ -74,7 +74,7 @@ abstract class AbstractJsObj implements JsObj
 
 
     @Override
-    public final JsElem get(final Position position)
+    public final JsValue get(final Position position)
     {
         return requireNonNull(position).match(key -> map.getOrElse(key,
                                                                    NOTHING),
@@ -89,7 +89,7 @@ abstract class AbstractJsObj implements JsObj
     }
 
     @Override
-    public final Tuple2<String, JsElem> head()
+    public final Tuple2<String, JsValue> head()
     {
         return map.head();
     }
@@ -116,13 +116,13 @@ abstract class AbstractJsObj implements JsObj
     {
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
-        Tuple2<String, JsElem> head = a.head();
+        Tuple2<String, JsValue> head = a.head();
         JsObj tail = a.tail();
         final Trampoline<Trampoline<JsObj>> tailCall = () -> intersection(tail,
                                                                           b,
                                                                           ARRAY_AS
                                                                          );
-        final JsElem bElem = b.get(JsPath.fromKey(head._1));
+        final JsValue bElem = b.get(JsPath.fromKey(head._1));
 
         return ((bElem.isJson() && bElem.asJson()
                                         .equals(head._2,
@@ -136,45 +136,45 @@ abstract class AbstractJsObj implements JsObj
 
     @Override
     @SuppressWarnings({"squid:S00117", "squid:S00100"}) //  ARRAY_AS should be a valid name, naming convention: _ traverses recursively
-    public final JsObj intersection_(final JsObj that,
-                                     final TYPE ARRAY_AS
-                                    )
+    public final JsObj intersectionAll(final JsObj that,
+                                       final TYPE ARRAY_AS
+                                      )
     {
         requireNonNull(that);
         requireNonNull(ARRAY_AS);
-        return intersection_(this,
-                             that,
-                             ARRAY_AS
-                            ).get();
+        return intersectionAll(this,
+                               that,
+                               ARRAY_AS
+                              ).get();
 
     }
 
     @SuppressWarnings({"squid:S00117", "squid:S00100"}) // ARRAY_AS should be a valid name for an enum constant, naming convention _
-    private Trampoline<JsObj> intersection_(final JsObj a,
-                                            final JsObj b,
-                                            final JsArray.TYPE ARRAY_AS
-                                           )
+    private Trampoline<JsObj> intersectionAll(final JsObj a,
+                                              final JsObj b,
+                                              final JsArray.TYPE ARRAY_AS
+                                             )
     {
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
-        Tuple2<String, JsElem> head = a.head();
+        Tuple2<String, JsValue> head = a.head();
 
         JsObj tail = a.tail();
 
-        final Trampoline<JsObj> tailCall = more(() -> intersection_(tail,
-                                                                    b,
-                                                                    ARRAY_AS
-                                                                   ));
+        final Trampoline<JsObj> tailCall = more(() -> intersectionAll(tail,
+                                                                      b,
+                                                                      ARRAY_AS
+                                                                     ));
         if (b.containsPath(JsPath.fromKey(head._1)))
         {
 
-            final JsElem headOtherElement = b.get(JsPath.fromKey(head._1));
+            final JsValue headOtherElement = b.get(JsPath.fromKey(head._1));
             if (headOtherElement.equals(head._2))
             {
-                return more(() -> intersection_(tail,
-                                                b.tail(),
-                                                ARRAY_AS
-                                               )).map(it -> it.put(JsPath.fromKey(head._1),
+                return more(() -> intersectionAll(tail,
+                                                  b.tail(),
+                                                  ARRAY_AS
+                                                 )).map(it -> it.put(JsPath.fromKey(head._1),
                                                                    head._2
                                                                   ));
 
@@ -186,10 +186,10 @@ abstract class AbstractJsObj implements JsObj
                 .asJson();
                 Json<?> obj1 = headOtherElement.asJson();
 
-                Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersection_(obj,
-                                                                                                                  obj1,
-                                                                                                                  ARRAY_AS
-                                                                                                                 )
+                Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
+                                                                                                                    obj1,
+                                                                                                                    ARRAY_AS
+                                                                                                                   )
                                                              );
                 return more(() -> tailCall).flatMap(json -> headCall
                                                     .map(it -> json.put(JsPath.fromKey(head._1),
@@ -228,15 +228,15 @@ abstract class AbstractJsObj implements JsObj
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final <R> Optional<R> reduce_(final BinaryOperator<R> op,
-                                         final Function<? super JsPair, R> map,
-                                         final Predicate<? super JsPair> predicate
-                                        )
+    public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                                           final Function<? super JsPair, R> map,
+                                           final Predicate<? super JsPair> predicate
+                                          )
     {
         return new OpMapReduce<>(predicate,
                                  map,
                                  op
-        ).reduce_(this);
+        ).reduceAll(this);
 
     }
 
@@ -249,7 +249,7 @@ abstract class AbstractJsObj implements JsObj
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
-    public final Stream<JsPair> stream_()
+    public final Stream<JsPair> streamAll()
     {
         return streamOfObj(this,
                            JsPath.empty()
@@ -338,7 +338,7 @@ abstract class AbstractJsObj implements JsObj
                                    )
     {
         if (b.isEmpty()) return done(a);
-        Tuple2<String, JsElem> head = b.head();
+        Tuple2<String, JsValue> head = b.head();
         JsObj tail = b.tail();
         return union(a,
                      tail
@@ -349,25 +349,25 @@ abstract class AbstractJsObj implements JsObj
     }
 
     @Override
-    public final boolean containsElem(final JsElem el)
+    public final boolean containsElem(final JsValue el)
     {
         return stream().anyMatch(p -> p.elem.equals(Objects.requireNonNull(el)));
     }
 
     @Override
     @SuppressWarnings({"squid:S00117", "squid:S00100"}) // ARRAY_AS  should be a valid name, naming convention: xx_ traverses the whole json
-    public final JsObj union_(final JsObj that,
-                              final TYPE ARRAY_AS
-                             )
+    public final JsObj unionAll(final JsObj that,
+                                final TYPE ARRAY_AS
+                               )
     {
         requireNonNull(that);
         requireNonNull(ARRAY_AS);
         return ifEmptyElse(() -> that,
                            () -> that.ifEmptyElse(() -> this,
-                                                  () -> union_(this,
-                                                               that,
-                                                               ARRAY_AS
-                                                              )
+                                                  () -> unionAll(this,
+                                                                 that,
+                                                                 ARRAY_AS
+                                                                )
                                                   .get()
                                                  )
                           );
@@ -377,19 +377,19 @@ abstract class AbstractJsObj implements JsObj
     //squid:S00117 ARRAY_AS should be a valid name
     //squid:S00100 naming convention: xx_ traverses the whole json
     @SuppressWarnings({"squid:S00117", "squid:S00100"}) //  ARRAY_AS  should be a valid name
-    private Trampoline<JsObj> union_(final JsObj a,
-                                     final JsObj b,
-                                     final JsArray.TYPE ARRAY_AS
-                                    )
+    private Trampoline<JsObj> unionAll(final JsObj a,
+                                       final JsObj b,
+                                       final JsArray.TYPE ARRAY_AS
+                                      )
     {
 
         if (b.isEmpty()) return done(a);
-        Tuple2<String, JsElem> head = b.head();
+        Tuple2<String, JsValue> head = b.head();
         JsObj tail = b.tail();
-        Trampoline<JsObj> tailCall = more(() -> union_(a,
-                                                       tail,
-                                                       ARRAY_AS
-                                                      ));
+        Trampoline<JsObj> tailCall = more(() -> unionAll(a,
+                                                         tail,
+                                                         ARRAY_AS
+                                                        ));
         return ifNothingElse(() -> more(() -> tailCall).map(it -> it.put(JsPath.fromKey(head._1),
                                                             head._2
                                                            )),
@@ -402,10 +402,10 @@ abstract class AbstractJsObj implements JsObj
                                      Json<?> obj1 = head._2
                                                         .asJson();
 
-                                     Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().union_(obj,
-                                                                                                                         obj1,
-                                                                                                                         ARRAY_AS
-                                                                                                                        )
+                                     Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
+                                                                                                                           obj1,
+                                                                                                                           ARRAY_AS
+                                                                                                                          )
                                                                                   );
                                      return more(() -> tailCall).flatMap(tailResult -> headCall.map(headUnion_ ->
                                                                                                     tailResult.put(JsPath.fromKey(head._1),
@@ -426,7 +426,7 @@ abstract class AbstractJsObj implements JsObj
     @Override
     public final boolean same(final JsObj obj)
     {
-        final HashMap<String, JsElem> other = ((AbstractJsObj) obj).map;
+        final HashMap<String, JsValue> other = ((AbstractJsObj) obj).map;
         final boolean thisEmpty = isEmpty();
         final boolean thatEmpty = other.isEmpty();
         if (thisEmpty && thatEmpty) return true;
@@ -437,7 +437,7 @@ abstract class AbstractJsObj implements JsObj
                                  other.get(f)
                                       .map(it ->
                                            {
-                                               final JsElem a = map.get(f).get();
+                                               final JsValue a = map.get(f).get();
                                                if (a.isObj() && it.isObj()) return a.asJsObj()
                                                                                     .same(it.asJsObj());
                                                else if (a.isArray() && it.isArray()) return a.asJsArray()
@@ -452,36 +452,36 @@ abstract class AbstractJsObj implements JsObj
 
     @SuppressWarnings("squid:S1602")
         // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsElem> pmap)
+    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsValue> pmap)
     {
         return (head, tail) ->
         {
             return (!pmap.containsKey(head) || !pmap.get(head)
-                                                    .filter(JsElem::isNotJson)
+                                                    .filter(JsValue::isNotJson)
                                                     .isEmpty())
             ||
             (
             (tail.head()
                  .isKey() && !pmap.get(head)
-                                  .filter(JsElem::isArray)
+                                  .filter(JsValue::isArray)
                                   .isEmpty())
             )
             ||
             (tail.head()
                  .isIndex() && !pmap.get(head)
-                                    .filter(JsElem::isObj)
+                                    .filter(JsValue::isObj)
                                     .isEmpty());
         };
     }
 
-    static HashMap<String, JsElem> parse(final JsonParser parser
-                                 ) throws IOException
+    static HashMap<String, JsValue> parse(final JsonParser parser
+                                         ) throws IOException
     {
-        HashMap<String, JsElem> map = HashMap.empty();
+        HashMap<String, JsValue> map = HashMap.empty();
         String key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName())
         {
-            JsElem elem;
+            JsValue elem;
             switch (parser.nextToken()
                           .id())
             {
@@ -529,13 +529,13 @@ abstract class AbstractJsObj implements JsObj
 
     }
 
-    static HashMap<String, JsElem> parse(final JsonParser parser,
-                                         final ParseBuilder.Options options,
-                                         final JsPath path
-                                        ) throws IOException
+    static HashMap<String, JsValue> parse(final JsonParser parser,
+                                          final ParseBuilder.Options options,
+                                          final JsPath path
+                                         ) throws IOException
     {
 
-        HashMap<String, JsElem> map = HashMap.empty();
+        HashMap<String, JsValue> map = HashMap.empty();
         final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
         while (parser.nextToken() != JsonToken.END_OBJECT)
         {

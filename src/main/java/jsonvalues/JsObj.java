@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonToken;
 import io.vavr.Tuple2;
 import jsonvalues.JsArray.TYPE;
 
-import javax.swing.*;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
@@ -19,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  provided, an immutable which uses the persistent Scala HashMap, and a mutable which uses the conventional
  Java HashMap.
  */
-public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
+public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
 
 {
@@ -99,8 +98,8 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
                                  {
                                      final boolean exists = that.containsPath(JsPath.fromKey(field));
                                      if (!exists) return false;
-                                     final JsElem elem = get(JsPath.fromKey(field));
-                                     final JsElem thatElem = that.get(JsPath.fromKey(field));
+                                     final JsValue elem = get(JsPath.fromKey(field));
+                                     final JsValue thatElem = that.get(JsPath.fromKey(field));
                                      if (elem.isJson() && thatElem.isJson()) return elem.asJson()
                                                                                         .equals(thatElem,
                                                                                                 ARRAY_AS
@@ -124,7 +123,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
      @return an arbitrary {@code Map.Entry<String,JsElem>} of this JsObj
      @throws UserError if this json object is empty
      */
-    Tuple2<String, JsElem> head();
+    Tuple2<String, JsValue> head();
 
     /**
      Returns a new object with all the entries of this json object except the one with the given key.
@@ -161,9 +160,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00100_ naming convention: xx_ traverses the whole json
     // squid:S00117 ARRAY_AS should be a valid name
     @SuppressWarnings({"squid:S00117", "squid:S00100"})
-    JsObj intersection_(final JsObj that,
-                        final TYPE ARRAY_AS
-                       );
+    JsObj intersectionAll(final JsObj that,
+                          final TYPE ARRAY_AS
+                         );
 
     /**
      returns {@code this} json object plus those pairs from the given json object {@code that} which
@@ -188,19 +187,19 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00100:  naming convention: _ traverses recursively
     // squid:squid:S00117: ARRAY_AS should be a valid name
     @SuppressWarnings({"squid:S00100", "squid:S00117"})
-    JsObj union_(final JsObj that,
-                 final TYPE ARRAY_AS
-                );
+    JsObj unionAll(final JsObj that,
+                   final TYPE ARRAY_AS
+                  );
 
     default <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                          final BiFunction<Tuple2<String, JsElem>, JsObj, Trampoline<T>> fn
+                                          final BiFunction<Tuple2<String, JsValue>, JsObj, Trampoline<T>> fn
                                          )
     {
 
 
         if (this.isEmpty()) return empty;
 
-        final Tuple2<String, JsElem> head = this.head();
+        final Tuple2<String, JsValue> head = this.head();
 
         final JsObj tail = this.tail();
 
@@ -226,7 +225,7 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
      @throws UserError if an elem is a mutable Json
      */
     static JsObj of(final String key,
-                    final JsElem el
+                    final JsValue el
                    )
     {
 
@@ -246,9 +245,9 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
      @throws UserError if an elem is a mutable Json
      */
     static JsObj of(final String key1,
-                    final JsElem el1,
+                    final JsValue el1,
                     final String key2,
-                    final JsElem el2
+                    final JsValue el2
                    )
     {
 
@@ -274,11 +273,11 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
-                    final JsElem el1,
+                    final JsValue el1,
                     final String key2,
-                    final JsElem el2,
+                    final JsValue el2,
                     final String key3,
-                    final JsElem el3
+                    final JsValue el3
                    )
     {
         return of(key1,
@@ -307,13 +306,13 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
-                    final JsElem el1,
+                    final JsValue el1,
                     final String key2,
-                    final JsElem el2,
+                    final JsValue el2,
                     final String key3,
-                    final JsElem el3,
+                    final JsValue el3,
                     final String key4,
-                    final JsElem el4
+                    final JsValue el4
                    )
     {
 
@@ -347,15 +346,15 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
-                    final JsElem el1,
+                    final JsValue el1,
                     final String key2,
-                    final JsElem el2,
+                    final JsValue el2,
                     final String key3,
-                    final JsElem el3,
+                    final JsValue el3,
                     final String key4,
-                    final JsElem el4,
+                    final JsValue el4,
                     final String key5,
-                    final JsElem el5
+                    final JsValue el5
                    )
     {
 
@@ -393,17 +392,17 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     static JsObj of(final String key1,
-                    final JsElem el1,
+                    final JsValue el1,
                     final String key2,
-                    final JsElem el2,
+                    final JsValue el2,
                     final String key3,
-                    final JsElem el3,
+                    final JsValue el3,
                     final String key4,
-                    final JsElem el4,
+                    final JsValue el4,
                     final String key5,
-                    final JsElem el5,
+                    final JsValue el5,
                     final String key6,
-                    final JsElem el6
+                    final JsValue el6
                    )
     {
 
@@ -449,10 +448,10 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
 
     }
 
-    static JsObj ofIterable(Iterable<Map.Entry<String, JsElem>> xs)
+    static JsObj ofIterable(Iterable<Map.Entry<String, JsValue>> xs)
     {
         JsObj acc = ImmutableJsObj.EMPTY;
-        for (Map.Entry<String, JsElem> x : requireNonNull(xs))
+        for (Map.Entry<String, JsValue> x : requireNonNull(xs))
         {
 
             acc = acc.put(JsPath.fromKey(x.getKey()),

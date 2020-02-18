@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  * <li>Accessory methods to convert the JsElem to the real implementation, which starts with the prefix asJsXXX</li>
  </ul>
  */
-public interface JsElem
+public interface JsValue
 {
 
     /**
@@ -54,7 +54,7 @@ public interface JsElem
      @param that the given elem
      @return true if this JsElem and the given have the same type
      */
-    default boolean isSameType(final JsElem that)
+    default boolean isSameType(final JsValue that)
     {
         return this.getClass() == requireNonNull(that).getClass();
     }

@@ -20,7 +20,7 @@ class StreamCollectorSpec extends BasePropSpec
                                ): JsObj => Boolean =
             {
               json =>
-                json.stream_().
+                json.streamAll().
                   filter((t: jsonvalues.JsPair) => filter.apply(t)).
                   allMatch((t: jsonvalues.JsPair) => predicate.apply(t))
             }
@@ -80,13 +80,13 @@ class StreamCollectorSpec extends BasePropSpec
 
             val function: Function[JsPair, Long] = pair => pair.elem.asJsLong().x
 
-            val value: stream.Stream[Long] = js.stream_().filter(p => p.elem.isLong || p.elem.isInt).map(function)
+            val value: stream.Stream[Long] = js.streamAll().filter(p => p.elem.isLong || p.elem.isInt).map(function)
             val a = value.reduce((a: Long,
                                   b: Long
                                  ) => a + b
                                  ).orElse(-1)
 
-            val value1: stream.Stream[Long] = js.stream_().parallel().filter(p => p.elem.isLong || p.elem.isInt).map(function)
+            val value1: stream.Stream[Long] = js.streamAll().parallel().filter(p => p.elem.isLong || p.elem.isInt).map(function)
             val b = value1.reduce((a: Long,
                                    b: Long
                                   ) => a + b

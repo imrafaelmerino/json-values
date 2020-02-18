@@ -7,17 +7,17 @@ final class OpIntersectionJsons
     //squid:S00100 ->  naming convention: xx_ traverses the whole json
     //squid:S00117 -> ARRAY_AS should be a valid name
     @SuppressWarnings({"squid:S00100", "squid:S1452", "squid:S00117"})
-    Json<?> intersection_(final Json<?> a,
-                          final Json<?> b,
-                          final JsArray.TYPE ARRAY_AS
-                         )
+    Json<?> intersectionAll(final Json<?> a,
+                            final Json<?> b,
+                            final JsArray.TYPE ARRAY_AS
+                           )
     {
         if (a.isObj() && b.isObj()) return a.asJsObj()
-                                            .intersection_(b.asJsObj(),
-                                                           ARRAY_AS
-                                                          );
+                                            .intersectionAll(b.asJsObj(),
+                                                             ARRAY_AS
+                                                            );
         if (ARRAY_AS == JsArray.TYPE.LIST) return a.asJsArray()
-                                                   .intersection_(b.asJsArray());
+                                                   .intersectionAll(b.asJsArray());
         return a.asJsArray()
                 .intersection(b.asJsArray(),
                               ARRAY_AS

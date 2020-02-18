@@ -48,19 +48,19 @@ final class OpMapArrObjs extends OpMapObjs<JsArray>
     }
 
     @Override
-    Trampoline<JsArray> map_(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                             final BiPredicate<? super JsPath, ? super JsObj> predicate,
-                             final JsPath startingPath
-                            )
+    Trampoline<JsArray> mapAll(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                               final BiPredicate<? super JsPath, ? super JsObj> predicate,
+                               final JsPath startingPath
+                              )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.inc();
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).map_(fn,
-                                                                                                                           predicate,
-                                                                                                                           headPath
-                                                                                                                          ));
+                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).mapAll(fn,
+                                                                                                                             predicate,
+                                                                                                                             headPath
+                                                                                                                            ));
                                     return ifJsonElse(headObj -> JsPair.of(headPath,
                                                                            headObj
                                                                           )
@@ -69,23 +69,23 @@ final class OpMapArrObjs extends OpMapObjs<JsArray>
                                                                                                   ),
                                                                                p -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjObjs(fn.apply(headPath,
                                                                                                                                                          headObj
-                                                                                                                                                        )).map_(fn,
-                                                                                                                                                                         predicate,
-                                                                                                                                                                         headPath
-                                                                                                                                                                        )
+                                                                                                                                                        )).mapAll(fn,
+                                                                                                                                                                  predicate,
+                                                                                                                                                                  headPath
+                                                                                                                                                                 )
                                                                                                                                                                    .map(tailResult::prepend))
                                                                        ,
-                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjObjs(headObj).map_(fn,
-                                                                                                                                                              predicate,
-                                                                                                                                                              headPath
-                                                                                                                                                             )
+                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjObjs(headObj).mapAll(fn,
+                                                                                                                                                                predicate,
+                                                                                                                                                                headPath
+                                                                                                                                                               )
                                                                                                                                                         .map(tailResult::prepend))
                                                                               )
                                     ,
-                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArr).map_(fn,
-                                                                                                                                           predicate,
-                                                                                                                                           headPath.index(-1)
-                                                                                                                                          )
+                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArr).mapAll(fn,
+                                                                                                                                             predicate,
+                                                                                                                                             headPath.index(-1)
+                                                                                                                                            )
                                                                                                                                      .map(tailResult::prepend)),
                                                       headElem -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
                                                      )

@@ -16,7 +16,7 @@ import static jsonvalues.JsArray.TYPE.MULTISET;
 /**
  Represents a json array, which is an ordered list of elements.
  */
-public interface JsArray extends Json<JsArray>, Iterable<JsElem>
+public interface JsArray extends Json<JsArray>, Iterable<JsValue>
 
 {
     static JsArray empty(){return ImmutableJsArray.EMPTY; }
@@ -75,8 +75,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional JsElem to be added to the back
      @return a new JsArray
      */
-    JsArray append(final JsElem elem,
-                   final JsElem... others
+    JsArray append(final JsValue elem,
+                   final JsValue... others
                   );
 
     /**
@@ -85,8 +85,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param others more optional JsElem to be added to the front
      @return a new JsArray
      */
-    JsArray prepend(final JsElem elem,
-                    final JsElem... others
+    JsArray prepend(final JsValue elem,
+                    final JsValue... others
                    );
 
 
@@ -117,7 +117,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return the first JsElem of this JsArray
      @throws UserError if this JsArray is empty
      */
-    JsElem head();
+    JsValue head();
 
     /**
      Returns all the elements of this array except the last one.
@@ -132,7 +132,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return the last JsElem of this JsArray
      @throws UserError if this JsArray is empty
      */
-    JsElem last();
+    JsValue last();
 
     /**
      Returns a json array consisting of all elements of this array except the first one.
@@ -166,7 +166,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    JsArray intersection_(final JsArray that);
+    JsArray intersectionAll(final JsArray that);
 
     /**
      {@code this.union(that, SET)} returns {@code this} plus those elements from {@code that} that
@@ -195,14 +195,14 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    JsArray union_(final JsArray that);
+    JsArray unionAll(final JsArray that);
 
     default <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                          final BiFunction<JsElem, JsArray, Trampoline<T>> fn
+                                          final BiFunction<JsValue, JsArray, Trampoline<T>> fn
                                          )
     {
         if (this.isEmpty()) return empty;
-        final JsElem head = this.head();
+        final JsValue head = this.head();
         final JsArray tail = this.tail();
         return fn.apply(head,
                         tail
@@ -218,7 +218,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
     boolean same(JsArray other);
 
-    static JsArray of(JsElem e)
+    static JsArray of(JsValue e)
     {
 
         return ImmutableJsArray.EMPTY.append(e);
@@ -258,8 +258,8 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return an immutable two-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsElem e,
-                      final JsElem e1
+    static JsArray of(final JsValue e,
+                      final JsValue e1
                      )
     {
         return of(e).append(e1);
@@ -273,9 +273,9 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return an immutable three-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsElem e,
-                      final JsElem e1,
-                      final JsElem e2
+    static JsArray of(final JsValue e,
+                      final JsValue e1,
+                      final JsValue e2
                      )
     {
 
@@ -293,10 +293,10 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @return an immutable four-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsElem e,
-                      final JsElem e1,
-                      final JsElem e2,
-                      final JsElem e3
+    static JsArray of(final JsValue e,
+                      final JsValue e1,
+                      final JsValue e2,
+                      final JsValue e3
                      )
     {
         return of(e,
@@ -317,11 +317,11 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      */
     //squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
-    static JsArray of(final JsElem e,
-                      final JsElem e1,
-                      final JsElem e2,
-                      final JsElem e3,
-                      final JsElem e4
+    static JsArray of(final JsValue e,
+                      final JsValue e1,
+                      final JsValue e2,
+                      final JsValue e3,
+                      final JsValue e4
                      )
     {
 
@@ -345,12 +345,12 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      */
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
-    static JsArray of(final JsElem e,
-                      final JsElem e1,
-                      final JsElem e2,
-                      final JsElem e3,
-                      final JsElem e4,
-                      final JsElem... rest
+    static JsArray of(final JsValue e,
+                      final JsValue e1,
+                      final JsValue e2,
+                      final JsValue e3,
+                      final JsValue e4,
+                      final JsValue... rest
                      )
     {
         JsArray result = of(e,
@@ -359,7 +359,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                             e3,
                             e4
                            );
-        for (JsElem other : requireNonNull(rest))
+        for (JsValue other : requireNonNull(rest))
         {
             result = result.append(other);
         }
@@ -373,10 +373,10 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
      @param iterable the iterable of json elements
      @return an immutable json array
      */
-    static JsArray ofIterable(Iterable<JsElem> iterable)
+    static JsArray ofIterable(Iterable<JsValue> iterable)
     {
-        Vector<JsElem> vector = Vector.empty();
-        for (JsElem e : requireNonNull(iterable))
+        Vector<JsValue> vector = Vector.empty();
+        for (JsValue e : requireNonNull(iterable))
         {
 
             vector = vector.append(e);
@@ -397,7 +397,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                      )
     {
 
-        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsStr.of(str));
+        Vector<JsValue> vector = Vector.<JsValue>empty().append(JsStr.of(str));
         for (String a : others)
         {
             vector = vector.append(JsStr.of(a));
@@ -418,7 +418,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                      )
     {
 
-        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsInt.of(number));
+        Vector<JsValue> vector = Vector.<JsValue>empty().append(JsInt.of(number));
         for (int a : others)
         {
             vector = vector.append(JsInt.of(a));
@@ -437,7 +437,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                       final boolean... others
                      )
     {
-        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsBool.of(bool));
+        Vector<JsValue> vector = Vector.<JsValue>empty().append(JsBool.of(bool));
         for (boolean a : others)
         {
             vector = vector.append(JsBool.of(a));
@@ -458,7 +458,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                      )
     {
 
-        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsLong.of(number));
+        Vector<JsValue> vector = Vector.<JsValue>empty().append(JsLong.of(number));
         for (long a : others)
         {
             vector = vector.append(JsLong.of(a));
@@ -479,7 +479,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
                      )
     {
 
-        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsDouble.of(number));
+        Vector<JsValue> vector = Vector.<JsValue>empty().append(JsDouble.of(number));
         for (double a : others)
         {
             vector = vector.append(JsDouble.of(a));

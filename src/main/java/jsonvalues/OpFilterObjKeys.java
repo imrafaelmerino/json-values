@@ -15,32 +15,32 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj>
 
     @Override
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    Trampoline<JsObj> filter_(final JsPath startingPath,
-                              final Predicate<? super JsPair> predicate
-                             )
+    Trampoline<JsObj> filterAll(final JsPath startingPath,
+                                final Predicate<? super JsPair> predicate
+                               )
     {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.key(head._1);
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filter_(startingPath,
-                                                                                                                               predicate
-                                                                                                                              ));
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filterAll(startingPath,
+                                                                                                                                 predicate
+                                                                                                                                ));
                                     return JsPair.of(headPath,
                                                      head._2
                                                     )
                                                  .ifElse(predicate,
-                                                         p -> ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filter_(headPath,
-                                                                                                                                                                    predicate
-                                                                                                                                                                   )
+                                                         p -> ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
+                                                                                                                                                                      predicate
+                                                                                                                                                                     )
                                                                                                                                                            .map(headMapped ->
                                                                                                                                                                          tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                                         headMapped
                                                                                                                                                                                        )
                                                                                                                                                                         )),
-                                                                         headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrKeys(headArray).filter_(headPath.index(-1),
-                                                                                                                                                                        predicate
-                                                                                                                                                                       )
+                                                                         headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrKeys(headArray).filterAll(headPath.index(-1),
+                                                                                                                                                                          predicate
+                                                                                                                                                                         )
                                                                                                                                                                .map(headMapped ->
                                                                                                                                                                              tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                                             headMapped

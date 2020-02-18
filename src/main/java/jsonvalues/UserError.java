@@ -18,7 +18,7 @@ public final class UserError extends RuntimeException
         super(message);
     }
 
-    static <T extends JsElem> UserError immutableArgExpected(T arg)
+    static <T extends JsValue> UserError immutableArgExpected(T arg)
     {
 
         return new UserError(String.format(GENERAL_MESSAGE,
@@ -54,7 +54,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsBool(final JsElem elem)
+    static UserError isNotAJsBool(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsBool expected, but %s was found",
@@ -64,7 +64,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsInt(final JsElem elem)
+    static UserError isNotAJsInt(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsInt expected, but %s was found",
@@ -74,7 +74,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsLong(final JsElem elem)
+    static UserError isNotAJsLong(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsLong expected, but %s was found",
@@ -84,7 +84,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsDouble(final JsElem elem)
+    static UserError isNotAJsDouble(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsDouble expected, but %s was found",
@@ -94,7 +94,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsBigInt(final JsElem elem)
+    static UserError isNotAJsBigInt(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsBigInt expected, but %s was found",
@@ -104,7 +104,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsBigDec(final JsElem elem)
+    static UserError isNotAJsBigDec(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsBigDec expected, but %s was found",
@@ -114,7 +114,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsArray(final JsElem elem)
+    static UserError isNotAJsArray(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsArray expected, but %s was found",
@@ -124,7 +124,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsObj(final JsElem elem)
+    static UserError isNotAJsObj(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsObj expected, but %s was found",
@@ -134,7 +134,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJson(final JsElem elem)
+    static UserError isNotAJson(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("Json expected, but %s was found",
@@ -144,7 +144,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static UserError isNotAJsString(final JsElem elem)
+    static UserError isNotAJsString(final JsValue elem)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsStr expected, but %s was found",
@@ -221,7 +221,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static <T extends JsElem> UserError mutableArgExpected(T arg)
+    static <T extends JsValue> UserError mutableArgExpected(T arg)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("Immutable object found: %s",

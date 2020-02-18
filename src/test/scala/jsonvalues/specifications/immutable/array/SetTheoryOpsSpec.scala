@@ -52,7 +52,7 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.union_(js).equals(js) && js.union_(js).hashCode() == js.hashCode()
+            js.unionAll(js).equals(js) && js.unionAll(js).hashCode() == js.hashCode()
           }
           )
   }
@@ -78,7 +78,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           { js =>
             js.union(JsArray.empty(),
                      TYPE.LIST
-                     ).equals(js) && js.union_(JsArray.empty()).equals(js)
+                     ).equals(js) && js.unionAll(JsArray.empty()).equals(js)
           }
           )
   }
@@ -113,7 +113,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.union_(b).size() == b.union_(a).size()
+            a.unionAll(b).size() == b.unionAll(a).size()
 
 
           }
@@ -145,7 +145,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.intersection_(b).equals(b.intersection_(a))
+            a.intersectionAll(b).equals(b.intersectionAll(a))
           }
           )
   }
@@ -172,7 +172,7 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.intersection_(JsArray.empty()).equals(JsArray.empty())
+            js.intersectionAll(JsArray.empty()).equals(JsArray.empty())
           }
           )
   }
