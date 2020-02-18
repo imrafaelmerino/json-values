@@ -1,9 +1,15 @@
 package jsonvalues;
 
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import io.vavr.collection.Vector;
+import java.io.IOException;
 import java.util.function.BiFunction;
 import java.util.stream.IntStream;
 
+import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
+import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.TYPE.LIST;
 import static jsonvalues.JsArray.TYPE.MULTISET;
 
@@ -13,6 +19,7 @@ import static jsonvalues.JsArray.TYPE.MULTISET;
 public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
 {
+    static JsArray empty(){return ImmutableJsArray.EMPTY; }
 
     /**
      Returns true if this array is equal to the given as a parameter. In the case of ARRAY_AS=LIST,
@@ -211,4 +218,321 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
 
     boolean same(JsArray other);
 
+    static JsArray of(JsElem e)
+    {
+
+        return ImmutableJsArray.EMPTY.append(e);
+    }
+
+    /**
+     Returns an immutable array from one or more pairs.
+     @param pair a pair
+     @param others more optional pairs
+     @return an immutable JsArray
+     @throws UserError if an elem of a pair is mutable
+
+     */
+    static JsArray of(final JsPair pair,
+                      final JsPair... others
+                     )
+    {
+        JsArray arr = ImmutableJsArray.EMPTY.put(pair.path,
+                                  pair.elem
+                                 );
+        for (JsPair p : others)
+        {
+
+            arr = arr.put(p.path,
+                          p.elem
+                         );
+        }
+        return arr;
+
+    }
+
+
+    /**
+     Returns an immutable two-element array.
+     @param e a JsElem
+     @param e1 a JsElem
+     @return an immutable two-element JsArray
+     @throws UserError if an elem is a mutable Json
+     */
+    static JsArray of(final JsElem e,
+                      final JsElem e1
+                     )
+    {
+        return of(e).append(e1);
+    }
+
+    /**
+     Returns an immutable three-element array.
+     @param e  a JsElem
+     @param e1 a JsElem
+     @param e2 a JsElem
+     @return an immutable three-element JsArray
+     @throws UserError if an elem is a mutable Json
+     */
+    static JsArray of(final JsElem e,
+                      final JsElem e1,
+                      final JsElem e2
+                     )
+    {
+
+        return of(e,
+                  e1
+                 ).append(e2);
+    }
+
+    /**
+     Returns an immutable four-element array.
+     @param e a JsElem
+     @param e1 a JsElem
+     @param e2 a JsElem
+     @param e3 a JsElem
+     @return an immutable four-element JsArray
+     @throws UserError if an elem is a mutable Json
+     */
+    static JsArray of(final JsElem e,
+                      final JsElem e1,
+                      final JsElem e2,
+                      final JsElem e3
+                     )
+    {
+        return of(e,
+                  e1,
+                  e2
+                 ).append(e3);
+    }
+
+    /**
+     Returns an immutable five-element array.
+     @param e a JsElem
+     @param e1 a JsElem
+     @param e2 a JsElem
+     @param e3 a JsElem
+     @param e4 a JsElem
+     @return an immutable five-element JsArray
+     @throws UserError if an elem is a mutable Json
+     */
+    //squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsArray of(final JsElem e,
+                      final JsElem e1,
+                      final JsElem e2,
+                      final JsElem e3,
+                      final JsElem e4
+                     )
+    {
+
+        return of(e,
+                  e1,
+                  e2,
+                  e3
+                 ).append(e4);
+    }
+
+    /**
+     Returns an immutable array.
+     @param e a JsElem
+     @param e1 a JsElem
+     @param e2 a JsElem
+     @param e3 a JsElem
+     @param e4 a JsElem
+     @param rest more optional JsElem
+     @return an immutable JsArray
+     @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsArray of(final JsElem e,
+                      final JsElem e1,
+                      final JsElem e2,
+                      final JsElem e3,
+                      final JsElem e4,
+                      final JsElem... rest
+                     )
+    {
+        JsArray result = of(e,
+                            e1,
+                            e2,
+                            e3,
+                            e4
+                           );
+        for (JsElem other : requireNonNull(rest))
+        {
+            result = result.append(other);
+        }
+        return result;
+
+
+    }
+
+    /**
+     returns an immutable json array from an iterable of json elements
+     @param iterable the iterable of json elements
+     @return an immutable json array
+     */
+    static JsArray ofIterable(Iterable<JsElem> iterable)
+    {
+        Vector<JsElem> vector = Vector.empty();
+        for (JsElem e : requireNonNull(iterable))
+        {
+
+            vector = vector.append(e);
+        }
+        return new ImmutableJsArray(vector
+
+        );
+    }
+
+    /**
+     Returns an immutable array from one or more strings.
+     @param str a string
+     @param others more optional strings
+     @return an immutable JsArray
+     */
+    static JsArray of(String str,
+                      String... others
+                     )
+    {
+
+        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsStr.of(str));
+        for (String a : others)
+        {
+            vector = vector.append(JsStr.of(a));
+        }
+        return new ImmutableJsArray(vector
+        );
+    }
+
+
+    /**
+     Returns an immutable array from one or more integers.
+     @param number an integer
+     @param others more optional integers
+     @return an immutable JsArray
+     */
+    static JsArray of(int number,
+                      int... others
+                     )
+    {
+
+        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsInt.of(number));
+        for (int a : others)
+        {
+            vector = vector.append(JsInt.of(a));
+        }
+        return new ImmutableJsArray(vector
+        );
+    }
+
+    /**
+     Returns an immutable array from one or more booleans.
+     @param bool an boolean
+     @param others more optional booleans
+     @return an immutable JsArray
+     */
+    static JsArray of(final boolean bool,
+                      final boolean... others
+                     )
+    {
+        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsBool.of(bool));
+        for (boolean a : others)
+        {
+            vector = vector.append(JsBool.of(a));
+        }
+        return new ImmutableJsArray(vector
+        );
+    }
+
+
+    /**
+     Returns an immutable array from one or more longs.
+     @param number a long
+     @param others more optional longs
+     @return an immutable JsArray
+     */
+    static JsArray of(final long number,
+                      final long... others
+                     )
+    {
+
+        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsLong.of(number));
+        for (long a : others)
+        {
+            vector = vector.append(JsLong.of(a));
+        }
+        return new ImmutableJsArray(vector
+
+        );
+    }
+
+    /**
+     Returns an immutable array from one or more doubles.
+     @param number a double
+     @param others more optional doubles
+     @return an immutable JsArray
+     */
+    static JsArray of(final double number,
+                      final double... others
+                     )
+    {
+
+        Vector<JsElem> vector = Vector.<JsElem>empty().append(JsDouble.of(number));
+        for (double a : others)
+        {
+            vector = vector.append(JsDouble.of(a));
+        }
+        return new ImmutableJsArray(vector
+        );
+    }
+    /**
+     Tries to parse the string into an immutable json array.
+     @param str the string to be parsed
+     @return a Try computation
+     */
+    static JsArray parse(final String str) throws MalformedJson
+    {
+
+        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        {
+            final JsonToken keyEvent = parser.nextToken();
+            if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
+            return  new ImmutableJsArray(AbstractJsArray.parse(parser
+            ));
+        }
+        catch (IOException e)
+        {
+
+            throw new MalformedJson(e.getMessage());
+        }
+
+    }
+
+    static JsArray parse(final String str,
+                              final ParseBuilder builder
+                             ) throws MalformedJson
+    {
+
+        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        {
+            final JsonToken keyEvent = parser.nextToken();
+            if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
+            return new ImmutableJsArray(AbstractJsArray.parse(parser,
+                                                          requireNonNull(builder).create(),
+                                                          JsPath.fromIndex(-1)
+                                                         )
+            );
+        }
+        catch (IOException e)
+        {
+            throw new MalformedJson(e.getMessage());
+        }
+
+    }
+
 }
+
+
+

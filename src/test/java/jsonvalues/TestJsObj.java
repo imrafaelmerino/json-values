@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.BiFunction;
-import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static jsonvalues.JsArray.TYPE.*;
@@ -17,15 +16,43 @@ import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.JsPath.fromKey;
 import static jsonvalues.JsPath.path;
-import static jsonvalues.Jsons.immutable;
 
 public class TestJsObj
 {
 
     @Test
+    public void test_append_immutable()
+    {
+        JsObj empty = JsObj.empty();
+
+        final JsObj obj = empty.append(path("/a/b"),
+                                       JsStr.of("hi")
+                                      );
+
+        Assertions.assertTrue(empty.isEmpty());
+
+        Assertions.assertEquals(JsArray.of("hi"),
+                                obj.getArray(path("/a/b"))
+                                   .get()
+                               );
+
+        final JsObj obj1 = obj.append(path("/a/b"),
+                                      JsStr.of("bye")
+                                     );
+
+        Assertions.assertEquals(Optional.of("bye"),
+                                obj1.getStr(path("/a/b/-1"))
+                               );
+
+        Assertions.assertEquals(Optional.of("hi"),
+                                obj1.getStr(path("/a/b/0"))
+                               );
+    }
+
+    @Test
     public void test_creates_immutable_empty_object()
     {
-        JsObj obj = immutable.object.empty();
+        JsObj obj = JsObj.empty();
         Assertions.assertTrue(obj.isEmpty());
 
         final JsObj obj1 = obj.put(JsPath.fromKey("a"),
@@ -37,70 +64,65 @@ public class TestJsObj
                                );
     }
 
-
-
     @Test
-    public void test_creates_immutable_two_elements_object()
+    public void test_creates_immutable_five_elements_object()
     {
-        JsObj obj = immutable.object.of("a",
-                                        JsInt.of(1),
-                                        "b",
-                                        JsStr.of("a")
-                                       );
-        Assertions.assertEquals(2,
+
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("A"),
+                             "b",
+                             JsStr.of("B"),
+                             "c",
+                             JsStr.of("C"),
+                             "d",
+                             JsStr.of("D"),
+                             "e",
+                             JsStr.of("E")
+                            );
+
+        Assertions.assertEquals(5,
                                 obj.size()
                                );
+        final JsObj obj1 = obj.mapKeys(it -> it.path.last()
+                                                    .asKey().name.toUpperCase());
 
-        final JsObj obj1 = obj.remove(JsPath.fromKey("b"));// obj is mutable
-        Assertions.assertEquals(2,
-                                obj.size()
-                               );
-        Assertions.assertEquals(1,
-                                obj1.size()
-                               );
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList("A",
+                                 "B",
+                                 "C",
+                                 "D",
+                                 "E"
+                                ));
 
+        Assertions.assertEquals(set,
+                                obj1.fields()
+                               );
+        Set<String> set1 = new HashSet<>();
+        set1.addAll(Arrays.asList("a",
+                                  "b",
+                                  "c",
+                                  "d",
+                                  "e"
+                                 ));
+        Assertions.assertEquals(set1,
+                                obj.fields()
+                               );
     }
-
-
-    @Test
-    public void test_creates_immutable_three_elements_object()
-    {
-        JsObj obj = immutable.object.of("a",
-                                        JsLong.of(10),
-                                        "b",
-                                        JsStr.of("b"),
-                                        "c",
-                                        JsInt.of(10)
-                                       );
-        Assertions.assertEquals(3,
-                                obj.size()
-                               );
-
-        final JsObj obj1 = obj.remove(JsPath.fromKey("a"));// obj is mutable
-        Assertions.assertEquals(3,
-                                obj.size()
-                               );
-        Assertions.assertEquals(2,
-                                obj1.size()
-                               );
-
-    }
-
 
     @Test
     public void test_creates_immutable_four_elements_object()
     {
-        JsObj obj = immutable.object.of("a",
-                                        JsStr.of("A"),
-                                        "b",
-                                        JsStr.of("B"),
-                                        "c",
-                                        JsStr.of("C"),
-                                        "h",
-                                        NULL,
-                                        "d",
-                                        JsStr.of("D")
-                                       );
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("A"),
+                             "b",
+                             JsStr.of("B"),
+                             "c",
+                             JsStr.of("C"),
+                             "h",
+                             NULL,
+                             "d",
+                             JsStr.of("D")
+                            );
         Assertions.assertEquals(5,
                                 obj.size()
                                );
@@ -136,73 +158,26 @@ public class TestJsObj
 
     }
 
-
-    @Test
-    public void test_creates_immutable_five_elements_object()
-    {
-
-        JsObj obj = immutable.object.of("a",
-                                        JsStr.of("A"),
-                                        "b",
-                                        JsStr.of("B"),
-                                        "c",
-                                        JsStr.of("C"),
-                                        "d",
-                                        JsStr.of("D"),
-                                        "e",
-                                        JsStr.of("E")
-                                       );
-
-        Assertions.assertEquals(5,
-                                obj.size()
-                               );
-        final JsObj obj1 = obj.mapKeys(it -> it.path.last()
-                                                    .asKey().name.toUpperCase());
-
-        Set<String> set = new HashSet<>();
-        set.addAll(Arrays.asList("A",
-                                 "B",
-                                 "C",
-                                 "D",
-                                 "E"
-                                ));
-
-        Assertions.assertEquals(set,
-                                obj1.fields()
-                               );
-        Set<String> set1 = new HashSet<>();
-        set1.addAll(Arrays.asList("a",
-                                  "b",
-                                  "c",
-                                  "d",
-                                  "e"
-                                 ));
-        Assertions.assertEquals(set1,
-                                obj.fields()
-                               );
-    }
-
-
     @Test
     public void test_creates_immutable_object_from_pairs()
     {
 
-        JsObj obj = immutable.object.of(JsPair.of(fromKey("a"),
-                                                  JsInt.of(1)
-                                                 ),
-                                        JsPair.of(fromKey("b"),
-                                                  JsInt.of(2)
-                                                 ),
-                                        JsPair.of(fromKey("c"),
-                                                  JsInt.of(3)
-                                                 ),
-                                        JsPair.of(path("/d/0/0"),
-                                                  JsInt.of(5)
-                                                 ),
-                                        JsPair.of(path("/d/0/1"),
-                                                  JsInt.of(6)
-                                                 )
-                                       );
+        JsObj obj = JsObj.of(JsPair.of(fromKey("a"),
+                                       JsInt.of(1)
+                                      ),
+                             JsPair.of(fromKey("b"),
+                                       JsInt.of(2)
+                                      ),
+                             JsPair.of(fromKey("c"),
+                                       JsInt.of(3)
+                                      ),
+                             JsPair.of(path("/d/0/0"),
+                                       JsInt.of(5)
+                                      ),
+                             JsPair.of(path("/d/0/1"),
+                                       JsInt.of(6)
+                                      )
+                            );
 
         Assertions.assertEquals(5,
                                 obj.size_()
@@ -219,29 +194,160 @@ public class TestJsObj
 
     }
 
+    @Test
+    public void test_creates_immutable_three_elements_object()
+    {
+        JsObj obj = JsObj.of("a",
+                             JsLong.of(10),
+                             "b",
+                             JsStr.of("b"),
+                             "c",
+                             JsInt.of(10)
+                            );
+        Assertions.assertEquals(3,
+                                obj.size()
+                               );
 
+        final JsObj obj1 = obj.remove(JsPath.fromKey("a"));// obj is mutable
+        Assertions.assertEquals(3,
+                                obj.size()
+                               );
+        Assertions.assertEquals(2,
+                                obj1.size()
+                               );
+
+    }
+
+    @Test
+    public void test_creates_immutable_two_elements_object()
+    {
+        JsObj obj = JsObj.of("a",
+                             JsInt.of(1),
+                             "b",
+                             JsStr.of("a")
+                            );
+        Assertions.assertEquals(2,
+                                obj.size()
+                               );
+
+        final JsObj obj1 = obj.remove(JsPath.fromKey("b"));// obj is mutable
+        Assertions.assertEquals(2,
+                                obj.size()
+                               );
+        Assertions.assertEquals(1,
+                                obj1.size()
+                               );
+
+    }
+
+    @Test
+    public void test_equals()
+    {
+
+        JsObj obj = JsObj.of("a",
+                             JsObj.of("b",
+                                      JsArray.of(1,
+                                                 2,
+                                                 3
+                                                )
+                                     ),
+                             "b",
+                             JsArray.of("a",
+                                        "b",
+                                        "c"
+                                       )
+                            );
+
+        JsObj obj2 = JsObj.of("a",
+                              JsObj.of("b",
+                                       JsArray.of(1,
+                                                  2,
+                                                  3,
+                                                  1,
+                                                  2,
+                                                  3
+                                                 )
+                                      ),
+                              "b",
+                              JsArray.of("a",
+                                         "b",
+                                         "c",
+                                         "a",
+                                         "b",
+                                         "c"
+                                        )
+                             );
+        JsObj obj3 = JsObj.of("a",
+                              JsObj.of("b",
+                                       JsArray.of(3,
+                                                  2,
+                                                  1,
+                                                  1,
+                                                  2,
+                                                  3
+                                                 )
+                                      ),
+                              "b",
+                              JsArray.of("c",
+                                         "b",
+                                         "a",
+                                         "a",
+                                         "b",
+                                         "c"
+                                        )
+                             );
+        Assertions.assertTrue(obj.equals(obj,
+                                         LIST
+                                        )
+                             );
+
+        Assertions.assertFalse(obj.equals(obj2,
+                                          LIST
+                                         )
+                              );
+        Assertions.assertTrue(obj2.equals(obj3,
+                                          SET
+                                         )
+                             );
+        Assertions.assertTrue(obj2.equals(obj3,
+                                          MULTISET
+                                         )
+                             );
+        Assertions.assertTrue(obj.equals(obj2,
+                                         SET
+                                        )
+                             );
+        Assertions.assertTrue(obj2.equals(obj2,
+                                          LIST
+                                         )
+                             );
+        Assertions.assertTrue(obj3.equals(obj3,
+                                          LIST
+                                         )
+                             );
+    }
 
     @Test
     public void test_equals_and_hashcode()
     {
-        final JsObj obj = immutable.object.of("a",
-                                              JsInt.of(1),
-                                              "b",
-                                              JsBigInt.of(BigInteger.ONE),
-                                              "c",
-                                              JsLong.of(1),
-                                              "d",
-                                              JsBigDec.of(BigDecimal.ONE)
-                                             );
-        final JsObj obj1 = immutable.object.of("a",
-                                               JsBigDec.of(BigDecimal.ONE),
-                                               "b",
-                                               JsLong.of(1),
-                                               "c",
-                                               JsInt.of(1),
-                                               "d",
-                                               JsBigInt.of(BigInteger.ONE)
-                                              );
+        final JsObj obj = JsObj.of("a",
+                                   JsInt.of(1),
+                                   "b",
+                                   JsBigInt.of(BigInteger.ONE),
+                                   "c",
+                                   JsLong.of(1),
+                                   "d",
+                                   JsBigDec.of(BigDecimal.ONE)
+                                  );
+        final JsObj obj1 = JsObj.of("a",
+                                    JsBigDec.of(BigDecimal.ONE),
+                                    "b",
+                                    JsLong.of(1),
+                                    "c",
+                                    JsInt.of(1),
+                                    "d",
+                                    JsBigInt.of(BigInteger.ONE)
+                                   );
 
         Assertions.assertEquals(obj,
                                 obj1
@@ -253,166 +359,116 @@ public class TestJsObj
     }
 
     @Test
-    public void test_map_strings_to_lowercase_and_reduce()
+    public void test_filter_elements_immutable() throws MalformedJson
     {
 
-        final JsObj obj  = Jsons.immutable.object.of("a",
+        final JsObj obj = JsObj.parse("{\n"
+                                      + "  \"a\": 1,\n"
+                                      + "  \"b\": 2,\n"
+                                      + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
+                                      +
+                                      "}");
 
-                                                          Jsons.immutable.object.of("a1",
-                                                                                    JsStr.of("A"),
-                                                                                    "b1",
-                                                                                    JsStr.of("B")
-                                                                                   ),
-                                                          "n",
-                                                          JsInt.of(1),
-                                                          "c",
-                                                          JsStr.of("C"),
-                                                          "d",
-                                                          Jsons.immutable.object.of("d1",
-                                                                                    JsStr.of("D"),
-                                                                                    "e1",
-                                                                                    JsStr.of("E"),
-                                                                                    "g",
-                                                                                    JsInt.of(2)
-                                                                                   ),
-                                                          "f",
-                                                          JsStr.of("F")
-                                                         );
+        final JsObj result = obj.filterElems((pair) -> pair.elem.asJsInt().x % 2 == 0);
+
+        final JsObj result_ = obj.filterElems_((pair) -> pair.elem.asJsInt().x % 2 == 0);
 
 
+        Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}"),
+                                result
+                               );
 
-            final JsObj obj1 = obj.mapElems_(pair ->
-                                             {
-                                                 Assertions.assertEquals(pair.elem,
-                                                                         obj.get(pair.path)
-                                                                        );
-                                                 return pair.mapIfStr(String::toLowerCase).elem;
-                                             });
-
-            final Optional<String> reduced_ = obj1.reduce_(String::concat,
-                                                           p ->
-                                                           {
-                                                               Assertions.assertEquals(p.elem,
-                                                                                       obj1.get(p.path)
-                                                                                      );
-                                                               return p.elem.asJsStr().x;
-                                                           },
-                                                           p -> p.elem.isStr()
-                                                          );
-
-            final char[] chars_ = reduced_.get()
-                                          .toCharArray();
-            Arrays.sort(chars_);
-            Assertions.assertEquals("abcdef",
-                                    new String(chars_)
-                                   );
-
-            final Optional<String> reduced = obj1.reduce(String::concat,
-                                                         p ->
-                                                         {
-                                                             Assertions.assertEquals(p.elem,
-                                                                                     obj1.get(p.path)
-                                                                                    );
-                                                             return p.elem.asJsStr().x;
-                                                         },
-                                                         p -> p.elem.isStr()
-                                                        );
-
-            final char[] chars = reduced.get()
-                                        .toCharArray();
-            Arrays.sort(chars);
-            Assertions.assertEquals("cf",
-                                    new String(chars)
-                                   );
-        }
+        Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4},6]}"),
+                                result_
+                               );
 
 
-
-
+    }
 
     @Test
-    public void test_map_keys_to_uppercase_removing_trailing_white_spaces_immutable()
+    public void test_filter_jsons_from_immutable() throws MalformedJson
     {
-        final JsObj obj = immutable.object.of(" a ",
-                                              immutable.object.of(" a1 ",
-                                                                  JsStr.of("A"),
-                                                                  " b1 ",
-                                                                  JsStr.of("B")
-                                                                 ),
-                                              " c ",
-                                              JsStr.of("C"),
-                                              " d ",
-                                              immutable.object.of(" d1 ",
-                                                                  JsStr.of("D"),
-                                                                  " e1 ",
-                                                                  immutable.array.of(immutable.object.of(" f ",
-                                                                                                         JsStr.of("F1")
-                                                                                                        ),
-                                                                                     immutable.object.of(" g ",
-                                                                                                         JsStr.of("G1")
-                                                                                                        )
-                                                                                    )
-                                                                 ),
-                                              " f ",
-                                              JsStr.of("F")
-                                             );
+        final JsObj obj = JsObj.of("a",
+                                   JsObj.of("R",
+                                            JsInt.of(1)
+                                           ),
+                                   "b",
+                                   JsObj.of("R",
+                                            JsInt.of(1)
+                                           ),
+                                   "c",
+                                   JsArray.of(JsObj.of("R",
+                                                       JsInt.of(1)
+                                                      ),
+                                              JsObj.of("S",
+                                                       JsInt.of(1),
+                                                       "T",
+                                                       JsObj.of("R",
+                                                                JsInt.of(1)
+                                                               )
+                                                      )
+                                             ),
+                                   "d",
+                                   JsObj.of("d",
+                                            JsInt.of(3)
+                                           ),
+                                   "e",
+                                   NULL
+                                  );
+        final JsObj result = obj.filterObjs((p, o) ->
+                                            {
+                                                Assertions.assertEquals(o,
+                                                                        obj.get(p)
+                                                                       );
+                                                return !o.containsPath(JsPath.fromKey("R"));
+                                            });
+        final JsObj result1 = obj.filterObjs_((p, o) ->
+                                              {
+                                                  Assertions.assertEquals(o,
+                                                                          obj.get(p)
+                                                                         );
+                                                  return !o.containsPath(JsPath.fromKey("R"));
+                                              });
 
 
-        final JsObj mapped = obj.mapKeys_(p ->
-                                          {
-                                              Assertions.assertEquals(p.elem,
-                                                                      obj.get(p.path)
-                                                                     );
-                                              return p.path.last()
-                                                           .asKey().name.trim()
-                                                                        .toUpperCase();
-                                          });
-
-        Assertions.assertFalse(mapped.stream_()
-                                     .map(it ->
-                                          {
-                                              final String name = it.path.last()
-                                                                         .asKey().name;
-                                              return name.contains(" ") || name.chars()
-                                                                               .mapToObj(Character::isLowerCase)
-                                                                               .findAny()
-                                                                               .orElse(false);
-                                          })
-                                     .findFirst()
-                                     .orElse(false));
-
+        Assertions.assertEquals(JsObj.parse("{\"c\":[{\"R\":1},{\"T\":{\"R\":1},\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
+                                result
+                               );
+        Assertions.assertEquals(JsObj.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
+                                result1
+                               );
     }
 
     @Test
     public void test_filter_keys_immutable()
     {
-        final Supplier<JsObj> obj = () -> immutable.object.of("a",
-                                                              immutable.object.of("a1",
-                                                                                  JsStr.of("A"),
-                                                                                  "b1",
-                                                                                  JsStr.of("B")
-                                                                                 ),
-                                                              "b2",
-                                                              JsStr.of("C"),
-                                                              "d",
-                                                              immutable.object.of("d1",
-                                                                                  JsStr.of("D"),
-                                                                                  "e1",
-                                                                                  immutable.array.of(immutable.object.of("f",
-                                                                                                                         JsStr.of("F1")
-                                                                                                                        ),
-                                                                                                     TRUE,
-                                                                                                     immutable.object.of("b3",
-                                                                                                                         JsStr.of("G1"),
-                                                                                                                         "c",
-                                                                                                                         JsStr.of("G2")
-                                                                                                                        ),
-                                                                                                     FALSE
-                                                                                                    )
-                                                                                 ),
-                                                              "b4",
-                                                              JsStr.of("F")
-                                                             );
+        final Supplier<JsObj> obj = () -> JsObj.of("a",
+                                                   JsObj.of("a1",
+                                                            JsStr.of("A"),
+                                                            "b1",
+                                                            JsStr.of("B")
+                                                           ),
+                                                   "b2",
+                                                   JsStr.of("C"),
+                                                   "d",
+                                                   JsObj.of("d1",
+                                                            JsStr.of("D"),
+                                                            "e1",
+                                                            JsArray.of(JsObj.of("f",
+                                                                                JsStr.of("F1")
+                                                                               ),
+                                                                       TRUE,
+                                                                       JsObj.of("b3",
+                                                                                JsStr.of("G1"),
+                                                                                "c",
+                                                                                JsStr.of("G2")
+                                                                               ),
+                                                                       FALSE
+                                                                      )
+                                                           ),
+                                                   "b4",
+                                                   JsStr.of("F")
+                                                  );
 
 
         final JsObj obj1 = obj.get()
@@ -449,150 +505,366 @@ public class TestJsObj
 
     }
 
-
-
-
-
-    @Test
-    public void test_filter_jsons_from_immutable() throws MalformedJson
-    {
-        final JsObj obj = immutable.object.of("a",
-                                              immutable.object.of("R",
-                                                                  JsInt.of(1)
-                                                                 ),
-                                              "b",
-                                              immutable.object.of("R",
-                                                                  JsInt.of(1)
-                                                                 ),
-                                              "c",
-                                              immutable.array.of(immutable.object.of("R",
-                                                                                     JsInt.of(1)
-                                                                                    ),
-                                                                 immutable.object.of("S",
-                                                                                     JsInt.of(1),
-                                                                                     "T",
-                                                                                     immutable.object.of("R",
-                                                                                                         JsInt.of(1)
-                                                                                                        )
-                                                                                    )
-                                                                ),
-                                              "d",
-                                              immutable.object.of("d",
-                                                                  JsInt.of(3)
-                                                                 ),
-                                              "e",
-                                              NULL
-                                             );
-        final JsObj result = obj.filterObjs((p, o) ->
-                                            {
-                                                Assertions.assertEquals(o,
-                                                                        obj.get(p)
-                                                                       );
-                                                return !o.containsPath(JsPath.fromKey("R"));
-                                            });
-        final JsObj result1 = obj.filterObjs_((p, o) ->
-                                              {
-                                                  Assertions.assertEquals(o,
-                                                                          obj.get(p)
-                                                                         );
-                                                  return !o.containsPath(JsPath.fromKey("R"));
-                                              });
-
-
-        Assertions.assertEquals(immutable.object.parse("{\"c\":[{\"R\":1},{\"T\":{\"R\":1},\"S\":1}],\"d\":{\"d\":3},\"e\": null}")
-                                                .get(),
-                                result
-                               );
-        Assertions.assertEquals(immutable.object.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}")
-                                                .get(),
-                                result1
-                               );
-    }
-
-
-
-
-
-
     @Test
     public void test_filter_values_from_immutable_object() throws MalformedJson
     {
 
-        JsObj obj = immutable.object.of("a",
-                                        JsInt.of(1),
-                                        "b",
+        JsObj obj = JsObj.of("a",
+                             JsInt.of(1),
+                             "b",
+                             NULL,
+                             "c",
+                             JsArray.of(JsInt.of(1),
                                         NULL,
-                                        "c",
-                                        immutable.array.of(JsInt.of(1),
-                                                           NULL,
-                                                           JsInt.of(2),
-                                                           NULL,
-                                                           JsInt.of(3),
-                                                           immutable.array.of(JsInt.of(1),
-                                                                              NULL,
-                                                                              JsInt.of(2)
-                                                                             ),
-                                                           immutable.object.of("a",
-                                                                               NULL,
-                                                                               "b",
-                                                                               JsInt.of(1)
-                                                                              )
-                                                          )
-                                       );
+                                        JsInt.of(2),
+                                        NULL,
+                                        JsInt.of(3),
+                                        JsArray.of(JsInt.of(1),
+                                                   NULL,
+                                                   JsInt.of(2)
+                                                  ),
+                                        JsObj.of("a",
+                                                 NULL,
+                                                 "b",
+                                                 JsInt.of(1)
+                                                )
+                                       )
+                            );
 
         final JsObj obj1 = obj.filterElems_(p -> p.elem.isNotNull());
 
-        Assertions.assertEquals(immutable.object.parse("{\"a\":1,\"c\":[1,2,3,[1,2],{\"b\":1}]}\n")
-                                                .get(),
+        Assertions.assertEquals(JsObj.parse("{\"a\":1,\"c\":[1,2,3,[1,2],{\"b\":1}]}\n"),
                                 obj1
                                );
 
     }
 
     @Test
-    public void test_put_and_get()
+    public void test_malformed_json() throws MalformedJson
     {
-        final JsObj empty = immutable.object.empty();
-        final JsObj a = empty.put(JsPath.fromKey("a"),
-                                  JsBigDec.of(BigDecimal.valueOf(0.1d))
-                                 );
+        final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
+                                                                    () -> JsObj.parse("")
+                                                                   );
 
-        Assertions.assertEquals(OptionalDouble.of(0.1d),
-                                a.getDouble(fromKey("a"))
+        Assertions.assertEquals("Expected a json object {...}. Received: ",
+                                malformedJson.getMessage()
                                );
-        Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.1d)),
-                                a.getBigDecimal(fromKey("a"))
+
+
+        Assertions.assertThrows(MalformedJson.class,
+                                () -> JsObj.parse("{]")
                                );
+
+
     }
 
+    @Test
+    public void test_map_elements_immutable() throws MalformedJson
+    {
+
+        final JsObj obj = JsObj.parse("{\n"
+                                      + "  \"a\": 1,\n"
+                                      + "  \"b\": 2,\n"
+                                      + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
+                                      +
+                                      "}");
+
+        final JsObj result = obj.mapElems((pair) -> pair.elem.asJsInt()
+                                                             .map(i -> i + 10));
+
+        final JsObj result_ = obj.mapElems_((pair) -> pair.elem.asJsInt()
+                                                               .map(i -> i + 10));
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n"),
+                                result
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":14,\"d\":13},15,16]}\n"),
+                                result_
+                               );
 
 
+    }
 
+    @Test
+    public void test_map_json_immutable_obj() throws MalformedJson
+    {
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("A"),
+                             "b",
+                             JsObj.empty(),
+                             "c",
+                             JsArray.empty(),
+                             "h",
+                             JsArray.of(JsObj.of("c",
+                                                 JsStr.of("C"),
+                                                 "d",
+                                                 JsStr.of("D")
+                                                ),
+                                        NULL,
+                                        JsObj.of("d",
+                                                 JsStr.of("D"),
+                                                 "e",
+                                                 JsStr.of("E"),
+                                                 "f",
+                                                 JsObj.of("g",
+                                                          JsStr.of("G"),
+                                                          "h",
+                                                          JsStr.of("H")
+                                                         )
+                                                )
+                                       )
+                            );
+
+
+        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.put(JsPath.fromKey("size"),
+                                                                                    json.size()
+                                                                                   );
+        final JsObj newObj = obj.mapObjs_((p, o) ->
+                                          {
+                                              Assertions.assertEquals(o,
+                                                                      obj.get(p)
+                                                                     );
+                                              return addSizeFn.apply(p,
+                                                                     o
+                                                                    );
+                                          },
+                                          (p, o) -> o.isNotEmpty()
+                                         );
+
+        Assertions.assertNotEquals(obj,
+                                   newObj
+                                  );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}\n")
+        ,
+                                newObj
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+        ,
+                                obj.mapObjs_((p, o) ->
+                                             {
+
+                                                 Assertions.assertEquals(o,
+                                                                         obj.get(p)
+                                                                        );
+                                                 return addSizeFn.apply(p,
+                                                                        o
+                                                                       );
+                                             }
+                                            )
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+        ,
+                                obj.mapObjs((p, o) ->
+                                            {
+
+                                                Assertions.assertEquals(o,
+                                                                        obj.get(p)
+                                                                       );
+                                                return addSizeFn.apply(p,
+                                                                       o
+                                                                      );
+                                            }
+                                           )
+                               );
+
+        JsObj obj1 = JsObj.of("a",
+                              JsObj.of("b",
+                                       JsStr.of("B"),
+                                       "c",
+                                       JsStr.of("C")
+                                      ),
+                              "b",
+                              JsObj.empty(),
+                              "c",
+                              JsArray.empty(),
+                              "d",
+                              JsObj.of("e",
+                                       JsStr.of("E"),
+                                       "f",
+                                       JsStr.of("F"),
+                                       "g",
+                                       JsObj.of("h",
+                                                JsStr.of("H"),
+                                                "i",
+                                                JsStr.of("I")
+                                               )
+                                      )
+                             );
+
+        final JsObj newObj1 = obj1.mapObjs((p, o) ->
+                                           {
+                                               Assertions.assertEquals(o,
+                                                                       obj1.get(p)
+                                                                      );
+                                               return addSizeFn.apply(p,
+                                                                      o
+                                                                     );
+                                           },
+                                           (p, o) -> o.isNotEmpty()
+                                          );
+
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":{\"size\":2,\"b\":\"B\",\"c\":\"C\"},\"b\":{},\"c\":[],\"d\":{\"e\":\"E\",\"size\":3,\"f\":\"F\",\"g\":{\"i\":\"I\",\"h\":\"H\"}}}\n")
+        ,
+                                newObj1
+                               );
+
+    }
+
+    @Test
+    public void test_map_keys_to_uppercase_removing_trailing_white_spaces_immutable()
+    {
+        final JsObj obj = JsObj.of(" a ",
+                                   JsObj.of(" a1 ",
+                                            JsStr.of("A"),
+                                            " b1 ",
+                                            JsStr.of("B")
+                                           ),
+                                   " c ",
+                                   JsStr.of("C"),
+                                   " d ",
+                                   JsObj.of(" d1 ",
+                                            JsStr.of("D"),
+                                            " e1 ",
+                                            JsArray.of(JsObj.of(" f ",
+                                                                JsStr.of("F1")
+                                                               ),
+                                                       JsObj.of(" g ",
+                                                                JsStr.of("G1")
+                                                               )
+                                                      )
+                                           ),
+                                   " f ",
+                                   JsStr.of("F")
+                                  );
+
+
+        final JsObj mapped = obj.mapKeys_(p ->
+                                          {
+                                              Assertions.assertEquals(p.elem,
+                                                                      obj.get(p.path)
+                                                                     );
+                                              return p.path.last()
+                                                           .asKey().name.trim()
+                                                                        .toUpperCase();
+                                          });
+
+        Assertions.assertFalse(mapped.stream_()
+                                     .map(it ->
+                                          {
+                                              final String name = it.path.last()
+                                                                         .asKey().name;
+                                              return name.contains(" ") || name.chars()
+                                                                               .mapToObj(Character::isLowerCase)
+                                                                               .findAny()
+                                                                               .orElse(false);
+                                          })
+                                     .findFirst()
+                                     .orElse(false));
+
+    }
+
+    @Test
+    public void test_map_strings_to_lowercase_and_reduce()
+    {
+
+        final JsObj obj = JsObj.of("a",
+
+                                   JsObj.of("a1",
+                                            JsStr.of("A"),
+                                            "b1",
+                                            JsStr.of("B")
+                                           ),
+                                   "n",
+                                   JsInt.of(1),
+                                   "c",
+                                   JsStr.of("C"),
+                                   "d",
+                                   JsObj.of("d1",
+                                            JsStr.of("D"),
+                                            "e1",
+                                            JsStr.of("E"),
+                                            "g",
+                                            JsInt.of(2)
+                                           ),
+                                   "f",
+                                   JsStr.of("F")
+                                  );
+
+
+        final JsObj obj1 = obj.mapElems_(pair ->
+                                         {
+                                             Assertions.assertEquals(pair.elem,
+                                                                     obj.get(pair.path)
+                                                                    );
+                                             return pair.mapIfStr(String::toLowerCase).elem;
+                                         });
+
+        final Optional<String> reduced_ = obj1.reduce_(String::concat,
+                                                       p ->
+                                                       {
+                                                           Assertions.assertEquals(p.elem,
+                                                                                   obj1.get(p.path)
+                                                                                  );
+                                                           return p.elem.asJsStr().x;
+                                                       },
+                                                       p -> p.elem.isStr()
+                                                      );
+
+        final char[] chars_ = reduced_.get()
+                                      .toCharArray();
+        Arrays.sort(chars_);
+        Assertions.assertEquals("abcdef",
+                                new String(chars_)
+                               );
+
+        final Optional<String> reduced = obj1.reduce(String::concat,
+                                                     p ->
+                                                     {
+                                                         Assertions.assertEquals(p.elem,
+                                                                                 obj1.get(p.path)
+                                                                                );
+                                                         return p.elem.asJsStr().x;
+                                                     },
+                                                     p -> p.elem.isStr()
+                                                    );
+
+        final char[] chars = reduced.get()
+                                    .toCharArray();
+        Arrays.sort(chars);
+        Assertions.assertEquals("cf",
+                                new String(chars)
+                               );
+    }
 
     @Test
     public void test_operations()
     {
 
-        JsObj obj = immutable.object.of(JsPair.of(path("/a/b/c"),
-                                                  JsInt.of(1)
-                                                 ),
-                                        JsPair.of(path("/a/b/d"),
-                                                  JsInt.of(2)
-                                                 )
-                                       );
+        JsObj obj = JsObj.of(JsPair.of(path("/a/b/c"),
+                                       JsInt.of(1)
+                                      ),
+                             JsPair.of(path("/a/b/d"),
+                                       JsInt.of(2)
+                                      )
+                            );
 
         Assertions.assertEquals(obj.appendAll(JsPath.fromIndex(0),
-                                              immutable.array.of(1,
-                                                                 2
-                                                                )
+                                              JsArray.of(1,
+                                                         2
+                                                        )
                                              ),
                                 obj
                                );
 
         Assertions.assertEquals(obj.prependAll(JsPath.fromIndex(0),
-                                               immutable.array.of(1,
-                                                                  2
-                                                                 )
+                                               JsArray.of(1,
+                                                          2
+                                                         )
                                               ),
                                 obj
                                );
@@ -622,343 +894,38 @@ public class TestJsObj
                                );
     }
 
-
-
-
     @Test
     public void test_parse_into_immutable() throws MalformedJson
     {
-        JsObj obj = immutable.object.of(JsPair.of(path("/a/b/0"),
-                                                  NULL
-                                                 ),
-                                        JsPair.of(path("/a/b/1"),
-                                                  TRUE
-                                                 ),
-                                        JsPair.of(path("/a/b/c"),
-                                                  FALSE
-                                                 ),
-                                        JsPair.of(path("/a/b/c/d"),
-                                                  JsInt.of(1)
-                                                 ),
-                                        JsPair.of(path("/a/a/a/"),
-                                                  JsStr.of("a")
-                                                 ),
-                                        JsPair.of(path("/a/b/0"),
-                                                  JsBigDec.of(BigDecimal.ONE)
-                                                 )
-                                       );
+        JsObj obj = JsObj.of(JsPair.of(path("/a/b/0"),
+                                       NULL
+                                      ),
+                             JsPair.of(path("/a/b/1"),
+                                       TRUE
+                                      ),
+                             JsPair.of(path("/a/b/c"),
+                                       FALSE
+                                      ),
+                             JsPair.of(path("/a/b/c/d"),
+                                       JsInt.of(1)
+                                      ),
+                             JsPair.of(path("/a/a/a/"),
+                                       JsStr.of("a")
+                                      ),
+                             JsPair.of(path("/a/b/0"),
+                                       JsBigDec.of(BigDecimal.ONE)
+                                      )
+                            );
 
         Assertions.assertEquals(obj,
-                                immutable.object.parse(obj.toString())
-                                                .get()
+                                JsObj.parse(obj.toString())
+
                                );
 
         Assertions.assertEquals(obj,
-                                immutable.parse(obj.toString())
-                                         .get()
+                                JsObj.parse(obj.toString())
+
                                );
-
-    }
-
-
-
-
-    @Test
-    public void test_equals()
-    {
-
-        JsObj obj = immutable.object.of("a",
-                                        immutable.object.of("b",
-                                                            immutable.array.of(1,
-                                                                               2,
-                                                                               3
-                                                                              )
-                                                           ),
-                                        "b",
-                                        immutable.array.of("a",
-                                                           "b",
-                                                           "c"
-                                                          )
-                                       );
-
-        JsObj obj2 = immutable.object.of("a",
-                                         immutable.object.of("b",
-                                                             immutable.array.of(1,
-                                                                                2,
-                                                                                3,
-                                                                                1,
-                                                                                2,
-                                                                                3
-                                                                               )
-                                                            ),
-                                         "b",
-                                         immutable.array.of("a",
-                                                            "b",
-                                                            "c",
-                                                            "a",
-                                                            "b",
-                                                            "c"
-                                                           )
-                                        );
-        JsObj obj3 = immutable.object.of("a",
-                                         immutable.object.of("b",
-                                                             immutable.array.of(3,
-                                                                                2,
-                                                                                1,
-                                                                                1,
-                                                                                2,
-                                                                                3
-                                                                               )
-                                                            ),
-                                         "b",
-                                         immutable.array.of("c",
-                                                            "b",
-                                                            "a",
-                                                            "a",
-                                                            "b",
-                                                            "c"
-                                                           )
-                                        );
-        Assertions.assertTrue(obj.equals(obj,
-                                         LIST
-                                        )
-                             );
-
-        Assertions.assertFalse(obj.equals(obj2,
-                                          LIST
-                                         )
-                              );
-        Assertions.assertTrue(obj2.equals(obj3,
-                                          SET
-                                         )
-                             );
-        Assertions.assertTrue(obj2.equals(obj3,
-                                          MULTISET
-                                         )
-                             );
-        Assertions.assertTrue(obj.equals(obj2,
-                                         SET
-                                        )
-                             );
-        Assertions.assertTrue(obj2.equals(obj2,
-                                          LIST
-                                         )
-                             );
-        Assertions.assertTrue(obj3.equals(obj3,
-                                          LIST
-                                         )
-                             );
-    }
-
-    @Test
-    public void test_map_json_immutable_obj() throws MalformedJson
-    {
-        JsObj obj = immutable.object.of("a",
-                                        JsStr.of("A"),
-                                        "b",
-                                        immutable.object.empty(),
-                                        "c",
-                                        immutable.array.empty(),
-                                        "h",
-                                        immutable.array.of(immutable.object.of("c",
-                                                                               JsStr.of("C"),
-                                                                               "d",
-                                                                               JsStr.of("D")
-                                                                              ),
-                                                           NULL,
-                                                           immutable.object.of("d",
-                                                                               JsStr.of("D"),
-                                                                               "e",
-                                                                               JsStr.of("E"),
-                                                                               "f",
-                                                                               immutable.object.of("g",
-                                                                                                   JsStr.of("G"),
-                                                                                                   "h",
-                                                                                                   JsStr.of("H")
-                                                                                                  )
-                                                                              )
-                                                          )
-                                       );
-
-
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.put(JsPath.fromKey("size"),
-                                                                                    json.size()
-                                                                                   );
-        final JsObj newObj = obj.mapObjs_((p, o) ->
-                                          {
-                                              Assertions.assertEquals(o,
-                                                                      obj.get(p)
-                                                                     );
-                                              return addSizeFn.apply(p,
-                                                                     o
-                                                                    );
-                                          },
-                                          (p, o) -> o.isNotEmpty()
-                                         );
-
-        Assertions.assertNotEquals(obj,
-                                   newObj
-                                  );
-
-        Assertions.assertEquals(immutable.parse("{\"a\":\"A\",\"b\":{},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}\n")
-                                         .get(),
-                                newObj
-                               );
-
-        Assertions.assertEquals(immutable.object.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-                                                .get(),
-                                obj.mapObjs_((p, o) ->
-                                             {
-
-                                                 Assertions.assertEquals(o,
-                                                                         obj.get(p)
-                                                                        );
-                                                 return addSizeFn.apply(p,
-                                                                        o
-                                                                       );
-                                             }
-                                            )
-                               );
-
-        Assertions.assertEquals(immutable.object.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-                                                .get(),
-                                obj.mapObjs((p, o) ->
-                                            {
-
-                                                Assertions.assertEquals(o,
-                                                                        obj.get(p)
-                                                                       );
-                                                return addSizeFn.apply(p,
-                                                                       o
-                                                                      );
-                                            }
-                                           )
-                               );
-
-        JsObj obj1 = immutable.object.of("a",
-                                         immutable.object.of("b",
-                                                             JsStr.of("B"),
-                                                             "c",
-                                                             JsStr.of("C")
-                                                            ),
-                                         "b",
-                                         immutable.object.empty(),
-                                         "c",
-                                         immutable.array.empty(),
-                                         "d",
-                                         immutable.object.of("e",
-                                                             JsStr.of("E"),
-                                                             "f",
-                                                             JsStr.of("F"),
-                                                             "g",
-                                                             immutable.object.of("h",
-                                                                                 JsStr.of("H"),
-                                                                                 "i",
-                                                                                 JsStr.of("I")
-                                                                                )
-                                                            )
-                                        );
-
-        final JsObj newObj1 = obj1.mapObjs((p, o) ->
-                                           {
-                                               Assertions.assertEquals(o,
-                                                                       obj1.get(p)
-                                                                      );
-                                               return addSizeFn.apply(p,
-                                                                      o
-                                                                     );
-                                           },
-                                           (p, o) -> o.isNotEmpty()
-                                          );
-
-
-        Assertions.assertEquals(immutable.parse("{\"a\":{\"size\":2,\"b\":\"B\",\"c\":\"C\"},\"b\":{},\"c\":[],\"d\":{\"e\":\"E\",\"size\":3,\"f\":\"F\",\"g\":{\"i\":\"I\",\"h\":\"H\"}}}\n")
-                                         .get(),
-                                newObj1
-                               );
-
-    }
-
-
-    @Test
-    public void test_malformed_json() throws MalformedJson
-    {
-        final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
-                                                                    () -> immutable.object.parse("")
-                                                                                          .get()
-                                                                   );
-
-        Assertions.assertEquals("Expected a json object {...}. Received: ",
-                                malformedJson.getMessage()
-                               );
-
-
-        Assertions.assertThrows(MalformedJson.class,
-                                () -> immutable.object.parse("{]")
-                                                      .get()
-                               );
-
-
-    }
-
-    @Test
-    public void test_map_elements_immutable() throws MalformedJson
-    {
-
-        final JsObj obj = immutable.object.parse("{\n"
-                                                 + "  \"a\": 1,\n"
-                                                 + "  \"b\": 2,\n"
-                                                 + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
-                                                 +
-                                                 "}")
-                                          .get();
-
-        final JsObj result = obj.mapElems((pair) -> pair.elem.asJsInt()
-                                                             .map(i -> i + 10));
-
-        final JsObj result_ = obj.mapElems_((pair) -> pair.elem.asJsInt()
-                                                               .map(i -> i + 10));
-
-        Assertions.assertEquals(immutable.object.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n")
-                                                .get(),
-                                result
-                               );
-
-        Assertions.assertEquals(immutable.object.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":14,\"d\":13},15,16]}\n")
-                                                .get(),
-                                result_
-                               );
-
-
-    }
-
-    @Test
-    public void test_filter_elements_immutable() throws MalformedJson
-    {
-
-        final JsObj obj = immutable.object.parse("{\n"
-                                                 + "  \"a\": 1,\n"
-                                                 + "  \"b\": 2,\n"
-                                                 + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
-                                                 +
-                                                 "}")
-                                          .get();
-
-        final JsObj result = obj.filterElems((pair) -> pair.elem.asJsInt().x % 2 == 0);
-
-        final JsObj result_ = obj.filterElems_((pair) -> pair.elem.asJsInt().x % 2 == 0);
-
-
-        Assertions.assertEquals(immutable.object.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}")
-                                                .get(),
-                                result
-                               );
-
-        Assertions.assertEquals(immutable.object.parse("{\"b\":2,\"c\":[{\"e\":4},6]}")
-                                                .get(),
-                                result_
-                               );
-
 
     }
 
@@ -966,11 +933,11 @@ public class TestJsObj
     public void test_prepend()
     {
 
-        JsObj obj = immutable.object.of("a",
-                                        immutable.array.of(TRUE),
-                                        "b",
-                                        immutable.array.of(FALSE)
-                                       );
+        JsObj obj = JsObj.of("a",
+                             JsArray.of(TRUE),
+                             "b",
+                             JsArray.of(FALSE)
+                            );
 
         final JsObj obj1 = obj.prepend(path("/a"),
                                        TRUE
@@ -978,10 +945,10 @@ public class TestJsObj
                               .append(path("/a"),
                                       FALSE
                                      );
-        Assertions.assertEquals(immutable.array.of(true,
-                                                   true,
-                                                   false
-                                                  ),
+        Assertions.assertEquals(JsArray.of(true,
+                                           true,
+                                           false
+                                          ),
                                 obj1.get(path("/a"))
                                );
 
@@ -993,7 +960,7 @@ public class TestJsObj
         final JsObj obj2 = obj.prepend(path("/a/b"),
                                        JsStr.of("hi")
                                       );
-        Assertions.assertEquals(immutable.array.of("hi"),
+        Assertions.assertEquals(JsArray.of("hi"),
                                 obj2.get(path("/a/b"))
                                );
 
@@ -1001,7 +968,7 @@ public class TestJsObj
         final JsObj obj3 = obj2.prepend(path("/a/b/3"),
                                         JsStr.of("bye")
                                        );
-        Assertions.assertEquals(immutable.array.of("bye"),
+        Assertions.assertEquals(JsArray.of("bye"),
                                 obj3
                                 .get(path("/a/b/3"))
                                );
@@ -1016,7 +983,7 @@ public class TestJsObj
                                 obj3.get(path("/a/b/2"))
                                );
 
-        Assertions.assertEquals(immutable.array.of(1),
+        Assertions.assertEquals(JsArray.of(1),
                                 obj3.prepend(path("/a/b/3/1"),
                                              JsInt.of(1)
                                             )
@@ -1029,12 +996,12 @@ public class TestJsObj
     @Test
     public void test_prepend_all_immutable()
     {
-        JsObj empty = immutable.object.empty();
+        JsObj empty = JsObj.empty();
 
-        final JsArray xs = Jsons.immutable.array.of(1,
-                                                    2,
-                                                    3
-                                                   );
+        final JsArray xs = JsArray.of(1,
+                                      2,
+                                      3
+                                     );
         final JsObj obj = empty.prependAll(path("/a/b"),
                                            xs
                                           );
@@ -1088,31 +1055,18 @@ public class TestJsObj
     }
 
     @Test
-    public void test_append_immutable()
+    public void test_put_and_get()
     {
-        JsObj empty = immutable.object.empty();
+        final JsObj empty = JsObj.empty();
+        final JsObj a = empty.put(JsPath.fromKey("a"),
+                                  JsBigDec.of(BigDecimal.valueOf(0.1d))
+                                 );
 
-        final JsObj obj = empty.append(path("/a/b"),
-                                       JsStr.of("hi")
-                                      );
-
-        Assertions.assertTrue(empty.isEmpty());
-
-        Assertions.assertEquals(Jsons.immutable.array.of("hi"),
-                                obj.getArray(path("/a/b"))
-                                   .get()
+        Assertions.assertEquals(OptionalDouble.of(0.1d),
+                                a.getDouble(fromKey("a"))
                                );
-
-        final JsObj obj1 = obj.append(path("/a/b"),
-                                      JsStr.of("bye")
-                                     );
-
-        Assertions.assertEquals(Optional.of("bye"),
-                                obj1.getStr(path("/a/b/-1"))
-                               );
-
-        Assertions.assertEquals(Optional.of("hi"),
-                                obj1.getStr(path("/a/b/0"))
+        Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.1d)),
+                                a.getBigDecimal(fromKey("a"))
                                );
     }
 

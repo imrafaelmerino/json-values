@@ -1,9 +1,13 @@
 package jsonvalues;
 
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.collection.Vector;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -17,6 +21,9 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static jsonvalues.AbstractJsObj.streamOfObj;
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
+import static jsonvalues.JsNull.NULL;
 import static jsonvalues.Trampoline.done;
 import static jsonvalues.Trampoline.more;
 
@@ -28,9 +35,9 @@ abstract class AbstractJsArray implements JsArray
 
 {
 
-protected Vector<JsElem> seq;
+    protected Vector<JsElem> seq;
 
-    AbstractJsArray( Vector<JsElem> seq)
+    AbstractJsArray(Vector<JsElem> seq)
     {
         this.seq = seq;
     }
@@ -98,7 +105,7 @@ protected Vector<JsElem> seq;
 
     }
 
-    private boolean yContainsSameX(Vector<JsElem>  x,
+    private boolean yContainsSameX(Vector<JsElem> x,
                                    Vector<JsElem> y
                                   )
     {
@@ -343,7 +350,6 @@ protected Vector<JsElem> seq;
     }
 
 
-
     @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
                                         final Function<? super JsPair, R> map,
@@ -445,7 +451,9 @@ protected Vector<JsElem> seq;
     @Override
     public String toString()
     {
-        return seq.mkString("[",",","]");
+        return seq.mkString("[",
+                            ",",
+                            "]");
     }
 
     @Override
@@ -604,4 +612,139 @@ protected Vector<JsElem> seq;
             );
         };
     }
+
+    static Vector<JsElem> parse(final JsonParser parser
+                               ) throws IOException
+    {
+        Vector<JsElem> root = Vector.empty();
+        while (true)
+        {
+            JsonToken token = parser.nextToken();
+            JsElem elem;
+            switch (token.id())
+            {
+                case JsonTokenId.ID_END_ARRAY:
+                    return root;
+                case JsonTokenId.ID_START_OBJECT:
+                    elem = new ImmutableJsObj(AbstractJsObj.parse(parser)
+                    );
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    elem = new ImmutableJsArray(parse(parser
+                                                     )
+                    );
+                    break;
+                case JsonTokenId.ID_STRING:
+                    elem = JsStr.of(parser.getValueAsString());
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+                    elem = JsNumber.of(parser);
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+                    elem = JsBigDec.of(parser.getDecimalValue());
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    elem = TRUE;
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    elem = FALSE;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    elem = NULL;
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(token.name());
+            }
+            root = root.append(elem);
+        }
+    }
+
+    static Vector<JsElem> parse(final JsonParser parser,
+                                final ParseBuilder.Options options,
+                                final JsPath path
+                               ) throws IOException
+    {
+        JsonToken elem;
+        JsPair pair;
+        Vector<JsElem> root = Vector.empty();
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
+        while ((elem = parser.nextToken()) != JsonToken.END_ARRAY)
+        {
+            final JsPath currentPath = path.inc();
+            switch (elem.id())
+            {
+                case JsonTokenId.ID_STRING:
+
+                    pair = JsPair.of(currentPath,
+                                     JsStr.of(parser.getValueAsString())
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+
+                    pair = JsPair.of(currentPath,
+                                     JsNumber.of(parser)
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+
+                    pair = JsPair.of(currentPath,
+                                     JsBigDec.of(parser.getDecimalValue())
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    pair = JsPair.of(currentPath,
+                                     TRUE
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    pair = JsPair.of(currentPath,
+                                     FALSE
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    pair = JsPair.of(currentPath,
+                                     NULL
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                    break;
+                case JsonTokenId.ID_START_OBJECT:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        root = root.append(new ImmutableJsObj(AbstractJsObj.parse(parser,
+                                                                                  options,
+                                                                                  currentPath
+                                                                                 )
+                                           )
+                                          );
+                    }
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        root = root.append(new ImmutableJsArray(parse(parser,
+                                                                      options,
+                                                                      currentPath.index(-1)
+                                                                     )
+                                           )
+                                          );
+                    }
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(elem.name());
+
+
+            }
+        }
+        return root;
+    }
+
 }

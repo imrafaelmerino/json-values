@@ -94,7 +94,7 @@ class FilterMapReduceSpec extends BasePropSpec
         js =>
           val predicate: Predicate[JsPair] = _ => false
           val obj = js.filterKeys(predicate)
-          obj == Jsons.immutable.`object`.empty()
+          obj == JsObj.empty()
       }
       )
   }

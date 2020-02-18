@@ -16,7 +16,7 @@ class HashCodeEqualsSpec extends PropSpec with Checkers
   {
     check(forAll(jsGen.jsObjGen)
           { json =>
-            val obj = Jsons.immutable.`object`.parse(json.toString).get()
+            val obj = JsObj.parse(json.toString)
             val h1 = json.hashCode()
             val h2 = obj.hashCode()
             h1==h2

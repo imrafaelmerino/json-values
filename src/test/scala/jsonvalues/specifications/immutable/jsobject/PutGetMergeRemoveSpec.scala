@@ -30,7 +30,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
       { (path,
          str
         ) =>
-        Jsons.immutable.`object`.empty().put(path,
+        JsObj.empty().put(path,
                                              JsStr.of(str)
                                              ).getStr(path).get() == str
       }
@@ -48,7 +48,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
         )
       =>
 
-        val obj = Jsons.immutable.`object`.empty().put(path,
+        val obj = JsObj.empty().put(path,
                                                        JsBool.of(bool)
                                                        )
         obj.getBool(path).get() == bool
@@ -77,7 +77,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
          n
         )
       =>
-        val obj = Jsons.immutable.`object`.empty().put(path,
+        val obj = JsObj.empty().put(path,
                                                        JsInt.of(n)
                                                        )
         obj.getInt(path).getAsInt == n
@@ -106,7 +106,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
       =>
 
 
-        val obj = Jsons.immutable.`object`.empty().put(path,
+        val obj = JsObj.empty().put(path,
                                                        JsLong.of(n)
                                                        )
 
@@ -136,7 +136,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
         )
       =>
 
-        val obj = Jsons.immutable.`object`.empty().put(path,
+        val obj = JsObj.empty().put(path,
                                                        JsBigInt.of(n.bigInteger)
                                                        )
 
@@ -202,7 +202,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            Jsons.immutable.`object`.empty().putIfAbsent(path,
+            JsObj.empty().putIfAbsent(path,
                                                          ScalaToJava.supplier(() => elem)
                                                          ).get(path) == elem
           }
@@ -219,7 +219,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
              elem
             ) =>
 
-            Jsons.immutable.`object`.empty().put(path,
+            JsObj.empty().put(path,
                                                  elem
                                                  ).remove(path).get(path) == JsNothing.NOTHING
 
@@ -237,7 +237,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
          value
         ) =>
 
-        val json = Jsons.immutable.`object`.empty().put(path,
+        val json = JsObj.empty().put(path,
                                                         JsBool.of(value)
                                                         )
         (json.getBool(path).get() == value) &&

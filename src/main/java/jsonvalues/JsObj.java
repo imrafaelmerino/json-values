@@ -1,10 +1,18 @@
 package jsonvalues;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import io.vavr.Tuple2;
 import jsonvalues.JsArray.TYPE;
 
+import javax.swing.*;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
+
+import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
+import static java.util.Objects.requireNonNull;
 
 /**
  Represents a json object, which is an unordered set of name/element pairs. Two implementations are
@@ -12,7 +20,66 @@ import java.util.function.BiFunction;
  Java HashMap.
  */
 public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
+
+
 {
+
+    static JsObj empty(){return ImmutableJsObj.EMPTY; }
+    /**
+     Tries to parse the string into an immutable object.
+     @param str the string to be parsed
+     @return a Try computation
+     */
+    static JsObj parse(final String str) throws MalformedJson
+    {
+
+        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        {
+            JsonToken keyEvent = parser.nextToken();
+            if (START_OBJECT != keyEvent) throw  MalformedJson.expectedObj(str);
+            return new ImmutableJsObj(AbstractJsObj.parse(parser
+                                                                     )
+            );
+        }
+
+        catch (IOException e)
+        {
+            throw new MalformedJson(e.getMessage());
+        }
+    }
+
+    /**
+     Tries to parse the string into an immutable object,  performing the specified transformations during the parsing.
+     It's faster to do certain operations right while the parsing instead of doing the parsing and
+     applying them later.
+     @param str  string to be parsed
+     @param builder builder with the transformations that will be applied during the parsing
+     @return a Try computation
+     */
+    static JsObj parse(final String str,
+                            final ParseBuilder builder
+                           ) throws MalformedJson
+    {
+
+        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str.getBytes())))
+        {
+            final JsonToken keyEvent = parser.nextToken();
+            if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
+            return new ImmutableJsObj(ImmutableJsObj.parse(parser,
+                                                                       requireNonNull(builder).create(),
+                                                                       JsPath.empty()
+                                                                      )
+
+
+                              );
+
+
+        }
+        catch (IOException e)
+        {
+            throw new MalformedJson(e.getMessage());
+        }
+    }
     /**
      return true if this obj is equal to the given as a parameter. In the case of ARRAY_AS=LIST, this
      method is equivalent to JsObj.equals(Object).
@@ -150,5 +217,251 @@ public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
     }
 
     boolean same(JsObj other);
+
+    /**
+     Returns a one-element immutable object.
+     @param key name of a key
+     @param el  JsElem to be associated to the key
+     @return an immutable one-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    static JsObj of(final String key,
+                    final JsElem el
+                   )
+    {
+
+        return ImmutableJsObj.EMPTY.put(JsPath.empty()
+                                 .key(requireNonNull(key)),
+                           el
+                          );
+    }
+
+    /**
+     Returns a two-element immutable object.
+     @param key1 name of a key
+     @param el1  JsElem to be associated to the key1
+     @param key2 name of a key
+     @param el2  JsElem to be associated to the key2
+     @return an immutable two-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    static JsObj of(final String key1,
+                    final JsElem el1,
+                    final String key2,
+                    final JsElem el2
+                   )
+    {
+
+        return of(key1,
+                  el1
+                 ).put(JsPath.empty()
+                             .key(requireNonNull(key2)),
+                       el2
+                      );
+    }
+
+    /**
+     Returns a three-element immutable object.
+     @param key1 name of a key
+     @param el1  JsElem to be associated to the key1
+     @param key2 name of a key
+     @param el2  JsElem to be associated to the key2
+     @param key3 name of a key
+     @param el3  JsElem to be associated to the key3
+     @return an immutable three-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsObj of(final String key1,
+                    final JsElem el1,
+                    final String key2,
+                    final JsElem el2,
+                    final String key3,
+                    final JsElem el3
+                   )
+    {
+        return of(key1,
+                  el1,
+                  key2,
+                  el2
+                 ).put(JsPath.empty()
+                             .key(requireNonNull(key3)),
+                       el3
+                      );
+    }
+
+    /**
+     Returns a four-element immutable object.
+     @param key1 name of a key
+     @param el1  JsElem to be associated to the key1
+     @param key2 name of a key
+     @param el2  JsElem to be associated to the key2
+     @param key3 name of a key
+     @param el3  JsElem to be associated to the key3
+     @param key4 name of a key
+     @param el4 JsElem to be associated to the key4
+     @return an immutable four-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsObj of(final String key1,
+                    final JsElem el1,
+                    final String key2,
+                    final JsElem el2,
+                    final String key3,
+                    final JsElem el3,
+                    final String key4,
+                    final JsElem el4
+                   )
+    {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3
+                 ).put(JsPath.empty()
+                             .key(requireNonNull(key4)),
+                       el4
+                      );
+    }
+
+    /**
+     Returns a five-element immutable object.
+     @param key1 name of a key
+     @param el1  JsElem to be associated to the key1
+     @param key2 name of a key
+     @param el2  JsElem to be associated to the key2
+     @param key3 name of a key
+     @param el3  JsElem to be associated to the key3
+     @param key4 name of a key
+     @param el4 JsElem to be associated to the key4
+     @param key5 name of a key
+     @param el5 JsElem to be associated to the key5
+     @return an immutable five-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsObj of(final String key1,
+                    final JsElem el1,
+                    final String key2,
+                    final JsElem el2,
+                    final String key3,
+                    final JsElem el3,
+                    final String key4,
+                    final JsElem el4,
+                    final String key5,
+                    final JsElem el5
+                   )
+    {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4
+                 ).put(JsPath.empty()
+                             .key(requireNonNull(key5)),
+                       el5
+                      );
+    }
+
+    /**
+     Returns a six-element immutable object.
+     @param key1 name of a key
+     @param el1  JsElem to be associated to the key1
+     @param key2 name of a key
+     @param el2  JsElem to be associated to the key2
+     @param key3 name of a key
+     @param el3  JsElem to be associated to the key3
+     @param key4 name of a key
+     @param el4 JsElem to be associated to the key4
+     @param key5 name of a key
+     @param el5 JsElem to be associated to the key5
+     @param key6 name of a key
+     @param el6 JsElem to be associated to the key6
+     @return an immutable six-element JsObj
+     @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    static JsObj of(final String key1,
+                    final JsElem el1,
+                    final String key2,
+                    final JsElem el2,
+                    final String key3,
+                    final JsElem el3,
+                    final String key4,
+                    final JsElem el4,
+                    final String key5,
+                    final JsElem el5,
+                    final String key6,
+                    final JsElem el6
+                   )
+    {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5
+                 ).put(JsPath.empty()
+                             .key(requireNonNull(key6)),
+                       el6
+                      );
+    }
+
+    /**
+     Returns an immutable object from one or more pairs.
+     @param pair a pair
+     @param others more optional pairs
+     @return an immutable JsObject
+     @throws UserError if an elem of a pair is mutable
+
+     */
+    static JsObj of(final JsPair pair,
+                    final JsPair... others
+                   )
+    {
+        JsObj obj = ImmutableJsObj.EMPTY.put(pair.path,
+                                pair.elem
+                               );
+        for (JsPair p : others)
+        {
+
+            obj = obj.put(p.path,
+                          p.elem
+                         );
+        }
+        return obj;
+
+    }
+
+    static JsObj ofIterable(Iterable<Map.Entry<String, JsElem>> xs)
+    {
+        JsObj acc = ImmutableJsObj.EMPTY;
+        for (Map.Entry<String, JsElem> x : requireNonNull(xs))
+        {
+
+            acc = acc.put(JsPath.fromKey(x.getKey()),
+                          x.getValue()
+                         );
+        }
+        return acc;
+    }
+
+
 }
 

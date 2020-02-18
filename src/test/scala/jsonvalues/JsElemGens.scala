@@ -219,8 +219,8 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       value <- Gen.frequency((freqTypeOfPair.valueFreq, jsValueGen),
                              (freqTypeOfPair.arrFreq, jsArrGen),
                              (freqTypeOfPair.objFreq, jsObjGen),
-                             (freqTypeOfPair.emptyObjFreq, Jsons.immutable.`object`.empty()),
-                             (freqTypeOfPair.emptyArrFreq, Jsons.immutable.array.empty())
+                             (freqTypeOfPair.emptyObjFreq, JsObj.empty()),
+                             (freqTypeOfPair.emptyArrFreq,JsArray.empty())
                              )
     } yield (key, value)
   }
@@ -234,7 +234,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       pairs <- Gen.containerOfN[Array, (String, JsElem)](size,
                                                          pairNameValueGen
                                                          )
-    } yield Jsons.immutable.`object`.ofIterable(scala.collection.immutable.HashMap[String, JsElem](pairs: _*).asJava.entrySet())
+    } yield JsObj.ofIterable(scala.collection.immutable.HashMap[String, JsElem](pairs: _*).asJava.entrySet())
 
   }
   val jsElemGen: Gen[JsElem] = Gen.oneOf(jsValueGen,

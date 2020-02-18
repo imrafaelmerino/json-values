@@ -1,15 +1,20 @@
 package jsonvalues;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.control.Try;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.IOException;
 import java.util.Iterator;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.MatchExp.ifNothingElse;
 
@@ -278,17 +283,6 @@ final class ImmutableJsObj extends AbstractJsObj
                                         .get();
     }
 
-    @Override
-    public boolean isMutable()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isImmutable()
-    {
-        return true;
-    }
 
 
     @SuppressWarnings("Duplicates")

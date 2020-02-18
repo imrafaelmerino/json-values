@@ -12,7 +12,7 @@ public class StringToJsArray_1000
     public JsArray scala_vector() throws MalformedJson
     {
 
-        return Jsons.immutable.array.parse(array)
+        return JsArray.parse(array)
                                     .orElseThrow();
     }
 

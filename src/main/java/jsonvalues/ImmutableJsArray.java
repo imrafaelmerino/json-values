@@ -50,18 +50,6 @@ final class ImmutableJsArray extends AbstractJsArray
 
 
     @Override
-    public boolean isMutable()
-    {
-        return false;
-    }
-
-    @Override
-    public boolean isImmutable()
-    {
-        return true;
-    }
-
-    @Override
     public final String toString()
     {
         String result = str;

@@ -76,9 +76,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.union(Jsons.immutable.array.empty(),
+            js.union(JsArray.empty(),
                      TYPE.LIST
-                     ).equals(js) && js.union_(Jsons.immutable.array.empty()).equals(js)
+                     ).equals(js) && js.union_(JsArray.empty()).equals(js)
           }
           )
   }
@@ -155,15 +155,15 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.intersection(Jsons.immutable.array.empty(),
+            js.intersection(JsArray.empty(),
                             TYPE.LIST
-                            ).equals(Jsons.immutable.array.empty()) &&
-            js.intersection(Jsons.immutable.array.empty(),
+                            ).equals(JsArray.empty()) &&
+            js.intersection(JsArray.empty(),
                             TYPE.SET
-                            ).equals(Jsons.immutable.array.empty()) &&
-            js.intersection(Jsons.immutable.array.empty(),
+                            ).equals(JsArray.empty()) &&
+            js.intersection(JsArray.empty(),
                             TYPE.LIST
-                            ).equals(Jsons.immutable.array.empty())
+                            ).equals(JsArray.empty())
           }
           )
   }
@@ -172,7 +172,7 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            js.intersection_(Jsons.immutable.array.empty()).equals(Jsons.immutable.array.empty())
+            js.intersection_(JsArray.empty()).equals(JsArray.empty())
           }
           )
   }

@@ -210,19 +210,19 @@ They are singletons; therefore, they can not be modified.
 
 ```
 // from keys and associated elements
-Jsons.immutable.object.of("a", JsInt.of(1), 
+JsObj.of("a", JsInt.of(1), 
                           "b", JsBool.TRUE, 
                           "c", JsNull.NULL, 
                           "d", JsStr.of("hi")
                          );
 
 // from varargs of json pairs
-JsObj w = Jsons.immutable.object.of( JsPair.of(path("/a/b/0"), 1),
+JsObj w = JsObj.of( JsPair.of(path("/a/b/0"), 1),
                                      JsPair.of(path("/a/b/1"), 2)
                                    );    
                            
 //parsing a string, which returns a TryObj computation that may fail                       
-JsObj z = Jsons.immutable.object.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
 
 Assertions.assertEquals(w, z);   
  ```
@@ -252,25 +252,25 @@ Assertions.assertEquals(w, z);
 
 ```
 // from varargs of ints
-JsArray a = Jsons.immutable.array.of(1,2,3);  
+JsArray a = JsArray.of(1,2,3);  
 
 // from varargs of strings
-JsArray b = Jsons.immutable.array.of("a","b","c");
+JsArray b = JsArray.of("a","b","c");
 
 // from varargs of JsElem
-JsArray c = Jsons.immutable.array.of(JsBool.TRUE, 
+JsArray c = JsArray.of(JsBool.TRUE, 
                                      JsStr.of("a"), 
                                      JsNull.NULL, 
                                      JsDouble.of(1.5d)
                                     );
                        
 //from varargs of json pairs
-JsArray d = Jsons.immutable.array.of(JsPair.of(path("/0/a/b/0"), 1),
+JsArray d = JsArray.of(JsPair.of(path("/0/a/b/0"), 1),
                                      JsPair.of(path("/0/a/b/1"), 2)
                                     );
 
 //parsing a string, which returns a TryArr computation that may fail                      
-JsArray e =  Jsons.immutable.array.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
+JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
 
 Assertions.assertEquals(d, e);  
 ```        
@@ -292,12 +292,12 @@ JsArray c = Jsons.mutable.array.of(JsBool.TRUE,
                                   );
 
 // from varargs of json pairs
-JsArray d = Jsons.immutable.array.of(JsPair.of(path("/0/a/b/0"), 1),
+JsArray d = JsArray.of(JsPair.of(path("/0/a/b/0"), 1),
                                      JsPair.of(path("/0/a/b/1"), 2)
                                     );
 
 // parsing a string, which returns a TryArr computation that may fail                        
-JsArray e =  Jsons.immutable.array.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
+JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
 
 Assertions.assertEquals(d, e);  
 ```
@@ -346,12 +346,12 @@ Assertions.assertEquals(OptionalInt.empty(),
 To obtains JsObj or JsArray wrapped into an optional:
 
 ```
-Assertions.assertEquals(Optional.of(Jsons.immutable.array.of(1,2)), 
+Assertions.assertEquals(Optional.of(JsArray.of(1,2)), 
                         json.getArr(path("/e/0"))
                         );
-Assertions.assertEquals(Optional.of(Jsons.immutable.object.of("c",JsInt.of(1),
-                                                              "d",Jsons.immutable.array.of(1,2),
-                                                              "e",Jsons.immutable.array.of("a","b"))
+Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
+                                                              "d",JsArray.of(1,2),
+                                                              "e",JsArray.of("a","b"))
                                                               )
                                     ), 
                         json.getObj(path("/a/b/0"))
@@ -388,8 +388,8 @@ Assertions.assertEquals(true, a.getBool(path("/a/b")).get());
 //a and b are immutable
 Assertions.assertNotEquals(a,b);
 
-JsArray c = Jsons.immutable.array.of(Jsons.immutable.object.of("a",Jsons.immutable.array.of(1,2)),
-                                     Jsons.immutable.object.of("b",Jsons.immutable.array.of("a","b"))
+JsArray c = JsArray.of(JsObj.of("a",JsArray.of(1,2)),
+                                     JsObj.of("b",JsArray.of("a","b"))
                                     );
 Assertions.assertEquals(JsInt.of(1), c.get(path("/0/a/0")) );
 Assertions.assertEquals(1l, c.getLong(path("/0/a/0")).getAsLong() );
@@ -403,7 +403,7 @@ When inserting data in arrays at specific positions, filling with null may be ne
 
 ```
 JsArray e = c.put(path("/0/b/3"),"c");
-Assertions.assertEquals(Jsons.immutable.array.of(JsStr.of("a"),
+Assertions.assertEquals(JsArray.of(JsStr.of("a"),
                                                  JsStr.of("b"),
                                                  JsNull.NULL,   
                                                  JsStr.of("c")
@@ -419,11 +419,11 @@ The point here is being honest. The string _c_ has been inserted at the forth po
   the specified index are shifted one position to the right.
   
 ```
-JsObj obj = Jsons.immutable.object.of("a",Jsons.immutable.array.of(1,2,3),
-                                      "b",Jsons.immutable.object.of("c",JsStr.of("hi"))
+JsObj obj = JsObj.of("a",JsArray.of(1,2,3),
+                                      "b",JsObj.of("c",JsStr.of("hi"))
                                      );
 
-Assertions.assertEquals(Jsons.immutable.array.of(1,5,2,3),
+Assertions.assertEquals(JsArray.of(1,5,2,3),
                         obj.add(path("/a/1"), 5).get(path("a"))
                        );
 
@@ -517,8 +517,8 @@ language you are programming in.
 Stream methods return sequences of JsPairs on-demand:
 
 ```
-JsObj x = Jsons.immutable.object.of("a", Jsons.immutable.array.of(1,2,3),
-                                    "b", Jsons.immutable.object.of("c",JsInt.of(4),
+JsObj x = JsObj.of("a", JsArray.of(1,2,3),
+                                    "b", JsObj.of("c",JsInt.of(4),
                                                                    "d",JsStr.of("hi")
                                                                    )
                                    );
@@ -552,9 +552,9 @@ prints out the following sequence of five pairs:
 For arrays, it's just the same:
 
 ```
-JsArray y = Jsons.immutable.array.of(Jsons.immutable.array.of(1,2), 
+JsArray y = JsArray.of(JsArray.of(1,2), 
                                      JsStr.of("red"), 
-                                     Jsons.immutable.object.of("c","blue", 
+                                     JsObj.of("c","blue", 
                                                                "d", "pink"
                                                               )
                                     );
@@ -864,13 +864,13 @@ is data-centric, which means basically that a number is just a number. No matter
 a long or even a BigDecimal. According to that, the following objects:
 
 ```
-JsObj x = Jsons.immutable.object.of("a", JsInt.of(1),
+JsObj x = JsObj.of("a", JsInt.of(1),
                                     "b", JsLong.of(100)
                                     "c", JsDouble.of(1),
                                     "d", JsDouble.of(10d)
                                    );
 
-JsObj y = Jsons.immutable.object.of("a", JsBigInt.of(BigInteger.ONE),
+JsObj y = JsObj.of("a", JsBigInt.of(BigInteger.ONE),
                                     "b", JsInt.of(100)
                                     "c", JsBigDec.of(BigDecimal.ONE),
                                     "d", JsInt.of(10)
@@ -894,9 +894,9 @@ boolean equals(final JsElem elem,
 For example:
 
 ```
-JsArray a = Jsons.immutable.array.of(1,2,3)
-JsArray b = Jsons.immutable.array.of(1,2,3,2,3)
-JsArray c = Jsons.immutable.array.of(1,2,3,3,2)
+JsArray a = JsArray.of(1,2,3)
+JsArray b = JsArray.of(1,2,3,2,3)
+JsArray c = JsArray.of(1,2,3,3,2)
 
 Assertions.assertTrue(a.equals(b, TYPE.SET));     
 Assertions.assertFalse(a.equals(b, TYPE.MULTISET));
@@ -909,7 +909,7 @@ Given the same Json created with two different factories:
 ```
 String str = "{...}"
 
-Json x = Jsons.immutable.object.parse(str)
+Json x = JsObj.parse(str)
 
 Json y = Jsons.mutable.object.parse(str)
 
@@ -943,7 +943,7 @@ Trampoline in case you want to do some _head and tail_ programming, and you shou
  only consider strings, numbers, booleans, and null. Find below an example:
 
 ```
-JsObj obj = Jsons.immutable.object.of("a",JsInt.of(1),
+JsObj obj = JsObj.of("a",JsInt.of(1),
                                       "b",JsStr.of("a"),
                                       "c",TRUE,
                                       "d",NULL,
@@ -982,35 +982,35 @@ A possible recursive implementation is:
         JsObj tail = obj.tail(headName); 
         if (headElem.isStr()) return schema(tail,
                                             acc.put(fromKey(headName),
-                                                    Jsons.immutable.object.of("type",
+                                                    JsObj.of("type",
                                                                               JsStr.of("string")
                                                                               )
                                                     )
                                              );
         if (headElem.isIntegral()) return schema(tail,
                                                  acc.put(fromKey(headName),
-                                                         Jsons.immutable.object.of("type",
+                                                         JsObj.of("type",
                                                                                    JsStr.of("integral")
                                                                                   )
                                                          )
                                                 );
         if (headElem.isDecimal()) return schema(tail,
                                                 acc.put(fromKey(headName),
-                                                        Jsons.immutable.object.of("type",
+                                                        JsObj.of("type",
                                                                                   JsStr.of("decimal")
                                                                                  )
                                                         )
                                                 );
         if (headElem.isBool()) return schema(tail,
                                              acc.put(fromKey(headName),
-                                                     Jsons.immutable.object.of("type",
+                                                     JsObj.of("type",
                                                                                JsStr.of("boolean")
                                                                               )
                                                     )
                                             );
         if (headElem.isNull()) return schema(tail,
                                              acc.put(fromKey(headName),
-                                                     Jsons.immutable.object.of("type",
+                                                     JsObj.of("type",
                                                                                JsStr.of("null")
                                                                               )
                                                     )
@@ -1046,7 +1046,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
         if (headElem.isStr()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
-                                                           Jsons.immutable.object.of("type",
+                                                           JsObj.of("type",
                                                                                      JsStr.of("string")
                                                                                      )
                                                            )
@@ -1054,7 +1054,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
         if (headElem.isIntegral()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
-                                                           Jsons.immutable.object.of("type",
+                                                           JsObj.of("type",
                                                                                      JsStr.of("integral")
                                                                                     )
                                                           )
@@ -1062,7 +1062,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
         if (headElem.isDecimal())
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
-                                                           Jsons.immutable.object.of("type",
+                                                           JsObj.of("type",
                                                                                      JsStr.of("decimal")
                                                                                      )
                                                            )
@@ -1070,7 +1070,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
         if (headElem.isBool()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
-                                                           Jsons.immutable.object.of("type",
+                                                           JsObj.of("type",
                                                                                      JsStr.of("boolean")
                                                                                     )
                                                            )
@@ -1078,7 +1078,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
         if (headElem.isNull()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
-                                                           Jsons.immutable.object.of("type",
+                                                           JsObj.of("type",
                                                                                      JsStr.of("null")
                                                                                      )
                                                            )

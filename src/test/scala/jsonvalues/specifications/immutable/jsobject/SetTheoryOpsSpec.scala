@@ -49,8 +49,8 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.union(Jsons.immutable.`object`.empty()
-                     ).equals(js) && js.union(Jsons.immutable.`object`.empty()).equals(js)
+            js.union(JsObj.empty()
+                     ).equals(js) && js.union(JsObj.empty()).equals(js)
           }
           )
   }
@@ -139,9 +139,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection(Jsons.immutable.`object`.empty(),
+            js.intersection(JsObj.empty(),
                             TYPE.LIST
-                            ).equals(Jsons.immutable.`object`.empty()
+                            ).equals(JsObj.empty()
                                      )
           }
           )
@@ -151,9 +151,9 @@ class SetTheoryOpsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            js.intersection_(Jsons.immutable.`object`.empty(),
+            js.intersection_(JsObj.empty(),
                              SET
-                             ).equals(Jsons.immutable.`object`.empty()
+                             ).equals(JsObj.empty()
                                       )
           }
           )
@@ -164,23 +164,23 @@ class SetTheoryOpsSpec extends BasePropSpec
     val ONE = JsInt.of(1)
     val TWO = JsInt.of(2)
     val THREE = JsInt.of(3)
-    val obj3 = Jsons.immutable.`object`.of("d",
+    val obj3 = JsObj.of("d",
                                            ONE
                                            )
-    val obj4 = Jsons.immutable.`object`.of("e",
+    val obj4 = JsObj.of("e",
                                            TWO
                                            )
 
-    val gen: Gen[JsObj] = Gen.const(Jsons.immutable.`object`.of("a",
-                                                                Jsons.immutable.array.of(ONE,
+    val gen: Gen[JsObj] = Gen.const(JsObj.of("a",
+                                                                JsArray.of(ONE,
                                                                                          TWO,
                                                                                          obj3
                                                                                          )
                                                                 )
                                     )
 
-    val b: JsObj = Jsons.immutable.`object`.of("a",
-                                               Jsons.immutable.array.of(ONE,
+    val b: JsObj = JsObj.of("a",
+                                               JsArray.of(ONE,
                                                                         THREE,
                                                                         obj4
                                                                         )

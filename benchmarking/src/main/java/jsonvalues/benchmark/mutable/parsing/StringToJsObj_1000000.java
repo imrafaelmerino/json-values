@@ -27,7 +27,6 @@ package jsonvalues.benchmark.mutable.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import jsonvalues.JsObj;
-import jsonvalues.Jsons;
 import jsonvalues.MalformedJson;
 import jsonvalues.benchmark.JacksonObjectMapper;
 import org.openjdk.jmh.annotations.Benchmark;

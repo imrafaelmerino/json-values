@@ -1,11 +1,15 @@
 package jsonvalues;
 
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -17,7 +21,10 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.AbstractJsArray.streamOfArr;
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNothing.NOTHING;
+import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
 import static jsonvalues.Trampoline.done;
 import static jsonvalues.Trampoline.more;
@@ -465,6 +472,158 @@ abstract class AbstractJsObj implements JsObj
                                     .filter(JsElem::isObj)
                                     .isEmpty());
         };
+    }
+
+    static HashMap<String, JsElem> parse(final JsonParser parser
+                                 ) throws IOException
+    {
+        HashMap<String, JsElem> map = HashMap.empty();
+        String key = parser.nextFieldName();
+        for (; key != null; key = parser.nextFieldName())
+        {
+            JsElem elem;
+            switch (parser.nextToken()
+                          .id())
+            {
+                case JsonTokenId.ID_STRING:
+                    elem = JsStr.of(parser.getValueAsString());
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+                    elem = JsNumber.of(parser);
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+                    elem = JsBigDec.of(parser.getDecimalValue());
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    elem = FALSE;
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    elem = TRUE;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    elem = NULL;
+                    break;
+                case JsonTokenId.ID_START_OBJECT:
+                    elem = new ImmutableJsObj(parse(parser)
+
+                    );
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    elem = new ImmutableJsArray(AbstractJsArray.parse(parser
+                                                                               )
+
+                    );
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(parser.currentToken()
+                                                               .name());
+
+
+            }
+            map = map.put(key,
+                          elem
+                         );
+        }
+
+        return map;
+
+    }
+
+    static HashMap<String, JsElem> parse(final JsonParser parser,
+                                         final ParseBuilder.Options options,
+                                         final JsPath path
+                                        ) throws IOException
+    {
+
+        HashMap<String, JsElem> map = HashMap.empty();
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
+        while (parser.nextToken() != JsonToken.END_OBJECT)
+        {
+            final String key = options.keyMap.apply(parser.getCurrentName());
+            final JsPath currentPath = path.key(key);
+            final JsPair pair;
+            switch (parser.nextToken()
+                          .id())
+            {
+                case JsonTokenId.ID_STRING:
+                    pair = JsPair.of(currentPath,
+                                     JsStr.of(parser.getValueAsString())
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+                    pair = JsPair.of(currentPath,
+                                     JsNumber.of(parser)
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+                    pair = JsPair.of(currentPath,
+                                     JsBigDec.of(parser.getDecimalValue())
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    pair = JsPair.of(currentPath,
+                                     TRUE
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    pair = JsPair.of(currentPath,
+                                     FALSE
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    pair = JsPair.of(currentPath,
+                                     NULL
+                                    );
+                    map = (condition.test(pair)) ? map.put(key,
+                                                           options.elemMap.apply(pair)
+                                                          ) : map;
+                    break;
+
+                case JsonTokenId.ID_START_OBJECT:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        map = map.put(key,
+                                      new ImmutableJsObj(parse(parser,
+                                                               options,
+                                                               currentPath
+                                                              )
+                                      )
+                                     );
+                    }
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        map = map.put(key,
+                                      new ImmutableJsArray(AbstractJsArray.parse(parser,
+                                                                                 options,
+                                                                                           currentPath.index(-1)
+                                                                                          )
+                                      )
+                                     );
+                    }
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(parser.currentToken()
+                                                               .name());
+            }
+        }
+        return map;
     }
 
 }

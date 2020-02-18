@@ -16,7 +16,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            Jsons.immutable.`object`.empty().append(path,
+            JsObj.empty().append(path,
                                                     elem
                                                     ).getArray(path).get().size() == 1
           }
@@ -31,7 +31,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            !Jsons.immutable.`object`.empty().appendIfPresent(path,
+            !JsObj.empty().appendIfPresent(path,
                                                               ScalaToJava.supplier(() => elem)
                                                               ).getArray(path).isPresent
           }
@@ -46,7 +46,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            Jsons.immutable.`object`.empty().prepend(path,
+            JsObj.empty().prepend(path,
                                                      elem,
                                                      elem
                                                      ).getArray(path).get().size() == 2
@@ -62,9 +62,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            !Jsons.immutable.
-              `object`
-              .empty().prependIfPresent(path,
+            !JsObj.empty().prependIfPresent(path,
                                         ScalaToJava.supplier(() => elem)
                                         ).getArray(path).isPresent
           }
@@ -79,9 +77,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            Jsons.immutable
-              .`object`
-              .empty().prepend(path,
+            JsObj.empty().prepend(path,
                                elem
                                ).prependIfPresent(path,
                                                   ScalaToJava.supplier(() => elem)
@@ -100,7 +96,7 @@ class AppendToArraySpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            Jsons.immutable.`object`.empty().append(path,
+            JsObj.empty().append(path,
                                                     elem
                                                     ).appendIfPresent(path,
                                                                       ScalaToJava.supplier(() => elem)

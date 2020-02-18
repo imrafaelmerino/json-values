@@ -90,7 +90,7 @@ json.patch(Patch.ops().add("/a/b",
 
 // creation of Jsons from primitive types
 
-Jsons.immutable.object.of("a",JsInt.of(13),
+JsObj.of("a",JsInt.of(13),
                           "b",JsStr.of("hi!")
                          )
 
@@ -98,7 +98,7 @@ Jsons.mutable.array.of(1,2,3)
 
 // creation of Jsons parsing strings
 
-Jsons.immutable.object.parse("{...}")
+JsObj.parse("{...}")
 
 Jsons.mutable.array.parse("[...]")
 ```
