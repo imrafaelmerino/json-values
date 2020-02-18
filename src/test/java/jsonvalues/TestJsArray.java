@@ -214,11 +214,6 @@ public class TestJsArray
                                    .init()
                                );
 
-        Assertions.assertThrows(UserError.class,
-                                () -> Jsons.immutable.array.empty()
-                                                           .init()
-                               );
-
 
     }
 
@@ -240,11 +235,6 @@ public class TestJsArray
         Assertions.assertEquals(JsStr.of("a"),
                                 arr.init()
                                    .last()
-                               );
-
-        Assertions.assertThrows(UserError.class,
-                                () -> Jsons.immutable.array.empty()
-                                                           .last()
                                );
 
 
@@ -426,23 +416,23 @@ public class TestJsArray
                                                          2
                                                         ),
                                 Jsons.immutable.array.parse("[1,2]")
-                                                     .orElseThrow()
+                                                     .get()
                                );
         Assertions.assertEquals(Optional.of(Jsons.immutable.array.of(1,
                                                                      2
                                                                     )),
                                 Jsons.immutable.array.parse("[1,2]")
-                                                     .toOptional()
+                                                     .toJavaOptional()
                                );
         Assertions.assertThrows(MalformedJson.class,
                                 () -> Jsons.immutable.array.parse("[1,2")
-                                                           .orElseThrow()
+                                                           .get()
                                );
 
 
         Assertions.assertEquals(Optional.empty(),
                                 Jsons.immutable.array.parse("[1,2")
-                                                     .toOptional()
+                                                     .toJavaOptional()
                                ); // Optional.empty
 
 
@@ -462,11 +452,6 @@ public class TestJsArray
                                 arr.tail()
                                ); //  ["b","c"]
 
-        Assertions.assertThrows(UserError.class,
-                                () -> Jsons.immutable.array.empty()
-                                                           .tail()
-                               );
-
 
     }
 
@@ -480,7 +465,7 @@ public class TestJsArray
                                                                     .withElemMap(p -> JsElems.mapIfInt(i -> i + 10)
                                                                                              .apply(p.elem))
                                                        )
-                                                 .orElseThrow();
+                                                 .get();
 
         Assertions.assertEquals(Jsons.immutable.array.of(JsInt.of(11),
                                                          JsInt.of(12),
@@ -573,7 +558,7 @@ public class TestJsArray
                                                      );
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[{\"a\": 1},null,{\"b\": 3}]")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 arr1
                                );
 
@@ -586,9 +571,9 @@ public class TestJsArray
     {
 
         final JsArray arr1 = Jsons.immutable.array.parse("[{\"a\": 1, \"b\": [1,2,2]}]")
-                                                  .orElseThrow();
+                                                  .get();
         final JsArray arr2 = Jsons.immutable.array.parse("[{\"a\": 1, \"b\": [1,2]}]")
-                                                  .orElseThrow();
+                                                  .get();
 
         Assertions.assertEquals(arr1,
                                 arr1.intersection(arr1,
@@ -748,7 +733,7 @@ public class TestJsArray
                                                          .isNotNull();
                                              });
         Assertions.assertEquals(Jsons.immutable.array.parse("[1,{\"a\":1},[{\"a\":1},{\"b\":null}]]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 arr1
                                );
 
@@ -763,7 +748,7 @@ public class TestJsArray
                                             });
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[1,{\"a\":1},[{\"a\":null},{\"a\":1},{\"b\":null},{\"a\":null}]]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 arr2
                                );
     }
@@ -789,11 +774,12 @@ public class TestJsArray
                                                                               );
                                                        return p.elem.isNotNull();
                                                    }),
-                                Jsons.immutable.array.parse(array.toString(),
+                                Jsons.immutable.array.parse(
+                                array.toString(),
                                                             ParseBuilder.builder()
                                                                         .withElemFilter(p -> p.elem.isNotNull())
                                                            )
-                                                     .orElseThrow()
+                                                     .get()
                                );
     }
 
@@ -835,7 +821,7 @@ public class TestJsArray
 
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[{\"size\":2,\"a\":1,\"b\":2},\"c\",true,false,{\"size\":3,\"a\":{\"e\":2,\"size\":2,\"d\":1},\"b\":2,\"c\":3}]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 a_
                                );
 
@@ -850,7 +836,7 @@ public class TestJsArray
                                       });
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[{\"size\":2,\"a\":1,\"b\":2},\"c\",true,false,{\"size\":3,\"a\":{\"e\":2,\"d\":1},\"b\":2,\"c\":3}]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 a
                                );
     }
@@ -910,7 +896,7 @@ public class TestJsArray
                                                             + "    \"c\": 3\n"
                                                             + "  }\n"
                                                             + "]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 a
                                );
     }
@@ -959,7 +945,7 @@ public class TestJsArray
                                   );
 
         Assertions.assertEquals(Jsons.immutable.parse("[{\"size\":2,\"a\":{},\"b\":\"B\"},null,{},[],{\"e\":{\"f\":\"F\"},\"size\":3,\"c\":\"C\",\"d\":\"D\"}]\n")
-                                               .arrOrElseThrow(),
+                                               .get(),
                                 newArr
                                );
 
@@ -1004,7 +990,7 @@ public class TestJsArray
                                   );
 
         Assertions.assertEquals(Jsons.immutable.parse("[{\"size\":2,\"a\":{},\"b\":\"B\"},null,{},[],{\"e\":{\"size\":2,\"f\":\"F\",\"g\":{\"size\":1,\"h\":\"H\"}},\"size\":3,\"c\":[],\"d\":\"D\"}]\n")
-                                               .arrOrElseThrow(),
+                                               .get(),
                                 newArr1
                                );
     }

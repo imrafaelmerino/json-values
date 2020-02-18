@@ -5,9 +5,9 @@ import java.util.function.Predicate;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.Trampoline.more;
 
-final class OpFilterImmutableObjElems extends OpFilterElems<JsObj>
+final class OpFilterObjElems extends OpFilterElems<JsObj>
 {
-    OpFilterImmutableObjElems(final JsObj a)
+    OpFilterObjElems(final JsObj a)
     {
         super(a
              );
@@ -20,26 +20,26 @@ final class OpFilterImmutableObjElems extends OpFilterElems<JsObj>
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
-                                    final JsPath headPath = startingPath.key(head.getKey());
+                                    final JsPath headPath = startingPath.key(head._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterImmutableObjElems(tail).filter_(startingPath,
-                                                                                                                                         predicate
-                                                                                                                                        )
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjElems(tail).filter_(startingPath,
+                                                                                                                                predicate
+                                                                                                                               )
                                                                                       );
-                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterImmutableObjElems(headObj).filter_(headPath,
-                                                                                                                                                           predicate
-                                                                                                                                                          )
-                                                                                                                                                  .map(headFiltered ->
-                                                                                                                                                       tailResult.put(JsPath.fromKey(head.getKey()),
+                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjElems(headObj).filter_(headPath,
+                                                                                                                                                  predicate
+                                                                                                                                                 )
+                                                                                                                                         .map(headFiltered ->
+                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                       headFiltered
                                                                                                                                                                      )
                                                                                                                                                       )
                                                                                              ),
-                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpFilterImmutableArrElems(headArr).filter_(headPath.index(-1),
-                                                                                                                                                           predicate
-                                                                                                                                                          )
-                                                                                                                                                  .map(headFiltered ->
-                                                                                                                                                       tailResult.put(JsPath.fromKey(head.getKey()),
+                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrElems(headArr).filter_(headPath.index(-1),
+                                                                                                                                                  predicate
+                                                                                                                                                 )
+                                                                                                                                         .map(headFiltered ->
+                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                                                       headFiltered
                                                                                                                                                                      )
                                                                                                                                                       )
@@ -48,7 +48,7 @@ final class OpFilterImmutableObjElems extends OpFilterElems<JsObj>
                                                                             headElem
                                                                            )
                                                                         .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head.getKey()),
+                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                            headElem
                                                                                                                                           )
                                                                                                              ),
@@ -56,7 +56,7 @@ final class OpFilterImmutableObjElems extends OpFilterElems<JsObj>
                                                                                )
 
                                                      )
-                                    .apply(head.getValue());
+                                    .apply(head._2);
 
                                 }
                                );
@@ -70,25 +70,25 @@ final class OpFilterImmutableObjElems extends OpFilterElems<JsObj>
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
-                                    final JsPath headPath = startingPath.key(head.getKey());
+                                    final JsPath headPath = startingPath.key(head._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterImmutableObjElems(tail).filter(startingPath,
-                                                                                                                                        predicate
-                                                                                                                                       ));
-                                    return ifJsonElse(headElem -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head.getKey()),
+                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjElems(tail).filter(startingPath,
+                                                                                                                               predicate
+                                                                                                                              ));
+                                    return ifJsonElse(headElem -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
                                                                                                                         headElem
                                                                                                                        )),
                                                       headElem -> JsPair.of(headPath,
                                                                             headElem
                                                                            )
                                                                         .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head.getKey()),
+                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
                                                                                                                                            headElem
                                                                                                                                           )),
                                                                                 p -> tailCall
                                                                                )
                                                      )
-                                    .apply(head.getValue());
+                                    .apply(head._2);
 
                                 }
                                );

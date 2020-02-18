@@ -2,39 +2,35 @@ package jsonvalues;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Vector;
+import io.vavr.control.Try;
 import org.checkerframework.checker.nullness.qual.KeyFor;
 
 import java.io.IOException;
 import java.util.Map;
-import java.util.Set;
+import java.util.function.Predicate;
 
 import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
+import static jsonvalues.JsNull.NULL;
 
 /**
  Factory to create immutable jsons.
  */
 public final class ImmutableJsons
 {
-    /**
-     converts the given json using this factory to an immutable one, if it's not immutable, returning the same instance otherwise.
-     @param json the given json
-     @return an immutable json
-     */
-    @SuppressWarnings("squid:S1452") //Json requires a type and the real type is unknown
-    public Json<?> toImmutable(Json<?> json)
-    {
-        if (json.isMutable()) return json.isObj() ? object.toImmutable(json.asJsObj()) : array.toImmutable(json.asJsArray());
-        return json;
-    }
 
     /**
      Tries to parse the string into an immutable json.
      @param str the string that will be parsed
      @return a {@link Try} computation
      */
-    public Try parse(String str)
+    public Try<Json<?>> parse(String str)
     {
 
         try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str)))
@@ -42,16 +38,12 @@ public final class ImmutableJsons
             final JsonToken event = parser.nextToken();
             if (event == START_ARRAY)
             {
-                return new Try(new ImmutableJsArray(Jsons.immutable.array.emptySeq.parse(this,
-                                                                                         parser
-                                                                                        ),
-                                                    this
+                return Try.success(new ImmutableJsArray(this.array.parse(parser
+                                                                            )
                 ));
             }
-            return new Try(new ImmutableJsObj(Jsons.immutable.object.emptyMap.parse(this,
-                                                                                    parser
-                                                                                   ),
-                                              this
+            return Try.success(new ImmutableJsObj(this.object.parse(parser
+                                                               )
             )
             );
         }
@@ -60,7 +52,7 @@ public final class ImmutableJsons
         catch (IOException e)
         {
 
-            return new Try(new MalformedJson(e.getMessage()));
+            return  Try.failure(new MalformedJson(e.getMessage()));
 
         }
 
@@ -73,7 +65,7 @@ public final class ImmutableJsons
      @param builder a builder with the transformations that will be applied during the parsing
      @return a {@link Try} computation
      */
-    public Try parse(String str,
+    public Try<Json<?>> parse(String str,
                      ParseBuilder builder
                     )
     {
@@ -81,23 +73,18 @@ public final class ImmutableJsons
         try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str)))
         {
             final JsonToken event = parser.nextToken();
-            if (event == START_ARRAY) return new Try(new ImmutableJsArray(Jsons.immutable.array.emptySeq.parse(this,
-                                                                                                               parser,
-                                                                                                               builder.create(),
-                                                                                                               JsPath.empty()
-                                                                                                                     .index(-1)
+            if (event == START_ARRAY) return  Try.success(new ImmutableJsArray(this.array.parse(parser,
+                                                                                           builder.create(),
+                                                                                           JsPath.empty()
+                                                                                                 .index(-1)
 
-                                                                                                              ),
-                                                                          this
+                                                                                          )
             )
             );
-            return new Try(new ImmutableJsObj(Jsons.immutable.object.emptyMap.parse(this,
-                                                                                    parser,
-                                                                                    builder.create(),
-                                                                                    JsPath.empty()
-
-                                                                                   ),
-                                              this
+            return  Try.success(new ImmutableJsObj(this.object.parse(parser,
+                                                                builder.create(),
+                                                                JsPath.empty()
+                                                               )
             )
             );
 
@@ -105,7 +92,7 @@ public final class ImmutableJsons
         catch (IOException e)
         {
 
-            return new Try(new MalformedJson(e.getMessage()));
+            return  Try.failure(new MalformedJson(e.getMessage()));
 
         }
 
@@ -119,32 +106,151 @@ public final class ImmutableJsons
     {
 
         final ImmutableJsArray empty;
-        final ScalaImmutableVector emptySeq;
 
         ImmutableJsArrays()
         {
 
-            emptySeq = new ScalaImmutableVector();
-            empty = new ImmutableJsArray(emptySeq,
-                                         ImmutableJsons.this
+            empty = new ImmutableJsArray(Vector.empty()
             );
 
 
         }
 
-
-        public JsArray toImmutable(JsArray mutable)
+        Vector<JsElem> parse(final JsonParser parser
+                            ) throws IOException
         {
-            JsArray acc = empty();
-            for (JsElem elem : requireNonNull(mutable))
+            Vector<JsElem> root = Vector.empty();
+            while (true)
             {
-                if (elem.isObj()) acc = acc.append(object.toImmutable(elem.asJsObj()));
-                else if (elem.isArray()) acc = acc.append(array.toImmutable(elem.asJsArray()));
-                else acc = acc.append(elem);
+                JsonToken token = parser.nextToken();
+                JsElem elem;
+                switch (token.id())
+                {
+                    case JsonTokenId.ID_END_ARRAY:
+                        return root;
+                    case JsonTokenId.ID_START_OBJECT:
+                        elem = new ImmutableJsObj(ImmutableJsons.this.object.parse(parser)
+                        );
+                        break;
+                    case JsonTokenId.ID_START_ARRAY:
+                        elem = new ImmutableJsArray(parse(parser
+                                                         )
+                        );
+                        break;
+                    case JsonTokenId.ID_STRING:
+                        elem = JsStr.of(parser.getValueAsString());
+                        break;
+                    case JsonTokenId.ID_NUMBER_INT:
+                        elem = JsNumber.of(parser);
+                        break;
+                    case JsonTokenId.ID_NUMBER_FLOAT:
+                        elem = JsBigDec.of(parser.getDecimalValue());
+                        break;
+                    case JsonTokenId.ID_TRUE:
+                        elem = TRUE;
+                        break;
+                    case JsonTokenId.ID_FALSE:
+                        elem = FALSE;
+                        break;
+                    case JsonTokenId.ID_NULL:
+                        elem = NULL;
+                        break;
+                    default:
+                        throw InternalError.tokenNotExpected(token.name());
+                }
+                root = root.append(elem);
             }
-            return acc;
-
         }
+
+        Vector<JsElem> parse(final JsonParser parser,
+                             final ParseBuilder.Options options,
+                             final JsPath path
+                            ) throws IOException
+        {
+            JsonToken elem;
+            JsPair pair;
+            Vector<JsElem> root = Vector.empty();
+            final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
+            while ((elem = parser.nextToken()) != JsonToken.END_ARRAY)
+            {
+                final JsPath currentPath = path.inc();
+                switch (elem.id())
+                {
+                    case JsonTokenId.ID_STRING:
+
+                        pair = JsPair.of(currentPath,
+                                         JsStr.of(parser.getValueAsString())
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                        break;
+                    case JsonTokenId.ID_NUMBER_INT:
+
+                        pair = JsPair.of(currentPath,
+                                         JsNumber.of(parser)
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                        break;
+                    case JsonTokenId.ID_NUMBER_FLOAT:
+
+                        pair = JsPair.of(currentPath,
+                                         JsBigDec.of(parser.getDecimalValue())
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                        break;
+                    case JsonTokenId.ID_TRUE:
+                        pair = JsPair.of(currentPath,
+                                         TRUE
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                        break;
+                    case JsonTokenId.ID_FALSE:
+                        pair = JsPair.of(currentPath,
+                                         FALSE
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                        break;
+                    case JsonTokenId.ID_NULL:
+                        pair = JsPair.of(currentPath,
+                                         NULL
+                                        );
+                        root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                        break;
+                    case JsonTokenId.ID_START_OBJECT:
+                        if (options.keyFilter.test(currentPath))
+                        {
+                            root = root.append(new ImmutableJsObj(ImmutableJsons.this.object.parse(parser,
+                                                                                                   options,
+                                                                                                   currentPath
+                                                                                                  )
+                                               )
+                                              );
+                        }
+                        break;
+                    case JsonTokenId.ID_START_ARRAY:
+                        if (options.keyFilter.test(currentPath))
+                        {
+                            root = root.append(new ImmutableJsArray(parse(parser,
+                                                                          options,
+                                                                          currentPath.index(-1)
+                                                                         )
+                                               )
+                                              );
+                        }
+                        break;
+                    default:
+                        throw InternalError.tokenNotExpected(elem.name());
+
+
+                }
+            }
+            return root;
+        }
+
+
 
         /**
          Returns the immutable empty array. The same instance is always returned.
@@ -321,15 +427,15 @@ public final class ImmutableJsons
          */
         public JsArray ofIterable(Iterable<JsElem> iterable)
         {
-            ImmutableSeq vector = emptySeq;
+            Vector<JsElem> vector = Vector.empty();
             for (JsElem e : requireNonNull(iterable))
             {
                 if (requireNonNull(e).isJson(Json::isMutable)) throw UserError.immutableArgExpected(e);
 
-                vector = vector.appendBack(e);
+                vector = vector.append(e);
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
+
             );
         }
 
@@ -344,13 +450,12 @@ public final class ImmutableJsons
                          )
         {
 
-            ImmutableSeq vector = emptySeq.appendBack(JsStr.of(str));
+            Vector<JsElem> vector = Vector.<JsElem>empty().append(JsStr.of(str));
             for (String a : others)
             {
-                vector = vector.appendBack(JsStr.of(a));
+                vector = vector.append(JsStr.of(a));
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
             );
         }
 
@@ -366,13 +471,12 @@ public final class ImmutableJsons
                          )
         {
 
-            ImmutableSeq vector = emptySeq.appendBack(JsInt.of(number));
+            Vector<JsElem> vector = Vector.<JsElem>empty().append(JsInt.of(number));
             for (int a : others)
             {
-                vector = vector.appendBack(JsInt.of(a));
+                vector = vector.append(JsInt.of(a));
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
             );
         }
 
@@ -386,13 +490,12 @@ public final class ImmutableJsons
                           final boolean... others
                          )
         {
-            ImmutableSeq vector = emptySeq.appendBack(JsBool.of(bool));
+            Vector<JsElem> vector = Vector.<JsElem>empty().append(JsBool.of(bool));
             for (boolean a : others)
             {
-                vector = vector.appendBack(JsBool.of(a));
+                vector = vector.append(JsBool.of(a));
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
             );
         }
 
@@ -408,13 +511,13 @@ public final class ImmutableJsons
                          )
         {
 
-            ImmutableSeq vector = emptySeq.appendBack(JsLong.of(number));
+            Vector<JsElem> vector = Vector.<JsElem>empty().append(JsLong.of(number));
             for (long a : others)
             {
-                vector = vector.appendBack(JsLong.of(a));
+                vector = vector.append(JsLong.of(a));
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
+
             );
         }
 
@@ -429,13 +532,12 @@ public final class ImmutableJsons
                          )
         {
 
-            ImmutableSeq vector = emptySeq.appendBack(JsDouble.of(number));
+            Vector<JsElem> vector = Vector.<JsElem>empty().append(JsDouble.of(number));
             for (double a : others)
             {
-                vector = vector.appendBack(JsDouble.of(a));
+                vector = vector.append(JsDouble.of(a));
             }
-            return new ImmutableJsArray(vector,
-                                        ImmutableJsons.this
+            return new ImmutableJsArray(vector
             );
         }
 
@@ -443,30 +545,28 @@ public final class ImmutableJsons
         /**
          Tries to parse the string into an immutable json array.
          @param str the string to be parsed
-         @return a {@link TryArr} computation
+         @return a Try computation
          */
-        public TryArr parse(final String str)
+        public Try<JsArray> parse(final String str)
         {
 
             try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str)))
             {
                 final JsonToken keyEvent = parser.nextToken();
-                if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));
-                return new TryArr(new ImmutableJsArray(emptySeq.parse(ImmutableJsons.this,
-                                                                      parser
-                                                                     ),
-                                                       ImmutableJsons.this
+                if (START_ARRAY != keyEvent) return  Try.failure(MalformedJson.expectedArray(str));
+                return  Try.success(new ImmutableJsArray(parse(parser
+                                                            )
                 ));
             }
             catch (IOException e)
             {
 
-                return new TryArr(new MalformedJson(e.getMessage()));
+                return  Try.failure(new MalformedJson(e.getMessage()));
             }
 
         }
 
-        public TryArr parse(final String str,
+        public Try<JsArray> parse(final String str,
                             final ParseBuilder builder
                            )
         {
@@ -474,19 +574,17 @@ public final class ImmutableJsons
             try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str)))
             {
                 final JsonToken keyEvent = parser.nextToken();
-                if (START_ARRAY != keyEvent) return new TryArr(MalformedJson.expectedArray(str));
-                return new TryArr(new ImmutableJsArray(emptySeq.parse(ImmutableJsons.this,
-                                                                      parser,
-                                                                      requireNonNull(builder).create(),
-                                                                      JsPath.fromIndex(-1)
-                                                                     ),
-                                                       ImmutableJsons.this
+                if (START_ARRAY != keyEvent) return  Try.failure(MalformedJson.expectedArray(str));
+                return Try.success(new ImmutableJsArray(parse(parser,
+                                                             requireNonNull(builder).create(),
+                                                             JsPath.fromIndex(-1)
+                                                            )
                 ));
             }
             catch (IOException e)
             {
 
-                return new TryArr(new MalformedJson(e.getMessage()));
+                return Try.failure(new MalformedJson(e.getMessage()));
             }
 
         }
@@ -500,41 +598,165 @@ public final class ImmutableJsons
     {
 
         final ImmutableJsObj empty;
-        final ScalaImmutableMap emptyMap;
 
         ImmutableJsObjs()
         {
-            emptyMap = new ScalaImmutableMap();
-            empty = new ImmutableJsObj(emptyMap,
-                                       ImmutableJsons.this
+            empty = new ImmutableJsObj(HashMap.empty()
+
             );
         }
 
-        public JsObj toImmutable(JsObj mutable)
+        HashMap<String, JsElem> parse(final JsonParser parser
+                                     ) throws IOException
         {
-            JsObj acc = empty();
-            @SuppressWarnings("squid:S1905")// in return checkerframework does its job!
-            final Set<@KeyFor("mutable") String> keys = (Set<@KeyFor("mutable") String>) requireNonNull(mutable).fields();
-            for (String key : keys)
+            HashMap<String, JsElem> map = HashMap.empty();
+            String key = parser.nextFieldName();
+            for (; key != null; key = parser.nextFieldName())
             {
-                final JsPath path = JsPath.fromKey(key);
-                final JsElem elem = mutable.get(path);
-                if (elem.isObj()) acc = acc.put(path,
-                                                object.toImmutable(elem.asJsObj())
-                                               );
-                else if (elem.isArray()) acc = acc.put(path,
-                                                       array.toImmutable(elem.asJsArray())
-                                                      );
-                else acc = acc.put(path,
-                                   elem
-                                  );
+                JsElem elem;
+                switch (parser.nextToken()
+                              .id())
+                {
+                    case JsonTokenId.ID_STRING:
+                        elem = JsStr.of(parser.getValueAsString());
+                        break;
+                    case JsonTokenId.ID_NUMBER_INT:
+                        elem = JsNumber.of(parser);
+                        break;
+                    case JsonTokenId.ID_NUMBER_FLOAT:
+                        elem = JsBigDec.of(parser.getDecimalValue());
+                        break;
+                    case JsonTokenId.ID_FALSE:
+                        elem = FALSE;
+                        break;
+                    case JsonTokenId.ID_TRUE:
+                        elem = TRUE;
+                        break;
+                    case JsonTokenId.ID_NULL:
+                        elem = NULL;
+                        break;
+                    case JsonTokenId.ID_START_OBJECT:
+                        elem = new ImmutableJsObj(parse(parser)
 
+                        );
+                        break;
+                    case JsonTokenId.ID_START_ARRAY:
+                        elem = new ImmutableJsArray(ImmutableJsons.this.array.parse(parser
+                                                                                   )
+
+                        );
+                        break;
+                    default:
+                        throw InternalError.tokenNotExpected(parser.currentToken()
+                                                                   .name());
+
+
+                }
+                map = map.put(key,
+                              elem
+                             );
             }
 
-            return acc;
+            return map;
 
         }
 
+        public HashMap<String, JsElem> parse(final JsonParser parser,
+                                             final ParseBuilder.Options options,
+                                             final JsPath path
+                                            ) throws IOException
+        {
+
+            HashMap<String, JsElem> map = HashMap.empty();
+            final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
+            while (parser.nextToken() != JsonToken.END_OBJECT)
+            {
+                final String key = options.keyMap.apply(parser.getCurrentName());
+                final JsPath currentPath = path.key(key);
+                final JsPair pair;
+                switch (parser.nextToken()
+                              .id())
+                {
+                    case JsonTokenId.ID_STRING:
+                        pair = JsPair.of(currentPath,
+                                         JsStr.of(parser.getValueAsString())
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+                    case JsonTokenId.ID_NUMBER_INT:
+                        pair = JsPair.of(currentPath,
+                                         JsNumber.of(parser)
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+                    case JsonTokenId.ID_NUMBER_FLOAT:
+                        pair = JsPair.of(currentPath,
+                                         JsBigDec.of(parser.getDecimalValue())
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+                    case JsonTokenId.ID_TRUE:
+                        pair = JsPair.of(currentPath,
+                                         TRUE
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+                    case JsonTokenId.ID_FALSE:
+                        pair = JsPair.of(currentPath,
+                                         FALSE
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+                    case JsonTokenId.ID_NULL:
+                        pair = JsPair.of(currentPath,
+                                         NULL
+                                        );
+                        map = (condition.test(pair)) ? map.put(key,
+                                                               options.elemMap.apply(pair)
+                                                              ) : map;
+                        break;
+
+                    case JsonTokenId.ID_START_OBJECT:
+                        if (options.keyFilter.test(currentPath))
+                        {
+                            map = map.put(key,
+                                          new ImmutableJsObj(parse(parser,
+                                                                   options,
+                                                                   currentPath
+                                                                  )
+                                          )
+                                         );
+                        }
+                        break;
+                    case JsonTokenId.ID_START_ARRAY:
+                        if (options.keyFilter.test(currentPath))
+                        {
+                            map = map.put(key,
+                                          new ImmutableJsArray(ImmutableJsons.this.array.parse(parser,
+                                                                                               options,
+                                                                                               currentPath.index(-1)
+                                                                                              )
+                                          )
+                                         );
+                        }
+                        break;
+                    default:
+                        throw InternalError.tokenNotExpected(parser.currentToken()
+                                                                   .name());
+                }
+            }
+            return map;
+        }
 
         /**
          Returns the immutable empty object. The same instance is always returned.
@@ -549,25 +771,23 @@ public final class ImmutableJsons
         /**
          Tries to parse the string into an immutable object.
          @param str the string to be parsed
-         @return a {@link TryObj} computation
+         @return a Try computation
          */
-        public TryObj parse(final String str)
+        public Try<JsObj> parse(final String str)
         {
 
             try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str)))
             {
                 JsonToken keyEvent = parser.nextToken();
-                if (START_OBJECT != keyEvent) return new TryObj(MalformedJson.expectedObj(str));
-                return new TryObj(new ImmutableJsObj(emptyMap.parse(ImmutableJsons.this,
-                                                                    parser
-                                                                   ),
-                                                     ImmutableJsons.this
+                if (START_OBJECT != keyEvent) return  Try.failure(MalformedJson.expectedObj(str));
+                return Try.success(new ImmutableJsObj(ImmutableJsons.this.object.parse(parser
+                                                                                     )
                 ));
             }
 
             catch (IOException e)
             {
-                return new TryObj(new MalformedJson(e.getMessage()));
+                return  Try.failure(new MalformedJson(e.getMessage()));
             }
         }
 
@@ -577,9 +797,9 @@ public final class ImmutableJsons
          applying them later.
          @param str  string to be parsed
          @param builder builder with the transformations that will be applied during the parsing
-         @return a {@link TryObj} computation
+         @return a Try computation
          */
-        public TryObj parse(final String str,
+        public Try<JsObj> parse(final String str,
                             final ParseBuilder builder
                            )
         {
@@ -587,13 +807,12 @@ public final class ImmutableJsons
             try (JsonParser parser = Jsons.factory.createParser(requireNonNull(str.getBytes())))
             {
                 final JsonToken keyEvent = parser.nextToken();
-                if (START_OBJECT != keyEvent) return new TryObj(MalformedJson.expectedObj(str));
-                return new TryObj(new ImmutableJsObj(emptyMap.parse(ImmutableJsons.this,
-                                                                    parser,
-                                                                    requireNonNull(builder).create(),
-                                                                    JsPath.empty()
-                                                                   ),
-                                                     ImmutableJsons.this
+                if (START_OBJECT != keyEvent) return  Try.failure(MalformedJson.expectedObj(str));
+                return Try.success(new ImmutableJsObj(parse(parser,
+                                                           requireNonNull(builder).create(),
+                                                           JsPath.empty()
+                                                          )
+
                 )
                 );
 
@@ -601,7 +820,7 @@ public final class ImmutableJsons
             }
             catch (IOException e)
             {
-                return new TryObj(new MalformedJson(e.getMessage()));
+                return  Try.failure(new MalformedJson(e.getMessage()));
             }
         }
 

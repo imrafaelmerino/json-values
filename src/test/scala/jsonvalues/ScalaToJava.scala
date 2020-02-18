@@ -30,6 +30,13 @@ object ScalaToJava
                                     )
   }
 
-
+  def  toVavrVector[T](arr:Vector[T]):io.vavr.collection.Vector[T] = {
+    var v = io.vavr.collection.Vector.empty[T]()
+    for (elem <- arr)
+    {
+      v = v.append(elem)
+    }
+    v
+  }
 
 }

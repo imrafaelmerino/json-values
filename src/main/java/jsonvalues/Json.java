@@ -149,7 +149,7 @@ public interface Json<T extends Json<T>> extends JsElem
 
     /**
      Appends all the elements of the array computed by the supplier, starting from the head, to an
-     array located at the given path in this json, returning the same this instance if the array is 
+     array located at the given path in this json, returning the same this instance if the array is
      not present, in which case, the supplier is not invoked.
      @param path the given JsPath object pointing to the existing array in which all the elements will be appended
      @param supplier   the supplier of the array of elements that will be appended
@@ -177,9 +177,9 @@ public interface Json<T extends Json<T>> extends JsElem
 
     /**
      prepends all the elements of the array, starting from the head, to the array located at the path
-     in this json. If the array at the path doesn't exist, a new one is created, replacing any existing 
-     element in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when 
-     necessary. The same this instance is returned when it's an array and the head of the path is 
+     in this json. If the array at the path doesn't exist, a new one is created, replacing any existing
+     element in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when
+     necessary. The same this instance is returned when it's an array and the head of the path is
      a key or when it's an object and the head of the path is an index.
      @param path  the JsPath pointing to the array in which all the elements will be prepended
      @param elems the JsArray of elements to be prepended to the existing or created array
@@ -192,9 +192,9 @@ public interface Json<T extends Json<T>> extends JsElem
 
     /**
      prepends one or more elements, starting from the first, to the array located at the path in this
-     json. If the array at the path doesn't exist, a new one is created, replacing any existing element 
-     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary. 
-     The same this instance is returned when it's an array and the head of the path is a key or when 
+     json. If the array at the path doesn't exist, a new one is created, replacing any existing element
+     in the path and filling empty indexes in arrays with {@link jsonvalues.JsNull} when necessary.
+     The same this instance is returned when it's an array and the head of the path is a key or when
      it's an object and the head of the path is an index.
      @param path   the JsPath pointing to the array in which all the elements will be prepended
      @param elem   the first JsElem to be prepended to the existing or created array
@@ -891,39 +891,6 @@ public interface Json<T extends Json<T>> extends JsElem
     T mapKeys_(final Function<? super JsPair, String> fn,
                final Predicate<? super JsPair> predicate
               );
-
-    /**
-     If the given path is not already associated with a value or is associated with null, associates it with the given value. Otherwise,
-     replaces the associated value with the results of the given remapping function. This method may be of use when combining multiple mapped
-     values for a key.For example, to either create or append a String msg to a value mapping:
-     {@code
-     map.merge(key, msg, String::concat)
-     }
-     @param path the given JsPath object which the resulting value is to be associated
-     @param value the given value to be merged with the existing value associated with the path or, if no existing value or a null value is
-     associated with the path, to be associated with the path
-     @param fn the given function to recompute a value if present
-     @return a new json of the same type T
-     */
-    default T merge(final JsPath path,
-                    final JsElem value,
-                    final BiFunction<? super JsElem, ? super JsElem, ? extends JsElem> fn
-                   )
-    {
-        requireNonNull(fn);
-        requireNonNull(value);
-        return put(requireNonNull(path),
-                   elem ->
-                   {
-                       if (elem.isNothing() || elem.isNull()) return value;
-                       return fn.apply(value,
-                                       elem
-                                      );
-                   }
-                  );
-    }
-
-
     /**
      Inserts the element returned by the function at the given path in this json, replacing any existing element
      and filling with {@link jsonvalues.JsNull} empty indexes in arrays when necessary. The same instance
@@ -938,150 +905,6 @@ public interface Json<T extends Json<T>> extends JsElem
     T put(final JsPath path,
           final Function<? super JsElem, ? extends JsElem> fn
          );
-
-    /**
-     <pre>
-     Inserts the element returned by the function at the given path in this json, replacing any existing
-     element at that path. If the element can no be added, a UserError exception is thrown and the function
-     is not invoked. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param fn the function that returns the element to be inserted from the the existing element
-     @return a new json of the same type T
-     */
-    T add(final JsPath path,
-          final Function<? super JsElem, ? extends JsElem> fn
-         );
-
-    /**
-     <pre>
-     Inserts the given element at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the element to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final JsElem elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> requireNonNull(elem)
-                  );
-    }
-
-    /**
-     <pre>
-     Inserts the given integer at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the integer to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final int elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> JsInt.of(elem)
-                  );
-    }
-
-    /**
-     <pre>
-     Inserts the given double at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the double to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final double elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> JsDouble.of(elem)
-                  );
-    }
-
-    /**
-     <pre>
-     Inserts the given long at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the long to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final long elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> JsLong.of(elem)
-                  );
-    }
-
-    /**
-     <pre>
-     Inserts the given string at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the string to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final String elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> JsStr.of(requireNonNull(elem))
-                  );
-    }
-
-    /**
-     <pre>
-     Inserts the given boolean at the given path in this json, replacing any existing element at that path.
-     If the element can no be added, a UserError exception is thrown. The following scenarios produce an error:
-     .the input path is empty.
-     .there's no parent where to insert the element in, because it doesn't exist or it's no a Json or it's not a
-     Json of the expected type.
-     </pre>
-     @param path the given path
-     @param elem the boolean to be inserted
-     @return a new json of the same type T
-     */
-    default T add(final JsPath path,
-                  final boolean elem
-                 )
-    {
-        return add(requireNonNull(path),
-                   it -> JsBool.of(elem)
-                  );
-    }
-
     /**
      Inserts the element at the path in this json, replacing any existing element and filling with {@link jsonvalues.JsNull} empty
      indexes in arrays when necessary.
@@ -1965,10 +1788,5 @@ public interface Json<T extends Json<T>> extends JsElem
      */
     boolean isImmutable();
 
-    /**
-     Implementation of the Json Patch specification. Go to  https://tools.ietf.org/html/rfc6902 for further details.
-     @param ops operations to be applied to the json
-     @return a TryPatch computation
-     */
-    TryPatch<T> patch(JsArray ops);
+
 }

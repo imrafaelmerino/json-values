@@ -76,7 +76,7 @@ class FactoryMethodsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
-            Jsons.immutable.array.parse(js.toString).orElseThrow().equals(js)
+            Jsons.immutable.array.parse(js.toString).get().equals(js)
           }
           )
   }
@@ -89,7 +89,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withKeyMap(it => it + "!")
                                                      )
             val allKeysEndsWithExclamation: Predicate[_ >: JsPair] = p => p.path.stream().filter(pos => pos.isKey).allMatch(pos => pos.asKey().name.endsWith("!"))
-            parsed.orElseThrow().stream_().allMatch(allKeysEndsWithExclamation)
+            parsed.get().stream_().allMatch(allKeysEndsWithExclamation)
           }
           )
   }
@@ -104,7 +104,7 @@ class FactoryMethodsSpec extends BasePropSpec
             val parsed = Jsons.immutable.array.parse(js.toString,
                                                      ParseBuilder.builder().withElemFilter(ScalaToJava.predicate(predicate))
                                                      )
-            parsed.orElseThrow().stream_().filter(p => p.elem.isNotJson && p.path.last().isIndex).findFirst().equals(Optional.empty)
+            parsed.get().stream_().filter(p => p.elem.isNotJson && p.path.last().isIndex).findFirst().equals(Optional.empty)
 
           }
           )
@@ -118,7 +118,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemFilter(p => p.elem.isNotNull)
                                                      )
 
-            val value = parsed.orElseThrow().stream_().filter(p => p.elem.isNull).findFirst()
+            val value = parsed.get().stream_().filter(p => p.elem.isNull).findFirst()
 
             value.equals(Optional.empty)
           }
@@ -135,7 +135,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                                                            )
                                                      )
 
-            parsed.orElseThrow().stream_().filter(p => p.elem.isStr).findFirst().equals(Optional.empty)
+            parsed.get().stream_().filter(p => p.elem.isStr).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -150,7 +150,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemFilter(predicate)
                                                      )
 
-            parsed.orElseThrow().stream_().filter(p => p.elem.isNumber).findFirst().equals(Optional.empty)
+            parsed.get().stream_().filter(p => p.elem.isNumber).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -163,7 +163,7 @@ class FactoryMethodsSpec extends BasePropSpec
                                                      ParseBuilder.builder().withElemMap(p => JsElems.mapIfStr(_ => "hi").apply(p.elem))
                                                      )
 
-            parsed.orElseThrow().stream_().filter(p => p.elem.isStr).allMatch(p => p.elem.isStr(a => a.equals("hi")))
+            parsed.get().stream_().filter(p => p.elem.isStr).allMatch(p => p.elem.isStr(a => a.equals("hi")))
           }
           )
   }

@@ -156,40 +156,6 @@ class PutGetMergeRemoveSpec extends BasePropSpec
   }
 
 
-  property("inserts integer in an empty array with merge function")
-  {
-    check(forAll(jsPathGen.arrayPathGen,
-                 Arbitrary.arbitrary[Int]
-                 )
-          { (path,
-             number
-            ) =>
-
-            Jsons.immutable.array.empty().merge(path,
-                                  JsInt.of(number),
-                                  doubleInt
-                                  ).getInt(path).getAsInt == number
-          }
-          )
-  }
-
-  property("inserts integer and doubles it with merge function")
-  {
-    check(forAll(jsPathGen.arrayPathGen,
-                 Arbitrary.arbitrary[Int]
-                 )
-          { (path,
-             number
-            ) =>
-            Jsons.immutable.array.empty().put(path,
-                                JsInt.of(number)
-                                ).merge(path,
-                                        JsInt.of(number),
-                                        doubleInt
-                                        ).getInt(path).getAsInt == 2 * number
-          }
-          )
-  }
 
 
   property("put if present replaces elements with null")

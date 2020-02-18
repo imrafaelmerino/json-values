@@ -1,13 +1,9 @@
 package jsonvalues;
 
-import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
-
 import static jsonvalues.JsArray.TYPE.*;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNull.NULL;
@@ -21,19 +17,19 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"a\": 1, \"c\": [{\"d\": 1}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"b\": 2, \"c\": [{\"e\": 2}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"a\": 1, \"b\": 2, \"c\": [{\"d\": 1}, {\"e\": 2}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj d = Jsons.immutable.object.parse("{\"a\": 1, \"b\": 2, \"c\": [{\"d\": 1,\"e\": 2}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj e = Jsons.immutable.object.parse("{\"a\": 1, \"b\": 2, \"c\": [{\"d\": 1}]}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -66,16 +62,16 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"a\": [1, 2]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"a\": [3, [4, 5], 6]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"a\":[1,2,3,[4,5],6]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj d = Jsons.immutable.object.parse("{\"a\":[1,2,6]}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -108,22 +104,22 @@ public class TestsUnionAndIntersection
 
 
         JsArray a = Jsons.immutable.array.parse("[\"1\", \"2\"]")
-                                         .orElseThrow();
+                                         .get();
 
         JsArray b = Jsons.immutable.array.parse("[\"3\", [\"4\", \"5\"], \"6\"]")
-                                         .orElseThrow();
+                                         .get();
 
         JsArray c = Jsons.immutable.array.parse("[\"1\",\"2\",\"3\",[\"4\",\"5\"],\"6\"]")
-                                         .orElseThrow();
+                                         .get();
 
         JsArray d = Jsons.immutable.array.parse("[\"1\",\"2\",\"6\"]")
-                                         .orElseThrow();
+                                         .get();
 
         JsArray e = Jsons.immutable.array.parse("[\"1\",\"2\",\"3\", [\"4\", \"5\"], \"6\"]")
-                                         .orElseThrow();
+                                         .get();
 
         JsArray f = Jsons.immutable.array.parse("[\"1\",\"2\",\"3\", [\"4\", \"5\"], \"6\",\"1\",\"2\",\"6\"]")
-                                         .orElseThrow();
+                                         .get();
 
 
         Assertions.assertEquals(d,
@@ -157,19 +153,19 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"a\": [3, [4, 5], 6, 7], \"b\": [1, 2]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}, 3, [4, 5], 6, 7], \"b\": [1, 2]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj d = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}, 7],\"b\": [1, 2]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj e = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}], \"b\": [1, 2]}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -202,17 +198,17 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"a\":1, \"b\":[1,2,3], \"c\":[ {\"d\":1,\"e\":[1,2]}, {\"f\":2,\"g\":[\"a\",\"b\",\"c\"]} ]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"a\":\"b\", \"b\":[4,5,6], \"c\":[ {\"d\":\"a\",\"e\":[3,4,5]}, {\"f\":2,\"g\":[\"d\",\"e\",\"f\",\"g\"]}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"a\":1, \"b\":[1,2,3,4,5,6], \"c\":[ {\"d\":1,\"e\":[1,2]}, {\"f\":2,\"g\":[\"a\",\"b\",\"c\"]}, "
                                                + "{\"d\":\"a\",\"e\":[3,4,5]}, {\"f\":2,\"g\":[\"d\",\"e\",\"f\",\"g\"]}]}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj d = Jsons.immutable.object.parse("{\"a\":1, \"b\":[1,2,3], \"c\":[ {\"d\":1,\"e\":[1,2,5]}, {\"f\":2,\"g\":[\"a\",\"b\",\"c\",\"g\"]}]}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -246,13 +242,13 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"a\":1,\"b\":2}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"a\":1}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"a\":1}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -270,13 +266,13 @@ public class TestsUnionAndIntersection
 
 
         JsObj a = Jsons.immutable.object.parse("{\"b\":{\"a\":1,\"b\":2,\"c\":[{\"a\":1,\"b\":[1,2]},{\"b\":2},{\"c\":3}]}}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj b = Jsons.immutable.object.parse("{\"b\":{\"a\":1,\"b\":2,\"c\":[{\"a\":1,\"b\":[1]}]}}")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj c = Jsons.immutable.object.parse("{\"b\":{\"a\":1,\"b\":2,\"c\":[{\"a\":1,\"b\":[1]}]}}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(c,
@@ -336,7 +332,7 @@ public class TestsUnionAndIntersection
                                                    p -> p.elem.isStr()
                                                   );
         Assertions.assertEquals(Jsons.immutable.array.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 newArray1
                                );
 
@@ -468,7 +464,7 @@ public class TestsUnionAndIntersection
                                   );
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[{\"a\":1,\"B\":\"B\",\"c\":{}},null,{\"c\":1,\"D\":\"D\"},true,[{\"e\":1,\"F\":\"F\"}]]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 arr1
                                );
 
@@ -477,7 +473,7 @@ public class TestsUnionAndIntersection
                                          );
 
         Assertions.assertEquals(Jsons.immutable.array.parse("[{\"A\":1,\"B\":\"B\",\"C\":{}},null,{\"C\":1,\"D\":\"D\"},true,[{\"E\":1,\"F\":\"F\"}]]\n")
-                                                     .orElseThrow(),
+                                                     .get(),
                                 arr2
                                );
 
@@ -489,15 +485,15 @@ public class TestsUnionAndIntersection
     public void test_readme_union() throws MalformedJson
     {
         JsObj a = Jsons.immutable.object.parse("{\"a\":1, \"c\": [{ \"d\":1 }] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj b = Jsons.immutable.object.parse("{\"b\":2, \"c\": [{ \"e\":2 }] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj c = Jsons.immutable.object.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 }, { \"e\":2 }] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj d = Jsons.immutable.object.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 , \"e\":2 }] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj e = Jsons.immutable.object.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1  }] }")
-                                        .orElseThrow();
+                                        .get();
 
         Assertions.assertEquals(c,
                                 a.union_(b,
@@ -514,15 +510,15 @@ public class TestsUnionAndIntersection
                                );
 
         JsObj f = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} } ] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj g = Jsons.immutable.object.parse("{\"a\": [3, [4,5], 6, 7], \"b\": [1, 2] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj h = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 3, [4,5], 6, 7], \"b\":[1,2]}")
-                                        .orElseThrow();
+                                        .get();
         JsObj i = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 7], \"b\":[1,2]}")
-                                        .orElseThrow();
+                                        .get();
         JsObj j = Jsons.immutable.object.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }], \"b\":[1,2]}")
-                                        .orElseThrow();
+                                        .get();
 
 
         Assertions.assertEquals(h,
@@ -551,11 +547,11 @@ public class TestsUnionAndIntersection
     {
 
         JsObj a = Jsons.immutable.object.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1,2]}, {\"b\":2}, {\"c\":3}] } }")
-                                        .orElseThrow();
+                                        .get();
         JsObj b = Jsons.immutable.object.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1]  }, {\"b\":2}] } }")
-                                        .orElseThrow();
+                                        .get();
         JsObj c = Jsons.immutable.object.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"b\":2}] } }")
-                                        .orElseThrow();
+                                        .get();
 
         Assertions.assertEquals(Jsons.immutable.object.empty(),
                                 a.intersection(b,
@@ -588,15 +584,15 @@ public class TestsUnionAndIntersection
                                                )
                                );
         JsObj d = Jsons.immutable.object.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, true,  null, false    ] }")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj e = Jsons.immutable.object.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, false, true, null, 1 ] }")
-                                        .orElseThrow();
+                                        .get();
         JsObj f = Jsons.immutable.object.parse("{ \"a\": true }")
-                                        .orElseThrow();
+                                        .get();
 
         JsObj i = Jsons.immutable.object.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1}] }")
-                                        .orElseThrow();
+                                        .get();
 
         Assertions.assertEquals(d,
                                 d.intersection(e,

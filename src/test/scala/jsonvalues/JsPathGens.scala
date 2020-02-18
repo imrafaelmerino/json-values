@@ -1,5 +1,5 @@
 package jsonvalues
-
+import jsonvalues.ScalaToJava.toVavrVector
 import org.scalacheck.Gen
 
 case class FreqField(freqIndex: Int = 1,
@@ -32,7 +32,7 @@ case class JsPathGens(lengthGen: Gen[Int] = Gen.choose(1,
     arr <- Gen.containerOfN[Vector, Position](length,
                                               fieldGen
                                              )
-  } yield new JsPath(arr)
+  } yield new JsPath(toVavrVector(arr))
 
 
   val   objectPathGen = for
@@ -42,7 +42,7 @@ case class JsPathGens(lengthGen: Gen[Int] = Gen.choose(1,
     arr <- Gen.containerOfN[Vector, Position](length,
                                               fieldGen
                                              )
-  } yield new JsPath(arr).prepend(new JsPath(Vector(key)))
+  } yield new JsPath(toVavrVector(arr)).prepend(new JsPath(toVavrVector[Position](Vector(key))))
 
   val arrayPathGen = for
     {
@@ -51,7 +51,7 @@ case class JsPathGens(lengthGen: Gen[Int] = Gen.choose(1,
     arr <- Gen.containerOfN[Vector, Position](length,
                                               fieldGen
                                              )
-  } yield new JsPath(arr).prepend(new JsPath(Vector(key)))
+  } yield new JsPath(toVavrVector(arr)).prepend(new JsPath(toVavrVector[Position](Vector(key))))
 
 
 }

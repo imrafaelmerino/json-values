@@ -220,21 +220,6 @@ public class TestJsObj
     }
 
 
-    @Test
-    public void test_head_and_tail_of_empty_obj_returns_exception()
-    {
-
-        Assertions.assertThrows(UserError.class,
-                                () -> immutable.object.empty()
-                                                      .head()
-                               );
-
-        Assertions.assertThrows(UserError.class,
-                                () -> immutable.object.empty()
-                                                      .tail("a")
-                               );
-
-    }
 
     @Test
     public void test_equals_and_hashcode()
@@ -515,11 +500,11 @@ public class TestJsObj
 
 
         Assertions.assertEquals(immutable.object.parse("{\"c\":[{\"R\":1},{\"T\":{\"R\":1},\"S\":1}],\"d\":{\"d\":3},\"e\": null}")
-                                                .orElseThrow(),
+                                                .get(),
                                 result
                                );
         Assertions.assertEquals(immutable.object.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}")
-                                                .orElseThrow(),
+                                                .get(),
                                 result1
                                );
     }
@@ -558,7 +543,7 @@ public class TestJsObj
         final JsObj obj1 = obj.filterElems_(p -> p.elem.isNotNull());
 
         Assertions.assertEquals(immutable.object.parse("{\"a\":1,\"c\":[1,2,3,[1,2],{\"b\":1}]}\n")
-                                                .orElseThrow(),
+                                                .get(),
                                 obj1
                                );
 
@@ -665,12 +650,12 @@ public class TestJsObj
 
         Assertions.assertEquals(obj,
                                 immutable.object.parse(obj.toString())
-                                                .orElseThrow()
+                                                .get()
                                );
 
         Assertions.assertEquals(obj,
                                 immutable.parse(obj.toString())
-                                         .objOrElseThrow()
+                                         .get()
                                );
 
     }
@@ -816,12 +801,12 @@ public class TestJsObj
                                   );
 
         Assertions.assertEquals(immutable.parse("{\"a\":\"A\",\"b\":{},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}\n")
-                                         .objOrElseThrow(),
+                                         .get(),
                                 newObj
                                );
 
         Assertions.assertEquals(immutable.object.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-                                                .orElseThrow(),
+                                                .get(),
                                 obj.mapObjs_((p, o) ->
                                              {
 
@@ -836,7 +821,7 @@ public class TestJsObj
                                );
 
         Assertions.assertEquals(immutable.object.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-                                                .orElseThrow(),
+                                                .get(),
                                 obj.mapObjs((p, o) ->
                                             {
 
@@ -888,142 +873,8 @@ public class TestJsObj
 
 
         Assertions.assertEquals(immutable.parse("{\"a\":{\"size\":2,\"b\":\"B\",\"c\":\"C\"},\"b\":{},\"c\":[],\"d\":{\"e\":\"E\",\"size\":3,\"f\":\"F\",\"g\":{\"i\":\"I\",\"h\":\"H\"}}}\n")
-                                         .objOrElseThrow(),
+                                         .get(),
                                 newObj1
-                               );
-
-    }
-
-
-
-
-
-    @Test
-    public void test_add_element_into_immutable_object_with_errors()
-    {
-
-
-        final UserError error1 = Assertions.assertThrows(UserError.class,
-                                                         () -> immutable.object.empty()
-                                                                               .add(JsPath.path("/a/0"),
-                                                                                    JsStr.of("hi")
-                                                                                   )
-                                                        );
-
-        Assertions.assertEquals("Parent not found at /a while applying add in {}. Suggestion: either check if the parent exists or call the put method, which always does the insertion.",
-                                error1.getMessage()
-                               );
-
-
-        final UserError error2 = Assertions.assertThrows(UserError.class,
-                                                         () -> immutable.object.of("a",
-                                                                                   immutable.array.of(1)
-                                                                                  )
-                                                                               .add(JsPath.path("/a/b"),
-                                                                                    JsStr.of("hi")
-                                                                                   )
-                                                        );
-
-        Assertions.assertEquals("Trying to add the key 'b' in an array. add operation can not be applied in {\"a\":[1]} at /a/b. Suggestion: call get(path).isObj() before.",
-                                error2.getMessage()
-                               );
-
-        final UserError error3 = Assertions.assertThrows(UserError.class,
-                                                         () -> immutable.object.of("a",
-                                                                                   immutable.object.of("a",
-                                                                                                       JsInt.of(1)
-                                                                                                      )
-                                                                                  )
-                                                                               .add(JsPath.path("/a/0"),
-                                                                                    JsStr.of("hi")
-                                                                                   )
-                                                        );
-
-        Assertions.assertEquals("Trying to add at the index '0' in an object. add operation can not be applied in {\"a\":{\"a\":1}} at /a/0. Suggestion: call get(path).isArray() before.",
-                                error3.getMessage()
-                               );
-
-        final UserError error4 = Assertions.assertThrows(UserError.class,
-                                                         () -> immutable.object.of("a",
-                                                                                   JsStr.of("a")
-                                                                                  )
-                                                                               .add(JsPath.path("/a/b"),
-                                                                                    JsStr.of("hi")
-                                                                                   )
-                                                        );
-
-        Assertions.assertEquals("Element located at '/a' is not a Json. add operation can not be applied in {\"a\":\"a\"} at /a/b. Suggestion: call get(path).isJson() before.",
-                                error4.getMessage()
-                               );
-
-
-    }
-
-
-    @Test
-    public void test_add_element_into_immutable_json_recursively()
-    {
-
-        JsObj obj = immutable.object.of("a",
-                                        immutable.object.of("b",
-                                                            immutable.array.of(1,
-                                                                               2,
-                                                                               3
-                                                                              ),
-                                                            "c",
-                                                            immutable.object.of("d",
-                                                                                TRUE
-                                                                               )
-                                                           )
-                                       );
-
-        Assertions.assertEquals(immutable.array.of(1,
-                                                   2,
-                                                   3,
-                                                   4
-                                                  ),
-                                obj.add(path("/a/b/-1"),
-                                        JsInt.of(4)
-                                       )
-                                   .get(JsPath.path("/a/b"))
-                               );
-
-        Assertions.assertEquals(immutable.array.of(1,
-                                                   2,
-                                                   3,
-                                                   4
-                                                  ),
-                                obj.add(path("/a/b/3"),
-                                        JsInt.of(4)
-                                       )
-                                   .get(JsPath.path("/a/b"))
-                               );
-
-        Assertions.assertEquals(immutable.array.of(4,
-                                                   1,
-                                                   2,
-                                                   3
-                                                  ),
-                                obj.add(path("/a/b/0"),
-                                        JsInt.of(4)
-                                       )
-                                   .get(JsPath.path("/a/b"))
-                               );
-
-
-        Assertions.assertEquals(FALSE,
-                                obj.add(path("/a/c/d"),
-                                        e -> e.asJsBool()
-                                              .negate()
-                                       )
-                                   .get(JsPath.path("/a/c/d"))
-                               );
-
-        Assertions.assertEquals(JsStr.of("bye!"),
-                                obj.add(path("/a/c/e"),
-                                        JsStr.of("bye!")
-                                       )
-                                   .get(JsPath.path("/a/c/e"))
                                );
 
     }
@@ -1034,7 +885,7 @@ public class TestJsObj
     {
         final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
                                                                     () -> immutable.object.parse("")
-                                                                                          .orElseThrow()
+                                                                                          .get()
                                                                    );
 
         Assertions.assertEquals("Expected a json object {...}. Received: ",
@@ -1044,7 +895,7 @@ public class TestJsObj
 
         Assertions.assertThrows(MalformedJson.class,
                                 () -> immutable.object.parse("{]")
-                                                      .orElseThrow()
+                                                      .get()
                                );
 
 
@@ -1060,7 +911,7 @@ public class TestJsObj
                                                  + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
                                                  +
                                                  "}")
-                                          .orElseThrow();
+                                          .get();
 
         final JsObj result = obj.mapElems((pair) -> pair.elem.asJsInt()
                                                              .map(i -> i + 10));
@@ -1069,12 +920,12 @@ public class TestJsObj
                                                                .map(i -> i + 10));
 
         Assertions.assertEquals(immutable.object.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n")
-                                                .orElseThrow(),
+                                                .get(),
                                 result
                                );
 
         Assertions.assertEquals(immutable.object.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":14,\"d\":13},15,16]}\n")
-                                                .orElseThrow(),
+                                                .get(),
                                 result_
                                );
 
@@ -1091,7 +942,7 @@ public class TestJsObj
                                                  + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
                                                  +
                                                  "}")
-                                          .orElseThrow();
+                                          .get();
 
         final JsObj result = obj.filterElems((pair) -> pair.elem.asJsInt().x % 2 == 0);
 
@@ -1099,12 +950,12 @@ public class TestJsObj
 
 
         Assertions.assertEquals(immutable.object.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}")
-                                                .orElseThrow(),
+                                                .get(),
                                 result
                                );
 
         Assertions.assertEquals(immutable.object.parse("{\"b\":2,\"c\":[{\"e\":4},6]}")
-                                                .orElseThrow(),
+                                                .get(),
                                 result_
                                );
 

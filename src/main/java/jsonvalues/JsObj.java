@@ -1,8 +1,8 @@
 package jsonvalues;
 
+import io.vavr.Tuple2;
 import jsonvalues.JsArray.TYPE;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 
@@ -11,7 +11,7 @@ import java.util.function.BiFunction;
  provided, an immutable which uses the persistent Scala HashMap, and a mutable which uses the conventional
  Java HashMap.
  */
-public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
+public interface JsObj extends Json<JsObj>, Iterable<Tuple2<String, JsElem>>
 {
     /**
      return true if this obj is equal to the given as a parameter. In the case of ARRAY_AS=LIST, this
@@ -53,19 +53,18 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
     /**
      Returns a pair with an arbitrary key of this object and its associated element. When using head
      and tail to process a JsObj, the key of the pair returned must be passed in to get the tail using
-     the method {@link #tail(String)}.
+     the method {@link #tail()}.
      @return an arbitrary {@code Map.Entry<String,JsElem>} of this JsObj
      @throws UserError if this json object is empty
      */
-    Map.Entry<String, JsElem> head();
+    Tuple2<String, JsElem> head();
 
     /**
      Returns a new object with all the entries of this json object except the one with the given key.
-     @param key the given key, which associated pair will be excluded
      @return a new JsObj
      @throws UserError if this json object is empty
      */
-    JsObj tail(final String key);
+    JsObj tail();
 
     /**
      {@code this.intersection(that, SET)} returns an array with the elements that exist in both {@code this} and {@code that}
@@ -127,16 +126,16 @@ public interface JsObj extends Json<JsObj>, Iterable<Map.Entry<String, JsElem>>
                 );
 
     default <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                          final BiFunction<Map.Entry<String, JsElem>, JsObj, Trampoline<T>> fn
+                                          final BiFunction<Tuple2<String, JsElem>, JsObj, Trampoline<T>> fn
                                          )
     {
 
 
         if (this.isEmpty()) return empty;
 
-        final Map.Entry<String, JsElem> head = this.head();
+        final Tuple2<String, JsElem> head = this.head();
 
-        final JsObj tail = this.tail(head.getKey());
+        final JsObj tail = this.tail();
 
         return fn.apply(head,
                         tail

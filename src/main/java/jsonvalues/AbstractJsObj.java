@@ -1,9 +1,11 @@
 package jsonvalues;
 
+
+import io.vavr.Tuple2;
+import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
-import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -22,14 +24,13 @@ import static jsonvalues.Trampoline.more;
 
 /**
  Explicit instantiation of JsObj interface to reduce class file size in subclasses.
- @param <M> type of the map implementation to hold json objects
  */
-abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
+abstract class AbstractJsObj implements JsObj
 {
 
-    protected M map;
+    protected HashMap<String, JsElem> map;
 
-    AbstractJsObj(final M myMap)
+    AbstractJsObj(final HashMap<String, JsElem> myMap)
     {
         assert myMap != null;
         this.map = myMap;
@@ -39,10 +40,10 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     @Override
     public final boolean equals(final @Nullable Object that)
     {
-        if (!(that instanceof AbstractJsObj<?>)) return false;
+        if (!(that instanceof AbstractJsObj)) return false;
         if (this == that) return true;
         if (getClass() != that.getClass()) return false;
-        final AbstractJsObj<?> thatMap = (AbstractJsObj) that;
+        final AbstractJsObj thatMap = (AbstractJsObj) that;
         final boolean thisEmpty = isEmpty();
         final boolean thatEmpty = thatMap.isEmpty();
         if (thisEmpty && thatEmpty) return true;
@@ -50,24 +51,26 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
 
         return fields().stream()
                        .allMatch(f ->
-                                 thatMap.map.getOptional(f)
-                                            .map(it -> it.equals(map.get(f)))
-                                            .orElse(false) && thatMap.fields()
-                                                                     .stream()
-                                                                     .allMatch(it -> map.contains(it)));
+                                 thatMap.map.get(f)
+                                            .map(it -> it.equals(map.get(f)
+                                                                    .get()))
+                                            .getOrElse(false) && thatMap.fields()
+                                                                        .stream()
+                                                                        .allMatch(it -> map.containsKey(it)));
     }
 
     @Override
     public final Set<String> fields()
     {
-        return map.keys();
+        return map.keySet().toJavaSet();
     }
 
 
     @Override
     public final JsElem get(final Position position)
     {
-        return requireNonNull(position).match(key -> map.contains(key) ? map.get(key) : NOTHING,
+        return requireNonNull(position).match(key -> map.getOrElse(key,
+                                                                   NOTHING),
                                               index -> NOTHING
                                              );
     }
@@ -79,7 +82,7 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     }
 
     @Override
-    public final Map.Entry<String, JsElem> head()
+    public final Tuple2<String, JsElem> head()
     {
         return map.head();
     }
@@ -106,20 +109,20 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     {
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
-        Map.Entry<String, JsElem> head = a.head();
-        JsObj tail = a.tail(head.getKey());
+        Tuple2<String, JsElem> head = a.head();
+        JsObj tail = a.tail();
         final Trampoline<Trampoline<JsObj>> tailCall = () -> intersection(tail,
                                                                           b,
                                                                           ARRAY_AS
                                                                          );
-        final JsElem bElem = b.get(JsPath.fromKey(head.getKey()));
+        final JsElem bElem = b.get(JsPath.fromKey(head._1));
 
         return ((bElem.isJson() && bElem.asJson()
-                                        .equals(head.getValue(),
+                                        .equals(head._2,
                                                 ARRAY_AS
-                                               )) || bElem.equals(head.getValue())) ?
-        more(tailCall).map(it -> it.put(JsPath.fromKey(head.getKey()),
-                                        head.getValue()
+                                               )) || bElem.equals(head._2)) ?
+        more(tailCall).map(it -> it.put(JsPath.fromKey(head._1),
+                                        head._2
                                        )) :
         more(tailCall);
     }
@@ -147,33 +150,33 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     {
         if (a.isEmpty()) return done(a);
         if (b.isEmpty()) return done(b);
-        Map.Entry<String, JsElem> head = a.head();
+        Tuple2<String, JsElem> head = a.head();
 
-        JsObj tail = a.tail(head.getKey());
+        JsObj tail = a.tail();
 
         final Trampoline<JsObj> tailCall = more(() -> intersection_(tail,
                                                                     b,
                                                                     ARRAY_AS
                                                                    ));
-        if (b.containsPath(JsPath.fromKey(head.getKey())))
+        if (b.containsPath(JsPath.fromKey(head._1)))
         {
 
-            final JsElem headOtherElement = b.get(JsPath.fromKey(head.getKey()));
-            if (headOtherElement.equals(head.getValue()))
+            final JsElem headOtherElement = b.get(JsPath.fromKey(head._1));
+            if (headOtherElement.equals(head._2))
             {
                 return more(() -> intersection_(tail,
-                                                b.tail(head.getKey()),
+                                                b.tail(),
                                                 ARRAY_AS
-                                               )).map(it -> it.put(JsPath.fromKey(head.getKey()),
-                                                                   head.getValue()
+                                               )).map(it -> it.put(JsPath.fromKey(head._1),
+                                                                   head._2
                                                                   ));
 
-            } else if (head.getValue()
-                           .isJson() && head.getValue()
-                                            .isSameType(headOtherElement))
+            } else if (head._2
+            .isJson() && head._2
+            .isSameType(headOtherElement))
             {//different but same container
-                Json<?> obj = head.getValue()
-                                  .asJson();
+                Json<?> obj = head._2
+                .asJson();
                 Json<?> obj1 = headOtherElement.asJson();
 
                 Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersection_(obj,
@@ -182,7 +185,7 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
                                                                                                                  )
                                                              );
                 return more(() -> tailCall).flatMap(json -> headCall
-                                                    .map(it -> json.put(JsPath.fromKey(head.getKey()),
+                                                    .map(it -> json.put(JsPath.fromKey(head._1),
                                                                         it
                                                                        )
                                                         )
@@ -201,7 +204,6 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     }
 
 
-    abstract JsObj of(M map);
 
 
     @Override
@@ -292,15 +294,26 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
 
 
     @Override
-    public final JsObj tail(final String head)
+    public final JsObj tail()
     {
-        return of(map.tail(head));
+        return new ImmutableJsObj(map.tail());
     }
 
     @Override
     public String toString()
     {
-        return map.toString();
+        if (map.isEmpty()) return "{}";
+
+
+        return map.keysIterator()
+                            .map(key -> String.format("\"%s\":%s",
+                                                          key,
+                                                          map.apply(key)
+                                                         ))
+                            .mkString("{",
+                                      ",",
+                                      "}"
+                                     );
     }
 
     @Override
@@ -318,13 +331,13 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
                                    )
     {
         if (b.isEmpty()) return done(a);
-        Map.Entry<String, JsElem> head = b.head();
-        JsObj tail = b.tail(head.getKey());
+        Tuple2<String, JsElem> head = b.head();
+        JsObj tail = b.tail();
         return union(a,
                      tail
                     ).map(it ->
-                          it.putIfAbsent(JsPath.fromKey(head.getKey()),
-                                         head::getValue
+                          it.putIfAbsent(JsPath.fromKey(head._1),
+                                         () -> head._2
                                         ));
     }
 
@@ -364,41 +377,41 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     {
 
         if (b.isEmpty()) return done(a);
-        Map.Entry<String, JsElem> head = b.head();
-        JsObj tail = b.tail(head.getKey());
+        Tuple2<String, JsElem> head = b.head();
+        JsObj tail = b.tail();
         Trampoline<JsObj> tailCall = more(() -> union_(a,
                                                        tail,
                                                        ARRAY_AS
                                                       ));
-        return ifNothingElse(() -> more(() -> tailCall).map(it -> it.put(JsPath.fromKey(head.getKey()),
-                                                                         head.getValue()
-                                                                        )),
-                             MatchExp.ifPredicateElse(e -> e.isJson() && e.isSameType(head.getValue()),
-                                                      it ->
-                                                      {
-                                                          Json<?> obj = a.get(JsPath.empty()
-                                                                                    .key(head.getKey()))
-                                                                         .asJson();
-                                                          Json<?> obj1 = head.getValue()
-                                                                             .asJson();
+        return ifNothingElse(() -> more(() -> tailCall).map(it -> it.put(JsPath.fromKey(head._1),
+                                                            head._2
+                                                           )),
+        MatchExp.ifPredicateElse(e -> e.isJson() && e.isSameType(head._2),
+                                 it ->
+                                 {
+                                     Json<?> obj = a.get(JsPath.empty()
+                                                               .key(head._1))
+                                                    .asJson();
+                                     Json<?> obj1 = head._2
+                                                        .asJson();
 
-                                                          Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().union_(obj,
-                                                                                                                                              obj1,
-                                                                                                                                              ARRAY_AS
-                                                                                                                                             )
-                                                                                                       );
-                                                          return more(() -> tailCall).flatMap(tailResult -> headCall.map(headUnion_ ->
-                                                                                                                         tailResult.put(JsPath.fromKey(head.getKey()),
-                                                                                                                                        headUnion_
-                                                                                                                                       )
+                                     Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().union_(obj,
+                                                                                                                         obj1,
+                                                                                                                         ARRAY_AS
                                                                                                                         )
-                                                                                             );
-                                                      },
-                                                      it -> tailCall
-                                                     )
+                                                                                  );
+                                     return more(() -> tailCall).flatMap(tailResult -> headCall.map(headUnion_ ->
+                                                                                                    tailResult.put(JsPath.fromKey(head._1),
+                                                                                                                   headUnion_
+                                                                                                                  )
+                                                                                                   )
+                                                                        );
+                                 },
+                                 it -> tailCall
+                                )
                             )
         .apply(a.get(JsPath.empty()
-                           .key(head.getKey())));
+                           .key(head._1)));
 
 
     }
@@ -406,7 +419,7 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
     @Override
     public final boolean same(final JsObj obj)
     {
-        final MyMap<?> other = ((AbstractJsObj) obj).map;
+        final HashMap<String, JsElem> other = ((AbstractJsObj) obj).map;
         final boolean thisEmpty = isEmpty();
         final boolean thatEmpty = other.isEmpty();
         if (thisEmpty && thatEmpty) return true;
@@ -414,42 +427,43 @@ abstract class AbstractJsObj<M extends MyMap<M>> implements JsObj
 
         return fields().stream()
                        .allMatch(f ->
-                                 other.getOptional(f)
+                                 other.get(f)
                                       .map(it ->
                                            {
-                                               final JsElem a = map.get(f);
+                                               final JsElem a = map.get(f).get();
                                                if (a.isObj() && it.isObj()) return a.asJsObj()
                                                                                     .same(it.asJsObj());
                                                else if (a.isArray() && it.isArray()) return a.asJsArray()
                                                                                              .same(it.asJsArray());
                                                else return it.equals(a);
                                            })
-                                      .orElse(false) && other.keys()
-                                                             .stream()
-                                                             .allMatch(it -> map.contains(it)));
+                                      .getOrElse(false) && other.keySet()
+                                                             .toJavaStream()
+                                                             .allMatch(it -> map.containsKey(it)));
     }
 
 
     @SuppressWarnings("squid:S1602")
-    // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final M pmap)
+        // curly braces makes IntelliJ to format the code in a more legible way
+    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsElem> pmap)
     {
         return (head, tail) ->
         {
-            return (!pmap.contains(head) || pmap.get(head)
-                                                .isNotJson())
+            return (!pmap.containsKey(head) || !pmap.get(head)
+                                                    .filter(JsElem::isNotJson)
+                                                    .isEmpty())
             ||
             (
             (tail.head()
-                 .isKey() && pmap.get(head)
-                                 .isArray()
+                 .isKey() && !pmap.get(head)
+                                  .filter(JsElem::isArray)
+                                  .isEmpty())
             )
             ||
             (tail.head()
-                 .isIndex() && pmap.get(head)
-                                   .isObj()
-            )
-            );
+                 .isIndex() && !pmap.get(head)
+                                    .filter(JsElem::isObj)
+                                    .isEmpty());
         };
     }
 

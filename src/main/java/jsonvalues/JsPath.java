@@ -1,12 +1,8 @@
 package jsonvalues;
 
 
+import io.vavr.collection.Vector;
 import org.checkerframework.checker.nullness.qual.Nullable;
-import scala.collection.JavaConverters;
-import scala.collection.generic.CanBuildFrom;
-import scala.collection.immutable.Vector;
-import scala.collection.mutable.Builder;
-import scala.runtime.AbstractFunction1;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -89,26 +85,9 @@ public final class JsPath implements Comparable<JsPath>
     private static final Key KEY_SINGLE_QUOTE = Key.of("'");
     private static final String MINUS_ONE = "-1";
     private static final String UTF8 = "utf-8";
-    private static final CanBuildFrom<Vector<Position>, Position, Vector<Position>> bf = new CanBuildFrom<Vector<Position>, Position, Vector<Position>>()
-    {
-        @Override
-        public Builder<Position, Vector<Position>> apply()
-        {
-            return Vector.<Position>canBuildFrom().apply();
-        }
-
-        @Override
-        public Builder<Position, Vector<Position>> apply(final Vector<Position> v)
-        {
-            return Vector.<Position>canBuildFrom().apply();
-        }
-    };
 
 
-    private static final Vector<Position> EMPTY_VECTOR = new Vector<>(0,
-                                                                      0,
-                                                                      0
-    );
+    private static final Vector<Position> EMPTY_VECTOR = Vector.empty();
     private static final JsPath EMPTY = new JsPath(EMPTY_VECTOR);
 
     /**
@@ -129,7 +108,7 @@ public final class JsPath implements Comparable<JsPath>
 
     JsPath(final Position position)
     {
-        this(EMPTY_VECTOR.appendBack(position));
+        this(EMPTY_VECTOR.append(position));
     }
 
 
@@ -193,9 +172,7 @@ public final class JsPath implements Comparable<JsPath>
      */
     public Stream<Position> stream()
     {
-        return JavaConverters.asJavaCollection(positions.iterator()
-                                                        .toIterable())
-                             .stream();
+        return positions.toJavaStream();
     }
 
     /**
@@ -264,7 +241,7 @@ public final class JsPath implements Comparable<JsPath>
      */
     public JsPath index(int i)
     {
-        return new JsPath(positions.appendBack(Index.of(i)));
+        return new JsPath(positions.append(Index.of(i)));
 
     }
 
@@ -305,7 +282,7 @@ public final class JsPath implements Comparable<JsPath>
      */
     public JsPath key(String key)
     {
-        return new JsPath(positions.appendBack(Key.of(requireNonNull(key))));
+        return new JsPath(positions.append(Key.of(requireNonNull(key))));
 
 
     }
@@ -399,7 +376,7 @@ public final class JsPath implements Comparable<JsPath>
                                                          -1
                                                         );
             Vector<Position> vector = EMPTY_VECTOR;
-            for (String token : tokens) vector = vector.appendBack(mapFn.apply(token));
+            for (String token : tokens) vector = vector.append(mapFn.apply(token));
             return new JsPath(vector);
         };
     }
@@ -450,12 +427,7 @@ public final class JsPath implements Comparable<JsPath>
     {
         if (positions.isEmpty()) return "";
         return positions.iterator()
-                        .map(new AbstractFunction1<Position, String>()
-                        {
-                            @Override
-                            public String apply(final Position pos)
-                            {
-                                return pos.match(key ->
+                        .map(pos ->  pos.match(key ->
                                                  {
                                                      if (key.equals("")) return key;
                                                      return isNumeric(key) ? String.format("'%s'",
@@ -463,9 +435,9 @@ public final class JsPath implements Comparable<JsPath>
                                                                                           ) : key;
                                                  },
                                                  Integer::toString
-                                                );
-                            }
-                        })
+                                                )
+
+                        )
                         .mkString("/",
                                   "/",
                                   ""
@@ -482,12 +454,8 @@ public final class JsPath implements Comparable<JsPath>
     {
         if (positions.isEmpty()) return "";
         return positions.iterator()
-                        .map(new AbstractFunction1<Position, String>()
-                        {
-                            @Override
-                            public String apply(final Position pos)
-                            {
-                                return pos.match(key ->
+                        .map(pos ->
+                                 pos.match(key ->
                                                  {
                                                      if (key.equals("")) return key;
                                                      try
@@ -504,10 +472,8 @@ public final class JsPath implements Comparable<JsPath>
                                                      }
                                                  },
                                                  Integer::toString
-                                                );
-                            }
-                        })
-                        .mkString("#/",
+                                                )
+                        ).mkString("#/",
                                   "/",
                                   ""
                                  );
@@ -564,8 +530,7 @@ public final class JsPath implements Comparable<JsPath>
     @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath append(final JsPath path)
     {
-        return new JsPath(this.positions.$plus$plus(requireNonNull(path).positions,
-                                                    bf
+        return new JsPath(this.positions.appendAll(requireNonNull(path).positions
                                                    )
         );
     }
@@ -578,8 +543,7 @@ public final class JsPath implements Comparable<JsPath>
     @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath prepend(final JsPath path)
     {
-        return new JsPath(requireNonNull(path).positions.$plus$plus(this.positions,
-                                                                    bf
+        return new JsPath(requireNonNull(path).positions.appendAll(this.positions
                                                                    ));
     }
 

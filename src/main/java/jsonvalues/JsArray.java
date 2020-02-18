@@ -208,9 +208,6 @@ public interface JsArray extends Json<JsArray>, Iterable<JsElem>
         return true;
     }
 
-    JsArray add(int index,
-                JsElem elem
-               );
 
     boolean same(JsArray other);
 

@@ -160,7 +160,7 @@ final class OpMapReduce<T>
         return (obj, acc) -> obj.ifEmptyElse(done(acc),
                                              (head, tail) ->
                                              {
-                                                 final JsPath headPath = startingPath.key(head.getKey());
+                                                 final JsPath headPath = startingPath.key(head._1);
                                                  return MatchExp.ifJsonElse(headJson -> reduceHeadJsonTail.apply(headPath,
                                                                                                                  headJson
                                                                                                                 )
@@ -178,7 +178,7 @@ final class OpMapReduce<T>
                                                                                                                    ))
 
                                                                            )
-                                                                .apply(head.getValue());
+                                                                .apply(head._2);
 
                                              }
                                             );

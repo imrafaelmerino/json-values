@@ -1,6 +1,7 @@
 package jsonvalues;
 
 
+import io.vavr.collection.Vector;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Iterator;
@@ -22,15 +23,14 @@ import static jsonvalues.Trampoline.more;
 /**
  Explicit instantiation of JsArray interface to reduce class file size in subclasses.
 
- @param <V> type of the seq implementation to hold json arrays
  */
-abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
+abstract class AbstractJsArray implements JsArray
 
 {
 
-    protected V seq;
+protected Vector<JsElem> seq;
 
-    AbstractJsArray(V seq)
+    AbstractJsArray( Vector<JsElem> seq)
     {
         this.seq = seq;
     }
@@ -66,9 +66,9 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
     @Override
     public final boolean equals(final @Nullable Object that)
     {
-        if (!(that instanceof AbstractJsArray<?>)) return false;
+        if (!(that instanceof AbstractJsArray)) return false;
         if (this == that) return true;
-        final MySeq<?> thatSeq = ((AbstractJsArray<?>) that).seq;
+        final Vector<JsElem> thatSeq = ((AbstractJsArray) that).seq;
         final boolean thatEmpty = thatSeq.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
@@ -82,8 +82,8 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
     }
 
 
-    private boolean yContainsX(final MySeq<?> x,
-                               final MySeq<?> y
+    private boolean yContainsX(final Vector<JsElem> x,
+                               final Vector<JsElem> y
                               )
     {
         for (int i = 0; i < x.size(); i++)
@@ -98,8 +98,8 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
 
     }
 
-    private boolean yContainsSameX(MySeq<?> x,
-                                   MySeq<?> y
+    private boolean yContainsSameX(Vector<JsElem>  x,
+                                   Vector<JsElem> y
                                   )
     {
         for (int i = 0; i < x.size(); i++)
@@ -130,7 +130,7 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
     public final boolean same(final JsArray that)
     {
         if (this == that) return true;
-        final MySeq<?> other = ((AbstractJsArray<?>) that).seq;
+        final Vector<JsElem> other = ((AbstractJsArray) that).seq;
         final boolean thatEmpty = that.isEmpty();
         final boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
@@ -174,7 +174,7 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
     @Override
     public final JsArray init()
     {
-        return of(seq.init());
+        return new ImmutableJsArray(seq.init());
     }
 
     @Override
@@ -342,7 +342,6 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
         return seq.last();
     }
 
-    abstract JsArray of(V vector);
 
 
     @Override
@@ -440,13 +439,13 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
     @Override
     public final JsArray tail()
     {
-        return of(seq.tail());
+        return new ImmutableJsArray(seq.tail());
     }
 
     @Override
     public String toString()
     {
-        return seq.toString();
+        return seq.mkString("[",",","]");
     }
 
     @Override
@@ -587,7 +586,7 @@ abstract class AbstractJsArray<V extends MySeq<V>> implements JsArray
 
     @SuppressWarnings("squid:S1602")
         // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<Integer, JsPath> putEmptyJson(final V pseq)
+    BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsElem> pseq)
     {
         return (index, tail) ->
         {

@@ -6,9 +6,9 @@ import java.util.function.Predicate;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.Trampoline.more;
 
-final class OpMapImmutableArrElems extends OpMapElems<JsArray>
+final class OpMapArrElems extends OpMapElems<JsArray>
 {
-    OpMapImmutableArrElems(final JsArray json)
+    OpMapArrElems(final JsArray json)
     {
         super(json);
     }
@@ -24,10 +24,10 @@ final class OpMapImmutableArrElems extends OpMapElems<JsArray>
                                 {
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapImmutableArrElems(tail).map(fn,
-                                                                                                                                    predicate,
-                                                                                                                                    headPath
-                                                                                                                                   ));
+                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrElems(tail).map(fn,
+                                                                                                                           predicate,
+                                                                                                                           headPath
+                                                                                                                          ));
                                     return ifJsonElse(headJson -> more(() -> tailCall).map(it -> it.prepend(headJson)),
                                                       headElem ->
                                                       {
@@ -57,21 +57,21 @@ final class OpMapImmutableArrElems extends OpMapElems<JsArray>
                                 {
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapImmutableArrElems(tail).map_(fn,
-                                                                                                                                     predicate,
-                                                                                                                                     headPath
-                                                                                                                                    ));
-                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpMapImmutableObjElems(headObj).map_(fn,
-                                                                                                                                                     predicate,
-                                                                                                                                                     headPath
-                                                                                                                                                    )
-                                                                                                                                               .map(tailResult::prepend)
+                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrElems(tail).map_(fn,
+                                                                                                                            predicate,
+                                                                                                                            headPath
+                                                                                                                           ));
+                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpMapObjElems(headObj).map_(fn,
+                                                                                                                                            predicate,
+                                                                                                                                            headPath
+                                                                                                                                           )
+                                                                                                                                      .map(tailResult::prepend)
                                                                                              ),
-                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapImmutableArrElems(headArr).map_(fn,
-                                                                                                                                                     predicate,
-                                                                                                                                                     headPath.index(-1)
-                                                                                                                                                    )
-                                                                                                                                               .map(tailResult::prepend)
+                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrElems(headArr).map_(fn,
+                                                                                                                                            predicate,
+                                                                                                                                            headPath.index(-1)
+                                                                                                                                           )
+                                                                                                                                      .map(tailResult::prepend)
                                                                                              ),
                                                       headElem -> JsPair.of(headPath,
                                                                             headElem
