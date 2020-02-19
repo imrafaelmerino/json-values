@@ -297,7 +297,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                  arr.appendAll(elems)
                                                                                                                 )),
                                                                                el -> new ImmutableJsObj(map.put(head,
-                                                                                                                ImmutableJsArray.EMPTY
+                                                                                                                JsArray.EMPTY
                                                                                                                              .appendAll(elems)
                                                                                                                ))
                                                                               )
@@ -311,7 +311,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                                                   .appendAll(tail,
                                                                                                                                                              elems
                                                                                                                                                             ),
-                                                                                                                             index -> ImmutableJsArray.EMPTY
+                                                                                                                             index -> JsArray.EMPTY
                                                                                                                                                    .appendAll(tail,
                                                                                                                                                               elems
                                                                                                                                                              )
@@ -348,7 +348,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                  arr.append(elem)
                                                                                                                 )),
                                                                                el -> new ImmutableJsObj(map.put(head,
-                                                                                                                ImmutableJsArray.EMPTY
+                                                                                                                JsArray.EMPTY
                                                                                                                              .append(elem)
                                                                                                                ))
                                                                               )
@@ -362,7 +362,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                                                   .append(tail,
                                                                                                                                                           elem
                                                                                                                                                          ),
-                                                                                                                             index -> ImmutableJsArray.EMPTY
+                                                                                                                             index -> JsArray.EMPTY
                                                                                                                                                    .append(tail,
                                                                                                                                                            elem
                                                                                                                                                           )
@@ -403,7 +403,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                  arr.prependAll(elems)
                                                                                                                 )),
                                                                                el -> new ImmutableJsObj(map.put(head,
-                                                                                                                ImmutableJsArray.EMPTY
+                                                                                                                JsArray.EMPTY
                                                                                                                              .prependAll(elems)
                                                                                                                ))
                                                                               )
@@ -417,7 +417,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                                                   .prependAll(tail,
                                                                                                                                                               elems
                                                                                                                                                              ),
-                                                                                                                             index -> ImmutableJsArray.EMPTY
+                                                                                                                             index -> JsArray.EMPTY
                                                                                                                                                    .prependAll(tail,
                                                                                                                                                                elems
                                                                                                                                                               )
@@ -457,7 +457,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                  arr.prepend(elem)
                                                                                                                 )),
                                                                                el -> new ImmutableJsObj(map.put(head,
-                                                                                                                ImmutableJsArray.EMPTY
+                                                                                                                JsArray.EMPTY
                                                                                                                              .prepend(elem)
                                                                                                                ))
                                                                               )
@@ -471,7 +471,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                                                   .prepend(tail,
                                                                                                                                                            elem
                                                                                                                                                           ),
-                                                                                                                             index -> ImmutableJsArray.EMPTY
+                                                                                                                             index -> JsArray.EMPTY
                                                                                                                                                    .prepend(tail,
                                                                                                                                                             elem
                                                                                                                                                            )
@@ -522,7 +522,7 @@ final class ImmutableJsObj extends AbstractJsObj
                                                                                                                                                   .put(tail,
                                                                                                                                                        fn
                                                                                                                                                       ),
-                                                                                                                             index -> ImmutableJsArray.EMPTY
+                                                                                                                             index -> JsArray.EMPTY
                                                                                                                                                    .put(tail,
                                                                                                                                                         fn
                                                                                                                                                        )

@@ -3,23 +3,54 @@ package jsonvalues;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.collection.Vector;
+import org.checkerframework.checker.nullness.qual.Nullable;
+
 import java.io.IOException;
-import java.util.function.BiFunction;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.function.*;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.IntStream.range;
+import static jsonvalues.AbstractJsObj.streamOfObj;
 import static jsonvalues.JsArray.TYPE.LIST;
 import static jsonvalues.JsArray.TYPE.MULTISET;
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
+import static jsonvalues.JsNull.NULL;
+import static jsonvalues.MatchExp.ifJsonElse;
+import static jsonvalues.MatchExp.ifNothingElse;
+import static jsonvalues.Trampoline.done;
+import static jsonvalues.Trampoline.more;
 
 /**
  Represents a json array, which is an ordered list of elements.
  */
-public interface JsArray extends Json<JsArray>, Iterable<JsValue>
+public class JsArray implements Json<JsArray>, Iterable<JsValue>
+
 
 {
-    static JsArray empty(){return ImmutableJsArray.EMPTY; }
+    private volatile int hascode;
+    //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
+    //is a recommendation from Effective Java to apply the idiom single check for lazy initialization
+    @SuppressWarnings("squid:S3077")
+    @Nullable
+    private volatile String str;
+
+    public static JsArray EMPTY = new JsArray(Vector.empty());
+
+    private Vector<JsValue> seq;
+    JsArray(Vector<JsValue> seq)
+    {
+        this.seq = seq;
+    }
+    public static JsArray empty(){return EMPTY; }
 
     /**
      Returns true if this array is equal to the given as a parameter. In the case of ARRAY_AS=LIST,
@@ -29,7 +60,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return true if both arrays are equals according to ARRAY_AS parameter
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    default boolean equals(final JsArray array,
+    public  boolean equals(final JsArray array,
                            final TYPE ARRAY_AS
                           )
     {
@@ -58,42 +89,124 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param array the JsArray of elements to be added to the back
      @return a new JsArray
      */
-    JsArray appendAll(JsArray array
-                     );
+    public final JsArray appendAll(final JsArray array
+                                  )
+    {
+        return appendAllBackTrampoline(this,
+                                       requireNonNull(array)
+                                      ).get();
+
+
+    }
+
+    public final JsArray put(final JsPath path,
+                             final Function<? super JsValue, ? extends JsValue> fn
+                            )
+    {
+
+        requireNonNull(fn);
+        if (requireNonNull(path).isEmpty()) return this;
+        return path.head()
+                   .match(head -> this,
+                          index ->
+                          {
+                              final JsPath tail = path.tail();
+
+                              return tail.ifEmptyElse(() -> ifNothingElse(() -> this,
+                                                                          elem -> new JsArray(nullPadding(index,
+                                                                                                                   seq,
+                                                                                                                   elem
+                                                                                                                  ))
+                                                                         )
+                                                      .apply(fn.apply(get(path))),
+                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
+                                                                                                             t
+                                                                                                            ),
+                                                                                 () ->
+                                                                                 {
+                                                                                     final JsValue newElem = tail.head()
+                                                                                                                 .match(key -> ImmutableJsObj.EMPTY
+                                                                                                                        .put(tail,
+                                                                                                                             fn
+                                                                                                                            ),
+                                                                                                                        i -> JsArray.EMPTY
+                                                                                                                        .put(tail,
+                                                                                                                             fn
+                                                                                                                            )
+                                                                                                                       );
+                                                                                     return new JsArray(nullPadding(index,
+                                                                                                                             seq,
+                                                                                                                             newElem
+                                                                                                                            ));
+                                                                                 },
+                                                                                 () -> new JsArray(seq.update(index,
+                                                                                                                       seq.get(index)
+                                                                                                                          .asJson()
+                                                                                                                          .put(tail,
+                                                                                                                               fn
+                                                                                                                              )
+                                                                                                                      ))
+
+                                                                                )
+                                                     );
+
+                          }
+
+                         );
+
+    }
 
     /**
      Adds all the elements of the array, starting from the last, to the front of this array.
      @param array the JsArray of elements to be added to the front
      @return a new JsArray
      */
-    JsArray prependAll(JsArray array);
+    public final JsArray prependAll(final JsArray array
+                                   )
+    {
+        return appendAllFrontTrampoline(this,
+                                        requireNonNull(array)
+                                       ).get();
 
+    }
 
     /**
      Adds one or more elements, starting from the first, to the back of this array.
-     @param elem   the JsElem to be added to the back.
+     @param e   the JsElem to be added to the back.
      @param others more optional JsElem to be added to the back
      @return a new JsArray
      */
-    JsArray append(final JsValue elem,
-                   final JsValue... others
-                  );
-
+    public final JsArray append(final JsValue e,
+                                final JsValue... others
+                               )
+    {
+        Vector<JsValue> acc = this.seq.append(requireNonNull(e));
+        for (JsValue other : requireNonNull(others)) acc = acc.append(requireNonNull(other));
+        return new JsArray(acc);
+    }
     /**
      Adds one or more elements, starting from the last, to the front of this array.
-     @param elem   the JsElem to be added to the front.
+     @param e   the JsElem to be added to the front.
      @param others more optional JsElem to be added to the front
      @return a new JsArray
      */
-    JsArray prepend(final JsValue elem,
-                    final JsValue... others
-                   );
-
+    public final JsArray prepend(final JsValue e,
+                                 final JsValue... others
+                                )
+    {
+        Vector<JsValue> acc = seq;
+        for (int i = 0, othersLength = requireNonNull(others).length; i < othersLength; i++)
+        {
+            final JsValue other = others[othersLength - 1 - i];
+            acc = acc.prepend(requireNonNull(other));
+        }
+        return new JsArray(acc.prepend(requireNonNull(e)));
+    }
 
     /**
      Type of arrays: SET, MULTISET or LIST.
      */
-    enum TYPE
+    public enum TYPE
     {
         /**
          The order of data items does not matter (or is undefined) but duplicate data items are not
@@ -117,14 +230,24 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return the first JsElem of this JsArray
      @throws UserError if this JsArray is empty
      */
-    JsValue head();
+    public final JsValue head()
+    {
+        return seq.head();
+    }
+
+
+
+
 
     /**
      Returns all the elements of this array except the last one.
      @return JsArray with all the JsElem except the last one
      @throws UserError if this JsArray is empty
      */
-    JsArray init();
+    public final JsArray init()
+    {
+        return new JsArray(seq.init());
+    }
 
 
     /**
@@ -132,15 +255,20 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return the last JsElem of this JsArray
      @throws UserError if this JsArray is empty
      */
-    JsValue last();
+    public final JsValue last()
+    {
 
+        return seq.last();
+    }
     /**
      Returns a json array consisting of all elements of this array except the first one.
      @return a JsArray consisting of all the elements of this JsArray except the head
      @throws UserError if this JsArray is empty.
      */
-    JsArray tail();
-
+    public final JsArray tail()
+    {
+        return new JsArray(seq.tail());
+    }
     /**
      {@code this.intersection(that, SET)} returns an array with the elements that exist in both {@code this}
      and {@code that}.
@@ -153,9 +281,107 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    JsArray intersection(final JsArray that,
-                         final TYPE ARRAY_AS
-                        );
+    public final JsArray intersection(final JsArray that,
+                                      final TYPE ARRAY_AS
+                                     )
+    {
+        return intersection(this,
+                            requireNonNull(that),
+                            requireNonNull(ARRAY_AS)
+                           ).get();
+    }
+
+    @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
+    private static Trampoline<JsArray> intersection(JsArray a,
+                                                    JsArray b,
+                                                    JsArray.TYPE ARRAY_AS
+                                                   )
+    {
+        switch (ARRAY_AS)
+        {
+            case SET:
+                return intersectionAsSet(a,
+                                         b
+                                        );
+            case LIST:
+                return intersectionAsList(a,
+                                          b
+                                         );
+            case MULTISET:
+                return intersectionAsMultiSet(a,
+                                              b
+                                             );
+            default:
+                throw InternalError.arrayOptionNotImplemented(ARRAY_AS.name());
+        }
+
+    }
+
+    private static Trampoline<JsArray> intersectionAsList(JsArray a,
+                                                          JsArray b
+                                                         )
+    {
+
+        if (a.isEmpty()) return done(a);
+        if (b.isEmpty()) return done(b);
+
+        final JsValue head = a.head();
+        final JsArray tail = a.tail();
+
+        final JsValue otherHead = b.head();
+        final JsArray otherTail = b.tail();
+
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsList(tail,
+                                                                                  otherTail
+                                                                                 );
+
+        if (head.equals(otherHead)) return more(tailCall).map(it -> it.prepend(head));
+
+        return more(tailCall);
+
+
+    }
+
+
+    private static Trampoline<JsArray> intersectionAsMultiSet(JsArray a,
+                                                              JsArray b
+                                                             )
+    {
+
+        if (a.isEmpty()) return done(a);
+        if (b.isEmpty()) return done(b);
+
+        final JsValue head = a.head();
+        final JsArray tail = a.tail();
+
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsMultiSet(tail,
+                                                                                      b
+                                                                                     );
+
+        if (b.containsElem(head)) return more(tailCall).map(it -> it.prepend(head));
+
+        return more(tailCall);
+    }
+
+    private static Trampoline<JsArray> intersectionAsSet(JsArray a,
+                                                         JsArray b
+                                                        )
+    {
+        if (a.isEmpty()) return done(a);
+        if (b.isEmpty()) return done(b);
+
+        final JsValue head = a.head();
+        final JsArray tail = a.tail();
+
+        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsSet(tail,
+                                                                                 b
+                                                                                );
+
+        if (b.containsElem(head) && !tail.containsElem(head))
+            return more(tailCall).map(it -> it.prepend(head));
+
+        return more(tailCall);
+    }
 
     /**
      {@code this.intersection_(that)} behaves as {@code this.intersection(that, LIST)}, but for those
@@ -166,8 +392,69 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    JsArray intersectionAll(final JsArray that);
+    public JsArray intersectionAll(final JsArray that)
+    {
+        return intersectionAll(this,
+                               requireNonNull(that)
+                              ).get();
+    }
 
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
+    private Trampoline<JsArray> intersectionAll(final JsArray a,
+                                                final JsArray b
+                                               )
+    {
+        if (a.isEmpty()) return done(a);
+        if (b.isEmpty()) return done(b);
+
+        final JsValue head = a.head();
+        final JsValue otherHead = b.head();
+
+        final Trampoline<JsArray> tailCall = intersectionAsList(a.tail(),
+                                                                b.tail()
+                                                               );
+
+        if (head.isJson() && head.isSameType(otherHead))
+        {
+            final Json<?> obj = head.asJson();
+            final Json<?> obj1 = otherHead.asJson();
+
+            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
+                                                                                                                obj1,
+                                                                                                                JsArray.TYPE.LIST
+                                                                                                               ));
+
+            return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
+
+        } else if (head.equals(otherHead))
+            return more(() -> tailCall).map(it -> it.prepend(head));
+        else return more(() -> tailCall);
+    }
+    public final JsArray remove(final JsPath path)
+    {
+
+        if (requireNonNull(path).isEmpty()) return this;
+        return path.head()
+                   .match(head -> this,
+                          index ->
+                          {
+                              final int maxIndex = seq.size() - 1;
+                              if (index < -1 || index > maxIndex) return this;
+                              final JsPath tail = path.tail();
+                              return tail.ifEmptyElse(() -> new JsArray(index == -1 ? seq.removeAt(maxIndex) : seq.removeAt(index)),
+                                                      () -> ifJsonElse(json -> new JsArray(seq.update(index,
+                                                                                                               json.remove(tail)
+                                                                                                              )),
+                                                                       e -> this
+                                                                      )
+                                                      .apply(seq.get(index))
+                                                     );
+                          }
+
+                         );
+
+
+    }
     /**
      {@code this.union(that, SET)} returns {@code this} plus those elements from {@code that} that
      don't exist in {@code this}.
@@ -180,10 +467,75 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return a new json array of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    JsArray union(final JsArray that,
-                  final TYPE ARRAY_AS
-                 );
+    public final JsArray union(final JsArray that,
+                               final JsArray.TYPE ARRAY_AS
+                              )
+    {
+        return union(this,
+                     requireNonNull(that),
+                     requireNonNull(ARRAY_AS)
+                    ).get();
+    }
 
+    @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
+    private Trampoline<JsArray> union(JsArray a,
+                                      JsArray b,
+                                      JsArray.TYPE ARRAY_AS
+                                     )
+    {
+        switch (ARRAY_AS)
+        {
+            case SET:
+                return unionAsSet(a,
+                                  b
+                                 );
+            case LIST:
+                return unionAsList(a,
+                                   b
+                                  );
+            case MULTISET:
+                return unionAsMultiSet(a,
+                                       b
+                                      );
+            default:
+                throw InternalError.arrayOptionNotImplemented(ARRAY_AS.name());
+        }
+    }
+
+    private static Trampoline<JsArray> unionAsList(final JsArray a,
+                                                   final JsArray b
+                                                  )
+    {
+        if (b.isEmpty()) return done(a);
+        if (a.isEmpty()) return done(b);
+        final Trampoline<JsArray> tailCall = unionAsList(a.tail(),
+                                                         b.tail()
+                                                        );
+        return more(() -> tailCall).map(it -> it.prepend(a.head()));
+    }
+
+    private static Trampoline<JsArray> unionAsMultiSet(final JsArray a,
+                                                       final JsArray b
+                                                      )
+    {
+        if (b.isEmpty()) return done(a);
+        if (a.isEmpty()) return done(b);
+        return more(() -> () -> a.appendAll(b));
+    }
+
+    private static Trampoline<JsArray> unionAsSet(final JsArray a,
+                                                  final JsArray b
+                                                 )
+    {
+        if (b.isEmpty()) return done(a);
+        if (a.isEmpty()) return done(b);
+        JsValue last = b.last();
+        final Trampoline<JsArray> initCall = unionAsSet(a,
+                                                        b.init()
+                                                       );
+        if (!a.containsElem(last)) return more(() -> initCall).map(it -> it.append(last));
+        return more(() -> initCall);
+    }
 
     /**
      returns {@code this} plus those elements from {@code that} which position is  {@code >= this.size()},
@@ -195,9 +547,41 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    JsArray unionAll(final JsArray that);
+    public final JsArray unionAll(final JsArray that
+                                 )
+    {
+        return unionAll(this,
+                        requireNonNull(that)
+                       ).get();
+    }
 
-    default <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
+    private Trampoline<JsArray> unionAll(final JsArray a,
+                                         final JsArray b
+                                        )
+    {
+        if (b.isEmpty()) return done(a);
+        if (a.isEmpty()) return done(b);
+        final JsValue head = a.head();
+        final JsValue otherHead = b.head();
+        final Trampoline<JsArray> tailCall = unionAll(a.tail(),
+                                                      b.tail()
+                                                     );
+        if (head.isJson() && head.isSameType(otherHead))
+        {
+            final Json<?> obj = head.asJson();
+            final Json<?> obj1 = otherHead.asJson();
+            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
+                                                                                                  obj1,
+                                                                                                  JsArray.TYPE.LIST
+                                                                                                 ));
+            return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
+
+        }
+        return more(() -> tailCall).map(it -> it.prepend(head));
+    }
+
+    public  <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
                                           final BiFunction<JsValue, JsArray, Trampoline<T>> fn
                                          )
     {
@@ -209,19 +593,17 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
                        );
     }
 
-    @Override
-    default boolean isArray()
+    public boolean isArray()
     {
         return true;
     }
 
 
-    boolean same(JsArray other);
 
-    static JsArray of(JsValue e)
+    public static JsArray of(JsValue e)
     {
 
-        return ImmutableJsArray.EMPTY.append(e);
+        return JsArray.EMPTY.append(e);
     }
 
     /**
@@ -232,11 +614,11 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @throws UserError if an elem of a pair is mutable
 
      */
-    static JsArray of(final JsPair pair,
+    public static JsArray of(final JsPair pair,
                       final JsPair... others
                      )
     {
-        JsArray arr = ImmutableJsArray.EMPTY.put(pair.path,
+        JsArray arr = JsArray.EMPTY.put(pair.path,
                                   pair.elem
                                  );
         for (JsPair p : others)
@@ -258,7 +640,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return an immutable two-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsValue e,
+    public static JsArray of(final JsValue e,
                       final JsValue e1
                      )
     {
@@ -273,7 +655,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return an immutable three-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsValue e,
+    public static JsArray of(final JsValue e,
                       final JsValue e1,
                       final JsValue e2
                      )
@@ -293,7 +675,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @return an immutable four-element JsArray
      @throws UserError if an elem is a mutable Json
      */
-    static JsArray of(final JsValue e,
+    public static JsArray of(final JsValue e,
                       final JsValue e1,
                       final JsValue e2,
                       final JsValue e3
@@ -317,7 +699,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      */
     //squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
-    static JsArray of(final JsValue e,
+    public static JsArray of(final JsValue e,
                       final JsValue e1,
                       final JsValue e2,
                       final JsValue e3,
@@ -345,7 +727,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      */
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
-    static JsArray of(final JsValue e,
+    public static JsArray of(final JsValue e,
                       final JsValue e1,
                       final JsValue e2,
                       final JsValue e3,
@@ -373,7 +755,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param iterable the iterable of json elements
      @return an immutable json array
      */
-    static JsArray ofIterable(Iterable<JsValue> iterable)
+    public static JsArray ofIterable(Iterable<JsValue> iterable)
     {
         Vector<JsValue> vector = Vector.empty();
         for (JsValue e : requireNonNull(iterable))
@@ -381,7 +763,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
 
             vector = vector.append(e);
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
 
         );
     }
@@ -392,7 +774,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param others more optional strings
      @return an immutable JsArray
      */
-    static JsArray of(String str,
+    public static JsArray of(String str,
                       String... others
                      )
     {
@@ -402,7 +784,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             vector = vector.append(JsStr.of(a));
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
         );
     }
 
@@ -413,7 +795,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param others more optional integers
      @return an immutable JsArray
      */
-    static JsArray of(int number,
+    public static JsArray of(int number,
                       int... others
                      )
     {
@@ -423,7 +805,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             vector = vector.append(JsInt.of(a));
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
         );
     }
 
@@ -433,7 +815,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param others more optional booleans
      @return an immutable JsArray
      */
-    static JsArray of(final boolean bool,
+    public static JsArray of(final boolean bool,
                       final boolean... others
                      )
     {
@@ -442,7 +824,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             vector = vector.append(JsBool.of(a));
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
         );
     }
 
@@ -453,7 +835,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param others more optional longs
      @return an immutable JsArray
      */
-    static JsArray of(final long number,
+    public static JsArray of(final long number,
                       final long... others
                      )
     {
@@ -463,10 +845,302 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             vector = vector.append(JsLong.of(a));
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
 
         );
     }
+
+
+    public final JsArray filterElems(final Predicate<? super JsPair> filter)
+    {
+        return new OpFilterArrElems(this).filter(JsPath.empty()
+                                                       .index(-1),
+                                                 requireNonNull(filter)
+                                                )
+
+                                         .get();
+    }
+
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
+    public final JsArray filterAllElems(final Predicate<? super JsPair> filter)
+    {
+        return new OpFilterArrElems(this).filterAll(JsPath.empty()
+                                                          .index(-1),
+                                                    requireNonNull(filter)
+                                                   )
+
+                                         .get();
+    }
+
+
+    public final JsArray filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
+    {
+        return new OpFilterArrObjs(this).filter(JsPath.empty()
+                                                      .index(-1),
+                                                requireNonNull(filter)
+                                               )
+
+                                        .get();
+    }
+
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
+    public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
+    {
+        return new OpFilterArrObjs(this).filterAll(JsPath.empty()
+                                                         .index(-1),
+                                                   requireNonNull(filter)
+                                                  )
+                                        .get();
+    }
+
+
+
+    public final JsArray filterKeys(final Predicate<? super JsPair> filter)
+    {
+        return this;
+    }
+
+
+    public final JsArray filterAllKeys(final Predicate<? super JsPair> filter)
+    {
+        return new OpFilterArrKeys(this).filterAll(JsPath.empty()
+                                                         .index(-1),
+                                                   filter
+                                                  )
+                                        .get();
+    }
+
+    @SuppressWarnings("Duplicates")
+
+    public final JsArray appendAll(final JsPath path,
+                                   final JsArray elems
+
+                                  )
+    {
+
+        Objects.requireNonNull(elems);
+        return requireNonNull(path).head()
+                                   .match(key -> this,
+                                          index ->
+                                          {
+                                              final JsPath tail = path.tail();
+                                              return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
+                                                                                                                                      arr.appendAll(elems)
+                                                                                                                                     )),
+                                                                                               e -> new JsArray(nullPadding(index,
+                                                                                                                                     seq,
+                                                                                                                                     JsArray.EMPTY
+                                                                                                                                     .appendAll(elems)
+                                                                                                                                    ))
+                                                                                              )
+                                                                                    .apply(get(Index.of(index))),
+                                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
+                                                                                                                             t
+                                                                                                                            ),
+                                                                                                 () -> new JsArray(nullPadding(index,
+                                                                                                                                        seq,
+                                                                                                                                        tail.head()
+                                                                                                                                            .match(o -> ImmutableJsObj.EMPTY
+                                                                                                                                                   .appendAll(tail,
+                                                                                                                                                              elems
+                                                                                                                                                             ),
+                                                                                                                                                   a -> JsArray.EMPTY
+                                                                                                                                                   .appendAll(tail,
+                                                                                                                                                              elems
+                                                                                                                                                             )
+                                                                                                                                                  )
+                                                                                                                                       )),
+                                                                                                 () -> new JsArray(seq.update(index,
+                                                                                                                                       seq.get(index)
+                                                                                                                                          .asJson()
+                                                                                                                                          .appendAll(tail,
+                                                                                                                                                     elems
+                                                                                                                                                    )
+                                                                                                                                      ))
+                                                                                                )
+
+
+                                                                     );
+                                          }
+
+                                         );
+
+    }
+
+
+    public final JsArray append(final JsPath path,
+                                final JsValue elem
+                               )
+    {
+        if (requireNonNull(path).isEmpty()) return this;
+        Objects.requireNonNull(elem);
+        return path.head()
+                   .match(key -> this,
+                          index ->
+                          {
+                              final JsPath tail = path.tail();
+                              return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
+                                                                                                                      arr.append(elem)
+                                                                                                                     )),
+                                                                               e -> new JsArray(nullPadding(index,
+                                                                                                                     seq,
+                                                                                                                     JsArray.EMPTY
+                                                                                                                     .append(elem)
+                                                                                                                    ))
+                                                                              )
+                                                                    .apply(get(Index.of(index))),
+                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
+                                                                                                             t
+                                                                                                            ),
+                                                                                 () -> new JsArray(nullPadding(index,
+                                                                                                                        seq,
+                                                                                                                        tail.head()
+                                                                                                                            .match(o -> ImmutableJsObj.EMPTY
+                                                                                                                                   .append(tail,
+                                                                                                                                           elem
+                                                                                                                                          ),
+                                                                                                                                   a -> JsArray.EMPTY
+                                                                                                                                   .append(tail,
+                                                                                                                                           elem
+                                                                                                                                          )
+                                                                                                                                  )
+                                                                                                                       )),
+                                                                                 () -> new JsArray(seq.update(index,
+                                                                                                                       seq.get(index)
+                                                                                                                          .asJson()
+                                                                                                                          .append(tail,
+                                                                                                                                  elem
+                                                                                                                                 )
+                                                                                                                      ))
+                                                                                )
+
+
+                                                     );
+                          }
+
+                         );
+
+    }
+
+    @SuppressWarnings("Duplicates")
+
+    public final JsArray prependAll(final JsPath path,
+                                    final JsArray elems
+                                   )
+    {
+        Objects.requireNonNull(elems);
+        return requireNonNull(path).head()
+                                   .match(key -> this,
+                                          index ->
+                                          {
+                                              final JsPath tail = path.tail();
+                                              return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
+                                                                                                                                      arr.prependAll(elems)
+                                                                                                                                     )),
+                                                                                               e -> new JsArray(nullPadding(index,
+                                                                                                                                     seq,
+                                                                                                                                     JsArray.EMPTY
+                                                                                                                                     .prependAll(elems)
+                                                                                                                                    ))
+                                                                                              )
+                                                                                    .apply(get(Index.of(index))),
+                                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
+                                                                                                                             t
+                                                                                                                            ),
+                                                                                                 () -> new JsArray(nullPadding(index,
+                                                                                                                                        seq,
+                                                                                                                                        tail.head()
+                                                                                                                                            .match(o -> ImmutableJsObj.EMPTY
+                                                                                                                                                   .prependAll(tail,
+                                                                                                                                                               elems
+                                                                                                                                                              ),
+                                                                                                                                                   a -> JsArray.EMPTY
+                                                                                                                                                   .prependAll(tail,
+                                                                                                                                                               elems
+                                                                                                                                                              )
+                                                                                                                                                  )
+
+                                                                                                                                       )),
+                                                                                                 () -> new JsArray(seq.update(index,
+                                                                                                                                       seq.get(index)
+                                                                                                                                          .asJson()
+                                                                                                                                          .prependAll(tail,
+                                                                                                                                                      elems
+                                                                                                                                                     )
+                                                                                                                                      ))
+                                                                                                )
+
+
+                                                                     );
+                                          }
+
+                                         );
+
+    }
+
+    @SuppressWarnings("Duplicates")
+
+    public final JsArray prepend(final JsPath path,
+                                 final JsValue elem
+                                )
+    {
+        Objects.requireNonNull(elem);
+        if (requireNonNull(path).isEmpty()) return this;
+        return path.head()
+                   .match(key -> this,
+                          index ->
+                          {
+                              final JsPath tail = path.tail();
+                              return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
+                                                                                                                      arr.prepend(elem)
+                                                                                                                     )),
+                                                                               e -> new JsArray(nullPadding(index,
+                                                                                                                     seq,
+                                                                                                                     JsArray.EMPTY
+                                                                                                                     .prepend(elem)
+                                                                                                                    ))
+                                                                              )
+                                                                    .apply(get(Index.of(index))),
+                                                      () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
+                                                                                                             t
+                                                                                                            ),
+                                                                                 () -> new JsArray(nullPadding(index,
+                                                                                                                        seq,
+                                                                                                                        tail.head()
+                                                                                                                            .match(o -> ImmutableJsObj.EMPTY
+                                                                                                                                   .prepend(tail,
+                                                                                                                                            elem
+                                                                                                                                           ),
+                                                                                                                                   a -> JsArray.EMPTY
+                                                                                                                                   .prepend(tail,
+                                                                                                                                            elem
+                                                                                                                                           )
+                                                                                                                                  )
+
+                                                                                                                       )),
+                                                                                 () -> new JsArray(seq.update(index,
+                                                                                                                       seq.get(index)
+                                                                                                                          .asJson()
+                                                                                                                          .prepend(tail,
+                                                                                                                                   elem
+                                                                                                                                  )
+                                                                                                                      ))
+                                                                                )
+
+
+                                                     );
+                          }
+
+                         );
+
+    }
+
+
+
 
     /**
      Returns an immutable array from one or more doubles.
@@ -474,7 +1148,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param others more optional doubles
      @return an immutable JsArray
      */
-    static JsArray of(final double number,
+    public static JsArray of(final double number,
                       final double... others
                      )
     {
@@ -484,7 +1158,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             vector = vector.append(JsDouble.of(a));
         }
-        return new ImmutableJsArray(vector
+        return new JsArray(vector
         );
     }
     /**
@@ -492,14 +1166,14 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
      @param str the string to be parsed
      @return a Try computation
      */
-    static JsArray parse(final String str) throws MalformedJson
+    public static JsArray parse(final String str) throws MalformedJson
     {
 
         try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
         {
             final JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-            return  new ImmutableJsArray(AbstractJsArray.parse(parser
+            return  new JsArray(parse(parser
             ));
         }
         catch (IOException e)
@@ -510,7 +1184,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
 
     }
 
-    static JsArray parse(final String str,
+    public static JsArray parse(final String str,
                               final ParseBuilder builder
                              ) throws MalformedJson
     {
@@ -519,7 +1193,7 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
         {
             final JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-            return new ImmutableJsArray(AbstractJsArray.parse(parser,
+            return new JsArray(parse(parser,
                                                           requireNonNull(builder).create(),
                                                           JsPath.fromIndex(-1)
                                                          )
@@ -530,6 +1204,583 @@ public interface JsArray extends Json<JsArray>, Iterable<JsValue>
             throw new MalformedJson(e.getMessage());
         }
 
+    }
+    private Trampoline<Vector<JsValue>> nullPaddingTrampoline(final int i,
+                                                              final Vector<JsValue> arr,
+                                                              final JsValue e
+                                                             )
+    {
+
+        if (i == arr.size()) return Trampoline.done(arr.append(e));
+
+        if (i == -1) return Trampoline.done(arr.update(seq.size() - 1,
+                                                       e
+                                                      ));
+
+        if (i < arr.size()) return Trampoline.done(arr.update(i,
+                                                              e
+                                                             ));
+        return Trampoline.more(() -> nullPaddingTrampoline(i,
+                                                           arr.append(JsNull.NULL),
+                                                           e
+                                                          ));
+    }
+
+    private Vector<JsValue> nullPadding(final int index,
+                                        final Vector<JsValue> arr,
+                                        final JsValue e
+                                       )
+    {
+        assert arr != null;
+        assert e != null;
+
+        return nullPaddingTrampoline(index,
+                                     arr,
+                                     e
+                                    ).get();
+    }
+
+    /**
+     equals method is inherited, so it's implemented. The purpose of this method is to cache
+     the hashcode once calculated. the object is immutable and it won't change
+     Single-check idiom  Item 83 from Effective Java
+     */
+    @SuppressWarnings("squid:S1206")
+
+    public final int hashCode()
+    {
+        int result = hascode;
+        if (result == 0)
+            hascode = result = seq.hashCode();
+        return result;
+    }
+
+
+    public final String toString()
+    {
+        String result = str;
+        if (result == null)
+            str = result = seq.mkString("[",
+                                        ",",
+                                        "]");
+        return result;
+
+    }
+
+
+    public final JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn)
+    {
+        return new OpMapArrElems(this).map(requireNonNull(fn),
+                                           p -> true,
+                                           JsPath.empty()
+                                                 .index(-1)
+                                          )
+                                      .get();
+
+    }
+
+
+    public JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn,
+                            final Predicate<? super JsPair> predicate
+                           )
+    {
+        return new OpMapArrElems(this).map(requireNonNull(fn),
+                                           requireNonNull(predicate),
+                                           JsPath.empty()
+                                                 .index(-1)
+                                          )
+                                      .get();
+    }
+
+
+    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn)
+    {
+        return new OpMapArrElems(this).mapAll(requireNonNull(fn),
+                                              p -> true,
+                                              JsPath.empty()
+                                                    .index(-1)
+                                             )
+                                      .get();
+    }
+
+
+    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
+                               final Predicate<? super JsPair> predicate
+                              )
+    {
+        return new OpMapArrElems(this).mapAll(requireNonNull(fn),
+                                              requireNonNull(predicate),
+                                              JsPath.empty()
+                                                    .index(-1)
+                                             )
+                                      .get();
+    }
+
+
+    public final JsArray mapKeys(final Function<? super JsPair, String> fn)
+    {
+        return this;
+    }
+
+
+    public final JsArray mapKeys(final Function<? super JsPair, String> fn,
+                                 final Predicate<? super JsPair> predicate
+                                )
+    {
+        return this;
+    }
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
+    public final JsArray mapAllKeys(final Function<? super JsPair, String> fn)
+    {
+        return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
+                                             it -> true,
+                                             JsPath.empty()
+                                                   .index(-1)
+                                            )
+                                     .get();
+    }
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
+    public final JsArray mapAllKeys(final Function<? super JsPair, String> fn,
+                                    final Predicate<? super JsPair> predicate
+                                   )
+    {
+        return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             JsPath.empty()
+                                                   .index(-1)
+                                            )
+                                     .get();
+
+    }
+
+
+
+    public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                 final BiPredicate<? super JsPath, ? super JsObj> predicate
+                                )
+    {
+
+        return new OpMapArrObjs(this).map(requireNonNull(fn),
+                                          requireNonNull(predicate),
+                                          JsPath.empty()
+                                                .index(-1)
+                                         )
+                                     .get();
+
+    }
+
+
+
+    public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
+    {
+        return new OpMapArrObjs(this).map(requireNonNull(fn),
+                                          (p, o) -> true,
+                                          JsPath.empty()
+                                                .index(-1)
+                                         )
+                                     .get();
+    }
+
+
+    public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                                    final BiPredicate<? super JsPath, ? super JsObj> predicate
+                                   )
+    {
+        return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
+                                             requireNonNull(predicate),
+                                             JsPath.empty()
+                                                   .index(-1)
+                                            )
+                                     .get();
+    }
+
+
+    public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
+    {
+        return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
+                                             (p, o) -> true,
+                                             JsPath.empty()
+                                                   .index(-1)
+                                            )
+                                     .get();
+    }
+
+    public final boolean containsElem(final JsValue el)
+    {
+        return seq.contains(requireNonNull(el));
+    }
+
+
+    public final boolean equals(final @Nullable Object that)
+    {
+        if (!(that instanceof JsArray)) return false;
+        if (this == that) return true;
+        final Vector<JsValue> thatSeq = ((JsArray) that).seq;
+        final boolean thatEmpty = thatSeq.isEmpty();
+        final boolean thisEmpty = isEmpty();
+        if (thatEmpty && thisEmpty) return true;
+        if (this.size() != thatSeq.size()) return false;
+        return yContainsX(seq,
+                          thatSeq
+                         ) && yContainsX(thatSeq,
+                                         seq
+                                        );
+
+    }
+
+
+    private boolean yContainsX(final Vector<JsValue> x,
+                               final Vector<JsValue> y
+                              )
+    {
+        for (int i = 0; i < x.size(); i++)
+        {
+            if (!Objects.equals(x.get(i),
+                                y.get(i)
+                               ))
+                return false;
+
+        }
+        return true;
+
+    }
+
+    private boolean yContainsSameX(Vector<JsValue> x,
+                                   Vector<JsValue> y
+                                  )
+    {
+        for (int i = 0; i < x.size(); i++)
+        {
+
+            final JsValue a = x.get(i);
+            final JsValue b = y.get(i);
+            if (a.isObj() && b.isObj())
+            {
+                if (!a.asJsObj()
+                      .same(b.asJsObj())) return false;
+            } else if (a.isArray() && b.isArray())
+            {
+                if (!a.asJsArray()
+                      .equals(b.asJsArray())) return false;
+            } else if (!Objects.equals(a,
+                                       b
+                                      ))
+                return false;
+
+        }
+        return true;
+
+    }
+
+    public final JsValue get(final Position pos)
+    {
+
+
+        return requireNonNull(pos).match(key -> JsNothing.NOTHING,
+                                         index ->
+                                         {
+                                             if (index == -1 && !seq.isEmpty()) return seq.last();
+                                             return (seq.isEmpty() || index < 0 || index > seq.size() - 1) ?
+                                             JsNothing.NOTHING : seq.get(index);
+                                         }
+                                        );
+
+
+    }
+
+
+    public final boolean isEmpty()
+    {
+        return seq.isEmpty();
+    }
+
+
+    public final Iterator<JsValue> iterator()
+    {
+        return seq.iterator();
+    }
+
+
+
+
+
+
+    public final <R> Optional<R> reduce(final BinaryOperator<R> op,
+                                        final Function<? super JsPair, R> map,
+                                        final Predicate<? super JsPair> predicate
+                                       )
+    {
+        return new OpMapReduce<>(predicate,
+                                 map,
+                                 op
+        ).reduce(this);
+
+
+    }
+
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
+    public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                                           final Function<? super JsPair, R> map,
+                                           final Predicate<? super JsPair> predicate
+                                          )
+    {
+        return new OpMapReduce<>(predicate,
+                                 map,
+                                 op
+        ).reduceAll(this);
+
+    }
+
+
+
+    public final int size()
+    {
+        return seq.size();
+    }
+
+
+    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
+    public Stream<JsPair> streamAll()
+    {
+        return streamOfArr(this,
+                           JsPath.empty()
+                          );
+    }
+
+
+    public Stream<JsPair> stream()
+    {
+        return IntStream.range(0,
+                               size()
+                              )
+                        .mapToObj(i ->
+                                  {
+                                      final JsPath path = JsPath.fromIndex(i);
+                                      return JsPair.of(path,
+                                                       get(path)
+                                                      );
+                                  });
+
+    }
+
+    static Stream<JsPair> streamOfArr(final JsArray array,
+                                      final JsPath path
+                                     )
+    {
+
+
+        requireNonNull(path);
+        return requireNonNull(array).ifEmptyElse(() -> Stream.of(JsPair.of(path,
+                                                                           array
+                                                                          )),
+                                                 () -> range(0,
+                                                             array.size()
+                                                            ).mapToObj(pair -> JsPair.of(path.index(pair),
+                                                                                         array.get(Index.of(pair))
+
+                                                                                        ))
+                                                             .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
+                                                                                                                   pair.path
+                                                                                                                  ),
+                                                                                                  a -> streamOfArr(a,
+                                                                                                                   pair.path
+                                                                                                                  ),
+                                                                                                  e -> Stream.of(pair)
+                                                                                                 )
+                                                                                      .apply(pair.elem)
+                                                                     )
+                                                );
+
+
+    }
+
+
+    protected Trampoline<JsArray> appendAllBackTrampoline(final JsArray arr1,
+                                                          final JsArray arr2
+                                                         )
+    {
+        assert arr1 != null;
+        assert arr2 != null;
+        if (arr2.isEmpty()) return Trampoline.done(arr1);
+        if (arr1.isEmpty()) return Trampoline.done(arr2);
+        return Trampoline.more(() -> appendAllBackTrampoline(arr1.append(arr2.head()),
+                                                             arr2.tail()
+                                                            ));
+    }
+
+    protected Trampoline<JsArray> appendAllFrontTrampoline(final JsArray arr1,
+                                                           final JsArray arr2
+                                                          )
+    {
+        assert arr1 != null;
+        assert arr2 != null;
+        if (arr2.isEmpty()) return Trampoline.done(arr1);
+        if (arr1.isEmpty()) return Trampoline.done(arr2);
+        return Trampoline.more(() -> appendAllFrontTrampoline(arr1.prepend(arr2.last()),
+                                                              arr2.init()
+                                                             ));
+    }
+
+
+    @SuppressWarnings("squid:S1602")
+        // curly braces makes IntelliJ to format the code in a more legible way
+    BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsValue> pseq)
+    {
+        return (index, tail) ->
+        {
+            return index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
+                                                                    .isNotJson()
+            ||
+            (tail.head()
+                 .isKey() && pseq.get(index)
+                                 .isArray()
+            )
+            ||
+            (tail.head()
+                 .isIndex() && pseq.get(index)
+                                   .isObj()
+            );
+        };
+    }
+
+    static Vector<JsValue> parse(final JsonParser parser
+                                ) throws IOException
+    {
+        Vector<JsValue> root = Vector.empty();
+        while (true)
+        {
+            JsonToken token = parser.nextToken();
+            JsValue elem;
+            switch (token.id())
+            {
+                case JsonTokenId.ID_END_ARRAY:
+                    return root;
+                case JsonTokenId.ID_START_OBJECT:
+                    elem = new ImmutableJsObj(AbstractJsObj.parse(parser)
+                    );
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    elem = new JsArray(parse(parser
+                                            )
+                    );
+                    break;
+                case JsonTokenId.ID_STRING:
+                    elem = JsStr.of(parser.getValueAsString());
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+                    elem = JsNumber.of(parser);
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+                    elem = JsBigDec.of(parser.getDecimalValue());
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    elem = TRUE;
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    elem = FALSE;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    elem = NULL;
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(token.name());
+            }
+            root = root.append(elem);
+        }
+    }
+
+    static Vector<JsValue> parse(final JsonParser parser,
+                                 final ParseBuilder.Options options,
+                                 final JsPath path
+                                ) throws IOException
+    {
+        JsonToken elem;
+        JsPair pair;
+        Vector<JsValue> root = Vector.empty();
+        final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
+        while ((elem = parser.nextToken()) != JsonToken.END_ARRAY)
+        {
+            final JsPath currentPath = path.inc();
+            switch (elem.id())
+            {
+                case JsonTokenId.ID_STRING:
+
+                    pair = JsPair.of(currentPath,
+                                     JsStr.of(parser.getValueAsString())
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_NUMBER_INT:
+
+                    pair = JsPair.of(currentPath,
+                                     JsNumber.of(parser)
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_NUMBER_FLOAT:
+
+                    pair = JsPair.of(currentPath,
+                                     JsBigDec.of(parser.getDecimalValue())
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_TRUE:
+                    pair = JsPair.of(currentPath,
+                                     TRUE
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+
+                    break;
+                case JsonTokenId.ID_FALSE:
+                    pair = JsPair.of(currentPath,
+                                     FALSE
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                    break;
+                case JsonTokenId.ID_NULL:
+                    pair = JsPair.of(currentPath,
+                                     NULL
+                                    );
+                    root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
+                    break;
+                case JsonTokenId.ID_START_OBJECT:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        root = root.append(new ImmutableJsObj(AbstractJsObj.parse(parser,
+                                                                                  options,
+                                                                                  currentPath
+                                                                                 )
+                                           )
+                                          );
+                    }
+                    break;
+                case JsonTokenId.ID_START_ARRAY:
+                    if (options.keyFilter.test(currentPath))
+                    {
+                        root = root.append(new JsArray(parse(parser,
+                                                             options,
+                                                             currentPath.index(-1)
+                                                            )
+                                           )
+                                          );
+                    }
+                    break;
+                default:
+                    throw InternalError.tokenNotExpected(elem.name());
+
+
+            }
+        }
+        return root;
     }
 
 }

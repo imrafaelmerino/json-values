@@ -20,7 +20,7 @@ import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
-import static jsonvalues.AbstractJsArray.streamOfArr;
+import static jsonvalues.JsArray.streamOfArr;
 import static jsonvalues.JsBool.FALSE;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNothing.NOTHING;
@@ -441,7 +441,7 @@ abstract class AbstractJsObj implements JsObj
                                                if (a.isObj() && it.isObj()) return a.asJsObj()
                                                                                     .same(it.asJsObj());
                                                else if (a.isArray() && it.isArray()) return a.asJsArray()
-                                                                                             .same(it.asJsArray());
+                                                                                             .equals(it.asJsArray());
                                                else return it.equals(a);
                                            })
                                       .getOrElse(false) && other.keySet()
@@ -509,7 +509,7 @@ abstract class AbstractJsObj implements JsObj
                     );
                     break;
                 case JsonTokenId.ID_START_ARRAY:
-                    elem = new ImmutableJsArray(AbstractJsArray.parse(parser
+                    elem = new JsArray(JsArray.parse(parser
                                                                                )
 
                     );
@@ -610,7 +610,7 @@ abstract class AbstractJsObj implements JsObj
                     if (options.keyFilter.test(currentPath))
                     {
                         map = map.put(key,
-                                      new ImmutableJsArray(AbstractJsArray.parse(parser,
+                                      new JsArray(JsArray.parse(parser,
                                                                                  options,
                                                                                            currentPath.index(-1)
                                                                                           )

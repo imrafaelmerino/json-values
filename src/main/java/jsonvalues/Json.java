@@ -929,7 +929,7 @@ public interface Json<T extends Json<T>> extends JsValue
             final JsonToken event = parser.nextToken();
             if (event == START_ARRAY)
             {
-                return new ImmutableJsArray(AbstractJsArray.parse(parser
+                return new JsArray(JsArray.parse(parser
                                                                  )
                 );
             }
@@ -964,7 +964,7 @@ public interface Json<T extends Json<T>> extends JsValue
         try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
         {
             final JsonToken event = parser.nextToken();
-            if (event == START_ARRAY) return new ImmutableJsArray(AbstractJsArray.parse(parser,
+            if (event == START_ARRAY) return new JsArray(JsArray.parse(parser,
                                                                                         builder.create(),
                                                                                         JsPath.empty()
                                                                                               .index(-1)

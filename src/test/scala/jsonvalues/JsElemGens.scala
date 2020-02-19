@@ -106,7 +106,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsNumberGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                                                  )
   }
 
@@ -118,7 +118,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsStrGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector))
+    } yield new JsArray(ScalaToJava.toVavrVector(vector))
 
   }
 
@@ -130,7 +130,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsBoolGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
@@ -143,7 +143,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsIntGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
@@ -156,7 +156,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsDoubleGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
@@ -170,7 +170,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsObj](size,
                                                 jsObjGen
                                                 )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
@@ -183,7 +183,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsLongGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
@@ -196,7 +196,7 @@ case class JsElemGens(strGen: Gen[String] = Gen.oneOf(Characters.ALPHABET),
       vector <- Gen.containerOfN[Vector, JsValue](size,
                                                   jsValueGen
                                                   )
-    } yield new ImmutableJsArray(ScalaToJava.toVavrVector(vector)
+    } yield new JsArray(ScalaToJava.toVavrVector(vector)
                                  )
 
   }
