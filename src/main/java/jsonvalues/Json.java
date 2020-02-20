@@ -933,7 +933,7 @@ public interface Json<T extends Json<T>> extends JsValue
                                                                  )
                 );
             }
-            return new ImmutableJsObj(AbstractJsObj.parse(parser
+            return new JsObj(JsObj.parse(parser
                                                          )
 
             );
@@ -972,7 +972,7 @@ public interface Json<T extends Json<T>> extends JsValue
                                                                                        )
 
             );
-            return new ImmutableJsObj(AbstractJsObj.parse(parser,
+            return new JsObj(JsObj.parse(parser,
                                                           builder.create(),
                                                           JsPath.empty()
                                                          )
