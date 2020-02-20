@@ -29,7 +29,7 @@ abstract class JsNumber implements JsValue
                 return JsLong.of(parser.getLongValue());
             }
             catch (JsonParseException ex)
-            {
+    {
                 return JsBigInt.of(parser.getBigIntegerValue());
             }
         }

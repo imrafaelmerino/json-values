@@ -35,8 +35,8 @@ public final class MatchExp
         return e ->
         {
             if (e.isNotJson()) ifValue.accept(e);
-            if (e.isObj()) ifObj.accept(e.asJsObj());
-            if (e.isArray()) ifArray.accept(e.asJsArray());
+            if (e.isObj()) ifObj.accept(e.toJsObj());
+            if (e.isArray()) ifArray.accept(e.toJsArray());
         };
 
     }
@@ -54,7 +54,7 @@ public final class MatchExp
                                                     )
     {
 
-        return elem -> elem.isArray() ? requireNonNull(ifArr).apply(elem.asJsArray()) : requireNonNull(ifNotArr).apply(elem);
+        return elem -> elem.isArray() ? requireNonNull(ifArr).apply(elem.toJsArray()) : requireNonNull(ifNotArr).apply(elem);
     }
 
     /**
@@ -68,7 +68,7 @@ public final class MatchExp
                                                       final Function<? super JsValue, T> ifNotBoolean
                                                      )
     {
-        return e -> e.isBool() ? requireNonNull(ifBoolean).apply(e.asJsBool().x) : requireNonNull(ifNotBoolean).apply(e);
+        return e -> e.isBool() ? requireNonNull(ifBoolean).apply(e.toJsBool().value) : requireNonNull(ifNotBoolean).apply(e);
     }
 
     /**
@@ -86,8 +86,8 @@ public final class MatchExp
     {
         return elem ->
         {
-            if (elem.isBigDec()) return requireNonNull(ifBigDecimal).apply(elem.asJsBigDec().x);
-            if (elem.isDouble()) return requireNonNull(ifDouble).apply(elem.asJsDouble().x);
+            if (elem.isBigDec()) return requireNonNull(ifBigDecimal).apply(elem.toJsBigDec().value);
+            if (elem.isDouble()) return requireNonNull(ifDouble).apply(elem.toJsDouble().value);
             return requireNonNull(ifOther).apply(elem);
         };
 
@@ -110,9 +110,9 @@ public final class MatchExp
     {
         return elem ->
         {
-            if (elem.isLong()) return requireNonNull(ifLong).apply(elem.asJsLong().x);
-            if (elem.isInt()) return requireNonNull(ifInt).apply(elem.asJsInt().x);
-            if (elem.isBigInt()) return requireNonNull(ifBigInt).apply(elem.asJsBigInt().x);
+            if (elem.isLong()) return requireNonNull(ifLong).apply(elem.toJsLong().value);
+            if (elem.isInt()) return requireNonNull(ifInt).apply(elem.toJsInt().value);
+            if (elem.isBigInt()) return requireNonNull(ifBigInt).apply(elem.toJsBigInt().value);
             return requireNonNull(ifOther).apply(elem);
         };
 
@@ -136,8 +136,8 @@ public final class MatchExp
         {
 
 
-            if (elem.isObj()) return requireNonNull(ifObj).apply(elem.asJsObj());
-            if (elem.isArray()) return requireNonNull(ifArr).apply(elem.asJsArray());
+            if (elem.isObj()) return requireNonNull(ifObj).apply(elem.toJsObj());
+            if (elem.isArray()) return requireNonNull(ifArr).apply(elem.toJsArray());
             return ifValue.apply(elem);
         };
     }
@@ -154,7 +154,7 @@ public final class MatchExp
                                                      )
     {
 
-        return elem -> requireNonNull(elem).isJson() ? requireNonNull(ifJson).apply(elem.asJson()) : requireNonNull(ifNotJson).apply(elem);
+        return elem -> requireNonNull(elem).isJson() ? requireNonNull(ifJson).apply(elem.toJson()) : requireNonNull(ifNotJson).apply(elem);
     }
 
     /**
@@ -185,7 +185,7 @@ public final class MatchExp
     {
         return elem ->
         {
-            if (elem.isObj()) return requireNonNull(ifObj).apply(elem.asJsObj());
+            if (elem.isObj()) return requireNonNull(ifObj).apply(elem.toJsObj());
             else return requireNonNull(ifNotObj).apply(elem);
         };
     }
@@ -222,7 +222,7 @@ public final class MatchExp
                                                      final Function<? super JsValue, T> ifNotStr
                                                     )
     {
-        return elem -> elem.isStr() ? requireNonNull(ifStr).apply(elem.asJsStr().x) : requireNonNull(ifNotStr).apply(elem);
+        return elem -> elem.isStr() ? requireNonNull(ifStr).apply(elem.toJsStr().value) : requireNonNull(ifNotStr).apply(elem);
     }
 
 }

@@ -14,17 +14,22 @@ import static java.util.Objects.requireNonNull;
 public final class JsStr implements JsValue, Comparable<JsStr>
 {
 
+    public static final int ID = 2;
 
     /**
      The string value.
      */
-    public final String x;
+    public final String value;
 
-    private JsStr(String x)
+    private JsStr(String value)
     {
-        this.x = x;
+        this.value = value;
     }
-
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     /**
      Compares two {@code JsStr} objects lexicographically.
      @see String#compareTo(String)
@@ -32,7 +37,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
     @Override
     public int compareTo(final JsStr o)
     {
-        return x.compareTo(requireNonNull(o).x);
+        return value.compareTo(requireNonNull(o).value);
     }
 
 
@@ -47,8 +52,8 @@ public final class JsStr implements JsValue, Comparable<JsStr>
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
         final JsStr thatStr = (JsStr) that;
-        return Objects.equals(x,
-                              thatStr.x
+        return Objects.equals(value,
+                              thatStr.value
                              );
     }
 
@@ -59,7 +64,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
      */
     public boolean test(Predicate<String> predicate)
     {
-        return predicate.test(x);
+        return predicate.test(value);
     }
 
 
@@ -70,7 +75,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
     @Override
     public int hashCode()
     {
-        return x.hashCode();
+        return value.hashCode();
     }
 
     /**
@@ -80,7 +85,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
      */
     public JsStr map(final UnaryOperator<String> fn)
     {
-        return JsStr.of(requireNonNull(fn).apply(x));
+        return JsStr.of(requireNonNull(fn).apply(value));
     }
 
     /**
@@ -100,7 +105,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
     @Override
     public String toString()
     {
-        return "\"" + x + "\"";
+        return "\"" + value + "\"";
     }
 
     @Override

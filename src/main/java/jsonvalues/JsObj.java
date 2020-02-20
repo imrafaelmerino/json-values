@@ -31,6 +31,8 @@ import static jsonvalues.Trampoline.more;
  */
 public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 {
+    private static final int ID = 3;
+
     @SuppressWarnings("squid:S3008")//EMPTY should be a valid name
     private static final JsPath EMPTY_PATH = JsPath.empty();
     private volatile int hascode;
@@ -50,6 +52,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     public static final JsObj EMPTY = new JsObj(HashMap.empty());
 
     public static JsObj empty(){return EMPTY; }
+
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     /**
      Tries to parse the string into an immutable object.
      @param str the string to be parsed
@@ -126,7 +134,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                      if (!exists) return false;
                                      final JsValue elem = get(JsPath.fromKey(field));
                                      final JsValue thatElem = that.get(JsPath.fromKey(field));
-                                     if (elem.isJson() && thatElem.isJson()) return elem.asJson()
+                                     if (elem.isJson() && thatElem.isJson()) return elem.toJson()
                                                                                         .equals(thatElem,
                                                                                                 ARRAY_AS
                                                                                                );
@@ -532,7 +540,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                          );
         final JsValue bElem = b.get(JsPath.fromKey(head._1));
 
-        return ((bElem.isJson() && bElem.asJson()
+        return ((bElem.isJson() && bElem.toJson()
                                         .equals(head._2,
                                                 ARRAY_AS
                                                )) || bElem.equals(head._2)) ?
@@ -578,8 +586,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
             .isSameType(headOtherElement))
             {//different but same container
                 Json<?> obj = head._2
-                .asJson();
-                Json<?> obj1 = headOtherElement.asJson();
+                .toJson();
+                Json<?> obj1 = headOtherElement.toJson();
 
                 Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
                                                                                                                     obj1,
@@ -798,9 +806,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                       {
                                                           Json<?> obj = a.get(JsPath.empty()
                                                                                     .key(head._1))
-                                                                         .asJson();
+                                                                         .toJson();
                                                           Json<?> obj1 = head._2
-                                                          .asJson();
+                                                          .toJson();
 
                                                           Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
                                                                                                                                                 obj1,
@@ -838,10 +846,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                       .map(it ->
                                            {
                                                final JsValue a = map.get(f).get();
-                                               if (a.isObj() && it.isObj()) return a.asJsObj()
-                                                                                    .equals(it.asJsObj());
-                                               else if (a.isArray() && it.isArray()) return a.asJsArray()
-                                                                                             .equals(it.asJsArray());
+                                               if (a.isObj() && it.isObj()) return a.toJsObj()
+                                                                                    .equals(it.toJsObj());
+                                               else if (a.isArray() && it.isArray()) return a.toJsArray()
+                                                                                             .equals(it.toJsArray());
                                                else return it.equals(a);
                                            })
                                       .getOrElse(false) && other.keySet()
@@ -1325,7 +1333,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                  () -> new JsObj(map.put(head,
                                                                                                                   map.get(head)
                                                                                                                      .get()
-                                                                                                                     .asJson()
+                                                                                                                     .toJson()
                                                                                                                      .appendAll(tail,
                                                                                                                                 elems
                                                                                                                                )
@@ -1376,7 +1384,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                  () -> new JsObj(map.put(head,
                                                                                                                   map.get(head)
                                                                                                                      .get()
-                                                                                                                     .asJson()
+                                                                                                                     .toJson()
                                                                                                                      .append(tail,
                                                                                                                              elem
                                                                                                                             )
@@ -1431,7 +1439,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                  () -> new JsObj(map.put(head,
                                                                                                                   map.get(head)
                                                                                                                      .get()
-                                                                                                                     .asJson()
+                                                                                                                     .toJson()
                                                                                                                      .prependAll(tail,
                                                                                                                                  elems
                                                                                                                                 )
@@ -1485,7 +1493,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                  () -> new JsObj(map.put(head,
                                                                                                                   map.get(head)
                                                                                                                      .get()
-                                                                                                                     .asJson()
+                                                                                                                     .toJson()
                                                                                                                      .prepend(tail,
                                                                                                                               elem
                                                                                                                              )
@@ -1536,7 +1544,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                  () -> new JsObj(map.put(head,
                                                                                                                   map.get(head)
                                                                                                                      .get()
-                                                                                                                     .asJson()
+                                                                                                                     .toJson()
                                                                                                                      .put(tail,
                                                                                                                           fn
                                                                                                                          )

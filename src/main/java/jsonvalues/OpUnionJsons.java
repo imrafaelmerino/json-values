@@ -13,15 +13,15 @@ final class OpUnionJsons
                     )
     {
 
-        if (a.isObj() && b.isObj()) return a.asJsObj()
-                                            .unionAll(b.asJsObj(),
+        if (a.isObj() && b.isObj()) return a.toJsObj()
+                                            .unionAll(b.toJsObj(),
                                                       ARRAY_AS
                                                      );
-        if (ARRAY_AS == JsArray.TYPE.LIST) return a.asJsArray()
-                                                   .unionAll(b.asJsArray()
+        if (ARRAY_AS == JsArray.TYPE.LIST) return a.toJsArray()
+                                                   .unionAll(b.toJsArray()
                                                             );
-        return a.asJsArray()
-                .union(b.asJsArray(),
+        return a.toJsArray()
+                .union(b.toJsArray(),
                        ARRAY_AS
                       );
     }

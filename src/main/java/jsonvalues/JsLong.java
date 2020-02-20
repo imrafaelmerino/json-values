@@ -13,16 +13,22 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsLong extends JsNumber implements Comparable<JsLong>
 {
+    private static final int ID = 7;
 
+    @Override
+    public int id()
+    {
+        return ID;
+    }
 
     /**
      The long primitive.
      */
-    public final long x;
+    public final long value;
 
-    private JsLong(final long x)
+    private JsLong(final long value)
     {
-        this.x = x;
+        this.value = value;
     }
 
 
@@ -33,8 +39,8 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
     @Override
     public int compareTo(final JsLong o)
     {
-        return Long.compare(x,
-                            requireNonNull(o).x
+        return Long.compare(value,
+                            requireNonNull(o).value
                            );
     }
 
@@ -53,11 +59,11 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
         if (!(that instanceof JsNumber)) return false;
         final JsNumber number = (JsNumber) that;
 
-        if (number.isLong()) return x == number.asJsLong().x;
-        if (number.isInt()) return equals(number.asJsInt());
-        if (number.isBigInt()) return equals(number.asJsBigInt());
-        if (number.isBigDec()) return equals(number.asJsBigDec());
-        if (number.isDouble()) return equals(number.asJsDouble());
+        if (number.isLong()) return value == number.toJsLong().value;
+        if (number.isInt()) return equals(number.toJsInt());
+        if (number.isBigInt()) return equals(number.toJsBigInt());
+        if (number.isBigDec()) return equals(number.toJsBigDec());
+        if (number.isDouble()) return equals(number.toJsDouble());
 
         return false;
 
@@ -71,7 +77,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
     public int hashCode()
     {
         final OptionalInt intExact = intValueExact();
-        return intExact.isPresent() ? intExact.getAsInt() : (int) (x ^ (x >>> 32));
+        return intExact.isPresent() ? intExact.getAsInt() : (int) (value ^ (value >>> 32));
     }
 
     /**
@@ -81,7 +87,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public JsLong map(LongUnaryOperator fn)
     {
-        return JsLong.of(requireNonNull(fn).applyAsLong(x));
+        return JsLong.of(requireNonNull(fn).applyAsLong(value));
     }
 
     /**
@@ -91,7 +97,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public JsLong plus(JsLong that)
     {
-        return JsLong.of(x + that.x);
+        return JsLong.of(value + that.value);
     }
 
     /**
@@ -101,7 +107,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public JsLong minus(JsLong that)
     {
-        return JsLong.of(x - that.x);
+        return JsLong.of(value - that.value);
     }
 
     /**
@@ -111,7 +117,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public JsLong times(JsLong that)
     {
-        return JsLong.of(x * that.x);
+        return JsLong.of(value * that.value);
     }
 
     /**
@@ -121,7 +127,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public boolean test(LongPredicate predicate)
     {
-        return predicate.test(x);
+        return predicate.test(value);
     }
 
 
@@ -132,7 +138,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
     @Override
     public String toString()
     {
-        return Long.toString(x);
+        return Long.toString(value);
     }
 
     /**
@@ -153,7 +159,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
     {
         try
         {
-            return OptionalInt.of(Math.toIntExact(x));
+            return OptionalInt.of(Math.toIntExact(value));
         }
         catch (ArithmeticException e)
         {
@@ -186,7 +192,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public boolean equals(JsInt jsInt)
     {
-        return x == (long) requireNonNull(jsInt).x;
+        return value == (long) requireNonNull(jsInt).value;
     }
 
     /**
@@ -196,7 +202,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
      */
     public boolean equals(JsDouble jsDouble)
     {
-        return (double) x == requireNonNull(jsDouble).x;
+        return (double) value == requireNonNull(jsDouble).value;
     }
 
     @Override

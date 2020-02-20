@@ -12,16 +12,22 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsInt extends JsNumber implements Comparable<JsInt>
 {
+    private static final int ID = 9;
 
+    @Override
+    public int id()
+    {
+        return ID;
+    }
 
     /**
      The integer value.
      */
-    public final int x;
+    public final int value;
 
-    private JsInt(final int x)
+    private JsInt(final int value)
     {
-        this.x = x;
+        this.value = value;
     }
 
     /**
@@ -31,8 +37,8 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
     @Override
     public int compareTo(final JsInt o)
     {
-        return Integer.compare(x,
-                               requireNonNull(o).x
+        return Integer.compare(value,
+                               requireNonNull(o).value
                               );
     }
 
@@ -52,11 +58,11 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
         if (!(that instanceof JsNumber)) return false;
         final JsNumber number = (JsNumber) that;
 
-        if (number.isInt()) return x == number.asJsInt().x;
-        if (number.isLong()) return (long) x == number.asJsLong().x;
-        if (number.isBigInt()) return equals(number.asJsBigInt());
-        if (number.isBigDec()) return equals(number.asJsBigDec());
-        if (number.isDouble()) return equals(number.asJsDouble());
+        if (number.isInt()) return value == number.toJsInt().value;
+        if (number.isLong()) return (long) value == number.toJsLong().value;
+        if (number.isBigInt()) return equals(number.toJsBigInt());
+        if (number.isBigDec()) return equals(number.toJsBigDec());
+        if (number.isDouble()) return equals(number.toJsDouble());
 
         return false;
     }
@@ -68,7 +74,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
     @Override
     public int hashCode()
     {
-        return x;
+        return value;
     }
 
 
@@ -79,7 +85,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
     @Override
     public String toString()
     {
-        return Integer.toString(x);
+        return Integer.toString(value);
     }
 
     /**
@@ -99,7 +105,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public JsInt map(IntUnaryOperator fn)
     {
-        return JsInt.of(requireNonNull(fn).applyAsInt(x));
+        return JsInt.of(requireNonNull(fn).applyAsInt(value));
     }
 
     /**
@@ -109,7 +115,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public JsInt plus(JsInt that)
     {
-        return JsInt.of(x + that.x);
+        return JsInt.of(value + that.value);
     }
 
     /**
@@ -119,7 +125,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public JsInt minus(JsInt that)
     {
-        return JsInt.of(x - that.x);
+        return JsInt.of(value - that.value);
     }
 
     /**
@@ -129,7 +135,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public JsInt times(JsInt that)
     {
-        return JsInt.of(x * that.x);
+        return JsInt.of(value * that.value);
     }
 
     /**
@@ -139,7 +145,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public boolean test(IntPredicate predicate)
     {
-        return requireNonNull(predicate).test(x);
+        return requireNonNull(predicate).test(value);
     }
 
     /**
@@ -179,7 +185,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
      */
     public boolean equals(JsDouble jsDouble)
     {
-        return (double) x == requireNonNull(jsDouble).x;
+        return (double) value == requireNonNull(jsDouble).value;
     }
 
     @Override

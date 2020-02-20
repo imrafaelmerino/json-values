@@ -18,15 +18,24 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
 {
+
+    public static final int ID = 8;
+
+
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     /**
      The big decimal value
      */
-    public final BigDecimal x;
+    public final BigDecimal value;
 
 
-    private JsBigDec(final BigDecimal x)
+    private JsBigDec(final BigDecimal value)
     {
-        this.x = x;
+        this.value = value;
     }
 
     /**
@@ -36,7 +45,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     @Override
     public int compareTo(final JsBigDec o)
     {
-        return x.compareTo(requireNonNull(o).x);
+        return value.compareTo(requireNonNull(o).value);
     }
 
 
@@ -53,11 +62,11 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
         if (that == null) return false;
         if (!(that instanceof JsNumber)) return false;
         final JsNumber number = (JsNumber) that;
-        if (number.isBigDec()) return x.compareTo(number.asJsBigDec().x) == 0;
-        if (number.isBigInt()) return equals(number.asJsBigInt());
-        if (number.isInt()) return equals(number.asJsInt());
-        if (number.isLong()) return equals(number.asJsLong());
-        if (number.isDouble()) return equals(number.asJsDouble());
+        if (number.isBigDec()) return value.compareTo(number.toJsBigDec().value) == 0;
+        if (number.isBigInt()) return equals(number.toJsBigInt());
+        if (number.isInt()) return equals(number.toJsInt());
+        if (number.isLong()) return equals(number.toJsLong());
+        if (number.isDouble()) return equals(number.toJsDouble());
         return false;
     }
 
@@ -77,7 +86,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
 
         final Optional<BigInteger> optBigInt = bigIntegerExact();
         return optBigInt.map(BigInteger::hashCode)
-                        .orElseGet(x::hashCode);
+                        .orElseGet(value::hashCode);
 
     }
 
@@ -88,7 +97,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
      */
     public JsBigDec map(UnaryOperator<BigDecimal> fn)
     {
-        return JsBigDec.of(requireNonNull(fn).apply(x));
+        return JsBigDec.of(requireNonNull(fn).apply(value));
     }
 
     /**
@@ -98,7 +107,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
      */
     public boolean test(Predicate<BigDecimal> predicate)
     {
-        return predicate.test(x);
+        return predicate.test(value);
     }
 
     /**
@@ -119,7 +128,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     @Override
     public String toString()
     {
-        return x.toString();
+        return value.toString();
     }
 
     /**
@@ -130,7 +139,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     {
         try
         {
-            return Optional.of(x.toBigIntegerExact());
+            return Optional.of(value.toBigIntegerExact());
         }
         catch (ArithmeticException e)
         {
@@ -147,7 +156,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     {
         try
         {
-            return OptionalInt.of(x.intValueExact());
+            return OptionalInt.of(value.intValueExact());
         }
         catch (ArithmeticException e)
         {
@@ -163,7 +172,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     {
         try
         {
-            return OptionalLong.of(x.longValueExact());
+            return OptionalLong.of(value.longValueExact());
         }
         catch (ArithmeticException e)
         {
@@ -179,7 +188,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
      */
     public OptionalDouble doubleValueExact()
     {
-        final double value = x.doubleValue();
+        final double value = this.value.doubleValue();
         if (value == Double.NEGATIVE_INFINITY) return OptionalDouble.empty();
         if (value == Double.POSITIVE_INFINITY) return OptionalDouble.empty();
         return OptionalDouble.of(value);
@@ -195,7 +204,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     {
         final Optional<BigInteger> optional = bigIntegerExact();
         return optional.isPresent() && optional.get()
-                                               .equals(requireNonNull(jsBigInt).x);
+                                               .equals(requireNonNull(jsBigInt).value);
     }
 
     /**
@@ -206,7 +215,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     public boolean equals(JsInt jsInt)
     {
         final OptionalInt optional = intValueExact();
-        return optional.isPresent() && optional.getAsInt() == requireNonNull(jsInt).x;
+        return optional.isPresent() && optional.getAsInt() == requireNonNull(jsInt).value;
     }
 
     /**
@@ -217,7 +226,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     public boolean equals(JsLong jsLong)
     {
         final OptionalLong optional = longValueExact();
-        return optional.isPresent() && optional.getAsLong() == requireNonNull(jsLong).x;
+        return optional.isPresent() && optional.getAsLong() == requireNonNull(jsLong).value;
     }
 
     /**
@@ -229,8 +238,8 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
     {
 
         //errorProne warning BigDecimalEquals -> compareTo instead of equals so 2.0 = 2.000
-        return BigDecimal.valueOf(requireNonNull(jsDouble).x)
-                         .compareTo(x) == 0;
+        return BigDecimal.valueOf(requireNonNull(jsDouble).value)
+                         .compareTo(value) == 0;
     }
 
     @Override

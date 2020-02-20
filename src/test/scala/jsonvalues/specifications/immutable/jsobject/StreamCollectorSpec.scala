@@ -27,12 +27,12 @@ class StreamCollectorSpec extends BasePropSpec
 
             List(
               testPredicateIf(p => p.elem.isStr,
-                              pair => js.getStr(pair.path).get == pair.elem.asJsStr.x
+                              pair => js.getStr(pair.path).get == pair.elem.toJsStr.value
                               ),
               testPredicateIf(p => p.elem.isInt,
                               pair =>
                               {
-                                val n = pair.elem.asJsInt.x
+                                val n = pair.elem.toJsInt.value
                                 (js.getInt(pair.path).getAsInt == n) &&
                                 (js.getLong(pair.path).getAsLong == n) &&
                                 (js.getBigInt(pair.path).get() == BigInteger.valueOf(n))
@@ -41,7 +41,7 @@ class StreamCollectorSpec extends BasePropSpec
               testPredicateIf(p => p.elem.isLong,
                               pair =>
                               {
-                                val n = pair.elem.asJsLong.x
+                                val n = pair.elem.toJsLong.value
                                 (js.getLong(pair.path).getAsLong == n) &&
                                 (js.getBigInt(pair.path).get() == BigInteger.valueOf(n))
                               }
@@ -49,19 +49,19 @@ class StreamCollectorSpec extends BasePropSpec
               testPredicateIf(p => p.elem.isDouble,
                               pair =>
                               {
-                                val n = pair.elem.asJsDouble.x
+                                val n = pair.elem.toJsDouble.value
                                 (js.getDouble(pair.path).getAsDouble == n) &&
                                 (js.getBigDecimal(pair.path).get() == java.math.BigDecimal.valueOf(n))
                               }
                               ),
               testPredicateIf(p => p.elem.isBigInt,
-                              pair => js.getBigInt(pair.path).get == pair.elem.asJsBigInt.x
+                              pair => js.getBigInt(pair.path).get == pair.elem.toJsBigInt.value
                               ),
               testPredicateIf(pair => pair.elem.isBigDec,
-                              pair => js.getBigDecimal(pair.path).get == pair.elem.asJsBigDec.x
+                              pair => js.getBigDecimal(pair.path).get == pair.elem.toJsBigDec.value
                               ),
               testPredicateIf(pair => pair.elem.isBool,
-                              pair => js.getBool(pair.path).get == pair.elem.asJsBool.x
+                              pair => js.getBool(pair.path).get == pair.elem.toJsBool.value
                               )
               ).map(f => f(js))
               .reduce(_ && _)
@@ -78,7 +78,7 @@ class StreamCollectorSpec extends BasePropSpec
     check(forAll(jsGen.jsObjGen)
           { js =>
 
-            val function: Function[JsPair, Long] = pair => pair.elem.asJsLong().x
+            val function: Function[JsPair, Long] = pair => pair.elem.toJsLong().value
 
             val value: stream.Stream[Long] = js.streamAll().filter(p => p.elem.isLong || p.elem.isInt).map(function)
             val a = value.reduce((a: Long,

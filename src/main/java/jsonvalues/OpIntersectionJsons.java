@@ -12,14 +12,14 @@ final class OpIntersectionJsons
                             final JsArray.TYPE ARRAY_AS
                            )
     {
-        if (a.isObj() && b.isObj()) return a.asJsObj()
-                                            .intersectionAll(b.asJsObj(),
+        if (a.isObj() && b.isObj()) return a.toJsObj()
+                                            .intersectionAll(b.toJsObj(),
                                                              ARRAY_AS
                                                             );
-        if (ARRAY_AS == JsArray.TYPE.LIST) return a.asJsArray()
-                                                   .intersectionAll(b.asJsArray());
-        return a.asJsArray()
-                .intersection(b.asJsArray(),
+        if (ARRAY_AS == JsArray.TYPE.LIST) return a.toJsArray()
+                                                   .intersectionAll(b.toJsArray());
+        return a.toJsArray()
+                .intersection(b.toJsArray(),
                               ARRAY_AS
                              );
     }

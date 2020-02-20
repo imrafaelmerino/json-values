@@ -44,7 +44,7 @@ public final class JsPair
     {
 
         if (this.elem.isInt()) return of(path,
-                                         elem.asJsInt()
+                                         elem.toJsInt()
                                              .map(operator)
                                         );
 
@@ -61,7 +61,7 @@ public final class JsPair
     {
 
         if (this.elem.isStr()) return of(path,
-                                         elem.asJsStr()
+                                         elem.toJsStr()
                                              .map(requireNonNull(fn))
                                         );
         return this;
@@ -272,7 +272,7 @@ public final class JsPair
     {
 
         return elem.isJson() ? requireNonNull(ifJson).apply(path,
-                                                            elem.asJson()
+                                                            elem.toJson()
                                                            ) : requireNonNull(ifNotJson).apply(path,
                                                                                                elem
                                                                                               );
@@ -293,10 +293,10 @@ public final class JsPair
                            )
     {
         if (elem.isObj()) return requireNonNull(ifJsOb).apply(path,
-                                                              elem.asJsObj()
+                                                              elem.toJsObj()
                                                              );
         if (elem.isArray()) return requireNonNull(ifJsArr).apply(path,
-                                                                 elem.asJsArray()
+                                                                 elem.toJsArray()
                                                                 );
         return requireNonNull(ifNotJson).apply(path,
                                                elem

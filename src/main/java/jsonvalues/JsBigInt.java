@@ -15,14 +15,21 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
 {
+    public static final int ID = 6;
+
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     /**
      the big integer value.
      */
-    public final BigInteger x;
+    public final BigInteger value;
 
-    private JsBigInt(final BigInteger x)
+    private JsBigInt(final BigInteger value)
     {
-        this.x = x;
+        this.value = value;
     }
 
     /**
@@ -32,7 +39,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     @Override
     public int compareTo(final JsBigInt o)
     {
-        return x.compareTo(requireNonNull(o).x);
+        return value.compareTo(requireNonNull(o).value);
     }
 
 
@@ -49,11 +56,11 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
         if (that == null) return false;
         if (!(that instanceof JsNumber)) return false;
         final JsNumber number = (JsNumber) that;
-        if (number.isBigInt()) return x.equals(number.asJsBigInt().x);
-        if (number.isInt()) return equals(number.asJsInt());
-        if (number.isLong()) return equals(number.asJsLong());
-        if (number.isBigDec()) return equals(number.asJsBigDec());
-        if (number.isDouble()) return equals(number.asJsDouble());
+        if (number.isBigInt()) return value.equals(number.toJsBigInt().value);
+        if (number.isInt()) return equals(number.toJsInt());
+        if (number.isLong()) return equals(number.toJsLong());
+        if (number.isBigDec()) return equals(number.toJsBigDec());
+        if (number.isDouble()) return equals(number.toJsDouble());
         return false;
     }
 
@@ -72,7 +79,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
             return JsLong.of(optLong.getAsLong())
                          .hashCode();
 
-        return x.hashCode();
+        return value.hashCode();
 
     }
 
@@ -83,7 +90,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
      */
     public JsBigInt map(UnaryOperator<BigInteger> fn)
     {
-        return JsBigInt.of(requireNonNull(fn).apply(x));
+        return JsBigInt.of(requireNonNull(fn).apply(value));
     }
 
     /**
@@ -93,7 +100,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
      */
     public boolean test(Predicate<BigInteger> predicate)
     {
-        return predicate.test(x);
+        return predicate.test(value);
     }
 
     /**
@@ -113,7 +120,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     @Override
     public String toString()
     {
-        return x.toString();
+        return value.toString();
     }
 
     /**
@@ -124,7 +131,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     {
         try
         {
-            return OptionalInt.of(x.intValueExact());
+            return OptionalInt.of(value.intValueExact());
         }
         catch (ArithmeticException e)
         {
@@ -141,7 +148,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     {
         try
         {
-            return OptionalLong.of(x.longValueExact());
+            return OptionalLong.of(value.longValueExact());
         }
         catch (ArithmeticException e)
         {
@@ -168,7 +175,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     public boolean equals(JsInt jsInt)
     {
         final OptionalInt optional = intValueExact();
-        return optional.isPresent() && optional.getAsInt() == requireNonNull(jsInt).x;
+        return optional.isPresent() && optional.getAsInt() == requireNonNull(jsInt).value;
     }
 
     /**
@@ -179,7 +186,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     public boolean equals(JsLong jsLong)
     {
         final OptionalLong optional = longValueExact();
-        return optional.isPresent() && optional.getAsLong() == requireNonNull(jsLong).x;
+        return optional.isPresent() && optional.getAsLong() == requireNonNull(jsLong).value;
     }
 
     /**

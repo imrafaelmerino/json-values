@@ -7,6 +7,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class JsNull implements JsValue
 {
+    public static final int ID = 1;
+
+
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     /**
      * The singleton null value.
      */

@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -108,78 +107,78 @@ public class TestJsElems
     {
         Assertions.assertThrows(UserError.class,
                                 () -> JsInt.of(1)
-                                           .asJson()
+                                           .toJson()
                                );
         Assertions.assertThrows(UserError.class,
                                 () -> JsInt.of(1)
-                                           .asJsStr()
+                                           .toJsStr()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsInt.of(1)
-                                           .asJsObj()
+                                           .toJsObj()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsStr.of("1")
-                                           .asJsInt()
+                                           .toJsInt()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsStr.of("1")
-                                           .asJsBigInt()
+                                           .toJsBigInt()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsStr.of("1")
-                                           .asJsBigDec()
+                                           .toJsBigDec()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsDouble.of(1d)
-                                              .asJsInt()
+                                              .toJsInt()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsDouble.of(1d)
-                                              .asJsStr()
+                                              .toJsStr()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsLong.of(1)
-                                            .asJsStr()
+                                            .toJsStr()
                                );
 
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsStr()
+                                              .toJsStr()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsArray()
+                                              .toJsArray()
                                );
 
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsDouble()
+                                              .toJsDouble()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsInt()
+                                              .toJsInt()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsLong()
+                                              .toJsLong()
                                );
 
         Assertions.assertThrows(UserError.class,
                                 () -> JsBigInt.of(BigInteger.ONE)
-                                              .asJsBool()
+                                              .toJsBool()
                                );
     }
 
@@ -237,7 +236,7 @@ public class TestJsElems
         final JsPair pair1 = JsPair.of(JsPath.path("/a/b/1"),
                                        JsInt.of(1)
                                       )
-                                   .mapElem(e -> e.asJsInt()
+                                   .mapElem(e -> e.toJsInt()
                                                   .map(i -> i + 1));
 
         Assertions.assertEquals(JsPair.of(JsPath.path("/a/b/1"),

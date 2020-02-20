@@ -24,12 +24,12 @@ import static java.util.Objects.requireNonNull;
  */
 public interface JsValue
 {
-
+    int id();
     /**
      @return this JsElem as a JsBool
      @throws UserError if this JsElem is not a JsBool
      */
-    default JsBool asJsBool()
+    default JsBool toJsBool()
     {
         try
         {
@@ -77,7 +77,7 @@ public interface JsValue
      @return this JsElem as a JsInt
      @throws UserError if this JsElem is not a JsInt
      */
-    default JsInt asJsInt()
+    default JsInt toJsInt()
     {
         try
         {
@@ -103,14 +103,14 @@ public interface JsValue
      */
     default boolean isInt(IntPredicate predicate)
     {
-        return isInt() && predicate.test(asJsInt().x);
+        return isInt() && predicate.test(toJsInt().value);
     }
 
     /**
      @return this JsElem as a JsDouble
      @throws UserError if this JsElem is not a JsDouble
      */
-    default JsDouble asJsDouble()
+    default JsDouble toJsDouble()
     {
         try
         {
@@ -136,18 +136,18 @@ public interface JsValue
      */
     default boolean isDouble(DoublePredicate predicate)
     {
-        return isDouble() && predicate.test(asJsDouble().x);
+        return isDouble() && predicate.test(toJsDouble().value);
     }
 
     /**
      @return this JsElem as a JsBigDec
      @throws UserError if this JsElem is not a JsBigDec or a JsDouble
      */
-    default JsBigDec asJsBigDec()
+    default JsBigDec toJsBigDec()
     {
         try
         {
-            if (isDouble()) return JsBigDec.of(BigDecimal.valueOf(asJsDouble().x));
+            if (isDouble()) return JsBigDec.of(BigDecimal.valueOf(toJsDouble().value));
             else return ((JsBigDec) this);
         }
         catch (ClassCastException e)
@@ -171,18 +171,18 @@ public interface JsValue
      */
     default boolean isBigDec(Predicate<BigDecimal> predicate)
     {
-        return isBigDec() && predicate.test(asJsBigDec().x);
+        return isBigDec() && predicate.test(toJsBigDec().value);
     }
 
     /**
      @return this JsElem as a JsLong
      @throws UserError if this JsElem is not a JsLong or a JsInt
      */
-    default JsLong asJsLong()
+    default JsLong toJsLong()
     {
         try
         {
-            if (isInt()) return JsLong.of(asJsInt().x);
+            if (isInt()) return JsLong.of(toJsInt().value);
             else return ((JsLong) this);
         }
         catch (ClassCastException e)
@@ -205,7 +205,7 @@ public interface JsValue
      */
     default boolean isLong(LongPredicate predicate)
     {
-        return isLong() && predicate.test(asJsLong().x);
+        return isLong() && predicate.test(toJsLong().value);
     }
 
     /**
@@ -214,11 +214,11 @@ public interface JsValue
      */
     //S1452: Json<?> has only two possible types: JsObj or JsArr,
     @SuppressWarnings("squid:S1452")
-    default Json<?> asJson()
+    default Json<?> toJson()
     {
 
-        if (isObj()) return asJsObj();
-        else if (isArray()) return asJsArray();
+        if (isObj()) return toJsObj();
+        else if (isArray()) return toJsArray();
         else throw UserError.isNotAJson(this);
 
     }
@@ -246,14 +246,14 @@ public interface JsValue
      */
     default boolean isJson(Predicate<Json<?>> predicate)
     {
-        return isJson() && predicate.test(asJson());
+        return isJson() && predicate.test(toJson());
     }
 
     /**
      @return this JsElem as a JsObj
      @throws UserError if this JsElem is not a JsObj
      */
-    default JsObj asJsObj()
+    default JsObj toJsObj()
     {
         try
         {
@@ -279,14 +279,14 @@ public interface JsValue
      */
     default boolean isObj(Predicate<JsObj> predicate)
     {
-        return isObj() && predicate.test(asJsObj());
+        return isObj() && predicate.test(toJsObj());
     }
 
     /**
      @return this JsElem as a JsArray
      @throws UserError if this JsElem is not a JsArray
      */
-    default JsArray asJsArray()
+    default JsArray toJsArray()
     {
         try
         {
@@ -314,14 +314,14 @@ public interface JsValue
      */
     default boolean isArray(Predicate<JsArray> predicate)
     {
-        return isArray() && predicate.test(asJsArray());
+        return isArray() && predicate.test(toJsArray());
     }
 
     /**
      @return this JsElem as a JsStr
      @throws UserError if this JsElem is not a JsStr
      */
-    default JsStr asJsStr()
+    default JsStr toJsStr()
     {
         try
         {
@@ -347,19 +347,19 @@ public interface JsValue
      */
     default boolean isStr(Predicate<String> predicate)
     {
-        return isStr() && predicate.test(asJsStr().x);
+        return isStr() && predicate.test(toJsStr().value);
     }
 
     /**
      @return this JsElem as a JsBigInt
      @throws UserError if this JsElem is not a JsBigInt or JsLong or JsInt
      */
-    default JsBigInt asJsBigInt()
+    default JsBigInt toJsBigInt()
     {
         try
         {
-            if (isInt()) return JsBigInt.of(BigInteger.valueOf(asJsInt().x));
-            if (isLong()) return JsBigInt.of(BigInteger.valueOf(asJsLong().x));
+            if (isInt()) return JsBigInt.of(BigInteger.valueOf(toJsInt().value));
+            if (isLong()) return JsBigInt.of(BigInteger.valueOf(toJsLong().value));
             return ((JsBigInt) this);
         }
         catch (ClassCastException e)
@@ -383,7 +383,7 @@ public interface JsValue
      */
     default boolean isBigInt(Predicate<BigInteger> predicate)
     {
-        return isBigInt() && predicate.test(asJsBigInt().x);
+        return isBigInt() && predicate.test(toJsBigInt().value);
     }
 
     /**

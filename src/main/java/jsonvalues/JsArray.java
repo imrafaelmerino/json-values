@@ -37,6 +37,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
 {
     public static JsArray EMPTY = new JsArray(Vector.empty());
+    public static final int ID = 4;
     private volatile int hashcode;
     //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
     //is a recommendation from Effective Java to apply the idiom single check for lazy initialization
@@ -104,7 +105,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                               )),
                                                                                  () -> new JsArray(seq.update(index,
                                                                                                               seq.get(index)
-                                                                                                                 .asJson()
+                                                                                                                 .toJson()
                                                                                                                  .append(tail,
                                                                                                                          elem
                                                                                                                         )
@@ -176,7 +177,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                                               )),
                                                                                                  () -> new JsArray(seq.update(index,
                                                                                                                               seq.get(index)
-                                                                                                                                 .asJson()
+                                                                                                                                 .toJson()
                                                                                                                                  .appendAll(tail,
                                                                                                                                             elems
                                                                                                                                            )
@@ -346,6 +347,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
+    public JsValue get(final int i)
+    {
+        return seq.apply(0);
+    }
+
     /**
      equals method is inherited, so it's implemented. The purpose of this method is to cache
      the hashcode once calculated. the object is immutable and it won't change
@@ -429,6 +435,12 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
         return intersectionAll(this,
                                requireNonNull(that)
                               ).get();
+    }
+
+    @Override
+    public int id()
+    {
+        return ID;
     }
 
     public boolean isArray()
@@ -1092,7 +1104,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                               )),
                                                                                  () -> new JsArray(seq.update(index,
                                                                                                               seq.get(index)
-                                                                                                                 .asJson()
+                                                                                                                 .toJson()
                                                                                                                  .prepend(tail,
                                                                                                                           elem
                                                                                                                          )
@@ -1162,7 +1174,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                                               )),
                                                                                                  () -> new JsArray(seq.update(index,
                                                                                                                               seq.get(index)
-                                                                                                                                 .asJson()
+                                                                                                                                 .toJson()
                                                                                                                                  .prependAll(tail,
                                                                                                                                              elems
                                                                                                                                             )
@@ -1219,7 +1231,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                  },
                                                                                  () -> new JsArray(seq.update(index,
                                                                                                               seq.get(index)
-                                                                                                                 .asJson()
+                                                                                                                 .toJson()
                                                                                                                  .put(tail,
                                                                                                                       fn
                                                                                                                      )
@@ -1492,8 +1504,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
         if (head.isJson() && head.isSameType(otherHead))
         {
-            final Json<?> obj = head.asJson();
-            final Json<?> obj1 = otherHead.asJson();
+            final Json<?> obj = head.toJson();
+            final Json<?> obj1 = otherHead.toJson();
 
             Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
                                                                                                                 obj1,
@@ -1646,8 +1658,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                      );
         if (head.isJson() && head.isSameType(otherHead))
         {
-            final Json<?> obj = head.asJson();
-            final Json<?> obj1 = otherHead.asJson();
+            final Json<?> obj = head.toJson();
+            final Json<?> obj1 = otherHead.toJson();
             Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
                                                                                                   obj1,
                                                                                                   JsArray.TYPE.LIST

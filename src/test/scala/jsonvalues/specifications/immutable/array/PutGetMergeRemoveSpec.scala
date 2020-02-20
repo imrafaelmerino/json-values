@@ -17,7 +17,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
 
   val doubleInt: BiFunction[JsValue, JsValue, JsInt] = ScalaToJava.bifunction((a,
                                                                                b
-                                                                            ) => JsInt.of(a.asJsInt().x + b.asJsInt().x)
+                                                                            ) => JsInt.of(a.toJsInt().value + b.toJsInt().value)
                                                                               )
 
 

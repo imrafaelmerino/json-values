@@ -9,7 +9,14 @@ import org.checkerframework.checker.nullness.qual.Nullable;
  */
 public final class JsNothing implements JsValue
 {
+    public static final int ID = 4;
 
+
+    @Override
+    public int id()
+    {
+        return ID;
+    }
     private JsNothing()
     {
     }

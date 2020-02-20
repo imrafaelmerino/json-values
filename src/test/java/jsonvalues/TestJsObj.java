@@ -128,7 +128,7 @@ public class TestJsObj
                                );
 
         final JsObj obj1 = obj.mapKeys(pair -> pair.path.last()
-                                                        .asKey().name + pair.elem.asJsStr().x,
+                                                        .asKey().name + pair.elem.toJsStr().value,
                                        p -> p.elem.isStr()
                                       );// obj is mutable
 
@@ -369,9 +369,9 @@ public class TestJsObj
                                       +
                                       "}");
 
-        final JsObj result = obj.filterElems((pair) -> pair.elem.asJsInt().x % 2 == 0);
+        final JsObj result = obj.filterElems((pair) -> pair.elem.toJsInt().value % 2 == 0);
 
-        final JsObj result_ = obj.filterAllElems((pair) -> pair.elem.asJsInt().x % 2 == 0);
+        final JsObj result_ = obj.filterAllElems((pair) -> pair.elem.toJsInt().value % 2 == 0);
 
 
         Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}"),
@@ -569,10 +569,10 @@ public class TestJsObj
                                       +
                                       "}");
 
-        final JsObj result = obj.mapElems((pair) -> pair.elem.asJsInt()
+        final JsObj result = obj.mapElems((pair) -> pair.elem.toJsInt()
                                                              .map(i -> i + 10));
 
-        final JsObj result_ = obj.mapAllElems((pair) -> pair.elem.asJsInt()
+        final JsObj result_ = obj.mapAllElems((pair) -> pair.elem.toJsInt()
                                                                  .map(i -> i + 10));
 
         Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n"),
@@ -810,7 +810,7 @@ public class TestJsObj
                                                            Assertions.assertEquals(p.elem,
                                                                                    obj1.get(p.path)
                                                                                   );
-                                                           return p.elem.asJsStr().x;
+                                                           return p.elem.toJsStr().value;
                                                        },
                                                        p -> p.elem.isStr()
                                                         );
@@ -828,7 +828,7 @@ public class TestJsObj
                                                          Assertions.assertEquals(p.elem,
                                                                                  obj1.get(p.path)
                                                                                 );
-                                                         return p.elem.asJsStr().x;
+                                                         return p.elem.toJsStr().value;
                                                      },
                                                      p -> p.elem.isStr()
                                                     );

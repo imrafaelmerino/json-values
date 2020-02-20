@@ -68,6 +68,7 @@ public interface Json<T extends Json<T>> extends JsValue
 {
 
 
+
     /**
      Appends one or more elements, starting from the first, to the array located at the given path in
      this json. If the array doesn't exist, a new one is created, replacing any existing element
@@ -485,10 +486,10 @@ public interface Json<T extends Json<T>> extends JsValue
                           )
     {
         if (elem == null || getClass() != elem.getClass()) return false;
-        if (isObj()) return asJsObj().equals(elem.asJsObj(),
+        if (isObj()) return toJsObj().equals(elem.toJsObj(),
                                              ARRAY_AS
                                             );
-        if (isArray()) return asJsArray().equals(elem.asJsArray(),
+        if (isArray()) return toJsArray().equals(elem.toJsArray(),
                                                  ARRAY_AS
                                                 );
         return false;
@@ -575,7 +576,7 @@ public interface Json<T extends Json<T>> extends JsValue
         final JsPath tail = path.tail();
         if (tail.isEmpty()) return e;
         if (e.isNotJson()) return NOTHING;
-        return e.asJson()
+        return e.toJson()
                 .get(tail);
     }
 

@@ -23,7 +23,7 @@ public class JsElems
     {
         return element ->
         {
-            if (element.isInt()) return element.asJsInt()
+            if (element.isInt()) return element.toJsInt()
                                                .map(requireNonNull(fn));
             return element;
         };
@@ -39,7 +39,7 @@ public class JsElems
     {
         return element ->
         {
-            if (element.isStr()) return element.asJsStr()
+            if (element.isStr()) return element.toJsStr()
                                                .map(requireNonNull(fn));
             return element;
         };

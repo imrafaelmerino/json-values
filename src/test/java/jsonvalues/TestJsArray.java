@@ -269,17 +269,17 @@ public class TestJsArray
         final int result = arr.mapElems(p -> p.mapIfInt(i -> i + 100).elem
                                        )
                               .reduce(Integer::sum,
-                                      pair -> pair.elem.asJsInt().x,
+                                      pair -> pair.elem.toJsInt().value,
                                       p -> p.elem.isInt()
                                      )
                               .orElse(-1);
 
-        final int result1 = arr.mapElems(p -> p.elem.asJsInt()
+        final int result1 = arr.mapElems(p -> p.elem.toJsInt()
                                                     .map(i -> i + 100),
                                          p -> p.elem.isInt()
                                         )
                                .reduce(Integer::sum,
-                                       pair -> pair.elem.asJsInt().x,
+                                       pair -> pair.elem.toJsInt().value,
                                        p -> p.elem.isInt()
                                       )
                                .orElse(-1);
@@ -297,17 +297,17 @@ public class TestJsArray
         final int result2 = arr.mapAllElems(p -> p.mapIfInt(i -> i + 100).elem
                                            )
                                .reduceAll(Integer::sum,
-                                        pair -> pair.elem.asJsInt().x,
+                                        pair -> pair.elem.toJsInt().value,
                                         p -> p.elem.isInt()
                                          )
                                .orElse(-1);
 
-        final int result3 = arr.mapAllElems(p -> p.elem.asJsInt()
+        final int result3 = arr.mapAllElems(p -> p.elem.toJsInt()
                                                        .map(i -> i + 100),
                                           p -> p.elem.isInt()
                                            )
                                .reduceAll(Integer::sum,
-                                        pair -> pair.elem.asJsInt().x,
+                                        pair -> pair.elem.toJsInt().value,
                                         p -> p.elem.isInt()
                                          )
                                .orElse(-1);
@@ -902,7 +902,7 @@ public class TestJsArray
                                         );
 
         final Optional<String> result = array.reduceAll(String::concat,
-                                                      p -> p.elem.asJsStr().x,
+                                                      p -> p.elem.toJsStr().value,
                                                       p -> p.elem.isStr()
                                                        );
 
@@ -915,7 +915,7 @@ public class TestJsArray
                                );
 
         final Optional<String> result1 = array.reduce(String::concat,
-                                                      p -> p.elem.asJsStr().x,
+                                                      p -> p.elem.toJsStr().value,
                                                       p -> p.elem.isStr()
                                                      );
 

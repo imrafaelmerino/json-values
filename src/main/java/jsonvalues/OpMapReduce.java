@@ -138,12 +138,12 @@ final class OpMapReduce<T>
         {
             if (headJson.isObj()) return reduceObj(headPath,
                                                    reduceHeadJsonAndObjTail_()
-                                                  ).apply(headJson.asJsObj(),
+                                                  ).apply(headJson.toJsObj(),
                                                           acc
                                                          );
             return reduceArr(headPath.index(-1),
                              reduceHeadJsonAndArrayTail_()
-                            ).apply(headJson.asJsArray(),
+                            ).apply(headJson.toJsArray(),
                                     acc
                                    );
 
