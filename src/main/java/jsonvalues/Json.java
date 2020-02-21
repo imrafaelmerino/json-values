@@ -6,6 +6,7 @@ import jsonvalues.JsArray.TYPE;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -1855,5 +1856,12 @@ public interface Json<T extends Json<T>> extends JsValue
                           .count();
     }
 
+    default byte[] serialize(){
+        return JsonLibsFactory.serialize(this);
+    }
 
+    default void serialize(final OutputStream os) throws IOException
+    {
+        JsonLibsFactory.serialize(this,os);
+    }
 }
