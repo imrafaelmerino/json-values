@@ -66,7 +66,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     public static JsObj parse(final String str) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str)))
         {
             JsonToken keyEvent = parser.nextToken();
             if (START_OBJECT != keyEvent) throw  MalformedJson.expectedObj(str);
@@ -94,7 +94,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                            ) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str.getBytes())))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str.getBytes())))
         {
             final JsonToken keyEvent = parser.nextToken();
             if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
@@ -1063,10 +1063,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     
     public final String toString()
     {
-        String result = str;
-        if (result == null)
-         str = result = toString(map);
-        return result;
+        return JsonLibsFactory.toString(this);
     }
     private String toString(HashMap<String,JsValue> pmap)
     {

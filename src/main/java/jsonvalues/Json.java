@@ -4,9 +4,11 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import jsonvalues.JsArray.TYPE;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -14,6 +16,7 @@ import java.util.stream.Stream;
 import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsNothing.NOTHING;
+import static jsonvalues.JsonLibsFactory.dslJson;
 
 /**
  <pre>
@@ -67,6 +70,26 @@ public interface Json<T extends Json<T>> extends JsValue
 
 {
 
+    /** Converts the string representation of this Json to a pretty print version
+     *
+     * @return pretty print version of the string representation of this Json
+     */
+    default String toPrettyString(){
+
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        try
+        {
+            dslJson.serialize(this,
+                              new MyPrettifyOutputStream(baos)
+                             );
+            return baos.toString(StandardCharsets.UTF_8.name());
+
+        }
+        catch (IOException e)
+        {
+            throw  InternalError.unexpectedErrorSerializingAJsonIntoString(e);
+        }
+    }
 
 
     /**
@@ -925,7 +948,7 @@ public interface Json<T extends Json<T>> extends JsValue
     static Json<?> parse(String str) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str)))
         {
             final JsonToken event = parser.nextToken();
             if (event == START_ARRAY)
@@ -962,7 +985,7 @@ public interface Json<T extends Json<T>> extends JsValue
                          ) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str)))
         {
             final JsonToken event = parser.nextToken();
             if (event == START_ARRAY) return new JsArray(JsArray.parse(parser,

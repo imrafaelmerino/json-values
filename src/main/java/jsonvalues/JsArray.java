@@ -349,7 +349,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     public JsValue get(final int i)
     {
-        return seq.apply(0);
+        return seq.apply(i);
     }
 
     /**
@@ -872,7 +872,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     public static JsArray parse(final String str) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str)))
         {
             final JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
@@ -892,7 +892,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                ) throws MalformedJson
     {
 
-        try (JsonParser parser = JacksonFactory.instance.createParser(requireNonNull(str)))
+        try (JsonParser parser = JsonLibsFactory.jackson.createParser(requireNonNull(str)))
         {
             final JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
@@ -1390,14 +1390,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     public final String toString()
     {
-        String result = str;
-        if (result == null)
-            str = result = seq.mkString("[",
-                                        ",",
-                                        "]"
-                                       );
-        return result;
-
+        return JsonLibsFactory.toString(this);
     }
 
     /**

@@ -1,5 +1,7 @@
 package jsonvalues;
 
+import java.io.IOError;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 
 /**
@@ -21,6 +23,10 @@ public final class InternalError extends RuntimeException
     private InternalError(final Exception e)
     {
         super(e);
+    }
+
+    static InternalError unexpectedErrorSerializingAJsonIntoString(IOException e){
+        return new InternalError(e);
     }
 
     static InternalError arrayOptionNotImplemented(final String option)
