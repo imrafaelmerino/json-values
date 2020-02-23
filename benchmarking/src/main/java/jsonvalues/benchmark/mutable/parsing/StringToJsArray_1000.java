@@ -26,7 +26,8 @@
 package jsonvalues.benchmark.mutable.parsing;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import jsonvalues.*;
+import jsonvalues.JsArray;
+import jsonvalues.MalformedJson;
 import jsonvalues.benchmark.JacksonObjectMapper;
 import org.openjdk.jmh.annotations.Benchmark;
 
@@ -52,12 +53,8 @@ public class StringToJsArray_1000
     public JsArray java_array_list() throws MalformedJson
     {
 
-        return Jsons.mutable.array.parse(array
-                                        )
-                                  .orElseThrow();
+        return JsArray.parse(array);
     }
-
-
 
 
 }

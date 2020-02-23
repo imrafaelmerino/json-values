@@ -12,7 +12,7 @@ public class StringToJsArray_100
     public JsArray scala_vector() throws MalformedJson
     {
         return JsArray.parse(array)
-                                    .orElseThrow();
+                          ;
     }
 
 

@@ -1,6 +1,5 @@
 /**
  json-values is a one-package and zero-dependency library to work with jsons in a declarative and functional way.
- From now on, an immutable object is a value. There are two factories to create Jsons: {@link jsonvalues.Jsons#mutable} and {@link jsonvalues.Jsons#immutable}.
  The main exceptions thrown by the library are the following:
  <ul>
  <li>the custom unchecked {@link jsonvalues.UserError}, when the client makes a programming error. A suggestion in the message

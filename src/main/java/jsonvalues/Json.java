@@ -943,8 +943,9 @@ public interface Json<T extends Json<T>> extends JsValue
 
     /**
      Tries to parse the string into an immutable json.
-     @return a {@link Try} computation
+     @return an immutable json
      @param str the string that will be parsed
+     @throws MalformedJson if the string doesnt represent a json
      */
     static Json<?> parse(String str) throws MalformedJson
     {
@@ -977,9 +978,10 @@ public interface Json<T extends Json<T>> extends JsValue
 
     /**
      Tries to parse the string into an immutable json, performing the specified transformations while the parsing.
-     @return a {@link Try} computation
+     @return an immutable json
      @param str     the string that will be parsed
      @param builder a builder with the transformations that will be applied during the parsing
+     @throws MalformedJson if it's not a valid Json
      */
     static Json<?> parse(String str,
                           ParseBuilder builder

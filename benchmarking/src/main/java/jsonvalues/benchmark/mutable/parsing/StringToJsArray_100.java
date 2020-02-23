@@ -52,8 +52,7 @@ public class StringToJsArray_100
     public JsArray java_array_list() throws MalformedJson
     {
 
-        return Jsons.mutable.array.parse(array)
-                                  .orElseThrow();
+        return JsArray.parse(array);
     }
 
 

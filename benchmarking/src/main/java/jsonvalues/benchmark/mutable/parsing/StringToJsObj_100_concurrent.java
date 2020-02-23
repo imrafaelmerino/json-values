@@ -26,6 +26,7 @@
 package jsonvalues.benchmark.mutable.parsing;
 
 
+import jsonvalues.JsObj;
 import jsonvalues.MalformedJson;
 import jsonvalues.benchmark.ExecutorState;
 import jsonvalues.benchmark.JacksonObjectMapper;
@@ -90,8 +91,8 @@ public class StringToJsObj_100_concurrent
                              {
                                  try
                                  {
-                                     return Jsons.mutable.object.parse(object)
-                                                                .orElseThrow();
+                                     return JsObj.parse(object)
+                                     ;
                                  }
                                  catch (MalformedJson ex)
                                  {

@@ -12,7 +12,7 @@ public class StringToJsArray_1000000
     {
 
         return JsArray.parse(array)
-                                    .orElseThrow();
+                                    ;
     }
 
 

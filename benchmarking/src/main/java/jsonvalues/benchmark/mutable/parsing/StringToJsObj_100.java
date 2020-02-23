@@ -53,8 +53,8 @@ public class StringToJsObj_100
     public JsObj java_hash_map() throws MalformedJson
     {
 
-        return Jsons.mutable.object.parse(object)
-                                   .orElseThrow();
+        return JsObj.parse(object)
+        ;
     }
 
 

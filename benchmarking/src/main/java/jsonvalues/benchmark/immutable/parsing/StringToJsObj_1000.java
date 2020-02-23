@@ -13,7 +13,7 @@ public class StringToJsObj_1000
     {
 
         return JsObj.parse(object)
-                                     .orElseThrow();
+                                  ;
     }
 
 

@@ -14,7 +14,7 @@ public class StringTosObj_10000
     {
 
         return JsObj.parse(object)
-                                     .orElseThrow();
+                                   ;
     }
 
 

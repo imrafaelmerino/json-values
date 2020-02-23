@@ -61,7 +61,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     /**
      Tries to parse the string into an immutable object.
      @param str the string to be parsed
-     @return a Try computation
+     @return a JsOb object
+     @throws MalformedJson if the string doesnt represent a json object
      */
     public static JsObj parse(final String str) throws MalformedJson
     {
@@ -87,7 +88,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
      applying them later.
      @param str  string to be parsed
      @param builder builder with the transformations that will be applied during the parsing
-     @return a Try computation
+     @return a JsObj object
+     @throws MalformedJson if the string doesnt represent a json object
      */
     public static JsObj parse(final String str,
                             final ParseBuilder builder

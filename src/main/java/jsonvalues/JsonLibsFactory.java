@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import com.dslplatform.json.MyDslJson;
+import com.dslplatform.json.DslJson;
 import com.fasterxml.jackson.core.JsonFactory;
 
 import java.io.ByteArrayOutputStream;
@@ -13,13 +13,13 @@ import static java.util.Objects.requireNonNull;
 class JsonLibsFactory
 {
     static JsonFactory jackson = new JsonFactory();
-    static MyDslJson dslJson = new MyDslJson();
+    static DslJson<Object> dslJson = new DslJson<>();
 
     /** Returns the string representation of this Json
      *
      * @return the string representation of this Json
      */
-    static String toString(Json json)
+    static String toString(Json<?> json)
     {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         try

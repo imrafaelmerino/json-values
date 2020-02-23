@@ -14,7 +14,7 @@ public class StringToJsArray_10000
     {
 
         return JsArray.parse(array)
-                                    .orElseThrow();
+                                    ;
     }
 
 

@@ -13,7 +13,7 @@ public class StringToJsArray_1000
     {
 
         return JsArray.parse(array)
-                                    .orElseThrow();
+                             ;
     }
 
 

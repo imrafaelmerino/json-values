@@ -867,7 +867,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     /**
      Tries to parse the string into an immutable json array.
      @param str the string to be parsed
-     @return a Try computation
+     @return a JsArray
+     @throws MalformedJson if the string doesnt represent a json array
      */
     public static JsArray parse(final String str) throws MalformedJson
     {
