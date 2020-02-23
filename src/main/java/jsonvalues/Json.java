@@ -490,7 +490,7 @@ public interface Json<T extends Json<T>> extends JsValue
      @param element the give element JsElem whose presence in this JsArray is to be tested
      @return true if this JsArray contains the  JsElem
      */
-    boolean containsElem(JsValue element);
+    boolean containsValue(JsValue element);
 
 
     /**
@@ -525,19 +525,19 @@ public interface Json<T extends Json<T>> extends JsValue
      the predicate.
      @param filter the predicate which takes as the input every JsPair in the first level of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterAllElems(Predicate) how to filter the pair of elements of the whole json and not only the first level
+     @see #filterAllValues(Predicate) how to filter the pair of elements of the whole json and not only the first level
      */
-    T filterElems(final Predicate<? super JsPair> filter);
+    T filterValues(final Predicate<? super JsPair> filter);
 
     /**
      Filters all the pairs of elements of this json, removing those that don't ifPredicateElse the predicate.
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterElems(Predicate) how to filter the pairs of values of only the first level
+     @see #filterValues(Predicate) how to filter the pairs of values of only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T filterAllElems(final Predicate<? super JsPair> filter);
+    T filterAllValues(final Predicate<? super JsPair> filter);
 
     /**
      Filters the keys in the first level of this json, removing those that don't ifPredicateElse the predicate.
@@ -792,9 +792,9 @@ public interface Json<T extends Json<T>> extends JsValue
      @return a new mapped json of the same type T
      @see #mapObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map keys of json objects
-     @see #mapAllElems(Function) to map all the values and not only the first level
+     @see #mapAllValues(Function) to map all the values and not only the first level
      */
-    T mapElems(final Function<? super JsPair, ? extends JsValue> fn);
+    T mapValues(final Function<? super JsPair, ? extends JsValue> fn);
 
     /**
      Maps the values in the first level of this json that satisfies a given predicate.
@@ -805,11 +805,11 @@ public interface Json<T extends Json<T>> extends JsValue
 
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map keys of json objects
-     @see #mapAllElems(Function, Predicate) to map all the values and not only the first level
+     @see #mapAllValues(Function, Predicate) to map all the values and not only the first level
      */
-    T mapElems(final Function<? super JsPair, ? extends JsValue> fn,
-               final Predicate<? super JsPair> predicate
-              );
+    T mapValues(final Function<? super JsPair, ? extends JsValue> fn,
+                final Predicate<? super JsPair> predicate
+               );
 
     /**
      Maps all the values of this json.
@@ -817,11 +817,11 @@ public interface Json<T extends Json<T>> extends JsValue
      @return a new mapped json of the same type T
      @see #mapAllObjs(BiFunction) to map jsons
      @see #mapAllKeys(Function) to map keys of json objects
-     @see #mapElems(Function) to map only the first level
+     @see #mapValues(Function) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapAllElems(final Function<? super JsPair, ? extends JsValue> fn);
+    T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn);
 
     /**
      Maps all the values of this json that satisfies a given predicate.
@@ -830,19 +830,19 @@ public interface Json<T extends Json<T>> extends JsValue
      @return same this instance or a new mapped json of the same type TT
      @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
      @see #mapAllKeys(Function, Predicate) to map keys of json objects
-     @see #mapElems(Function, Predicate) to map only the first level
+     @see #mapValues(Function, Predicate) to map only the first level
      */
     @SuppressWarnings("squid:S00100")
     //  naming convention: xx_ traverses the whole json
-    T mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
-                  final Predicate<? super JsPair> predicate
-                 );
+    T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
+                   final Predicate<? super JsPair> predicate
+                  );
 
     /**
      Maps the keys in the first level of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapElems(Function) to map values
+     @see #mapValues(Function) to map values
      @see #mapObjs(BiFunction) to map jsons
      @see #mapAllKeys(Function) to map all the keys and not only the first level
      */
@@ -854,7 +854,7 @@ public interface Json<T extends Json<T>> extends JsValue
      @param predicate the given predicate that determines what keys will be mapped
      @return same this instance or a new mapped json of the same type T
      @see #mapObjs(BiFunction, BiPredicate) to map jsons
-     @see #mapElems(Function, Predicate) to map values
+     @see #mapValues(Function, Predicate) to map values
      @see #mapAllKeys(Function, Predicate) to map all the keys and not only the first level
      */
 
@@ -866,7 +866,7 @@ public interface Json<T extends Json<T>> extends JsValue
      Maps all the keys of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllElems(Function) to map values
+     @see #mapAllValues(Function) to map values
      @see #mapAllObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
      */
@@ -879,7 +879,7 @@ public interface Json<T extends Json<T>> extends JsValue
      @param fn the mapping function
      @param predicate the given predicate that determines what keys will be mapped
      @return same this instance or a new mapped json of the same type T
-     @see #mapAllElems(Function, Predicate) to map values
+     @see #mapAllValues(Function, Predicate) to map values
      @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
      */
@@ -894,7 +894,7 @@ public interface Json<T extends Json<T>> extends JsValue
      @param fn the mapping function
      @param predicate the given predicate that determines what Jsons will be mapped
      @return same this instance or a new mapped json of the same type T
-     @see #mapElems(Function, Predicate) to map values
+     @see #mapValues(Function, Predicate) to map values
      @see #mapKeys(Function, Predicate) to map keys of json objects
      @see #mapAllObjs(BiFunction, BiPredicate) to map all the jsons and not only the first level
      */
@@ -906,7 +906,7 @@ public interface Json<T extends Json<T>> extends JsValue
      Maps the jsons in the first level of this json.
      @param fn the  mapping function
      @return a new mapped json of the same type T
-     @see #mapElems(Function) to map values
+     @see #mapValues(Function) to map values
      @see #mapKeys(Function) to map keys of json objects
      @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
      */
@@ -918,7 +918,7 @@ public interface Json<T extends Json<T>> extends JsValue
      @param fn the  mapping function
      @param predicate the given predicate that determines what Jsons will be mapped
      @return same this instance or a new mapped json of the same type T
-     @see #mapAllElems(Function, Predicate) to map values
+     @see #mapAllValues(Function, Predicate) to map values
      @see #mapAllKeys(Function, Predicate) to map keys of json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
      */
@@ -932,7 +932,7 @@ public interface Json<T extends Json<T>> extends JsValue
      Maps all the jsons of this json.
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllElems(Function) to map values
+     @see #mapAllValues(Function) to map values
      @see #mapAllKeys(Function) to map keys of json objects
      @see #mapObjs(BiFunction) to map only the first level
      */
@@ -1847,14 +1847,14 @@ public interface Json<T extends Json<T>> extends JsValue
 
     default long times(JsValue e)
     {
-        return stream().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
+        return stream().filter(p -> p.value.equals(Objects.requireNonNull(e)))
                        .count();
     }
 
     @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default long timesAll(JsValue e)
     {
-        return streamAll().filter(p -> p.elem.equals(Objects.requireNonNull(e)))
+        return streamAll().filter(p -> p.value.equals(Objects.requireNonNull(e)))
                           .count();
     }
 

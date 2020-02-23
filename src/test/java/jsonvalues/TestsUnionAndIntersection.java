@@ -289,7 +289,7 @@ public class TestsUnionAndIntersection
     @Test
     public void test_map_values_immutable_array() throws MalformedJson
     {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).value;
 
 
         JsArray array = JsArray.of(JsStr.of("A"),
@@ -297,9 +297,9 @@ public class TestsUnionAndIntersection
                                                  JsStr.of("B")
                                                 );
 
-        final JsArray newArray = array.mapElems(toLowerCaseFn,
-                                                p -> p.elem.isStr()
-                                               );
+        final JsArray newArray = array.mapValues(toLowerCaseFn,
+                                                p -> p.value.isStr()
+                                                );
 
         Assertions.assertNotEquals(array,
                                    newArray
@@ -328,9 +328,9 @@ public class TestsUnionAndIntersection
                                                                            )
                                                  );
 
-        final JsArray newArray1 = array1.mapAllElems(toLowerCaseFn,
-                                                   p -> p.elem.isStr()
-                                                    );
+        final JsArray newArray1 = array1.mapAllValues(toLowerCaseFn,
+                                                   p -> p.value.isStr()
+                                                     );
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                                                      ,
                                 newArray1
@@ -343,7 +343,7 @@ public class TestsUnionAndIntersection
     @Test
     public void test_map_values_immutable_obj()
     {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).elem;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).value;
 
         JsObj obj = JsObj.of("a",
                                               JsStr.of("A"),
@@ -351,7 +351,7 @@ public class TestsUnionAndIntersection
                                               JsStr.of("B")
                                              );
 
-        final JsObj newObj = obj.mapElems(toLowerCaseFn);
+        final JsObj newObj = obj.mapValues(toLowerCaseFn);
 
         Assertions.assertNotEquals(obj,
                                    newObj
@@ -367,7 +367,7 @@ public class TestsUnionAndIntersection
                                                                        )
                                               );
 
-        final JsObj newObj1 = obj1.mapAllElems(toLowerCaseFn);
+        final JsObj newObj1 = obj1.mapAllValues(toLowerCaseFn);
 
         Assertions.assertNotEquals(obj1,
                                    newObj1
@@ -455,7 +455,7 @@ public class TestsUnionAndIntersection
 
         final JsArray arr1 = arr.mapAllKeys(p -> p.path.last()
                                                        .asKey().name.toUpperCase(),
-                                          p -> p.elem.isStr()
+                                          p -> p.value.isStr()
                                            );
 
 

@@ -18,7 +18,7 @@ public final class JsPair
     /**
      the json element.
      */
-    public final JsValue elem;
+    public final JsValue value;
 
 
     /**
@@ -28,11 +28,11 @@ public final class JsPair
 
 
     private JsPair(final JsPath path,
-                   final JsValue elem
+                   final JsValue value
                   )
     {
         this.path = path;
-        this.elem = elem;
+        this.value = value;
     }
 
     /**
@@ -43,10 +43,10 @@ public final class JsPair
     public JsPair mapIfInt(IntUnaryOperator operator)
     {
 
-        if (this.elem.isInt()) return of(path,
-                                         elem.toJsInt()
-                                             .map(operator)
-                                        );
+        if (this.value.isInt()) return of(path,
+                                          value.toJsInt()
+                                               .map(operator)
+                                         );
 
 
         return this;
@@ -60,10 +60,10 @@ public final class JsPair
     public JsPair mapIfStr(final UnaryOperator<String> fn)
     {
 
-        if (this.elem.isStr()) return of(path,
-                                         elem.toJsStr()
-                                             .map(requireNonNull(fn))
-                                        );
+        if (this.value.isStr()) return of(path,
+                                          value.toJsStr()
+                                               .map(requireNonNull(fn))
+                                         );
         return this;
     }
 
@@ -198,7 +198,7 @@ public final class JsPair
     {
         return String.format("(%s, %s)",
                              path,
-                             elem
+                             value
                             );
     }
 
@@ -213,8 +213,8 @@ public final class JsPair
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
         final JsPair thatPair = (JsPair) that;
-        return Objects.equals(elem,
-                              thatPair.elem
+        return Objects.equals(value,
+                              thatPair.value
                              ) &&
         Objects.equals(path,
                        thatPair.path
@@ -228,7 +228,7 @@ public final class JsPair
     @Override
     public int hashCode()
     {
-        return Objects.hash(elem,
+        return Objects.hash(value,
                             path
                            );
     }
@@ -242,7 +242,7 @@ public final class JsPair
     public JsPair mapElem(final UnaryOperator<JsValue> map)
     {
         return JsPair.of(this.path,
-                         requireNonNull(map).apply(this.elem)
+                         requireNonNull(map).apply(this.value)
                         );
     }
 
@@ -254,7 +254,7 @@ public final class JsPair
     public JsPair mapPath(final UnaryOperator<JsPath> map)
     {
         return JsPair.of(requireNonNull(map).apply(this.path),
-                         this.elem
+                         this.value
                         );
     }
 
@@ -271,10 +271,10 @@ public final class JsPair
                            )
     {
 
-        return elem.isJson() ? requireNonNull(ifJson).apply(path,
-                                                            elem.toJson()
-                                                           ) : requireNonNull(ifNotJson).apply(path,
-                                                                                               elem
+        return value.isJson() ? requireNonNull(ifJson).apply(path,
+                                                             value.toJson()
+                                                            ) : requireNonNull(ifNotJson).apply(path,
+                                                                                                value
                                                                                               );
     }
 
@@ -292,14 +292,14 @@ public final class JsPair
                             final BiFunction<JsPath, JsValue, T> ifNotJson
                            )
     {
-        if (elem.isObj()) return requireNonNull(ifJsOb).apply(path,
-                                                              elem.toJsObj()
-                                                             );
-        if (elem.isArray()) return requireNonNull(ifJsArr).apply(path,
-                                                                 elem.toJsArray()
-                                                                );
+        if (value.isObj()) return requireNonNull(ifJsOb).apply(path,
+                                                               value.toJsObj()
+                                                              );
+        if (value.isArray()) return requireNonNull(ifJsArr).apply(path,
+                                                                  value.toJsArray()
+                                                                 );
         return requireNonNull(ifNotJson).apply(path,
-                                               elem
+                                               value
                                               );
     }
 

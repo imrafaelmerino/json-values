@@ -40,7 +40,7 @@ final class OpMapObjObjs extends OpMapObjs<JsObj>
                                                                                                                                      p -> fn.apply(p.path,
                                                                                                                                                    headObj
                                                                                                                                                   ),
-                                                                                                                                     p -> p.elem
+                                                                                                                                     p -> p.value
                                                                                                                                     );
                                                                                              return tailResult.put(JsPath.fromKey(head._1),
                                                                                                                    headMapped

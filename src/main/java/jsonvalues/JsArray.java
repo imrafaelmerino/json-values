@@ -218,7 +218,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                              ));
     }
 
-    public final boolean containsElem(final JsValue el)
+    public final boolean containsValue(final JsValue el)
     {
         return seq.contains(requireNonNull(el));
     }
@@ -249,14 +249,14 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                         .mapToObj(i -> get(Index.of(i)))
                         .allMatch(elem ->
                                   {
-                                      if (!array.containsElem(elem)) return false;
+                                      if (!array.containsValue(elem)) return false;
                                       if (ARRAY_AS == MULTISET) return times(elem) == array.times(elem);
                                       return true;
                                   }) && IntStream.range(0,
                                                         array.size()
                                                        )
                                                  .mapToObj(i -> array.get(Index.of(i)))
-                                                 .allMatch(this::containsElem);
+                                                 .allMatch(this::containsValue);
     }
 
     public final boolean equals(final @Nullable Object that)
@@ -277,7 +277,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     }
 
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
-    public final JsArray filterAllElems(final Predicate<? super JsPair> filter)
+    public final JsArray filterAllValues(final Predicate<? super JsPair> filter)
     {
         return new OpFilterArrElems(this).filterAll(JsPath.empty()
                                                           .index(-1),
@@ -306,7 +306,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                         .get();
     }
 
-    public final JsArray filterElems(final Predicate<? super JsPair> filter)
+    public final JsArray filterValues(final Predicate<? super JsPair> filter)
     {
         return new OpFilterArrElems(this).filter(JsPath.empty()
                                                        .index(-1),
@@ -469,7 +469,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
         return seq.last();
     }
 
-    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn)
+    public JsArray mapAllValues(final Function<? super JsPair, ? extends JsValue> fn)
     {
         return new OpMapArrElems(this).mapAll(requireNonNull(fn),
                                               p -> true,
@@ -479,9 +479,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                       .get();
     }
 
-    public JsArray mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
-                               final Predicate<? super JsPair> predicate
-                              )
+    public JsArray mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
+                                final Predicate<? super JsPair> predicate
+                               )
     {
         return new OpMapArrElems(this).mapAll(requireNonNull(fn),
                                               requireNonNull(predicate),
@@ -538,7 +538,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                      .get();
     }
 
-    public final JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn)
+    public final JsArray mapValues(final Function<? super JsPair, ? extends JsValue> fn)
     {
         return new OpMapArrElems(this).map(requireNonNull(fn),
                                            p -> true,
@@ -549,9 +549,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
-    public JsArray mapElems(final Function<? super JsPair, ? extends JsValue> fn,
-                            final Predicate<? super JsPair> predicate
-                           )
+    public JsArray mapValues(final Function<? super JsPair, ? extends JsValue> fn,
+                             final Predicate<? super JsPair> predicate
+                            )
     {
         return new OpMapArrElems(this).map(requireNonNull(fn),
                                            requireNonNull(predicate),
@@ -616,13 +616,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                             )
     {
         JsArray arr = JsArray.EMPTY.put(pair.path,
-                                        pair.elem
+                                        pair.value
                                        );
         for (JsPair p : others)
         {
 
             arr = arr.put(p.path,
-                          p.elem
+                          p.value
                          );
         }
         return arr;
@@ -1372,7 +1372,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                                   ),
                                                                                                   e -> Stream.of(pair)
                                                                                                  )
-                                                                                      .apply(pair.elem)
+                                                                                      .apply(pair.value)
                                                                      )
                                                 );
 
@@ -1553,7 +1553,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                       b
                                                                                      );
 
-        if (b.containsElem(head)) return more(tailCall).map(it -> it.prepend(head));
+        if (b.containsValue(head)) return more(tailCall).map(it -> it.prepend(head));
 
         return more(tailCall);
     }
@@ -1572,7 +1572,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                  b
                                                                                 );
 
-        if (b.containsElem(head) && !tail.containsElem(head))
+        if (b.containsValue(head) && !tail.containsValue(head))
             return more(tailCall).map(it -> it.prepend(head));
 
         return more(tailCall);
@@ -1695,7 +1695,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
         final Trampoline<JsArray> initCall = unionAsSet(a,
                                                         b.init()
                                                        );
-        if (!a.containsElem(last)) return more(() -> initCall).map(it -> it.append(last));
+        if (!a.containsValue(last)) return more(() -> initCall).map(it -> it.append(last));
         return more(() -> initCall);
     }
 

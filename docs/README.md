@@ -22,24 +22,8 @@
 - [Related projects](#rp)
 
 ## <a name="introduction"><a/> Introduction
-Welcome to **json-values**, the first-ever Json library in _Java_ that uses _persistent data structures_ 
-from _Scala_. _Java_ doesn't implement _persistent data structures_ natively; nevertheless, _Scala_ does and 
-runs on the _JVM_; therefore, you can go from Java to Scala smoothly and without any impact on the performance. 
+Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures. 
 
-
-I'm a big fan of [Clojure](https://clojure.org) among other functional languages, and with due respect to the
-apparent differences, **json-values** follows its philosophy: 
-
-* **Immutability over mutability**. If you still have doubts about why, you should take 
-a look at one of my favorite talks ever, [_The value of values_](https://www.youtube.com/watch?v=-6BsiVyC1kM) 
-from **Rich Hickey**. **json-values** is _functional_ because you can take advantage of immutable data structures 
-to represent a Json.
-* **Data over abstraction**. The API is declarative and data-centric. You only need values (also known as immutable objects) and functions to 
-manipulate them.
-* _It is better to have 100 functions operate on one data structure than 10 functions on 10 data structures_. —Alan Perlis. 
-
-**json-values** has taken much inspiration from Scala as well, as a matter of fact, it's been implemented following both the object-oriented
-and functional paradigms, as Scala promotes.
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 * You need to deal with Jsons, and you want to program following a functional style, **using functions and immutable types (or values)**,
 but you can't benefit from all the advantages that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
@@ -47,9 +31,6 @@ The thing is that Java 8 brought functions, lambdas, lazy evaluation to some ext
 something is still missing, and as _**Pat Helland**_ said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
 * You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and takes advantages of all the new features that were introduced 
 in Java 8, like functions, suppliers, streams, and collectors, making json manipulation simple, fast, and efficient. 
-* You may be thinking, ok, great, I agree with all the described above, but, there are some scenarios where I still need a mutable Json as, after all, I'm programming in Java. 
-With **json-values**, you can go from a mutable Json to an immutable one, back and forth, and the API to manipulate 
-them is the same, being both implementations hidden to the user. 
 * Simplicity matters, and I 'd argue that **json-values** is simple.
 * As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
 leave the functions passed in as arguments with no implementation for brevity reasons (go to the [project page](https://imrafaelmerino.github.io/json-values/) for further

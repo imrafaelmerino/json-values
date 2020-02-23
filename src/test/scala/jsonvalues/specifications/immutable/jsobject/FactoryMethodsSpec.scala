@@ -18,52 +18,52 @@ class FactoryMethodsSpec extends BasePropSpec
           { p =>
             JsObj
               .of("a",
-                  p.elem
+                  p.value
                   ).size() == 1 &&
             JsObj.of("a",
-                                        p.elem,
+                                        p.value,
                                         "x",
-                                        p.elem
+                                        p.value
                                         ).size() == 2 &&
             JsObj.of("a",
-                                        p.elem,
+                                        p.value,
                                         "x",
-                                        p.elem,
+                                        p.value,
                                         "c",
-                                        p.elem
+                                        p.value
                                         ).size() == 3 &&
             JsObj.of("a",
-                                        p.elem,
+                                        p.value,
                                         "x",
-                                        p.elem,
+                                        p.value,
                                         "c",
-                                        p.elem,
+                                        p.value,
                                         "d",
-                                        p.elem
+                                        p.value
                                         ).size() == 4 &&
             JsObj.of("a",
-                                        p.elem,
+                                        p.value,
                                         "x",
-                                        p.elem,
+                                        p.value,
                                         "c",
-                                        p.elem,
+                                        p.value,
                                         "d",
-                                        p.elem,
+                                        p.value,
                                         "e",
-                                        p.elem
+                                        p.value
                                         ).size() == 5 &&
             JsObj.of("a",
-                                        p.elem,
+                                        p.value,
                                         "x",
-                                        p.elem,
+                                        p.value,
                                         "c",
-                                        p.elem,
+                                        p.value,
                                         "d",
-                                        p.elem,
+                                        p.value,
                                         "e",
-                                        p.elem,
+                                        p.value,
                                         "f",
-                                        p.elem
+                                        p.value
                                         ).size() == 6
 
 
@@ -102,7 +102,7 @@ class FactoryMethodsSpec extends BasePropSpec
             val parsed = JsObj.parse(js.toString,
                      ParseBuilder.builder().withElemFilter(_ => false)
                      )
-            parsed.streamAll().filter(p => p.elem.isNotJson).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.value.isNotJson).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -113,10 +113,10 @@ class FactoryMethodsSpec extends BasePropSpec
           { js =>
             val parsed = JsObj
               .parse(js.toString,
-                     ParseBuilder.builder().withElemFilter(p => p.elem.isNotNull)
+                     ParseBuilder.builder().withElemFilter(p => p.value.isNotNull)
                      )
 
-            parsed.streamAll().filter(p => p.elem.isNull).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.value.isNull).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -127,10 +127,10 @@ class FactoryMethodsSpec extends BasePropSpec
           { js =>
 
             val parsed =JsObj.parse(js.toString,
-                     ParseBuilder.builder().withElemFilter(p => !p.elem.isStr)
+                     ParseBuilder.builder().withElemFilter(p => !p.value.isStr)
                      )
 
-            parsed.streamAll().filter(p => p.elem.isStr).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.value.isStr).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -139,13 +139,13 @@ class FactoryMethodsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
-            val predicate: Predicate[JsPair] = (p: JsPair) => p.elem.isNotNumber
+            val predicate: Predicate[JsPair] = (p: JsPair) => p.value.isNotNumber
 
             val parsed = JsObj.parse(js.toString,
                      ParseBuilder.builder().withElemFilter(predicate)
                      )
 
-            parsed.streamAll().filter(p => p.elem.isNumber).findFirst().equals(Optional.empty)
+            parsed.streamAll().filter(p => p.value.isNumber).findFirst().equals(Optional.empty)
           }
           )
   }
@@ -156,10 +156,10 @@ class FactoryMethodsSpec extends BasePropSpec
           { js =>
 
             val parsed = JsObj.parse(js.toString,
-                     ParseBuilder.builder().withElemMap(p => JsElems.mapIfStr(_ => "hi")(p.elem))
+                     ParseBuilder.builder().withElemMap(p => JsElems.mapIfStr(_ => "hi")(p.value))
                      )
 
-            parsed.streamAll().filter(p => p.elem.isStr).allMatch(p => p.elem.isStr(s => s.equals("hi")))
+            parsed.streamAll().filter(p => p.value.isStr).allMatch(p => p.value.isStr(s => s.equals("hi")))
           }
           )
   }

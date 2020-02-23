@@ -36,7 +36,7 @@ final class OpMapArrElems extends OpMapElems<JsArray>
                                                                                         )
                                                                                      .ifElse(predicate,
                                                                                             fn::apply,
-                                                                                            p -> p.elem
+                                                                                            p -> p.value
                                                                                            );
                                                           return more(() -> tailCall).map(tailResult -> tailResult.prepend(headMapped));
                                                       }

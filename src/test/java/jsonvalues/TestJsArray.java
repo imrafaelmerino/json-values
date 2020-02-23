@@ -28,11 +28,11 @@ public class TestJsArray
                                  JsStr.of("a"),
                                  NULL
                                 );
-        Assertions.assertTrue(arr.containsElem(JsInt.of(1)));   //true
-        Assertions.assertTrue(arr.containsElem(TRUE));   //true
-        Assertions.assertTrue(arr.containsElem(JsStr.of("a"))); //true
-        Assertions.assertTrue(arr.containsElem(NULL));
-        Assertions.assertFalse(arr.containsElem(JsInt.of(10)));
+        Assertions.assertTrue(arr.containsValue(JsInt.of(1)));   //true
+        Assertions.assertTrue(arr.containsValue(TRUE));   //true
+        Assertions.assertTrue(arr.containsValue(JsStr.of("a"))); //true
+        Assertions.assertTrue(arr.containsValue(NULL));
+        Assertions.assertFalse(arr.containsValue(JsInt.of(10)));
 
 
         JsArray _arr_ = JsArray.of(JsInt.of(1),
@@ -40,11 +40,11 @@ public class TestJsArray
                                    JsStr.of("a"),
                                    NULL
                                   );
-        Assertions.assertTrue(_arr_.containsElem(JsInt.of(1)));   //true
-        Assertions.assertTrue(_arr_.containsElem(TRUE));   //true
-        Assertions.assertTrue(_arr_.containsElem(JsStr.of("a"))); //true
-        Assertions.assertTrue(_arr_.containsElem(NULL));
-        Assertions.assertFalse(arr.containsElem(JsInt.of(10)));
+        Assertions.assertTrue(_arr_.containsValue(JsInt.of(1)));   //true
+        Assertions.assertTrue(_arr_.containsValue(TRUE));   //true
+        Assertions.assertTrue(_arr_.containsValue(JsStr.of("a"))); //true
+        Assertions.assertTrue(_arr_.containsValue(NULL));
+        Assertions.assertFalse(arr.containsValue(JsInt.of(10)));
     }
 
     @Test
@@ -80,7 +80,7 @@ public class TestJsArray
                                  JsStr.of("c"),
                                  JsInt.of(10)
                                 );
-        JsArray arr1 = arr.filterElems(p -> p.elem.isIntegral());
+        JsArray arr1 = arr.filterValues(p -> p.value.isIntegral());
 
         Assertions.assertNotEquals(arr,
                                    arr1
@@ -171,14 +171,14 @@ public class TestJsArray
                                  JsStr.of("G")
                                 );
 
-        JsArray arr1 = arr.mapElems(pair -> pair.mapIfStr(s ->
+        JsArray arr1 = arr.mapValues(pair -> pair.mapIfStr(s ->
                                                           {
                                                               final int index = pair.path.last()
                                                                                          .asIndex().n;
                                                               return s.concat(String.valueOf(index));
                                                           })
-                                    .elem
-                                   );
+                                    .value
+                                    );
 
         Assertions.assertNotEquals(arr,
                                    arr1
@@ -205,7 +205,7 @@ public class TestJsArray
                                  JsStr.of("c")
                                 );
 
-        final JsArray newArr = arr.mapElems(p -> p.mapIfStr(String::toUpperCase).elem);
+        final JsArray newArr = arr.mapValues(p -> p.mapIfStr(String::toUpperCase).value);
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -229,9 +229,9 @@ public class TestJsArray
                                  JsInt.of(2),
                                  JsObj.empty()
                                 );
-        JsArray newArr = arr.mapElems(p -> p.mapIfInt(i -> i + 10).elem,
-                                      p -> p.elem.isInt()
-                                     );
+        JsArray newArr = arr.mapValues(p -> p.mapIfInt(i -> i + 10).value,
+                                      p -> p.value.isInt()
+                                      );
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -266,21 +266,21 @@ public class TestJsArray
                                 );
 
 
-        final int result = arr.mapElems(p -> p.mapIfInt(i -> i + 100).elem
-                                       )
+        final int result = arr.mapValues(p -> p.mapIfInt(i -> i + 100).value
+                                        )
                               .reduce(Integer::sum,
-                                      pair -> pair.elem.toJsInt().value,
-                                      p -> p.elem.isInt()
+                                      pair -> pair.value.toJsInt().value,
+                                      p -> p.value.isInt()
                                      )
                               .orElse(-1);
 
-        final int result1 = arr.mapElems(p -> p.elem.toJsInt()
-                                                    .map(i -> i + 100),
-                                         p -> p.elem.isInt()
-                                        )
+        final int result1 = arr.mapValues(p -> p.value.toJsInt()
+                                                      .map(i -> i + 100),
+                                         p -> p.value.isInt()
+                                         )
                                .reduce(Integer::sum,
-                                       pair -> pair.elem.toJsInt().value,
-                                       p -> p.elem.isInt()
+                                       pair -> pair.value.toJsInt().value,
+                                       p -> p.value.isInt()
                                       )
                                .orElse(-1);
 
@@ -294,21 +294,21 @@ public class TestJsArray
                                );
 
 
-        final int result2 = arr.mapAllElems(p -> p.mapIfInt(i -> i + 100).elem
-                                           )
+        final int result2 = arr.mapAllValues(p -> p.mapIfInt(i -> i + 100).value
+                                            )
                                .reduceAll(Integer::sum,
-                                        pair -> pair.elem.toJsInt().value,
-                                        p -> p.elem.isInt()
+                                        pair -> pair.value.toJsInt().value,
+                                        p -> p.value.isInt()
                                          )
                                .orElse(-1);
 
-        final int result3 = arr.mapAllElems(p -> p.elem.toJsInt()
-                                                       .map(i -> i + 100),
-                                          p -> p.elem.isInt()
-                                           )
+        final int result3 = arr.mapAllValues(p -> p.value.toJsInt()
+                                                         .map(i -> i + 100),
+                                          p -> p.value.isInt()
+                                            )
                                .reduceAll(Integer::sum,
-                                        pair -> pair.elem.toJsInt().value,
-                                        p -> p.elem.isInt()
+                                        pair -> pair.value.toJsInt().value,
+                                        p -> p.value.isInt()
                                          )
                                .orElse(-1);
         Assertions.assertEquals(406,
@@ -779,9 +779,9 @@ public class TestJsArray
 
         final JsArray arr = JsArray.parse("[1,2,3,true,false,null,[null,true,4]]",
                                           ParseBuilder.builder()
-                                                      .withElemFilter(p -> p.elem.isInt())
+                                                      .withElemFilter(p -> p.value.isInt())
                                                       .withElemMap(p -> JsElems.mapIfInt(i -> i + 10)
-                                                                               .apply(p.elem))
+                                                                               .apply(p.value))
                                          );
 
         Assertions.assertEquals(JsArray.of(JsInt.of(11),
@@ -807,17 +807,17 @@ public class TestJsArray
                                                    ),
                                          NULL
                                         );
-        Assertions.assertEquals(array.filterAllElems(p ->
+        Assertions.assertEquals(array.filterAllValues(p ->
                                                    {
-                                                       Assertions.assertEquals(p.elem,
+                                                       Assertions.assertEquals(p.value,
                                                                                array.get(p.path)
                                                                               );
-                                                       return p.elem.isNotNull();
+                                                       return p.value.isNotNull();
                                                    }),
                                 JsArray.parse(
                                 array.toString(),
                                 ParseBuilder.builder()
-                                            .withElemFilter(p -> p.elem.isNotNull())
+                                            .withElemFilter(p -> p.value.isNotNull())
                                              )
 
                                );
@@ -902,8 +902,8 @@ public class TestJsArray
                                         );
 
         final Optional<String> result = array.reduceAll(String::concat,
-                                                      p -> p.elem.toJsStr().value,
-                                                      p -> p.elem.isStr()
+                                                      p -> p.value.toJsStr().value,
+                                                      p -> p.value.isStr()
                                                        );
 
         final char[] chars = result.get()
@@ -915,8 +915,8 @@ public class TestJsArray
                                );
 
         final Optional<String> result1 = array.reduce(String::concat,
-                                                      p -> p.elem.toJsStr().value,
-                                                      p -> p.elem.isStr()
+                                                      p -> p.value.toJsStr().value,
+                                                      p -> p.value.isStr()
                                                      );
 
         final char[] chars1 = result1.get()

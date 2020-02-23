@@ -128,8 +128,8 @@ public class TestJsObj
                                );
 
         final JsObj obj1 = obj.mapKeys(pair -> pair.path.last()
-                                                        .asKey().name + pair.elem.toJsStr().value,
-                                       p -> p.elem.isStr()
+                                                        .asKey().name + pair.value.toJsStr().value,
+                                       p -> p.value.isStr()
                                       );// obj is mutable
 
         Set<String> set = new HashSet<>();
@@ -369,9 +369,9 @@ public class TestJsObj
                                       +
                                       "}");
 
-        final JsObj result = obj.filterElems((pair) -> pair.elem.toJsInt().value % 2 == 0);
+        final JsObj result = obj.filterValues((pair) -> pair.value.toJsInt().value % 2 == 0);
 
-        final JsObj result_ = obj.filterAllElems((pair) -> pair.elem.toJsInt().value % 2 == 0);
+        final JsObj result_ = obj.filterAllValues((pair) -> pair.value.toJsInt().value % 2 == 0);
 
 
         Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}"),
@@ -474,7 +474,7 @@ public class TestJsObj
         final JsObj obj1 = obj.get()
                               .filterAllKeys(p ->
                                            {
-                                               Assertions.assertEquals(p.elem,
+                                               Assertions.assertEquals(p.value,
                                                                        obj.get()
                                                                           .get(p.path)
                                                                       );
@@ -489,7 +489,7 @@ public class TestJsObj
         final JsObj obj2 = obj.get()
                               .filterKeys(p ->
                                           {
-                                              Assertions.assertEquals(p.elem,
+                                              Assertions.assertEquals(p.value,
                                                                       obj.get()
                                                                          .get(p.path)
                                                                      );
@@ -531,7 +531,7 @@ public class TestJsObj
                                        )
                             );
 
-        final JsObj obj1 = obj.filterAllElems(p -> p.elem.isNotNull());
+        final JsObj obj1 = obj.filterAllValues(p -> p.value.isNotNull());
 
         Assertions.assertEquals(JsObj.parse("{\"a\":1,\"c\":[1,2,3,[1,2],{\"b\":1}]}\n"),
                                 obj1
@@ -569,11 +569,11 @@ public class TestJsObj
                                       +
                                       "}");
 
-        final JsObj result = obj.mapElems((pair) -> pair.elem.toJsInt()
-                                                             .map(i -> i + 10));
+        final JsObj result = obj.mapValues((pair) -> pair.value.toJsInt()
+                                                               .map(i -> i + 10));
 
-        final JsObj result_ = obj.mapAllElems((pair) -> pair.elem.toJsInt()
-                                                                 .map(i -> i + 10));
+        final JsObj result_ = obj.mapAllValues((pair) -> pair.value.toJsInt()
+                                                                   .map(i -> i + 10));
 
         Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n"),
                                 result
@@ -745,7 +745,7 @@ public class TestJsObj
 
         final JsObj mapped = obj.mapAllKeys(p ->
                                           {
-                                              Assertions.assertEquals(p.elem,
+                                              Assertions.assertEquals(p.value,
                                                                       obj.get(p.path)
                                                                      );
                                               return p.path.last()
@@ -796,23 +796,23 @@ public class TestJsObj
                                   );
 
 
-        final JsObj obj1 = obj.mapAllElems(pair ->
+        final JsObj obj1 = obj.mapAllValues(pair ->
                                          {
-                                             Assertions.assertEquals(pair.elem,
+                                             Assertions.assertEquals(pair.value,
                                                                      obj.get(pair.path)
                                                                     );
-                                             return pair.mapIfStr(String::toLowerCase).elem;
+                                             return pair.mapIfStr(String::toLowerCase).value;
                                          });
 
         final Optional<String> reduced_ = obj1.reduceAll(String::concat,
                                                        p ->
                                                        {
-                                                           Assertions.assertEquals(p.elem,
+                                                           Assertions.assertEquals(p.value,
                                                                                    obj1.get(p.path)
                                                                                   );
-                                                           return p.elem.toJsStr().value;
+                                                           return p.value.toJsStr().value;
                                                        },
-                                                       p -> p.elem.isStr()
+                                                       p -> p.value.isStr()
                                                         );
 
         final char[] chars_ = reduced_.get()
@@ -825,12 +825,12 @@ public class TestJsObj
         final Optional<String> reduced = obj1.reduce(String::concat,
                                                      p ->
                                                      {
-                                                         Assertions.assertEquals(p.elem,
+                                                         Assertions.assertEquals(p.value,
                                                                                  obj1.get(p.path)
                                                                                 );
-                                                         return p.elem.toJsStr().value;
+                                                         return p.value.toJsStr().value;
                                                      },
-                                                     p -> p.elem.isStr()
+                                                     p -> p.value.isStr()
                                                     );
 
         final char[] chars = reduced.get()

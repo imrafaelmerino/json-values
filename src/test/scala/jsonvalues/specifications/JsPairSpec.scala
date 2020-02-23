@@ -11,7 +11,7 @@ class JsPairSpec extends BasePropSpec
     check(forAll(jsPairGen.pairGen)
           { a =>
             val b = JsPair.of(a.path,
-                              a.elem
+                              a.value
                               )
             a.equals(b
                      ) &&

@@ -444,13 +444,13 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                    )
     {
         JsObj obj = JsObj.EMPTY.put(pair.path,
-                                pair.elem
+                                pair.value
                                );
         for (JsPair p : others)
         {
 
             obj = obj.put(p.path,
-                          p.elem
+                          p.value
                          );
         }
         return obj;
@@ -699,7 +699,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                              ),
                                                                                              e -> Stream.of(pair)
                                                                                             )
-                                                                                 .apply(pair.elem))
+                                                                                 .apply(pair.value))
                                               );
 
     }
@@ -749,9 +749,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    public final boolean containsElem(final JsValue el)
+    public final boolean containsValue(final JsValue el)
     {
-        return stream().anyMatch(p -> p.elem.equals(Objects.requireNonNull(el)));
+        return stream().anyMatch(p -> p.value.equals(Objects.requireNonNull(el)));
     }
 
     /**
@@ -1085,7 +1085,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    public final JsObj mapElems(final Function<? super JsPair, ? extends JsValue> fn)
+    public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn)
     {
 
         return new OpMapObjElems(this).map(requireNonNull(fn),
@@ -1096,9 +1096,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    public final JsObj mapElems(final Function<? super JsPair, ? extends JsValue> fn,
-                                final Predicate<? super JsPair> predicate
-                               )
+    public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn,
+                                 final Predicate<? super JsPair> predicate
+                                )
     {
         return new OpMapObjElems(this).map(requireNonNull(fn),
                                            requireNonNull(predicate),
@@ -1108,7 +1108,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    public final JsObj mapAllElems(final Function<? super JsPair, ? extends JsValue> fn)
+    public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn)
     {
         return new OpMapObjElems(this).mapAll(requireNonNull(fn),
                                               p -> true,
@@ -1119,9 +1119,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
     
     @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
-    public final JsObj mapAllElems(final Function<? super JsPair, ? extends JsValue> fn,
-                                   final Predicate<? super JsPair> predicate
-                                  )
+    public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
+                                    final Predicate<? super JsPair> predicate
+                                   )
     {
         return new OpMapObjElems(this).mapAll(requireNonNull(fn),
                                               requireNonNull(predicate),
@@ -1229,7 +1229,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
 
     
-    public final JsObj filterElems(final Predicate<? super JsPair> filter)
+    public final JsObj filterValues(final Predicate<? super JsPair> filter)
     {
         return new OpFilterObjElems(this).filter(JsPath.empty(),
                                                  requireNonNull(filter)
@@ -1240,7 +1240,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
 
     
-    public final JsObj filterAllElems(final Predicate<? super JsPair> filter)
+    public final JsObj filterAllValues(final Predicate<? super JsPair> filter)
     {
         return new OpFilterObjElems(this).filterAll(JsPath.empty(),
                                                     requireNonNull(filter)

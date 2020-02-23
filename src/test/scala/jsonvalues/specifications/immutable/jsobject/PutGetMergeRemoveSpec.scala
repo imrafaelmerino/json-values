@@ -186,7 +186,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
             js.streamAll().allMatch(
               it => js.putIfAbsent(it.path,
                                    ScalaToJava.supplier(() => JsNull.NULL)
-                                   ).get(it.path) == it.elem
+                                   ).get(it.path) == it.value
               )
 
 
