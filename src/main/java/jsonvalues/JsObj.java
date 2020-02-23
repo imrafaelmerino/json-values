@@ -184,9 +184,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
-    // squid:S00100_ naming convention: xx_ traverses the whole json
     // squid:S00117 ARRAY_AS should be a valid name
-    @SuppressWarnings({"squid:S00117", "squid:S00100"})
+    @SuppressWarnings({"squid:S00117" })
     public JsObj intersectionAll(final JsObj that,
                           final TYPE ARRAY_AS
                          ){
@@ -554,7 +553,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
     
 
-    @SuppressWarnings({"squid:S00117", "squid:S00100"}) // ARRAY_AS should be a valid name for an enum constant, naming convention _
+    @SuppressWarnings({"squid:S00117", }) // ARRAY_AS should be a valid name for an enum constant
     private Trampoline<JsObj> intersectionAll(final JsObj a,
                                               final JsObj b,
                                               final JsArray.TYPE ARRAY_AS
@@ -630,9 +629,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
         ).reduce(this);
     }
 
-
-    
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                                            final Function<? super JsPair, R> map,
                                            final Predicate<? super JsPair> predicate
@@ -653,7 +649,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final Stream<JsPair> streamAll()
     {
         return streamOfObj(this,
@@ -764,8 +759,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
-
-    @SuppressWarnings({"squid:S00117", "squid:S00100"}) // ARRAY_AS  should be a valid name, naming convention: xx_ traverses the whole json
     public final JsObj unionAll(final JsObj that,
                                 final TYPE ARRAY_AS
                                )
@@ -785,8 +778,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     //squid:S00117 ARRAY_AS should be a valid name
-    //squid:S00100 naming convention: xx_ traverses the whole json
-    @SuppressWarnings({"squid:S00117", "squid:S00100"}) //  ARRAY_AS  should be a valid name
     private Trampoline<JsObj> unionAll(final JsObj a,
                                        final JsObj b,
                                        final JsArray.TYPE ARRAY_AS
@@ -1062,29 +1053,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     /**
      // Single-check idiom  Item 83 from effective java
      */
-    
     public final String toString()
     {
-        return JsonLibsFactory.toString(this);
-    }
-    private String toString(HashMap<String,JsValue> pmap)
-    {
-
-        if (pmap.isEmpty()) return "{}";
-
-
-        return pmap.keysIterator()
-                  .map(key -> String.format("\"%s\":%s",
-                                            key,
-                                            pmap.apply(key)
-                                           ))
-                  .mkString("{",
-                            ",",
-                            "}"
-                           );
+        String result = str;
+        if (result == null)
+            str = result = JsonLibsFactory.toString(this);
+        return result;
     }
 
-    
     public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn)
     {
 
@@ -1118,7 +1094,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
                                     final Predicate<? super JsPair> predicate
                                    )
@@ -1153,8 +1128,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                      .get();
     }
 
-    
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsObj mapAllKeys(final Function<? super JsPair, String> fn)
     {
         return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
@@ -1204,7 +1177,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
 
     
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                                   final BiPredicate<? super JsPath, ? super JsObj> predicate
                                  )
@@ -1217,7 +1189,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
     {
         return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
@@ -1260,9 +1231,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                         .get();
     }
 
-
-    
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsObj filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return new OpFilterObjObjs(this).filterAll(JsPath.empty(),

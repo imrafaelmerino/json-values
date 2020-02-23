@@ -44,7 +44,6 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
 
 
     @Override
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     Trampoline<JsArray> filterAll(final JsPath startingPath,
                                   final Predicate<? super JsPair> predicate
                                  )

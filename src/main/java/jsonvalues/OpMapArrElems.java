@@ -46,7 +46,6 @@ final class OpMapArrElems extends OpMapElems<JsArray>
     }
 
     @Override
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     Trampoline<JsArray> mapAll(final Function<? super JsPair, ? extends JsValue> fn,
                                final Predicate<? super JsPair> predicate,
                                final JsPath startingPath

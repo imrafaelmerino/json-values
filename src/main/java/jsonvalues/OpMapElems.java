@@ -16,7 +16,6 @@ abstract class OpMapElems<T>
                                final JsPath path
                               );
 
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     abstract Trampoline<T> mapAll(final Function<? super JsPair, ? extends JsValue> fn,
                                   final Predicate<? super JsPair> predicate,
                                   final JsPath path

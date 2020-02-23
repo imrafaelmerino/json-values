@@ -13,8 +13,6 @@ abstract class OpFilterKeys<T>
         this.json = json;
     }
 
-
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     abstract Trampoline<T> filterAll(final JsPath startingPath,
                                      final Predicate<? super JsPair> predicate
                                     );

@@ -16,7 +16,6 @@ abstract class OpMapObjs<T>
                                final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                final JsPath startingPath
                               );
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     abstract Trampoline<T> mapAll(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                                   final BiPredicate<? super JsPath, ? super JsObj> predicate,
                                   final JsPath startingPath

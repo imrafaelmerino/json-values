@@ -51,7 +51,6 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj>
     }
 
     @Override
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json recursively
     Trampoline<JsObj> filterAll(final JsPath startingPath,
                                 final BiPredicate<? super JsPath, ? super JsObj> predicate
                                )

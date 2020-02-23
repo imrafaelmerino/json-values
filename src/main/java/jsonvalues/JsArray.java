@@ -242,7 +242,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     {
         if (ARRAY_AS == LIST) return this.equals(array);
         if (isEmpty()) return array.isEmpty();
-        if (array.isEmpty()) return isEmpty();
+        if (array.isEmpty()) return false;
         return IntStream.range(0,
                                size()
                               )
@@ -276,7 +276,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray filterAllValues(final Predicate<? super JsPair> filter)
     {
         return new OpFilterArrElems(this).filterAll(JsPath.empty()
@@ -296,7 +295,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                         .get();
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter)
     {
         return new OpFilterArrObjs(this).filterAll(JsPath.empty()
@@ -428,8 +426,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
      @param that the other array
      @return a JsArray of the same type as the inputs (mutable or immutable)
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     public JsArray intersectionAll(final JsArray that)
     {
         return intersectionAll(this,
@@ -491,7 +487,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                       .get();
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     public final JsArray mapAllKeys(final Function<? super JsPair, String> fn)
     {
         return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
@@ -502,7 +497,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                      .get();
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final JsArray mapAllKeys(final Function<? super JsPair, String> fn,
                                     final Predicate<? super JsPair> predicate
                                    )
@@ -1281,7 +1275,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                                            final Function<? super JsPair, R> map,
                                            final Predicate<? super JsPair> predicate
@@ -1340,7 +1333,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     public Stream<JsPair> streamAll()
     {
         return streamOfArr(this,
@@ -1389,9 +1381,16 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
         return new JsArray(seq.tail());
     }
 
+    /**
+     // Single-check idiom  Item 83 from effective java
+     */
     public final String toString()
     {
-        return JsonLibsFactory.toString(this);
+        String result = str;
+        if (result == null)
+            str = result = JsonLibsFactory.toString(this);
+
+        return result;
     }
 
     /**
@@ -1425,7 +1424,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
      @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     public final JsArray unionAll(final JsArray that
                                  )
     {
@@ -1481,7 +1479,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     private Trampoline<JsArray> intersectionAll(final JsArray a,
                                                 final JsArray b
                                                )
@@ -1638,7 +1635,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
         }
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention:  xx_ traverses the whole json
     private Trampoline<JsArray> unionAll(final JsArray a,
                                          final JsArray b
                                         )

@@ -535,8 +535,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterValues(Predicate) how to filter the pairs of values of only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T filterAllValues(final Predicate<? super JsPair> filter);
 
     /**
@@ -553,8 +551,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
      @see #filterKeys(Predicate) how to filter the keys of only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T filterAllKeys(final Predicate<? super JsPair> filter);
 
     /**
@@ -575,8 +571,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
      @see #filterObjs(BiPredicate) how to filter the pair of jsons of only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter
                    );
 
@@ -819,8 +813,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllKeys(Function) to map keys of json objects
      @see #mapValues(Function) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn);
 
     /**
@@ -832,8 +824,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllKeys(Function, Predicate) to map keys of json objects
      @see #mapValues(Function, Predicate) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
                    final Predicate<? super JsPair> predicate
                   );
@@ -870,8 +860,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllObjs(BiFunction) to map jsons
      @see #mapKeys(Function) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllKeys(final Function<? super JsPair, String> fn);
 
     /**
@@ -883,8 +871,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
      @see #mapKeys(Function, Predicate) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllKeys(final Function<? super JsPair, String> fn,
                  final Predicate<? super JsPair> predicate
                 );
@@ -922,8 +908,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllKeys(Function, Predicate) to map keys of json objects
      @see #mapObjs(BiFunction, BiPredicate) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
                  final BiPredicate<? super JsPath, ? super JsObj> predicate
                 );
@@ -936,8 +920,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @see #mapAllKeys(Function) to map keys of json objects
      @see #mapObjs(BiFunction) to map only the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn
                 );
 
@@ -1762,8 +1744,6 @@ public interface Json<T extends Json<T>> extends JsValue
 
      @see #reduce(BinaryOperator, Function, Predicate) to apply the reduction only in the first level
      */
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     <R> Optional<R> reduceAll(BinaryOperator<R> op,
                               Function<? super JsPair, R> map,
                               Predicate<? super JsPair> predicate
@@ -1804,7 +1784,6 @@ public interface Json<T extends Json<T>> extends JsValue
      Returns the number of all the elements in this json
      @return the number of all the elements in this json
      */
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default int sizeAll()
     {
         return streamAll().mapToInt(p -> 1)
@@ -1819,7 +1798,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @param path the given JsPath object
      @return an OptionalInt
      */
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default OptionalInt sizeAll(final JsPath path)
     {
 
@@ -1842,7 +1820,6 @@ public interface Json<T extends Json<T>> extends JsValue
      @return a {@code Stream} over all the JsPairs in this json
      */
     @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     Stream<JsPair> streamAll();
 
     default long times(JsValue e)
@@ -1851,7 +1828,6 @@ public interface Json<T extends Json<T>> extends JsValue
                        .count();
     }
 
-    @SuppressWarnings("squid:S00100") //  naming convention: xx_ traverses the whole json
     default long timesAll(JsValue e)
     {
         return streamAll().filter(p -> p.value.equals(Objects.requireNonNull(e)))

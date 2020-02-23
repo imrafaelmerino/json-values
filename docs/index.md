@@ -612,29 +612,29 @@ Assert.assertTrue(y.same(y.stream_()
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
 carefully in different ways taking into account the structure of a Json.
 
-Functions which name ends with an underscore, are applied recursively to every element and not only to the first level of the json. It's
-a naming convention in the API. As was mentioned before, names with symbols (except _ and $) are not valid in Java.
+Functions which name contains the word all, are applied recursively to every element and not only to the first level of the json. It's
+a naming convention in the API.
 
 ### <a name="filter"></a> Filter
 _filterKeys_ methods remove the keys from a JsObj which pairs satisfy a predicate: 
 
 ```
 Json filterKeys(Predicate<? super JsPair> predicate);
-Json filterKeys_(Predicate<? super JsPair> predicate);
+Json filterAllKeys(Predicate<? super JsPair> predicate);
 ```
 
 _filterElems_ methods remove the elements from a Json **which are not containers** and which pairs satisfy a predicate:
 
 ```
 Json filterElems(Predicate<? super JsPair> predicate);
-Json filterElems_(Predicate<? super JsPair> predicate);
+Json filterAllElems(Predicate<? super JsPair> predicate);
 ```
 
 _filterObjs_ methods remove the json objects from a Json which pairs satisfy a predicate:
 
 ```
 Json filterObjs(BiPredicate<? super JsPath, ? super JsObj> predicate); 
-Json filterObjs_(BiPredicate<? super JsPath, ? super JsObj> predicate); 
+Json filterAllObjs(BiPredicate<? super JsPath, ? super JsObj> predicate); 
 ```
 
 ### <a name="map"></a> 
@@ -645,8 +645,8 @@ the new key.
 Json mapKeys(Function<? super JsPair, String> fn,
              Predicate<? super JsPair> predicate
             );
-Json mapKeys_(Function<? super JsPair, String> fn,
-              Predicate<? super JsPair> predicate
+Json mapKeysAll(Function<? super JsPair, String> fn,
+                Predicate<? super JsPair> predicate
              );  
 ```
 
@@ -657,9 +657,9 @@ as a parameter a pair and returns the new json element.
 Json mapElems(Function<? super JsPair, ? extends JsElem> fn,
               Predicate<? super JsPair> predicate
              );
-Json mapElems_(Function<? super JsPair, ? extends JsElem> fn,
-               Predicate<? super JsPair> predicate
-              );   
+Json mapAllElems(Function<? super JsPair, ? extends JsElem> fn,
+                 Predicate<? super JsPair> predicate
+                );   
 ```
 
 _mapObjs_ methods map the json objects from a Json which pairs satisfy a predicate. The map function takes
@@ -669,9 +669,9 @@ as a parameter a json object, its path location and returns the new json object:
 Json mapObjs(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
              BiPredicate<? super JsPath, ? super JsObj> predicate
             );
-Json mapObjs_(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-              BiPredicate<? super JsPath, ? super JsObj> predicate
-             );            
+Json mapAllObjs(BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
+                BiPredicate<? super JsPath, ? super JsObj> predicate
+               );            
 ``` 
 
 The map functions have been designed in such a way that they don't change the structure of the json, which reminds of _functors_, 
@@ -687,10 +687,10 @@ Reduce methods are a classic map-reduce over the elements **which are not contai
                        Predicate<? super JsPair> predicate
                        );       
                                   
-<R> Optional<R> reduce_(BinaryOperator<R> op,
-                        Function<? super JsPair, R> map,
-                        Predicate<? super JsPair> predicate
-                       );        
+<R> Optional<R> reduceAll(BinaryOperator<R> op,
+                          Function<? super JsPair, R> map,
+                          Predicate<? super JsPair> predicate
+                         );        
 ```
 
 ## <a name="json-patch"></a> [RFC 6902](https://tools.ietf.org/html/rfc6902): Json Patch specification
@@ -719,7 +719,7 @@ Given two json objects _a_ and _b_:
 *  _a.union(b)_ returns _a_ plus those pairs from _b_  which keys don't exist in _a_.
 Taking that into account, it's not a commutative operation unless the elements associated with the keys that exist in both
 objects are equals.
-* a.union_(b, ARRAY_AS) behaves like the union above but, for those keys that exit in _a_ and _b_ which associated elements
+* a.unionAll(b, ARRAY_AS) behaves like the union above but, for those keys that exit in _a_ and _b_ which associated elements
 are **containers of the same type**, the result is their union. In this case, we can specify if arrays are considered Sets, Lists, or MultiSets.
 
 Examples:
@@ -728,8 +728,8 @@ Examples:
 a = { "a": 1, "c": json1}  
 b = { "b": 2, "c": json2}
 // json1 and json2 are either objecs or arrays
-a.union_(b) = { "a": 1, "b":2, "c": json1.union_(json2) }
-b.union_(a) = { "a": 1, "b":2, "c": json2.union_(json1) }
+a.unionAll(b) = { "a": 1, "b":2, "c": json1.union_(json2) }
+b.unionAll(a) = { "a": 1, "b":2, "c": json2.union_(json1) }
 // notice de difference
 a.union(b) = { "a": 1,  "b":2, "c": json1} 
 b.union(a) = { "a": 1,  "b":2, "c": json2} 
@@ -742,8 +742,8 @@ c= {"a":1, "b":2, c": [{ "d":1 }, { "e":2 }] }
 d= {"a":1, "b":2, c": [{ "d":1, "e":2 }] }
 e= {"a":1, "b":2, c": [{ "d":1 }] }
 
-c = a.union_(b, SET)
-d = a.union_(b, LIST)
+c = a.unionAll(b, SET)
+d = a.unionAll(b, LIST)
 e = a.union(b)
 
 f= {"a": [1, 2, {"b": {"b":1} } ] }  
@@ -752,9 +752,9 @@ h= {"a": [1, 2, {"b": {"b":1} }, 3, [4,5], 6, 7], "b":[1,2]}
 i = {"a": [1, 2, {"b": {"b":1} }, 7], "b":[1,2]} 
 j = {"a": [1, 2, {"b": {"b":1} }], "b":[1,2]} 
 
-h = f.union_(g,SET)
-h = f.union_(g,MULTISET)
-i = f.union_(g,LIST)
+h = f.unionAll(g,SET)
+h = f.unionAll(g,MULTISET)
+i = f.unionAll(g,LIST)
 j = f.union(g)
 ```
 
@@ -765,7 +765,7 @@ Given two arrays _c_ and _d_:
 
 * _c.union(d, LIST)_ returns _c_ plus those elements from d which position >= c.size().
 
-* _c.union\_(d)_ returns _c_ plus those elements from _d_ which position >= c.size(), and, at the positions
+* _c.unionAll(d)_ returns _c_ plus those elements from _d_ which position >= c.size(), and, at the positions
 where a container of the same type exists in _c_ and _d_, the result is their union. This operation doesn't make
 any sense if arrays are not considered Lists.
 
@@ -780,7 +780,7 @@ d= [ 1, json2, 3, 2]
 c.union(d,SET) = [1, json1, 2, json2, 3]
 c.union(d,MULTISET) = [1, json1, 2, 1, json2, 3, 2]
 c.union(d,LIST) = [1, json1, 2, 2]
-c.union_(d) = [1, json1.union_(json2), 2, 2]
+c.unionAll(d) = [1, json1.unionAll(json2), 2, 2]
 ```
 ```
 a= [1, 2]
@@ -827,9 +827,9 @@ a.intersection(b,SET) == Jsons.immutable.obj.empty()
 a.intersection(b,MULTISET) == Jsons.immutable.obj.empty()
 
 //the intersection is applied recursively between the json objects associated with the key "b"
-a.intersection_(b,LIST) == b
-a.intersection_(b,SET) == c
-a.intersection_(b,MULTISET) == c
+a.intersectionAll(b,LIST) == b
+a.intersectionAll(b,SET) == c
+a.intersectionAll(b,MULTISET) == c
 
 d = { "b": [1, 2, {"a":1       }, true,  null, true ] }
 e = { "b": [1, 2, {"a":1, "c":2}, false, true, null, 1 ] }
@@ -841,7 +841,7 @@ h = { "b": [1, 2, {"a":1}] }
 f = d.intersection(e,SET)
 g = d.intersection(e,MULTISET)
 h = d.intersection(e,LIST)
-i = d.intersection_(e,LIST)
+i = d.intersectionAll(e,LIST)
 ``` 
 
 Given two json arrays, _c_ and _d_:
@@ -852,7 +852,7 @@ Given two json arrays, _c_ and _d_:
 
 * _c.intersection(d, LIST)_ returns an array with the elements that exist in both _c_ and _d_ and are located at the same position.
 
-* _c.intersection\_(d)_ behaves as _a.intersection(b, LIST)_, but, the result for those elements that are containers of the same type and are also located at the same position, is their intersection.
+* _c.intersectionAll(d)_ behaves as _a.intersection(b, LIST)_, but, the result for those elements that are containers of the same type and are also located at the same position, is their intersection.
 
 Examples:
 

@@ -30,8 +30,6 @@ final class OpMapReduce<T>
         };
     }
 
-    @SuppressWarnings("squid:S00100")
-        //  naming convention, _ -> traverses the whole json recursively
     Optional<T> reduceAll(JsObj obj)
     {
         return reduceObj(JsPath.empty(),
@@ -52,8 +50,6 @@ final class OpMapReduce<T>
                          .get();
     }
 
-    @SuppressWarnings("squid:S00100")
-        //  naming convention, _ -> traverses the whole json recursively
     Optional<T> reduceAll(JsArray arr)
     {
         return reduceArr(JsPath.empty()
@@ -98,8 +94,6 @@ final class OpMapReduce<T>
                                                                      );
     }
 
-    @SuppressWarnings("squid:S00100")
-    //  naming convention, _ -> traverses the whole json recursively
     private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail_()
     {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
@@ -115,8 +109,6 @@ final class OpMapReduce<T>
     }
 
 
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail_()
     {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
@@ -150,8 +142,6 @@ final class OpMapReduce<T>
         };
     }
 
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     private BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>> reduceObj(final JsPath startingPath,
                                                                               final BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonTail
                                                                              )
@@ -186,8 +176,6 @@ final class OpMapReduce<T>
 
     }
 
-    @SuppressWarnings("squid:S00100")
-    //  naming convention: xx_ traverses the whole json
     private BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>> reduceArr(final JsPath startingPath,
                                                                                 final BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonTail
                                                                                )
