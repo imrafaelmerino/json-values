@@ -12,7 +12,7 @@ class FilterMapReduceSpec extends BasePropSpec
 {
 
 
-  property("filterElems_ (removes every element but strings)")
+  property("filterAllValues (removes every element but strings)")
   {
     check(
       forAll(jsGen.jsObjGen)
@@ -37,7 +37,7 @@ class FilterMapReduceSpec extends BasePropSpec
   }
 
 
-  property("filterElems_ (removes every element but integral numbers)")
+  property("filterAllValues (removes every element but integral numbers)")
   {
     check(
       forAll(jsGen.jsObjGen)
@@ -62,7 +62,7 @@ class FilterMapReduceSpec extends BasePropSpec
       )
   }
 
-  property("filterElems_ (removes null)")
+  property("filterAllValues (removes null)")
   {
     check(
       forAll(jsGen.jsObjGen)

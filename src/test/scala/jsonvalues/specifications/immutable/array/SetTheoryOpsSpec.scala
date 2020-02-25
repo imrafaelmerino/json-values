@@ -48,7 +48,7 @@ class SetTheoryOpsSpec extends BasePropSpec
   }
 
 
-  property("union_ of an array with itself returns the same array ")
+  property("unionAll of an array with itself returns the same array ")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
@@ -105,7 +105,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
   //
-  property("array union_ is commutative (MULTISET AND LIST)")
+  property("array unionAll is commutative (MULTISET AND LIST)")
   {
     check(forAll(jsGen.jsArrGen,
                  jsGen.jsArrGen
@@ -137,7 +137,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("arrays intersection_ is commutative (ORDERED LIST)")
+  property("arrays intersectionAll is commutative (ORDERED LIST)")
   {
     check(forAll(jsGen.jsArrGen,
                  jsGen.jsArrGen
@@ -168,7 +168,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("intersection_ of an array with an empty array returns an empty array")
+  property("intersectionAll of an array with an empty array returns an empty array")
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
