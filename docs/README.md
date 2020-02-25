@@ -9,6 +9,7 @@
 [![Javadocs](https://www.javadoc.io/badge/com.github.imrafaelmerino/json-values.svg)](https://www.javadoc.io/doc/com.github.imrafaelmerino/json-values)
 [![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/5.0.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/5.0.0/jar)
 [![](https://jitpack.io/v/imrafaelmerino/json-values.svg)](https://jitpack.io/#imrafaelmerino/json-values)
+
 [![Gitter](https://badges.gitter.im/json-values/community.svg)](https://gitter.im/json-values/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 - [Introduction](#introduction)
@@ -37,6 +38,7 @@ efficient, especially when copy-on-write is the only option to avoid mutation. A
 value of values](https://www.youtube.com/watch?v=-6BsiVyC1kM), a masterpiece from Rich Hickey. Json-values, the library I'm introducing here, was named after that talk.
 json-values is a functional JSON library in Scala that uses persistent data structures. In this first article, we are going to focus on two 
 more important aspects of software development where json-values can make a difference: data validation and testing.
+
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 * You need to deal with Jsons, and you want to program following a functional style, **using functions and immutable types (or values)**,
 but you can't benefit from all the advantages that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
@@ -48,6 +50,7 @@ in Java 8, like functions, suppliers, streams, and collectors, making json manip
 * As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
 leave the functions passed in as arguments with no implementation for brevity reasons (go to the [project page](https://imrafaelmerino.github.io/json-values/) for further
 details)
+  
 ```
 json.mapKeys(toSneakeCase)
 
