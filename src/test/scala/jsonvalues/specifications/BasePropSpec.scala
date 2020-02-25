@@ -12,7 +12,7 @@ class BasePropSpec extends PropSpec with Checkers
   val jsPairGen = JsPairGens()
 
   implicit override val generatorDrivenConfig = PropertyCheckConfiguration(minSuccessful = 10000,
-                                                                           workers = 100
+                                                                           workers = 1
 
                                                                            )
 }
