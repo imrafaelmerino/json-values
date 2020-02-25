@@ -153,10 +153,7 @@
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>${PLUGIN_SCALA_TEST_VERSION}</version>
                 <configuration>
-                    <reportsDirectory>${project.build.directory}/surefire-reports</reportsDirectory>
-                    <junitxml>.</junitxml>
-                    <filereports>TestSuite.txt</filereports>
-                    <skipTests>false</skipTests>
+                    <stdout></stdout>
                 </configuration>
                 <executions>
                     <execution>

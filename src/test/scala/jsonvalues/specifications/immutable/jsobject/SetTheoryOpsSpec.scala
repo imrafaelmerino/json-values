@@ -19,7 +19,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("union_ of an object with itself itself returns the same object")
+  property("unionAll of an object with itself itself returns the same object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>
@@ -70,7 +70,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
   //
-  property("objects union_ is commutative (same fields but not necessarily same values)")
+  property("objects unionAll is commutative (same fields but not necessarily same values)")
   {
     check(forAll(jsGen.jsObjGen,
                  jsGen.jsObjGen

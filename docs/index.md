@@ -533,8 +533,8 @@ Examples:
 a = { "a": 1, "c": json1}  
 b = { "b": 2, "c": json2}
 // json1 and json2 are either objecs or arrays
-a.unionAll(b) = { "a": 1, "b":2, "c": json1.union_(json2) }
-b.unionAll(a) = { "a": 1, "b":2, "c": json2.union_(json1) }
+a.unionAll(b) = { "a": 1, "b":2, "c": json1.unionAll(json2) }
+b.unionAll(a) = { "a": 1, "b":2, "c": json2.unionAll(json1) }
 // notice de difference
 a.union(b) = { "a": 1,  "b":2, "c": json1} 
 b.union(a) = { "a": 1,  "b":2, "c": json2} 

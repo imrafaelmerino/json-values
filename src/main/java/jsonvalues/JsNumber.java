@@ -23,13 +23,13 @@ abstract class JsNumber implements JsValue
         {
             return JsInt.of(parser.getIntValue());
         }
-        catch (InputCoercionException e)
+        catch (InputCoercionException | JsonParseException e)
         {
             try
             {
                 return JsLong.of(parser.getLongValue());
             }
-            catch (InputCoercionException ex)
+            catch (InputCoercionException | JsonParseException ex)
     {
                 return JsBigInt.of(parser.getBigIntegerValue());
             }
