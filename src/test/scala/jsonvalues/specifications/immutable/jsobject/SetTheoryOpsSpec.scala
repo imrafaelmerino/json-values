@@ -112,7 +112,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("objects intersection_ is commutative (same fields and values)")
+  property("objects intersectionAll is commutative (same fields and values)")
   {
     check(forAll(jsGen.jsObjGen,
                  jsGen.jsObjGen
@@ -147,7 +147,7 @@ class SetTheoryOpsSpec extends BasePropSpec
           )
   }
 
-  property("intersection_ of an object with an empty object returns an empty object")
+  property("intersectionAll of an object with an empty object returns an empty object")
   {
     check(forAll(jsGen.jsObjGen)
           { js =>

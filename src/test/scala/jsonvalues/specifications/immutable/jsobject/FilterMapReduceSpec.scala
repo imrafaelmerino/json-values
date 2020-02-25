@@ -24,7 +24,7 @@ class FilterMapReduceSpec extends BasePropSpec
       )
   }
 
-  property("filterElems (removes every element but strings)")
+  property("filterValues (removes every element but strings)")
   {
     check(
       forAll(jsGen.jsObjGen)
@@ -50,7 +50,7 @@ class FilterMapReduceSpec extends BasePropSpec
   }
 
 
-  property("filterElems (removes every element but integral numbers)")
+  property("filterValues (removes every element but integral numbers)")
   {
     check(
       forAll(jsGen.jsObjGen)
@@ -74,7 +74,7 @@ class FilterMapReduceSpec extends BasePropSpec
       )
   }
 
-  property("filterElems (removes null)")
+  property("filterVAlues (removes null)")
   {
     check(
       forAll(jsGen.jsObjGen)
@@ -112,7 +112,7 @@ class FilterMapReduceSpec extends BasePropSpec
       )
   }
 
-  property("filterKeys_ (removes keys named 'a')")
+  property("filterAllKeys_ (removes keys named 'a')")
   {
     check(
       forAll(jsGen.jsObjGen)

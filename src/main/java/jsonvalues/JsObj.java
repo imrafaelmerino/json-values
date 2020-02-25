@@ -364,7 +364,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
 
     /**
-     {@code this.intersection_(that)} behaves as {@code this.intersection(that, LIST)}, but for those elements
+     {@code this.intersectionAll(that)} behaves as {@code this.intersection(that, LIST)}, but for those elements
      that are containers of the same type and are located at the same position, the result is their
      intersection.  So this operation is kind of a 'recursive' intersection.
      @param that the other object

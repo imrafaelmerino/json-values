@@ -443,11 +443,11 @@ Json filterKeys(Predicate<? super JsPair> predicate);
 Json filterAllKeys(Predicate<? super JsPair> predicate);
 ```
 
-_filterElems_ methods remove the elements from a Json **which are not containers** and which pairs satisfy a predicate:
+_filterValues_ methods remove the elements from a Json **which are not containers** and which pairs satisfy a predicate:
 
 ```
-Json filterElems(Predicate<? super JsPair> predicate);
-Json filterAllElems(Predicate<? super JsPair> predicate);
+Json filterValues(Predicate<? super JsPair> predicate);
+Json filterAllValues(Predicate<? super JsPair> predicate);
 ```
 
 _filterObjs_ methods remove the json objects from a Json which pairs satisfy a predicate:

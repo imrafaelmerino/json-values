@@ -17,7 +17,7 @@
  x.size() = 2  // a and b
  x.size_() = 3 // a, b.0.c and b.0.1
  x.mapKeys(toUppercase)  =  {"A":1, "B":[{"c":1, "d":true}]}
- x.mapKeys_(toUppercase) =  {"A":1, "B":[{"C":1, "D":true}]}
+ x.mapAllKeys(toUppercase) =  {"A":1, "B":[{"C":1, "D":true}]}
  }
  </pre>
  */
