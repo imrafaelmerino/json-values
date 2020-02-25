@@ -4,6 +4,7 @@ package jsonvalues;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -774,7 +775,7 @@ public class TestJsArray
     }
 
     @Test
-    public void test_parse_string_into_immutable_json_array_with_options() throws MalformedJson
+    public void test_parse_string_into_immutable_json_array_with_options() throws MalformedJson, IOException
     {
 
         final JsArray arr = JsArray.parse("[1,2,3,true,false,null,[null,true,4]]",
@@ -795,7 +796,7 @@ public class TestJsArray
     }
 
     @Test
-    public void test_parse_with_options_immutable() throws MalformedJson
+    public void test_parse_with_options_immutable() throws MalformedJson, IOException
     {
         final JsArray array = JsArray.of(NULL,
                                          JsArray.of(1,
@@ -993,6 +994,15 @@ public class TestJsArray
                                ); //  ["b","c"]
 
 
+    }
+
+    @Test
+    public void test_parse_array_of_bigints() throws MalformedJson
+    {
+        final JsArray arr = JsArray.parse("[-8354817123538400257,9223372036854775807,-1,0,-8871622059039849388]");
+
+        Assertions.assertEquals(JsArray.parse(arr.toString()),
+                                       arr);
     }
 
 

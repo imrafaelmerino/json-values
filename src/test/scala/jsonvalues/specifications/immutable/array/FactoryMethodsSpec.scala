@@ -76,6 +76,7 @@ class FactoryMethodsSpec extends BasePropSpec
   {
     check(forAll(jsGen.jsArrGen)
           { js =>
+            println(js)
             JsArray.parse(js.toString).equals(js)
           }
           )

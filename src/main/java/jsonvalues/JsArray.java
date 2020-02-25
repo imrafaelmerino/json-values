@@ -347,7 +347,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
     public JsValue get(final int i)
     {
-        return seq.apply(i);
+        return seq.get(i);
     }
 
     /**
