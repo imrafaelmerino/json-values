@@ -7,7 +7,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 [![Javadocs](https://www.javadoc.io/badge/com.github.imrafaelmerino/json-values.svg)](https://www.javadoc.io/doc/com.github.imrafaelmerino/json-values)
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/4.1.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/4.1.0/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/5.0.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/5.0.0/jar)
 [![](https://jitpack.io/v/imrafaelmerino/json-values.svg)](https://jitpack.io/#imrafaelmerino/json-values)
 [![Gitter](https://badges.gitter.im/json-values/community.svg)](https://gitter.im/json-values/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
@@ -21,9 +21,22 @@
 - [Develop](#develop)
 - [Related projects](#rp)
 
-## <a name="introduction"><a/> Introduction
-Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures. 
 
+## <a name="introduction"><a/> Introduction
+Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures.  
+One of the most important aspects of functional programming is immutable data structures, better known as values. 
+Updating these structures using the copy-on-write approach is very inefficient, and this is the reason why persistent 
+data structures were created. 
+On the other hand, JSON is a lightweight, text-based, language-independent data interchange format. It's become so popular 
+due to its simplicity. There are a lot of libraries out there to work with JSON in the JVM ecosystem; however, none of them 
+use persistent data structures.
+In most cases, those libraries parse a string or array of bytes into an object. The thing is, why do that? JSON is a great structure. 
+It's simple, easy to aggregate, ease to create, easy to reason about, so why create yet another abstraction over JSON?
+Moreover, there are many architectures that work with JSON end-to-end. Going from JSON to objects or strings back and forth is not very 
+efficient, especially when copy-on-write is the only option to avoid mutation. All these points are way better elaborated in the talk [the 
+value of values](https://www.youtube.com/watch?v=-6BsiVyC1kM), a masterpiece from Rich Hickey. Json-values, the library I'm introducing here, was named after that talk.
+json-values is a functional JSON library in Scala that uses persistent data structures. In this first article, we are going to focus on two 
+more important aspects of software development where json-values can make a difference: data validation and testing.
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 * You need to deal with Jsons, and you want to program following a functional style, **using functions and immutable types (or values)**,
 but you can't benefit from all the advantages that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
@@ -38,13 +51,11 @@ details)
 ```
 json.mapKeys(toSneakeCase)
 
-obj.stream().parallel().map(toSneakCase).collect(Jsons.mutable.object.collector())
-
-json.mapElems(trim, ifStr)
+json.mapValues(trim, ifStr)
 
 json.filterKeys(key.startsWith("_field"))
 
-json.filterElems(isNotNull)
+json.filterValues(isNotNull)
 
 json.reduce(plus, ifInt)
 
@@ -61,27 +72,19 @@ a.union(b, JsArray.TYPE.MULTISET)
 
 a.intersection(b)
 
-//RFC 6902
-json.patch(Patch.ops().add("/a/b",
-                           JsInt.of(1)
-                          )
-                      .remove("/c/0")
-                      .toArray()
-          )
-
 // creation of Jsons from primitive types
 
 JsObj.of("a",JsInt.of(13),
-                          "b",JsStr.of("hi!")
-                         )
+         "b",JsStr.of("hi!")
+         )
 
-Jsons.mutable.array.of(1,2,3)
+JsArray.of(1,2,3)
 
 // creation of Jsons parsing strings
 
 JsObj.parse("{...}")
 
-Jsons.mutable.array.parse("[...]")
+JsArray.parse("[...]")
 ```
 I'd argue that it's very simple, expressive and concise. And that plus the fact that it's a persistent
 data structure shows very well the essence of **json-values**.
@@ -98,7 +101,7 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>4.1.0</version>
+  <version>5.0.0</version>
 </dependency>
 ```
 and that's all. It's a **zero-dependency** library, so you won't have to go through a kind of dependency hell to get it working. 
@@ -122,5 +125,7 @@ After the development of json-values, I published two more related projects:
 * Json generators in Scala to do property-based testing: [json-scala-values-generator](https://github.com/imrafaelmerino/json-scala-values-generator) . This is a 
 project I'm especially proud of. I think there is no Json generator more declarative, concise, and why not, beautiful in the
 whole wide world! If I'm wrong, please let me know!
+
+json-values uses the persistent data structures from [vavr](https://www.vavr.io/)
 
 

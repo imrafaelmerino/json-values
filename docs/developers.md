@@ -3,7 +3,6 @@
 - [Why some methods have a well-documented Javadoc and others not?](#javadoc)
 - [Has json-values been developed using TDD?](#tests)
 - [How long has it taken to develop json-values?](#time)
-- [Some optimizations carried out along the way](#optimizations)
 
 ## <a name="tests"><a/> Why is json-values a one-package library?
 I don't want the user to get drowned in hundred of classes that they don't have to know about after hitting the 
@@ -39,43 +38,6 @@ ScalaCheck.
 I've been working on it since 2016. I did the first version of json-values two years ago, it was called [neatjson](https://github.com/imrafaelmerino/neatjson/). Back then, I was a typical enterprise object-oriented programmer; you know what I mean, I loved frameworks like Spring, Hibernate, and all that stuff. I reeducated myself reading a lot of books and watching a lot of videos on youtube about computer science:  functional programming, pure object-oriented programming, APIs, programming languages... I've put in json-values all the knowledge I've been acquiring since then.
 Now, I don't like frameworks and tools, and I love programming languages. I consider myself an ultimately better programmer than I was, and it doesn't have anything to do with experience.  Albert Einstein said: "The definition of insanity is doing the same thing over and over again and expecting a different result."  
 It has to do with education and practice, like everything in life. 
-
-## <a name="optimizations"><a/> Some optimizations carried out along the way.
-I had to turn some interfaces into abstract classes for the sake of performance. Those classes are 
-_MyMap_, _MutableMap_, _ImmutableMap_, _MySeq_, _ImmutableSeq_ and _MutableSeq_. The most critique operation in terms 
-of performance in the API is parsing a string into a Json object. If I wanted **json-values** to be a real alternative 
-to existing APIs like Jackson, I had to sacrifice some good design principles. The bytecode of a method 
-call turns out to be more efficient in classes than interfaces. You can read up on the bytecode instructions _invokeinterface_ and _invokedinamic_. 
-The performance thing, plus the fact that **the API does not expose those classes**, are valid reasons 
-for that change. Of course, this is an optimization of a heat operation of the API where the JIT compiler will 
-kick in, and **it doesn't mean under any concept you have to use abstract classes over interfaces**.
-The optimization that made the most significant difference was to refactor switch statements so that their values 
-were integers instead of strings or enum values. You can read up on the instruction _tableswitch_ to go deeper and
-to know why that happens:
-
-```
-//TOKEN_TYPE IS AN INTEGER  
-switch(TOKEN_TYPE)
-{
-    case NUMBER:
-        // handle it
-        break;
-    case STRING:
-        // handle it
-        break;
-    case BOOLEAN:
-        // handle it
-        break;
-    case JSON_OBJECT:
-        // handle it
-        break;
-    case JSON_ARRAY:
-        // handle it
-        break;
-    case NULL:
-        // handle it
-        break;
-}
 
 ```
 

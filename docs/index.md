@@ -1,11 +1,9 @@
  - [JsPath](#jspath)
- - [JsElem](#jselem)
+ - [JsValue](#jselem)
  - [JsPair](#jspair)
  - [Creating Jsons](#json-creation)
-   - [Immutable Json objects](#json-immutable-obj-creation)
-   - [Mutable Json objects](#json-mutable-obj-creation)
-   - [Immutable Json arrays](#json-immutable-arr-creation)
-   - [Mutable Json arrays](#json-mutable-arr-creation)
+   - [Json objects](#json-immutable-obj-creation)
+   - [Json arrays](#json-immutable-arr-creation)
  - [Putting data in and getting data out](#data-in-out)
    - [Obtaining primitive types](#obtaining-primitive-types)
    - [Obtaining Json elements](#obtaining-jselements)
@@ -13,10 +11,6 @@
    - [Being idiomatic: _tell, don't ask_ principle](#tell-dont-ask)
    - [Being lazy](#lazy)
    - [Manipulating arrays](#manipulating-arrays)
- - [Stream and collectors](#stream-collectors)
-    - [Streams](#streams)
-    - [Object collectors](#object-collectors)
-    - [Array collectors](#array-collectors)
  - [Filter, map and reduce](#filter-map-reduce)
    - [Filter](#filter)
    - [Map](#map)
@@ -41,7 +35,7 @@ method _path(string)_, but there are two slightly differences:
   by the user. However, imagine that the user wants to insert the name "Rafa" at /names/0 in an empty Json object:
 
 ```
-JsObj obj = Jsons.immutable.obj.empty().put(path("/names/0"),"Rafa")
+JsObj obj = JsObj.empty().put(path("/names/0"),"Rafa")
 ```
 
 What is the expected result? According to the rfc6901, both:
@@ -57,20 +51,20 @@ and
 ```
 
 are valid results. The API has to provide the user with a way of distinguishing arrays from objects. 
-The rfc6901 is to read data from a Json, and given the pointed out above, it can not be used to insert 
+The rfc6901 is to read data from a Json, and given the pointed out above, it cannot be used to insert 
 data in a Json. The approach of json-values to make that distinction is to single-quote only the keys 
 which names are numbers, i.e.:
 
 ```
 // {"names":{"0":"Rafa"}}
-JsObj obj = Jsons.immutable.obj.empty().put(path("/names/'0'"),"Rafa")
+JsObj obj = JsObj.empty().put(path("/names/'0'"),"Rafa")
 ```
 
 and
 
 ```
 // {"names":["Rafa"]}
-JsObj obj = Jsons.immutable.obj.empty().put(path("/names/0"),"Rafa")
+JsObj obj = JsObj.empty().put(path("/names/0"),"Rafa")
 ```
 
   - The index -1 represents the last element of an array.
@@ -140,8 +134,8 @@ path("/")
 fromKey("")
 ```
 
-## <a name="jselem"></a> JsElem
-Every element in a Json is a _JsElem_. There is one for each json value described in [json.org](https://www.json.org):
+## <a name="jselem"></a> JsValue
+Every element in a Json is a _JsValue_. There is one for each json value described in [json.org](https://www.json.org):
 * _JsStr_ represents immutable strings.
 
 * The singletons _JsBool.TRUE_ and _JsBool.FALSE_ represent true and false.
@@ -165,90 +159,64 @@ Every element in a Json is a _JsElem_. There is one for each json value describe
     * _JsBigDec_
 
 * The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
-that makes certain functions that return a JsElem **total** on their arguments. For example, the function
- _JsElem get(JsPath)_ is total because it returns a JsElem for every JsPath. If there is no element located at the specified path, it returns _NOTHING_. In other functions like _Json putIfPresent(Function<JsElem, JsElem>)_, this type comes in handy as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present. 
+that makes certain functions that return a JsValue **total** on their arguments. For example, the function
+ _JsValue get(JsPath)_ is total because it returns a JsValue for every JsPath. If there is no element located at the 
+ specified path, it returns _NOTHING_. In other functions like _Json putIfPresent(Function<JsValue, JsValue>)_, this type comes in handy as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present. 
  
 ## <a name="jspair"></a> JsPair
 There are different overloaded static factory methods to create pairs:
 ```
-JsPair of(JsPath path, int elem)
-JsPair of(JsPath path, double elem)
-JsPair of(JsPath path, long elem)
-JsPair of(JsPath path, boolean elem)
-JsPair of(JsPath path, String elem)
-JsPair of(JsPath path, JsElem elem)
+JsPair of(JsPath path, int value)
+JsPair of(JsPath path, double value)
+JsPair of(JsPath path, long value)
+JsPair of(JsPath path, boolean value)
+JsPair of(JsPath path, String value)
+JsPair of(JsPath path, JsValue value)
 ```
 
-Pairs are immutable. You can get the path and element of a pair by direct field access:
+Pairs are immutable. You can get the path and value of a pair by direct field access:
 
 ```
 JsPair pair = JsPair.of(path("/a/b/0"), "a");
 JsPath path = pair.path;
-JsElem elem = pair.elem;
+JsValue value = pair.value;
 ```
 
 Pairs can be mapped using:
 
 ```
 JsPair mapPath(UnaryOperator<JsPath> fn)
-JsPair mapElem(UnaryOperator<JsElem> fn)
+JsPair mapElem(UnaryOperator<JsValue> fn)
 ```
 
 ## <a name="json-creation"></a> Creating Jsons
 
-**json-values** uses factories to create objects. There are two factories:
+**json-values** uses factories to create objects.
 
-_Jsons.immutable_, that uses persistent data structures from Scala: [Scala HashMap](https://scala-lang.org/files/archive/api/2.12.0/scala/collection/seq/HashMap.html) 
-and [Scala Vector](https://www.scala-lang.org/api/2.12.0/scala/collection/immutable/Vector.html)
-
-_Jsons.mutable_, that uses the conventional Java collections HashMap and ArrayList.
-
-They are singletons; therefore, they can not be modified. 
 ```
                                       
-### <a name="json-immutable-obj-creation"></a> Creation of immutable Json objects
+### <a name="json-immutable-obj-creation"></a> Json objects
 
 ```
-// from keys and associated elements
+// from keys and associated values
 JsObj.of("a", JsInt.of(1), 
-                          "b", JsBool.TRUE, 
-                          "c", JsNull.NULL, 
-                          "d", JsStr.of("hi")
-                         );
+         "b", JsBool.TRUE, 
+         "c", JsNull.NULL, 
+         "d", JsStr.of("hi")
+         );
 
 // from varargs of json pairs
 JsObj w = JsObj.of( JsPair.of(path("/a/b/0"), 1),
-                                     JsPair.of(path("/a/b/1"), 2)
-                                   );    
+                    JsPair.of(path("/a/b/1"), 2)
+                  );    
                            
-//parsing a string, which returns a TryObj computation that may fail                       
-JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
+//parsing a string
+JsObj z = JsObj.parse("{\"a\": {\"b\": [1,2]}}");
 
 Assertions.assertEquals(w, z);   
  ```
 
-### <a name="json-mutable-obj-creation"></a> Creation of mutable Json objects
-
-```
-// from keys and associated elements
-JsObj x = Jsons.mutable.object.of("a", JsInt.of(1), 
-                                  "b", JsBool.TRUE, 
-                                  "c", JsNull.NULL, 
-                                  "d", JsStr.of("hi")
-                                 );  
-
-// from vargs of json pairs
-JsObj w = Jsons.mutable.object.of( JsPair.of(path("/a/b/0"), 1),
-                                     JsPair.of(path("/a/b/1"), 2)
-                                   );    
-                            
-// parsing a string, which returns a TryObj computation that may fail                  
-JsObj z = Jsons.mutable.object.parse("{\"a\": {\"b\": [1,2]}}").orElseThrow(); 
-
-Assertions.assertEquals(w, z);   
-```
-
-### <a name="json-immutable-arr-creation"></a> Creation of immutable Json arrays
+### <a name="json-immutable-arr-creation"></a> Json arrays
 
 ```
 // from varargs of ints
@@ -257,51 +225,24 @@ JsArray a = JsArray.of(1,2,3);
 // from varargs of strings
 JsArray b = JsArray.of("a","b","c");
 
-// from varargs of JsElem
+// from varargs of JsValue
 JsArray c = JsArray.of(JsBool.TRUE, 
-                                     JsStr.of("a"), 
-                                     JsNull.NULL, 
-                                     JsDouble.of(1.5d)
-                                    );
+                       JsStr.of("a"), 
+                       JsNull.NULL, 
+                       JsDouble.of(1.5d)
+                      );
                        
 //from varargs of json pairs
 JsArray d = JsArray.of(JsPair.of(path("/0/a/b/0"), 1),
-                                     JsPair.of(path("/0/a/b/1"), 2)
-                                    );
+                       JsPair.of(path("/0/a/b/1"), 2)
+                      );
 
-//parsing a string, which returns a TryArr computation that may fail                      
-JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
+//parsing a string
+JsArray e = JsArray.parse("[{\"a\":{\"b\":[1,2]}}]");
 
 Assertions.assertEquals(d, e);  
 ```        
        
-### <a name="json-mutable-arr-creation"></a> Creation of mutable Json arrays
-
-```
-// from varargs of ints
-JsArray a = Jsons.mutable.array.of(1,2,3);  
-
-// from varargs of strings
-JsArray b = Jsons.mutable.array.of("a","b","c"); 
-
-// from varargs of JsElem
-JsArray c = Jsons.mutable.array.of(JsBool.TRUE, 
-                                   JsStr.of("a"), 
-                                   JsNull.NULL, 
-                                   JsDouble.of(1.5d)
-                                  );
-
-// from varargs of json pairs
-JsArray d = JsArray.of(JsPair.of(path("/0/a/b/0"), 1),
-                                     JsPair.of(path("/0/a/b/1"), 2)
-                                    );
-
-// parsing a string, which returns a TryArr computation that may fail                        
-JsArray e =  JsArray.parse("[{\"a\":{\"b\":[1,2]}}]").orElseThrow();       
-
-Assertions.assertEquals(d, e);  
-```
-
 ## <a name="data-in-out"></a> Putting data in and getting data out
 To be able to insert data in and pull data out in a simple way is a must for any Json API. That's why **json-values**
 has several overloaded methods that allow the client to work directly with primitive types, avoiding any conversion. 
@@ -358,9 +299,9 @@ Assertions.assertEquals(Optional.of(JsObj.of("c",JsInt.of(1),
                         );
 ```
 
-Working with JsElem may be necessary sometimes, for example, if it's unknown the type of the element located at a path.
-The _get_ by path method returns a _JsElem_ and has the attractive property that is total, as it was mentioned above. 
-Just as a reminder, it means that it returns a JsElem for every possible path. Functional programmers strive for total functions. 
+Working with JsValue may be necessary sometimes, for example, if it's unknown the type of the element located at a path.
+The _get_ by path method returns a _JsValue_ and has the attractive property that is total, as it was mentioned above. 
+Just as a reminder, it means that it returns a JsValue for every possible path. Functional programmers strive for total functions. 
 It's possible thanks to the _JsNothing_ type.
 
 ```
@@ -377,7 +318,7 @@ Assertions.assertEquals(JsNothing.NOTHING,
    - The _put_ method always inserts the specified element at the specified path:
    
 ```
-Jsobj a = Jsons.immutable.obj.empty().put(path("/a/b/c"), 1);
+Jsobj a = JsObj.empty().put(path("/a/b/c"), 1);
 Assertions.assertEquals(JsInt.of(1), a.get(path("/a/b/c")));
 Assertions.assertEquals(1, a.getInt(path("/a/b/c")).getAsInt());
 
@@ -389,10 +330,10 @@ Assertions.assertEquals(true, a.getBool(path("/a/b")).get());
 Assertions.assertNotEquals(a,b);
 
 JsArray c = JsArray.of(JsObj.of("a",JsArray.of(1,2)),
-                                     JsObj.of("b",JsArray.of("a","b"))
-                                    );
+                       JsObj.of("b",JsArray.of("a","b"))
+                      );
 Assertions.assertEquals(JsInt.of(1), c.get(path("/0/a/0")) );
-Assertions.assertEquals(1l, c.getLong(path("/0/a/0")).getAsLong() );
+Assertions.assertEquals(1l, c.getLong(path("/0/a/0")).getAsLong());
                        
 JsArray d = c.put(path("0.a.0"),true); 
 Assertions.assertEquals(JsBool.TRUE, d.get(path("/0/a/0")) );
@@ -404,10 +345,10 @@ When inserting data in arrays at specific positions, filling with null may be ne
 ```
 JsArray e = c.put(path("/0/b/3"),"c");
 Assertions.assertEquals(JsArray.of(JsStr.of("a"),
-                                                 JsStr.of("b"),
-                                                 JsNull.NULL,   
-                                                 JsStr.of("c")
-                                                 ), 
+                                   JsStr.of("b"),
+                                   JsNull.NULL,   
+                                   JsStr.of("c")
+                                   ), 
                         d.get(path("/0/b")) 
                         );
 ```
@@ -420,8 +361,8 @@ The point here is being honest. The string _c_ has been inserted at the forth po
   
 ```
 JsObj obj = JsObj.of("a",JsArray.of(1,2,3),
-                                      "b",JsObj.of("c",JsStr.of("hi"))
-                                     );
+                     "b",JsObj.of("c",JsStr.of("hi"))
+                    );
 
 Assertions.assertEquals(JsArray.of(1,5,2,3),
                         obj.add(path("/a/1"), 5).get(path("a"))
@@ -439,11 +380,11 @@ point is, instead of checking if an element is present or not and, in consequenc
 you can do the same thing in just one call:
 
 ```
-JsObj a = Jsons.immutable.obj.empty().putIfPresent(fromKey("a"),1);
-Assertions.assertEquals(Jsons.immutable.obj.empty(), a);
+JsObj a = JsObj.empty().putIfPresent(fromKey("a"),1);
+Assertions.assertEquals(JsObj.empty(), a);
 
 
-JsObj b = Jsons.immutable.obj.empty().putIfAbsent(fromKey("a"),1);
+JsObj b = JsObj.empty().putIfAbsent(fromKey("a"),1);
 Assertions.assertEquals(JsInt.of(1), 
                         b.get(fromKey("a"))
                         );
@@ -454,10 +395,10 @@ Assertions.assertEquals(b,c)
 
 JsInt defaultElem = JsInt.of(1);
 // in the function, d stands for the default element and e stands for the existing one
-BiFunction<? super JsElem, ? super JsElem, ? extends JsElem> fn = (d, e)-> e.isInt() ?  e.asJsInt().plus(d.asJsInt()) : d;
+BiFunction<? super JsValue, ? super JsValue, ? extends JsValue> fn = (d, e)-> e.isInt() ?  e.asJsInt().plus(d.asJsInt()) : d;
 
 // no element exists at "a" -> defaultElement is inserted
-JsObj f = Jsons.immutable.obj.empty().merge(fromKey("a"),
+JsObj f = JsObj.empty().merge(fromKey("a"),
                               defaultElem,                                   
                               fn
                               ); 
@@ -486,127 +427,6 @@ To insert elements at the front of an array, it exists the methods _prepend_, _p
 To insert elements at the back of an array, it exists the methods _append_, _appendAll_, _appendIfPresent_, and _appendAllIfPresent_.
 The same considerations above apply for all of them.  
 
-## <a name="stream-collectors"></a> Stream and collectors
-After Java 8 was released, I can't imagine a data structure in Java without providing the stream and collector operations. They open the door
-to manipulate data in a very functional way.
-
-A Set of _JsPairs_ can model a Json, which makes obvious how to implement streams on _Jsons_. For example, the following Set:
-
-````
-{(a, 1), (b, 2), (c.d, "a"), (c.e.0, 1), (c.e.1, 2), (_, JsNothing)}  where _ means any other path
-````
-
-represents the json
-
-```text
-{
-    "a":1,
-    "b":2,
-    "c":{
-        "d": "a"
-        "e": [1,2]
-        }
-}
-```
-
-On the other hand, to implement a collector in Java, a mutable data structure to accumulate the pairs in, is required. It's the real reason that
-there is a mutable implementation of a Json in **json-values**. At first, I had no intention of providing one, but sometimes you have to give in and be coherent with the
-language you are programming in. 
-
-### <a name="streams"></a> Streams
-Stream methods return sequences of JsPairs on-demand:
-
-```
-JsObj x = JsObj.of("a", JsArray.of(1,2,3),
-                                    "b", JsObj.of("c",JsInt.of(4),
-                                                                   "d",JsStr.of("hi")
-                                                                   )
-                                   );
-x.stream().forEach(System.out::println);
-```
-
-prints out the following sequence of two pairs:
-
-```text
-("a", [1,2,3])
-("b", {"c":4, "d": "hi"})
-```
-
-By convention, every method that ends with an underscore is applied recursively to every element that is a Json.
-Taking that into account:
-
-```
-x.stream_().forEach(System.out::println);
-```
-
-prints out the following sequence of five pairs:
-
-```text
-("a.0", 1) 
-("a.1", 2)
-("a.2", 3) 
-("b.c", 4)
-("b.d", "hi")
-```
-
-For arrays, it's just the same:
-
-```
-JsArray y = JsArray.of(JsArray.of(1,2), 
-                                     JsStr.of("red"), 
-                                     JsObj.of("c","blue", 
-                                                               "d", "pink"
-                                                              )
-                                    );
-y.stream().forEach(System.out::println);
-```
-
-prints out the following sequence of three pairs:
-
-```text
-("0", [1,2])
-("1", "red")
-("2", {"c":"blue", "d":"pink"})
-```
-
-and
-
-```
-y.stream_().forEach(System.out::println)
-```
-
-prints out the following sequence of five pairs:
-
-```text
-("0.0", 1)
-("0.1", 2)
-("1", "red")
-("2.c", "blue")
-("2.d", "pink")
-```
-
-### <a name="object-collectors"></a> Object collectors
-You can get the stream back into a mutable json object by the collector _Jsons.mutable.object.collector()_:
-
-```
-Assert.assertTrue(x.same(x.stream_()
-                          .collector(Jsons.mutable.object.collector())
-                        )
-                 );
-```
-
-Take into account that a collector requires a mutable object in order to accumulate all the elements of the stream.
-
-### <a name="array-collectors"></a> Array collectors
-You can get the stream back into a mutable json array by the collector _Jsons.mutable.array.collector()_:
-
-```
-Assert.assertTrue(y.same(y.stream_()
-                          .collector(Jsons.mutable.array.collector())
-                        )
-                 );
-
-```
 
 ## <a name="filter-map-reduce"></a> Filter, map and reduce
 What would an API be nowadays without filter, map, and reduce?. They are the crown jewel in functional programming and have been implemented
@@ -654,10 +474,10 @@ _mapElems_ methods map the elements from a Json **which are not containers** and
 as a parameter a pair and returns the new json element.
 
 ```
-Json mapElems(Function<? super JsPair, ? extends JsElem> fn,
+Json mapElems(Function<? super JsPair, ? extends JsValue> fn,
               Predicate<? super JsPair> predicate
              );
-Json mapAllElems(Function<? super JsPair, ? extends JsElem> fn,
+Json mapAllElems(Function<? super JsPair, ? extends JsValue> fn,
                  Predicate<? super JsPair> predicate
                 );   
 ```
@@ -691,21 +511,6 @@ Reduce methods are a classic map-reduce over the elements **which are not contai
                           Function<? super JsPair, R> map,
                           Predicate<? super JsPair> predicate
                          );        
-```
-
-## <a name="json-patch"></a> [RFC 6902](https://tools.ietf.org/html/rfc6902): Json Patch specification
-
-```
-TryPatch<JsObj> try = json.patch(Patch.ops()
-                                      .add("/a/b",JsStr.of("a"))
-                                      .move("/a/c","/b/c")
-                                      .copy("/a/E","/b/h/0")
-                                      .remove("/f/e")
-                                      .test("/d/0",JsBool.TRUE)
-                                      .toArray()
-                                   );
-
-if(try.isSuccess()) return try.orElseThrow();
 ```
 
 ## <a name="union-and-intersection"></a> Union and intersection
@@ -822,9 +627,9 @@ b = { "b": {"a":1, "b":2, "c": [{"a":1, "b":[1]  }, {"b":2}] } }
 c = { "b": {"a":1, "b":2, "c": [{"b":2}] } }
 
 //the json object associated with the key "b", are different
-a.intersection(b,LIST) == Jsons.immutable.obj.empty()
-a.intersection(b,SET) == Jsons.immutable.obj.empty()
-a.intersection(b,MULTISET) == Jsons.immutable.obj.empty()
+a.intersection(b,LIST) == JsObj.empty()
+a.intersection(b,SET) == JsObj.empty()
+a.intersection(b,MULTISET) == JsObj.empty()
 
 //the intersection is applied recursively between the json objects associated with the key "b"
 a.intersectionAll(b,LIST) == b
@@ -865,16 +670,16 @@ a long or even a BigDecimal. According to that, the following objects:
 
 ```
 JsObj x = JsObj.of("a", JsInt.of(1),
-                                    "b", JsLong.of(100)
-                                    "c", JsDouble.of(1),
-                                    "d", JsDouble.of(10d)
-                                   );
+                   "b", JsLong.of(100)
+                   "c", JsDouble.of(1),
+                   "d", JsDouble.of(10d)
+                   );
 
 JsObj y = JsObj.of("a", JsBigInt.of(BigInteger.ONE),
-                                    "b", JsInt.of(100)
-                                    "c", JsBigDec.of(BigDecimal.ONE),
-                                    "d", JsInt.of(10)
-                                   );
+                   "b", JsInt.of(100)
+                   "c", JsBigDec.of(BigDecimal.ONE),
+                   "d", JsInt.of(10)
+                   );
 ```
 
 satisfy the property _x.equals(y) => x.hashCode == y.hashCode()_
@@ -886,7 +691,7 @@ of the Java language.
 There is a method to test if two objects are equals considering arrays Sets or MultiSets:
 
 ```
-boolean equals(final JsElem elem,
+boolean equals(final JsValue value,
                final TYPE ARRAY_AS
                );
 ```               
@@ -904,20 +709,6 @@ Assertions.assertTrue(b.equals(c, TYPE.SET));
 Assertions.assertFalse(b.equals(c, TYPE.MULTISET));
 ```
 
-Given the same Json created with two different factories:
-
-```
-String str = "{...}"
-
-Json x = JsObj.parse(str)
-
-Json y = Jsons.mutable.object.parse(str)
-
-x.equals(y) == y.equals(x)   // false => objects from different factories are never equals 
-
-x.same(y) == y.same(x)       // true
-```
-
 ## <a name="exceptions-errors"></a> Exceptions and errors
 Exceptions and errors are both treated as Exceptions in Java and most of the mainstream languages, but, conceptually, 
 they are quite different. Errors mean that someone has to fix something; it could be an error of the user of the library or an error of the library itself. On the other hand, exceptions are expected in irregular situations at runtime, like accessing a non-existing file. No matter what you do, the file could be deleted anytime by any other process, and the only thing you can do is to handle that possibility. 
@@ -925,13 +716,9 @@ they are quite different. Errors mean that someone has to fix something; it coul
 **json-values** uses the custom unchecked exception _UserError_ when the client of the library makes an error,
 for example, getting the head of an empty array, which means that the programmer needs to change something to fix the bug. Another error could be to pass in null to a method, in which case it throws a NullPointerException. No method in the library but _equals_ accepts null as a parameter. _InternalError_ is another custom unchecked exception that is thrown when an
 error made by the developers is detected.
-The only exceptions in the API are the custom checked:
+The only exception in the API is the custom checked:
 
    - MalformedJson, which occurs when parsing a not well-formed string into a Json.
-   
-   - PatchMalformed, which occurs when a patch can not be applied because it has an invalid schema.
-   
-   - PatchOpError, which occurs when a patch is applied and returns an error.
 
 ## <a name="trampolines"></a> Trampolines
 **Json-values**, naturally, uses recursion all the time. To not blow up the stack, tail-recursive method calls are turned into iterative loops by Trampolines. The API exposes a well-known implementation of a 
@@ -944,11 +731,11 @@ Trampoline in case you want to do some _head and tail_ programming, and you shou
 
 ```
 JsObj obj = JsObj.of("a",JsInt.of(1),
-                                      "b",JsStr.of("a"),
-                                      "c",TRUE,
-                                      "d",NULL,
-                                      "e",JsDouble.of(1.3)
-                                     );
+                     "b",JsStr.of("a"),
+                     "c",TRUE,
+                     "d",NULL,
+                     "e",JsDouble.of(1.3)
+                    );
 System.out.println( a.schema() );
 
 {
@@ -967,7 +754,7 @@ A possible recursive implementation is:
     {
 
         return schema(this,
-                      Jsons.immutable.obj.empty()
+                      JsObj.empty()
                      );
     }
 
@@ -976,9 +763,9 @@ A possible recursive implementation is:
                         )
     {
         if (obj.isEmpty()) return acc;
-        Map.Entry<String, JsElem> head = obj.head();
+        Map.Entry<String, JsValue> head = obj.head();
         String headName = head.getKey();
-        JsElem headElem = head.getValue();
+        JsValue headElem = head.getValue();
         JsObj tail = obj.tail(headName); 
         if (headElem.isStr()) return schema(tail,
                                             acc.put(fromKey(headName),
@@ -1017,7 +804,7 @@ A possible recursive implementation is:
                                             );
         if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet");
 
-        throw new RuntimeException("Unexpected type of JsElem: " + headElem.getClass());
+        throw new RuntimeException("Unexpected type of JsValue: " + headElem.getClass());
     }
 ```
 
@@ -1030,7 +817,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
     {
 
         return schema(this,
-                      Jsons.immutable.obj.empty()
+                      JsObj.empty()
                      ).get();
     }
 
@@ -1039,9 +826,9 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
                                     )
     {
         if (obj.isEmpty()) return Trampoline.done(acc);
-        Map.Entry<String, JsElem> head = obj.head();
+        Map.Entry<String, JsValue> head = obj.head();
         String headName = head.getKey();
-        JsElem headElem = head.getValue();
+        JsValue headElem = head.getValue();
         JsObj tail = obj.tail(headName);
         if (headElem.isStr()) 
                return Trampoline.more(() -> schema(tail,
@@ -1086,7 +873,7 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
 
         if (headElem.isJson()) throw new UnsupportedOperationException("Not implemented yet...");
 
-        throw new RuntimeException("Unexpected type of JsElem: " + headElem.getClass());
+        throw new RuntimeException("Unexpected type of JsValue: " + headElem.getClass());
     }
 ```
 
@@ -1094,32 +881,8 @@ A Trampoline is a type that has two concrete implementations: _more_ and _done_.
 It's when _done_ is returned when the iteration is fired up, and then all the suppliers are computed in order.
 
 ## <a name="performance"></a> Performance
-A benchmark using [jmh](https://openjdk.java.net/projects/code-tools/jmh/) has been carried out on my computer.
-Find below the results parsing a string into a json of size 100,1000 and 10000,
-using Jackson and json-values (both mutable an immutable implementations):
 
-```
-Benchmark                                                           Mode   Samples    Mean          Mean error    Units
-parse_string_jackson_obj_10000                                      avgt     10    1356624.227      442088.003    ns/op
-parse_string_jsonvalues_mutable_eclipse_collections_obj_10000       avgt     10    2212575.403     1160516.788    ns/op
-parse_string_jsonvalues_mutable_obj_10000                           avgt     10    1295379.624       67240.388    ns/op
-parse_string_jsonvalues_immutable_obj_10000                         avgt     10    4047304.291      936095.812    ns/
-
-parse_string_jackson_obj_100000                                     avgt     10   35630406.739    23015218.199    ns/op
-parse_string_jsonvalues_mutable_eclipse_collections_obj_100000      avgt     10   10999830.101      544504.730    ns/op
-parse_string_json_values_mutable_obj_100000                         avgt     10   15452070.507     1523005.400    ns/op
-parse_string_jsonvalues_immutable_obj_100000                        avgt     10   45034250.352    11901240.411    ns/op
-
-
-parse_string_jackson_obj_1000000                                    avgt     10   319011320.738    176763458.970   ns/op
-parse_string_jsonvalues_mutable_eclipse_collections_obj_1000000     avgt     10   166773500.095    28255130.625    ns/op
-parse_string_jsonvalues_mutable_obj_1000000                         avgt     10   414601294.875    216932693.384   ns/op
-parse_string_jsonvalues_immutable_obj_1000000                       avgt     10   1320324870.750   734454321.103   ns/op
-```
-
-As expected, the immutable implementation is slightly slower, but, it could make a difference in those scenarios when
-defensive copies of objects are made. On the other hand, the Json that uses the map from Eclipse Collections get the best result
-in all the cases.
+to be added
 
 ## <a name="tools"></a> Tools
 I've used different compiler plug-ins to find bugs at _compile time_:
