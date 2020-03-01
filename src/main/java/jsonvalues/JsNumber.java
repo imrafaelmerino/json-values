@@ -21,14 +21,16 @@ abstract class JsNumber implements JsValue
         {
             return JsInt.of(parser.getIntValue());
         }
+
         catch (IOException ex)
         {
             try
             {
                 return JsLong.of(parser.getLongValue());
             }
+
             catch (IOException ex1)
-    {
+            {
                 return JsBigInt.of(parser.getBigIntegerValue());
             }
         }

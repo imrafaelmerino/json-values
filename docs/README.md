@@ -101,11 +101,7 @@ Add the following dependency to your building tool:
   <version>5.0.1</version>
 </dependency>
 ```
-and that's all. It's a **zero-dependency** library, so you won't have to go through a kind of dependency hell to get it working. 
-You can play around with the library using the java _REPL_ (>= Java 9) just typing:
-```
-jshell --class-path ${PATH_TO_JAR}/json-values-X.Y.Z.jar
-```
+
 ## <a ><a/> Documentation   
 Go to https://imrafaelmerino.github.io/json-values/
 ## <a name="wth"><a/> Want to help
