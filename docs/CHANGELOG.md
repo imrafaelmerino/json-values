@@ -1,10 +1,13 @@
 # JSON-VALUES
-## v5.0.0  ( Tue Feb 25 2020 08:19:36 GMT+0100 (Central European Standard Time) )
+## v5.0.1  ( Sun Mar 01 2020 12:18:39 GMT+0100 (Central European Standard Time) )
 
 
-## Breaking changes
+## Features
+  - 🎸 remove InputCoercionException dependency from jackson 2.10.1 so that older versions of Jackson can be used.
+  ([18e757dc](https://github.com/imrafaelmerino/json-values/commit/18e757dc963b1b2f514a7b49d390dae39c749af8))
 
-It's a brand new library. I want to keep the core simple and small. Mutable implementation 
-has been removed. All the method with and underscore at the end have been renamed.
-Patch implementation has been removed, it's gonna be added in another
-library.
+
+
+
+
+
