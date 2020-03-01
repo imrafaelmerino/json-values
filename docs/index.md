@@ -692,7 +692,9 @@ JsObj y = JsObj.of("a", JsBigInt.of(BigInteger.ONE),
                    );
 ```
 
-satisfy the property _x.equals(y) => x.hashCode == y.hashCode()_
+satisfy the property 
+
+_x.equals(y) => x.hashCode == y.hashCode()_
 
 Both objects represent the same piece of information, so they are equals, and therefore, they have the same hashcode.
 It doesn't matter that different primitive types and wrappers have been used to create both jsons. That's a detail
@@ -726,9 +728,7 @@ they are quite different. Errors mean that someone has to fix something; it coul
 **json-values** uses the custom unchecked exception _UserError_ when the client of the library makes an error,
 for example, getting the head of an empty array, which means that the programmer needs to change something to fix the bug. Another error could be to pass in null to a method, in which case it throws a NullPointerException. No method in the library but _equals_ accepts null as a parameter. _InternalError_ is another custom unchecked exception that is thrown when an
 error made by the developers is detected.
-The only exception in the API is the custom checked:
-
-   - MalformedJson, which occurs when parsing a not well-formed string into a Json.
+The only exception in the API is the custom checked _MalformedJson_, which occurs when parsing a not well-formed string into a Json.
 
 ## <a name="trampolines"></a> Trampolines
 **Json-values**, naturally, uses recursion all the time. To not blow up the stack, tail-recursive method calls are turned into iterative loops by Trampolines. The API exposes a well-known implementation of a 
