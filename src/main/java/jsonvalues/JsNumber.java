@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.exc.InputCoercionException;
 
@@ -23,13 +22,13 @@ abstract class JsNumber implements JsValue
         {
             return JsInt.of(parser.getIntValue());
         }
-        catch (InputCoercionException | JsonParseException e)
+        catch (InputCoercionException ex)
         {
             try
             {
                 return JsLong.of(parser.getLongValue());
             }
-            catch (InputCoercionException | JsonParseException ex)
+            catch (InputCoercionException ex1)
     {
                 return JsBigInt.of(parser.getBigIntegerValue());
             }

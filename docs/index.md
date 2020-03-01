@@ -1,3 +1,4 @@
+ - [Persistent data structures](#pds)
  - [JsPath](#jspath)
  - [JsValue](#jselem)
  - [JsPair](#jspair)
@@ -25,6 +26,10 @@
  - [Performance](#performance)
  - [Tools](#tools)
  
+## <a name="pds"></a> Persistent data structures  
+How do we make changes to immutable structures or values in a inexpensive way? Using persistent data structures. Copy-on-write is inefficient and the performance goes down as you produce new values.
+Why don't we have a persistent Json? This is the question I asked myself when I got into functional programming. Since I found out no answer, I decided to implement a persistent Json.  
+
 ## <a name="jspath"></a> JsPath
 A JsPath represents a location of a specific value within a JSON. It provides an implementation of the Json 
 Pointer specification defined in [rfc6901](https://tools.ietf.org/html/rfc6901) through the static factory
@@ -160,8 +165,15 @@ Every element in a Json is a _JsValue_. There is one for each json value describ
 
 * The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
 that makes certain functions that return a JsValue **total** on their arguments. For example, the function
- _JsValue get(JsPath)_ is total because it returns a JsValue for every JsPath. If there is no element located at the 
- specified path, it returns _NOTHING_. In other functions like _Json putIfPresent(Function<JsValue, JsValue>)_, this type comes in handy as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present. 
+
+_JsValue get(JsPath)_ 
+ 
+is total because it returns a JsValue for every JsPath. If there is no element located at the 
+specified path, it returns _NOTHING_. In other functions like 
+ 
+_Json putIfPresent(Function<JsValue, JsValue>)_
+ 
+this type comes in handy as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present. 
  
 ## <a name="jspair"></a> JsPair
 There are different overloaded static factory methods to create pairs:
@@ -192,9 +204,7 @@ JsPair mapElem(UnaryOperator<JsValue> fn)
 ## <a name="json-creation"></a> Creating Jsons
 
 **json-values** uses factories to create objects.
-
-```
-                                      
+                               
 ### <a name="json-immutable-obj-creation"></a> Json objects
 
 ```
@@ -612,13 +622,13 @@ considering arrays MultiSet of elements.
 * _a.intersection(b, LIST)_ returns an object with the keys that exist in both _a_ and _b_ which associated elements are equal,
 considering arrays List of elements.
 
-* _a.intersection\_(b, SET)_ behaves as _a.intersection(b, SET)_, but for those keys that exist in both _a_ and _b_ 
+* _a.intersectionAll(b, SET)_ behaves as _a.intersection(b, SET)_, but for those keys that exist in both _a_ and _b_ 
 which associated elements are json objects, the result is their intersection.
 
-* _a.intersection\_(b, LIST)_ behaves as _a.intersection(b, LIST)_, but for those keys that exist in both _a_ and _b_
+* _a.intersectionAll(b, LIST)_ behaves as _a.intersection(b, LIST)_, but for those keys that exist in both _a_ and _b_
 which associated elements are json of the same type (object or arrays), the result is their intersection.
 
-* _a.intersection\_(b, MULTISET)_ behaves as _a.intersection(b, MULTISET)_, but for those keys that exist in both _a_ and _b_
+* _a.intersectionAll(b, MULTISET)_ behaves as _a.intersection(b, MULTISET)_, but for those keys that exist in both _a_ and _b_
 which associated elements are json objects, the result is their intersection.
 
 ``` 
