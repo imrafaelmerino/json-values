@@ -844,40 +844,40 @@ compilers do. Nevertheless, we can still make use of Trampolines to turn recursi
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
                                                            JsObj.of("type",
-                                                                                     JsStr.of("string")
-                                                                                     )
+                                                                    JsStr.of("string")
+                                                                   )
                                                            )
                                                    ));
         if (headElem.isIntegral()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
                                                            JsObj.of("type",
-                                                                                     JsStr.of("integral")
-                                                                                    )
+                                                                    JsStr.of("integral")
+                                                                   )
                                                           )
                                                    ));
         if (headElem.isDecimal())
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
                                                            JsObj.of("type",
-                                                                                     JsStr.of("decimal")
-                                                                                     )
+                                                                    JsStr.of("decimal")
+                                                                   )
                                                            )
                                                    ));
         if (headElem.isBool()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
                                                            JsObj.of("type",
-                                                                                     JsStr.of("boolean")
-                                                                                    )
+                                                                    JsStr.of("boolean")
+                                                                   )
                                                            )
                                                   ));
         if (headElem.isNull()) 
                return Trampoline.more(() -> schema(tail,
                                                    acc.put(fromKey(headName),
                                                            JsObj.of("type",
-                                                                                     JsStr.of("null")
-                                                                                     )
+                                                                    JsStr.of("null")
+                                                                   )
                                                            )
                                                   ));
 
