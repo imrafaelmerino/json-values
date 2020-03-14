@@ -1,10 +1,11 @@
 # JSON-VALUES
-## v5.0.2  ( Tue Mar 10 2020 11:11:33 GMT+0100 (Central European Standard Time) )
+## v6.0.0  ( Sat Mar 14 2020 23:17:39 GMT+0100 (Central European Standard Time) )
 
 
-## Bug Fixes
-  - 🐛 close #110
-  ([149908c5](https://github.com/imrafaelmerino/json-values/commit/149908c56677342fc8aa736aa5bb3855a177d10f))
+## Features
+  - 🎸 close #112. Serializers are no loaded by the ServiceLoader. They are loaded programmatically.
+  METAINF/service/com.dslplatform.json.Configuration has ben deleted.
+  ([56141cfc](https://github.com/imrafaelmerino/json-values/commit/56141cfcc439e2b79ef08424285643331a048d05))
 
 
 
