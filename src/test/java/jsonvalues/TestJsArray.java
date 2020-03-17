@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.BiFunction;
 
@@ -1005,5 +1006,11 @@ public class TestJsArray
                                        arr);
     }
 
-
+  @Test
+  public void test_of_iterable_PECS_rule(){
+    List<JsInt> xs = Arrays.asList(JsInt.of(1),
+                                     JsInt.of(2)
+                                    );
+    Assertions.assertTrue(JsArray.ofIterable(xs).isNotEmpty());
+  }
 }

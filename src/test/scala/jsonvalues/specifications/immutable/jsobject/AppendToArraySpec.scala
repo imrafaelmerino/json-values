@@ -17,8 +17,8 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             JsObj.empty().append(path,
-                                                    elem
-                                                    ).getArray(path).get().size() == 1
+                                 elem
+                                 ).getArray(path).size() == 1
           }
           )
   }
@@ -32,8 +32,8 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             !JsObj.empty().appendIfPresent(path,
-                                                              ScalaToJava.supplier(() => elem)
-                                                              ).getArray(path).isPresent
+                                           ScalaToJava.supplier(() => elem)
+                                           ).getArrayOpt(path).isPresent
           }
           )
   }
@@ -47,9 +47,9 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             JsObj.empty().prepend(path,
-                                                     elem,
-                                                     elem
-                                                     ).getArray(path).get().size() == 2
+                                  elem,
+                                  elem
+                                  ).getArray(path).size() == 2
           }
           )
   }
@@ -63,8 +63,8 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             !JsObj.empty().prependIfPresent(path,
-                                        ScalaToJava.supplier(() => elem)
-                                        ).getArray(path).isPresent
+                                            ScalaToJava.supplier(() => elem)
+                                            ).getArrayOpt(path).isPresent
           }
           )
   }
@@ -78,10 +78,10 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             JsObj.empty().prepend(path,
-                               elem
-                               ).prependIfPresent(path,
-                                                  ScalaToJava.supplier(() => elem)
-                                                  ).getArray(path).get().size() == 2
+                                  elem
+                                  ).prependIfPresent(path,
+                                                     ScalaToJava.supplier(() => elem)
+                                                     ).getArray(path).size() == 2
 
 
           }
@@ -97,10 +97,10 @@ class AppendToArraySpec extends BasePropSpec
              elem
             ) =>
             JsObj.empty().append(path,
-                                                    elem
-                                                    ).appendIfPresent(path,
-                                                                      ScalaToJava.supplier(() => elem)
-                                                                      ).getArray(path).get().size() == 2
+                                 elem
+                                 ).appendIfPresent(path,
+                                                   ScalaToJava.supplier(() => elem)
+                                                   ).getArrayOpt(path).get().size() == 2
 
 
           }

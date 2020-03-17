@@ -63,8 +63,8 @@ class SetTheoryOpsSpec extends BasePropSpec
           { (a,
              b
             ) =>
-            a.union(b).fields().containsAll(b.union(a).fields()) &&
-            b.union(a).fields().containsAll(a.union(b).fields())
+            a.union(b).keySet().containsAll(b.union(a).keySet()) &&
+            b.union(a).keySet().containsAll(a.union(b).keySet())
 
           }
           )
@@ -80,15 +80,15 @@ class SetTheoryOpsSpec extends BasePropSpec
             ) =>
             a.unionAll(b,
                        SET
-                       ).fields().containsAll(b.unionAll(a,
+                       ).keySet().containsAll(b.unionAll(a,
                                                          SET
-                                                         ).fields()
+                                                         ).keySet()
                                             ) &&
             b.unionAll(a,
                        SET
-                       ).fields().containsAll(a.unionAll(b,
+                       ).keySet().containsAll(a.unionAll(b,
                                                          SET
-                                                         ).fields()
+                                                         ).keySet()
                                             )
 
           }

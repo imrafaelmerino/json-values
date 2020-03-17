@@ -32,7 +32,7 @@ public class TestJsObj
         Assertions.assertTrue(empty.isEmpty());
 
         Assertions.assertEquals(JsArray.of("hi"),
-                                obj.getArray(path("/a/b"))
+                                obj.getArrayOpt(path("/a/b"))
                                    .get()
                                );
 
@@ -41,11 +41,11 @@ public class TestJsObj
                                      );
 
         Assertions.assertEquals(Optional.of("bye"),
-                                obj1.getStr(path("/a/b/-1"))
+                                obj1.getStrOpt(path("/a/b/-1"))
                                );
 
         Assertions.assertEquals(Optional.of("hi"),
-                                obj1.getStr(path("/a/b/0"))
+                                obj1.getStrOpt(path("/a/b/0"))
                                );
     }
 
@@ -60,7 +60,7 @@ public class TestJsObj
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
         Assertions.assertEquals(OptionalInt.of(1),
-                                obj1.getInt(JsPath.fromKey("a"))
+                                obj1.getIntOpt(JsPath.fromKey("a"))
                                );
     }
 
@@ -95,7 +95,7 @@ public class TestJsObj
                                 ));
 
         Assertions.assertEquals(set,
-                                obj1.fields()
+                                obj1.keySet()
                                );
         Set<String> set1 = new HashSet<>();
         set1.addAll(Arrays.asList("a",
@@ -105,7 +105,7 @@ public class TestJsObj
                                   "e"
                                  ));
         Assertions.assertEquals(set1,
-                                obj.fields()
+                                obj.keySet()
                                );
     }
 
@@ -140,7 +140,7 @@ public class TestJsObj
                                  "dD"
                                 ));
         Assertions.assertEquals(set,
-                                obj1.fields()
+                                obj1.keySet()
 
                                );
 
@@ -152,7 +152,7 @@ public class TestJsObj
                                   "h"
                                  ));
         Assertions.assertEquals(set1,
-                                obj.fields()
+                                obj.keySet()
 
                                );
 
@@ -188,7 +188,7 @@ public class TestJsObj
                                );
 
         Assertions.assertEquals(OptionalInt.of(6),
-                                obj.getInt(path("/d/0/1"))
+                                obj.getIntOpt(path("/d/0/1"))
                                );
 
 
@@ -1063,12 +1063,13 @@ public class TestJsObj
                                  );
 
         Assertions.assertEquals(OptionalDouble.of(0.1d),
-                                a.getDouble(fromKey("a"))
+                                a.getDoubleOpt(fromKey("a"))
                                );
         Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.1d)),
-                                a.getBigDecimal(fromKey("a"))
+                                a.getBigDecimalOpt(fromKey("a"))
                                );
     }
+
 
 
 }

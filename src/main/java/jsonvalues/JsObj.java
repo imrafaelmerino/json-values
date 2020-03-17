@@ -12,7 +12,6 @@ import java.io.IOException;
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
-
 import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
@@ -178,7 +177,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   {
     if (isEmpty()) return that.isEmpty();
     if (that.isEmpty()) return isEmpty();
-    return fields().stream()
+    return keySet().stream()
                    .allMatch(field ->
                              {
                                final boolean exists = that.containsPath(JsPath.fromKey(field));
@@ -190,7 +189,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                           ARRAY_AS
                                                                                          );
                                return elem.equals(thatElem);
-                             }) && that.fields()
+                             }) && that.keySet()
                                        .stream()
                                        .allMatch(f -> this.containsPath(JsPath.fromKey(f)));
   }
@@ -206,12 +205,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     if (thisEmpty && thatEmpty) return true;
     if (thisEmpty != thatEmpty) return false;
 
-    return fields().stream()
+    return keySet().stream()
                    .allMatch(f ->
                                thatMap.map.get(f)
                                           .map(it -> it.equals(map.get(f)
                                                                   .get()))
-                                          .getOrElse(false) && thatMap.fields()
+                                          .getOrElse(false) && thatMap.keySet()
                                                                       .stream()
                                                                       .allMatch(map::containsKey));
   }
@@ -220,7 +219,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    Returns a set containing each key fo this object.
    @return a Set containing each key of this JsObj
    */
-  public final Set<String> fields()
+  public final Set<String> keySet()
   {
     return map.keySet()
               .toJavaSet();
@@ -287,6 +286,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                           index -> NOTHING
                                          );
   }
+
 
   /**
    equals method is inherited, so it's implemented. The purpose of this method is to cache
@@ -418,21 +418,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                 .isEmpty());
     };
   }
-  /**
 
-   @return the keys contained in this map
-   */
-  public Set<String> keySet()
-  {
-    return map.keySet()
-              .toJavaSet();
-  }
   @Override
   public Iterator<Tuple2<String, JsValue>> iterator()
   {
     return map.iterator();
   }
-
 
 
   public final JsObj mapAllKeys(final Function<? super JsPair, String> fn)
@@ -791,10 +782,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   }
 
 
-  public static JsObj ofIterable(Iterable<Map.Entry<String, ? extends JsValue>> xs)
+  public static JsObj ofIterable(Iterable<Map.Entry<String, JsValue>> xs)
   {
     JsObj acc = JsObj.EMPTY;
-    for (Map.Entry<String, ? extends JsValue> x : requireNonNull(xs))
+    for (Map.Entry<String, JsValue> x : requireNonNull(xs))
     {
 
       acc = acc.put(JsPath.fromKey(x.getKey()),
@@ -1226,20 +1217,20 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return map.size();
   }
 
-  public final Stream<JsPair> stream()
-  {
-    return this.fields()
-               .stream()
-               .map(f ->
-                    {
-                      final JsPath key = JsPath.fromKey(f);
-                      return JsPair.of(key,
-                                       this.get(key)
-                                      );
-                    }
+    public final Stream<JsPair> stream()
+    {
+        return this.keySet()
+                   .stream()
+                   .map(f ->
+                        {
+                            final JsPath key = JsPath.fromKey(f);
+                            return JsPair.of(key,
+                                             this.get(key)
+                                            );
+                        }
 
-                   );
-  }
+                       );
+    }
 
   public final Stream<JsPair> streamAll()
   {
@@ -1257,7 +1248,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return requireNonNull(obj).ifEmptyElse(() -> Stream.of(JsPair.of(path,
                                                                      obj
                                                                     )),
-                                           () -> obj.fields()
+                                           () -> obj.keySet()
                                                     .stream()
                                                     .map(key -> JsPair.of(path.key(key),
                                                                           obj.get(Key.of(key))
