@@ -613,7 +613,20 @@ public interface Json<T extends Json<T>> extends JsValue
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
-    /**
+  /**
+   Returns the array located at the given path or null if it doesn't exist or
+   it's not an array.
+   @param path the path
+   @return the JsArray located at the given path or null
+
+   */
+  default JsArray getArrayOrNull(final JsPath path)
+  {
+    return getArray(path).orElse(null);
+  }
+
+
+  /**
      Returns the big decimal located at the given path as a big decimal or {@link Optional#empty()} if
      it doesn't exist or it's not a decimal number.
      @param path the JsPath object of the BigDecimal that will be returned
@@ -628,10 +641,22 @@ public interface Json<T extends Json<T>> extends JsValue
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
+  /**
+   Returns the big decimal located at the given path as a big decimal or null if
+   it doesn't exist or it's not a decimal number.
+   @param path the path
+   @return the BigDecimal located at the given path
+   */
+  default BigDecimal getBigDecimalOrNull(final JsPath path)
+  {
+    final Optional<BigDecimal> opt = getBigDecimal(path);
+    return opt.orElse(null);
+  }
+
     /**
      Returns the big integer located at the given path as a big integer or {@link Optional#empty()} if it doesn't
      exist or it's not an integral number.
-     @param path the JsPath object of the BigInteger that will be returned
+     @param path the path
      @return the BigInteger located at the given JsPath wrapped in an Optional
      */
     default Optional<BigInteger> getBigInt(final JsPath path)
@@ -643,6 +668,17 @@ public interface Json<T extends Json<T>> extends JsValue
                                                                                       );
         return ifElse.apply(this.get(requireNonNull(path)));
     }
+
+  /**
+   Returns the big integer located at the given path as a big integer or null if it doesn't
+   exist or it's not an integral number.
+   @param path the path
+   @return the BigInteger located at the given path
+   */
+  default BigInteger getBigIntOrNull(final JsPath path)
+  {
+    return getBigInt(path).orElse(null);
+  }
 
     /**
      Returns the boolean located at the given path or {@link Optional#empty()} if it doesn't exist.
@@ -656,6 +692,16 @@ public interface Json<T extends Json<T>> extends JsValue
                                                                            );
         return fn.apply(this.get(requireNonNull(path)));
     }
+
+  /**
+   Returns the boolean located at the given path or null if it doesn't exist.
+   @param path the path
+   @return the Boolean located at the given path or null
+   */
+  default Boolean getBoolOrNull(final JsPath path)
+  {
+    return getBool(path).orElse(null);
+  }
 
     /**
      Returns the decimal number located at the given path as a double or {@link OptionalDouble#empty()} if it
@@ -675,6 +721,20 @@ public interface Json<T extends Json<T>> extends JsValue
                        .apply(this.get(requireNonNull(path)));
     }
 
+  /**
+   Returns the decimal number located at the given path as a double or null if it
+   doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
+   to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
+   the precision of the BigDecimal
+   @param path the path
+   @return the decimal number located at the given path or null
+   */
+  default Double getDoubleOrNull(final JsPath path)
+  {
+    final OptionalDouble opt = getDouble(path);
+    return opt.isPresent() ? opt.getAsDouble() : null;
+  }
+
     /**
      Returns the integral number located at the given path as an integer or {@link OptionalInt#empty()} if it
      doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
@@ -691,6 +751,18 @@ public interface Json<T extends Json<T>> extends JsValue
                                        other -> OptionalInt.empty()
                                       )
                        .apply(this.get(requireNonNull(path)));
+    }
+
+  /**
+   Returns the integral number located at the given path as an integer or null if it
+   doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+   @param path the path
+   @return the integral number located at the given path or null
+   */
+    default Integer getIntOrNull(final JsPath path){
+      final OptionalInt opt = getInt(path);
+      return opt.isPresent() ? opt.getAsInt() : null;
+
     }
 
     /**
@@ -711,6 +783,18 @@ public interface Json<T extends Json<T>> extends JsValue
 
     }
 
+  /**
+   Returns the integral number located at the given path as a long or null if it
+   doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
+   @param path the path
+   @return the integral number located at the given path or null
+   */
+  default Long getLongOrNull(final JsPath path)
+  {
+    final OptionalLong opt = getLong(path);
+    return opt.isPresent() ? opt.getAsLong() : null;
+  }
+
     /**
      Returns the object located at the given path or {@link Optional#empty()} if it doesn't exist or it's
      not an object.
@@ -725,6 +809,17 @@ public interface Json<T extends Json<T>> extends JsValue
         return ifElse.apply(this.get(requireNonNull(path)));
     }
 
+  /**
+   Returns the object located at the given path or null if it doesn't exist or it's
+   not an object.
+   @param path the path
+   @return the JsObj located at the given path or null
+   */
+  default JsObj getObjOrNull(final JsPath path)
+  {
+    return getObj(path).orElse(null);
+  }
+
     /**
      Returns the string located at the given path or {@link Optional#empty()} if it doesn't exist or it's
      not an string.
@@ -738,6 +833,15 @@ public interface Json<T extends Json<T>> extends JsValue
                                                                                   );
         return ifStrElseFn.apply(this.get(requireNonNull(path)));
 
+    }
+  /**
+   Returns the string located at the given path or null if it doesn't exist or it's
+   not an string.
+   @param path the path
+   @return the string located at the given path or null
+   */
+    default String getStrOrNull(final JsPath path){
+      return getStr(path).orElse(null);
     }
 
     /**
