@@ -418,7 +418,15 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                 .isEmpty());
     };
   }
+  /**
 
+   @return the keys contained in this map
+   */
+  public Set<String> keySet()
+  {
+    return map.keySet()
+              .toJavaSet();
+  }
   @Override
   public Iterator<Tuple2<String, JsValue>> iterator()
   {
