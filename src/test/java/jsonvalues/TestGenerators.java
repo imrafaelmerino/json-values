@@ -254,6 +254,12 @@ public class TestGenerators
         );
   }
 
+  /**
+
+   @param gen generator to produce randomized input data
+   @param condition the property to be tested
+   @param times number of times an input is produced and tested on the property
+   */
   public static void test(JsGen<?> gen,
                           Predicate<JsValue> condition,
                           int times

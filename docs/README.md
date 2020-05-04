@@ -140,7 +140,6 @@ JsObj b = parser.parse(jsonStr);
 // given a generator you can define properties and test them using randomized inputs
 // this is a key concept in property-based-testing
 
-
 /**
    @param gen generator to produce randomized input data
    @param property a predicate that represents a property that the code under test  has to satisfy

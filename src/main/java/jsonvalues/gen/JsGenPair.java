@@ -26,12 +26,4 @@ public class JsGenPair<O extends JsValue>
     this.gen = gen;
   }
 
-  @Override
-  public String toString()
-  {
-    return "(" +
-      "key=" + key +
-      ", gen=" + gen +
-      ')';
-  }
 }
