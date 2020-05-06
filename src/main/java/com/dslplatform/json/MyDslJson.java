@@ -39,7 +39,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
                            );
   }
 
-  private JsonReader<?> getReader(final byte[] bytes
+  public JsonReader<?> getReader(final byte[] bytes
                                  )
   {
     return localReader.get()
@@ -48,7 +48,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
                               );
   }
 
-  private JsonReader<?> getReader(final InputStream is) throws JsParserException
+  public JsonReader<?> getReader(final InputStream is) throws JsParserException
   {
     try
     {

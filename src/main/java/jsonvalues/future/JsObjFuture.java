@@ -7,12 +7,22 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
+/**
+ Represents a json future which result type is a json object
+ */
 public class JsObjFuture implements JsFuture<JsObj>
 {
 
   private Map<String, JsFuture<?>> bindings = new HashMap<>();
   private Executor executor = ForkJoinPool.commonPool();
 
+
+
+  /**
+   the executor to use for the asynchronous operation assigned to the future.
+   By default the ForkJoinPool.commonPool() will be used.
+   @param executor the executor
+   */
   public void executor(final Executor executor)
   {
     this.executor = executor;
@@ -27,6 +37,7 @@ public class JsObjFuture implements JsFuture<JsObj>
                 );
 
   }
+
 
 
   private JsObjFuture(final String key,
@@ -355,6 +366,17 @@ public class JsObjFuture implements JsFuture<JsObj>
    this.bindings = bindings;
   }
 
+
+  /**
+   returns a new CompletionFuture that, when all the futures of the json object complete normally,
+   is executed using the supplied executor binding each value to its respective key and composing
+   the json object returned:
+
+   JsObj(a->CompletableFuture(1), b->CompletableFuture("a") c->CompletableFuture(true)) =
+   CompletableFuture(JsObj(a->1,b->"a",c->true))
+
+   @return a CompletableFuture of a json array
+   */
   @Override
   public CompletableFuture<JsObj> get()
   {
@@ -375,6 +397,12 @@ public class JsObjFuture implements JsFuture<JsObj>
     return result;
   }
 
+  /**
+   returns an immutable json future containing one mapping
+   @param key the key
+   @param fut the future associated to the key
+   @return a json object future containing the specified mappings
+   */
   public static JsObjFuture of(final String key,
                                final JsFuture<?> fut
                               )
@@ -384,6 +412,14 @@ public class JsObjFuture implements JsFuture<JsObj>
     );
   }
 
+  /**
+   returns an immutable json future containing two mappings
+   @param key the first key
+   @param fut future associated to the first key
+   @param key1 the second key
+   @param fut1 future associated to the second key
+   @return a json object future containing the specified mappings
+   */
   public static JsObjFuture of(final String key,
                                final JsFuture<?> fut,
                                final String key1,
@@ -705,6 +741,10 @@ public class JsObjFuture implements JsFuture<JsObj>
     return new JsObjFuture(bindings);
   }
 
+  public static JsObjFuture of(){
+    return new JsObjFuture(new HashMap<>());
+  }
+
   public static JsObjFuture of(final JsFuturePair<?> pair,
                             final JsFuturePair<?>... others
                            )
@@ -719,5 +759,7 @@ public class JsObjFuture implements JsFuture<JsObj>
                    );
     return fut;
   }
+
+
 
 }

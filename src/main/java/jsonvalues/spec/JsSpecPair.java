@@ -25,12 +25,4 @@ import static java.util.Objects.requireNonNull;
       this.spec = spec;
     }
 
-    @Override
-    public String toString()
-    {
-      return "JsSpecPair{" +
-        "key='" + key + '\'' +
-        ", spec=" + spec +
-        '}';
-    }
   }

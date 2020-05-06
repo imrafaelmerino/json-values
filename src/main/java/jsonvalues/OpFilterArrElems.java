@@ -61,8 +61,7 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
                                                                                                                                                     predicate
                                                                                                                                                    )
                                                                                                                                          .map(tailResult::prepend)
-                                                                                             )
-                                    ,
+                                                                                             ),
                                                       headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrElems(headArray).filterAll(headPath.index(-1),
                                                                                                                                                         predicate
                                                                                                                                                        )
