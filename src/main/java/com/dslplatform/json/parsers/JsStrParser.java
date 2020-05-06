@@ -19,7 +19,7 @@ import java.util.function.Function;
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -38,7 +38,7 @@ import java.util.function.Function;
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

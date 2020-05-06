@@ -36,7 +36,7 @@ import jsonvalues.JsObj;
       }
       catch (ParsingException e)
       {
-        throw new JsParserException(e);
+        throw new JsParserException(e.getMessage());
       }
     }
 

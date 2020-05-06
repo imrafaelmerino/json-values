@@ -21,7 +21,7 @@ final class JsBoolParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -38,7 +38,7 @@ final class JsBoolParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -51,7 +51,7 @@ final class JsBoolParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -68,7 +68,7 @@ final class JsBoolParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -81,7 +81,7 @@ final class JsBoolParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }

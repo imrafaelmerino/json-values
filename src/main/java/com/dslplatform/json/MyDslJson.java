@@ -57,7 +57,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -75,7 +75,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
     finally
@@ -97,7 +97,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
     finally
     {
@@ -119,7 +119,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
     finally
     {
@@ -140,7 +140,7 @@ public final class MyDslJson<Object> extends DslJson<Object>
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
     finally
     {

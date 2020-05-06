@@ -36,7 +36,7 @@ final class JsArrayOfValueParser extends JsArrayParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -65,7 +65,7 @@ final class JsArrayOfValueParser extends JsArrayParser
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }

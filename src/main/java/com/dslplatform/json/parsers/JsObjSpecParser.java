@@ -61,7 +61,7 @@ import java.io.IOException;
       }
       catch (IOException e)
       {
-        throw new JsParserException(e);
+        throw new JsParserException(e.getMessage());
       }
     }
 

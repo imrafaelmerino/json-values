@@ -13,13 +13,12 @@ final class JsIntParser extends AbstractParser
   @Override
 JsInt value(final JsonReader<?> reader) throws JsParserException
   {
-    try
-    {
+    try{
       return JsInt.of(MyNumberConverter.parseInt(reader));
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
   }
 
@@ -36,7 +35,7 @@ JsInt value(final JsonReader<?> reader) throws JsParserException
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

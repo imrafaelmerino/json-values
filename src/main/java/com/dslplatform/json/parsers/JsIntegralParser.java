@@ -43,7 +43,7 @@ JsBigInt valueSuchThat(final JsonReader<?> reader,
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

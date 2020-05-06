@@ -25,7 +25,7 @@ final class JsNumberParser extends AbstractParser
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
     if (number instanceof Double) return JsDouble.of(((double) number));
@@ -48,7 +48,7 @@ final class JsNumberParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

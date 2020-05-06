@@ -23,7 +23,7 @@ import java.util.function.LongFunction;
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
   }
 
@@ -40,7 +40,7 @@ JsLong valueSuchThat(final JsonReader<?> reader,
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

@@ -25,7 +25,7 @@ public final  class JsArraySpecParser
       }
       catch (ParsingException e)
       {
-        throw new JsParserException(e);
+        throw new JsParserException(e.getMessage());
       }
     }
 
@@ -52,7 +52,7 @@ public final  class JsArraySpecParser
       }
       catch (IOException e)
       {
-        throw new JsParserException(e);
+        throw new JsParserException(e.getMessage());
       }
     }
 

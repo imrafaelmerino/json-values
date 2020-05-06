@@ -4,8 +4,8 @@ import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.MyDslJson;
 import jsonvalues.*;
 import jsonvalues.spec.JsSpec;
+
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -32,27 +32,16 @@ public class JsIOs
                      throw new RuntimeException(e);
                    }
 
-                 });
+                 }
+                )
+      .exceptionally(it ->
+                     {
+                       final String message = it.getCause() != null ? it.getCause()
+                                                                        .getMessage() : it.getMessage();
+                       System.out.println(message);
+                       return JsNothing.NOTHING;
+                     });
   }
-
-  public static JsIO<JsValue> readStr = path -> () -> completedFuture(readLine())
-    .thenApply(JsStr::of);
-
-  public static JsIO<JsValue> readInt = path -> () -> completedFuture(readLine())
-    .thenApply(s -> JsInt.of(Integer.parseInt(s)));
-
-  public static JsIO<JsValue> readLong = path -> () -> completedFuture(readLine())
-    .thenApply(s -> JsLong.of(Long.parseLong(s)));
-
-  public static JsIO<JsValue> readBool = path -> () -> completedFuture(readLine())
-    .thenApply(s -> JsBool.of(Boolean.parseBoolean(s)));
-
-  public static JsIO<JsValue> readDouble = path -> () -> completedFuture(readLine())
-    .thenApply(s -> JsDouble.of(Double.parseDouble(s)));
-
-
-  public static JsIO<JsValue> readDecimal = path -> () -> completedFuture(readLine())
-    .thenApply(s -> JsBigDec.of(new BigDecimal(s)));
 
 
   private static String readLine()
@@ -72,4 +61,5 @@ public class JsIOs
                     .mapToObj(i -> " ")
                     .collect(Collectors.joining());
   }
+
 }

@@ -47,7 +47,7 @@ final class JsObjParser extends AbstractJsObjParser
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
   }
@@ -65,7 +65,7 @@ final class JsObjParser extends AbstractJsObjParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 

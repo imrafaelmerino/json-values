@@ -47,8 +47,6 @@ public class JsObjIO implements JsIO<JsObj>
                                                            value
                                                           )
                                   );
-
-
      }
      return result;
    };

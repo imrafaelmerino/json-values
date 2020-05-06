@@ -18,7 +18,7 @@ abstract class AbstractJsObjParser extends AbstractParser
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
   }
 

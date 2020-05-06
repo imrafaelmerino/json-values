@@ -65,7 +65,7 @@ final class JsValueParser extends AbstractParser
     }
     catch (IOException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
     }
   }
 
@@ -83,7 +83,7 @@ final class JsValueParser extends AbstractParser
     }
     catch (ParsingException e)
     {
-      throw new JsParserException(e);
+      throw new JsParserException(e.getMessage());
 
     }
 
