@@ -106,21 +106,21 @@ public class JsTupleSpec implements JsArraySpec
                );
   }
   private Set<JsErrorPair> test(final JsPath parent,
-                               final JsTupleSpec parentSpec,
+                               final JsTupleSpec tupleSpec,
                                final Set<JsErrorPair> errors,
-                               final JsValue parentValue
+                               final JsValue value
                               )
   {
-    if(parentValue.isNull() && nullable) return errors;
+    if(value.isNull() && nullable) return errors;
 
-    if(!parentValue.isArray()) {
-      errors.add(JsErrorPair.of(parent,new Error(parentValue,ARRAY_EXPECTED)));
+    if(!value.isArray()) {
+      errors.add(JsErrorPair.of(parent,new Error(value,ARRAY_EXPECTED)));
       return errors;
     }
-    JsArray array = parentValue.toJsArray();
-    final Vector<JsSpec> specs = parentSpec.specs;
-    final int specsSize = parentSpec.specs.size();
-    if (specsSize > 0 && array.size() > specsSize && parentSpec.strict)
+    JsArray array = value.toJsArray();
+    final Vector<JsSpec> specs = tupleSpec.specs;
+    final int specsSize = tupleSpec.specs.size();
+    if (specsSize > 0 && array.size() > specsSize && tupleSpec.strict)
     {
       errors.add(JsErrorPair.of(parent.tail()
                                       .index(specsSize),

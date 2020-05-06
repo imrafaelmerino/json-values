@@ -3,11 +3,13 @@ package jsonvalues.io;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.future.JsFuture;
-
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
+
+
+import static jsonvalues.io.JsIOs.indent;
 
 
 public class JsObjIO implements JsIO<JsObj>
@@ -15,6 +17,12 @@ public class JsObjIO implements JsIO<JsObj>
 
   private Map<String, JsIO<?>> bindings = new HashMap<>();
 
+
+  @Override
+  public Consumer<JsPath> promptMessage()
+  {
+    return path -> System.out.println(indent(path) + path);
+  }
 
   @Override
   public JsFuture<JsObj> apply(JsPath path)
@@ -28,7 +36,8 @@ public class JsObjIO implements JsIO<JsObj>
        JsPath currentPath = path.append(JsPath.fromKey(entry.getKey()));
        result = result.thenApply(o ->
                                  {
-                                   System.out.println(currentPath + " -> ");
+                                   entry.getValue().promptMessage().accept(currentPath);
+
                                    return o;
                                  })
                       .thenCombine(entry.getValue()
@@ -38,6 +47,7 @@ public class JsObjIO implements JsIO<JsObj>
                                                            value
                                                           )
                                   );
+
 
      }
      return result;
@@ -75,6 +85,29 @@ public class JsObjIO implements JsIO<JsObj>
 
     console.bindings.put(key1,
                          io1
+                        );
+
+    return console;
+
+  }
+
+  public static JsObjIO of(final String key,
+                           final JsIO<?> io,
+                           final String key1,
+                           final JsIO<?> io1,
+                           final String key2,
+                           final JsIO<?> io2
+                          )
+  {
+
+    final JsObjIO console = JsObjIO.of(key,
+                                       io,
+                                       key1,
+                                       io1
+                                      );
+
+    console.bindings.put(key2,
+                         io2
                         );
 
     return console;

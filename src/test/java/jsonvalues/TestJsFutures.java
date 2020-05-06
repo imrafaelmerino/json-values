@@ -7,6 +7,7 @@ import jsonvalues.io.JsIOs;
 import jsonvalues.io.JsObjIO;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -32,7 +33,8 @@ public class TestJsFutures
                                     System.out.println(String.format("Returned %s by %s",
                                                                      it,
                                                                      Thread.currentThread()
-                                                                           .getName()));
+                                                                           .getName()
+                                                                    ));
                                     return it;
                                   });
   }
@@ -69,7 +71,8 @@ public class TestJsFutures
                                         log(JsObjFuture.of("a",
                                                            log(() -> supplyAsync(() -> JsNull.NULL,
                                                                                  eventLoop
-                                                                                ))))
+                                                                                ))
+                                                          ))
                                        );
 
     final CompletableFuture<JsObj> completableFuture = future.get();
@@ -88,7 +91,8 @@ public class TestJsFutures
                                                           ),
                                                      "e",
                                                      JsObjSpec.strict("a",
-                                                                      any(it -> it == JsNull.NULL))
+                                                                      any(it -> it == JsNull.NULL)
+                                                                     )
                                                     )
                                              .test(obj);
 
@@ -99,44 +103,60 @@ public class TestJsFutures
 
   }
 
-  private static CompletableFuture<JsValue> readNullFromConsole(final String text){
-    return readValue(text,s->{
-      if("null".equalsIgnoreCase(s)) return JsNull.NULL;
-      throw new RuntimeException("null expected");
-    });
+  private static CompletableFuture<JsValue> readNullFromConsole(final String text)
+  {
+    return readValue(text,
+                     s ->
+                     {
+                       if ("null".equalsIgnoreCase(s)) return JsNull.NULL;
+                       throw new RuntimeException("null expected");
+                     });
   }
 
-  private static CompletableFuture<JsValue> readBooleanFromConsole(final String text){
-    return readValue(text,s->JsBool.of(Boolean.parseBoolean(s)));
+  private static CompletableFuture<JsValue> readBooleanFromConsole(final String text)
+  {
+    return readValue(text,
+                     s -> JsBool.of(Boolean.parseBoolean(s)));
   }
 
-  private static CompletableFuture<JsValue> readDoubleFromConsole(final String text){
-    return readValue(text,s->JsDouble.of(Double.parseDouble(s)));
+  private static CompletableFuture<JsValue> readDoubleFromConsole(final String text)
+  {
+    return readValue(text,
+                     s -> JsDouble.of(Double.parseDouble(s)));
   }
 
-  private static CompletableFuture<JsValue> readLongFromConsole(final String text){
-    return readValue(text,s->JsLong.of(Long.parseLong(s)));
+  private static CompletableFuture<JsValue> readLongFromConsole(final String text)
+  {
+    return readValue(text,
+                     s -> JsLong.of(Long.parseLong(s)));
   }
 
-  private static CompletableFuture<JsValue> readIntFromConsole(final String text){
-    return readValue(text,s->JsInt.of(Integer.parseInt(s)));
+  private static CompletableFuture<JsValue> readIntFromConsole(final String text)
+  {
+    return readValue(text,
+                     s -> JsInt.of(Integer.parseInt(s)));
   }
-  private static CompletableFuture<JsValue> readStrFromConsole(final String text){
-    return readValue(text,JsStr::of);
+
+  private static CompletableFuture<JsValue> readStrFromConsole(final String text)
+  {
+    return readValue(text,
+                     JsStr::of);
   }
 
   static <T extends JsValue> CompletableFuture<T> readValue(String text,
-                                                            Function<String,T> fn)
+                                                            Function<String, T> fn
+                                                           )
   {
 
     return completedFuture(readFromConsole(text,
-                                           fn));
+                                           fn
+                                          ));
 
   }
 
-  private static  <T extends JsValue>  T readFromConsole(final String text,
-                                                         Function<String,T> fn
-                                                         )
+  private static <T extends JsValue> T readFromConsole(final String text,
+                                                       Function<String, T> fn
+                                                      )
   {
     Scanner in = new Scanner(System.in);
 
@@ -167,18 +187,32 @@ public class TestJsFutures
     System.out.println(obj.get().get());*/
 
 
+    System.out.println("Let's create a Json object interactively! \nJust type in the values and press Enter");
+    System.out.print("\n");
+
     JsObjIO obj = JsObjIO.of("a",
-                             JsIOs.readValue(str),
+                             JsIOs.read(str),
                              "b",
-                             JsObjIO.of("c", JsIOs.readValue(integer),
-                                        "d", JsIOs.readValue(bool)
+                             JsObjIO.of("c",
+                                        JsIOs.read(integer),
+                                        "d",
+                                        JsIOs.read(bool),
+                                        "e",
+                                        JsObjIO.of("f",
+                                                   JsIOs.read(arrayOfInt)
+                                                  )
                                        )
                             );
 
-    System.out.println(obj.apply(JsPath.empty()).get().get());
+    final JsObj x = obj.apply(JsPath.empty())
+                       .get()
+                       .get();
+    System.out.print("\n");
+    System.out.println("And the result is:");
+    System.out.print("\n");
+    System.out.println(x);
 
   }
-
 
 
   private ThreadFactory getThreadFactory(final String s)
