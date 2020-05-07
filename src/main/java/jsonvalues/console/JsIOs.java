@@ -3,10 +3,14 @@ package jsonvalues.console;
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.MyDslJson;
 import jsonvalues.*;
+import jsonvalues.future.JsFuture;
 import jsonvalues.spec.JsSpec;
 
 import java.io.IOException;
 import java.util.Scanner;
+import java.util.concurrent.CompletableFuture;
+import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -17,30 +21,35 @@ public class JsIOs
 
   public static JsIO<JsValue> read(JsSpec spec)
   {
-    return path -> () -> completedFuture(readLine())
-      .thenApply(s ->
-                 {
-                   final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
-                   try
-                   {
-                     reader.getNextToken();
-                     return spec.parser()
-                                .parse(reader);
-                   }
-                   catch (IOException e)
-                   {
-                     throw new RuntimeException(e);
-                   }
+    return path ->
+    {
+      final CompletableFuture<JsValue> retry = retry(() -> completedFuture(readLine())
+                                                       .thenApply(s ->
+                                                                  {
+                                                                    final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
+                                                                    try
+                                                                    {
+                                                                      reader.getNextToken();
+                                                                      return spec.parser()
+                                                                                 .parse(reader);
+                                                                    }
+                                                                    catch (IOException e)
+                                                                    {
+                                                                      throw new RuntimeException(e);
+                                                                    }
 
-                 }
-                )
-      .exceptionally(it ->
-                     {
-                       final String message = it.getCause() != null ? it.getCause()
-                                                                        .getMessage() : it.getMessage();
-                       System.out.println(message);
-                       return JsNothing.NOTHING;
-                     });
+                                                                  }
+                                                                 )
+                                                       .exceptionally(it ->
+                                                                      {
+                                                                        final String message = it.getCause() != null ? it.getCause()
+                                                                                                                         .getMessage() : it.getMessage();
+                                                                        System.out.println("Uppsss: "+message);
+                                                                       throw new RuntimeException(it);
+                                                                      }),
+                                                     1);
+      return ()->retry;
+    };
   }
 
 
@@ -61,5 +70,16 @@ public class JsIOs
                     .mapToObj(i -> " ")
                     .collect(Collectors.joining());
   }
-
+  public static <R> CompletableFuture<R> retry(Supplier<CompletableFuture<R>> supplier, int maxRetries) {
+    CompletableFuture<R> f = supplier.get();
+    for(int i=0; i<maxRetries; i++) {
+      f=f.thenApply(CompletableFuture::completedFuture)
+         .exceptionally(t -> {
+           System.out.println("Try again:");
+           return supplier.get();
+         })
+         .thenCompose(Function.identity());
+    }
+    return f;
+  }
 }
