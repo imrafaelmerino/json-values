@@ -1139,8 +1139,8 @@ public class TestJsObjParser
                        );
 
 
-    JsGen<JsArray> arrayGen = JsGens.arrayOf(objGen,
-                                    10);
+    JsGen<JsArray> arrayGen = JsGens.array(objGen,
+                                           10);
 
     JsArrayParser arrayParser = new JsArrayParser(JsSpecs.arrayOf(objSpec));
 

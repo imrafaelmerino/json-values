@@ -696,6 +696,7 @@ public class JsObjGen implements JsGen<JsObj>
                                     ));
   }
 
+  @SafeVarargs
   public static JsObjGen of(final Tuple2<String,JsGen<?>> pair,
                             final Tuple2<String,JsGen<?>>... others
                            )

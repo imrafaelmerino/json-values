@@ -6,7 +6,6 @@ import jsonvalues.gen.state.JsObjStateGen;
 import jsonvalues.gen.state.JsStateGens;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
@@ -88,9 +87,9 @@ public class TestJsObjStateGen
                                                    10
                                                   ),
                                        "f",
-                                       o -> JsGens.arrayOf(JsGens.integer,
-                                                           10
-                                                          )
+                                       o -> JsGens.array(JsGens.integer,
+                                                         10
+                                                        )
                                       );
 
     TestGenerators.test(a,

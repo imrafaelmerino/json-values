@@ -1,4 +1,4 @@
-package jsonvalues.io;
+package jsonvalues.console;
 
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
@@ -8,7 +8,16 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
+import java.util.function.Consumer;
 
+import static jsonvalues.console.JsIOs.indent;
+
+/**
+ represents a supplier of a completable future than composes a json array from the user inputs in
+ the standard console. It has the same recursive structure as a json array. Each index has a completable
+ future associated that prints it out in the standard console, waiting for the user to type in
+ its associated value.  When all the futures are completed, the json array is composed and returned
+ */
 public class JsArrayIO implements JsIO<JsArray>
 {
 
@@ -30,24 +39,36 @@ public class JsArrayIO implements JsIO<JsArray>
   {
     return () ->
     {
+
       CompletableFuture<JsArray> result = CompletableFuture.completedFuture(JsArray.empty());
 
-      for (JsIO<?> entry : seq)
+      for (int i = 0; i < seq.size(); i++)
+
       {
-        final JsPath currentPath = path.inc();
+        JsPath p = path.index(i);
+        final JsIO<?> jsIO = seq.get(i);
         result = result.thenApply(array ->
                                   {
-                                    System.out.println(currentPath + ": ");
+                                    jsIO
+                                      .promptMessage()
+                                      .accept(p);
                                     return array;
+
                                   })
-                       .thenCombine(entry.apply(currentPath)
-                                         .get(),
+                       .thenCombine(jsIO.apply(p)
+                                        .get(),
                                     (array, value) -> array.append(value)
                                    );
       }
 
       return result;
     };
+  }
+
+  @Override
+  public Consumer<JsPath> promptMessage()
+  {
+    return path -> System.out.println(indent(path) + path);
   }
 
 

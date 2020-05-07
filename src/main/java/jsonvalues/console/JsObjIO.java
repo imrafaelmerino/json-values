@@ -1,4 +1,4 @@
-package jsonvalues.io;
+package jsonvalues.console;
 
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
@@ -9,9 +9,14 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 
-import static jsonvalues.io.JsIOs.indent;
+import static jsonvalues.console.JsIOs.indent;
 
-
+/**
+represents a supplier of a completable future than composes a json object from the user inputs in
+the standard console. It has the same recursive structure as a json object. Each key has a completable
+ future associated that prints it out in the standard console, waiting for the user to type in
+ its associated value. When all the futures are completed, the json object is composed and returned
+ */
 public class JsObjIO implements JsIO<JsObj>
 {
 
@@ -34,13 +39,15 @@ public class JsObjIO implements JsIO<JsObj>
      for (Map.Entry<String, JsIO<?>> entry : bindings.entrySet())
      {
        JsPath currentPath = path.append(JsPath.fromKey(entry.getKey()));
+       final JsIO<?> nextValue = entry.getValue();
        result = result.thenApply(o ->
                                  {
-                                   entry.getValue().promptMessage().accept(currentPath);
+                                   nextValue
+                                        .promptMessage().accept(currentPath);
 
                                    return o;
                                  })
-                      .thenCombine(entry.getValue()
+                      .thenCombine(nextValue
                                         .apply(currentPath)
                                         .get(),
                                    (obj, value) -> obj.put(entry.getKey(),
@@ -53,7 +60,6 @@ public class JsObjIO implements JsIO<JsObj>
 
 
   }
-
 
   public static JsObjIO of(final String key,
                            final JsIO<?> io

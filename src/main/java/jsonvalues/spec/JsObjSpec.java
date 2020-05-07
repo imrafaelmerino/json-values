@@ -163,7 +163,7 @@ public class JsObjSpec implements JsSpec
                 value);
   }
 
-
+  @SafeVarargs
   public static JsObjSpec strict(final Tuple2<String,JsSpec> pair,
                                  final Tuple2<String,JsSpec>... others
                                 )
@@ -176,6 +176,7 @@ public class JsObjSpec implements JsSpec
     );
   }
 
+  @SafeVarargs
   public static JsObjSpec lenient(final Tuple2<String,JsSpec> pair,
                                   final Tuple2<String,JsSpec>... others
                                  )
@@ -188,6 +189,7 @@ public class JsObjSpec implements JsSpec
     );
   }
 
+  @SafeVarargs
   private JsObjSpec(final boolean strict,
                     final boolean required,
                     final boolean nullable,

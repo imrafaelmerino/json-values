@@ -1,13 +1,13 @@
 package jsonvalues;
 
+import jsonvalues.console.JsArrayIO;
 import jsonvalues.future.JsFuture;
 import jsonvalues.future.JsObjFuture;
 import jsonvalues.future.JsArrayFuture;
-import jsonvalues.io.JsIOs;
-import jsonvalues.io.JsObjIO;
+import jsonvalues.console.JsIOs;
+import jsonvalues.console.JsObjIO;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -201,7 +201,9 @@ public class TestJsFutures
                                         JsObjIO.of("f",
                                                    JsIOs.read(arrayOfInt)
                                                   )
-                                       )
+                                       ),
+                             "g",
+                             JsArrayIO.of(JsIOs.read(integer),JsIOs.read(str))
                             );
 
     final JsObj x = obj.apply(JsPath.empty())

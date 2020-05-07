@@ -1,10 +1,11 @@
 package jsonvalues.gen;
 
+import io.vavr.Tuple2;
 import jsonvalues.*;
 
 import java.nio.charset.StandardCharsets;
-import java.security.SecureRandom;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,8 +19,9 @@ public class JsGens
   public static JsGen<JsStr> character = r -> () -> JsStr.of(Character.toString(((char) r.nextInt(256))));
 
   public static JsGen<JsStr> characterAlpha = r -> () -> JsStr.of(Character.toString(((char) choose(65,
-                                                                                                    122).apply(r)
-                                                                                                        .get().value))
+                                                                                                    122
+                                                                                                   ).apply(r)
+                                                                                                    .get().value))
                                                                  );
   public static JsGen<JsStr> digit = r -> () -> JsStr.of(Integer.toString(r.nextInt(10)));
 
@@ -30,18 +32,7 @@ public class JsGens
     return JsStr.of(Character.toString(c));
   };
 
-
-
- public static JsGen<JsStr> characterAlphaNumeric = null;
-
- public static JsGen<JsStr> characterAscii = null;
-
- public static JsGen<JsInt> natural = r -> () -> JsInt.of(r.nextInt(Integer.MAX_VALUE));
-
-  //arrayDistinctOf(gen)
-  //arrayOf(JsValue..., max-tries(default10))
-  //frequencias(freq,gen,freq1,gen1)
-  //shuffle Creates a generator that generates random permutations of
+  public static JsGen<JsInt> natural = r -> () -> JsInt.of(r.nextInt(Integer.MAX_VALUE));
 
 
   public static JsGen<JsStr> str = choose(0,
@@ -170,28 +161,97 @@ public class JsGens
     );
   }
 
-  public static JsGen<JsArray> arrayOf(final JsGen<?> gen,
-                                       final int size
-                                      )
+  public static JsGen<JsArray> array(final JsGen<?> gen,
+                                     final int size
+                                    )
   {
     return JsArrayGen.of(gen,
                          size
                         );
   }
 
+  public static JsGen<JsArray> arrayDistinct(final JsGen<?> gen,
+                                             final int size
+                                            )
+  {
+    return arrayDistinct(gen,
+                         size,
+                         100);
+  }
+
+  public static JsGen<JsArray> arrayDistinct(final JsGen<?> gen,
+                                             final int size,
+                                             final int maxTries
+                                            )
+  {
+
+    return r -> () ->
+    {
+      int tries = 0;
+      Set<JsValue> set = new HashSet<>();
+      while (set.size() != size)
+      {
+        set.add(gen.apply(r)
+                   .get());
+        tries += 1;
+        if (tries >= maxTries)
+          throw new RuntimeException(String.format("Couldn't generate array of %s distinct elements  after %s tries",
+                                                   size,
+                                                   maxTries));
+      }
+      return JsArray.ofIterable(set);
+
+    };
+  }
+
+  /**
+   Creates a generator that chooses a generator from `pairs` based on the
+   provided likelihoods. The likelihood of a given generator being chosen is
+   its likelihood divided by the sum of all likelihoods. Shrinks toward
+   choosing an earlier generator, as well as shrinking the value generated
+   by the chosen generator.
+   */
+  public static JsGen<?> frequency(final Tuple2<Integer, JsGen<?>> freq,
+                                   final Tuple2<Integer, JsGen<?>>... others
+                                  )
+  {
+
+    final List<Tuple2<Integer, JsGen<?>>> filtered = Arrays.stream(others)
+                                                           .filter(it -> it._1 > 0)
+                                                           .collect(Collectors.toList());
+    if (freq._1 > 0) filtered.add(freq);
+    if (filtered.size() == 0)
+      throw new IllegalArgumentException("no items with positive weights");
+    int total = 0;
+    TreeMap<Integer, JsGen<?>> treeMap = new TreeMap<>();
+    for (Tuple2<Integer, JsGen<?>> t : filtered)
+    {
+      total += t._1;
+      treeMap.put(total,
+                  t._2
+                 );
+    }
+
+    return choose(1,
+                  total).flatMap(n -> treeMap.ceilingEntry(n.value)
+                                             .getValue());
+
+
+  }
 
   public static void main(String[] args)
   {
-    JsObj a = JsObj.empty();
 
     Random r = new Random();
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 10; i++)
     {
-      System.out.println(letter.apply(r)
-                                .get());
+      System.out.println(arrayDistinct(letter,
+                    5).apply(r)
+                      .get());
     }
-  }
 
+
+  }
 
 
 }

@@ -2,6 +2,7 @@ package jsonvalues.future;
 
 import io.vavr.Tuple2;
 import jsonvalues.JsObj;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.CompletableFuture;
@@ -9,7 +10,13 @@ import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
 /**
- Represents a json future which result type is a json object
+ Represents a supplier of a completable future which result is a json object. It has the same
+ recursive structure as a json object. Each key has a completable future associated. When all the
+ futures are completed, all the results are combined into a json object:
+
+ JsObjFuture(a->CompletableFuture(1), b->CompletableFuture("a") c->CompletableFuture(true)) =
+ CompletableFuture(JsObj(a->1,b->"a",c->true))
+
  */
 public class JsObjFuture implements JsFuture<JsObj>
 {
@@ -18,9 +25,8 @@ public class JsObjFuture implements JsFuture<JsObj>
   private Executor executor = ForkJoinPool.commonPool();
 
 
-
   /**
-   the executor to use for the asynchronous operation assigned to the future.
+   the executor to use for the asynchronous operation assigned to the futures.
    By default the ForkJoinPool.commonPool() will be used.
    @param executor the executor
    */
@@ -29,6 +35,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     this.executor = executor;
 
   }
+
   private JsObjFuture(final String key,
                       final JsFuture<?> fut
                      )
@@ -38,7 +45,6 @@ public class JsObjFuture implements JsFuture<JsObj>
                 );
 
   }
-
 
 
   private JsObjFuture(final String key,
@@ -362,16 +368,14 @@ public class JsObjFuture implements JsFuture<JsObj>
                 );
   }
 
-  JsObjFuture(final Map<String, JsFuture<?>> bindings)
+  private JsObjFuture(final Map<String, JsFuture<?>> bindings)
   {
-   this.bindings = bindings;
+    this.bindings = bindings;
   }
 
 
   /**
-   returns a new CompletionFuture that, when all the futures of the json object complete normally,
-   is executed using the supplied executor binding each value to its respective key and composing
-   the json object returned:
+   it triggers the execution of all the completable futures, combining the results into a JsObj
 
    JsObj(a->CompletableFuture(1), b->CompletableFuture("a") c->CompletableFuture(true)) =
    CompletableFuture(JsObj(a->1,b->"a",c->true))
@@ -398,12 +402,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     return result;
   }
 
-  /**
-   returns an immutable json future containing one mapping
-   @param key the key
-   @param fut the future associated to the key
-   @return a json object future containing the specified mappings
-   */
+
   public static JsObjFuture of(final String key,
                                final JsFuture<?> fut
                               )
@@ -413,14 +412,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     );
   }
 
-  /**
-   returns an immutable json future containing two mappings
-   @param key the first key
-   @param fut future associated to the first key
-   @param key1 the second key
-   @param fut1 future associated to the second key
-   @return a json object future containing the specified mappings
-   */
+
   public static JsObjFuture of(final String key,
                                final JsFuture<?> fut,
                                final String key1,
@@ -732,9 +724,10 @@ public class JsObjFuture implements JsFuture<JsObj>
                            fut10
     );
   }
+
   public JsObjFuture put(final String key,
-                      final JsFuture<?> future
-                     )
+                         final JsFuture<?> future
+                        )
   {
     bindings.put(key,
                  future
@@ -742,25 +735,26 @@ public class JsObjFuture implements JsFuture<JsObj>
     return new JsObjFuture(bindings);
   }
 
-  public static JsObjFuture of(){
+  public static JsObjFuture of()
+  {
     return new JsObjFuture(new HashMap<>());
   }
 
-  public static JsObjFuture of(final Tuple2<String,JsFuture<?>> pair,
-                            final Tuple2<String,JsFuture<?>>... others
-                           )
+  @SafeVarargs
+  public static JsObjFuture of(final Tuple2<String, JsFuture<?>> pair,
+                               final Tuple2<String, JsFuture<?>>... others
+                              )
   {
 
     JsObjFuture fut = new JsObjFuture(pair._1,
-                                pair._2
+                                      pair._2
     );
-    for (final Tuple2<String,JsFuture<?>> other : others)
+    for (final Tuple2<String, JsFuture<?>> other : others)
       fut = fut.put(other._1,
                     other._2
                    );
     return fut;
   }
-
 
 
 }

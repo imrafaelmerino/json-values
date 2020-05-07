@@ -26,16 +26,16 @@ public class TestGenerators
     final JsGen<JsObj> gen = JsObjGen.of("a",
                                          choose(0,
                                                 10
-                                               ).flatMap(n -> JsGens.arrayOf(alphabetic,
-                                                                               n.value
-                                                                              )
+                                               ).flatMap(n -> JsGens.array(alphabetic,
+                                                                           n.value
+                                                                          )
                                                            ),
                                          "b",
                                          choose(0,
                                                 10
-                                               ).flatMap(n -> JsGens.arrayOf(JsGens.integer,
-                                                                               n.value
-                                                                              )
+                                               ).flatMap(n -> JsGens.array(JsGens.integer,
+                                                                           n.value
+                                                                          )
                                                            )
                                         );
 
@@ -133,9 +133,9 @@ public class TestGenerators
   public void test_nested_gen()
   {
     JsObjGen gen = JsObjGen.of("a",
-                               JsGens.arrayOf(alphanumeric,
-                                             5
-                                            ),
+                               JsGens.array(alphanumeric,
+                                            5
+                                           ),
                                "b",
                                JsGens.tuple(JsGens.str,
                                              JsGens.bool,

@@ -9,9 +9,16 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
 
-/**
- Represents a json future which result type is a json array.
- */
+
+ /**
+ Represents a supplier of a completable future which result is a json array. It has the same
+ recursive structure as a json array. Each index of the array is a completable future. When all the
+ futures are completed, all the results are combined into a json array.
+
+  JsArrayFuture(CompletableFuture(1),CompletableFuture("a"),CompletableFuture(true)) = CompletableFuture(JsArray(1,"a",true))
+
+  */
+
 public class JsArrayFuture implements JsFuture<JsArray>
 {
   private List<JsFuture<?>> array = new ArrayList<>();
@@ -37,10 +44,7 @@ public class JsArrayFuture implements JsFuture<JsArray>
   }
 
   /**
-   returns a new CompletionFuture that, when all the futures of the array complete normally,
-   is executed using the supplied executor appending each value in order to an empty array:
-
-   JsArray(CompletableFuture(1),CompletableFuture("a"),CompletableFuture(true)) = CompletableFuture(JsArray(1,"a",true))
+  it triggers the execution of all the completable futures, appending the results into a JsArray
 
    @return a CompletableFuture of a json array
    */
@@ -59,13 +63,6 @@ public class JsArrayFuture implements JsFuture<JsArray>
     return result;
   }
 
-  /**
-   returns a json future which result type is a json array. Homogenous finite arrays and heterogeneous
-   finite arrays or tuples can be defined, being the latest the most common case.
-   @param fut the first future of the array
-   @param others others futures of the array
-   @return a new json array future
-   */
   public static JsArrayFuture of(final JsFuture<?> fut,
                                  final JsFuture<?>... others
                                 )

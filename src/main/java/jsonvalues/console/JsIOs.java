@@ -1,4 +1,4 @@
-package jsonvalues.io;
+package jsonvalues.console;
 
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.MyDslJson;
