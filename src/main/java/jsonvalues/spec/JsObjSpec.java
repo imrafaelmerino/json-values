@@ -164,8 +164,8 @@ public class JsObjSpec implements JsSpec
   }
 
 
-  public static JsObjSpec strict(final JsSpecPair pair,
-                                 final JsSpecPair... others
+  public static JsObjSpec strict(final Tuple2<String,JsSpec> pair,
+                                 final Tuple2<String,JsSpec>... others
                                 )
   {
     return new JsObjSpec(true,
@@ -176,8 +176,8 @@ public class JsObjSpec implements JsSpec
     );
   }
 
-  public static JsObjSpec lenient(final JsSpecPair pair,
-                                  final JsSpecPair... others
+  public static JsObjSpec lenient(final Tuple2<String,JsSpec> pair,
+                                  final Tuple2<String,JsSpec>... others
                                  )
   {
     return new JsObjSpec(false,
@@ -191,16 +191,16 @@ public class JsObjSpec implements JsSpec
   private JsObjSpec(final boolean strict,
                     final boolean required,
                     final boolean nullable,
-                    final JsSpecPair pair,
-                    final JsSpecPair... others
+                    final Tuple2<String,JsSpec> pair,
+                    final Tuple2<String,JsSpec>... others
                    )
   {
-    bindings = bindings.put(pair.key,
-                            pair.spec
+    bindings = bindings.put(pair._1,
+                            pair._2
                            );
-    for (JsSpecPair p : others)
-      bindings = bindings.put(p.key,
-                              p.spec
+    for (Tuple2<String,JsSpec> p : others)
+      bindings = bindings.put(p._1,
+                              p._2
                              );
     this.strict = strict;
     this.required = required;

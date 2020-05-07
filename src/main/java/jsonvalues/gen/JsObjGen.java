@@ -696,17 +696,17 @@ public class JsObjGen implements JsGen<JsObj>
                                     ));
   }
 
-  public static JsObjGen of(final JsGenPair<?> pair,
-                            final JsGenPair<?>... others
+  public static JsObjGen of(final Tuple2<String,JsGen<?>> pair,
+                            final Tuple2<String,JsGen<?>>... others
                            )
   {
 
-    JsObjGen gen = new JsObjGen(pair.key,
-                                pair.gen
+    JsObjGen gen = new JsObjGen(pair._1,
+                                pair._2
     );
-    for (final JsGenPair<?> other : others)
-      gen = gen.put(other.key,
-                    other.gen
+    for (final Tuple2<String,JsGen<?>> other : others)
+      gen = gen.put(other._1,
+                    other._2
                    );
     return gen;
   }

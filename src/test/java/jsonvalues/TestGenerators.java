@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import io.vavr.Tuple2;
 import jsonvalues.gen.*;
 import jsonvalues.gen.state.JsStateGen;
 import jsonvalues.spec.JsObjSpec;
@@ -57,19 +58,19 @@ public class TestGenerators
   public void test_pair_gen()
   {
 
-    JsObjGen gen = JsObjGen.of(JsGenPair.of("a",
+    JsObjGen gen = JsObjGen.of(new Tuple2<>("a",
                                             JsGens.integer
                                            ),
-                               JsGenPair.of("b",
+                               new Tuple2<>("b",
                                             JsGens.str
                                            ),
-                               JsGenPair.of("c",
+                               new Tuple2<>("c",
                                             JsGens.bool
                                            ),
-                               JsGenPair.of("d",
+                               new Tuple2<>("d",
                                             alphabetic
                                            ),
-                               JsGenPair.of("e",
+                               new Tuple2<>("e",
                                             alphanumeric
                                            )
                               );

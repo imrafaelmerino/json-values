@@ -22,6 +22,8 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   }
 
+ //TODO sample and sample(n), suchThat
+
   default JsStateGen stateMap(final Function<R,JsStateGen> f){
     return o -> random -> () -> f.apply(JsGen.this.apply(random)
                                             .get()

@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import jsonvalues.gen.JsGenPair;
+import io.vavr.Tuple2;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.spec.*;
@@ -21,22 +21,22 @@ public class TestJsObjSpec
 
   @Test
   public void test_spec_from_pairs(){
-    final JsObjSpec spec = JsObjSpec.strict(JsSpecPair.of("a",
-                                                            str
-                                                           ),
-                                              JsSpecPair.of("b",
+    final JsObjSpec spec = JsObjSpec.strict(new Tuple2<>("a",
+                                                      str
+                                                     ),
+                                            new Tuple2<>("b",
                                                             integral),
-                                              JsSpecPair.of("c",
+                                            new Tuple2<>("c",
                                                             decimal)
                                              );
 
-    final JsObjGen gen = JsObjGen.of(JsGenPair.of("a",
+    final JsObjGen gen = JsObjGen.of(new Tuple2<>("a",
                                                        JsGens.str
                                                       ),
-                                          JsGenPair.of("b",
+                                     new Tuple2<>("b",
                                                        JsGens.integer
                                                       ),
-                                          JsGenPair.of("c",
+                                     new Tuple2<>("c",
                                                           JsGens.decimal
                                                       )
                                           );

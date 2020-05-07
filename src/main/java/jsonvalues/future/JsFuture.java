@@ -6,7 +6,7 @@ import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
 /**
- Represents a supplier of completable futures which result is a JsValue of type T
+ Represents a supplier of a completable future which result is a JsValue
  @param <T> the type returned by the completable future
  */
 @FunctionalInterface

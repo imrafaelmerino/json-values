@@ -62,69 +62,69 @@
 .toJsObj: stream into JsArray
     java.util.stream.Stream  →  $expr$.collect(JsObj.collector())
 
-.isJsInt: predicate to test if a JsElem is a JsInt
-    jsonvalues.JsValue → JsElem.ifInt.test($expr$)
+.isJsInt: predicate to test if a JsValue is a JsInt
+    jsonvalues.JsValue → JsValue.ifInt.test($expr$)
     jsonvalues.JsPair → JsPair.ifInt.test($expr$)
 
 
-.isJsBigInteger: predicate to test if a JsElem is a JsBigInteger
-    jsonvalues.JsValue → JsElem.ifBigInteger.test($expr$)
+.isJsBigInteger: predicate to test if a JsValue is a JsBigInteger
+    jsonvalues.JsValue → JsValue.ifBigInteger.test($expr$)
     jsonvalues.JsPair → JsPair.ifBigInteger.test($expr$)
 
-.isJsLong: predicate to test if a JsElem is a JsLong
-    jsonvalues.JsValue → JsElem.isLong.test($expr$)
+.isJsLong: predicate to test if a JsValue is a JsLong
+    jsonvalues.JsValue → JsValue.isLong.test($expr$)
     jsonvalues.JsPair → JsPair.isLong.test($expr$)
 
-.isJsDouble: predicate to test if a JsElem is a JsDouble
-    jsonvalues.JsValue → JsElem.isDouble.test($expr$)
+.isJsDouble: predicate to test if a JsValue is a JsDouble
+    jsonvalues.JsValue → JsValue.isDouble.test($expr$)
     jsonvalues.JsPair → JsPair.isDouble.test($expr$)
 
-.isJsJson: predicate to test if a JsElem is a Json
-    jsonvalues.JsValue → JsElem.isJson.test($expr$)
+.isJsJson: predicate to test if a JsValue is a Json
+    jsonvalues.JsValue → JsValue.isJson.test($expr$)
     jsonvalues.JsPair → JsPair.isJson.test($expr$)
 
-.isJsNull: predicate to test if a JsElem is a JsNull
-    jsonvalues.JsValue → JsElem.isNull.test($expr$)
+.isJsNull: predicate to test if a JsValue is a JsNull
+    jsonvalues.JsValue → JsValue.isNull.test($expr$)
     jsonvalues.JsPair → JsPair.isNull.test($expr$)
 
-.isIntegral: predicate to test if a JsElem is an integral number
-    jsonvalues.JsValue → JsElem.isIntegral.test($expr$)
+.isIntegral: predicate to test if a JsValue is an integral number
+    jsonvalues.JsValue → JsValue.isIntegral.test($expr$)
     jsonvalues.JsPair → JsPair.isIntegral.test($expr$)
 
-.isNotJsNull: predicate to test if a JsElem is not a JsNull
-    jsonvalues.JsValue → JsElem.isNotNull.test($expr$)
+.isNotJsNull: predicate to test if a JsValue is not a JsNull
+    jsonvalues.JsValue → JsValue.isNotNull.test($expr$)
     jsonvalues.JsPair → JsPair.isNotNull.test($expr$)
 
-.isValue: predicate to test if a JsElem is not a container
-    jsonvalues.JsValue → JsElem.isValue.test($expr$)
+.isValue: predicate to test if a JsValue is not a container
+    jsonvalues.JsValue → JsValue.isValue.test($expr$)
     jsonvalues.JsPair → JsPair.isValue.test($expr$)
 
-.isStr: predicate to test if a JsElem is a JsStr
-    jsonvalues.JsValue → JsElem.isStr.test($expr$)
+.isStr: predicate to test if a JsValue is a JsStr
+    jsonvalues.JsValue → JsValue.isStr.test($expr$)
     jsonvalues.JsPair → JsPair.isStr.test($expr$)
 
-.isJsNumber: predicate to test if a JsElem is a JsNumber
-    jsonvalues.JsValue → JsElem.isNumber.test($expr$)
+.isJsNumber: predicate to test if a JsValue is a JsNumber
+    jsonvalues.JsValue → JsValue.isNumber.test($expr$)
     jsonvalues.JsPair → JsPair.isNumber.test($expr$)
 
-.isJsNothing: predicate to test if a JsElem is a JsNothing
-    jsonvalues.JsValue → JsElem.isNothing.test($expr$)
+.isJsNothing: predicate to test if a JsValue is a JsNothing
+    jsonvalues.JsValue → JsValue.isNothing.test($expr$)
     jsonvalues.JsPair → JsPair.isNothing.test($expr$)
 
-.isJsObj: predicate to test if a JsElem is a JsObj
-    jsonvalues.JsValue → JsElem.isObj.test($expr$)
+.isJsObj: predicate to test if a JsValue is a JsObj
+    jsonvalues.JsValue → JsValue.isObj.test($expr$)
     jsonvalues.JsPair → JsPair.isObj.test($expr$)
 
-.isJsArr: predicate to test if a JsElem is a JsArray
-    jsonvalues.JsValue → JsElem.isArray.test($expr$)
+.isJsArr: predicate to test if a JsValue is a JsArray
+    jsonvalues.JsValue → JsValue.isArray.test($expr$)
     jsonvalues.JsPair → JsPair.isArray.test($expr$)
 
 
-.isJsBoolean: predicate to test if a JsElem is a JsBoolean
-    jsonvalues.JsValue → JsElem.isBoolean.test($expr$)
-    jsonvalues.JsPair → JsElem.isBoolean.test($expr$)
+.isJsBoolean: predicate to test if a JsValue is a JsBoolean
+    jsonvalues.JsValue → JsValue.isBoolean.test($expr$)
+    jsonvalues.JsPair → JsValue.isBoolean.test($expr$)
 
-.isJsBigDecimal: predicate to test if a JsElem is a JsBigDecimal
-    jsonvalues.JsValue → JsElem.isDecimal.test($expr$)
+.isJsBigDecimal: predicate to test if a JsValue is a JsBigDecimal
+    jsonvalues.JsValue → JsValue.isDecimal.test($expr$)
     jsonvalues.JsPair → JsPair.isDecimal.test($expr$)
 

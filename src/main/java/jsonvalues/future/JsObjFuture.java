@@ -1,5 +1,6 @@
 package jsonvalues.future;
 
+import io.vavr.Tuple2;
 import jsonvalues.JsObj;
 import java.util.HashMap;
 import java.util.Map;
@@ -745,17 +746,17 @@ public class JsObjFuture implements JsFuture<JsObj>
     return new JsObjFuture(new HashMap<>());
   }
 
-  public static JsObjFuture of(final JsFuturePair<?> pair,
-                            final JsFuturePair<?>... others
+  public static JsObjFuture of(final Tuple2<String,JsFuture<?>> pair,
+                            final Tuple2<String,JsFuture<?>>... others
                            )
   {
 
-    JsObjFuture fut = new JsObjFuture(pair.key,
-                                pair.future
+    JsObjFuture fut = new JsObjFuture(pair._1,
+                                pair._2
     );
-    for (final JsFuturePair<?> other : others)
-      fut = fut.put(other.key,
-                    other.future
+    for (final Tuple2<String,JsFuture<?>> other : others)
+      fut = fut.put(other._1,
+                    other._2
                    );
     return fut;
   }
