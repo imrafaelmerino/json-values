@@ -187,7 +187,7 @@ public class TestJsFutures
     System.out.println(obj.get().get());*/
 
 
-    System.out.println("Let's create a Json object interactively! \nJust type in the values and press Enter");
+    System.out.println("---------JSON-VALUES---------");
     System.out.print("\n");
 
     JsObjIO obj = JsObjIO.of("a",
@@ -206,9 +206,7 @@ public class TestJsFutures
                              JsArrayIO.of(JsIOs.read(integer),JsIOs.read(str))
                             );
 
-    final JsObj x = obj.apply(JsPath.empty())
-                       .get()
-                       .get();
+    final JsObj x = obj.exec();
     System.out.print("\n");
     System.out.println("And the result is:");
     System.out.print("\n");

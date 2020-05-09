@@ -14,25 +14,25 @@ public class JsGens
   private static final int Z = 122;
   private final static int A = 97;
   private final static int ZERO = 48;
-  private static final String LENGTH_EQUAL_ZERO_ERROR = "string length must be greater than zero.";
+  private static final String LENGTH_EQUAL_ZERO_ERROR = "length must be greater than zero.";
 
-  public static JsGen<JsStr> character = r -> () -> JsStr.of(Character.toString(((char) r.nextInt(256))));
+  public static JsGen<JsStr> character = r -> () -> JsStr.of(Character.toString(((char) requireNonNull(r).nextInt(256))));
 
   public static JsGen<JsStr> characterAlpha = r -> () -> JsStr.of(Character.toString(((char) choose(65,
                                                                                                     122
-                                                                                                   ).apply(r)
+                                                                                                   ).apply(requireNonNull(r))
                                                                                                     .get().value))
                                                                  );
-  public static JsGen<JsStr> digit = r -> () -> JsStr.of(Integer.toString(r.nextInt(10)));
+  public static JsGen<JsStr> digit = r -> () -> JsStr.of(Integer.toString(requireNonNull(r).nextInt(10)));
 
 
   public static JsGen<JsStr> letter = r -> () ->
   {
-    char c = (char) (r.nextInt(26) + 'a');
+    char c = (char) (requireNonNull(r).nextInt(26) + 'a');
     return JsStr.of(Character.toString(c));
   };
 
-  public static JsGen<JsInt> natural = r -> () -> JsInt.of(r.nextInt(Integer.MAX_VALUE));
+  public static JsGen<JsInt> natural = r -> () -> JsInt.of(requireNonNull(r).nextInt(Integer.MAX_VALUE));
 
 
   public static JsGen<JsStr> str = choose(0,
@@ -63,43 +63,43 @@ public class JsGens
     };
   }
 
-  public static JsGen<JsBool> bool = r -> () -> JsBool.of(r.nextBoolean());
+  public static JsGen<JsBool> bool = r -> () -> JsBool.of(requireNonNull(r).nextBoolean());
 
-  public static JsGen<JsLong> longInteger = r -> () -> JsLong.of(r.nextLong());
+  public static JsGen<JsLong> longInteger = r -> () -> JsLong.of(requireNonNull(r).nextLong());
 
-  public static JsGen<JsInt> integer = r -> () -> JsInt.of(r.nextInt());
+  public static JsGen<JsInt> integer = r -> () -> JsInt.of(requireNonNull(r).nextInt());
 
-  public static JsGen<JsDouble> decimal = r -> () -> JsDouble.of(r.nextDouble());
+  public static JsGen<JsDouble> decimal = r -> () -> JsDouble.of(requireNonNull(r).nextDouble());
 
   public static JsGen<JsStr> alphabetic(final int length)
   {
     if (length < 0) throw new IllegalArgumentException(LENGTH_EQUAL_ZERO_ERROR);
 
-    return r -> () -> JsStr.of(r.ints(A,
-                                      Z + 1
-                                     )
-                                .limit(length)
-                                .collect(StringBuilder::new,
-                                         StringBuilder::appendCodePoint,
-                                         StringBuilder::append
-                                        )
-                                .toString());
+    return r -> () -> JsStr.of(requireNonNull(r).ints(A,
+                                                      Z + 1
+                                                     )
+                                                .limit(length)
+                                                .collect(StringBuilder::new,
+                                                         StringBuilder::appendCodePoint,
+                                                         StringBuilder::append
+                                                        )
+                                                .toString());
   }
 
   public static JsGen<JsStr> alphanumeric(final int length)
   {
     if (length < 0) throw new IllegalArgumentException(LENGTH_EQUAL_ZERO_ERROR);
 
-    return r -> () -> JsStr.of(r.ints(ZERO,
-                                      Z + 1
-                                     )
-                                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
-                                .limit(length)
-                                .collect(StringBuilder::new,
-                                         StringBuilder::appendCodePoint,
-                                         StringBuilder::append
-                                        )
-                                .toString());
+    return r -> () -> JsStr.of(requireNonNull(r).ints(ZERO,
+                                                      Z + 1
+                                                     )
+                                                .filter(i -> (i <= 57 || i >= 65) && (i <= 90 || i >= 97))
+                                                .limit(length)
+                                                .collect(StringBuilder::new,
+                                                         StringBuilder::appendCodePoint,
+                                                         StringBuilder::append
+                                                        )
+                                                .toString());
   }
 
   public static JsGen<JsInt> choose(final int min,
@@ -107,7 +107,7 @@ public class JsGens
                                    )
   {
     if (min > max) throw new IllegalArgumentException("min must be lower than max");
-    return r -> () -> JsInt.of(r.nextInt((max - min) + 1) + min);
+    return r -> () -> JsInt.of(requireNonNull(r).nextInt((max - min) + 1) + min);
   }
 
   public static JsGen<JsValue> single(final JsValue value)
@@ -120,9 +120,11 @@ public class JsGens
                                      final JsValue... others
                                     )
   {
+    Objects.requireNonNull(a);
+    Objects.requireNonNull(others);
     return r -> () ->
     {
-      final int n = r.nextInt(others.length + 1);
+      final int n = requireNonNull(r).nextInt(others.length + 1);
       if (n == 0) return requireNonNull(a);
       else return requireNonNull(others)[others.length - 1];
     };
@@ -132,21 +134,23 @@ public class JsGens
                                final JsGen<?>... others
                               )
   {
-    int n = new Random().nextInt(1 + others.length);
+    int n = new Random().nextInt(1 + requireNonNull(others).length);
     final List<JsGen<?>> gens = new ArrayList<>();
     gens.add(requireNonNull(a));
     Collections.addAll(gens,
-                       requireNonNull(others)
+                       others
                       );
     return gens.get(n);
   }
 
   public static <O extends JsValue> JsGen<O> oneOf(final List<O> list)
   {
+    if (requireNonNull(list).size() == 0)
+      throw new RuntimeException("list empty. No value can be generated");
+
     return r -> () ->
     {
-      if (requireNonNull(list).size() == 0) return list.get(0);
-      final int index = r.nextInt(list.size());
+      final int index = requireNonNull(r).nextInt(list.size());
       return list.get(index);
     };
   }
@@ -165,7 +169,8 @@ public class JsGens
                                      final int size
                                     )
   {
-    return JsArrayGen.of(gen,
+    if (size < 0) throw new IllegalArgumentException("size negative");
+    return JsArrayGen.of(requireNonNull(gen),
                          size
                         );
   }
@@ -174,9 +179,12 @@ public class JsGens
                                              final int size
                                             )
   {
-    return arrayDistinct(gen,
+    if (size < 0) throw new IllegalArgumentException("size negative");
+
+    return arrayDistinct(requireNonNull(gen),
                          size,
-                         100);
+                         100
+                        );
   }
 
   public static JsGen<JsArray> arrayDistinct(final JsGen<?> gen,
@@ -184,9 +192,13 @@ public class JsGens
                                              final int maxTries
                                             )
   {
+    requireNonNull(gen);
+    if (size < 0) throw new IllegalArgumentException("size negative");
+    if (maxTries < 0) throw new IllegalArgumentException("maxTries negative");
 
     return r -> () ->
     {
+      requireNonNull(r);
       int tries = 0;
       Set<JsValue> set = new HashSet<>();
       while (set.size() != size)
@@ -197,7 +209,8 @@ public class JsGens
         if (tries >= maxTries)
           throw new RuntimeException(String.format("Couldn't generate array of %s distinct elements  after %s tries",
                                                    size,
-                                                   maxTries));
+                                                   maxTries
+                                                  ));
       }
       return JsArray.ofIterable(set);
 
@@ -216,10 +229,10 @@ public class JsGens
                                   )
   {
 
-    final List<Tuple2<Integer, JsGen<?>>> filtered = Arrays.stream(others)
+    final List<Tuple2<Integer, JsGen<?>>> filtered = Arrays.stream(requireNonNull(others))
                                                            .filter(it -> it._1 > 0)
                                                            .collect(Collectors.toList());
-    if (freq._1 > 0) filtered.add(freq);
+    if (requireNonNull(freq)._1 > 0) filtered.add(freq);
     if (filtered.size() == 0)
       throw new IllegalArgumentException("no items with positive weights");
     int total = 0;
@@ -233,25 +246,11 @@ public class JsGens
     }
 
     return choose(1,
-                  total).flatMap(n -> treeMap.ceilingEntry(n.value)
-                                             .getValue());
+                  total
+                 ).flatMap(n -> treeMap.ceilingEntry(n.value)
+                                       .getValue());
 
 
   }
-
-  public static void main(String[] args)
-  {
-
-    Random r = new Random();
-    for (int i = 0; i < 10; i++)
-    {
-      System.out.println(arrayDistinct(letter,
-                    5).apply(r)
-                      .get());
-    }
-
-
-  }
-
 
 }

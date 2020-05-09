@@ -3,16 +3,24 @@ package jsonvalues.gen;
 import jsonvalues.JsValue;
 import jsonvalues.gen.state.JsStateGen;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
-
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsNothing.NOTHING;
+import static jsonvalues.JsNull.NULL;
 
 public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 {
+
+  default JsGen<?> nullable(){
+    return this.flatMap(value -> JsGens.oneOf(value,
+                                              NULL
+                                             )
+                       );
+  }
 
   default JsGen<?> optional()
   {
@@ -24,9 +32,10 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   }
 
-  default <T extends JsValue> JsGen<T> map(Function<R, T> f)
+  default <T extends JsValue> JsGen<T> map(final Function<R, T> f)
   {
-    return random -> () -> f.apply(JsGen.this.apply(random)
+    requireNonNull(f);
+    return random -> () -> f.apply(JsGen.this.apply(requireNonNull(random))
                                              .get()
                                   );
   }
@@ -38,12 +47,12 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   default Supplier<R> sample(final Random random)
   {
-    return apply(random);
+    return apply(requireNonNull(random));
   }
 
   default JsGen<R> suchThat(final Predicate<R> predicate)
   {
-    return suchThat(predicate,
+    return suchThat(requireNonNull(predicate),
                     100);
   }
 
@@ -51,8 +60,11 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
                             final int tries
                            )
   {
+    requireNonNull(predicate);
+    if(tries<0)throw new IllegalArgumentException("tries negative");
     return r -> () ->
     {
+      Objects.requireNonNull(r);
       for (int i = 0; i < tries; i++)
       {
         final R value = apply(r).get();
@@ -67,19 +79,21 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   default JsStateGen stateMap(final Function<R, JsStateGen> f)
   {
-    return o -> random -> () -> f.apply(JsGen.this.apply(random)
+    Objects.requireNonNull(f);
+    return o -> r -> () -> f.apply(JsGen.this.apply(requireNonNull(r))
                                                   .get()
                                        )
-                                 .apply(o)
-                                 .apply(random)
+                                 .apply(requireNonNull(o))
+                                 .apply(r)
                                  .get();
   }
 
   default <T extends JsValue> JsGen<T> flatMap(final Function<R, JsGen<T>> f)
   {
-    return random -> requireNonNull(f).apply(JsGen.this.apply(random)
+    Objects.requireNonNull(f);
+    return r -> f.apply(JsGen.this.apply(requireNonNull(r))
                                                        .get())
-                                      .apply(random);
+                                      .apply(r);
   }
 
 

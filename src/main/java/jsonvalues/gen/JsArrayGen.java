@@ -2,6 +2,7 @@ package jsonvalues.gen;
 
 import jsonvalues.JsArray;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
@@ -31,6 +32,7 @@ final class JsArrayGen implements JsGen<JsArray>
   @Override
   public Supplier<JsArray> apply(final Random random)
   {
+    Objects.requireNonNull(random);
     return () ->
     {
       JsArray array = JsArray.empty();

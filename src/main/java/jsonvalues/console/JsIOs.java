@@ -3,14 +3,14 @@ package jsonvalues.console;
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.MyDslJson;
 import jsonvalues.*;
-import jsonvalues.future.JsFuture;
+import jsonvalues.future.JsFutures;
 import jsonvalues.spec.JsSpec;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
-import java.util.function.Function;
-import java.util.function.Supplier;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,12 +19,13 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 public class JsIOs
 {
 
-  public static JsIO<JsValue> read(JsSpec spec)
+  public static JsIO<JsValue> read(final JsSpec spec)
   {
+    Objects.requireNonNull(spec);
     return path ->
     {
-      final CompletableFuture<JsValue> retry = retry(() -> completedFuture(readLine())
-                                                       .thenApply(s ->
+      final CompletableFuture<JsValue> retry = JsFutures.retry(() -> completedFuture(readLine())
+                                                        .thenApply(s ->
                                                                   {
                                                                     final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
                                                                     try
@@ -44,11 +45,13 @@ public class JsIOs
                                                                       {
                                                                         final String message = it.getCause() != null ? it.getCause()
                                                                                                                          .getMessage() : it.getMessage();
-                                                                        System.out.println("Uppsss: "+message);
+
+                                                                        System.out.println(toWhiteSpaces(indentationSize(path))+"Uppsss: "+message);
+                                                                        JsIOs.printIndentedPath().accept(path);
                                                                        throw new RuntimeException(it);
                                                                       }),
-                                                     1);
-      return ()->retry;
+                                                               1);
+      return () -> retry;
     };
   }
 
@@ -60,26 +63,26 @@ public class JsIOs
     return in.nextLine();
   }
 
-  static String indent(JsPath path)
+  private static int indentationSize(final JsPath path){
+    return (int) Math.pow(2, path.size());
+  }
+
+  private static String toWhiteSpaces(final int numberSpaces)
   {
-    return IntStream.range(0,
-                           (int) Math.pow(2,
-                                          path.size()
-                                         )
-                          )
+    return IntStream.range(0, numberSpaces)
                     .mapToObj(i -> " ")
                     .collect(Collectors.joining());
   }
-  public static <R> CompletableFuture<R> retry(Supplier<CompletableFuture<R>> supplier, int maxRetries) {
-    CompletableFuture<R> f = supplier.get();
-    for(int i=0; i<maxRetries; i++) {
-      f=f.thenApply(CompletableFuture::completedFuture)
-         .exceptionally(t -> {
-           System.out.println("Try again:");
-           return supplier.get();
-         })
-         .thenCompose(Function.identity());
-    }
-    return f;
+
+
+
+  static Consumer<JsPath> printIndentedPath()
+  {
+    return path -> System.out.print(toWhiteSpaces(indentationSize(path))+ path + " -> ");
+  }
+
+  static Consumer<JsPath> printlnIndentedPath()
+  {
+    return path -> System.out.println(toWhiteSpaces(indentationSize(path))+ path + " -> ");
   }
 }

@@ -42,7 +42,9 @@ public final class MatchExp
                                                       final Function<? super JsValue, T> ifNotBoolean
                                                      )
     {
-        return e -> e.isBool() ? requireNonNull(ifBoolean).apply(e.toJsBool().value) : requireNonNull(ifNotBoolean).apply(e);
+        return e -> e.isBool() ?
+          requireNonNull(ifBoolean).apply(e.toJsBool().value) :
+          requireNonNull(ifNotBoolean).apply(e);
     }
 
     /**
