@@ -1,8 +1,6 @@
 package jsonvalues.gen;
-
 import jsonvalues.JsValue;
 import jsonvalues.gen.state.JsStateGen;
-
 import java.util.Objects;
 import java.util.Random;
 import java.util.function.Function;
@@ -15,6 +13,10 @@ import static jsonvalues.JsNull.NULL;
 public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 {
 
+  /**
+   returns a new generator that generates the same elements as this generator and NULL
+   @return a new generator
+   */
   default JsGen<?> nullable(){
     return this.flatMap(value -> JsGens.oneOf(value,
                                               NULL
@@ -22,6 +24,12 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
                        );
   }
 
+  /**
+   returns a new generator that generates the same elements as this generator and NOTHING.
+   Inserting NOTHING in a json removes the element. Comes in handy to generate Json objects with
+   different keys.
+   @return a new generator
+   */
   default JsGen<?> optional()
   {
 
@@ -32,6 +40,12 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   }
 
+  /**
+   Returns this generator but with the values transformed by the given map function
+   @param f map function
+   @param <T> type of the generated value
+   @return a new generator
+   */
   default <T extends JsValue> JsGen<T> map(final Function<R, T> f)
   {
     requireNonNull(f);
@@ -40,22 +54,49 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
                                   );
   }
 
+  /**
+   Return a supplier of realized values from this generator
+   @return a supplier of values
+   */
   default Supplier<R> sample()
   {
     return apply(new Random());
   }
 
+  /**
+   Return a supplier of realized values from this generator and the given seed
+   @return a supplier of values
+   */
   default Supplier<R> sample(final Random random)
   {
     return apply(requireNonNull(random));
   }
 
+  /**
+   Creates a generator that generates values from this generator that satisfy the given predicate.
+   Care is needed to ensure there is a high chance this generator will satisfy
+   the predicate. By default, `suchThat` will try 100 times to generate a value that
+   satisfies the predicate. If no value passes this predicate after this number
+   of iterations, a runtime exception will be thrown.
+   @param predicate the predicate satisfied by every generated value
+   @return a generator
+   */
   default JsGen<R> suchThat(final Predicate<R> predicate)
   {
     return suchThat(requireNonNull(predicate),
                     100);
   }
 
+  /**
+   Creates a generator that generates values from this generator that satisfy the given predicate.
+   Care is needed to ensure there is a high chance this generator will satisfy
+   the predicate. By default, `suchThat` will try specified number of times to generate a value that
+   satisfies the predicate. If no value passes this predicate after this number
+   of iterations, a runtime exception will be thrown.
+   @param predicate the predicate satisfied by every generated value
+   @param  tries the number of tries
+   @return a generator
+   */
   default JsGen<R> suchThat(final Predicate<R> predicate,
                             final int tries
                            )
@@ -77,6 +118,13 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
     };
   }
 
+   /**
+   Creates a new state generator that passes the result of this generator into the given function
+   `f`. `f` should return a new state generator. This allows you to create new state generators that
+    depend on the value of other generators.
+   @param f the function that returns state generators
+   @return a generator
+   */
   default JsStateGen stateMap(final Function<R, JsStateGen> f)
   {
     Objects.requireNonNull(f);
@@ -88,6 +136,15 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
                                  .get();
   }
 
+
+  /**
+   Creates a new generator that passes the result of this generator into the given function
+   `f`. `f` should return a new generator. This allows you to create new
+   generators that depend on the value of other generators
+   @param f the function
+   @param <T> the type of the generated values
+   @return a generator
+   */
   default <T extends JsValue> JsGen<T> flatMap(final Function<R, JsGen<T>> f)
   {
     Objects.requireNonNull(f);

@@ -15,9 +15,6 @@ public class TestJsConsole
   public static void main(String[] args) throws ExecutionException, InterruptedException
   {
 
-    System.out.println();
-    System.out.print("\n");
-
     JsObjIO obj = JsObjIO.of("a",
                              read(str),
                              "b",

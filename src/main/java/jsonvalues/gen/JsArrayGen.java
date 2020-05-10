@@ -8,6 +8,9 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ represent a generator of Json arrays.
+ */
 final class JsArrayGen implements JsGen<JsArray>
 {
 

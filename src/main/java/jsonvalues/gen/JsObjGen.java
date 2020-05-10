@@ -9,6 +9,9 @@ import java.util.Random;
 import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
+/**
+ represent a generator of Json objects.
+ */
 public class JsObjGen implements JsGen<JsObj>
 {
 
