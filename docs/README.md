@@ -107,7 +107,34 @@ JsObjGen gen = JsObjGen.of("name", JsGens.alphabetic,
                                                   )
                            );
 
-// defining a json spec
+// defining a future
+
+CompletableFuture<JsValue> nameFuture;
+CompletableFuture<JsValue> ageFuture;
+CompletableFuture<JsValue> languagesFuture;
+CompletableFuture<JsValue> handleFuture;
+CompletableFuture<JsValue> professionFuture;
+CompletableFuture<JsValue> addressFuture;
+CompletableFuture<JsValue> longitudeFuture;
+CompletableFuture<JsValue> latitudeFuture;
+CompletableFuture<JsValue> countryFuture;
+    
+JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
+                                    "age", () -> ageFuture,
+                                    "languages", () -> languagesFuture,
+                                    "github", () -> handleFuture,
+                                    "profession", () -> professionFuture,
+                                    "address", () -> addressFuture,
+                                    "location", JsArrayFuture.of(() -> latitudeFuture, 
+                                                                 () -> longitudeFuture
+                                                                ),
+                                    "country", () -> countryFuture
+                                    );
+
+CompletableFuture<JsObj> comFuture = objFut.get();
+
+
+// defining a json spec. strict means: keys different than the specified are not allowed
 
 JsObjSpec spec = JsObjSpec.strict("name", JsSpecs.str,
                                   "age", JsSpecs.integer(n-> n>15 && n<100),
@@ -121,6 +148,7 @@ JsObjSpec spec = JsObjSpec.strict("name", JsSpecs.str,
                                                                "country",JsSpecs.str
                                                                )
                                   );
+
 
 // if the object doesn't conform the spec, the errors and their locations are returned in a set
 
@@ -158,11 +186,9 @@ public void testProperty(JsGen<JsObj> gen,
 }
 
 
-
-
 ```
 
-As you can see, creating specs and generators is as simple as creating raw JSON. Writing specs and
+As you can see, creating specs, futures and generators is as simple as creating raw JSON. Writing specs and
 generators for our tests is child's play. It has enormous advantages for development, such as:
 
 * Increase productivity.
