@@ -1,11 +1,14 @@
 # JSON-VALUES
-## v8.0.0-RC1  ( Sun May 03 2020 14:30:56 GMT+0200 (Central European Summer Time) )
+## v8.0.0-RC2  ( Sun May 10 2020 21:02:13 GMT+0200 (Central European Summer Time) )
+
 
 ## Features
-  - 🎸 generators
-  - 🎸 spec
-  - 🎸 parser from specs
-  - 🎸 getXXX methods return primitive types and getOptXXX return Optional 
+  - 🎸 jsfuture and jsconsole 
+  - 🎸 jsspec jsgen jsfuture constructors of 15 bindings
+  - 🎸 more generators 
+   
+## Documentation
+  - ✏️ javadoc improved 
  
 
 

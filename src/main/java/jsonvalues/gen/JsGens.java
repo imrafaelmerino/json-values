@@ -317,7 +317,7 @@ public class JsGens
                    .get());
         tries += 1;
         if (tries >= maxTries)
-          throw new RuntimeException(String.format("Couldn't generate array of %s distinct elements  after %s tries",
+          throw new RuntimeException(String.format("Couldn't generate array of %s distinct elements after %s tries",
                                                    size,
                                                    maxTries
                                                   ));

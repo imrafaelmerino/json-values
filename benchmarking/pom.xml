@@ -9,7 +9,7 @@
     <properties>
         <ECLIPSE-COLLECTIONS.VERSION>10.0.0</ECLIPSE-COLLECTIONS.VERSION>
         <VAVR.VERSION>1.0.0-alpha-3</VAVR.VERSION>
-        <JSON-VALUES.VERSION>8.0.0-RC1</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>8.0.0-RC2</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <JMH-VERSION>1.21</JMH-VERSION>
         <JUNIT-VERSION>5.5.2</JUNIT-VERSION>
