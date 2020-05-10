@@ -12,7 +12,10 @@ import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.*;
 
-
+/**
+ Represents a specification of every element of a Json array. It allows to define
+ tuples and the schema of every of its elements.
+ */
 public class JsTupleSpec implements JsArraySpec
 
 {

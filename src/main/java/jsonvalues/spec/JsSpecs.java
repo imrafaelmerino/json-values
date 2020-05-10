@@ -30,15 +30,22 @@ public class JsSpecs
 
 
   /**
-   Spec that is conforms by any value of a Json
+   spec that is conformed by any value
    */
   public static JsSpec any = new AnySpec(true);
 
-
+  /**
+   non-nullable string
+   */
   public static JsSpec str = new JsStrSpec(true,
                                            false
   );
 
+  /**
+   non-nullable string that satisfies the given predicate
+   @param  predicate the predicate
+   @return a JsSpec
+   */
   public static JsSpec str(final Predicate<String> predicate)
   {
     return new JsStrSuchThatSpec(true,
@@ -54,10 +61,18 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable number
+   */
   public static JsSpec number = new JsNumberSpec(true,
                                                  false
   );
 
+  /**
+   non-nullable number that satisfies the given predicate
+   @param predicate the predicate
+   @return a JsSpec
+   */
   public static JsSpec number(final Predicate<JsNumber> predicate)
   {
     return new JsNumberSuchThatSpec(true,
@@ -72,87 +87,131 @@ public class JsSpecs
     );
   }
 
-
+  /**
+   non-nullable boolean
+   */
   public static JsSpec bool = new JsBooleanSpec(true,
                                                 false
   );
 
 
+  /**
+   non-nullable decimal number
+   */
   public static JsSpec decimal = new JsDecimalSpec(true,
                                                    false
   );
 
-
+  /**
+   non-nullable integral number
+   */
   public static JsSpec integral = new JsIntegralSpec(true,
                                                      false
   );
-
+  /**
+   non-nullable long number
+   */
   public static JsSpec longInteger = new JsLongSpec(true,
                                                     false
   );
-
+  /**
+   non-nullable integer number
+   */
   public static JsSpec integer = new JsIntSpec(true,
                                                false
   );
 
+  /**
+   true constant spec
+   */
   public static JsSpec TRUE = new JsTrueConstantSpec(true,
                                                      false
   );
 
+  /**
+   false constant spec
+   */
   public static JsSpec FALSE = new JsFalseConstantSpec(true,
                                                        false
   );
 
+  /**
+   non-nullable json object spec
+   */
   public static JsSpec obj = new IsJsObjSpec(true,
                                              false
   );
 
-
+  /**
+   non-nullable array spec
+   */
   public static JsArraySpec array = new JsArrayOfValueSpec(true,
                                                            false
   );
 
-
+  /**
+   non-nullable array of long numbers spec
+   */
   public static JsArraySpec arrayOfLong = new JsArrayOfLongSpec(true,
                                                                 false
   );
 
-
+  /**
+   non-nullable array of integer numbers spec
+   */
   public static JsArraySpec arrayOfInt = new JsArrayOfIntSpec(true,
                                                               false
   );
 
-
+  /**
+   non-nullable array of strings spec
+   */
   public static JsArraySpec arrayOfStr = new JsArrayOfStrSpec(true,
                                                               false
   );
 
-
+  /**
+   non-nullable array of booleans spec
+   */
   public static JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(true,
                                                                 false
   );
 
-
+  /**
+   non-nullable array of decimal numbers spec
+   */
   public static JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(true,
                                                                   false
   );
 
-
+  /**
+   non-nullable array of numbers spec
+   */
   public static JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(true,
                                                                     false
   );
 
 
+  /**
+   non-nullable array of integral numbers spec
+   */
   public static JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(true,
                                                                         false
   );
 
 
+  /**
+   non-nullable array of objects spec
+   */
   public static JsArraySpec arrayOfObj = new JsArrayOfObjSpec(true,
                                                               false
   );
 
-
+  /**
+   non-nullable array of numbers that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfIntSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfIntSuchThatSpec(s ->
@@ -169,6 +228,12 @@ public class JsSpecs
   }
 
 
+  /**
+   non-nullable array of decimal numbers, where each element of the array satisfies
+   the given predicate
+   @param predicate the predicate each decimal number of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfDec(final Predicate<BigDecimal> predicate)
   {
 
@@ -184,6 +249,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of decimal numbers that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfDecSuchThat(final Predicate<JsArray> predicate
                                               )
   {
@@ -199,6 +269,12 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of integral numbers, where each element of the array satisfies
+   the given predicate
+   @param predicate the predicate each integral number of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfIntegral(final Predicate<BigInteger> predicate
                                            )
   {
@@ -214,7 +290,11 @@ public class JsSpecs
     );
   }
 
-
+  /**
+   non-nullable array of integral numbers that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfIntegralSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfIntegralSuchThatSpec(s ->
@@ -230,6 +310,12 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of numbers, where each element of the array satisfies
+   the given predicate
+   @param predicate the predicate each number of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfNumber(final Predicate<JsNumber> predicate)
   {
     return new JsArrayOfTestedNumberSpec(s ->
@@ -245,8 +331,12 @@ public class JsSpecs
     );
   }
 
-  public static JsArraySpec arrayOfNumberSuchThat(final Predicate<JsArray> predicate
-                                                 )
+  /**
+   non-nullable array of numbers that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
+  public static JsArraySpec arrayOfNumberSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfNumberSuchThatSpec(s ->
                                            {
@@ -261,6 +351,12 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of objects, where each element of the array satisfies
+   the given predicate
+   @param predicate the predicate each object of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfObj(final Predicate<JsObj> predicate
                                       )
   {
@@ -278,6 +374,11 @@ public class JsSpecs
 
   }
 
+  /**
+   non-nullable array of objects that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfObjSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfObjSuchThatSpec(s ->
@@ -295,9 +396,12 @@ public class JsSpecs
   }
 
 
-  public static JsSpec integer(
-    final IntPredicate predicate
-                              )
+  /**
+   non-nullable integer number that satisfies the given predicate
+   @param predicate the predicate the integer is tested on
+   @return a spec
+   */
+  public static JsSpec integer(final IntPredicate predicate)
   {
     return new JsIntSuchThatSpec(true,
                                  false,
@@ -312,8 +416,12 @@ public class JsSpecs
     );
   }
 
-  public static JsArraySpec arrayOfStrSuchThat(final Predicate<JsArray> predicate
-                                              )
+  /**
+   non-nullable array of strings that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
+  public static JsArraySpec arrayOfStrSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfStrSuchThatSpec(s ->
                                         {
@@ -327,6 +435,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array, where each element of the array satisfies the given predicate
+   @param predicate the predicate each value of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec array(final Predicate<JsValue> predicate)
   {
     return new JsArrayOfTestedValueSpec(s ->
@@ -342,8 +455,12 @@ public class JsSpecs
   }
 
 
-  public static JsArraySpec arrayOfLong(final LongPredicate predicate
-                                       )
+  /**
+   non-nullable array of long numbers, where each element of the array satisfies the given predicate
+   @param predicate the predicate each long number of the array is tested on
+   @return an array spec
+   */
+  public static JsArraySpec arrayOfLong(final LongPredicate predicate)
   {
     return new JsArrayOfTestedLongSpec(s ->
                                        {
@@ -358,6 +475,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of booleans that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfBoolSuchThat(final Predicate<JsArray> predicate
                                                )
   {
@@ -374,9 +496,12 @@ public class JsSpecs
     );
   }
 
-  public static JsSpec longInteger(
-    final LongPredicate predicate
-                                  )
+  /**
+   non-nullable long number that satisfies the given predicate
+   @param predicate the predicate the long is tested on
+   @return a spec
+   */
+  public static JsSpec longInteger(final LongPredicate predicate)
   {
     return new JsLongSuchThatSpec(true,
                                   false,
@@ -391,9 +516,12 @@ public class JsSpecs
     );
   }
 
-  public static JsSpec decimal(
-    final Predicate<BigDecimal> predicate
-                              )
+  /**
+   non-nullable decimal number that satisfies the given predicate
+   @param predicate the predicate the decimal is tested on
+   @return a spec
+   */
+  public static JsSpec decimal(final Predicate<BigDecimal> predicate)
   {
     return new JsDecimalSuchThatSpec(true,
                                      false,
@@ -408,10 +536,12 @@ public class JsSpecs
     );
   }
 
-
-  public static JsSpec integral(
-    final Predicate<BigInteger> predicate
-                               )
+  /**
+   non-nullable integral number that satisfies the given predicate
+   @param predicate the predicate the integral number is tested on
+   @return a spec
+   */
+  public static JsSpec integral(final Predicate<BigInteger> predicate)
   {
     return new JsIntegralSuchThatSpec(true,
                                       false,
@@ -426,8 +556,12 @@ public class JsSpecs
     );
   }
 
-  public static JsArraySpec arrayOfStr(final Predicate<String> predicate
-                                      )
+  /**
+   non-nullable array of strings, where each element of the array satisfies the given predicate
+   @param predicate the predicate each string of the array is tested on
+   @return an array spec
+   */
+  public static JsArraySpec arrayOfStr(final Predicate<String> predicate)
   {
 
     return new JsArrayOfTestedStrSpec(s ->
@@ -449,8 +583,7 @@ public class JsSpecs
    * @param predicate the predicate
    * @return a spec
    */
-  public static JsSpec any(final Predicate<JsValue> predicate
-                          )
+  public static JsSpec any(final Predicate<JsValue> predicate)
   {
     return new AnySuchThatSpec(true,
                                v ->
@@ -464,6 +597,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable json object that satisfies the given predicate
+   @param predicate the predicate the json object is tested on
+   @return a spec
+   */
   public static JsSpec obj(final Predicate<JsObj> predicate)
   {
     return new JsObjSuchThatSpec(true,
@@ -479,6 +617,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array of long numbers that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfLongSuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArrayOfLongSuchThatSpec(s ->
@@ -494,6 +637,11 @@ public class JsSpecs
     );
   }
 
+  /**
+   non-nullable array that satisfies the given predicate
+   @param predicate the predicate the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arraySuchThat(final Predicate<JsArray> predicate)
   {
     return new JsArraySuchThatSpec(s ->
@@ -510,6 +658,11 @@ public class JsSpecs
 
   }
 
+  /**
+   non-nullable array of integer numbers, where each element of the array satisfies the given predicate
+   @param predicate the predicate each integer number of the array is tested on
+   @return an array spec
+   */
   public static JsArraySpec arrayOfInt(final IntPredicate predicate)
   {
     return new JsArrayOfTestedIntSpec(s ->
@@ -526,12 +679,19 @@ public class JsSpecs
 
   }
 
+  /**
+   returns a tuple spec. Each nth-element of the tuple is specified by the nth given spec
+   @param spec the spec of the first element
+   @param others the rest of specs
+   @return a spec
+   */
   public static JsTupleSpec tuple(JsSpec spec,
                                   JsSpec... others
                                  )
   {
     return JsTupleSpec.of(spec,
-                          others);
+                          others
+                         );
   }
 
 }

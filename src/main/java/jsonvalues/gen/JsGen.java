@@ -65,6 +65,7 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>>
 
   /**
    Return a supplier of realized values from this generator and the given seed
+   @param random the seed of the generator
    @return a supplier of values
    */
   default Supplier<R> sample(final Random random)

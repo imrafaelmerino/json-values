@@ -13,7 +13,9 @@ import java.util.*;
 
 import static jsonvalues.spec.ERROR_CODE.*;
 
-
+/**
+ Represents a specification of a Json object
+ */
 public class JsObjSpec implements JsSpec
 {
 
