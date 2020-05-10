@@ -74,6 +74,7 @@ public class JsGens
   /**
    Generates an alphabetic string of the given length
    @param length the length of the generated string
+   @return  a generator
    */
   public static JsGen<JsStr> str(final int length)
   {
