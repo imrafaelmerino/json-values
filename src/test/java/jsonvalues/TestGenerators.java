@@ -334,6 +334,21 @@ public class TestGenerators
     }
   }
 
+  @Test
+  public void testDigits(){
+
+    final JsGen<JsArray> array = JsGens.array(digit,
+                                              10);
+
+    test(array,it-> it.toJsArray().size()==10 ,100);
+
+    test(array,value->JsSpecs.arrayOfStr(it->it.length()==1)
+                             .test(value.toJsArray()).isEmpty(),
+         100);
+
+
+  }
+
   public static void test(JsStateGen gen,
                           Predicate<JsValue> condition,
                           int times
@@ -347,6 +362,7 @@ public class TestGenerators
       Assertions.assertTrue(condition.test(value));
     }
   }
+
 
 
 }
