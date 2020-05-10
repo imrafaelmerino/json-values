@@ -1,10 +1,11 @@
 package jsonvalues.future;
 
 import io.vavr.Tuple2;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.Map;
 import jsonvalues.JsObj;
 
-import java.util.HashMap;
-import java.util.Map;
+
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
@@ -16,26 +17,29 @@ import static java.util.Objects.requireNonNull;
  recursive structure as a json object. Each key has a completable future associated that it's
  executed asynchronously. When all the futures are completed, all the results are combined into
  a json object:
+ {@code
 
  JsObjFuture(a-> CompletableFuture(1),
-             b-> CompletableFuture("a"),
-             c-> CompletableFuture(true)
-            ) =
+ b-> CompletableFuture("a"),
+ c-> CompletableFuture(true)
+ ) =
 
  CompletableFuture(JsObj(a->1,
-                         b->"a",
-                         c->true
-                         )
-                  )
+ b->"a",
+ c->true
+ )
+ )
+
+ }
+
 
 
  */
 public class JsObjFuture implements JsFuture<JsObj>
 {
 
-  private Map<String, JsFuture<?>> bindings = new HashMap<>();
+  private Map<String, JsFuture<?>> bindings = HashMap.empty();
   private Executor executor = ForkJoinPool.commonPool();
-
 
 
   /**
@@ -45,10 +49,12 @@ public class JsObjFuture implements JsFuture<JsObj>
    to iterate the pairs (key,future), trigger every future and compose the result of every completed
    future to the final json object that will be returned.
    @param executor the executor
+   @return the same this JsObjFuture
    */
-  public void executor(final Executor executor)
+  public JsObjFuture executor(final Executor executor)
   {
     this.executor = requireNonNull(executor);
+    return this;
 
   }
 
@@ -56,9 +62,9 @@ public class JsObjFuture implements JsFuture<JsObj>
                       final JsFuture<?> fut
                      )
   {
-    bindings.put(key,
-                 fut
-                );
+    bindings = bindings.put(key,
+                            fut
+                           );
 
   }
 
@@ -72,7 +78,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     this(key,
          fut
         );
-    bindings.put(key1,
+    bindings = bindings.put(key1,
                  fut1
                 );
   }
@@ -90,7 +96,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key1,
          fut1
         );
-    bindings.put(key2,
+    bindings = bindings.put(key2,
                  fut2
                 );
   }
@@ -112,7 +118,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key2,
          fut2
         );
-    bindings.put(key3,
+    bindings = bindings.put(key3,
                  fut3
                 );
   }
@@ -138,7 +144,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key3,
          fut3
         );
-    bindings.put(key4,
+    bindings =bindings.put(key4,
                  fut4
                 );
   }
@@ -168,7 +174,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key4,
          fut4
         );
-    bindings.put(key5,
+    bindings =bindings.put(key5,
                  fut5
                 );
   }
@@ -202,7 +208,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key5,
          fut5
         );
-    bindings.put(key6,
+    bindings =bindings.put(key6,
                  fut6
                 );
   }
@@ -241,7 +247,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key6,
          fut6
         );
-    bindings.put(key7,
+    bindings =bindings.put(key7,
                  fut7
                 );
   }
@@ -283,7 +289,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key7,
          fut7
         );
-    bindings.put(key8,
+    bindings = bindings.put(key8,
                  fut8
                 );
   }
@@ -329,7 +335,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key8,
          fut8
         );
-    bindings.put(key9,
+    bindings =bindings.put(key9,
                  fut9
                 );
   }
@@ -379,7 +385,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key9,
          fut9
         );
-    bindings.put(key10,
+    bindings =bindings.put(key10,
                  fut10
                 );
   }
@@ -433,7 +439,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key10,
          fut10
         );
-    bindings.put(key11,
+    bindings =bindings.put(key11,
                  fut11
                 );
   }
@@ -491,7 +497,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key11,
          fut11
         );
-    bindings.put(key12,
+    bindings = bindings.put(key12,
                  fut12
                 );
   }
@@ -553,7 +559,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key12,
          fut12
         );
-    bindings.put(key13,
+    bindings =bindings.put(key13,
                  fut13
                 );
   }
@@ -619,7 +625,7 @@ public class JsObjFuture implements JsFuture<JsObj>
          key13,
          fut13
         );
-    bindings.put(key14,
+    bindings = bindings.put(key14,
                  fut14
                 );
   }
@@ -641,16 +647,17 @@ public class JsObjFuture implements JsFuture<JsObj>
 
     CompletableFuture<JsObj> result = CompletableFuture.completedFuture(JsObj.empty());
 
-    for (Map.Entry<String, JsFuture<?>> entry : bindings.entrySet())
+    for (final Tuple2<String, JsFuture<?>> tuple : bindings.iterator())
     {
-      result = result.thenCombineAsync(entry.getValue()
+      result = result.thenCombineAsync(tuple._2
                                             .get(),
-                                       (obj, value) -> obj.put(entry.getKey(),
+                                       (obj, value) -> obj.put(tuple._1,
                                                                value
                                                               ),
                                        executor
                                       );
     }
+
 
     return result;
   }
@@ -690,6 +697,7 @@ public class JsObjFuture implements JsFuture<JsObj>
                            requireNonNull(fut2)
     );
   }
+
   /**
    static factory method to create a JsObjFuture of three mappings
    @param key1 the first key
@@ -749,6 +757,7 @@ public class JsObjFuture implements JsFuture<JsObj>
                            requireNonNull(fut4)
     );
   }
+
   /**
    static factory method to create a JsObjFuture of five mappings
    @param key1 the first key
@@ -1322,6 +1331,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     );
 
   }
+
   /**
    static factory method to create a JsObjFuture of fourteen mappings
    @param key1 the first key
@@ -1517,6 +1527,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     );
 
   }
+
   /**
    returns a new object future inserting the given future at the given key
    @param key the given key
@@ -1527,10 +1538,10 @@ public class JsObjFuture implements JsFuture<JsObj>
                          final JsFuture<?> future
                         )
   {
-    bindings.put(requireNonNull(key),
-                 requireNonNull(future)
-                );
-    return new JsObjFuture(bindings);
+    final Map<String, JsFuture<?>> a = bindings.put(requireNonNull(key),
+                                                      requireNonNull(future)
+                                                     );
+    return new JsObjFuture(a);
   }
 
   /**
@@ -1539,7 +1550,7 @@ public class JsObjFuture implements JsFuture<JsObj>
    */
   public static JsObjFuture empty()
   {
-    return new JsObjFuture(new HashMap<>());
+    return new JsObjFuture(HashMap.empty());
   }
 
   /**

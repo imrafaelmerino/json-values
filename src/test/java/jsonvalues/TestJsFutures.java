@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import io.vavr.Tuple2;
 import jsonvalues.console.JsArrayIO;
 import jsonvalues.future.JsFuture;
 import jsonvalues.future.JsObjFuture;
@@ -103,118 +104,640 @@ public class TestJsFutures
 
   }
 
-  private static CompletableFuture<JsValue> readNullFromConsole(final String text)
-  {
-    return readValue(text,
-                     s ->
-                     {
-                       if ("null".equalsIgnoreCase(s)) return JsNull.NULL;
-                       throw new RuntimeException("null expected");
-                     });
-  }
+@Test
+public void testPut() throws ExecutionException, InterruptedException
+{
 
-  private static CompletableFuture<JsValue> readBooleanFromConsole(final String text)
-  {
-    return readValue(text,
-                     s -> JsBool.of(Boolean.parseBoolean(s)));
-  }
+  final JsFuture<JsValue> a = () -> completedFuture(JsStr.of("a"));
+  final JsObjFuture futA = JsObjFuture.empty()
+                                      .put("a",
+                                           a
+                                          );
 
-  private static CompletableFuture<JsValue> readDoubleFromConsole(final String text)
-  {
-    return readValue(text,
-                     s -> JsDouble.of(Double.parseDouble(s)));
-  }
+  final JsObjFuture futB = JsObjFuture.of("a",
+                                        a).executor(Executors.newSingleThreadExecutor());
 
-  private static CompletableFuture<JsValue> readLongFromConsole(final String text)
-  {
-    return readValue(text,
-                     s -> JsLong.of(Long.parseLong(s)));
-  }
 
-  private static CompletableFuture<JsValue> readIntFromConsole(final String text)
-  {
-    return readValue(text,
-                     s -> JsInt.of(Integer.parseInt(s)));
-  }
+  final JsObjFuture futC = JsObjFuture.of(new Tuple2<>("a",a));
 
-  private static CompletableFuture<JsValue> readStrFromConsole(final String text)
-  {
-    return readValue(text,
-                     JsStr::of);
-  }
+  Assertions.assertEquals(futA.get().get(), futB.get().get());
+  Assertions.assertEquals(futA.get().get(), futC.get().get());
+}
 
-  static <T extends JsValue> CompletableFuture<T> readValue(String text,
-                                                            Function<String, T> fn
-                                                           )
+  @Test
+  public void testAppend() throws ExecutionException, InterruptedException
   {
 
-    return completedFuture(readFromConsole(text,
-                                           fn
-                                          ));
+    final JsFuture<JsValue> a = () -> completedFuture(JsStr.of("a"));
+    final JsArrayFuture futA = JsArrayFuture.empty()
+                                        .append(
+                                             a
+                                            );
 
+    final JsArrayFuture futB = JsArrayFuture.of(a).executor(Executors.newSingleThreadExecutor());
+
+
+
+    Assertions.assertEquals(futA.get().get(), futB.get().get());
   }
 
-  private static <T extends JsValue> T readFromConsole(final String text,
-                                                       Function<String, T> fn
+  @Test
+  public void testJsObjFuturesConstructors() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                     one,
+                                     "b",
+                                     one,
+                                     "c",
+                                     one
+                                    )
+                                 .get()
+                                 .get(),JsObj.of("a",JsInt.of(1),
+                                                 "b",JsInt.of(1),
+                                                 "c",JsInt.of(1)
+                                                )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors4() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           one,
+                                           "c",
+                                           one,
+                                           "d",
+                                           one
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(1),
+                                                       "c",JsInt.of(1),
+                                                       "d",JsInt.of(1)
                                                       )
-  {
-    Scanner in = new Scanner(System.in);
-
-    System.out.println(text);
-
-    String s = in.nextLine();
-
-    return fn.apply(s);
+                           );
   }
 
-
-  public static void main(String[] args) throws ExecutionException, InterruptedException
+  @Test
+  public void testJsObjFuturesConstructors5() throws ExecutionException, InterruptedException
   {
-    /*JsObjFuture future = JsObjFuture.of("a",
-                                        ()->readStrFromConsole("a value: "),
-                                        "b",
-                                        ()-> readStrFromConsole("a value: ")
-                                       );
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
 
-    System.out.println(future.get()
-                             .get());*/
-
-/*    JsObjIO obj = JsObjIO.of("a",
-                                       readStr,
-                                       "b",
-                                       JsObjIO.of("c",readInt,"d",readBool) );
-
-    System.out.println(obj.get().get());*/
-
-
-    System.out.println("---------JSON-VALUES---------");
-    System.out.print("\n");
-
-    JsObjIO obj = JsObjIO.of("a",
-                             JsIOs.read(str),
-                             "b",
-                             JsObjIO.of("c",
-                                        JsIOs.read(integer),
-                                        "d",
-                                        JsIOs.read(bool),
-                                        "e",
-                                        JsObjIO.of("f",
-                                                   JsIOs.read(arrayOfInt)
-                                                  )
-                                       ),
-                             "g",
-                             JsArrayIO.of(JsIOs.read(integer),JsIOs.read(str))
-                            );
-
-    final JsObj x = obj.exec();
-    System.out.print("\n");
-    System.out.println("And the result is:");
-    System.out.print("\n");
-    System.out.println(x);
-
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5)
+                                                      )
+                           );
   }
 
+  @Test
+  public void testJsObjFuturesConstructors6() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
 
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6)
+                                                       )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors7() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7)
+                                                      )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors8() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8)
+                                                      )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors9() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9)
+                                                      )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors10() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+    final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine,
+                                           "j",
+                                           ten
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9),
+                                                       "j",JsInt.of(10)
+                                                      )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors11() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+    final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+    final JsFuture<JsValue> eleven = () -> completedFuture(JsInt.of(11));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine,
+                                           "j",
+                                           ten,
+                                           "k",
+                                           eleven
+
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9),
+                                                       "j",JsInt.of(10),
+                                                       "k",JsInt.of(11)
+
+                                                       )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors12() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+    final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+    final JsFuture<JsValue> eleven = () -> completedFuture(JsInt.of(11));
+    final JsFuture<JsValue> twelve = () -> completedFuture(JsInt.of(12));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine,
+                                           "j",
+                                           ten,
+                                           "k",
+                                           eleven,
+                                           "l",
+                                           twelve
+
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9),
+                                                       "j",JsInt.of(10),
+                                                       "k",JsInt.of(11),
+                                                       "l",JsInt.of(12)
+
+                                                      )
+                           );
+  }
+
+  @Test
+  public void testJsObjFuturesConstructors13() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+    final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+    final JsFuture<JsValue> eleven = () -> completedFuture(JsInt.of(11));
+    final JsFuture<JsValue> twelve = () -> completedFuture(JsInt.of(12));
+    final JsFuture<JsValue> thirteen = () -> completedFuture(JsInt.of(13));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine,
+                                           "j",
+                                           ten,
+                                           "k",
+                                           eleven,
+                                           "l",
+                                           twelve,
+                                           "m",
+                                           thirteen
+
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9),
+                                                       "j",JsInt.of(10),
+                                                       "k",JsInt.of(11),
+                                                       "l",JsInt.of(12),
+                                                       "m",JsInt.of(13)
+                                                      )
+                           );
+  }
+
+  @Test
+public void testJsObjFuturesConstructors14() throws ExecutionException, InterruptedException
+{
+  final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+  final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+  final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+  final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+  final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+  final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+  final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+  final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+  final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+  final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+  final JsFuture<JsValue> eleven = () -> completedFuture(JsInt.of(11));
+  final JsFuture<JsValue> twelve = () -> completedFuture(JsInt.of(12));
+  final JsFuture<JsValue> thirteen = () -> completedFuture(JsInt.of(13));
+  final JsFuture<JsValue> fourteen = () -> completedFuture(JsInt.of(14));
+
+  Assertions.assertEquals(JsObjFuture.of("a",
+                                         one,
+                                         "b",
+                                         two,
+                                         "c",
+                                         three,
+                                         "d",
+                                         four,
+                                         "e",
+                                         five,
+                                         "f",
+                                         six,
+                                         "g",
+                                         seven,
+                                         "h",
+                                         eight,
+                                         "i",
+                                         nine,
+                                         "j",
+                                         ten,
+                                         "k",
+                                         eleven,
+                                         "l",
+                                         twelve,
+                                         "m",
+                                         thirteen,
+                                         "n",
+                                         fourteen
+
+                                        )
+                                     .get()
+                                     .get(),JsObj.of("a",JsInt.of(1),
+                                                     "b",JsInt.of(2),
+                                                     "c",JsInt.of(3),
+                                                     "d",JsInt.of(4),
+                                                     "e",JsInt.of(5),
+                                                     "f",JsInt.of(6),
+                                                     "g",JsInt.of(7),
+                                                     "h",JsInt.of(8),
+                                                     "i",JsInt.of(9),
+                                                     "j",JsInt.of(10),
+                                                     "k",JsInt.of(11),
+                                                     "l",JsInt.of(12),
+                                                     "m",JsInt.of(13),
+                                                     "n",JsInt.of(14)
+                                                    )
+                         );
+}
+
+  @Test
+  public void testJsObjFuturesConstructors15() throws ExecutionException, InterruptedException
+  {
+    final JsFuture<JsValue> one = () -> completedFuture(JsInt.of(1));
+    final JsFuture<JsValue> two = () -> completedFuture(JsInt.of(2));
+    final JsFuture<JsValue> three = () -> completedFuture(JsInt.of(3));
+    final JsFuture<JsValue> four = () -> completedFuture(JsInt.of(4));
+    final JsFuture<JsValue> five = () -> completedFuture(JsInt.of(5));
+    final JsFuture<JsValue> six = () -> completedFuture(JsInt.of(6));
+    final JsFuture<JsValue> seven = () -> completedFuture(JsInt.of(7));
+    final JsFuture<JsValue> eight = () -> completedFuture(JsInt.of(8));
+    final JsFuture<JsValue> nine = () -> completedFuture(JsInt.of(9));
+    final JsFuture<JsValue> ten = () -> completedFuture(JsInt.of(10));
+    final JsFuture<JsValue> eleven = () -> completedFuture(JsInt.of(11));
+    final JsFuture<JsValue> twelve = () -> completedFuture(JsInt.of(12));
+    final JsFuture<JsValue> thirteen = () -> completedFuture(JsInt.of(13));
+    final JsFuture<JsValue> fourteen = () -> completedFuture(JsInt.of(14));
+    final JsFuture<JsValue> fifteen = () -> completedFuture(JsInt.of(15));
+
+    Assertions.assertEquals(JsObjFuture.of("a",
+                                           one,
+                                           "b",
+                                           two,
+                                           "c",
+                                           three,
+                                           "d",
+                                           four,
+                                           "e",
+                                           five,
+                                           "f",
+                                           six,
+                                           "g",
+                                           seven,
+                                           "h",
+                                           eight,
+                                           "i",
+                                           nine,
+                                           "j",
+                                           ten,
+                                           "k",
+                                           eleven,
+                                           "l",
+                                           twelve,
+                                           "m",
+                                           thirteen,
+                                           "n",
+                                           fourteen,
+                                           "o",
+                                           fifteen
+
+                                          )
+                                       .get()
+                                       .get(),JsObj.of("a",JsInt.of(1),
+                                                       "b",JsInt.of(2),
+                                                       "c",JsInt.of(3),
+                                                       "d",JsInt.of(4),
+                                                       "e",JsInt.of(5),
+                                                       "f",JsInt.of(6),
+                                                       "g",JsInt.of(7),
+                                                       "h",JsInt.of(8),
+                                                       "i",JsInt.of(9),
+                                                       "j",JsInt.of(10),
+                                                       "k",JsInt.of(11),
+                                                       "l",JsInt.of(12),
+                                                       "m",JsInt.of(13),
+                                                       "n",JsInt.of(14),
+                                                       "o",JsInt.of(15)
+                                                      )
+                           );
+  }
   private ThreadFactory getThreadFactory(final String s)
   {
     return r ->

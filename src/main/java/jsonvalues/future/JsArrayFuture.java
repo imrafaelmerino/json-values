@@ -1,9 +1,10 @@
 package jsonvalues.future;
 
+import io.vavr.collection.List;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
-import java.util.*;
+import java.util.Arrays;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executor;
 import java.util.concurrent.ForkJoinPool;
@@ -17,18 +18,19 @@ import static java.util.Objects.requireNonNull;
  executed asynchronously. When all the futures are completed, all the results are combined into
  a json array.
 
-  JsArrayFuture(CompletableFuture(1),
-                CompletableFuture("a"),
-                CompletableFuture(true)
-               ) =
+ {@code
+
+ JsArrayFuture(CompletableFuture(1),CompletableFuture("a"),CompletableFuture(true)) =
 
  CompletableFuture(JsArray(1,"a",true))
+
+ }
 
   */
 
 public class JsArrayFuture implements JsFuture<JsArray>
 {
-  private List<JsFuture<?>> array = new ArrayList<>();
+  private List<JsFuture<?>> array = List.empty();
   private Executor executor = ForkJoinPool.commonPool();
 
   private JsArrayFuture() { }
@@ -40,10 +42,12 @@ public class JsArrayFuture implements JsFuture<JsArray>
    to iterate the array of futures, trigger every future and append the result of every completed
    future to the final array that will be returned.
    @param executor the executor
+   @return the same this JsArrayFuture
    */
-  public void executor(final Executor executor)
+  public JsArrayFuture executor(final Executor executor)
   {
     this.executor = requireNonNull(executor);
+    return this;
 
   }
 
@@ -51,8 +55,7 @@ public class JsArrayFuture implements JsFuture<JsArray>
                         final JsFuture<?>... others
                        )
   {
-    array.add(fut);
-    array.addAll(Arrays.asList(others));
+    array = array.append(fut).appendAll(Arrays.asList(others));
   }
 
   /**
@@ -94,5 +97,12 @@ public class JsArrayFuture implements JsFuture<JsArray>
   public static JsArrayFuture empty()
   {
     return new JsArrayFuture();
+  }
+
+  public JsArrayFuture append(final JsFuture<?> future){
+
+    final JsArrayFuture arrayFuture = new JsArrayFuture();
+    arrayFuture.array = arrayFuture.array.append(future);
+    return arrayFuture;
   }
 }

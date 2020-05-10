@@ -223,7 +223,11 @@ public class JsGens
    its likelihood divided by the sum of all likelihoods. Shrinks toward
    choosing an earlier generator, as well as shrinking the value generated
    by the chosen generator.
+   @param freq a frequency pair
+   @param others the rests of pairs
+   @return  a json generator
    */
+  @SafeVarargs
   public static JsGen<?> frequency(final Tuple2<Integer, JsGen<?>> freq,
                                    final Tuple2<Integer, JsGen<?>>... others
                                   )

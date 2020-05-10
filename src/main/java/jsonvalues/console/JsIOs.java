@@ -11,6 +11,7 @@ import java.util.Objects;
 import java.util.Scanner;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -24,34 +25,36 @@ public class JsIOs
     Objects.requireNonNull(spec);
     return path ->
     {
-      final CompletableFuture<JsValue> retry = JsFutures.retry(() -> completedFuture(readLine())
-                                                        .thenApply(s ->
-                                                                  {
-                                                                    final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
-                                                                    try
-                                                                    {
-                                                                      reader.getNextToken();
-                                                                      return spec.parser()
-                                                                                 .parse(reader);
-                                                                    }
-                                                                    catch (IOException e)
-                                                                    {
-                                                                      throw new RuntimeException(e);
-                                                                    }
+      final Supplier<CompletableFuture<JsValue>> retry = JsFutures.retry(() -> completedFuture(readLine())
+                                                                           .thenApply(s ->
+                                                                                      {
+                                                                                        final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
+                                                                                        try
+                                                                                        {
+                                                                                          reader.getNextToken();
+                                                                                          return spec.parser()
+                                                                                                     .parse(reader);
+                                                                                        }
+                                                                                        catch (IOException e)
+                                                                                        {
+                                                                                          throw new RuntimeException(e);
+                                                                                        }
 
-                                                                  }
-                                                                 )
-                                                       .exceptionally(it ->
-                                                                      {
-                                                                        final String message = it.getCause() != null ? it.getCause()
-                                                                                                                         .getMessage() : it.getMessage();
+                                                                                      }
+                                                                                     )
+                                                                           .exceptionally(it ->
+                                                                                          {
+                                                                                            final String message = it.getCause() != null ? it.getCause()
+                                                                                                                                             .getMessage() : it.getMessage();
 
-                                                                        System.out.println(toWhiteSpaces(indentationSize(path))+"Uppsss: "+message);
-                                                                        JsIOs.printIndentedPath().accept(path);
-                                                                       throw new RuntimeException(it);
-                                                                      }),
-                                                               1);
-      return () -> retry;
+                                                                                            System.out.println(toWhiteSpaces(indentationSize(path)) + "Uppsss: " + message);
+                                                                                            JsIOs.printIndentedPath()
+                                                                                                 .accept(path);
+                                                                                            throw new RuntimeException(it);
+                                                                                          }),
+                                                                         1
+                                                                        );
+      return retry::get;
     };
   }
 

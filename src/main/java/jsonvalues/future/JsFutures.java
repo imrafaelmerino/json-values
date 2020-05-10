@@ -14,15 +14,20 @@ public class JsFutures
    @param <R> the type of the value returned when the future is completed
    @return a new CompletableFuture wrapped in a supplier
    */
-  public static <R> CompletableFuture<R> retry(final Supplier<CompletableFuture<R>> supplier, final int maxRetries) {
+
+  //TODO retornar supplier
+  public static <R> Supplier<CompletableFuture<R>> retry(final Supplier<CompletableFuture<R>> supplier, final int maxRetries) {
     Objects.requireNonNull(supplier);
     if(maxRetries<1) throw new IllegalArgumentException("maxRetries must be greater than 0");
-    CompletableFuture<R> f = supplier.get();
-    for(int i=0; i<maxRetries; i++) {
-      f=f.thenApply(CompletableFuture::completedFuture)
-         .exceptionally(t -> supplier.get())
-         .thenCompose(Function.identity());
-    }
-    return f;
+    return ()->{
+      CompletableFuture<R> f = supplier.get();
+      for (int i = 0; i < maxRetries; i++)
+      {
+        f = f.thenApply(CompletableFuture::completedFuture)
+             .exceptionally(t -> supplier.get())
+             .thenCompose(Function.identity());
+      }
+      return f;
+    };
   }
 }

@@ -5,11 +5,8 @@ import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
-
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
-
 import static java.util.Objects.requireNonNull;
 
 public class JsObjGen implements JsGen<JsObj>
@@ -1361,4 +1358,5 @@ public class JsObjGen implements JsGen<JsObj>
                    );
     return gen;
   }
+
 }
