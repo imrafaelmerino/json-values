@@ -109,17 +109,14 @@ JsObjGen gen = JsObjGen.of("name", JsGens.alphabetic,
 
 // defining a future
 
-CompletableFuture<JsValue> nameFuture;
-CompletableFuture<JsValue> ageFuture;
-CompletableFuture<JsValue> languagesFuture;
-CompletableFuture<JsValue> handleFuture;
-CompletableFuture<JsValue> professionFuture;
-CompletableFuture<JsValue> addressFuture;
-CompletableFuture<JsValue> longitudeFuture;
-CompletableFuture<JsValue> latitudeFuture;
-CompletableFuture<JsValue> countryFuture;
+// imagine you've implemented some futures to get the data
 
-// this is a funcional effect, an immutable data structure that describes a side effect    
+CompletableFuture<JsValue> nameFuture, ageFuture, languagesFuture, handleFuture, countryFuture;
+CompletableFuture<JsValue> professionFuture, addressFuture,longitudeFuture,latitudeFuture;
+
+// this is a funcional effect, an immutable data structure that describes the necessary side effects
+// in order to compose a JsObj
+  
 JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
                                     "age", () -> ageFuture,
                                     "languages", () -> languagesFuture,
@@ -132,7 +129,7 @@ JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
                                     "country", () -> countryFuture
                                     );
 
-//it triggers the side effects: all the futures start to execute
+//it triggers the side effects: all the futures start executing
 CompletableFuture<JsObj> comFut = objFut.get();
 
 
