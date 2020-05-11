@@ -561,8 +561,8 @@ public class TestJson
                                                              )
                                             );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -586,8 +586,8 @@ public class TestJson
                                           () -> JsInt.of(1)
                                          );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -618,8 +618,8 @@ public class TestJson
                                           "b"
                                          );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -650,8 +650,8 @@ public class TestJson
                                           2
                                          );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -681,8 +681,8 @@ public class TestJson
                                           2L
                                          );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -712,8 +712,8 @@ public class TestJson
                                    2.5
                                   );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -744,8 +744,8 @@ public class TestJson
                                           false
                                          );
 
-    Assertions.assertEquals(Optional.empty(),
-                            b.getOptArray(path)
+    Assertions.assertNull(
+                            b.getArray(path)
                            );
 
   }
@@ -822,26 +822,26 @@ public class TestJson
     Assertions.assertNull(a.getObj(JsPath.path("/b")));
     Assertions.assertNull(a.getArray(JsPath.path("/b")));
 
-    Assertions.assertEquals(OptionalInt.empty(),
-                            a.getOptInt(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getInt(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(OptionalLong.empty(),
-                            a.getOptLong(JsPath.path("/b"))
+    Assertions.assertEquals(null,
+                            a.getLong(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(Optional.empty(),
-                            a.getOptBigDec(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getBigDec(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(Optional.empty(),
-                            a.getOptBigInt(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getBigInt(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(Optional.empty(),
-                            a.getOptBool(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getBool(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(Optional.empty(),
-                            a.getOptObj(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getObj(JsPath.path("/b"))
                            );
-    Assertions.assertEquals(Optional.empty(),
-                            a.getOptArray(JsPath.path("/b"))
+    Assertions.assertNull(
+                            a.getArray(JsPath.path("/b"))
                            );
 
   }

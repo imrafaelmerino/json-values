@@ -32,20 +32,19 @@ public class TestJsObj
         Assertions.assertTrue(empty.isEmpty());
 
         Assertions.assertEquals(JsArray.of("hi"),
-                                obj.getOptArray(path("/a/b"))
-                                   .get()
+                                obj.getArray(path("/a/b"))
                                );
 
         final JsObj obj1 = obj.append(path("/a/b"),
                                       JsStr.of("bye")
                                      );
 
-        Assertions.assertEquals(Optional.of("bye"),
-                                obj1.getOptStr(path("/a/b/-1"))
+        Assertions.assertEquals("bye",
+                                obj1.getStr(path("/a/b/-1"))
                                );
 
-        Assertions.assertEquals(Optional.of("hi"),
-                                obj1.getOptStr(path("/a/b/0"))
+        Assertions.assertEquals("hi",
+                                obj1.getStr(path("/a/b/0"))
                                );
     }
 
@@ -59,8 +58,7 @@ public class TestJsObj
                                    1
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
-        Assertions.assertEquals(OptionalInt.of(1),
-                                obj1.getOptInt(JsPath.fromKey("a"))
+        Assertions.assertTrue(obj1.getInt(JsPath.fromKey("a")).equals(1)
                                );
     }
 
@@ -187,8 +185,8 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        Assertions.assertEquals(OptionalInt.of(6),
-                                obj.getOptInt(path("/d/0/1"))
+        Assertions.assertTrue(
+                                obj.getInt(path("/d/0/1")).equals(6)
                                );
 
 
@@ -1039,11 +1037,11 @@ public class TestJsObj
                                   JsBigDec.of(BigDecimal.valueOf(0.1d))
                                  );
 
-        Assertions.assertEquals(OptionalDouble.of(0.1d),
-                                a.getOptDouble(fromKey("a"))
+        Assertions.assertTrue(
+                                a.getDouble(fromKey("a")).equals(0.1d)
                                );
-        Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.1d)),
-                                a.getOptBigDec(fromKey("a"))
+        Assertions.assertTrue(
+                                a.getBigDec(fromKey("a")).equals(BigDecimal.valueOf(0.1d))
                                );
     }
 

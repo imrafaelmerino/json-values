@@ -6,6 +6,7 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
+import jsonvalues.optics.Prisms;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
@@ -329,17 +330,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return get(JsPath.fromKey(Objects.requireNonNull(key)));
   }
 
-  /**
-   Returns the array located at the given key or {@link Optional#empty()} if it doesn't exist or
-   it's not an array.
-   @param key the key
-   @return the JsArray located at the given key wrapped in an Optional
 
-   */
-  public Optional<JsArray> getOptArray(final String key)
-  {
-    return getOptArray(JsPath.fromKey(key));
-  }
 
   /**
    Returns the array located at the given key or null if it doesn't exist or it's not an array.
@@ -348,19 +339,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsArray getArray(final String key)
   {
-    return getOptArray(key).orElse(null);
+    return  Prisms.array.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the number located at the given key as a big decimal or {@link Optional#empty()} if it doesn't
-   exist or it's not a decimal number.
-   @param key the key
-   @return the BigDecimal located at the given key wrapped in an Optional
-   */
-  public Optional<BigDecimal> getOptBigDec(final String key)
-  {
-    return getOptBigDec(JsPath.fromKey(key));
-  }
 
   /**
    Returns the number located at the given key as a big decimal or null if it doesn't exist or it's
@@ -370,20 +352,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigDecimal getBigDec(final String key)
   {
-    return getOptBigDec(key).orElse(null);
+    return  Prisms.decimalNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
 
   }
 
-  /**
-   Returns the big integer located at the given key as a big integer or {@link Optional#empty()} if it doesn't
-   exist or it's not an integral number.
-   @param key the key
-   @return the BigInteger located at the given key wrapped in an Optional
-   */
-  public Optional<BigInteger> getOptBigInt(final String key)
-  {
-    return getOptBigInt(JsPath.fromKey(key));
-  }
+
 
   /**
    Returns the big integer located at the given key as a big integer or null if it doesn't
@@ -393,18 +367,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigInteger getBigInt(final String key)
   {
-    return getOptBigInt(key).orElse(null);
+    return  Prisms.bigIntNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the boolean located at the given key or {@link Optional#empty()} if it doesn't exist.
-   @param key the key
-   @return the Boolean located at the given key wrapped in an Optional
-   */
-  public Optional<Boolean> getOptBool(final String key)
-  {
-    return getOptBool(JsPath.fromKey(key));
-  }
+
 
   /**
    Returns the boolean located at the given key or null if it doesn't exist.
@@ -413,21 +380,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Boolean getBool(final String key)
   {
-    return getOptBool(key).orElse(null);
+    return  Prisms.bool.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the number located at the given key as a double or {@link OptionalDouble#empty()} if it
-   doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
-   to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
-   the precision of the BigDecimal
-   @param key the key
-   @return the decimal number located at the given key wrapped in an OptionalDouble
-   */
-  public OptionalDouble getOptDouble(final String key)
-  {
-    return getOptDouble(JsPath.fromKey(key));
-  }
+
 
   /**
    Returns the number located at the given key as a double or null if it
@@ -439,20 +396,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Double getDouble(final String key)
   {
-    final OptionalDouble optDouble = getOptDouble(key);
-    return optDouble.isPresent() ? optDouble.getAsDouble() : null;
+    return  Prisms.doubleNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the integral number located at the given key as an integer or {@link OptionalInt#empty()} if it
-   doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
-   @param key the key
-   @return the integral number located at the given key wrapped in an OptionalInt
-   */
-  public OptionalInt getOptInt(final String key)
-  {
-    return getOptInt(JsPath.fromKey(key));
-  }
+
 
   /**
    Returns the integral number located at the given key as an integer or null if it
@@ -462,20 +410,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Integer getInt(final String key)
   {
-    final OptionalInt optInt = getOptInt(key);
-    return optInt.isPresent() ? optInt.getAsInt() : null;
+    return  Prisms.intNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the integral number located at the given key as a long or {@link OptionalLong#empty()} if it
-   doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
-   @param key the key
-   @return the integral number located at the given key wrapped in an OptionalLong
-   */
-  public OptionalLong getOptLong(final String key)
-  {
-    return getOptLong(JsPath.fromKey(key));
-  }
 
   /**
    Returns the integral number located at the given key as a long or null if it
@@ -485,20 +423,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Long getLong(final String key)
   {
-    final OptionalLong optLong = getOptLong(key);
-    return optLong.isPresent() ? optLong.getAsLong() : null;
+    return  Prisms.longNum.getOptional.apply(get(Objects.requireNonNull(key))).orElse(null);
+
   }
 
-  /**
-   Returns the json object located at the given key or {@link Optional#empty()} if it doesn't exist or it's
-   not an object.
-   @param key the key
-   @return the json object located at the given key wrapped in an Optional
-   */
-  public Optional<JsObj> getOptObj(final String key)
-  {
-    return getOptObj(JsPath.fromKey(key));
-  }
+
 
   /**
    Returns the json object located at the given key or null if it doesn't exist or it's not an object.
@@ -507,19 +436,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsObj getObj(final String key)
   {
-    return getOptObj(key).orElse(null);
+    return  Prisms.obj.getOptional.apply(get(key)).orElse(null);
+
   }
 
-  /**
-   Returns the string located at the given key or {@link Optional#empty()} if it doesn't exist or it's
-   not an string.
-   @param key the key
-   @return the string located at the given key wrapped in an Optional
-   */
-  public Optional<String> getOptStr(final String key)
-  {
-    return getOptStr(JsPath.fromKey(key));
-  }
 
   /**
    Returns the string located at the given key or null if it doesn't exist or it's not an string.
@@ -528,7 +448,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public String getStr(final String key)
   {
-    return getOptStr(key).orElse(null);
+   return  Prisms.str.getOptional.apply(get(key)).orElse(null);
   }
 
   /**

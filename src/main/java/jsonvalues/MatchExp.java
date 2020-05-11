@@ -47,52 +47,9 @@ public final class MatchExp
           requireNonNull(ifNotBoolean).apply(e);
     }
 
-    /**
-     return a matching expression to extract decimal numbers out of json elements.
-     @param ifDouble the function to be applied if this JsElem is a JsDouble
-     @param ifBigDecimal the function to be applied if this JsElem is a JsBigDec
-     @param ifOther the function to be applied if this JsElem is a not a decimal JsNumber
-     @param <T> the type of the object returned
-     @return a function that takes a JsElem and returns an object of type T
-     */
-    public static <T> Function<JsValue, T> ifDecimalElse(final DoubleFunction<T> ifDouble,
-                                                         final Function<BigDecimal, T> ifBigDecimal,
-                                                         final Function<? super JsValue, T> ifOther
-                                                        )
-    {
-        return elem ->
-        {
-            if (elem.isBigDec()) return requireNonNull(ifBigDecimal).apply(elem.toJsBigDec().value);
-            if (elem.isDouble()) return requireNonNull(ifDouble).apply(elem.toJsDouble().value);
-            return requireNonNull(ifOther).apply(elem);
-        };
 
-    }
 
-    /**
-     return a matching expression to extract integral numbers out of json elements.
-     @param ifInt function to be applied if the JsElem is a JsInt
-     @param ifLong function to be applied if the JsElem is a JsLong
-     @param ifBigInt function to be applied if the JsElem is a JsBigInt
-     @param ifOther function to be applied if the JsElem is a not an integral number
-     @param <T> the type of the result
-     @return a function that takes a JsElem and returns an object of type T
-     */
-    public static <T> Function<JsValue, T> ifIntegralElse(final IntFunction<T> ifInt,
-                                                          final LongFunction<T> ifLong,
-                                                          final Function<BigInteger, T> ifBigInt,
-                                                          final Function<? super JsValue, T> ifOther
-                                                         )
-    {
-        return elem ->
-        {
-            if (elem.isLong()) return requireNonNull(ifLong).apply(elem.toJsLong().value);
-            if (elem.isInt()) return requireNonNull(ifInt).apply(elem.toJsInt().value);
-            if (elem.isBigInt()) return requireNonNull(ifBigInt).apply(elem.toJsBigInt().value);
-            return requireNonNull(ifOther).apply(elem);
-        };
 
-    }
 
     /**
      return a matching expression to extract objs and arrays out of json elements.
@@ -182,18 +139,6 @@ public final class MatchExp
         };
     }
 
-    /**
-     returns a matching expression to extract strings out of json elements.
-     @param ifStr the function to be applied if the JsElem is a JsStr
-     @param ifNotStr the function to be applied if the JsElem is not a JsStr
-     @param <T> the type of the result
-     @return a function that takes a JsElem and returns an object of type T
-     */
-    public static <T> Function<JsValue, T> ifStrElse(final Function<? super String, T> ifStr,
-                                                     final Function<? super JsValue, T> ifNotStr
-                                                    )
-    {
-        return elem -> elem.isStr() ? requireNonNull(ifStr).apply(elem.toJsStr().value) : requireNonNull(ifNotStr).apply(elem);
-    }
+
 
 }

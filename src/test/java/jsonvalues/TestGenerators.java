@@ -199,6 +199,7 @@ public class TestGenerators
   @Test
   public void test_constructors()
   {
+
     final JsGen<JsBool> boolGen = JsGens.oneOf(Arrays.asList(JsBool.TRUE,
                                                              JsBool.FALSE
                                                             ));
@@ -345,6 +346,8 @@ public class TestGenerators
     test(array,value->JsSpecs.arrayOfStr(it->it.length()==1)
                              .test(value.toJsArray()).isEmpty(),
          100);
+
+
 
 
   }
