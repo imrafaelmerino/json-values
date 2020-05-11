@@ -118,7 +118,8 @@ CompletableFuture<JsValue> addressFuture;
 CompletableFuture<JsValue> longitudeFuture;
 CompletableFuture<JsValue> latitudeFuture;
 CompletableFuture<JsValue> countryFuture;
-    
+
+// this is a funcional effect, an immutable data structure that describes a side effect    
 JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
                                     "age", () -> ageFuture,
                                     "languages", () -> languagesFuture,
@@ -131,7 +132,8 @@ JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
                                     "country", () -> countryFuture
                                     );
 
-CompletableFuture<JsObj> comFuture = objFut.get();
+//it triggers the side effects: all the futures start to execute
+CompletableFuture<JsObj> comFut = objFut.get();
 
 
 // defining a json spec. strict means: keys different than the specified are not allowed
@@ -212,8 +214,6 @@ JsObjStateGen gen = JsObjStateGen.of("a", obj -> JsGens.alphabetic
                                                                                )
                                                                 )
                                      );`
-
-//Some examples
 
 {"b":3,"c":4}
 {"a":"okegwg"}
