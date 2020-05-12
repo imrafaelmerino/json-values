@@ -69,67 +69,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     return new JsArray(acc);
   }
 
-  public final JsArray append(final JsPath path,
-                              final JsValue elem
-                             )
-  {
-    if (requireNonNull(path).isEmpty()) return this;
-    Objects.requireNonNull(elem);
-    return path.head()
-               .match(key -> this,
-                      index ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
-                                                                                                       arr.append(elem)
-                                                                                                      )),
-                                                                         e -> new JsArray(nullPadding(index,
-                                                                                                      seq,
-                                                                                                      JsArray.EMPTY
-                                                                                                        .append(elem)
-                                                                                                     ))
-                                                                        )
-                                                              .apply(get(Index.of(index))),
-                                                () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
-                                                                                                       t
-                                                                                                      ),
-                                                                           () -> new JsArray(nullPadding(index,
-                                                                                                         seq,
-                                                                                                         tail.head()
-                                                                                                             .match(o -> JsObj.EMPTY
-                                                                                                                      .append(tail,
-                                                                                                                              elem
-                                                                                                                             ),
-                                                                                                                    a -> JsArray.EMPTY
-                                                                                                                      .append(tail,
-                                                                                                                              elem
-                                                                                                                             )
-                                                                                                                   )
-                                                                                                        )),
-                                                                           () -> new JsArray(seq.update(index,
-                                                                                                        seq.get(index)
-                                                                                                           .toJson()
-                                                                                                           .append(tail,
-                                                                                                                   elem
-                                                                                                                  )
-                                                                                                       ))
-                                                                          )
-
-
-                                               );
-                      }
-
-                     );
-
-  }
 
   /**
    Adds all the elements of the given array, starting from the head, to the back of this array.
    @param array the JsArray of elements to be added to the back
    @return a new JsArray
    */
-  public final JsArray appendAll(final JsArray array
-                                )
+  public final JsArray appendAll(final JsArray array)
   {
     return appendAllBackTrampoline(this,
                                    requireNonNull(array)
@@ -138,62 +84,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
   }
 
-  @SuppressWarnings("Duplicates")
-
-  public final JsArray appendAll(final JsPath path,
-                                 final JsArray elems
-
-                                )
-  {
-
-    Objects.requireNonNull(elems);
-    return requireNonNull(path).head()
-                               .match(key -> this,
-                                      index ->
-                                      {
-                                        final JsPath tail = path.tail();
-                                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
-                                                                                                                       arr.appendAll(elems)
-                                                                                                                      )),
-                                                                                         e -> new JsArray(nullPadding(index,
-                                                                                                                      seq,
-                                                                                                                      JsArray.EMPTY
-                                                                                                                        .appendAll(elems)
-                                                                                                                     ))
-                                                                                        )
-                                                                              .apply(get(Index.of(index))),
-                                                                () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
-                                                                                                                       t
-                                                                                                                      ),
-                                                                                           () -> new JsArray(nullPadding(index,
-                                                                                                                         seq,
-                                                                                                                         tail.head()
-                                                                                                                             .match(o -> JsObj.EMPTY
-                                                                                                                                      .appendAll(tail,
-                                                                                                                                                 elems
-                                                                                                                                                ),
-                                                                                                                                    a -> JsArray.EMPTY
-                                                                                                                                      .appendAll(tail,
-                                                                                                                                                 elems
-                                                                                                                                                )
-                                                                                                                                   )
-                                                                                                                        )),
-                                                                                           () -> new JsArray(seq.update(index,
-                                                                                                                        seq.get(index)
-                                                                                                                           .toJson()
-                                                                                                                           .appendAll(tail,
-                                                                                                                                      elems
-                                                                                                                                     )
-                                                                                                                       ))
-                                                                                          )
-
-
-                                                               );
-                                      }
-
-                                     );
-
-  }
 
   private Trampoline<JsArray> appendAllBackTrampoline(final JsArray arr1,
                                                       final JsArray arr2
@@ -399,9 +289,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     return seq.head();
   }
 
-  public <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                       final BiFunction<JsValue, JsArray, Trampoline<T>> fn
-                                      )
+  <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
+                                final BiFunction<JsValue, JsArray, Trampoline<T>> fn
+                               )
   {
     if (this.isEmpty()) return empty;
     final JsValue head = this.head();
@@ -633,13 +523,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                            final JsPair... others
                           )
   {
-    JsArray arr = JsArray.EMPTY.put(pair.path,
+    JsArray arr = JsArray.EMPTY.set(pair.path,
                                     pair.value
                                    );
     for (JsPair p : others)
     {
 
-      arr = arr.put(p.path,
+      arr = arr.set(p.path,
                     p.value
                    );
     }
@@ -1099,70 +989,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     return new JsArray(acc.prepend(requireNonNull(e)));
   }
 
-  @SuppressWarnings("Duplicates")
-
-  public final JsArray prepend(final JsPath path,
-                               final JsValue elem
-                              )
-  {
-    Objects.requireNonNull(elem);
-    if (requireNonNull(path).isEmpty()) return this;
-    return path.head()
-               .match(key -> this,
-                      index ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
-                                                                                                       arr.prepend(elem)
-                                                                                                      )),
-                                                                         e -> new JsArray(nullPadding(index,
-                                                                                                      seq,
-                                                                                                      JsArray.EMPTY
-                                                                                                        .prepend(elem)
-                                                                                                     ))
-                                                                        )
-                                                              .apply(get(Index.of(index))),
-                                                () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
-                                                                                                       t
-                                                                                                      ),
-                                                                           () -> new JsArray(nullPadding(index,
-                                                                                                         seq,
-                                                                                                         tail.head()
-                                                                                                             .match(o -> JsObj.EMPTY
-                                                                                                                      .prepend(tail,
-                                                                                                                               elem
-                                                                                                                              ),
-                                                                                                                    a -> JsArray.EMPTY
-                                                                                                                      .prepend(tail,
-                                                                                                                               elem
-                                                                                                                              )
-                                                                                                                   )
-
-                                                                                                        )),
-                                                                           () -> new JsArray(seq.update(index,
-                                                                                                        seq.get(index)
-                                                                                                           .toJson()
-                                                                                                           .prepend(tail,
-                                                                                                                    elem
-                                                                                                                   )
-                                                                                                       ))
-                                                                          )
-
-
-                                               );
-                      }
-
-                     );
-
-  }
 
   /**
    Adds all the elements of the array, starting from the last, to the front of this array.
    @param array the JsArray of elements to be added to the front
    @return a new JsArray
    */
-  public final JsArray prependAll(final JsArray array
-                                 )
+  public final JsArray prependAll(final JsArray array)
   {
     return appendAllFrontTrampoline(this,
                                     requireNonNull(array)
@@ -1170,68 +1003,12 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
   }
 
-  @SuppressWarnings("Duplicates")
-
-  public final JsArray prependAll(final JsPath path,
-                                  final JsArray elems
-                                 )
-  {
-    Objects.requireNonNull(elems);
-    return requireNonNull(path).head()
-                               .match(key -> this,
-                                      index ->
-                                      {
-                                        final JsPath tail = path.tail();
-                                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsArray(seq.update(index,
-                                                                                                                       arr.prependAll(elems)
-                                                                                                                      )),
-                                                                                         e -> new JsArray(nullPadding(index,
-                                                                                                                      seq,
-                                                                                                                      JsArray.EMPTY
-                                                                                                                        .prependAll(elems)
-                                                                                                                     ))
-                                                                                        )
-                                                                              .apply(get(Index.of(index))),
-                                                                () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
-                                                                                                                       t
-                                                                                                                      ),
-                                                                                           () -> new JsArray(nullPadding(index,
-                                                                                                                         seq,
-                                                                                                                         tail.head()
-                                                                                                                             .match(o -> JsObj.EMPTY
-                                                                                                                                      .prependAll(tail,
-                                                                                                                                                  elems
-                                                                                                                                                 ),
-                                                                                                                                    a -> JsArray.EMPTY
-                                                                                                                                      .prependAll(tail,
-                                                                                                                                                  elems
-                                                                                                                                                 )
-                                                                                                                                   )
-
-                                                                                                                        )),
-                                                                                           () -> new JsArray(seq.update(index,
-                                                                                                                        seq.get(index)
-                                                                                                                           .toJson()
-                                                                                                                           .prependAll(tail,
-                                                                                                                                       elems
-                                                                                                                                      )
-                                                                                                                       ))
-                                                                                          )
-
-
-                                                               );
-                                      }
-
-                                     );
-
-  }
-
-  public final JsArray put(final JsPath path,
-                           final Function<? super JsValue, ? extends JsValue> fn
+  public final JsArray set(final JsPath path,
+                           final JsValue value
                           )
   {
 
-    requireNonNull(fn);
+    requireNonNull(value);
     if (requireNonNull(path).isEmpty()) return this;
     return path.head()
                .match(head -> this,
@@ -1245,7 +1022,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                                                     elem
                                                                                                    ))
                                                                    )
-                                                  .apply(fn.apply(get(path))),
+                                                  .apply(value),
                                                 () -> tail.ifPredicateElse(t -> putEmptyJson(seq).test(index,
                                                                                                        t
                                                                                                       ),
@@ -1253,12 +1030,12 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                            {
                                                                              final JsValue newElem = tail.head()
                                                                                                          .match(key -> JsObj.EMPTY
-                                                                                                                  .put(tail,
-                                                                                                                       fn
+                                                                                                                  .set(tail,
+                                                                                                                       value
                                                                                                                       ),
                                                                                                                 i -> JsArray.EMPTY
-                                                                                                                  .put(tail,
-                                                                                                                       fn
+                                                                                                                  .set(tail,
+                                                                                                                       value
                                                                                                                       )
                                                                                                                );
                                                                              return new JsArray(nullPadding(index,
@@ -1269,8 +1046,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                                                            () -> new JsArray(seq.update(index,
                                                                                                         seq.get(index)
                                                                                                            .toJson()
-                                                                                                           .put(tail,
-                                                                                                                fn
+                                                                                                           .set(tail,
+                                                                                                                value
                                                                                                                )
                                                                                                        ))
 
@@ -1329,9 +1106,14 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
   }
 
-  public final JsArray remove(final JsPath path)
+  public final JsArray delete(final int index)
   {
+    if (index < -1) throw new IllegalArgumentException("index must be >= -1");
+    return delete(JsPath.fromIndex(index));
+  }
 
+  public final JsArray delete(final JsPath path)
+  {
     if (requireNonNull(path).isEmpty()) return this;
     return path.head()
                .match(head -> this,
@@ -1342,7 +1124,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                         final JsPath tail = path.tail();
                         return tail.ifEmptyElse(() -> new JsArray(index == -1 ? seq.removeAt(maxIndex) : seq.removeAt(index)),
                                                 () -> ifJsonElse(json -> new JsArray(seq.update(index,
-                                                                                                json.remove(tail)
+                                                                                                json.delete(tail)
                                                                                                )),
                                                                  e -> this
                                                                 )

@@ -30,7 +30,7 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                                                                                                     predicate
                                                                                                                                                    )
                                                                                                                                          .map(headFiltered ->
-                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
+                                                                                                                                                       tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                                                       headFiltered
                                                                                                                                                                      )
                                                                                                                                                       )
@@ -39,7 +39,7 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                                                                                                     predicate
                                                                                                                                                    )
                                                                                                                                          .map(headFiltered ->
-                                                                                                                                                       tailResult.put(JsPath.fromKey(head._1),
+                                                                                                                                                       tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                                                       headFiltered
                                                                                                                                                                      )
                                                                                                                                                       )
@@ -48,7 +48,7 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                             headElem
                                                                            )
                                                                         .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
+                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                            headElem
                                                                                                                                           )
                                                                                                              ),
@@ -75,14 +75,14 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                     final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjElems(tail).filter(startingPath,
                                                                                                                                predicate
                                                                                                                               ));
-                                    return ifJsonElse(headElem -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
+                                    return ifJsonElse(headElem -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                         headElem
                                                                                                                        )),
                                                       headElem -> JsPair.of(headPath,
                                                                             headElem
                                                                            )
                                                                         .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.put(JsPath.fromKey(head._1),
+                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                            headElem
                                                                                                                                           )),
                                                                                 p -> tailCall

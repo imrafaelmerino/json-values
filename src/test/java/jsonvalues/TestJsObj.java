@@ -12,7 +12,6 @@ import java.util.function.Supplier;
 import static jsonvalues.JsArray.TYPE.*;
 import static jsonvalues.JsBool.FALSE;
 import static jsonvalues.JsBool.TRUE;
-import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.JsPath.fromKey;
 import static jsonvalues.JsPath.path;
@@ -20,33 +19,7 @@ import static jsonvalues.JsPath.path;
 public class TestJsObj
 {
 
-    @Test
-    public void test_append_immutable()
-    {
-        JsObj empty = JsObj.empty();
 
-        final JsObj obj = empty.append(path("/a/b"),
-                                       JsStr.of("hi")
-                                      );
-
-        Assertions.assertTrue(empty.isEmpty());
-
-        Assertions.assertEquals(JsArray.of("hi"),
-                                obj.getArray(path("/a/b"))
-                               );
-
-        final JsObj obj1 = obj.append(path("/a/b"),
-                                      JsStr.of("bye")
-                                     );
-
-        Assertions.assertEquals("bye",
-                                obj1.getStr(path("/a/b/-1"))
-                               );
-
-        Assertions.assertEquals("hi",
-                                obj1.getStr(path("/a/b/0"))
-                               );
-    }
 
     @Test
     public void test_creates_immutable_empty_object()
@@ -54,7 +27,7 @@ public class TestJsObj
         JsObj obj = JsObj.empty();
         Assertions.assertTrue(obj.isEmpty());
 
-        final JsObj obj1 = obj.put(JsPath.fromKey("a"),
+        final JsObj obj1 = obj.set(JsPath.fromKey("a"),
                                    1
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
@@ -206,7 +179,7 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.remove(JsPath.fromKey("a"));// obj is mutable
+        final JsObj obj1 = obj.delete(JsPath.fromKey("a"));// obj is mutable
         Assertions.assertEquals(3,
                                 obj.size()
                                );
@@ -228,7 +201,7 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.remove(JsPath.fromKey("b"));// obj is mutable
+        final JsObj obj1 = obj.delete(JsPath.fromKey("b"));// obj is mutable
         Assertions.assertEquals(2,
                                 obj.size()
                                );
@@ -592,7 +565,7 @@ public class TestJsObj
                             );
 
 
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.put(JsPath.fromKey("size"),
+        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
                                                                                     json.size()
                                                                                    );
         final JsObj newObj = obj.mapAllObjs((p, o) ->
@@ -816,58 +789,7 @@ public class TestJsObj
                                );
     }
 
-    @Test
-    public void test_operations()
-    {
 
-        JsObj obj = JsObj.of(JsPair.of(path("/a/b/c"),
-                                       JsInt.of(1)
-                                      ),
-                             JsPair.of(path("/a/b/d"),
-                                       JsInt.of(2)
-                                      )
-                            );
-
-        Assertions.assertEquals(obj.appendAll(JsPath.fromIndex(0),
-                                              JsArray.of(1,
-                                                         2
-                                                        )
-                                             ),
-                                obj
-                               );
-
-        Assertions.assertEquals(obj.prependAll(JsPath.fromIndex(0),
-                                               JsArray.of(1,
-                                                          2
-                                                         )
-                                              ),
-                                obj
-                               );
-        Assertions.assertEquals(NOTHING,
-                                obj.get(JsPath.fromIndex(0))
-                               );
-        Assertions.assertEquals(obj,
-                                obj.put(JsPath.fromIndex(0),
-                                        a -> NULL
-                                       )
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/0"))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(JsPath.fromIndex(0))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/b/c/d"))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/b/c/0"))
-                               );
-    }
 
     @Test
     public void test_parse_into_immutable() throws MalformedJson
@@ -904,136 +826,13 @@ public class TestJsObj
 
     }
 
-    @Test
-    public void test_prepend()
-    {
 
-        JsObj obj = JsObj.of("a",
-                             JsArray.of(TRUE),
-                             "b",
-                             JsArray.of(FALSE)
-                            );
-
-        final JsObj obj1 = obj.prepend(path("/a"),
-                                       TRUE
-                                      )
-                              .append(path("/a"),
-                                      FALSE
-                                     );
-        Assertions.assertEquals(JsArray.of(true,
-                                           true,
-                                           false
-                                          ),
-                                obj1.get(path("/a"))
-                               );
-
-        Assertions.assertEquals(3,
-                                obj1.size(path("/a"))
-                                    .getAsInt()
-                               );
-
-        final JsObj obj2 = obj.prepend(path("/a/b"),
-                                       JsStr.of("hi")
-                                      );
-        Assertions.assertEquals(JsArray.of("hi"),
-                                obj2.get(path("/a/b"))
-                               );
-
-
-        final JsObj obj3 = obj2.prepend(path("/a/b/3"),
-                                        JsStr.of("bye")
-                                       );
-        Assertions.assertEquals(JsArray.of("bye"),
-                                obj3
-                                .get(path("/a/b/3"))
-                               );
-
-        Assertions.assertEquals(JsStr.of("hi"),
-                                obj3.get(path("/a/b/0"))
-                               );
-        Assertions.assertEquals(NULL,
-                                obj3.get(path("/a/b/1"))
-                               );
-        Assertions.assertEquals(NULL,
-                                obj3.get(path("/a/b/2"))
-                               );
-
-        Assertions.assertEquals(JsArray.of(1),
-                                obj3.prepend(path("/a/b/3/1"),
-                                             JsInt.of(1)
-                                            )
-                                    .get(path("/a/b/3/1"))
-                               );
-
-
-    }
-
-    @Test
-    public void test_prepend_all_immutable()
-    {
-        JsObj empty = JsObj.empty();
-
-        final JsArray xs = JsArray.of(1,
-                                      2,
-                                      3
-                                     );
-        final JsObj obj = empty.prependAll(path("/a/b"),
-                                           xs
-                                          );
-
-        Assertions.assertTrue(empty.isEmpty());
-
-        Assertions.assertEquals(xs,
-                                obj.get(path("/a/b"))
-                               );
-
-        final JsObj obj1 = obj.prependAll(path("/a/b"),
-                                          xs
-                                         );
-
-        Assertions.assertEquals(xs.prependAll(xs),
-                                obj1.get(path("/a/b"))
-                               );
-
-
-        final JsObj obj2 = empty.prependAll(path("/c/2"),
-                                            xs
-                                           );
-
-
-        Assertions.assertEquals(JsNull.NULL,
-                                obj2.get(path("/c/0"))
-                               );
-
-        Assertions.assertEquals(JsNull.NULL,
-                                obj2.get(path("/c/1"))
-                               );
-
-        Assertions.assertEquals(xs,
-                                obj2.get(path("/c/2"))
-                               );
-
-        Assertions.assertEquals(xs,
-                                empty.prependAll(path("/d/2"),
-                                                 xs
-                                                )
-                                     .get(path("/d/2"))
-                               );
-
-        final JsObj obj3 = obj2.prepend(path("/c/1"),
-                                        JsInt.of(1)
-                                       );
-
-        Assertions.assertEquals(JsInt.of(1),
-                                obj3.get(path("/c/1/0"))
-                               );
-    }
 
     @Test
     public void test_put_and_get()
     {
         final JsObj empty = JsObj.empty();
-        final JsObj a = empty.put(JsPath.fromKey("a"),
+        final JsObj a = empty.set(JsPath.fromKey("a"),
                                   JsBigDec.of(BigDecimal.valueOf(0.1d))
                                  );
 
@@ -1046,96 +845,6 @@ public class TestJsObj
     }
 
 
-    @Test
-    public void testPutIfPresentDoesntInsertIfNotPresent(){
 
-      JsObj empty = JsObj.empty();
-
-
-      JsObj a = empty.putIfPresent("a",1);
-
-      Assertions.assertEquals(empty,a);
-
-      JsObj b = empty.putIfPresent("b","hi");
-
-      Assertions.assertEquals(empty,b);
-
-      JsObj c = empty.putIfPresent("c",true);
-
-      Assertions.assertEquals(empty,c);
-
-
-      JsObj d = empty.putIfPresent("d",JsObj.empty());
-
-      Assertions.assertEquals(empty,d);
-
-      JsObj e = empty.putIfPresent("e",JsArray.empty());
-
-      Assertions.assertEquals(empty,e);
-
-      JsObj f = empty.putIfPresent("f",1L);
-
-      Assertions.assertEquals(empty,f);
-
-      JsObj g = empty.putIfPresent("g",1.5);
-
-      Assertions.assertEquals(empty,g);
-
-      JsObj h = empty.putIfPresent("h",BigInteger.TEN);
-
-      Assertions.assertEquals(empty,h);
-
-      JsObj i = empty.putIfPresent("i",BigDecimal.TEN);
-
-      Assertions.assertEquals(empty,i);
-
-      JsObj j = empty.putIfPresent("i",1.5);
-
-      Assertions.assertEquals(empty,j);
-
-    }
-
-  @Test
-  public void testPutIfPresentInsertIfPresent(){
-
-    JsObj obj = JsObj.empty().put("a","hi");
-
-    JsObj a = obj.putIfPresent("a",1);
-
-    Assertions.assertTrue(a.getInt("a")==1);
-
-    JsObj b = obj.putIfPresent("a","hi");
-
-    Assertions.assertEquals(b.getStr("a"),"hi");
-
-    JsObj c =  obj.putIfPresent("a",true);
-
-    Assertions.assertEquals( c.getBool("a"),true);
-
-    JsObj d =  obj.putIfPresent("a",JsObj.empty());
-
-    Assertions.assertEquals( d.getObj("a"),JsObj.empty());
-
-    JsObj e =  obj.putIfPresent("a",JsArray.empty());
-
-    Assertions.assertEquals(e.getArray("a"),JsArray.empty());
-
-    JsObj f = obj.putIfPresent("a",1L);
-
-    Assertions.assertTrue(f.getLong("a")==1L);
-
-    JsObj g = obj.putIfPresent("a",1.5);
-
-    Assertions.assertTrue(g.getDouble("a")==1.5);
-
-    JsObj h = obj.putIfPresent("a",BigInteger.TEN);
-
-    Assertions.assertEquals(h.getBigInt("a"),BigInteger.TEN);
-
-    JsObj i = obj.putIfPresent("a",BigDecimal.TEN);
-
-    Assertions.assertEquals(i.getBigDec("a"),BigDecimal.TEN);
-
-  }
 
 }

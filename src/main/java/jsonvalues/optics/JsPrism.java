@@ -4,21 +4,21 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-public class Prism<T>
+public class JsPrism<T>
 {
 
   public final Function<JsValue, Optional<T>> getOptional;
   public final Function<T,JsValue> reverseGet;
 
-  public Prism(final Function<JsValue, Optional<T>> getOptional,
-               final Function<T, JsValue> reverseGet
-              )
+  public JsPrism(final Function<JsValue, Optional<T>> getOptional,
+                 final Function<T, JsValue> reverseGet
+                )
   {
     this.getOptional = getOptional;
     this.reverseGet = reverseGet;
   }
 
-  public final Function<JsValue,JsValue> getOrModify(Function<T,T> f){
+  public final Function<JsValue,JsValue> modify(Function<T,T> f){
    return v ->
    {
      final Optional<T> opt = getOptional.apply(v);
@@ -26,6 +26,17 @@ public class Prism<T>
      if(opt.isPresent())return reverseGet.apply(f.apply(opt.get()));
      else return v;
    };
+  }
+
+
+  public final Function<JsValue,Optional<JsValue>> modifyOptional(Function<T,T> f){
+    return v ->
+    {
+      final Optional<T> opt = getOptional.apply(v);
+
+      if(opt.isPresent())return Optional.of(reverseGet.apply(f.apply(opt.get())));
+      else return Optional.empty();
+    };
   }
 
   public final boolean isEmpty(JsValue value) {

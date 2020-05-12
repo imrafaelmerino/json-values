@@ -5,6 +5,7 @@ import java.util._
 import java.util.function.BiFunction
 
 import jsonvalues._
+import jsonvalues.optics.JsArrayLens
 import jsonvalues.specifications.BasePropSpec
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -31,7 +32,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
            { (path,
               str
              ) =>
-             JsArray.empty().put(path,
+             JsArray.empty().set(path,
                                  JsStr.of(str)
                                  ).getStr(path) == str
            }
@@ -49,7 +50,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
              )
            =>
 
-             val obj = JsArray.empty().put(path,
+             val obj = JsArray.empty().set(path,
                                            JsBool.of(bool)
                                            )
              obj.getBool(path) == bool
@@ -77,7 +78,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
               n
              )
            =>
-             val arr = JsArray.empty().put(path,
+             val arr = JsArray.empty().set(path,
                                            JsInt.of(n)
                                            )
              arr.getInt(path) == n
@@ -107,7 +108,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
            =>
 
 
-             val arr = JsArray.empty().put(path,
+             val arr = JsArray.empty().set(path,
                                            JsLong.of(n)
                                            )
 
@@ -138,7 +139,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
              )
            =>
 
-             val arr = JsArray.empty().put(path,
+             val arr = JsArray.empty().set(path,
                                            JsBigInt.of(n.bigInteger)
                                            )
              arr.getInt(path) == Try.apply(n.bigInteger.intValueExact()).getOrElse(null)
@@ -166,10 +167,12 @@ class PutGetMergeRemoveSpec extends BasePropSpec
             js.streamAll().allMatch(
                                    it =>
                                    {
-                                     val elemToNull: function.Function[_ >: JsValue, _ <: JsValue] = _ => JsNull.NULL
-                                     js.putIfPresent(it.path,
-                                                     elemToNull
-                                                     ).get(it.path).equals(JsNull.NULL)
+                                     JsArrayLens.path(it.path)
+                                       .setIfPresent
+                                       .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
+                                       .get(it.path)
+                                       .equals(JsNull.NULL)
+
                                    }
                                    )
 
@@ -184,9 +187,12 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { js =>
 
             js.streamAll().allMatch(
-                                   it => js.putIfAbsent(it.path,
-                                                        ScalaToJava.supplier(() => JsNull.NULL)
-                                                        ).get(it.path) == it.value
+                                   it =>
+                                     JsArrayLens.path(it.path)
+                                       .setIfPresent
+                                       .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
+                                       .get(it.path)
+                                       .equals(it.value)
                                    )
 
 
@@ -202,9 +208,12 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            JsArray.empty().putIfAbsent(path,
-                                        ScalaToJava.supplier(() => elem)
-                                        ).get(path) == elem
+            JsArrayLens.path(path)
+              .setIfPresent
+              .apply(JsArray.empty(),ScalaToJava.supplier.apply(()=>elem))
+              .get(path)
+              .equals(elem)
+
           }
           )
   }
@@ -219,9 +228,9 @@ class PutGetMergeRemoveSpec extends BasePropSpec
              elem
             ) =>
 
-            JsArray.empty().put(path,
+            JsArray.empty().set(path,
                                 elem
-                                ).remove(path).get(path) == JsNothing.NOTHING
+                                ).delete(path).get(path) == JsNothing.NOTHING
 
           }
           )
@@ -237,11 +246,11 @@ class PutGetMergeRemoveSpec extends BasePropSpec
               value
              ) =>
 
-             val json = JsArray.empty().put(path,
+             val json = JsArray.empty().set(path,
                                             JsBool.of(value)
                                             )
              (json.getBool(path) == value) &&
-             (json.remove(path).get(path) == JsNothing.NOTHING)
+             (json.delete(path).get(path) == JsNothing.NOTHING)
 
 
            }

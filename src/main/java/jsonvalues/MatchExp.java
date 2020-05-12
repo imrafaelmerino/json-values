@@ -1,9 +1,7 @@
 package jsonvalues;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.function.*;
 
+import java.util.function.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -14,41 +12,6 @@ public final class MatchExp
 {
 
     private MatchExp(){}
-
-
-    /**
-     return a matching expression to extract arrays out of json elements.
-     @param ifArr the function to be applied if this JsElem is a JsArray
-     @param ifNotArr the function to be applied if this JsElem is not a JsArray
-     @param <T> the type of the object returned
-     @return a function that takes a JsElem and returns an object of type T
-     */
-    public static <T> Function<JsValue, T> ifArrElse(final Function<? super JsArray, T> ifArr,
-                                                     final Function<? super JsValue, T> ifNotArr
-                                                    )
-    {
-
-        return elem -> elem.isArray() ? requireNonNull(ifArr).apply(elem.toJsArray()) : requireNonNull(ifNotArr).apply(elem);
-    }
-
-    /**
-     return a matching expression to extract booleans out of json elements.
-     @param ifBoolean the function to be applied if this JsElem is a JsBool
-     @param ifNotBoolean the function to be applied if this JsElem is not a JsBool
-     @param <T> the type of the object returned
-     @return a function that takes a JsElem and returns an object of type T
-     */
-    public static <T> Function<JsValue, T> ifBoolElse(final Function<? super Boolean, T> ifBoolean,
-                                                      final Function<? super JsValue, T> ifNotBoolean
-                                                     )
-    {
-        return e -> e.isBool() ?
-          requireNonNull(ifBoolean).apply(e.toJsBool().value) :
-          requireNonNull(ifNotBoolean).apply(e);
-    }
-
-
-
 
 
     /**

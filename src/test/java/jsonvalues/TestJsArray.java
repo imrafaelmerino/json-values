@@ -56,7 +56,7 @@ public class TestJsArray
                                  JsStr.of("D"),
                                  JsStr.of("E")
                                 );
-        JsArray arr1 = arr.put(JsPath.fromIndex(-1),
+        JsArray arr1 = arr.set(JsPath.fromIndex(-1),
                                "F"
                               );
 
@@ -99,7 +99,7 @@ public class TestJsArray
                                                        JsInt.of(1)
                                                       )
                                         );
-        JsArray newArr = arr.remove(JsPath.fromIndex(-1));
+        JsArray newArr = arr.delete(JsPath.fromIndex(-1));
 
         Assertions.assertEquals(2,
                                 arr.size()
@@ -542,7 +542,7 @@ public class TestJsArray
                                             Assertions.assertEquals(obj,
                                                                     arr.get(path)
                                                                    );
-                                            return obj.put(JsPath.fromKey("size"),
+                                            return obj.set(JsPath.fromKey("size"),
                                                            obj.size()
                                                           );
                                         });
@@ -558,7 +558,7 @@ public class TestJsArray
                                           Assertions.assertEquals(obj,
                                                                   arr.get(path)
                                                                  );
-                                          return obj.put(JsPath.fromKey("size"),
+                                          return obj.set(JsPath.fromKey("size"),
                                                          obj.size()
                                                         );
                                       });
@@ -593,7 +593,7 @@ public class TestJsArray
                                       );
 
 
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.put(JsPath.fromKey("size"),
+        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
                                                                                     json.size()
                                                                                    );
 
@@ -693,7 +693,7 @@ public class TestJsArray
                                            Assertions.assertEquals(obj,
                                                                    arr.get(path)
                                                                   );
-                                           return obj.put(JsPath.fromKey("size"),
+                                           return obj.set(JsPath.fromKey("size"),
                                                           obj.size()
                                                          );
                                        },
@@ -734,15 +734,15 @@ public class TestJsArray
                                   );
 
         Assertions.assertEquals(array,
-                                array.remove(path("/0/b/c"))
+                                array.delete(path("/0/b/c"))
                                );
 
         Assertions.assertEquals(array,
-                                array.remove(path("/0/0/c"))
+                                array.delete(path("/0/0/c"))
                                );
 
         Assertions.assertEquals(array,
-                                array.remove(path("/0/b/0/a"))
+                                array.delete(path("/0/b/0/a"))
                                );
     }
 
@@ -822,63 +822,7 @@ public class TestJsArray
                                );
     }
 
-    @Test
-    public void test_prepend()
-    {
 
-        JsArray arr = JsArray.of("a",
-                                 "b"
-                                );
-
-        Assertions.assertEquals(JsArray.of("c",
-                                           "d",
-                                           "a",
-                                           "b"
-                                          ),
-                                arr.prepend(JsStr.of("c"),
-                                            JsStr.of("d")
-                                           )
-                               );
-
-        Assertions.assertEquals(2,
-                                arr.size()
-                               );
-
-
-        JsArray arr3 = JsArray.empty()
-        .prepend(path("/2/1"),
-                 JsArray.of("a",
-                            "b",
-                            "c"
-                           )
-                );
-
-        Assertions.assertEquals(NULL,
-                                arr3.get(path("/0"))
-                               );
-        Assertions.assertEquals(NULL,
-                                arr3.get(path("/1"))
-                               );
-        Assertions.assertEquals(NULL,
-                                arr3.get(path("/2/0"))
-                               );
-
-        JsArray arr4 = arr3.append(path("/2/1"),
-                                   TRUE
-                                  )
-                           .prepend(path("/2/1"),
-                                    TRUE
-                                   );
-
-        Assertions.assertEquals(TRUE,
-                                arr4.get(path("/2/1/-1"))
-                               );
-        Assertions.assertEquals(TRUE,
-                                arr4.get(path("/2/1/0"))
-                               );
-
-
-    }
 
     @Test
     public void test_reduce_strings()

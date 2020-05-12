@@ -651,7 +651,7 @@ public class JsObjFuture implements JsFuture<JsObj>
     {
       result = result.thenCombineAsync(tuple._2
                                             .get(),
-                                       (obj, value) -> obj.put(tuple._1,
+                                       (obj, value) -> obj.set(tuple._1,
                                                                value
                                                               ),
                                        executor

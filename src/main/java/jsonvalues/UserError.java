@@ -7,10 +7,6 @@ package jsonvalues;
 public final class UserError extends RuntimeException
 {
     private static final long serialVersionUID = 1L;
-    private static final String ERROR_DEFAULT_CONSTRUCTOR = "Define a default constructor in your implementation that creates an empty seq data structure";
-    private static final String ERROR_IMMUTABLE_IMPL = "Define a default constructor in your implementation that creates an empty map data structure";
-    private static final String GUARD_ARR_CONDITION_SUGGESTION = "use the guard condition arr.isEmpty() before";
-    private static final String GUARD_OBJ_CONDITION_SUGGESTION = "use the guard condition obj.isEmpty() before";
     private static final String GENERAL_MESSAGE = "%s. Suggestion: %s.";
 
     private UserError(final String message)
@@ -19,22 +15,7 @@ public final class UserError extends RuntimeException
     }
 
 
-    static UserError indexOutOfBounds(int size,
-                                      int index,
-                                      final String op
-                                     )
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           String.format("Index out of bounds applying '%s'. Index: %s. Size of the array: %s",
-                                                         op,
-                                                         index,
-                                                         size
-                                                        ),
-                                           "call the size method to know the length of the array before doing anything"
-                                          ));
-    }
-
-    public static UserError indexWithLeadingZeros(final String token)
+    static UserError indexWithLeadingZeros(final String token)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("index %s with leading zeros",
@@ -114,7 +95,7 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-  public static UserError isNotAJsNumber(final JsValue elem)
+  static UserError isNotAJsNumber(final JsValue elem)
   {
     return new UserError(String.format(GENERAL_MESSAGE,
                                        String.format("JsNumber expected, but %s was found",
@@ -171,17 +152,6 @@ public final class UserError extends RuntimeException
     }
 
 
-
-    static UserError pathEmpty(final String op)
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           String.format("Empty path calling %s method",
-                                                         op
-                                                        ),
-                                           "check that the path is not empty calling path.isEmpty()"
-                                          ));
-    }
-
     static UserError pathMalformed(final String path)
     {
         return new UserError(String.format(GENERAL_MESSAGE,
@@ -208,72 +178,6 @@ public final class UserError extends RuntimeException
                                           ));
     }
 
-    static <T extends JsValue> UserError mutableArgExpected(T arg)
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           String.format("Immutable object found: %s",
-                                                         arg
-                                                        ),
-                                           "create a mutable object instead using _xxx_ methods"
-                                          ));
-    }
-
-    static UserError headOfEmptyObj()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "head of empty map",
-                                           GUARD_OBJ_CONDITION_SUGGESTION
-                                          ));
-    }
-
-    static UserError tailOfEmptyObj()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "tail of empty map",
-                                           GUARD_OBJ_CONDITION_SUGGESTION
-                                          ));
-    }
-
-    static UserError headOfEmptyArr()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "head of empty seq",
-                                           GUARD_ARR_CONDITION_SUGGESTION
-                                          ));
-    }
-
-
-    static UserError tailOfEmptyArr()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "tail of empty seq",
-                                           GUARD_ARR_CONDITION_SUGGESTION
-                                          ));
-    }
-
-    static UserError lastOfEmptyArr()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "last of empty seq",
-                                           GUARD_ARR_CONDITION_SUGGESTION
-                                          ));
-    }
-
-    static UserError initOfEmptyObj()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "init of empty obj",
-                                           GUARD_OBJ_CONDITION_SUGGESTION
-                                          ));
-    }
-
-    static UserError initOfEmptyArr()
-    {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "init of empty seq",
-                                           GUARD_ARR_CONDITION_SUGGESTION
-                                          ));
-    }
 
     static UserError asKeyOfIndex()
     {

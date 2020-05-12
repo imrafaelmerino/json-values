@@ -1,46 +1,45 @@
 package jsonvalues.optics;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import jsonvalues.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 
-public class Prisms
+public class JsPrisms
 {
 
 
-  public static Prism<String> str =
-    new Prism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(),
-                JsStr::of
+  public static JsPrism<String> str =
+    new JsPrism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(),
+                  JsStr::of
     );
 
 
-  public static Prism<JsObj> obj =
-    new Prism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
+  public static JsPrism<JsObj> obj =
+    new JsPrism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
                 o -> o
     );
 
 
-  public static Prism<JsArray> array =
-    new Prism<>(
+  public static JsPrism<JsArray> array =
+    new JsPrism<>(
       s -> s.isArray() ? Optional.of(s.toJsArray()) : Optional.empty(),
       a -> a
     );
 
-  public static Prism<Boolean> bool =
-    new Prism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
-                JsBool::of
+  public static JsPrism<Boolean> bool =
+    new JsPrism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
+                  JsBool::of
     );
 
-  public static Prism<Integer> intNum =
-    new Prism<>(s -> s.isInt() ? Optional.of(s.toJsInt().value) : Optional.empty(),
-                JsInt::of
+  public static JsPrism<Integer> intNum =
+    new JsPrism<>(s -> s.isInt() ? Optional.of(s.toJsInt().value) : Optional.empty(),
+                  JsInt::of
     );
 
-  public static Prism<BigInteger> bigIntNum =
-    new Prism<>(s ->
+  public static JsPrism<BigInteger> bigIntNum =
+    new JsPrism<>(s ->
                 {
                   if (s.isLong())
                     return Optional.of(BigInteger.valueOf(s.toJsLong().value));
@@ -50,10 +49,10 @@ public class Prisms
                     return Optional.of(s.toJsBigInt().value);
                   return Optional.empty();
                 },
-                JsBigInt::of
+                  JsBigInt::of
     );
 
-  public static Prism<Long> longNum = new Prism<>(s ->
+  public static JsPrism<Long> longNum = new JsPrism<>(s ->
                                                   {
                                                     if (s.isLong())
                                                       return Optional.of(s.toJsLong().value);
@@ -61,11 +60,11 @@ public class Prisms
                                                       return Optional.of((long) s.toJsInt().value);
                                                     return Optional.empty();
                                                   },
-                                                  JsLong::of
+                                                      JsLong::of
   );
 
 
-  public static Prism<Double> doubleNum = new Prism<>(s ->
+  public static JsPrism<Double> doubleNum = new JsPrism<>(s ->
                                                       {
                                                         if (s.isLong())
                                                           return Optional.of((double) s.toJsLong().value);
@@ -73,13 +72,14 @@ public class Prisms
                                                           return Optional.of((double) s.toJsInt().value);
                                                         if (s.isDouble())
                                                           return Optional.of(s.toJsDouble().value);
+                                                        if(s.isDecimal()) return Optional.of(s.toJsBigDec().value.doubleValue());
                                                         return Optional.empty();
                                                       },
-                                                      JsDouble::of
+                                                          JsDouble::of
   );
 
 
-  public static Prism<BigDecimal> decimalNum = new Prism<>(s ->
+  public static JsPrism<BigDecimal> decimalNum = new JsPrism<>(s ->
                                                            {
                                                              if (s.isLong())
                                                                return Optional.of(BigDecimal.valueOf(s.toJsLong().value));
@@ -91,7 +91,7 @@ public class Prisms
                                                                return Optional.of(s.toJsBigDec().value);
                                                              return Optional.empty();
                                                            },
-                                                           JsBigDec::of
+                                                               JsBigDec::of
   );
 
 

@@ -601,7 +601,7 @@ public class JsObjGen implements JsGen<JsObj>
       {
         final JsValue value = pair._2.apply(random)
                                      .get();
-        obj = obj.put(pair._1,
+        obj = obj.set(pair._1,
                       value
                      );
       }

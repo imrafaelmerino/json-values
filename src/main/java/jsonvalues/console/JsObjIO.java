@@ -61,7 +61,7 @@ public class JsObjIO implements JsIO<JsObj>, Program<JsObj>
                        .thenCombine(nextValue
                                       .apply(currentPath)
                                       .get(),
-                                    (obj, value) -> obj.put(entry.getKey(),
+                                    (obj, value) -> obj.set(entry.getKey(),
                                                             value
                                                            )
                                    );

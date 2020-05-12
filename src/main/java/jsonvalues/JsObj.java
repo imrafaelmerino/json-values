@@ -6,7 +6,8 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
-import jsonvalues.optics.Prisms;
+import jsonvalues.optics.JsObjLens;
+import jsonvalues.optics.JsPrisms;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
@@ -50,116 +51,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   public JsObj(final HashMap<String, JsValue> myMap)
   {
     this.map = myMap;
-  }
-
-  public final JsObj append(final JsPath path,
-                            final JsValue elem
-                           )
-  {
-    requireNonNull(elem);
-    if (requireNonNull(path).isEmpty()) return this;
-    return path.head()
-               .match(head ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsObj(map.put(head,
-                                                                                                  arr.append(elem)
-                                                                                                 )),
-                                                                         el -> new JsObj(map.put(head,
-                                                                                                 JsArray.EMPTY
-                                                                                                   .append(elem)
-                                                                                                ))
-                                                                        )
-                                                              .apply(get(this,
-                                                                         Key.of(head)
-                                                                        )),
-                                                () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
-                                                                                                                 t
-                                                                                                                ),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   tail.head()
-                                                                                                       .match(key -> JsObj.EMPTY
-                                                                                                                .append(tail,
-                                                                                                                        elem
-                                                                                                                       ),
-                                                                                                              index -> JsArray.EMPTY
-                                                                                                                .append(tail,
-                                                                                                                        elem
-                                                                                                                       )
-                                                                                                             )
-                                                                                                  )),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   map.get(head)
-                                                                                                      .get()
-                                                                                                      .toJson()
-                                                                                                      .append(tail,
-                                                                                                              elem
-                                                                                                             )
-                                                                                                  )
-                                                                           )
-
-                                                                          )
-
-                                               );
-                      },
-                      index -> this
-                     );
-
-  }
-
-  @SuppressWarnings("Duplicates")
-
-  public final JsObj appendAll(final JsPath path,
-                               final JsArray elems
-                              )
-  {
-    requireNonNull(elems);
-    if (requireNonNull(path).isEmpty()) return this;
-
-    return path.head()
-               .match(head ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsObj(map.put(head,
-                                                                                                  arr.appendAll(elems)
-                                                                                                 )),
-                                                                         el -> new JsObj(map.put(head,
-                                                                                                 JsArray.EMPTY
-                                                                                                   .appendAll(elems)
-                                                                                                ))
-                                                                        )
-                                                              .apply(get(this,
-                                                                         Key.of(head)
-                                                                        )),
-                                                () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
-                                                                                                                 t
-                                                                                                                ),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   tail.head()
-                                                                                                       .match(key -> JsObj.EMPTY
-                                                                                                                .appendAll(tail,
-                                                                                                                           elems
-                                                                                                                          ),
-                                                                                                              index -> JsArray.EMPTY
-                                                                                                                .appendAll(tail,
-                                                                                                                           elems
-                                                                                                                          )
-                                                                                                             )
-                                                                                                  )),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   map.get(head)
-                                                                                                      .get()
-                                                                                                      .toJson()
-                                                                                                      .appendAll(tail,
-                                                                                                                 elems
-                                                                                                                )
-                                                                                                  )
-                                                                           )
-                                                                          )
-                                               );
-                      },
-                      index -> this
-                     );
   }
 
   /**
@@ -331,7 +222,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   }
 
 
-
   /**
    Returns the array located at the given key or null if it doesn't exist or it's not an array.
    @param key the key
@@ -339,7 +229,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsArray getArray(final String key)
   {
-    return  Prisms.array.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.array.getOptional.apply(get(requireNonNull(key)))
+                                     .orElse(null);
 
   }
 
@@ -352,11 +243,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigDecimal getBigDec(final String key)
   {
-    return  Prisms.decimalNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.decimalNum.getOptional.apply(get(requireNonNull(key)))
+                                          .orElse(null);
 
 
   }
-
 
 
   /**
@@ -367,10 +258,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigInteger getBigInt(final String key)
   {
-    return  Prisms.bigIntNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.bigIntNum.getOptional.apply(get(requireNonNull(key)))
+                                         .orElse(null);
 
   }
-
 
 
   /**
@@ -380,10 +271,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Boolean getBool(final String key)
   {
-    return  Prisms.bool.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.bool.getOptional.apply(get(requireNonNull(key)))
+                                    .orElse(null);
 
   }
-
 
 
   /**
@@ -396,10 +287,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Double getDouble(final String key)
   {
-    return  Prisms.doubleNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.doubleNum.getOptional.apply(get(requireNonNull(key)))
+                                         .orElse(null);
 
   }
-
 
 
   /**
@@ -410,7 +301,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Integer getInt(final String key)
   {
-    return  Prisms.intNum.getOptional.apply(get(requireNonNull(key))).orElse(null);
+    return JsPrisms.intNum.getOptional.apply(get(requireNonNull(key)))
+                                      .orElse(null);
 
   }
 
@@ -423,10 +315,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Long getLong(final String key)
   {
-    return  Prisms.longNum.getOptional.apply(get(Objects.requireNonNull(key))).orElse(null);
+    return JsPrisms.longNum.getOptional.apply(get(Objects.requireNonNull(key)))
+                                       .orElse(null);
 
   }
-
 
 
   /**
@@ -436,7 +328,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsObj getObj(final String key)
   {
-    return  Prisms.obj.getOptional.apply(get(key)).orElse(null);
+    return JsPrisms.obj.getOptional.apply(get(key))
+                                   .orElse(null);
 
   }
 
@@ -448,7 +341,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public String getStr(final String key)
   {
-   return  Prisms.str.getOptional.apply(get(key)).orElse(null);
+    return JsPrisms.str.getOptional.apply(get(key))
+                                   .orElse(null);
   }
 
   /**
@@ -724,7 +618,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                         )
   {
 
-    return JsObj.EMPTY.put(JsPath.empty()
+    return JsObj.EMPTY.set(JsPath.empty()
                                  .key(requireNonNull(key)),
                            el
                           );
@@ -748,7 +642,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
     return of(key1,
               el1
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key2)),
                    el2
                   );
@@ -779,7 +673,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el1,
               key2,
               el2
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key3)),
                    el3
                   );
@@ -817,7 +711,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el2,
               key3,
               el3
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key4)),
                    el4
                   );
@@ -861,7 +755,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el3,
               key4,
               el4
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key5)),
                    el5
                   );
@@ -911,7 +805,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el4,
               key5,
               el5
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key6)),
                    el6
                   );
@@ -967,7 +861,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el5,
               key6,
               el6
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key7)),
                    el7
                   );
@@ -1029,7 +923,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el6,
               key7,
               el7
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key8)),
                    el8
                   );
@@ -1097,7 +991,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el7,
               key8,
               el8
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key9)),
                    el9
                   );
@@ -1171,7 +1065,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el8,
               key9,
               el9
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key10)),
                    el10
                   );
@@ -1251,7 +1145,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el9,
               key10,
               el10
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key11)),
                    el11
                   );
@@ -1338,7 +1232,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el10,
               key11,
               el11
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key12)),
                    el12
                   );
@@ -1430,7 +1324,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el11,
               key12,
               el12
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key13)),
                    el13
                   );
@@ -1528,7 +1422,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el12,
               key13,
               el13
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key14)),
                    el14
                   );
@@ -1633,11 +1527,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               el13,
               key14,
               el14
-             ).put(JsPath.empty()
+             ).set(JsPath.empty()
                          .key(requireNonNull(key15)),
                    el15
                   );
   }
+
   /**
    Returns an immutable object from one or more pairs.
    @param pair a pair
@@ -1650,13 +1545,13 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                          final JsPair... others
                         )
   {
-    JsObj obj = JsObj.EMPTY.put(pair.path,
+    JsObj obj = JsObj.EMPTY.set(pair.path,
                                 pair.value
                                );
     for (JsPair p : others)
     {
 
-      obj = obj.put(p.path,
+      obj = obj.set(p.path,
                     p.value
                    );
     }
@@ -1670,7 +1565,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     for (Map.Entry<String, JsValue> x : requireNonNull(xs))
     {
 
-      acc = acc.put(JsPath.fromKey(x.getKey()),
+      acc = acc.set(JsPath.fromKey(x.getKey()),
                     x.getValue()
                    );
     }
@@ -1880,115 +1775,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   }
 
-  @SuppressWarnings("Duplicates")
-
-  public final JsObj prepend(final JsPath path,
-                             final JsValue elem
-                            )
-  {
-    requireNonNull(elem);
-    if (requireNonNull(path).isEmpty()) return this;
-    return path.head()
-               .match(head ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsObj(map.put(head,
-                                                                                                  arr.prepend(elem)
-                                                                                                 )),
-                                                                         el -> new JsObj(map.put(head,
-                                                                                                 JsArray.EMPTY
-                                                                                                   .prepend(elem)
-                                                                                                ))
-                                                                        )
-                                                              .apply(get(this,
-                                                                         Key.of(head)
-                                                                        )),
-                                                () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
-                                                                                                                 t
-                                                                                                                ),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   tail.head()
-                                                                                                       .match(key -> JsObj.EMPTY.prepend(tail,
-                                                                                                                                         elem
-                                                                                                                                        ),
-                                                                                                              index -> JsArray.EMPTY.prepend(tail,
-                                                                                                                                             elem
-                                                                                                                                            )
-                                                                                                             )
-                                                                                                  )),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   map.get(head)
-                                                                                                      .get()
-                                                                                                      .toJson()
-                                                                                                      .prepend(tail,
-                                                                                                               elem
-                                                                                                              )
-                                                                                                  ))
-
-                                                                          )
-
-                                               );
-                      },
-                      index -> this
-                     );
-
-  }
-
-  @SuppressWarnings("Duplicates")
-
-  public final JsObj prependAll(final JsPath path,
-                                final JsArray elems
-                               )
-  {
-    requireNonNull(elems);
-    if (requireNonNull(path).isEmpty()) return this;
-    return path.head()
-               .match(head ->
-                      {
-                        final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> MatchExp.ifArrElse(arr -> new JsObj(map.put(head,
-                                                                                                  arr.prependAll(elems)
-                                                                                                 )),
-                                                                         el -> new JsObj(map.put(head,
-                                                                                                 JsArray.EMPTY
-                                                                                                   .prependAll(elems)
-                                                                                                ))
-                                                                        )
-                                                              .apply(get(this,
-                                                                         Key.of(head)
-                                                                        )),
-                                                () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
-                                                                                                                 t
-                                                                                                                ),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   tail.head()
-                                                                                                       .match(key -> JsObj.EMPTY
-                                                                                                                .prependAll(tail,
-                                                                                                                            elems
-                                                                                                                           ),
-                                                                                                              index -> JsArray.EMPTY
-                                                                                                                .prependAll(tail,
-                                                                                                                            elems
-                                                                                                                           )
-                                                                                                             )
-                                                                                                  )),
-                                                                           () -> new JsObj(map.put(head,
-                                                                                                   map.get(head)
-                                                                                                      .get()
-                                                                                                      .toJson()
-                                                                                                      .prependAll(tail,
-                                                                                                                  elems
-                                                                                                                 )
-                                                                                                  ))
-
-                                                                          )
-
-                                               );
-                      },
-                      index -> this
-                     );
-
-  }
 
   /**
    Inserts the element at the key in this json, replacing any existing element.
@@ -1996,11 +1782,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the element
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final JsValue value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2011,11 +1797,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the string
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final String value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2026,11 +1812,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the number
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final int value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2041,11 +1827,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the number
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final long value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2056,11 +1842,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the boolean
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final boolean value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2071,11 +1857,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the object
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final JsObj value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2086,11 +1872,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the array
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final JsArray value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2101,11 +1887,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the number
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final BigDecimal value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
@@ -2116,36 +1902,21 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param value the number
    @return a new json object
    */
-  public JsObj put(final String key,
+  public JsObj set(final String key,
                    final BigInteger value
                   )
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                value
               );
   }
 
-  /**
-   Inserts the element returned by the function at the given key in this json, replacing any existing element
-   @param key  the key
-   @param fn the function that takes as an input the JsElem at the key and produces the JsElem to
-   be inserted at the key
-   @return the same instance or a new json of the same type T
-   */
-  public final JsObj put(final String key,
-                         final Function<? super JsValue, ? extends JsValue> fn
-                        )
-  {
-    return put(JsPath.fromKey(key),
-               fn
-              );
-  }
+  public final JsObj set(final JsPath path,
+                         final JsValue value
 
-  public final JsObj put(final JsPath path,
-                         final Function<? super JsValue, ? extends JsValue> fn
                         )
   {
-    requireNonNull(fn);
+    requireNonNull(value);
     if (requireNonNull(path).isEmpty()) return this;
     return path.head()
                .match(head ->
@@ -2157,7 +1928,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                               elem
                                                                                              ))
                                                                    )
-                                                  .apply(fn.apply(get(path))),
+                                                  .apply(value),
                                                 () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
                                                                                                                  t
                                                                                                                 ),
@@ -2165,12 +1936,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                    tail.head()
                                                                                                        .
                                                                                                          match(key -> JsObj.EMPTY
-                                                                                                                 .put(tail,
-                                                                                                                      fn
+                                                                                                                 .set(tail,
+                                                                                                                      value
                                                                                                                      ),
                                                                                                                index -> JsArray.EMPTY
-                                                                                                                 .put(tail,
-                                                                                                                      fn
+                                                                                                                 .set(tail,
+                                                                                                                      value
                                                                                                                      )
                                                                                                               )
                                                                                                   )),
@@ -2178,8 +1949,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                    map.get(head)
                                                                                                       .get()
                                                                                                       .toJson()
-                                                                                                      .put(tail,
-                                                                                                           fn
+                                                                                                      .set(tail,
+                                                                                                           value
                                                                                                           )
                                                                                                   ))
 
@@ -2192,298 +1963,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   }
 
-  /**
-   Inserts the element returned by the supplier at the given key in this json, if no element is present.
-   The supplier is not invoked if the element is present.
-   @param key the key
-   @param supplier the supplier which computes the new JsElem if absent
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final Supplier<? extends JsValue> supplier
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       supplier
-                      );
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified integer.
-   @param key the key
-   @param number the integer
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final int number
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       number
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified string.
-   @param key the key
-   @param str the string
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final String str
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       str
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified boolean.
-   @param key the key
-   @param bool the boolean
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final boolean bool
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       bool
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified obj.
-   @param key the key
-   @param obj the json object
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final JsObj obj
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       obj
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified array.
-   @param key the key
-   @param array the json array
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final JsArray array
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       array
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified long number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final long number
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       number
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if no element is present, the specified double number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfAbsent(final String key,
-                           final double number
-                          )
-  {
-    return putIfAbsent(JsPath.fromKey(key),
-                       number
-                      );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified integer number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final int number
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        number
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified string.
-   @param key the key
-   @param str the string
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final String str
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        str
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified obj.
-   @param key the key
-   @param obj the object
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final JsObj obj
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        obj
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified array.
-   @param key the key
-   @param array the array
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final JsArray array
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        array
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified long number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final long number
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        number
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified double number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final double number
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        number
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified boolean.
-   @param key the key
-   @param bool the boolean
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final boolean bool
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        bool
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified big integer number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final BigInteger number
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        number
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the specified big decimal number.
-   @param key the key
-   @param number the number
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final BigDecimal number
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        number
-                       );
-
-  }
-
-  /**
-   Inserts at the given key in this json, if some element is present, the element returned by the
-   function.
-   @param key the key
-   @param fn the function which computes the new JsElem from the existing one
-   @return the same instance or a new obj
-   */
-  public JsObj putIfPresent(final String key,
-                            final Function<? super JsValue, ? extends JsValue> fn
-                           )
-  {
-    return putIfPresent(JsPath.fromKey(key),
-                        fn
-                       );
-
-  }
 
   public JsObj putNull(final String key)
   {
-    return put(JsPath.fromKey(key),
+    return set(JsPath.fromKey(key),
                NULL
               );
   }
@@ -2511,7 +1994,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   }
 
-  public final JsObj remove(final JsPath path)
+  public final JsObj delete(final String key)
+  {
+    return delete(JsPath.fromKey(requireNonNull(key)));
+  }
+
+  public final JsObj delete(final JsPath path)
   {
     if (requireNonNull(path).isEmpty()) return this;
     return path.head()
@@ -2521,7 +2009,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                         final JsPath tail = path.tail();
                         return tail.ifEmptyElse(() -> new JsObj(map.remove(key)),
                                                 () -> MatchExp.ifJsonElse(json -> new JsObj(map.put(key,
-                                                                                                    json.remove(tail)
+                                                                                                    json.delete(tail)
                                                                                                    )),
                                                                           e -> this
                                                                          )
@@ -2535,31 +2023,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   }
 
-  public final boolean same(final JsObj obj)
-  {
-    final HashMap<String, JsValue> other = obj.map;
-    final boolean thisEmpty = isEmpty();
-    final boolean thatEmpty = other.isEmpty();
-    if (thisEmpty && thatEmpty) return true;
-    if (thisEmpty != thatEmpty) return false;
-
-    return keySet().stream()
-                   .allMatch(f ->
-                               other.get(f)
-                                    .map(it ->
-                                         {
-                                           final JsValue a = map.get(f)
-                                                                .get();
-                                           if (a.isObj() && it.isObj()) return a.toJsObj()
-                                                                                .equals(it.toJsObj());
-                                           else if (a.isArray() && it.isArray()) return a.toJsArray()
-                                                                                         .equals(it.toJsArray());
-                                           else return it.equals(a);
-                                         })
-                                    .getOrElse(false) && other.keySet()
-                                                              .toJavaStream()
-                                                              .allMatch(map::containsKey));
-  }
 
   public final int size()
   {
@@ -2587,6 +2050,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                        JsPath.empty()
                       );
   }
+
 
   static Stream<JsPair> streamOfObj(final JsObj obj,
                                     final JsPath path
@@ -2703,7 +2167,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                     .equals(head._2,
                                             ARRAY_AS
                                            )) || bElem.equals(head._2)) ?
-      more(tailCall).map(it -> it.put(JsPath.fromKey(head._1),
+      more(tailCall).map(it -> it.set(JsPath.fromKey(head._1),
                                       head._2
                                      )) :
       more(tailCall);
@@ -2734,7 +2198,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
         return more(() -> intersectionAll(tail,
                                           b.tail(),
                                           ARRAY_AS
-                                         )).map(it -> it.put(JsPath.fromKey(head._1),
+                                         )).map(it -> it.set(JsPath.fromKey(head._1),
                                                              head._2
                                                             ));
 
@@ -2752,7 +2216,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                            )
                                                      );
         return more(() -> tailCall).flatMap(json -> headCall
-                                              .map(it -> json.put(JsPath.fromKey(head._1),
+                                              .map(it -> json.set(JsPath.fromKey(head._1),
                                                                   it
                                                                  )
                                                   )
@@ -2773,9 +2237,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return union(a,
                  tail
                 ).map(it ->
-                        it.putIfAbsent(JsPath.fromKey(head._1),
-                                       () -> head._2
-                                      ));
+                        JsObjLens.path(JsPath.fromKey(head._1)).setIfAbsent.apply(it,
+                                                                                  () -> head._2
+                                                                                 )
+                     );
+
   }
 
   //squid:S00117 ARRAY_AS should be a valid name
@@ -2792,7 +2258,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                      tail,
                                                      ARRAY_AS
                                                     ));
-    return ifNothingElse(() -> more(() -> tailCall).map(it -> it.put(JsPath.fromKey(head._1),
+    return ifNothingElse(() -> more(() -> tailCall).map(it -> it.set(JsPath.fromKey(head._1),
                                                                      head._2
                                                                     )),
                          MatchExp.ifPredicateElse(e -> e.isJson() && e.isSameType(head._2),
@@ -2810,7 +2276,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                                                          )
                                                                                                  );
                                                     return more(() -> tailCall).flatMap(tailResult -> headCall.map(headUnion_ ->
-                                                                                                                     tailResult.put(JsPath.fromKey(head._1),
+                                                                                                                     tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                     headUnion_
                                                                                                                                    )
                                                                                                                   )

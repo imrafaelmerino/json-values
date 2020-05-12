@@ -8,23 +8,36 @@ import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-class Lens<S extends Json<S>>
+public class JsLens<S extends Json<S>>
 {
 
 
-  Lens(final JsPath path)
+
+  JsLens(final JsPath path)
   {
     this.path = requireNonNull(path);
     this.get = json -> requireNonNull(json).get(path);
-    this.set = (json, value) -> requireNonNull(json).put(path,
+    this.set = (json, value) -> requireNonNull(json).set(path,
                                                          requireNonNull(value)
                                                         );
-    this.modify = (json, f) -> requireNonNull(json).put(path,
-                                                        requireNonNull(f)
+    this.modify = (json, f) -> requireNonNull(json).set(path,
+                                                        f.apply(json.get(path))
                                                        );
+
+    this.setIfAbsent = (json,supplier) -> {
+      if(json.get(path).isNothing()) return json.set(path, supplier.get());
+      else return json;
+    };
+
+
+    this.setIfPresent = (json,supplier) -> {
+      if(!json.get(path).isNothing()) return json.set(path, supplier.get());
+      else return json;
+    };
 
   }
 
@@ -33,11 +46,13 @@ class Lens<S extends Json<S>>
   public final Function<S, JsValue> get;
   public final BiFunction<S, JsValue, S> set;
   public final BiFunction<S, Function<JsValue, JsValue>, S> modify;
+  public final BiFunction<S, Supplier<JsValue>, S> setIfAbsent;
+  public final BiFunction<S, Supplier<JsValue>, S> setIfPresent;
 
 
-  public <T extends Json<T>> Lens<T> compose(final Lens<T> lens)
+  public <T extends Json<T>> JsLens<T> compose(final JsLens<T> lens)
   {
-    return new Lens<>(this.path.append(requireNonNull(lens).path));
+    return new JsLens<>(this.path.append(requireNonNull(lens).path));
   }
 
   public Function<S, Optional<JsValue>> find(final Predicate<JsValue> predicate)

@@ -1,13 +1,15 @@
 package jsonvalues.optics;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 
-public class JsArrayLens extends Lens<JsArray>
+public class JsArrayLens extends JsLens<JsArray>
 {
 
-  public static JsArrayLens of(final JsPath path){
+  public static JsArrayLens index(final int index){
+    return new JsArrayLens(JsPath.fromIndex(index));
+  }
+  public static JsArrayLens path(final JsPath path){
     return new JsArrayLens(path);
   }
 
