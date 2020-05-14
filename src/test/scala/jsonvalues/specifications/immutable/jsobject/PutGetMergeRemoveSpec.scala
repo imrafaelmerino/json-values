@@ -5,7 +5,6 @@ import java.util._
 import java.util.function.BiFunction
 
 import jsonvalues._
-import jsonvalues.optics.JsObjLens
 import jsonvalues.specifications.BasePropSpec
 import org.scalacheck.Arbitrary
 import org.scalacheck.Prop.forAll
@@ -167,7 +166,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
             js.streamAll().allMatch(
               it =>
               {
-                JsObjLens.path(it.path)
+                JsObj.lens(it.path)
                   .setIfPresent
                   .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                   .get(it.path)
@@ -187,7 +186,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { js =>
 
             js.streamAll().allMatch(
-              it => JsObjLens.path(it.path)
+              it => JsObj.lens(it.path)
                 .setIfAbsent
                 .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                 .get(it.path)
@@ -207,9 +206,9 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            JsObjLens.path(path)
+            JsObj.lens(path)
               .setIfAbsent
-              .apply(JsObj.empty(),ScalaToJava.supplier.apply(()=>JsNull.NULL))
+              .apply(JsObj.empty(),ScalaToJava.supplier.apply(()=>elem))
               .get(path)
               .equals(elem)
           }

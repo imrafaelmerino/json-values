@@ -20,7 +20,24 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble>
     public static final int ID = 5;
 
 
-    @Override
+
+  public static JsPrism<Double> prism = new JsPrism<>(s ->
+                                                          {
+                                                           /* if (s.isLong())
+                                                              return Optional.of((double) s.toJsLong().value);
+                                                            if (s.isInt())
+                                                              return Optional.of((double) s.toJsInt().value);*/
+                                                            if (s.isDouble())
+                                                              return Optional.of(s.toJsDouble().value);
+                                                            if (s.isDecimal()) return s.toJsBigDec().doubleValueExact();
+                                                            return Optional.empty();
+                                                          },
+                                                          JsDouble::of
+  );
+
+
+
+  @Override
     public int id()
     {
         return ID;

@@ -8,7 +8,7 @@ import static java.util.Objects.requireNonNull;
  Java doesn't support Pattern Matching but we can implement some matching expressions using high
  order functions.
  */
-public final class MatchExp
+final class MatchExp
 {
 
     private MatchExp(){}

@@ -3,6 +3,7 @@ package jsonvalues;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
@@ -30,7 +31,14 @@ public final class JsStr implements JsValue, Comparable<JsStr>
     {
         return ID;
     }
-    /**
+
+  public static final JsPrism<String> prism =
+    new JsPrism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(),
+                  JsStr::of
+    );
+
+
+  /**
      Compares two {@code JsStr} objects lexicographically.
      @see String#compareTo(String)
      */

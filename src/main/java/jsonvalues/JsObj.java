@@ -6,8 +6,6 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
-import jsonvalues.optics.JsObjLens;
-import jsonvalues.optics.JsPrisms;
 import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
@@ -47,6 +45,22 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   @SuppressWarnings("squid:S3077")
   @Nullable
   private volatile String str;
+
+  public static JsLens<JsObj> lens(final String key)
+  {
+    return JsLens.of(key);
+  }
+
+  public static JsLens<JsObj> lens(final JsPath path)
+  {
+    if(path.head().isIndex())throw new IllegalArgumentException("head is not key");
+    return JsLens.of(path);
+  }
+
+  public static final JsPrism<JsObj> prism =
+    new JsPrism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
+                  o -> o
+    );
 
   public JsObj(final HashMap<String, JsValue> myMap)
   {
@@ -191,9 +205,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                      .get();
   }
 
-  static JsValue get(final JsObj obj,
-                     final Position position
-                    )
+  private static JsValue get(final JsObj obj,
+                             final Position position
+                            )
   {
     return requireNonNull(position).match(key -> obj.map.getOrElse(key,
                                                                    NOTHING
@@ -229,8 +243,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsArray getArray(final String key)
   {
-    return JsPrisms.array.getOptional.apply(get(requireNonNull(key)))
-                                     .orElse(null);
+    return JsArray.prism.getOptional.apply(get(requireNonNull(key)))
+                                    .orElse(null);
 
   }
 
@@ -243,8 +257,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigDecimal getBigDec(final String key)
   {
-    return JsPrisms.decimalNum.getOptional.apply(get(requireNonNull(key)))
-                                          .orElse(null);
+    return JsBigDec.prism.getOptional.apply(get(requireNonNull(key)))
+                                     .orElse(null);
 
 
   }
@@ -258,8 +272,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public BigInteger getBigInt(final String key)
   {
-    return JsPrisms.bigIntNum.getOptional.apply(get(requireNonNull(key)))
-                                         .orElse(null);
+    return JsBigInt.prism.getOptional.apply(get(requireNonNull(key)))
+                                     .orElse(null);
 
   }
 
@@ -271,8 +285,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Boolean getBool(final String key)
   {
-    return JsPrisms.bool.getOptional.apply(get(requireNonNull(key)))
-                                    .orElse(null);
+    return JsBool.prism.getOptional.apply(get(requireNonNull(key)))
+                                   .orElse(null);
 
   }
 
@@ -287,8 +301,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Double getDouble(final String key)
   {
-    return JsPrisms.doubleNum.getOptional.apply(get(requireNonNull(key)))
-                                         .orElse(null);
+    return JsDouble.prism.getOptional.apply(get(requireNonNull(key)))
+                                     .orElse(null);
 
   }
 
@@ -301,8 +315,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Integer getInt(final String key)
   {
-    return JsPrisms.intNum.getOptional.apply(get(requireNonNull(key)))
-                                      .orElse(null);
+    return JsInt.prism.getOptional.apply(get(requireNonNull(key)))
+                                  .orElse(null);
 
   }
 
@@ -315,8 +329,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public Long getLong(final String key)
   {
-    return JsPrisms.longNum.getOptional.apply(get(Objects.requireNonNull(key)))
-                                       .orElse(null);
+    return JsLong.prism.getOptional.apply(get(Objects.requireNonNull(key)))
+                                   .orElse(null);
 
   }
 
@@ -328,8 +342,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public JsObj getObj(final String key)
   {
-    return JsPrisms.obj.getOptional.apply(get(key))
-                                   .orElse(null);
+    return JsObj.prism.getOptional.apply(get(key))
+                                  .orElse(null);
 
   }
 
@@ -341,8 +355,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    */
   public String getStr(final String key)
   {
-    return JsPrisms.str.getOptional.apply(get(key))
-                                   .orElse(null);
+    return JsStr.prism.getOptional.apply(get(key))
+                                  .orElse(null);
   }
 
   /**
@@ -453,6 +467,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   }
 
   @SuppressWarnings("squid:S1602")
+  private
     // curly braces makes IntelliJ to format the code in a more legible way
   BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsValue> pmap)
   {
@@ -1934,16 +1949,15 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                                 ),
                                                                            () -> new JsObj(map.put(head,
                                                                                                    tail.head()
-                                                                                                       .
-                                                                                                         match(key -> JsObj.EMPTY
-                                                                                                                 .set(tail,
-                                                                                                                      value
-                                                                                                                     ),
-                                                                                                               index -> JsArray.EMPTY
-                                                                                                                 .set(tail,
-                                                                                                                      value
-                                                                                                                     )
-                                                                                                              )
+                                                                                                       .match(key -> JsObj.EMPTY
+                                                                                                                .set(tail,
+                                                                                                                     value
+                                                                                                                    ),
+                                                                                                              index -> JsArray.EMPTY
+                                                                                                                .set(tail,
+                                                                                                                     value
+                                                                                                                    )
+                                                                                                             )
                                                                                                   )),
                                                                            () -> new JsObj(map.put(head,
                                                                                                    map.get(head)
@@ -1963,13 +1977,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   }
 
-
-  public JsObj putNull(final String key)
-  {
-    return set(JsPath.fromKey(key),
-               NULL
-              );
-  }
 
   public final <R> Optional<R> reduce(final BinaryOperator<R> op,
                                       final Function<? super JsPair, R> map,
@@ -2237,9 +2244,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return union(a,
                  tail
                 ).map(it ->
-                        JsObjLens.path(JsPath.fromKey(head._1)).setIfAbsent.apply(it,
-                                                                                  () -> head._2
-                                                                                 )
+                        JsLens.of(head._1).setIfAbsent.apply(it,
+                                                             () -> head._2
+                                                            )
                      );
 
   }

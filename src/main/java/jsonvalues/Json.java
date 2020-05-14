@@ -3,7 +3,6 @@ package jsonvalues;
 import com.dslplatform.json.serializers.SerializerException;
 
 import jsonvalues.JsArray.TYPE;
-import jsonvalues.optics.JsPrisms;
 
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -180,7 +179,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default JsArray getArray(final JsPath path)
   {
-    return JsPrisms.array.getOptional.apply(get(requireNonNull(path)))
+    return JsArray.prism.getOptional.apply(get(requireNonNull(path)))
                                      .orElse(null);
 
   }
@@ -194,7 +193,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default BigDecimal getBigDec(final JsPath path)
   {
-    return JsPrisms.decimalNum.getOptional.apply(get(requireNonNull(path)))
+    return JsBigDec.prism.getOptional.apply(get(requireNonNull(path)))
                                           .orElse(null);
 
   }
@@ -208,7 +207,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default BigInteger getBigInt(final JsPath path)
   {
-    return JsPrisms.bigIntNum.getOptional.apply(get(requireNonNull(path)))
+    return JsBigInt.prism.getOptional.apply(get(requireNonNull(path)))
                                          .orElse(null);
 
   }
@@ -220,7 +219,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default Boolean getBool(final JsPath path)
   {
-    return JsPrisms.bool.getOptional.apply(get(requireNonNull(path)))
+    return JsBool.prism.getOptional.apply(get(requireNonNull(path)))
                                     .orElse(null);
 
   }
@@ -236,7 +235,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default Double getDouble(final JsPath path)
   {
-    return JsPrisms.doubleNum.getOptional.apply(get(requireNonNull(path)))
+    return JsDouble.prism.getOptional.apply(get(requireNonNull(path)))
                                          .orElse(null);
 
   }
@@ -250,7 +249,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default Integer getInt(final JsPath path)
   {
-    return JsPrisms.intNum.getOptional.apply(get(requireNonNull(path)))
+    return JsInt.prism.getOptional.apply(get(requireNonNull(path)))
                                       .orElse(null);
 
   }
@@ -264,7 +263,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default Long getLong(final JsPath path)
   {
-    return JsPrisms.longNum.getOptional.apply(get(requireNonNull(path)))
+    return JsLong.prism.getOptional.apply(get(requireNonNull(path)))
                                        .orElse(null);
 
   }
@@ -277,7 +276,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default JsObj getObj(final JsPath path)
   {
-    return JsPrisms.obj.getOptional.apply(get(path))
+    return JsObj.prism.getOptional.apply(get(path))
                                    .orElse(null);
   }
 
@@ -290,7 +289,7 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   default String getStr(final JsPath path)
   {
-    return JsPrisms.str.getOptional.apply(get(path))
+    return JsStr.prism.getOptional.apply(get(path))
                                    .orElse(null);
   }
 

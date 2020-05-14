@@ -1,8 +1,4 @@
-package jsonvalues.optics;
-
-import jsonvalues.JsPath;
-import jsonvalues.JsValue;
-import jsonvalues.Json;
+package jsonvalues;
 
 import java.util.Optional;
 import java.util.function.BiFunction;
@@ -15,8 +11,6 @@ import static java.util.Objects.requireNonNull;
 public class JsLens<S extends Json<S>>
 {
 
-
-
   JsLens(final JsPath path)
   {
     this.path = requireNonNull(path);
@@ -28,14 +22,22 @@ public class JsLens<S extends Json<S>>
                                                         f.apply(json.get(path))
                                                        );
 
-    this.setIfAbsent = (json,supplier) -> {
-      if(json.get(path).isNothing()) return json.set(path, supplier.get());
+    this.setIfAbsent = (json, supplier) ->
+    {
+      if (get.apply(json)
+              .isNothing()) return set.apply(json,
+                                            supplier.get()
+                                           );
       else return json;
     };
 
 
-    this.setIfPresent = (json,supplier) -> {
-      if(!json.get(path).isNothing()) return json.set(path, supplier.get());
+    this.setIfPresent = (json, supplier) ->
+    {
+      if (!get.apply(json)
+               .isNothing()) return set.apply(json,
+                                             supplier.get()
+                                            );
       else return json;
     };
 
@@ -44,15 +46,28 @@ public class JsLens<S extends Json<S>>
   private final JsPath path;
 
   public final Function<S, JsValue> get;
+
   public final BiFunction<S, JsValue, S> set;
+
   public final BiFunction<S, Function<JsValue, JsValue>, S> modify;
+
   public final BiFunction<S, Supplier<JsValue>, S> setIfAbsent;
+
   public final BiFunction<S, Supplier<JsValue>, S> setIfPresent;
 
-
-  public <T extends Json<T>> JsLens<T> compose(final JsLens<T> lens)
+  public JsLens<S> compose(final JsLens<?> lens)
   {
-    return new JsLens<>(this.path.append(requireNonNull(lens).path));
+    return new JsLens<>(path.append(lens.path));
+  }
+
+  public <T> JsOptional<S, T> compose(JsPrism<T> prism)
+  {
+    return new JsOptional<>(path,
+                            json -> prism.getOptional.apply(get.apply(json)),
+                            (json, value) -> json.set(path,
+                                                      prism.reverseGet.apply(value)
+                                                     )
+    );
   }
 
   public Function<S, Optional<JsValue>> find(final Predicate<JsValue> predicate)
@@ -65,5 +80,19 @@ public class JsLens<S extends Json<S>>
     return s -> predicate.test(get.apply(s));
   }
 
+  static JsLens<JsObj> of(final String key)
+  {
+    return new JsLens<>(JsPath.fromKey(requireNonNull(key)));
+  }
+
+  static JsLens<JsArray> of(int index)
+  {
+    return new JsLens<>(JsPath.fromIndex(index));
+  }
+
+  static <R extends Json<R>> JsLens<R> of(JsPath path)
+  {
+    return new JsLens<>(path);
+  }
 
 }

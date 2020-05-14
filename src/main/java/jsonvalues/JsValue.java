@@ -24,6 +24,8 @@ import static java.util.Objects.requireNonNull;
  */
 public interface JsValue
 {
+
+
     int id();
     /**
      @return this JsElem as a JsBool

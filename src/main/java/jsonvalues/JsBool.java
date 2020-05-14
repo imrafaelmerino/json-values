@@ -2,6 +2,8 @@ package jsonvalues;
 
 import org.checkerframework.checker.nullness.qual.Nullable;
 
+import java.util.Optional;
+
 /**
  Represents an immutable json boolean. Only two instances are created: {@link #FALSE} and {@link #TRUE}
  */
@@ -15,7 +17,15 @@ public final class JsBool implements JsValue
     {
         return ID;
     }
-    /**
+
+
+  public static JsPrism<Boolean> prism =
+    new JsPrism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
+                  JsBool::of
+    );
+
+
+  /**
      The singleton false value.
      */
     public static final JsBool FALSE = new JsBool(false);

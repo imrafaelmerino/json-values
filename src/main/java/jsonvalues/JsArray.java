@@ -1,12 +1,10 @@
 package jsonvalues;
 
-
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.collection.Vector;
 import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -15,7 +13,6 @@ import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
-
 import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static java.util.Objects.requireNonNull;
@@ -48,6 +45,22 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
   @Nullable
   private volatile String str;
   private final Vector<JsValue> seq;
+
+  public static JsPrism<JsArray> prism =
+    new JsPrism<>(
+      s -> s.isArray() ? Optional.of(s.toJsArray()) : Optional.empty(),
+      a -> a
+    );
+
+
+  public static JsLens<JsArray> lens(final int index){
+    return JsLens.of(index);
+  }
+
+  public static JsLens<JsArray> lens(final JsPath path){
+    if(path.head().isKey()) throw new IllegalArgumentException("head is not index");
+    return JsLens.of(path);
+  }
 
   JsArray(Vector<JsValue> seq)
   {
