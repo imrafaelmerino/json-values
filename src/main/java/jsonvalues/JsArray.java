@@ -389,64 +389,28 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
   public JsArray mapAllValues(final Function<? super JsPair, ? extends JsValue> fn)
   {
     return new OpMapArrElems(this).mapAll(requireNonNull(fn),
-                                          p -> true,
                                           JsPath.empty()
                                                 .index(-1)
                                          )
                                   .get();
   }
 
-  public JsArray mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
-                              final Predicate<? super JsPair> predicate
-                             )
-  {
-    return new OpMapArrElems(this).mapAll(requireNonNull(fn),
-                                          requireNonNull(predicate),
-                                          JsPath.empty()
-                                                .index(-1)
-                                         )
-                                  .get();
-  }
 
   public final JsArray mapAllKeys(final Function<? super JsPair, String> fn)
   {
     return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
-                                         it -> true,
                                          JsPath.empty()
                                                .index(-1)
                                         )
                                  .get();
   }
 
-  public final JsArray mapAllKeys(final Function<? super JsPair, String> fn,
-                                  final Predicate<? super JsPair> predicate
-                                 )
-  {
-    return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
-                                         requireNonNull(predicate),
-                                         JsPath.empty()
-                                               .index(-1)
-                                        )
-                                 .get();
 
-  }
 
-  public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                                  final BiPredicate<? super JsPath, ? super JsObj> predicate
-                                 )
+
+  public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn)
   {
     return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
-                                         requireNonNull(predicate),
-                                         JsPath.empty()
-                                               .index(-1)
-                                        )
-                                 .get();
-  }
-
-  public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
-  {
-    return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
-                                         (p, o) -> true,
                                          JsPath.empty()
                                                .index(-1)
                                         )
@@ -456,7 +420,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
   public final JsArray mapValues(final Function<? super JsPair, ? extends JsValue> fn)
   {
     return new OpMapArrElems(this).map(requireNonNull(fn),
-                                       p -> true,
                                        JsPath.empty()
                                              .index(-1)
                                       )
@@ -464,48 +427,16 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
   }
 
-  public JsArray mapValues(final Function<? super JsPair, ? extends JsValue> fn,
-                           final Predicate<? super JsPair> predicate
-                          )
-  {
-    return new OpMapArrElems(this).map(requireNonNull(fn),
-                                       requireNonNull(predicate),
-                                       JsPath.empty()
-                                             .index(-1)
-                                      )
-                                  .get();
-  }
 
   public final JsArray mapKeys(final Function<? super JsPair, String> fn)
   {
     return this;
   }
 
-  public final JsArray mapKeys(final Function<? super JsPair, String> fn,
-                               final Predicate<? super JsPair> predicate
-                              )
-  {
-    return this;
-  }
 
-  public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                               final BiPredicate<? super JsPath, ? super JsObj> predicate
-                              )
-  {
-
-    return new OpMapArrObjs(this).map(requireNonNull(fn),
-                                      requireNonNull(predicate),
-                                      JsPath.empty()
-                                            .index(-1)
-                                     )
-                                 .get();
-
-  }
-
-  public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
+  public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn)
   {
     return new OpMapArrObjs(this).map(requireNonNull(fn),
-                                      (p, o) -> true,
                                       JsPath.empty()
                                             .index(-1)
                                      )

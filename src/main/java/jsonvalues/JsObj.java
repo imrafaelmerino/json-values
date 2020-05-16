@@ -111,7 +111,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                        .allMatch(f -> this.containsPath(JsPath.fromKey(f)));
   }
 
-  public final boolean equals(final  Object that)
+  public final boolean equals(final Object that)
   {
     if (!(that instanceof JsObj)) return false;
     if (this == that) return true;
@@ -491,126 +491,47 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   public final JsObj mapAllKeys(final Function<? super JsPair, String> fn)
   {
     return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
-                                         it -> true,
                                          EMPTY_PATH
                                         )
                                  .get();
 
   }
 
-  @SuppressWarnings("squid:S00100") // xx_ traverses the whole json
-  public final JsObj mapAllKeys(final Function<? super JsPair, String> fn,
-                                final Predicate<? super JsPair> predicate
-                               )
-  {
-    return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
-                                         requireNonNull(predicate),
-                                         EMPTY_PATH
-                                        )
-                                 .get();
-  }
 
-  public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                                final BiPredicate<? super JsPath, ? super JsObj> predicate
-                               )
+  public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn)
   {
-    return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
-                                         requireNonNull(predicate),
-                                         JsPath.empty()
-                                        )
-                                 .get();
-  }
-
-  public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
-  {
-    return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
-                                         (p, o) -> true,
-                                         JsPath.empty()
-                                        )
-                                 .get();
+    return new OpMapObjObjs(this).mapAll(requireNonNull(fn), JsPath.empty()).get();
   }
 
   public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn)
   {
     return new OpMapObjElems(this).mapAll(requireNonNull(fn),
-                                          p -> true,
                                           EMPTY_PATH
                                          )
                                   .get();
   }
 
-  public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
-                                  final Predicate<? super JsPair> predicate
-                                 )
-  {
-    return new OpMapObjElems(this).mapAll(requireNonNull(fn),
-                                          requireNonNull(predicate),
-                                          EMPTY_PATH
-                                         )
-                                  .get();
-  }
 
   public final JsObj mapKeys(final Function<? super JsPair, String> fn)
   {
     return new OpMapObjKeys(this).map(requireNonNull(fn),
-                                      it -> true,
                                       EMPTY_PATH
                                      )
                                  .get();
   }
 
-  public final JsObj mapKeys(final Function<? super JsPair, String> fn,
-                             final Predicate<? super JsPair> predicate
-                            )
-  {
-    return new OpMapObjKeys(this).map(requireNonNull(fn),
-                                      requireNonNull(predicate),
-                                      EMPTY_PATH
-                                     )
-                                 .get();
-  }
 
-  public final JsObj mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-                             final BiPredicate<? super JsPath, ? super JsObj> predicate
-                            )
+  public final JsObj mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn)
   {
-
-    return new OpMapObjObjs(this).map(requireNonNull(fn),
-                                      requireNonNull(predicate),
-                                      JsPath.empty()
-                                     )
-                                 .get();
-  }
-
-  public final JsObj mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn)
-  {
-    return new OpMapObjObjs(this).map(requireNonNull(fn),
-                                      (p, o) -> true,
-                                      JsPath.empty()
-                                     )
-                                 .get();
+    return new OpMapObjObjs(this).map(requireNonNull(fn), JsPath.empty()).get();
   }
 
   public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn)
   {
-
-    return new OpMapObjElems(this).map(requireNonNull(fn),
-                                       p -> true,
-                                       EMPTY_PATH
-                                      )
-                                  .get();
+    return new OpMapObjElems(this).map(requireNonNull(fn), EMPTY_PATH).get();
   }
 
-  public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn,
-                               final Predicate<? super JsPair> predicate
-                              )
-  {
-    return new OpMapObjElems(this).map(requireNonNull(fn),
-                                       requireNonNull(predicate),
-                                       EMPTY_PATH
-                                      )
-                                  .get();
-  }
+
 
   /**
    Returns a one-element immutable object.

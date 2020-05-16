@@ -8,7 +8,10 @@ import java.util.Objects;
  */
 public final class Index implements Position
 {
-    /**
+
+  public static final JsIndexPrism prism= new JsIndexPrism();
+
+  /**
      * The index number.
      */
     public final int n;

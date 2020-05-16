@@ -287,9 +287,9 @@ public class TestsUnionAndIntersection
 
 
     @Test
-    public void test_map_values_immutable_array() throws MalformedJson
+    public void test_map_values_array() throws MalformedJson
     {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).value;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify(String::toLowerCase).apply(p.value);
 
 
         JsArray array = JsArray.of(JsStr.of("A"),
@@ -297,8 +297,7 @@ public class TestsUnionAndIntersection
                                                  JsStr.of("B")
                                                 );
 
-        final JsArray newArray = array.mapValues(toLowerCaseFn,
-                                                p -> p.value.isStr()
+        final JsArray newArray = array.mapValues(toLowerCaseFn
                                                 );
 
         Assertions.assertNotEquals(array,
@@ -328,9 +327,7 @@ public class TestsUnionAndIntersection
                                                                            )
                                                  );
 
-        final JsArray newArray1 = array1.mapAllValues(toLowerCaseFn,
-                                                   p -> p.value.isStr()
-                                                     );
+        final JsArray newArray1 = array1.mapAllValues(toLowerCaseFn);
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                                                      ,
                                 newArray1
@@ -341,9 +338,9 @@ public class TestsUnionAndIntersection
 
 
     @Test
-    public void test_map_values_immutable_obj()
+    public void test_map_values_obj()
     {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> p.mapIfStr(String::toLowerCase).value;
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify(String::toLowerCase).apply(p.value);
 
         JsObj obj = JsObj.of("a",
                                               JsStr.of("A"),
@@ -375,7 +372,7 @@ public class TestsUnionAndIntersection
     }
 
     @Test
-    public void test_map_keys_immutable_obj()
+    public void test_map_keys_obj()
     {
 
         JsObj obj = JsObj.of("a",
@@ -422,63 +419,6 @@ public class TestsUnionAndIntersection
 
 
 
-    @Test
-    public void test_map_keys_immutable_array() throws MalformedJson
-    {
-
-        JsArray arr = JsArray.of(JsObj.of("a",
-                                                                         JsInt.of(1),
-                                                                         "b",
-                                                                         JsStr.of("B"),
-                                                                         "c",
-                                                                         JsObj.empty()
-                                                                        ),
-                                               NULL,
-                                               JsObj.of("c",
-                                                                         JsInt.of(1),
-                                                                         "d",
-                                                                         JsStr.of("D")
-                                                                        ),
-                                               TRUE,
-                                               JsArray.of(JsObj.of("e",
-                                                                                                  JsInt.of(1),
-                                                                                                  "f",
-                                                                                                  JsStr.of("F")
-                                                                                                 ))
-                                              );
-
-        Assertions.assertSame(arr,
-                              arr.mapKeys(p -> p.path.last()
-                                                     .asKey().name.toUpperCase())
-                             );
-
-
-        final JsArray arr1 = arr.mapAllKeys(p -> p.path.last()
-                                                       .asKey().name.toUpperCase(),
-                                          p -> p.value.isStr()
-                                           );
-
-
-        Assertions.assertNotEquals(arr1,
-                                   arr
-                                  );
-
-        Assertions.assertEquals(JsArray.parse("[{\"a\":1,\"B\":\"B\",\"c\":{}},null,{\"c\":1,\"D\":\"D\"},true,[{\"e\":1,\"F\":\"F\"}]]\n")
-                                                     ,
-                                arr1
-                               );
-
-        final JsArray arr2 = arr.mapAllKeys(p -> p.path.last()
-                                                       .asKey().name.toUpperCase()
-                                           );
-
-        Assertions.assertEquals(JsArray.parse("[{\"A\":1,\"B\":\"B\",\"C\":{}},null,{\"C\":1,\"D\":\"D\"},true,[{\"E\":1,\"F\":\"F\"}]]\n")
-                                                     ,
-                                arr2
-                               );
-
-
-    }
 
 
     @Test

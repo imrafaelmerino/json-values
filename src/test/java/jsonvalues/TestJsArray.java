@@ -170,14 +170,8 @@ public class TestJsArray
                                  JsStr.of("G")
                                 );
 
-        JsArray arr1 = arr.mapValues(pair -> pair.mapIfStr(s ->
-                                                          {
-                                                              final int index = pair.path.last()
-                                                                                         .asIndex().n;
-                                                              return s.concat(String.valueOf(index));
-                                                          })
-                                    .value
-                                    );
+        JsArray arr1 = arr.mapValues(p -> JsStr.prism.modify(s->
+            s.concat(String.valueOf(p.path.last().asIndex().n))).apply(p.value));
 
         Assertions.assertNotEquals(arr,
                                    arr1
@@ -204,7 +198,7 @@ public class TestJsArray
                                  JsStr.of("c")
                                 );
 
-        final JsArray newArr = arr.mapValues(p -> p.mapIfStr(String::toUpperCase).value);
+        final JsArray newArr = arr.mapValues(p -> JsStr.prism.modify(String::toUpperCase).apply(p.value));
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -228,9 +222,7 @@ public class TestJsArray
                                  JsInt.of(2),
                                  JsObj.empty()
                                 );
-        JsArray newArr = arr.mapValues(p -> p.mapIfInt(i -> i + 10).value,
-                                      p -> p.value.isInt()
-                                      );
+        JsArray newArr = arr.mapValues(p -> JsInt.prism.modify(i->i+10).apply(p.value));
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -265,7 +257,7 @@ public class TestJsArray
                                 );
 
 
-        final int result = arr.mapValues(p -> p.mapIfInt(i -> i + 100).value
+        final int result = arr.mapValues(p ->JsInt.prism.modify(i->i+100).apply(p.value)
                                         )
                               .reduce(Integer::sum,
                                       pair -> pair.value.toJsInt().value,
@@ -273,10 +265,7 @@ public class TestJsArray
                                      )
                               .orElse(-1);
 
-        final int result1 = arr.mapValues(p -> p.value.toJsInt()
-                                                      .map(i -> i + 100),
-                                         p -> p.value.isInt()
-                                         )
+        final int result1 = arr.mapValues(p -> JsInt.prism.modify(i->i+100).apply(p.value))
                                .reduce(Integer::sum,
                                        pair -> pair.value.toJsInt().value,
                                        p -> p.value.isInt()
@@ -293,17 +282,14 @@ public class TestJsArray
                                );
 
 
-        final int result2 = arr.mapAllValues(p -> p.mapIfInt(i -> i + 100).value
-                                            )
+        final int result2 = arr.mapAllValues(p -> JsInt.prism.modify(i->i+100).apply(p.value))
                                .reduceAll(Integer::sum,
                                         pair -> pair.value.toJsInt().value,
                                         p -> p.value.isInt()
                                          )
                                .orElse(-1);
 
-        final int result3 = arr.mapAllValues(p -> p.value.toJsInt()
-                                                         .map(i -> i + 100),
-                                          p -> p.value.isInt()
+        final int result3 = arr.mapAllValues(p -> JsInt.prism.modify(i->i+100).apply(p.value)
                                             )
                                .reduceAll(Integer::sum,
                                         pair -> pair.value.toJsInt().value,
@@ -569,100 +555,6 @@ public class TestJsArray
                                );
     }
 
-    @Test
-    public void test_map_json_immutable_array() throws MalformedJson
-    {
-        final JsObj of = JsObj.of("c",
-                                  JsStr.of("C"),
-                                  "d",
-                                  JsStr.of("D"),
-                                  "e",
-                                  JsObj.of("f",
-                                           JsStr.of("F")
-                                          )
-                                 );
-        final JsArray arr = JsArray.of(JsObj.of("a",
-                                                JsObj.empty(),
-                                                "b",
-                                                JsStr.of("B")
-                                               ),
-                                       NULL,
-                                       JsObj.empty(),
-                                       JsArray.empty(),
-                                       of
-                                      );
-
-
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
-          JsInt.of(json.size())
-                                                                                   );
-
-        final JsArray newArr = arr.mapObjs((p, o) ->
-                                           {
-                                               Assertions.assertEquals(o,
-                                                                       arr.get(p)
-                                                                      );
-                                               return addSizeFn.apply(p,
-                                                                      o
-                                                                     );
-                                           },
-                                           (p, o) -> o.isNotEmpty()
-                                          );
-
-        Assertions.assertNotEquals(arr,
-                                   newArr
-                                  );
-
-        Assertions.assertEquals(JsArray.parse("[{\"size\":2,\"a\":{},\"b\":\"B\"},null,{},[],{\"e\":{\"f\":\"F\"},\"size\":3,\"c\":\"C\",\"d\":\"D\"}]\n")
-        ,
-                                newArr
-                               );
-
-        final JsArray arr1 = JsArray.of(JsObj.of("a",
-                                                 JsObj.empty(),
-                                                 "b",
-                                                 JsStr.of("B")
-                                                ),
-                                        NULL,
-                                        JsObj.empty(),
-                                        JsArray.empty(),
-                                        JsObj.of("c",
-                                                 JsArray.empty(),
-                                                 "d",
-                                                 JsStr.of("D"),
-                                                 "e",
-                                                 JsObj.of("f",
-                                                          JsStr.of("F"),
-                                                          "g",
-                                                          JsObj.of("h",
-                                                                   JsStr.of("H")
-                                                                  )
-                                                         )
-                                                )
-                                       );
-
-        final JsArray newArr1 = arr1.mapAllObjs((p, o) ->
-                                              {
-                                                  Assertions.assertEquals(o,
-                                                                          arr1.get(p)
-                                                                         );
-                                                  return addSizeFn.apply(p,
-                                                                         o
-                                                                        );
-                                              },
-                                                (p, o) -> o.isNotEmpty()
-                                               );
-
-
-        Assertions.assertNotEquals(arr1,
-                                   newArr1
-                                  );
-
-        Assertions.assertEquals(JsArray.parse("[{\"size\":2,\"a\":{},\"b\":\"B\"},null,{},[],{\"e\":{\"size\":2,\"f\":\"F\",\"g\":{\"size\":1,\"h\":\"H\"}},\"size\":3,\"c\":[],\"d\":\"D\"}]\n")
-        ,
-                                newArr1
-                               );
-    }
 
     @Test
     public void test_map_json_immutable_with_predicate() throws MalformedJson
@@ -690,14 +582,15 @@ public class TestJsArray
 
         final JsArray a = arr.mapAllObjs((path, obj) ->
                                        {
+
                                            Assertions.assertEquals(obj,
                                                                    arr.get(path)
                                                                   );
+                                           if(obj.isEmpty()) return obj;
                                            return obj.set(JsPath.fromKey("size"),
                                              JsInt.of(obj.size())
                                                          );
-                                       },
-                                         (p, obj) -> obj.isNotEmpty()
+                                       }
                                         );
 
 

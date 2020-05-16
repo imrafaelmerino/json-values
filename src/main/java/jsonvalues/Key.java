@@ -9,6 +9,8 @@ import static java.util.Objects.requireNonNull;
 public final class Key implements Position
 {
 
+  public static final JsKeyPrism prism= new JsKeyPrism();
+
     /**
      * name of the key.
      */

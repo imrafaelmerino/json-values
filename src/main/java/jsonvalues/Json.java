@@ -343,20 +343,6 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   T mapValues(final Function<? super JsPair, ? extends JsValue> fn);
 
-  /**
-   Maps the values in the first level of this json that satisfies a given predicate.
-   @param fn the mapping function
-   @param predicate the given predicate that determines what JsValues will be mapped
-   @return same this instance or a new mapped json of the same type T
-
-
-   @see #mapObjs(BiFunction, BiPredicate) to map jsons
-   @see #mapKeys(Function, Predicate) to map keys of json objects
-   @see #mapAllValues(Function, Predicate) to map all the values and not only the first level
-   */
-  T mapValues(final Function<? super JsPair, ? extends JsValue> fn,
-              final Predicate<? super JsPair> predicate
-             );
 
   /**
    Maps all the values of this json.
@@ -368,18 +354,6 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn);
 
-  /**
-   Maps all the values of this json that satisfies a given predicate.
-   @param fn the  mapping function
-   @param predicate the given predicate that determines what JsValues will be mapped
-   @return same this instance or a new mapped json of the same type TT
-   @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
-   @see #mapAllKeys(Function, Predicate) to map keys of json objects
-   @see #mapValues(Function, Predicate) to map only the first level
-   */
-  T mapAllValues(final Function<? super JsPair, ? extends JsValue> fn,
-                 final Predicate<? super JsPair> predicate
-                );
 
   /**
    Maps the keys in the first level of this json.
@@ -391,19 +365,6 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   T mapKeys(final Function<? super JsPair, String> fn);
 
-  /**
-   Maps the keys in the first level of this json that satisfies a given predicate.
-   @param fn the mapping function
-   @param predicate the given predicate that determines what keys will be mapped
-   @return same this instance or a new mapped json of the same type T
-   @see #mapObjs(BiFunction, BiPredicate) to map jsons
-   @see #mapValues(Function, Predicate) to map values
-   @see #mapAllKeys(Function, Predicate) to map all the keys and not only the first level
-   */
-
-  T mapKeys(final Function<? super JsPair, String> fn,
-            final Predicate<? super JsPair> predicate
-           );
 
   /**
    Maps all the keys of this json.
@@ -415,31 +376,6 @@ public interface Json<T extends Json<T>> extends JsValue
    */
   T mapAllKeys(final Function<? super JsPair, String> fn);
 
-  /**
-   Maps all the keys of this json that satisfies a given predicate.
-   @param fn the mapping function
-   @param predicate the given predicate that determines what keys will be mapped
-   @return same this instance or a new mapped json of the same type T
-   @see #mapAllValues(Function, Predicate) to map values
-   @see #mapAllObjs(BiFunction, BiPredicate) to map jsons
-   @see #mapKeys(Function, Predicate) to map only the first level
-   */
-  T mapAllKeys(final Function<? super JsPair, String> fn,
-               final Predicate<? super JsPair> predicate
-              );
-
-  /**
-   Maps the jsons in the first level of this json that satisfies a given predicate.
-   @param fn the mapping function
-   @param predicate the given predicate that determines what Jsons will be mapped
-   @return same this instance or a new mapped json of the same type T
-   @see #mapValues(Function, Predicate) to map values
-   @see #mapKeys(Function, Predicate) to map keys of json objects
-   @see #mapAllObjs(BiFunction, BiPredicate) to map all the jsons and not only the first level
-   */
-  T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-            final BiPredicate<? super JsPath, ? super JsObj> predicate
-           );
 
   /**
    Maps the jsons in the first level of this json.
@@ -449,21 +385,9 @@ public interface Json<T extends Json<T>> extends JsValue
    @see #mapKeys(Function) to map keys of json objects
    @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
    */
-  T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn
+  T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn
            );
 
-  /**
-   Maps all the jsons of this json that satisfies a given predicate.
-   @param fn the  mapping function
-   @param predicate the given predicate that determines what Jsons will be mapped
-   @return same this instance or a new mapped json of the same type T
-   @see #mapAllValues(Function, Predicate) to map values
-   @see #mapAllKeys(Function, Predicate) to map keys of json objects
-   @see #mapObjs(BiFunction, BiPredicate) to map only the first level
-   */
-  T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn,
-               final BiPredicate<? super JsPath, ? super JsObj> predicate
-              );
 
   /**
    Maps all the jsons of this json.
@@ -473,7 +397,7 @@ public interface Json<T extends Json<T>> extends JsValue
    @see #mapAllKeys(Function) to map keys of json objects
    @see #mapObjs(BiFunction) to map only the first level
    */
-  T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsObj> fn);
+  T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn);
 
 
   /**
@@ -486,23 +410,9 @@ public interface Json<T extends Json<T>> extends JsValue
    @param element the JsElem that will be inserted
    @return the same instance or a new json of the same type T
    */
-  default T set(final JsPath path,
+  T set(final JsPath path,
                 final JsValue element
-               )
-  {
-    requireNonNull(path);
-    requireNonNull(element);
-    if (element.isNothing())
-    {
-      //this is an instance of T (recursive type)
-      @SuppressWarnings("unchecked") final T t = (T) this;
-      return t;
-    }
-
-    return set(path,
-               element
-              );
-  }
+               );
 
 
   /**
