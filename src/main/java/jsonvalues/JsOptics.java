@@ -16,7 +16,6 @@ public class JsOptics {
 
   public static class JsArrayLenses {
 
-
     public JsValueLens<JsArray> value(final JsPath path) {
       return new JsValueLens<>(Objects.requireNonNull(path));
     }
@@ -105,7 +104,6 @@ public class JsOptics {
 
   public static class JsArrayOptionals {
 
-
     public JsOptional<JsArray, String> str(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsStr.prism);
     }
@@ -179,7 +177,6 @@ public class JsOptics {
       return JsOptics.array.lens.value(index).compose(JsArray.prism);
     }
 
-
   }
 
   public static class JsObjOptionals {
@@ -208,7 +205,6 @@ public class JsOptics {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsLong.prism);
     }
 
-
     public  JsOptional<JsObj, Integer> intNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsInt.prism);
     }
@@ -233,7 +229,6 @@ public class JsOptics {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsBigDec.prism);
     }
 
-
     public  JsOptional<JsObj, BigInteger> integralNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsBigInt.prism);
     }
@@ -241,7 +236,6 @@ public class JsOptics {
     public  JsOptional<JsObj, BigInteger> integralNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsBigInt.prism);
     }
-
 
     public  JsOptional<JsObj, JsObj> obj(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsObj.prism);

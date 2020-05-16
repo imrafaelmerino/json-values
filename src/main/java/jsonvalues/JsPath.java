@@ -5,7 +5,6 @@ import io.vavr.collection.Vector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.net.URLEncoder;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -84,8 +83,6 @@ public final class JsPath implements Comparable<JsPath>
     private static final Key KEY_SINGLE_QUOTE = Key.of("'");
     private static final String MINUS_ONE = "-1";
     private static final String UTF8 = "utf-8";
-
-
     private static final Vector<Position> EMPTY_VECTOR = Vector.empty();
     private static final JsPath EMPTY = new JsPath(EMPTY_VECTOR);
 
@@ -134,7 +131,6 @@ public final class JsPath implements Comparable<JsPath>
         return (i != 0) ? i : this.tail()
                                   .compareTo(that.tail());
 
-
     }
 
     /**
@@ -157,8 +153,8 @@ public final class JsPath implements Comparable<JsPath>
      @param <T> the type of the result
      @return an object of type T
      */
-    public <T> T ifEmptyElse(Supplier<T> emptySupplier,
-                             Supplier<T> noneEmptySupplier
+    public <T> T ifEmptyElse(final Supplier<T> emptySupplier,
+                             final Supplier<T> noneEmptySupplier
                             )
     {
 
@@ -183,9 +179,9 @@ public final class JsPath implements Comparable<JsPath>
      @param <T> the type of the result
      @return an object of type T
      */
-    public <T> T ifPredicateElse(Predicate<? super JsPath> predicate,
-                                 Supplier<T> ifTrueFn,
-                                 Supplier<T> ifFalseFn
+    public <T> T ifPredicateElse(final Predicate<? super JsPath> predicate,
+                                 final Supplier<T> ifTrueFn,
+                                 final Supplier<T> ifFalseFn
                                 )
     {
 
@@ -238,7 +234,7 @@ public final class JsPath implements Comparable<JsPath>
      @param i the value of the index to be appended
      @return a new JsPath with the Index appended to the back
      */
-    public JsPath index(int i)
+    public JsPath index(final int i)
     {
         return new JsPath(positions.append(Index.of(i)));
 
@@ -266,31 +262,19 @@ public final class JsPath implements Comparable<JsPath>
     }
 
     /**
-
-     @return false if this path is not empty
-     */
-    public boolean isNotEmpty()
-    {
-        return !positions.isEmpty();
-    }
-
-    /**
      creates a new JsPath appending the key to <code>this</code> JsPath.
      @param key the key name to be appended in raw, without encoding nor single-quoting like in {@link JsPath#path(String)} )}
      @return a JsPath with the key appended to the back
      */
-    public JsPath key(String key)
+    public JsPath key(final String key)
     {
         return new JsPath(positions.append(Key.of(requireNonNull(key))));
-
-
     }
 
 
     /**
      returns the last position <code>this</code> JsPath if it's not empty or a exception otherwise.
      @return the last position the JsPath witch is an object of type Position representing and Index or a Key
-
      @throws UserError if the JsPath is empty
      */
     public Position last()
@@ -349,7 +333,7 @@ public final class JsPath implements Comparable<JsPath>
         }
     };
 
-    public static JsPath path(String path)
+    public static JsPath path(final String path)
     {
         if (requireNonNull(path).equals("")) return EMPTY;
         if (path.equals("#")) return EMPTY;
@@ -444,41 +428,6 @@ public final class JsPath implements Comparable<JsPath>
     }
 
     /**
-     Returns a string representation of this path following the format defined in the RFC 6901 for uri
-     fragments, with the exception that keys which names are numbers are single-quoted
-     Example: #/a/b/0/'1'/c+d  where keys have been been url-encoded
-     @return a string representation of this JsPath following the RFC 6901
-     */
-    public String toUriFragment()
-    {
-        if (positions.isEmpty()) return "";
-        return positions.iterator()
-                        .map(pos ->
-                                 pos.match(key ->
-                                                 {
-                                                     if (key.equals("")) return key;
-                                                     try
-                                                     {
-                                                         return isNumeric(key) ? String.format("'%s'",
-                                                                                               key
-                                                                                              ) : URLEncoder.encode(key,
-                                                                                                                    UTF8
-                                                                                                                   );
-                                                     }
-                                                     catch (UnsupportedEncodingException e)
-                                                     {
-                                                         throw InternalError.encodingNotSupported(e);
-                                                     }
-                                                 },
-                                                 Integer::toString
-                                                )
-                        ).mkString("#/",
-                                  "/",
-                                  ""
-                                 );
-    }
-
-    /**
 
      @param token not empty string
      @return true if is a valid numeric position in a path
@@ -502,9 +451,8 @@ public final class JsPath implements Comparable<JsPath>
      @param map the given map function
      @return a new JsPath with all its Keys mapped with the given function
      */
-    public JsPath mapKeys(UnaryOperator<String> map)
+    public JsPath mapKeys(final UnaryOperator<String> map)
     {
-
         requireNonNull(map);
         if (this.isEmpty()) return EMPTY;
         final Position head = this.head();
@@ -515,9 +463,7 @@ public final class JsPath implements Comparable<JsPath>
                                                          ));
         if (tail.isEmpty()) return headPath;
 
-
         return headPath.append(tail.mapKeys(map));
-
 
     }
 
@@ -529,9 +475,7 @@ public final class JsPath implements Comparable<JsPath>
     @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath append(final JsPath path)
     {
-        return new JsPath(this.positions.appendAll(requireNonNull(path).positions
-                                                   )
-        );
+        return new JsPath(this.positions.appendAll(requireNonNull(path).positions));
     }
 
     /**
@@ -542,8 +486,7 @@ public final class JsPath implements Comparable<JsPath>
     @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath prepend(final JsPath path)
     {
-        return new JsPath(requireNonNull(path).positions.appendAll(this.positions
-                                                                   ));
+        return new JsPath(requireNonNull(path).positions.appendAll(this.positions));
     }
 
     /**
@@ -552,7 +495,7 @@ public final class JsPath implements Comparable<JsPath>
      @return true if that is a JsPath which represents the same location as this JsPath
      */
     @Override
-    public boolean equals( Object that)
+    public boolean equals(final Object that)
     {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;
@@ -575,7 +518,7 @@ public final class JsPath implements Comparable<JsPath>
      @param path the given path
      @return true if this JsPath starts with the given JsPath
      */
-    public boolean startsWith(JsPath path)
+    public boolean startsWith(final JsPath path)
     {
         if (requireNonNull(path).isEmpty()) return true;
         if (this.isEmpty()) return false;
@@ -591,7 +534,7 @@ public final class JsPath implements Comparable<JsPath>
      @param path the given path
      @return true if this JsPath ends with the given JsPath
      */
-    public boolean endsWith(JsPath path)
+    public boolean endsWith(final JsPath path)
     {
         if (requireNonNull(path).isEmpty()) return true;
         if (this.isEmpty()) return false;

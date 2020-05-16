@@ -1161,9 +1161,6 @@ public class TestJsObjParser
   public void test_numbers()
   {
 
-
-
-
     String obj = "{\n"
       + "  \"a\": 10E-5,\n"
       + "  \"b\": -10E+3,\n"
@@ -1188,8 +1185,7 @@ public class TestJsObjParser
                                                           "i",decimal
                                                          )).parse(obj);
 
-    Assertions.assertEquals(JsObj.parse(obj),
-                            parsed);
+    Assertions.assertEquals(JsObj.parse(obj), parsed);
   }
 
   @Test

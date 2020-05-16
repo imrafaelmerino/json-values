@@ -39,33 +39,23 @@ final class OpMapArrObjs extends OpMapObjs<JsArray> {
 
   @Override
   Trampoline<JsArray> mapAll(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
-                             final JsPath startingPath
-  ) {
+                             final JsPath startingPath) {
     return json.ifEmptyElse(Trampoline.done(json),
       (head, tail) ->
       {
         final JsPath headPath = startingPath.inc();
-        final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).mapAll(fn,
-          headPath
-        ));
-        return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> {
-          JsValue headMapped = fn.apply(headPath,
-            headObj
-          );
-          if(headMapped.isObj())
-            return new OpMapObjObjs(headMapped.toJsObj()).mapAll(fn,
-              headPath
-            ).map(tailResult::prepend);
-          return more(() -> tailCall).map(t -> t.prepend(headMapped));
-        })
-          ,
-          headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArr).mapAll(fn,
-            headPath.index(-1)
-          )
-            .map(tailResult::prepend)),
+        final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).mapAll(fn, headPath));
+        return ifJsonElse(
+          headObj -> more(() -> tailCall).flatMap(tailResult -> { JsValue headMapped = fn.apply(headPath, headObj);
+              if(headMapped.isObj()) return new OpMapObjObjs(headMapped.toJsObj()).mapAll(fn, headPath)
+                                                                                  .map(tailResult::prepend);
+              return more(() -> tailCall).map(t -> t.prepend(headMapped));
+          }),
+          headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArr)
+                                         .mapAll(fn, headPath.index(-1))
+                                         .map(tailResult::prepend)),
           headElem -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
-        )
-          .apply(head);
+        ).apply(head);
       }
 
     );

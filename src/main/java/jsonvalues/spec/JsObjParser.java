@@ -3,27 +3,21 @@ package jsonvalues.spec;
 import com.dslplatform.json.parsers.JsParserException;
 import com.dslplatform.json.parsers.JsSpecParser;
 import jsonvalues.JsObj;
-
 import java.io.InputStream;
-
 import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static java.util.Objects.requireNonNull;
-
 public class JsObjParser
 {
 
-  /**
-   @param spec the Json spec what defines the schema the json has to conform
-   @param strict if true, no more keys different than the specified by the spec are allowed
-   */
+
   private final JsSpecParser parser;
 
+  /**
+   @param spec the Json spec what defines the schema the json has to conform
+   */
   public JsObjParser(final JsObjSpec spec)
   {
-
-
    parser = spec.parser();
-
   }
 
 

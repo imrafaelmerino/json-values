@@ -421,8 +421,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return intersection(this,
                         that,
                         ARRAY_AS
-                       )
-      .get();
+                       ).get();
   }
 
   /**
@@ -483,18 +482,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   }
 
   @Override
-  public Iterator<Tuple2<String, JsValue>> iterator()
+  public Iterator<Tuple2<String,JsValue>> iterator()
   {
     return map.iterator();
   }
 
   public final JsObj mapAllKeys(final Function<? super JsPair, String> fn)
   {
-    return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
-                                         EMPTY_PATH
-                                        )
-                                 .get();
-
+    return new OpMapObjKeys(this).mapAll(requireNonNull(fn), EMPTY_PATH).get();
   }
 
 
@@ -505,19 +500,13 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn)
   {
-    return new OpMapObjElems(this).mapAll(requireNonNull(fn),
-                                          EMPTY_PATH
-                                         )
-                                  .get();
+    return new OpMapObjElems(this).mapAll(requireNonNull(fn), EMPTY_PATH).get();
   }
 
 
   public final JsObj mapKeys(final Function<? super JsPair, String> fn)
   {
-    return new OpMapObjKeys(this).map(requireNonNull(fn),
-                                      EMPTY_PATH
-                                     )
-                                 .get();
+    return new OpMapObjKeys(this).map(requireNonNull(fn), EMPTY_PATH).get();
   }
 
 
@@ -1523,39 +1512,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     }
   }
 
-  /**
-   Tries to parse the string into an immutable object,  performing the specified transformations during the parsing.
-   It's faster to do certain operations right while the parsing instead of doing the parsing and
-   applying them later.
-   @param str  string to be parsed
-   @param builder builder with the transformations that will be applied during the parsing
-   @return a JsObj object
-   @throws MalformedJson if the string doesnt represent a json object
-   */
-  public static JsObj parse(final String str,
-                            final ParseBuilder builder
-                           ) throws MalformedJson
-  {
 
-    try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str.getBytes())))
-    {
-      final JsonToken keyEvent = parser.nextToken();
-      if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
-      return new JsObj(JsObj.parse(parser,
-                                   requireNonNull(builder).create(),
-                                   JsPath.empty()
-                                  )
-
-
-      );
-
-
-    }
-    catch (IOException e)
-    {
-      throw new MalformedJson(e.getMessage());
-    }
-  }
 
   static HashMap<String, JsValue> parse(final JsonParser parser) throws IOException
   {
@@ -1600,104 +1557,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                    );
     }
 
-    return map;
-
-  }
-
-  static HashMap<String, JsValue> parse(final JsonParser parser,
-                                        final ParseBuilder.Options options,
-                                        final JsPath path
-                                       ) throws IOException
-  {
-
-    HashMap<String, JsValue> map = HashMap.empty();
-    final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
-    while (parser.nextToken() != JsonToken.END_OBJECT)
-    {
-      final String key = options.keyMap.apply(parser.getCurrentName());
-      final JsPath currentPath = path.key(key);
-      final JsPair pair;
-      switch (parser.nextToken()
-                    .id())
-      {
-        case JsonTokenId.ID_STRING:
-          pair = JsPair.of(currentPath,
-                           JsStr.of(parser.getValueAsString())
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-        case JsonTokenId.ID_NUMBER_INT:
-          pair = JsPair.of(currentPath,
-                           JsNumber.of(parser)
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-        case JsonTokenId.ID_NUMBER_FLOAT:
-          pair = JsPair.of(currentPath,
-                           JsBigDec.of(parser.getDecimalValue())
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-        case JsonTokenId.ID_TRUE:
-          pair = JsPair.of(currentPath,
-                           TRUE
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-        case JsonTokenId.ID_FALSE:
-          pair = JsPair.of(currentPath,
-                           FALSE
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-        case JsonTokenId.ID_NULL:
-          pair = JsPair.of(currentPath,
-                           NULL
-                          );
-          map = (condition.test(pair)) ? map.put(key,
-                                                 options.elemMap.apply(pair)
-                                                ) : map;
-          break;
-
-        case JsonTokenId.ID_START_OBJECT:
-          if (options.keyFilter.test(currentPath))
-          {
-            map = map.put(key,
-                          new JsObj(parse(parser,
-                                          options,
-                                          currentPath
-                                         )
-                          )
-                         );
-          }
-          break;
-        case JsonTokenId.ID_START_ARRAY:
-          if (options.keyFilter.test(currentPath))
-          {
-            map = map.put(key,
-                          new JsArray(JsArray.parse(parser,
-                                                    options,
-                                                    currentPath.index(-1)
-                                                   )
-                          )
-                         );
-          }
-          break;
-        default:
-          throw InternalError.tokenNotExpected(parser.currentToken()
-                                                     .name());
-      }
-    }
     return map;
 
   }

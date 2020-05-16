@@ -666,58 +666,6 @@ public class TestJsArray
     }
 
     @Test
-    public void test_parse_string_into_immutable_json_array_with_options() throws MalformedJson, IOException
-    {
-
-        final JsArray arr = JsArray.parse("[1,2,3,true,false,null,[null,true,4]]",
-                                          ParseBuilder.builder()
-                                                      .withValueFilter(p -> p.value.isInt())
-                                                      .withElemMap(p -> Functions.mapIfInt(i -> i + 10)
-                                                                                 .apply(p.value))
-                                         );
-
-        Assertions.assertEquals(JsArray.of(JsInt.of(11),
-                                           JsInt.of(12),
-                                           JsInt.of(13),
-                                           JsArray.of(14)
-                                          ),
-                                arr
-                               );
-
-    }
-
-    @Test
-    public void test_parse_with_options_immutable() throws MalformedJson, IOException
-    {
-        final JsArray array = JsArray.of(NULL,
-                                         JsArray.of(1,
-                                                    2
-                                                   ),
-                                         NULL,
-                                         JsArray.of("a",
-                                                    "b"
-                                                   ),
-                                         NULL
-                                        );
-        Assertions.assertEquals(array.filterAllValues(p ->
-                                                   {
-                                                       Assertions.assertEquals(p.value,
-                                                                               array.get(p.path)
-                                                                              );
-                                                       return p.value.isNotNull();
-                                                   }),
-                                JsArray.parse(
-                                array.toString(),
-                                ParseBuilder.builder()
-                                            .withValueFilter(p -> p.value.isNotNull())
-                                             )
-
-                               );
-    }
-
-
-
-    @Test
     public void test_reduce_strings()
     {
         final JsObj of = JsObj.of("key",

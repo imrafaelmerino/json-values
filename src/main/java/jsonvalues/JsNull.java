@@ -8,7 +8,6 @@ public final class JsNull implements JsValue
 {
     public static final int ID = 1;
 
-
     @Override
     public int id()
     {
@@ -19,11 +18,7 @@ public final class JsNull implements JsValue
      */
     public static final JsNull NULL = new JsNull();
 
-
-    private JsNull()
-    {
-    }
-
+    private JsNull() {}
 
     /**
      Returns true if that is the singleton {@link JsNull#NULL}.

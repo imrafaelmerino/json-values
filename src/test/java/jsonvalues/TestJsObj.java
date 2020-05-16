@@ -738,7 +738,8 @@ public class TestJsObj {
 
     JsObj o = JsObj.of("a", JsBigDec.of(BigDecimal.valueOf(1.5)),
                        "b", JsBigInt.of(BigInteger.valueOf(Long.MAX_VALUE)),
-                       "c",JsDouble.of(1.5d)
+                       "c",JsDouble.of(1.5d),
+                       "d",JsLong.of(15L)
                       );
 
     Assertions.assertNull(o.getStr("b"));
@@ -747,27 +748,14 @@ public class TestJsObj {
     Assertions.assertNull(o.getObj("b"));
     Assertions.assertNull(o.getDouble("b"));
     Assertions.assertNull(o.getArray("b"));
+    Assertions.assertNull(o.getLong("c"));
 
     Assertions.assertEquals(BigDecimal.valueOf(1.5), o.getBigDec("a"));
     Assertions.assertEquals(BigInteger.valueOf(Long.MAX_VALUE), o.getBigInt("b"));
     Assertions.assertEquals(Double.valueOf(1.5), o.getDouble("c"));
+    Assertions.assertEquals(Long.valueOf(15L), o.getLong("d"));
 
   }
 
-  @Test
-  public void testMap() {
-
-    JsObj o = JsObj.of("a", JsStr.of("a"),
-                       "b", JsStr.of("b"),
-                       "c", JsStr.of("c"),
-                       "d", JsStr.of("d"),
-                       "e",JsObj.of("d", JsStr.of("d"),
-                                         "e",JsInt.of(1),
-                                         "f",JsInt.of(2),
-                                         "g",JsInt.of(3)
-      )
-    );
-
-  }
 
 }

@@ -1,7 +1,6 @@
 package jsonvalues;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.LongPredicate;
 import java.util.function.LongUnaryOperator;
 
@@ -24,8 +23,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
                                                         return s.toJsBigInt().longValueExact();
                                                       return Optional.empty();
                                                     },
-                                                    JsLong::of
-  );
+                                                    JsLong::of);
 
   @Override
   public int id()

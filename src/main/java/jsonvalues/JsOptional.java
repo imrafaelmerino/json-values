@@ -4,7 +4,6 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-
 public class JsOptional<S extends Json<S>, T>
 {
   public final Function<S, Optional<T>> get;
@@ -16,9 +15,6 @@ public class JsOptional<S extends Json<S>, T>
   public final Function<Supplier<T>,Function<S,S>> setIfAbsent;
 
   public final Function< Supplier<T>, Function<S,S>> setIfPresent;
-
-
-
 
   JsOptional(final Function<S, Optional<T>> get,
              final Function<T, Function<S, S>> set

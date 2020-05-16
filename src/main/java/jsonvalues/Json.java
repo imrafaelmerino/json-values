@@ -80,7 +80,7 @@ public interface Json<T extends Json<T>> extends JsValue
    @param element the give element JsElem whose presence in this JsArray is to be tested
    @return true if this JsArray contains the  JsElem
    */
-  boolean containsValue(JsValue element);
+  boolean containsValue(final JsValue element);
 
 
   /**
@@ -302,8 +302,8 @@ public interface Json<T extends Json<T>> extends JsValue
    @return an object of type A
 
    */
-  default <A> A ifEmptyElse(Supplier<A> emptySupplier,
-                            Supplier<A> nonemptySupplier
+  default <A> A ifEmptyElse(final Supplier<A> emptySupplier,
+                            final Supplier<A> nonemptySupplier
                            )
   {
 
@@ -325,7 +325,7 @@ public interface Json<T extends Json<T>> extends JsValue
     return !isEmpty();
   }
 
-  default T map(UnaryOperator<T> fn)
+  default T map(final UnaryOperator<T> fn)
   {
     //this is an instance of T (recursive type)
     @SuppressWarnings("unchecked") T o = fn.apply((T) this);
@@ -385,8 +385,7 @@ public interface Json<T extends Json<T>> extends JsValue
    @see #mapKeys(Function) to map keys of json objects
    @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
    */
-  T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn
-           );
+  T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn);
 
 
   /**
@@ -411,8 +410,7 @@ public interface Json<T extends Json<T>> extends JsValue
    @return the same instance or a new json of the same type T
    */
   T set(final JsPath path,
-                final JsValue element
-               );
+        final JsValue element);
 
 
   /**
@@ -425,9 +423,9 @@ public interface Json<T extends Json<T>> extends JsValue
    @return an {@link Optional} describing the of of the reduction
    @see #reduceAll(BinaryOperator, Function, Predicate) to apply the reduction in all the Json and not only in the first level
    */
-  <R> Optional<R> reduce(BinaryOperator<R> op,
-                         Function<? super JsPair, R> map,
-                         Predicate<? super JsPair> predicate
+  <R> Optional<R> reduce(final BinaryOperator<R> op,
+                         final Function<? super JsPair, R> map,
+                         final Predicate<? super JsPair> predicate
                         );
 
   /**
@@ -441,9 +439,9 @@ public interface Json<T extends Json<T>> extends JsValue
 
    @see #reduce(BinaryOperator, Function, Predicate) to apply the reduction only in the first level
    */
-  <R> Optional<R> reduceAll(BinaryOperator<R> op,
-                            Function<? super JsPair, R> map,
-                            Predicate<? super JsPair> predicate
+  <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                            final Function<? super JsPair, R> map,
+                            final Predicate<? super JsPair> predicate
                            );
 
   /**
@@ -486,13 +484,13 @@ public interface Json<T extends Json<T>> extends JsValue
   @SuppressWarnings("squid:S00100")
   Stream<JsPair> streamAll();
 
-  default long times(JsValue e)
+  default long times(final JsValue e)
   {
     return stream().filter(p -> p.value.equals(requireNonNull(e)))
                    .count();
   }
 
-  default long timesAll(JsValue e)
+  default long timesAll(final JsValue e)
   {
     return streamAll().filter(p -> p.value.equals(requireNonNull(e)))
                       .count();
@@ -503,7 +501,7 @@ public interface Json<T extends Json<T>> extends JsValue
    *
    * @param ouputstream the output stream
    */
-  default void serialize(OutputStream ouputstream) throws SerializerException
+  default void serialize(final OutputStream ouputstream) throws SerializerException
   {
     INSTANCE.serialize(this,
                        requireNonNull(ouputstream)

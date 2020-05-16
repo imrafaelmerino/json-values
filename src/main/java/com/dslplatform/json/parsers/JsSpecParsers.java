@@ -190,10 +190,10 @@ public class JsSpecParsers
   }
 
   public JsSpecParser ofObjSpec(Vector<String> required,
-                         Map<String, JsSpecParser> keyDeserializers,
-                         boolean nullable,
-                         boolean strict
-                        )
+                                Map<String, JsSpecParser> keyDeserializers,
+                                boolean nullable,
+                                boolean strict
+                               )
   {
     return reader ->
     {
@@ -208,8 +208,7 @@ public class JsSpecParsers
       {
         JsObjSpecWithRequiredKeysParser parser = new JsObjSpecWithRequiredKeysParser(required,
                                                                                      keyDeserializers,
-                                                                                     strict
-        );
+                                                                                     strict);
         if (nullable) return parser.nullOrValue(reader);
         else return parser.value(reader);
       }

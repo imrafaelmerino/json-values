@@ -752,27 +752,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
 
   }
 
-  public static JsArray parse(final String str,
-                              final ParseBuilder builder
-                             ) throws MalformedJson
-  {
-
-    try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str)))
-    {
-      final JsonToken keyEvent = parser.nextToken();
-      if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-      return new JsArray(parse(parser,
-                               requireNonNull(builder).create(),
-                               JsPath.fromIndex(-1)
-                              )
-      );
-    }
-    catch (IOException e)
-    {
-      throw new MalformedJson(e.getMessage());
-    }
-
-  }
 
   static Vector<JsValue> parse(final JsonParser parser
                               ) throws IOException
@@ -820,93 +799,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     }
   }
 
-  static Vector<JsValue> parse(final JsonParser parser,
-                               final ParseBuilder.Options options,
-                               final JsPath path
-                              ) throws IOException
-  {
-    JsonToken elem;
-    JsPair pair;
-    Vector<JsValue> root = Vector.empty();
-    final Predicate<JsPair> condition = p -> options.elemFilter.test(p) && options.keyFilter.test(p.path);
-    while ((elem = parser.nextToken()) != JsonToken.END_ARRAY)
-    {
-      final JsPath currentPath = path.inc();
-      switch (elem.id())
-      {
-        case JsonTokenId.ID_STRING:
-
-          pair = JsPair.of(currentPath,
-                           JsStr.of(parser.getValueAsString())
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-
-          break;
-        case JsonTokenId.ID_NUMBER_INT:
-
-          pair = JsPair.of(currentPath,
-                           JsNumber.of(parser)
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-
-          break;
-        case JsonTokenId.ID_NUMBER_FLOAT:
-
-          pair = JsPair.of(currentPath,
-                           JsBigDec.of(parser.getDecimalValue())
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-
-          break;
-        case JsonTokenId.ID_TRUE:
-          pair = JsPair.of(currentPath,
-                           TRUE
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-
-          break;
-        case JsonTokenId.ID_FALSE:
-          pair = JsPair.of(currentPath,
-                           FALSE
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-          break;
-        case JsonTokenId.ID_NULL:
-          pair = JsPair.of(currentPath,
-                           NULL
-                          );
-          root = condition.test(pair) ? root.append(options.elemMap.apply(pair)) : root;
-          break;
-        case JsonTokenId.ID_START_OBJECT:
-          if (options.keyFilter.test(currentPath))
-          {
-            root = root.append(new JsObj(JsObj.parse(parser,
-                                                     options,
-                                                     currentPath
-                                                    )
-                               )
-                              );
-          }
-          break;
-        case JsonTokenId.ID_START_ARRAY:
-          if (options.keyFilter.test(currentPath))
-          {
-            root = root.append(new JsArray(parse(parser,
-                                                 options,
-                                                 currentPath.index(-1)
-                                                )
-                               )
-                              );
-          }
-          break;
-        default:
-          throw InternalError.tokenNotExpected(elem.name());
-
-
-      }
-    }
-    return root;
-  }
 
   /**
    Adds one or more elements, starting from the last, to the front of this array.

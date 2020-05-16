@@ -1,7 +1,5 @@
 package jsonvalues.specifications.immutable.jsarray
 
-import java.util.Optional
-import java.util.function.Predicate
 
 import jsonvalues._
 import jsonvalues.specifications.BasePropSpec
@@ -77,91 +75,6 @@ class FactoryMethodsSpec extends BasePropSpec
     check(forAll(jsGen.jsArrGen)
           { js =>
             JsArray.parse(js.toString).equals(js)
-          }
-          )
-  }
-
-  property("json array parser: mapping keys")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withKeyMap(it => it + "!")
-                                       )
-            val allKeysEndsWithExclamation: Predicate[_ >: JsPair] = p => p.path.stream().filter(pos => pos.isKey).allMatch(pos => pos.asKey().name.endsWith("!"))
-            parsed.streamAll().allMatch(allKeysEndsWithExclamation)
-          }
-          )
-  }
-
-
-  property("json array parser: filwithElemFiltertering all obj elements")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-
-            val predicate: JsPair => Boolean = (pair: JsPair) => pair.path.last().isKey
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withValueFilter(ScalaToJava.predicate(predicate))
-                                       )
-            parsed.streamAll().filter(p => p.value.isNotJson && p.path.last().isIndex).findFirst().equals(Optional.empty)
-
-          }
-          )
-  }
-
-  property("json array parser: ignoring null")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withValueFilter(p => p.value.isNotNull)
-                                       )
-
-            val value = parsed.streamAll().filter(p => p.value.isNull).findFirst()
-
-            value.equals(Optional.empty)
-          }
-
-          )
-  }
-
-  property("json array parser: filtertering string values")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withValueFilter(p => !p.value.isStr)
-                                       )
-            parsed.streamAll().filter(p => p.value.isStr).findFirst().equals(Optional.empty)
-          }
-          )
-  }
-
-  property("json array parser: filwithElemFiltertering number values")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-
-            val predicate: Predicate[JsPair] = (pair: JsPair) => pair.value.isNotNumber
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withValueFilter(predicate)
-                                       )
-
-            parsed.streamAll().filter(p => p.value.isNumber).findFirst().equals(Optional.empty)
-          }
-          )
-  }
-
-  property("json array parser: mapping x values")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-            val parsed = JsArray.parse(js.toString,
-                                       ParseBuilder.builder().withElemMap(p => Functions.mapIfStr(_ => "hi").apply(p.value))
-                                       )
-
-            parsed.streamAll().filter(p => p.value.isStr).allMatch(p => p.value.isStr(a => a.equals("hi")))
           }
           )
   }

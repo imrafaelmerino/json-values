@@ -9,8 +9,8 @@ public class JsValueLens<S extends Json<S>> extends JsAbstractLens<S, JsValue> {
 
   JsValueLens(final JsPath path) {
     super(json -> requireNonNull(json).get(path),
-       value -> json -> requireNonNull(json).set(path, requireNonNull(value)
-      )
+          value -> json -> requireNonNull(json).set(path, requireNonNull(value)
+         )
     );
 
     this.setIfAbsent = (json, supplier) ->
@@ -25,7 +25,6 @@ public class JsValueLens<S extends Json<S>> extends JsAbstractLens<S, JsValue> {
     {
       if (!get.apply(json).isNothing())
         return set.apply( supplier.get()).apply(json);
-
       else return json;
     };
 
