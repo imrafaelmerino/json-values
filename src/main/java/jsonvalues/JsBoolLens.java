@@ -1,7 +1,7 @@
 package jsonvalues;
 
 
-class JsBoolLens<S extends Json<S>> extends JsAbstractLens<S, Boolean>
+public class JsBoolLens<S extends Json<S>> extends JsAbstractLens<S, Boolean>
 {
   JsBoolLens(final JsPath path)
   {

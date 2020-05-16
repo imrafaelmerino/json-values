@@ -1192,4 +1192,30 @@ public class TestJsObjParser
                             parsed);
   }
 
+  @Test
+  public void test(){
+    JsObjSpec spec = JsObjSpec.strict("name", str,
+      "surname", str.optional(),
+      "age", integer.optional(),
+      "address", JsObjSpec.strict("street", str,
+        "number", any(it -> it.isInt()),
+        "city", str.nullable(),
+        "coordinates", tuple(decimal, decimal)
+      )
+    );
+
+    JsObjParser parser = new JsObjParser(spec);
+
+   JsObj.of("name", JsStr.of("Rafael"),
+      "surname", JsStr.of("Merino García"),
+      "age", JsInt.of(3),
+      "address",JsObj.of("street", JsStr.of("Elm Street"),
+        "number", JsInt.of(12),
+        "city", JsStr.of("Madrid"),
+        "coordinates", JsArray.of(45.9,18.6)
+      )
+    );
+
+  }
+
 }

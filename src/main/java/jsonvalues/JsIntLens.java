@@ -1,6 +1,6 @@
 package jsonvalues;
 
-class JsIntLens<S extends Json<S>> extends JsAbstractLens<S,Integer>
+public class JsIntLens<S extends Json<S>> extends JsAbstractLens<S,Integer>
 {
   JsIntLens(final JsPath path)
   {

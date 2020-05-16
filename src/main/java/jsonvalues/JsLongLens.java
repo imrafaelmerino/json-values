@@ -1,6 +1,6 @@
 package jsonvalues;
 
-class JsLongLens<S extends Json<S>> extends JsAbstractLens<S,Long>
+public class JsLongLens<S extends Json<S>> extends JsAbstractLens<S,Long>
 {
   JsLongLens(final JsPath path)
   {

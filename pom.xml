@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <packaging>pom</packaging>
+    <packaging>jar</packaging>
     <version>8.0.0-RC3</version>
 
   <name>json-values</name>

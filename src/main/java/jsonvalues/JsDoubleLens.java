@@ -1,7 +1,7 @@
 package jsonvalues;
 
 
-class JsDoubleLens<S extends Json<S>> extends JsAbstractLens<S, Double>
+public class JsDoubleLens<S extends Json<S>> extends JsAbstractLens<S, Double>
 {
   JsDoubleLens(final JsPath path)
   {

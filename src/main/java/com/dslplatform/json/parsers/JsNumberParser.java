@@ -29,8 +29,15 @@ final class JsNumberParser extends AbstractParser
 
     }
     if (number instanceof Double) return JsDouble.of(((double) number));
-    else if (number instanceof Long) return JsLong.of(((long) number));
-    else if (number instanceof BigDecimal) return JsBigDec.of(((BigDecimal) number));
+    else if (number instanceof Long) {
+      long n = (long) number;
+      try {
+        return JsInt.of(Math.toIntExact(n));
+      } catch (ArithmeticException e) {
+        return JsLong.of(n);
+      }
+    } else if (number instanceof BigDecimal)
+      return JsBigDec.of(((BigDecimal) number));
     throw new JsParserException("internal error: not condisered " + number.getClass());
   }
 
