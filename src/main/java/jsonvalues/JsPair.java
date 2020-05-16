@@ -1,7 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Objects;
@@ -305,7 +303,7 @@ public final class JsPair
      @return true if this.element.equals(that.element) and this.path.equals(that.path)
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;

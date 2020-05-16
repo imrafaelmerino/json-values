@@ -48,8 +48,7 @@ import java.io.IOException;
           throwErrorIfStrictAndKeyMissing(reader,
                                           key
                                          );
-          map = map.put(key,
-                        parsers.getOrElse(key,
+          map = map.put(key, parsers.getOrElse(key,
                                           defaultParser
                                          )
                                .parse(reader)

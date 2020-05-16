@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -73,7 +72,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
    @return true if that is a JsNumber with the same value as this
    */
   @Override
-  public boolean equals(@Nullable Object that)
+  public boolean equals( Object that)
   {
     if (this == that) return true;
     if (that == null) return false;

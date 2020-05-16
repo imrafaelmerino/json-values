@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  Represents null, which a valid json value. It's a singleton, only the instance JsNull.NULL exists.
@@ -32,7 +31,7 @@ public final class JsNull implements JsValue
      @return true if that is {@link JsNull#NULL}
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         return that == this;
     }

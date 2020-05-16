@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 /**
  It's a special json element that represents 'nothing'. Inserting nothing in a json leaves the json
@@ -41,7 +40,7 @@ public final class JsNothing implements JsValue
      @return true if that is {@link JsNothing#NOTHING}
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final Object that)
     {
         return this == that;
     }

@@ -2,7 +2,6 @@ package jsonvalues;
 
 
 import io.vavr.collection.Vector;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -553,7 +552,7 @@ public final class JsPath implements Comparable<JsPath>
      @return true if that is a JsPath which represents the same location as this JsPath
      */
     @Override
-    public boolean equals(@Nullable Object that)
+    public boolean equals( Object that)
     {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;

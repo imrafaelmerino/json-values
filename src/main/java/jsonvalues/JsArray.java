@@ -4,7 +4,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.collection.Vector;
-import org.checkerframework.checker.nullness.qual.Nullable;
 import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Iterator;
@@ -42,7 +41,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
   //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
   //is a recommendation from Effective Java to apply the idiom single check for lazy initialization
   @SuppressWarnings("squid:S3077")
-  @Nullable
+
   private volatile String str;
 
   public static final JsOptics.JsArrayOptics optics = JsOptics.array;
@@ -160,7 +159,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
                                              .allMatch(this::containsValue);
   }
 
-  public final boolean equals(final @Nullable Object that)
+  public final boolean equals(final  Object that)
   {
     if (!(that instanceof JsArray)) return false;
     if (this == that) return true;

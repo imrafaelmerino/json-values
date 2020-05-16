@@ -8,7 +8,7 @@ public class JsBigIntLens<S extends Json<S>> extends JsAbstractLens<S, BigIntege
   JsBigIntLens(final JsPath path)
   {
     super(json -> json.getBigInt(path),
-          (json,n) -> json.set(path,JsBigInt.of(n))
+          n -> json -> json.set(path,JsBigInt.of(n))
          );
   }
 }

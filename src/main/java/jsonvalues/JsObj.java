@@ -6,7 +6,6 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import jsonvalues.JsArray.TYPE;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -43,7 +42,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   //squid:S3077: doesn't make any sese, volatile is perfectly valid here an as a matter of fact
   //is a recomendation from Efective Java to apply the idiom single check for lazy initialization
   @SuppressWarnings("squid:S3077")
-  @Nullable
+
   private volatile String str;
 
   public static final JsOptics.JsObjOptics optics = JsOptics.obj;
@@ -112,7 +111,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                        .allMatch(f -> this.containsPath(JsPath.fromKey(f)));
   }
 
-  public final boolean equals(final @Nullable Object that)
+  public final boolean equals(final  Object that)
   {
     if (!(that instanceof JsObj)) return false;
     if (this == that) return true;

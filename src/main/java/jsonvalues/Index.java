@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
 
@@ -106,7 +105,7 @@ public final class Index implements Position
      * @return true if both objects are indexes representing the same position
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;

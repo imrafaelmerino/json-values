@@ -1,9 +1,7 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
-import java.util.OptionalInt;
 import java.util.function.IntPredicate;
 import java.util.function.IntUnaryOperator;
 
@@ -68,7 +66,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
    @return true if that is a JsNumber with the same value as this JsInt.
    */
   @Override
-  public boolean equals(final @Nullable Object that)
+  public boolean equals(final  Object that)
   {
 
     if (this == that) return true;

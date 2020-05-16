@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import static java.util.Objects.requireNonNull;
 
@@ -107,7 +106,7 @@ public final class Key implements Position
      * @return true if both object are Keys with the same name
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;

@@ -92,8 +92,6 @@ class FactoryMethodsSpec extends BasePropSpec
                                      )
             val allKeysEndsWithExclamation: Predicate[_ >: JsPair] = p => p.path.stream().filter(pos => pos.isKey).allMatch(pos => pos.asKey().name.endsWith("!"))
             val bool =parsed.streamAll().allMatch(allKeysEndsWithExclamation)
-            if(!bool)println(js)
-
             bool
           }
           )
@@ -108,9 +106,6 @@ class FactoryMethodsSpec extends BasePropSpec
                                      ParseBuilder.builder().withValueFilter(_ => false)
                                      )
             val bool = parsed.streamAll().filter(p => p.value.isNotJson).findFirst().equals(Optional.empty)
-
-            if(!bool)println(js)
-
             bool
           }
           )
@@ -140,9 +135,6 @@ class FactoryMethodsSpec extends BasePropSpec
                                      )
 
             val bool = parsed.streamAll().filter(p => p.value.isStr).findFirst().equals(Optional.empty)
-
-            if(!bool)println(js)
-
             bool
           }
           )
@@ -159,9 +151,6 @@ class FactoryMethodsSpec extends BasePropSpec
                                      )
 
             val bool = parsed.streamAll().filter(p => p.value.isNumber).findFirst().equals(Optional.empty)
-
-            if(!bool)println(js)
-
             bool
           }
           )

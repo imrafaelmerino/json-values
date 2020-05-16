@@ -7,7 +7,7 @@ public class JsDecimalLens<S extends Json<S>> extends JsAbstractLens<S, BigDecim
   JsDecimalLens(final JsPath path)
   {
     super(json -> json.getBigDec(path),
-          (json,n) -> json.set(path,JsBigDec.of(n))
+          n -> json -> json.set(path,JsBigDec.of(n))
          );
   }
 }

@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Optional;
 
@@ -52,7 +51,7 @@ public final class JsBool implements JsValue
      @return true if <code>that</code> is a JsBool with the same value as <code>this</code> JsBool
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;

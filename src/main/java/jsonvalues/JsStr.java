@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -55,7 +54,7 @@ public final class JsStr implements JsValue, Comparable<JsStr>
      @return true if <code>that</code> is a JsStr with the same value as <code>this</code> JsStr
      */
     @Override
-    public boolean equals(final @Nullable Object that)
+    public boolean equals(final  Object that)
     {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
