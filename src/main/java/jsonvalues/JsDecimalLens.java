@@ -1,0 +1,13 @@
+package jsonvalues;
+
+import java.math.BigDecimal;
+
+class JsDecimalLens<S extends Json<S>> extends JsAbstractLens<S, BigDecimal>
+{
+  JsDecimalLens(final JsPath path)
+  {
+    super(json -> json.getBigDec(path),
+          (json,n) -> json.set(path,JsBigDec.of(n))
+         );
+  }
+}

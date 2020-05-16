@@ -1,4 +1,4 @@
-package jsonvalues.specifications.immutable.array
+package jsonvalues.specifications.immutable.jsarray
 
 import java.math.BigInteger
 import java.util._
@@ -166,7 +166,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
             js.streamAll().allMatch(
                                    it =>
                                    {
-                                     JsArray.lens(it.path)
+                                     JsArray.optics.lens.value(it.path)
                                        .setIfPresent
                                        .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                                        .get(it.path)
@@ -187,7 +187,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
 
             js.streamAll().allMatch(
                                    it =>
-                                     JsArray.lens(it.path)
+                                     JsArray.optics.lens.value(it.path)
                                        .setIfAbsent
                                        .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                                        .get(it.path)
@@ -207,7 +207,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            JsArray.lens(path)
+            JsArray.optics.lens.value(path)
               .setIfAbsent
               .apply(JsArray.empty(),ScalaToJava.supplier.apply(()=>elem))
               .get(path)

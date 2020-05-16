@@ -1,4 +1,4 @@
-package jsonvalues.specifications.immutable.array
+package jsonvalues.specifications.immutable.jsarray
 
 import jsonvalues.JsArray.TYPE
 import jsonvalues._

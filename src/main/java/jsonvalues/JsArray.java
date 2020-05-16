@@ -44,6 +44,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
   @SuppressWarnings("squid:S3077")
   @Nullable
   private volatile String str;
+
+  public static final JsOptics.JsArrayOptics optics = JsOptics.array;
+
   private final Vector<JsValue> seq;
 
   public static JsPrism<JsArray> prism =
@@ -53,14 +56,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue>
     );
 
 
-  public static JsLens<JsArray> lens(final int index){
-    return JsLens.of(index);
-  }
-
-  public static JsLens<JsArray> lens(final JsPath path){
-    if(path.head().isKey()) throw new IllegalArgumentException("head is not index");
-    return JsLens.of(path);
-  }
 
   JsArray(Vector<JsValue> seq)
   {

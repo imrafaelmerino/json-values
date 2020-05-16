@@ -28,7 +28,7 @@ public class TestJsObj
         Assertions.assertTrue(obj.isEmpty());
 
         final JsObj obj1 = obj.set(JsPath.fromKey("a"),
-                                   1
+                                   JsInt.of(1)
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
         Assertions.assertTrue(obj1.getInt(JsPath.fromKey("a")).equals(1)
@@ -179,7 +179,7 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.delete(JsPath.fromKey("a"));// obj is mutable
+        final JsObj obj1 = obj.delete(JsPath.fromKey("a"));
         Assertions.assertEquals(3,
                                 obj.size()
                                );
@@ -566,7 +566,7 @@ public class TestJsObj
 
 
         final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
-                                                                                    json.size()
+          JsInt.of(json.size())
                                                                                    );
         final JsObj newObj = obj.mapAllObjs((p, o) ->
                                           {

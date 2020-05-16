@@ -57,7 +57,7 @@ public class TestJsArray
                                  JsStr.of("E")
                                 );
         JsArray arr1 = arr.set(JsPath.fromIndex(-1),
-                               "F"
+          JsStr.of("F")
                               );
 
         Assertions.assertNotEquals(arr,
@@ -543,7 +543,7 @@ public class TestJsArray
                                                                     arr.get(path)
                                                                    );
                                             return obj.set(JsPath.fromKey("size"),
-                                                           obj.size()
+                                              JsInt.of(obj.size())
                                                           );
                                         });
 
@@ -559,7 +559,7 @@ public class TestJsArray
                                                                   arr.get(path)
                                                                  );
                                           return obj.set(JsPath.fromKey("size"),
-                                                         obj.size()
+                                            JsInt.of(obj.size())
                                                         );
                                       });
 
@@ -594,7 +594,7 @@ public class TestJsArray
 
 
         final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
-                                                                                    json.size()
+          JsInt.of(json.size())
                                                                                    );
 
         final JsArray newArr = arr.mapObjs((p, o) ->
@@ -694,7 +694,7 @@ public class TestJsArray
                                                                    arr.get(path)
                                                                   );
                                            return obj.set(JsPath.fromKey("size"),
-                                                          obj.size()
+                                             JsInt.of(obj.size())
                                                          );
                                        },
                                          (p, obj) -> obj.isNotEmpty()

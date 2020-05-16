@@ -92,6 +92,20 @@ public final class JsPair
         return new JsPair(requireNonNull(path),JsInt.of(i));
     }
 
+
+  /**
+   Returns a json pair from the key and the integer.
+   @param key the key
+   @param i the integer
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final int i
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),JsInt.of(i));
+  }
+
     /**
      Returns a json pair from the path and the double.
      @param path the JsPath
@@ -106,6 +120,21 @@ public final class JsPair
                           JsDouble.of(d)
         );
     }
+
+  /**
+   Returns a json pair from the key and the double.
+   @param key the key
+   @param d the double
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final double d
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsDouble.of(d)
+    );
+  }
 
     /**
      Returns a json pair from the path and the long.
@@ -122,6 +151,21 @@ public final class JsPair
         );
     }
 
+  /**
+   Returns a json pair from the key and the long.
+   @param key the key
+   @param l the long
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final long l
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsLong.of(l)
+    );
+  }
+
     /**
      Returns a json pair from the path and the boolean.
      @param path the JsPath
@@ -136,6 +180,21 @@ public final class JsPair
                           JsBool.of(b)
         );
     }
+
+  /**
+   Returns a json pair from the key and the boolean.
+   @param key the key
+   @param b the boolean
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final boolean b
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsBool.of(b)
+    );
+  }
 
     /**
      Returns a json pair from the path and the string.
@@ -152,6 +211,21 @@ public final class JsPair
         );
     }
 
+  /**
+   Returns a json pair from the key and the string.
+   @param key the JsPath
+   @param s the string
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final String s
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsStr.of(requireNonNull(s))
+    );
+  }
+
     /**
      Returns a json pair from the path and the big decimal.
      @param path the JsPath
@@ -166,6 +240,21 @@ public final class JsPair
                           JsBigDec.of(requireNonNull(bd))
         );
     }
+
+  /**
+   Returns a json pair from the key and the big decimal.
+   @param key the key
+   @param bd the big decimal
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final BigDecimal bd
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsBigDec.of(requireNonNull(bd))
+    );
+  }
 
     /**
      Returns a json pair from the path and the big integer.
@@ -182,6 +271,20 @@ public final class JsPair
         );
     }
 
+  /**
+   Returns a json pair from the key and the big integer.
+   @param key the key
+   @param bi the big integer
+   @return an immutable JsPair
+   */
+  public static JsPair of(final String key,
+                          final BigInteger bi
+  )
+  {
+    return new JsPair(requireNonNull(JsPath.fromKey(key)),
+      JsBigInt.of(requireNonNull(bi))
+    );
+  }
 
     /**
 
@@ -252,25 +355,7 @@ public final class JsPair
                         );
     }
 
-    /**
-     Declarative way of implementing an if(json)return T; else return T; where T is computed by the
-     given functions
-     @param ifJson function that returns a T and is invoked if the element of this pair is a json
-     @param ifNotJson function that returns a T and is invoked if the element of this pair is not a json
-     @param <T> type of the result
-     @return object of type T
-     */
-    public <T> T ifJsonElse(final BiFunction<JsPath, Json<?>, T> ifJson,
-                            final BiFunction<JsPath, JsValue, T> ifNotJson
-                           )
-    {
 
-        return value.isJson() ? requireNonNull(ifJson).apply(path,
-                                                             value.toJson()
-                                                            ) : requireNonNull(ifNotJson).apply(path,
-                                                                                                value
-                                                                                              );
-    }
 
     /**
      Declarative way of implementing an if(obj)return T; else if(array) return T;  else return T; where
@@ -314,16 +399,6 @@ public final class JsPair
         return requireNonNull(predicate).test(this) ? requireNonNull(ifTrue).apply(this) : requireNonNull(ifFalse).apply(this);
     }
 
-    /**
-     Consumes this pair if it's evaluated to true o a given predicate
-     @param predicate the given predicate
-     @param consumer the consumer that it's invoked if the predicate is evaluated to true
-     */
-    public void consumeIf(final Predicate<JsPair> predicate,
-                          final Consumer<JsPair> consumer
-                         )
-    {
-        if (requireNonNull(predicate).test(this)) requireNonNull(consumer).accept(this);
-    }
+
 
 }

@@ -46,16 +46,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   @Nullable
   private volatile String str;
 
-  public static JsLens<JsObj> lens(final String key)
-  {
-    return JsLens.of(key);
-  }
+  public static final JsOptics.JsObjOptics optics = JsOptics.obj;
 
-  public static JsLens<JsObj> lens(final JsPath path)
-  {
-    if(path.head().isIndex())throw new IllegalArgumentException("head is not key");
-    return JsLens.of(path);
-  }
 
   public static final JsPrism<JsObj> prism =
     new JsPrism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
@@ -1806,125 +1798,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
               );
   }
 
-  /**
-   Inserts the string at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the string
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final String value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the integer number at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the number
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final int value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the long number at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the number
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final long value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the boolean at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the boolean
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final boolean value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the object at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the object
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final JsObj value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the array at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the array
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final JsArray value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the big decimal number at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the number
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final BigDecimal value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
-
-  /**
-   Inserts the big integer number at the key in this json, replacing any existing element.
-   @param key the key
-   @param value the number
-   @return a new json object
-   */
-  public JsObj set(final String key,
-                   final BigInteger value
-                  )
-  {
-    return set(JsPath.fromKey(key),
-               value
-              );
-  }
 
   public final JsObj set(final JsPath path,
                          final JsValue value
@@ -2244,9 +2117,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
     return union(a,
                  tail
                 ).map(it ->
-                        JsLens.of(head._1).setIfAbsent.apply(it,
-                                                             () -> head._2
-                                                            )
+                        JsValueLens.of(head._1).setIfAbsent.apply(it,
+                                                                  () -> head._2
+                                                                 )
                      );
 
   }

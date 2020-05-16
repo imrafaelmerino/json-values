@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import jsonvalues.*;
 import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -9,7 +8,6 @@ import java.util.function.Supplier;
 
 public class JsOptional<S extends Json<S>, T>
 {
-  protected final JsPath path;
   public final Function<S, Optional<T>> get;
   public final BiFunction<S, T, S> set;
 
@@ -19,12 +17,10 @@ public class JsOptional<S extends Json<S>, T>
 
   public final BiFunction<S, Supplier<T>, S> setIfPresent;
 
-  JsOptional(final JsPath path,
-             final Function<S, Optional<T>> get,
+  JsOptional(final Function<S, Optional<T>> get,
              final BiFunction<S, T, S> set
             )
   {
-    this.path = path;
     this.get = get;
     this.set = set;
 
@@ -55,7 +51,6 @@ public class JsOptional<S extends Json<S>, T>
                        supplier.get()
                       );
     };
-
 
   }
 

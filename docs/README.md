@@ -40,7 +40,7 @@ something is still missing, and as _**Pat Helland**_ said, [Immutability Changes
 * You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and takes advantages of all the new features that were introduced
 in Java 8, like functions, suppliers, streams, and collectors, making json manipulation simple, fast, and efficient.
 * Simplicity matters, and I 'd argue that **json-values** is simple.
-* As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
+* As a developer, I'm convinced that code should win arguments, so let me enumerate some examples.examples, where I
 leave the functions passed in as arguments with no implementation for brevity reasons (go to the [project page](https://imrafaelmerino.github.io/json-values/) for further
 details)
 
@@ -118,14 +118,14 @@ CompletableFuture<JsValue> addressFuture;
 CompletableFuture<JsValue> longitudeFuture;
 CompletableFuture<JsValue> latitudeFuture;
 CompletableFuture<JsValue> countryFuture;
-    
+
 JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
                                     "age", () -> ageFuture,
                                     "languages", () -> languagesFuture,
                                     "github", () -> handleFuture,
                                     "profession", () -> professionFuture,
                                     "address", () -> addressFuture,
-                                    "location", JsArrayFuture.of(() -> latitudeFuture, 
+                                    "location", JsArrayFuture.of(() -> latitudeFuture,
                                                                  () -> longitudeFuture
                                                                 ),
                                     "country", () -> countryFuture
@@ -213,7 +213,7 @@ JsObjStateGen gen = JsObjStateGen.of("a", obj -> JsGens.alphabetic
                                                                 )
                                      );`
 
-//Some examples
+//Some examples.examples
 
 {"b":3,"c":4}
 {"a":"okegwg"}

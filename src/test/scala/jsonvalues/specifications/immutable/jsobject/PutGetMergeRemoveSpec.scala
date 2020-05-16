@@ -3,7 +3,6 @@ package jsonvalues.specifications.immutable.jsobject
 import java.math.BigInteger
 import java.util._
 import java.util.function.BiFunction
-
 import jsonvalues._
 import jsonvalues.specifications.BasePropSpec
 import org.scalacheck.Arbitrary
@@ -166,7 +165,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
             js.streamAll().allMatch(
               it =>
               {
-                JsObj.lens(it.path)
+                JsObj.optics.lens.value(it.path)
                   .setIfPresent
                   .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                   .get(it.path)
@@ -186,7 +185,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { js =>
 
             js.streamAll().allMatch(
-              it => JsObj.lens(it.path)
+              it => JsObj.optics.lens.value(it.path)
                 .setIfAbsent
                 .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
                 .get(it.path)
@@ -206,7 +205,7 @@ class PutGetMergeRemoveSpec extends BasePropSpec
           { (path,
              elem
             ) =>
-            JsObj.lens(path)
+            JsObj.optics.lens.value(path)
               .setIfAbsent
               .apply(JsObj.empty(),ScalaToJava.supplier.apply(()=>elem))
               .get(path)
