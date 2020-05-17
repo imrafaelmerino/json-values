@@ -23,9 +23,9 @@ public final class JsPair {
   public final JsPath path;
 
 
-  public static final JsAbstractLens<JsPair, JsPath> pathLens = new JsPathPairLens();
+  public static final Lens<JsPair, JsPath> pathLens = new JsPathPairLens();
 
-  public static final JsAbstractLens<JsPair, JsValue> valueLens = new JsValuePairLens();
+  public static final Lens<JsPair, JsValue> valueLens = new JsValuePairLens();
 
 
   private JsPair(final JsPath path, final JsValue value) {

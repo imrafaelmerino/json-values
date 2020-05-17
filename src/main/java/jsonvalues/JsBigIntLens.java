@@ -3,7 +3,7 @@ package jsonvalues;
 
 import java.math.BigInteger;
 
-public class JsBigIntLens<S extends Json<S>> extends JsAbstractLens<S, BigInteger>
+public class JsBigIntLens<S extends Json<S>> extends Lens<S, BigInteger>
 {
   JsBigIntLens(final JsPath path)
   {

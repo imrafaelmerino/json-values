@@ -18,8 +18,8 @@ public final class JsBool implements JsValue
     }
 
 
-  public static JsPrism<Boolean> prism =
-    new JsPrism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
+  public static Prism<JsValue,Boolean> prism =
+    new Prism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
                   JsBool::of
     );
 

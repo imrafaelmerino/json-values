@@ -53,8 +53,8 @@ public class TestExample {
 
 
     JsStrLens<JsObj> nameLens = JsObj.optics.lens.str("name");
-    JsOptional<JsObj, String> surnameOpt = JsObj.optics.optional.str("surname");
-    JsOptional<JsObj, Integer> ageOpt = JsObj.optics.optional.intNum("age");
+    Option<JsObj, String> surnameOpt = JsObj.optics.optional.str("surname");
+    Option<JsObj, Integer> ageOpt = JsObj.optics.optional.intNum("age");
     JsStrLens<JsObj> streetLens = JsObj.optics.lens.str(JsPath.path("/address/street"));
     JsValueLens<JsObj> cityLens = JsObj.optics.lens.value(JsPath.path("/address/city"));
 

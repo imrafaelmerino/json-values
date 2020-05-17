@@ -19,7 +19,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
 
   public static final int ID = 8;
 
-  public static JsPrism<BigDecimal> prism = new JsPrism<>(s ->
+  public static Prism<JsValue,BigDecimal> prism = new Prism<>(s ->
                                                           {
                                                               /*   if (s.isLong())
                                                                    return Optional.of(BigDecimal.valueOf(s.toJsLong().value));

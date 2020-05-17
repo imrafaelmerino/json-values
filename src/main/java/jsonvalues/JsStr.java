@@ -28,8 +28,8 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
     return ID;
   }
 
-  public static final JsPrism<String> prism =
-    new JsPrism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(), JsStr::of);
+  public static final Prism<JsValue,String> prism =
+    new Prism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(), JsStr::of);
 
 
   /**

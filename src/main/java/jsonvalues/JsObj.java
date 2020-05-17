@@ -48,8 +48,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
   public static final JsOptics.JsObjOptics optics = JsOptics.obj;
 
 
-  public static final JsPrism<JsObj> prism =
-    new JsPrism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
+  public static final Prism<JsValue,JsObj> prism =
+    new Prism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
                   o -> o
     );
 
@@ -86,7 +86,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
    @param ARRAY_AS enum to specify if arrays are considered as lists or sets or multisets
    @return true if both objs are equals
    */
-  @SuppressWarnings("squid:S00117") //  perfectly fine _
+  @SuppressWarnings("squid:S00117")
   public boolean equals(final JsObj that,
                         final TYPE ARRAY_AS
                        )

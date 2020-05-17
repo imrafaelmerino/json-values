@@ -2,6 +2,7 @@ package jsonvalues;
 
 
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * Represents the index of a JsElem in a JsArray.
@@ -9,7 +10,10 @@ import java.util.Objects;
 public final class Index implements Position
 {
 
-  public static final JsIndexPrism prism= new JsIndexPrism();
+  public static final Prism<Position,Integer> prism= new Prism<>(
+    pos -> pos.isIndex() ? Optional.of(pos.asIndex().n) : Optional.empty(),
+    Index::of
+  );
 
   /**
      * The index number.

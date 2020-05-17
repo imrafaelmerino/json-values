@@ -19,7 +19,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble>
 
 
 
-  public static JsPrism<Double> prism = new JsPrism<>(s ->
+  public static Prism<JsValue,Double> prism = new Prism<>(s ->
                                                           {
                                                            /* if (s.isLong())
                                                               return Optional.of((double) s.toJsLong().value);

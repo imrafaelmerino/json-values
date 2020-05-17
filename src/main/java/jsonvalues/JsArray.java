@@ -47,8 +47,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
   private final Vector<JsValue> seq;
 
-  public static JsPrism<JsArray> prism =
-    new JsPrism<>(
+  public static Prism<JsValue,JsArray> prism =
+    new Prism<>(
       s -> s.isArray() ? Optional.of(s.toJsArray()) : Optional.empty(),
       a -> a
     );

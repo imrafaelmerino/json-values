@@ -2,7 +2,7 @@ package jsonvalues;
 
 import java.math.BigDecimal;
 
-public class JsDecimalLens<S extends Json<S>> extends JsAbstractLens<S, BigDecimal>
+public class JsDecimalLens<S extends Json<S>> extends Lens<S, BigDecimal>
 {
   JsDecimalLens(final JsPath path)
   {

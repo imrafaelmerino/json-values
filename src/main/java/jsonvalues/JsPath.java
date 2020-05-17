@@ -434,7 +434,6 @@ public final class JsPath implements Comparable<JsPath>
      @param path the given JsPath to be appended
      @return a new JsPath with the given JsPath appended to <code>this</code> JsPath
      */
-    @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath append(final JsPath path)
     {
         return new JsPath(this.positions.appendAll(requireNonNull(path).positions));
@@ -445,7 +444,6 @@ public final class JsPath implements Comparable<JsPath>
      @param path the given path to be prepended
      @return a new JsPath with the given JsPath prepended to <code>this</code> JsPath
      */
-    @SuppressWarnings("squid:S00117") // api de scala uses $ to name methods
     public JsPath prepend(final JsPath path)
     {
         return new JsPath(requireNonNull(path).positions.appendAll(this.positions));

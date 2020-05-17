@@ -1,6 +1,8 @@
 package jsonvalues;
 
 
+import java.util.Optional;
+
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -9,7 +11,10 @@ import static java.util.Objects.requireNonNull;
 public final class Key implements Position
 {
 
-  public static final JsKeyPrism prism= new JsKeyPrism();
+  public static final Prism<Position,String> prism= new Prism<>(
+    pos -> pos.isKey() ? Optional.of(pos.asKey().name) : Optional.empty(),
+    Key::of
+  );
 
     /**
      * name of the key.

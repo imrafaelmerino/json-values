@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
-public class JsValueLens<S extends Json<S>> extends JsAbstractLens<S, JsValue> {
+public class JsValueLens<S extends Json<S>> extends Lens<S, JsValue> {
 
   JsValueLens(final JsPath path) {
     super(json -> requireNonNull(json).get(path),
@@ -34,8 +34,8 @@ public class JsValueLens<S extends Json<S>> extends JsAbstractLens<S, JsValue> {
 
   public final BiFunction<S, Supplier<JsValue>, S> setIfPresent;
 
-  public <T> JsOptional<S, T> compose(final JsPrism<T> prism) {
-    return new JsOptional<>(json -> requireNonNull(prism).getOptional.apply(get.apply(json)),
+  public <T> Option<S, T> compose(final Prism<JsValue,T> prism) {
+    return new Option<>(json -> requireNonNull(prism).getOptional.apply(get.apply(json)),
       value -> json -> set.apply(prism.reverseGet.apply(value)).apply(json)
     );
 

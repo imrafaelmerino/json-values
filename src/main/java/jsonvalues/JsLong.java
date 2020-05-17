@@ -13,7 +13,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
 {
   private static final int ID = 7;
 
-  public static JsPrism<Long> prism = new JsPrism<>(s ->
+  public static Prism<JsValue,Long> prism = new Prism<>(s ->
                                                     {
                                                       if (s.isLong())
                                                         return Optional.of(s.toJsLong().value);

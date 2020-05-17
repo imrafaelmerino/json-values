@@ -1,8 +1,7 @@
 package jsonvalues;
 
 
-
-public class JsArrayLens<S extends Json<S>> extends JsAbstractLens<S, JsArray>
+public class JsArrayLens<S extends Json<S>> extends Lens<S, JsArray>
 {
   JsArrayLens(final JsPath path)
   {

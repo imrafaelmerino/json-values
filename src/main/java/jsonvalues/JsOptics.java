@@ -104,76 +104,76 @@ public class JsOptics {
 
   public static class JsArrayOptionals {
 
-    public JsOptional<JsArray, String> str(final JsPath path) {
+    public Option<JsArray, String> str(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsStr.prism);
     }
 
-    public JsOptional<JsArray, String> str(final int index) {
+    public Option<JsArray, String> str(final int index) {
       return JsOptics.array.lens.value(index).compose(JsStr.prism);
     }
 
-    public JsOptional<JsArray, Boolean> bool(final JsPath path) {
+    public Option<JsArray, Boolean> bool(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsBool.prism);
     }
 
-    public JsOptional<JsArray, Boolean> bool(final int index) {
+    public Option<JsArray, Boolean> bool(final int index) {
       return JsOptics.array.lens.value(index).compose(JsBool.prism);
     }
 
-    public JsOptional<JsArray, Long> longNum(final JsPath path) {
+    public Option<JsArray, Long> longNum(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsLong.prism);
     }
 
-    public JsOptional<JsArray, Long> longNum(final int index) {
+    public Option<JsArray, Long> longNum(final int index) {
       return JsOptics.array.lens.value(index).compose(JsLong.prism);
     }
 
 
-    public JsOptional<JsArray, Integer> intNum(final JsPath path) {
+    public Option<JsArray, Integer> intNum(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsInt.prism);
     }
 
-    public JsOptional<JsArray, Integer> intNum(final int index) {
+    public Option<JsArray, Integer> intNum(final int index) {
       return JsOptics.array.lens.value(index).compose(JsInt.prism);
     }
 
-    public JsOptional<JsArray, Double> doubleNum(final JsPath path) {
+    public Option<JsArray, Double> doubleNum(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsDouble.prism);
     }
 
-    public JsOptional<JsArray, Double> doubleNum(final int index) {
+    public Option<JsArray, Double> doubleNum(final int index) {
       return JsOptics.array.lens.value(index).compose(JsDouble.prism);
     }
 
-    public JsOptional<JsArray, BigDecimal> decimalNum(final JsPath path) {
+    public Option<JsArray, BigDecimal> decimalNum(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsBigDec.prism);
     }
 
-    public JsOptional<JsArray, BigDecimal> decimalNum(final int index) {
+    public Option<JsArray, BigDecimal> decimalNum(final int index) {
       return JsOptics.array.lens.value(index).compose(JsBigDec.prism);
     }
 
-    public JsOptional<JsArray, BigInteger> integralNum(final JsPath path) {
+    public Option<JsArray, BigInteger> integralNum(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsBigInt.prism);
     }
 
-    public JsOptional<JsArray, BigInteger> integralNum(final int index) {
+    public Option<JsArray, BigInteger> integralNum(final int index) {
       return JsOptics.array.lens.value(index).compose(JsBigInt.prism);
     }
 
-    public JsOptional<JsArray, JsObj> obj(final JsPath path) {
+    public Option<JsArray, JsObj> obj(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsObj.prism);
     }
 
-    public JsOptional<JsArray, JsObj> obj(final int index) {
+    public Option<JsArray, JsObj> obj(final int index) {
       return JsOptics.array.lens.value(index).compose(JsObj.prism);
     }
 
-    public JsOptional<JsArray, JsArray> array(final JsPath path) {
+    public Option<JsArray, JsArray> array(final JsPath path) {
       return JsOptics.array.lens.value(Objects.requireNonNull(path)).compose(JsArray.prism);
     }
 
-    public JsOptional<JsArray, JsArray> array(final int index) {
+    public Option<JsArray, JsArray> array(final int index) {
       return JsOptics.array.lens.value(index).compose(JsArray.prism);
     }
 
@@ -181,75 +181,75 @@ public class JsOptics {
 
   public static class JsObjOptionals {
 
-    public  JsOptional<JsObj, String> str(final JsPath path) {
+    public Option<JsObj, String> str(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsStr.prism);
     }
 
-    public  JsOptional<JsObj, String> str(final String key) {
+    public Option<JsObj, String> str(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsStr.prism);
     }
 
-    public  JsOptional<JsObj, Boolean> bool(final JsPath path) {
+    public Option<JsObj, Boolean> bool(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsBool.prism);
     }
 
-    public  JsOptional<JsObj, Boolean> bool(final String key) {
+    public Option<JsObj, Boolean> bool(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsBool.prism);
     }
 
-    public  JsOptional<JsObj, Long> longNum(final JsPath path) {
+    public Option<JsObj, Long> longNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsLong.prism);
     }
 
-    public  JsOptional<JsObj, Long> longNum(final String key) {
+    public Option<JsObj, Long> longNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsLong.prism);
     }
 
-    public  JsOptional<JsObj, Integer> intNum(final JsPath path) {
+    public Option<JsObj, Integer> intNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsInt.prism);
     }
 
-    public  JsOptional<JsObj, Integer> intNum(final String key) {
+    public Option<JsObj, Integer> intNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsInt.prism);
     }
 
-    public  JsOptional<JsObj, Double> doubleNum(final JsPath path) {
+    public Option<JsObj, Double> doubleNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsDouble.prism);
     }
 
-    public  JsOptional<JsObj, Double> doubleNum(final String key) {
+    public Option<JsObj, Double> doubleNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsDouble.prism);
     }
 
-    public  JsOptional<JsObj, BigDecimal> decimalNum(final JsPath path) {
+    public Option<JsObj, BigDecimal> decimalNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsBigDec.prism);
     }
 
-    public  JsOptional<JsObj, BigDecimal> decimalNum(final String key) {
+    public Option<JsObj, BigDecimal> decimalNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsBigDec.prism);
     }
 
-    public  JsOptional<JsObj, BigInteger> integralNum(final JsPath path) {
+    public Option<JsObj, BigInteger> integralNum(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsBigInt.prism);
     }
 
-    public  JsOptional<JsObj, BigInteger> integralNum(final String key) {
+    public Option<JsObj, BigInteger> integralNum(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsBigInt.prism);
     }
 
-    public  JsOptional<JsObj, JsObj> obj(final JsPath path) {
+    public Option<JsObj, JsObj> obj(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsObj.prism);
     }
 
-    public  JsOptional<JsObj, JsObj> obj(final String key) {
+    public Option<JsObj, JsObj> obj(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsObj.prism);
     }
 
-    public  JsOptional<JsObj, JsArray> array(final JsPath path) {
+    public Option<JsObj, JsArray> array(final JsPath path) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(path)).compose(JsArray.prism);
     }
 
-    public  JsOptional<JsObj, JsArray> array(final String key) {
+    public Option<JsObj, JsArray> array(final String key) {
       return JsOptics.obj.lens.value(Objects.requireNonNull(key)).compose(JsArray.prism);
     }
 

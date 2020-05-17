@@ -20,7 +20,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
   }
 
 
-  public static final JsPrism<Integer> prism = new JsPrism<>(s ->
+  public static final Prism<JsValue,Integer> prism = new Prism<>(s ->
                                                              {
                                                                if (s.isInt())
                                                                  return Optional.of(s.toJsInt().value);

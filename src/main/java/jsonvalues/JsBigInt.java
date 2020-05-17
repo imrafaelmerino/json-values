@@ -21,8 +21,8 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt>
     return ID;
   }
 
-  public static JsPrism<BigInteger> prism =
-    new JsPrism<>(s ->
+  public static Prism<JsValue,BigInteger> prism =
+    new Prism<>(s ->
                   {
                     if (s.isLong())
                       return Optional.of(BigInteger.valueOf(s.toJsLong().value));
