@@ -29,13 +29,12 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
                                                                                                                                  predicate
                                                                                                                                 ));
                                     return ifJsonElse(elem -> more(() -> tailCall).map(it -> it.prepend(elem)),
-                                                      elem -> JsPair.of(headPath,
-                                                                        elem
-                                                                       )
-                                                                    .ifElse(predicate,
-                                                                            p -> more(() -> tailCall).map(it -> it.prepend(elem)),
-                                                                            p -> tailCall
-                                                                           )
+                                                      elem -> predicate.test(JsPair.of(headPath,
+                                                                      elem
+                                                                      )) ?
+                                                                            more(() -> tailCall).map(it -> it.prepend(elem)):
+                                                                            tailCall
+
                                                      )
                                     .apply(head);
                                 }
@@ -67,15 +66,10 @@ final class OpFilterArrElems extends OpFilterElems<JsArray>
                                                                                                                                                        )
                                                                                                                                              .map(tailResult::prepend)
                                                                                                ),
-                                                      headElem -> JsPair.of(headPath,
-                                                                            headElem
-                                                                           )
-                                                                        .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem)),
-                                                                                p -> tailCall
-                                                                               )
-                                                     )
-                                    .apply(head);
+                                                      headElem -> predicate.test(JsPair.of(headPath, headElem)) ?
+                                                                                more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem)):
+                                                                                tailCall
+                                                                               ).apply(head);
                                 }
                                );
     }

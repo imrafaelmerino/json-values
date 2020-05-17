@@ -29,17 +29,14 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj>
                                     final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjObjs(tail).filter(startingPath,
                                                                                                                               predicate
                                                                                                                              ));
-                                    return ifObjElse(json -> JsPair.of(headPath,
-                                                                       json
-                                                                      )
-                                                                   .ifElse(p -> predicate.test(p.path,
+                                    return ifObjElse(json -> predicate.test(headPath,
                                                                                                json
-                                                                                              ),
-                                                                           p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                                                                              ) ?
+                                        more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                       json
-                                                                                                                                     )),
-                                                                           p -> tailCall
-                                                                          ),
+                                                                                                                                     )):
+                                                                           tailCall
+                                                                          ,
                                                      value -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                     value
                                                                                                                    ))
@@ -65,13 +62,10 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj>
                                     final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjObjs(tail).filterAll(startingPath,
                                                                                                                                  predicate
                                                                                                                                 ));
-                                    return ifJsonElse(headObj -> JsPair.of(headPath,
-                                                                           headObj
-                                                                          )
-                                                                       .ifElse(p -> predicate.test(p.path,
+                                    return ifJsonElse(headObj -> predicate.test(headPath,
                                                                                                    headObj
-                                                                                                  ),
-                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filterAll(headPath,
+                                                                                                  ) ?
+                                                                               more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filterAll(headPath,
                                                                                                                                                                       predicate
                                                                                                                                                                      )
                                                                                                                                                            .map(headFiltered ->
@@ -79,9 +73,8 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj>
                                                                                                                                                                                         headFiltered
                                                                                                                                                                                        )
                                                                                                                                                                         )
-                                                                                                                ),
-                                                                               p -> tailCall
-                                                                              ),
+                                                                                                                ):
+                                                                               tailCall,
                                                       headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrObjs(headArray).filterAll(headPath.index(-1),
                                                                                                                                                        predicate
                                                                                                                                                       )

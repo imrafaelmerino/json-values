@@ -29,16 +29,9 @@ final class OpFilterArrObjs extends OpFilterObjs<JsArray>
                                     final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrObjs(tail).filter(headPath,
                                                                                                                                 predicate
                                                                                                                                ));
-                                    return ifObjElse(headJson -> JsPair.of(headPath,
-                                                                           headJson
-                                                                          )
-                                                                       .ifElse(p -> predicate.test(p.path,
-                                                                                                   headJson
-                                                                                                  ),
-                                                                               p -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headJson)),
-                                                                               p -> tailCall
-                                                                              )
-                                    ,
+                                    return ifObjElse(headJson -> predicate.test(headPath, headJson) ?
+                                                                               more(() -> tailCall).map(tailResult -> tailResult.prepend(headJson)):
+                                                                               tailCall,
                                                      headElem -> more(() -> tailCall).map(it -> it.prepend(headElem))
                                                     )
                                     .apply(head);
@@ -61,19 +54,13 @@ final class OpFilterArrObjs extends OpFilterObjs<JsArray>
                                     final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrObjs(tail).filterAll(headPath,
                                                                                                                                    predicate
                                                                                                                                   ));
-                                    return ifJsonElse(headObj -> JsPair.of(headPath,
-                                                                           headObj
-                                                                          )
-                                                                       .ifElse(p -> predicate.test(p.path,
-                                                                                                   headObj
-                                                                                                  ),
-                                                                               p -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filterAll(headPath,
+                                    return ifJsonElse(headObj ->  predicate.test(headPath, headObj
+                                                                                                  ) ?
+                                                                               more(() -> tailCall).flatMap(tailResult -> new OpFilterObjObjs(headObj).filterAll(headPath,
                                                                                                                                                                       predicate
                                                                                                                                                                      )
-                                                                                                                                                           .map(tailResult::prepend)),
-                                                                               p -> tailCall
-
-                                                                              ),
+                                                                                                                                                           .map(tailResult::prepend)) :
+                                                                               tailCall,
                                                       headArr -> more(() -> tailCall).flatMap(json -> new OpFilterArrObjs(headArr).filterAll(headPath.index(-1),
                                                                                                                                              predicate
                                                                                                                                             )

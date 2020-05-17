@@ -1590,16 +1590,16 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                       {
                         final JsPath tail = path.tail();
 
-                        return tail.ifEmptyElse(() -> ifNothingElse(() -> this,
+                        return tail.isEmpty() ? ifNothingElse(() -> this,
                                                                     elem -> new JsObj(map.put(head,
                                                                                               elem
                                                                                              ))
                                                                    )
-                                                  .apply(value),
-                                                () -> tail.ifPredicateElse(t -> isReplaceWithEmptyJson(map).test(head,
-                                                                                                                 t
-                                                                                                                ),
-                                                                           () -> new JsObj(map.put(head,
+                                                  .apply(value):
+                                                isReplaceWithEmptyJson(map).test(head,
+                                                                                                                 tail
+                                                                                                                ) ?
+                                                                           new JsObj(map.put(head,
                                                                                                    tail.head()
                                                                                                        .match(key -> JsObj.EMPTY
                                                                                                                 .set(tail,
@@ -1610,18 +1610,15 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                                                                                                                      value
                                                                                                                     )
                                                                                                              )
-                                                                                                  )),
-                                                                           () -> new JsObj(map.put(head,
+                                                                                                  )) :
+                                                                           new JsObj(map.put(head,
                                                                                                    map.get(head)
                                                                                                       .get()
                                                                                                       .toJson()
                                                                                                       .set(tail,
                                                                                                            value
                                                                                                           )
-                                                                                                  ))
-
-                                                                          )
-                                               );
+                                                                                                  ));
                       },
                       index -> this
 
@@ -1666,15 +1663,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
                       {
                         if (!map.containsKey(key)) return this;
                         final JsPath tail = path.tail();
-                        return tail.ifEmptyElse(() -> new JsObj(map.remove(key)),
-                                                () -> MatchExp.ifJsonElse(json -> new JsObj(map.put(key,
+                        return tail.isEmpty() ? new JsObj(map.remove(key)):
+                                                MatchExp.ifJsonElse(json -> new JsObj(map.put(key,
                                                                                                     json.delete(tail)
                                                                                                    )),
                                                                           e -> this
                                                                          )
                                                               .apply(map.get(key)
-                                                                        .get())
-                                               );
+                                                                        .get());
                       },
                       index -> this
                      );

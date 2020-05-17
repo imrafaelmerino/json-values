@@ -48,7 +48,7 @@
     jsonvalues.JsValue     →  JsPair.of($END$,$expr$)
 
 .jsArray: creates a JsArray with an element
-    java.lang.Boolean      →  JsArray.of($expr$,$END$)
+    boolean                →  JsArray.of($expr$,$END$)
     java.lang.String       →  JsArray.of($expr$,$END$)
     NUMBER                 →  JsArray.of($expr$,$END$)
     jsonvalues.JsPair      →  JsArray.of($expr$,$END$)
@@ -62,3 +62,6 @@
 
 .jsGen: creates a JsObjGen with a Key
   java.lang.String   →  JsObjGen.of($expr$,$END$)
+
+
+

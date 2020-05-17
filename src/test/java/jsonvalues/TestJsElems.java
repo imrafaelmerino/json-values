@@ -234,32 +234,7 @@ public class TestJsElems
 
   }
 
-  @Test
-  public void test_map_pairs()
-  {
 
-    Assertions.assertEquals(JsPair.of(JsPath.path("/a/b/2"),
-                                      JsInt.of(1)
-                                     ),
-                            JsPair.of(JsPath.path("/a/b/1"),
-                                      JsInt.of(1)
-                                     )
-                                  .mapPath(JsPath::inc)
-                           );
-
-    final JsPair pair1 = JsPair.of(JsPath.path("/a/b/1"),
-                                   JsInt.of(1)
-                                  )
-                               .mapElem(e -> e.toJsInt()
-                                              .map(i -> i + 1));
-
-    Assertions.assertEquals(JsPair.of(JsPath.path("/a/b/1"),
-                                      JsInt.of(2)
-                                     ),
-                            pair1
-                           );
-
-  }
 
 
 }

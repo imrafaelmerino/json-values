@@ -44,16 +44,16 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                                                                                                                      )
                                                                                                                                                       )
                                                                                              ),
-                                                      headElem -> JsPair.of(headPath,
-                                                                            headElem
-                                                                           )
-                                                                        .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                                      headElem ->
+                                                                        predicate.test(JsPair.of(headPath,
+                                                                          headElem
+                                                                          )) ?
+                                                                                more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                            headElem
                                                                                                                                           )
-                                                                                                             ),
-                                                                                p -> tailCall
-                                                                               )
+                                                                                                             ) :
+                                                                                tailCall
+
 
                                                      )
                                     .apply(head._2);
@@ -78,15 +78,14 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                     return ifJsonElse(headElem -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                         headElem
                                                                                                                        )),
-                                                      headElem -> JsPair.of(headPath,
-                                                                            headElem
-                                                                           )
-                                                                        .ifElse(predicate,
-                                                                                p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                                      headElem ->
+                                                        predicate.test(JsPair.of(headPath,
+                                                          headElem
+                                                        )) ?
+                                                                                more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                                            headElem
-                                                                                                                                          )),
-                                                                                p -> tailCall
-                                                                               )
+                                                                                                                                          )):
+                                                                                tailCall
                                                      )
                                     .apply(head._2);
 

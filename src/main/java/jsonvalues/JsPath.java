@@ -1,13 +1,10 @@
 package jsonvalues;
 
-
 import io.vavr.collection.Vector;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.function.*;
 import java.util.stream.Stream;
-
 import static java.util.Objects.requireNonNull;
 
 /**<pre>
@@ -146,47 +143,12 @@ public final class JsPath implements Comparable<JsPath>
     }
 
     /**
-     Provides a declarative way of implementing an if-else statement based on the condition of if
-     this path is empty or not. The value returned by each branch is computed by a supplier.
-     @param emptySupplier the supplier that will compute the result only if the path is empty
-     @param noneEmptySupplier the supplier that will compute the result only if the path is not empty
-     @param <T> the type of the result
-     @return an object of type T
-     */
-    public <T> T ifEmptyElse(final Supplier<T> emptySupplier,
-                             final Supplier<T> noneEmptySupplier
-                            )
-    {
-
-        return isEmpty() ? requireNonNull(emptySupplier).get() : requireNonNull(noneEmptySupplier).get();
-    }
-
-    /**
      Returns a sequential {@code Stream} of Positions with this path as its source.
      @return stream of Positions of this path
      */
     public Stream<Position> stream()
     {
         return positions.toJavaStream();
-    }
-
-    /**
-     Provides a declarative way of implementing an if-else statement based on the condition given by
-     the predicate. The value returned by each branch is computed by a supplier.
-     @param predicate the given predicate
-     @param ifTrueFn the supplier that will compute the result only if the path tested on the predicate is true
-     @param ifFalseFn the supplier that will compute the result only if the path tested on the predicate is false
-     @param <T> the type of the result
-     @return an object of type T
-     */
-    public <T> T ifPredicateElse(final Predicate<? super JsPath> predicate,
-                                 final Supplier<T> ifTrueFn,
-                                 final Supplier<T> ifFalseFn
-                                )
-    {
-
-        return requireNonNull(predicate).test(this) ? requireNonNull(ifTrueFn).get() : requireNonNull(ifFalseFn).get();
-
     }
 
     /**

@@ -25,11 +25,11 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj>
                                     final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filterAll(startingPath,
                                                                                                                                  predicate
                                                                                                                                 ));
-                                    return JsPair.of(headPath,
-                                                     head._2
-                                                    )
-                                                 .ifElse(predicate,
-                                                         p -> ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
+                                    return
+                                                 predicate.test(JsPair.of(headPath,
+                                                   head._2
+                                                 ))?
+                                                         ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
                                                                                                                                                                       predicate
                                                                                                                                                                      )
                                                                                                                                                            .map(headMapped ->
@@ -49,9 +49,8 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj>
                                                                                                                            headElem
                                                                                                                           ))
                                                                         )
-                                                         .apply(head._2),
-                                                         p -> tailCall
-                                                        );
+                                                         .apply(head._2) :
+                                                         tailCall;
                                 }
                                );
     }
@@ -67,17 +66,15 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj>
                                                                   .key(head._1);
 
                                     final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filter(predicate));
-                                    return JsPair.of(headPath,
-                                                     head._2
-                                                    )
-                                                 .ifElse(predicate,
-                                                         p -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                    return predicate.test(JsPair.of(headPath,
+                                      head._2
+                                    )) ?
+                                                         more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
                                                                                                                     head._2
-                                                                                                                   )),
+                                                                                                                   )):
 
 
-                                                         p -> tailCall
-                                                        );
+                                                         tailCall;
                                 }
                                );
     }

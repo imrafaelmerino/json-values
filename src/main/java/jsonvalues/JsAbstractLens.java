@@ -4,7 +4,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-abstract class JsAbstractLens<S extends Json<S>,O>
+abstract class JsAbstractLens<S,O>
 {
 
   JsAbstractLens(final Function<S, O> get,

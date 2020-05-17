@@ -56,31 +56,33 @@ final class OpMapObjKeys extends OpMapKeys<JsObj>
                                     JsPair pair = JsPair.of(headPath,
                                                             head._2
                                                            );
-
-                                    return pair.ifJsonElse((path, headObj) ->
-                                        more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(headObj).mapAll(fn,
-                                          headPath
+                                  if (head._2.isObj()) {
+                                    return more(() -> tailCall).flatMap(tailResult -> new OpMapObjKeys(head._2.toJsObj()).mapAll(fn,
+                                      headPath
+                                      )
+                                        .map(headObjResult ->
+                                          tailResult.set(JsPath.fromKey(fn.apply(pair)),
+                                            headObjResult
                                           )
-                                            .map(headObjResult ->
-                                              tailResult.set(JsPath.fromKey(fn.apply(pair)),
-                                                headObjResult
-                                              )
-                                            )
-                                        ),
-                                      (path, headArr) ->
-                                        more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(headArr).mapAll(fn,
-                                          headPath.index(-1)
+                                        )
+                                    ) ;
+                                  }
+                                  else if (head._2.isArray()) {
+                                    return more(() -> tailCall).flatMap(tailResult -> new OpMapArrKeys(head._2.toJsArray()).mapAll(fn,
+                                      headPath.index(-1)
+                                      )
+                                        .map(headArrResult ->
+                                          tailResult.set(JsPath.fromKey(fn.apply(pair)),
+                                            headArrResult
                                           )
-                                            .map(headArrResult ->
-                                              tailResult.set(JsPath.fromKey(fn.apply(pair)),
-                                                headArrResult
-                                              )
-                                            )
-                                        ),
-                                      (path, headElem) -> more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(fn.apply(pair)),
-                                        headElem
-                                      ))
-                                    );
+                                        )
+                                    ) ;
+                                  }
+                                  else{
+                                    return more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(fn.apply(pair)),
+                                      head._2
+                                    ));
+                                  }
                                 }
                                );
     }
