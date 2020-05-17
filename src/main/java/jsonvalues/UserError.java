@@ -220,9 +220,17 @@ public final class UserError extends RuntimeException
     }
 
 
+  public static UserError pathHeadIsNotAnIndex(JsPath path) {
+    return new UserError(String.format(GENERAL_MESSAGE,
+      "Path head is not an index: "+path,
+      "Correct the path"
+    ));
+  }
 
-
-
-
-
+  public static UserError pathHeadIsNotAKey(JsPath path) {
+    return new UserError(String.format(GENERAL_MESSAGE,
+      "Path head is not a key: "+path,
+      "Correct the path"
+    ));
+  }
 }

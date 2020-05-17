@@ -5,7 +5,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * A Lens can be seen as a pair of functions:
+ * A Lens is an optic that can be seen as a pair of functions:
  *  - get: S      => O i.e. from an S, we can extract an O
  *  - set: (O, S) => S i.e. from an S and a O, we obtain a S. Unless a prism, to go back to S we need another S.
  *

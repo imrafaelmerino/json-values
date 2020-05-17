@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 /**
  *
- * A Prism can be seen as a pair of functions:
+ * A Prism is an optic that can be seen as a pair of functions:
  * {@code
    - getOptional: S -> Optional<T>
    - reverseGet : T -> S

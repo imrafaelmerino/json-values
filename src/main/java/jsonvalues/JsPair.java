@@ -7,24 +7,30 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Immutable pair which represents a JsElem of a Json and its JsPath location: (path, element).
+ * Immutable pair which represents a value and its location: (path, value).
  */
 public final class JsPair {
 
   /**
-   * the json element.
+   * the json value.
    */
   public final JsValue value;
 
 
   /**
-   * the location of the element.
+   * the location of the value.
    */
   public final JsPath path;
 
 
+  /**
+   * lens that focuses on the path of a pair
+   */
   public static final Lens<JsPair, JsPath> pathLens = new JsPathPairLens();
 
+  /**
+   * lens that focuses on the value of a pair
+   */
   public static final Lens<JsPair, JsValue> valueLens = new JsValuePairLens();
 
 
@@ -293,9 +299,7 @@ public final class JsPair {
    */
   @Override
   public int hashCode() {
-    return Objects.hash(value,
-      path
-    );
+    return Objects.hash(value, path);
   }
 
 

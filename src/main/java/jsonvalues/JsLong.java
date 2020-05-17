@@ -13,6 +13,9 @@ public final class JsLong extends JsNumber implements Comparable<JsLong>
 {
   private static final int ID = 7;
 
+  /**
+   * prism between the sum type JsValue and JsLong
+   */
   public static Prism<JsValue,Long> prism = new Prism<>(s ->
                                                     {
                                                       if (s.isLong())

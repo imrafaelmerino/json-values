@@ -28,6 +28,9 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
     return ID;
   }
 
+  /**
+   * prism between the sum type JsValue and JsStr
+   */
   public static final Prism<JsValue,String> prism =
     new Prism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(), JsStr::of);
 

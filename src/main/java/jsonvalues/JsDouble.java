@@ -19,12 +19,11 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble>
 
 
 
+  /**
+   * prism between the sum type JsValue and JsDouble
+   */
   public static Prism<JsValue,Double> prism = new Prism<>(s ->
                                                           {
-                                                           /* if (s.isLong())
-                                                              return Optional.of((double) s.toJsLong().value);
-                                                            if (s.isInt())
-                                                              return Optional.of((double) s.toJsInt().value);*/
                                                             if (s.isDouble())
                                                               return Optional.of(s.toJsDouble().value);
                                                             if (s.isDecimal()) return s.toJsBigDec().doubleValueExact();

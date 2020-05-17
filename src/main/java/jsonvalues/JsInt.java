@@ -20,6 +20,9 @@ public final class JsInt extends JsNumber implements Comparable<JsInt>
   }
 
 
+  /**
+   * prism between the sum type JsValue and JsInt
+   */
   public static final Prism<JsValue,Integer> prism = new Prism<>(s ->
                                                              {
                                                                if (s.isInt())

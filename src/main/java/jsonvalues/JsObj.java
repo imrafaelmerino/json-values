@@ -45,9 +45,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>>
 
   private volatile String str;
 
+  /**
+   * optics defined for a Json object
+   */
   public static final JsOptics.JsObjOptics optics = JsOptics.obj;
 
-
+  /**
+   * prism between the sum type JsValue and JsObj
+   */
   public static final Prism<JsValue,JsObj> prism =
     new Prism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
                   o -> o

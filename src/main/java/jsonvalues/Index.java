@@ -5,11 +5,14 @@ import java.util.Objects;
 import java.util.Optional;
 
 /**
- * Represents the index of a JsElem in a JsArray.
+ * represents the index of a value in an json array.
  */
 public final class Index implements Position
 {
 
+  /**
+   * prism between the sum type Position and Index
+   */
   public static final Prism<Position,Integer> prism= new Prism<>(
     pos -> pos.isIndex() ? Optional.of(pos.asIndex().n) : Optional.empty(),
     Index::of

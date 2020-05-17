@@ -6,11 +6,14 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- Represents the Key of a JsElem in a JsObj.
+ represents the key of a value in a json object
  */
 public final class Key implements Position
 {
 
+  /**
+   * prism between the sum type Position and Key
+   */
   public static final Prism<Position,String> prism= new Prism<>(
     pos -> pos.isKey() ? Optional.of(pos.asKey().name) : Optional.empty(),
     Key::of

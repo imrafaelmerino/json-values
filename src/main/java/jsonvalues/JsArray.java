@@ -43,10 +43,16 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
   private volatile String str;
 
+  /**
+   * optics defined for a Json array
+   */
   public static final JsOptics.JsArrayOptics optics = JsOptics.array;
 
   private final Vector<JsValue> seq;
 
+  /**
+   * prism between the sum type JsValue and JsArray
+   */
   public static Prism<JsValue,JsArray> prism =
     new Prism<>(
       s -> s.isArray() ? Optional.of(s.toJsArray()) : Optional.empty(),

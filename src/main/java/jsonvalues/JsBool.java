@@ -18,6 +18,9 @@ public final class JsBool implements JsValue
     }
 
 
+  /**
+   * prism between the sum type JsValue and JsBool
+   */
   public static Prism<JsValue,Boolean> prism =
     new Prism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
                   JsBool::of

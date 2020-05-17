@@ -19,14 +19,11 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec>
 
   public static final int ID = 8;
 
+  /**
+   * prism between the sum type JsValue and JsBigDec
+   */
   public static Prism<JsValue,BigDecimal> prism = new Prism<>(s ->
                                                           {
-                                                              /*   if (s.isLong())
-                                                                   return Optional.of(BigDecimal.valueOf(s.toJsLong().value));
-                                                                 if (s.isInt())
-                                                                   return Optional.of(BigDecimal.valueOf(s.toJsInt().value));
-                                                                 if (s.isBigInt())
-                                                                   return Optional.of(new BigDecimal(s.toJsBigInt().value));*/
                                                             if (s.isDouble())
                                                               return Optional.of(BigDecimal.valueOf(s.toJsDouble().value));
                                                             if (s.isBigDec())
