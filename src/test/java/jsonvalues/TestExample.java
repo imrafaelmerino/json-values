@@ -13,6 +13,7 @@ import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -120,6 +121,25 @@ public class TestExample {
                                           .map(i -> i + 1));
 
 
+        Assertions.assertEquals(nameLens.get.apply(newPerson),"RAFAEL");
+        Assertions.assertEquals(surnameOpt.get.apply(newPerson),
+                                Optional.ofNullable("MERINO GARCÍA"));
+
+
+        Assertions.assertEquals(latitudeLens.get.apply(newPerson),Double.valueOf(47.9));
+        Assertions.assertEquals(longitudeLens.get.apply(newPerson),Double.valueOf(20.6));
+
+        Assertions.assertEquals(cityLens.get.apply(newPerson),
+                                JsStr.of("Madrid"));
+
+
+        Assertions.assertEquals(streetLens.get.apply(newPerson),"Las cruces"
+                                );
+
+
+        Assertions.assertEquals(numberLens.get.apply(newPerson),
+                                JsStr.of("034CF")
+                               );
     }
 
     @Test

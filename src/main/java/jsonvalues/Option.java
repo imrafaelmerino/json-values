@@ -8,8 +8,10 @@ import java.util.function.Supplier;
  An Optional is an optic that allows seeing into a structure and getting, setting, or modifying an optional focus.
  It combines the properties of a Lens (getting, setting, and modifying) with the properties of a Prism (an optional focus).
  An  Optional can be seen as a pair of functions:
+ {@code
  - get: S      => Optional[T]
  - set: (T, S) => S
+ }
  A Optional could also be defined as a weaker Lens and weaker Prism
 
  @param <S> the source of an optional

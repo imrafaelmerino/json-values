@@ -324,13 +324,15 @@ public class JsGens {
                                      final Tuple2<Integer, JsGen<?>>... others
                                     ) {
 
+        @SuppressWarnings("varargs")//method does not throw a ClassCastException
         final List<Tuple2<Integer, JsGen<?>>> filtered = Arrays.stream(requireNonNull(others))
                                                                .filter(it -> it._1 > 0)
                                                                .collect(Collectors.toList());
         if (requireNonNull(freq)._1 > 0) filtered.add(freq);
-        if (filtered.size() == 0)
+        if (filtered.size() == 0) {
             throw new IllegalArgumentException("no items with positive weights");
-        int                        total   = 0;
+        }
+        int total   = 0;
         TreeMap<Integer, JsGen<?>> treeMap = new TreeMap<>();
         for (Tuple2<Integer, JsGen<?>> t : filtered) {
             total += t._1;

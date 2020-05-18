@@ -37,8 +37,8 @@ public class Prism<S, T> {
      modify the target of a Prism with a function, returning the same source if the prism is not matching. Basically
      it means we dont care about the success of the operation
 
-     @param f the function from T -> T
-     @return a function from S -> S
+     @param f the function from T to T
+     @return a function from S to S
      */
     public final Function<S, S> modify(Function<T, T> f) {
         Objects.requireNonNull(f);
@@ -54,8 +54,8 @@ public class Prism<S, T> {
      modify the target of a Prism with a function, returning empty if the prism is not matching. Unless modify, we
      need to know the success of the operation
 
-     @param f the function from T -> T
-     @return a function from S -> S
+     @param f the function from T to T
+     @return a function from S to S
      */
     public final Function<S, Optional<S>> modifyOptional(Function<T, T> f) {
         return v ->
