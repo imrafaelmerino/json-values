@@ -3,13 +3,14 @@ package jsonvalues.supplier;
 import io.vavr.collection.Vector;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
-
 import java.util.Arrays;
 import java.util.function.Supplier;
-
 import static java.util.Objects.requireNonNull;
 
-
+/**
+ Represents a Json array of suppliers that combines every supplier
+ and produces as a result a Json array
+ */
 public class JsArraySupplier implements java.util.function.Supplier<JsArray> {
     private Vector<Supplier<? extends JsValue>> array = Vector.empty();
 
@@ -49,7 +50,7 @@ public class JsArraySupplier implements java.util.function.Supplier<JsArray> {
     }
 
     /**
-     returns a JsArraySupplier that is completed returning the empty Json array
+     returns a JsArraySupplier that returns an empty Json array
      @return a JsArraySupplier
      */
     public static JsArraySupplier empty() {
