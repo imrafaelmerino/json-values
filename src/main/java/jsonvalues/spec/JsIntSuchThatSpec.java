@@ -7,60 +7,59 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.IntFunction;
 
-import static jsonvalues.spec.ERROR_CODE.*;
+import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate
-{
-  @Override
-  public JsSpec nullable()
-  {
-    return new JsIntSuchThatSpec(required, true, predicate);
-  }
+class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+    final IntFunction<Optional<Error>> predicate;
 
-  @Override
-  public JsSpec optional()
-  {
-    return new JsIntSuchThatSpec(false, nullable, predicate);
-  }
+    JsIntSuchThatSpec(final boolean required,
+                      final boolean nullable,
+                      final IntFunction<Optional<Error>> predicate
+                     ) {
+        super(required,
+              nullable
+             );
+        this.predicate = predicate;
+    }
 
-  @Override
-  public JsSpecParser parser()
-  {
-    return JsSpecParsers.INSTANCE.ofIntSuchThat(predicate,
-                                                nullable
-                                               );
-  }
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
 
-  @Override
-  public boolean isRequired()
-  {
-    return required;
-  }
-  final IntFunction<Optional<Error>> predicate;
+    @Override
+    public JsSpec nullable() {
+        return new JsIntSuchThatSpec(required,
+                                     true,
+                                     predicate
+        );
+    }
 
-   JsIntSuchThatSpec(final boolean required,
-                     final boolean nullable,
-                     final IntFunction<Optional<Error>> predicate
-                    )
-  {
-    super(required,
-          nullable
-         );
-    this.predicate = predicate;
-  }
+    @Override
+    public JsSpec optional() {
+        return new JsIntSuchThatSpec(false,
+                                     nullable,
+                                     predicate
+        );
+    }
 
+    @Override
+    public JsSpecParser parser() {
+        return JsSpecParsers.INSTANCE.ofIntSuchThat(predicate,
+                                                    nullable
+                                                   );
+    }
 
-  @Override
-  public Optional<Error> test(final JsValue value)
-  {
-    final Optional<Error> error = jsonvalues.spec.Functions.testElem(JsValue::isInt,
-                                                                     INT_EXPECTED,
-                                                                     required,
-                                                                     nullable
-                                                                    )
-                                                           .apply(value);
+    @Override
+    public Optional<Error> test(final JsValue value) {
+        final Optional<Error> error = jsonvalues.spec.Functions.testElem(JsValue::isInt,
+                                                                         INT_EXPECTED,
+                                                                         required,
+                                                                         nullable
+                                                                        )
+                                                               .apply(value);
 
-    if (error.isPresent() || value.isNull()) return error;
-    return predicate.apply(value.toJsInt().value);
-  }
+        if (error.isPresent() || value.isNull()) return error;
+        return predicate.apply(value.toJsInt().value);
+    }
 }

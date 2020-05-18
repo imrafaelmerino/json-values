@@ -7,54 +7,53 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValuePredicate,JsArraySpec
-{
-  @Override
-  public JsSpec nullable()
-  {
-    return new JsArrayOfTestedValueSpec(predicate, required, true);
-  }
+class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+    private final Function<JsValue, Optional<Error>> predicate;
 
-  @Override
-  public JsSpec optional()
-  {
-    return new JsArrayOfTestedValueSpec(predicate, false, nullable);
-  }
+    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<Error>> predicate,
+                             final boolean required,
+                             final boolean nullable
+                            ) {
+        super(required,
+              nullable
+             );
+        this.predicate = predicate;
+    }
 
-  @Override
-  public JsSpecParser parser()
-  {
-    return JsSpecParsers.INSTANCE.ofArrayOfValueEachSuchThat(predicate,
-                                                             nullable
-                                                            );
-  }
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
 
-  @Override
-  public boolean isRequired()
-  {
-    return required;
-  }
-  private final Function<JsValue, Optional<Error>> predicate;
-
-
-  JsArrayOfTestedValueSpec(final Function<JsValue, Optional<Error>> predicate,
-                           final boolean required,
-                           final boolean nullable
-                          )
-  {
-    super(required,
-          nullable
-         );
-    this.predicate = predicate;
-  }
-
-  @Override
-  public Optional<Error> test(final JsValue value)
-  {
-    return Functions.testArrayOfTestedValue(predicate,
+    @Override
+    public JsSpec nullable() {
+        return new JsArrayOfTestedValueSpec(predicate,
                                             required,
+                                            true
+        );
+    }
+
+    @Override
+    public JsSpec optional() {
+        return new JsArrayOfTestedValueSpec(predicate,
+                                            false,
                                             nullable
-                                           )
-                    .apply(value);
-  }
+        );
+    }
+
+    @Override
+    public JsSpecParser parser() {
+        return JsSpecParsers.INSTANCE.ofArrayOfValueEachSuchThat(predicate,
+                                                                 nullable
+                                                                );
+    }
+
+    @Override
+    public Optional<Error> test(final JsValue value) {
+        return Functions.testArrayOfTestedValue(predicate,
+                                                required,
+                                                nullable
+                                               )
+                        .apply(value);
+    }
 }

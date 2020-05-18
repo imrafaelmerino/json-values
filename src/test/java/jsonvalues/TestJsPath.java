@@ -1,19 +1,15 @@
 package jsonvalues;
 
-import jsonvalues.JsPath;
-import jsonvalues.UserError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class TestJsPath
-{
+public class TestJsPath {
 
 
     @Test
-    public void test_to_string()
-    {
+    public void test_to_string() {
 
         Assertions.assertEquals("/a/b/0/1",
                                 JsPath.path("/a/b/0/1")
@@ -44,8 +40,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_jspath_comparator()
-    {
+    public void test_jspath_comparator() {
         Assertions.assertEquals("a".compareTo("b"),
                                 JsPath.path("/a/b")
                                       .compareTo(JsPath.path("/b/a"))
@@ -63,8 +58,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_map_keys()
-    {
+    public void test_map_keys() {
 
         Assertions.assertEquals(JsPath.path("/a!/1/b!/1/c!"),
                                 JsPath.path("/a/1/b/1/c")
@@ -73,8 +67,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_equals()
-    {
+    public void test_equals() {
         Assertions.assertEquals(JsPath.path("#/a/b/c/d/0//%20"),
                                 JsPath.path("#/a/b/c/d/0//+")
                                );
@@ -108,8 +101,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_path_dec()
-    {
+    public void test_path_dec() {
         Assertions.assertEquals(JsPath.path("/a/b/0"),
                                 JsPath.path("/a/b/1")
                                       .dec()
@@ -122,8 +114,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_position()
-    {
+    public void test_position() {
         assertTrue(JsPath.path("/a")
                          .last()
                          .isKey());
@@ -157,8 +148,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_empty_key_equals()
-    {
+    public void test_empty_key_equals() {
         Assertions.assertEquals(JsPath.empty()
                                       .key(""),
                                 JsPath.path("#/")
@@ -180,8 +170,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_starts_with()
-    {
+    public void test_starts_with() {
 
         final JsPath path = JsPath.path("/a/b/c/0/1");
         assertTrue(path.startsWith(JsPath.empty()));
@@ -194,8 +183,7 @@ public class TestJsPath
     }
 
     @Test
-    public void test_ends_with()
-    {
+    public void test_ends_with() {
         final JsPath path = JsPath.path("/a/b/c/0/1");
         assertTrue(path.endsWith(JsPath.empty()));
         assertTrue(path.endsWith(JsPath.path("/1")));
@@ -207,16 +195,14 @@ public class TestJsPath
     }
 
     @Test
-    public void test_same()
-    {
+    public void test_same() {
         Assertions.assertEquals(JsPath.path("/a/b/c/d/0"),
                                 JsPath.path("#/a/b/c/d/0")
                                );
     }
 
     @Test
-    public void test_error_if_index_has_leading_zeros()
-    {
+    public void test_error_if_index_has_leading_zeros() {
         final UserError userError = Assertions.assertThrows(UserError.class,
                                                             () -> JsPath.path("/a/01")
                                                            );

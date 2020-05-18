@@ -7,35 +7,23 @@ import java.io.IOException;
 /**
  Represents an immutable json number. It's a marker interface for the types {@link JsInt}, {@link JsLong}, {@link JsDouble}, {@link JsBigInt} and {@link JsBigDec}
  */
-public abstract class JsNumber implements JsValue
-{
-    @Override
-    public boolean isNumber()
-    {
-        return true;
-    }
-
-
-    static JsNumber of(JsonParser parser) throws IOException
-    {
-        try
-        {
+public abstract class JsNumber implements JsValue {
+    static JsNumber of(JsonParser parser) throws IOException {
+        try {
             return JsInt.of(parser.getIntValue());
-        }
-
-        catch (Exception ex)
-        {
-            try
-            {
+        } catch (Exception ex) {
+            try {
                 return JsLong.of(parser.getLongValue());
-            }
-
-            catch (Exception ex1)
-            {
+            } catch (Exception ex1) {
                 return JsBigInt.of(parser.getBigIntegerValue());
             }
         }
 
+    }
+
+    @Override
+    public boolean isNumber() {
+        return true;
     }
 
 }

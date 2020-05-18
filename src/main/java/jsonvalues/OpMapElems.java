@@ -1,12 +1,11 @@
 package jsonvalues;
+
 import java.util.function.Function;
 
-abstract class OpMapElems<T>
-{
+abstract class OpMapElems<T> {
     T json;
 
-    OpMapElems(final T json)
-    {
+    OpMapElems(final T json) {
         this.json = json;
     }
 

@@ -5,20 +5,17 @@ import java.util.function.Predicate;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.Trampoline.more;
 
-final class OpFilterArrKeys extends OpFilterKeys<JsArray>
-{
+final class OpFilterArrKeys extends OpFilterKeys<JsArray> {
 
 
-    OpFilterArrKeys(final JsArray json)
-    {
+    OpFilterArrKeys(final JsArray json) {
         super(json);
     }
 
     @Override
     Trampoline<JsArray> filterAll(final JsPath startingPath,
                                   final Predicate<? super JsPair> predicate
-                                 )
-    {
+                                 ) {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
@@ -35,15 +32,14 @@ final class OpFilterArrKeys extends OpFilterKeys<JsArray>
                                                                                                                                                   )),
                                                       headElem -> more(() -> tailCall).map(it -> it.prepend(headElem))
                                                      )
-                                    .apply(head);
+                                            .apply(head);
                                 }
                                );
     }
 
     @Override
     Trampoline<JsArray> filter(final Predicate<? super JsPair> predicate
-                              )
-    {
+                              ) {
         throw InternalError.opNotSupportedForArrays();
     }
 

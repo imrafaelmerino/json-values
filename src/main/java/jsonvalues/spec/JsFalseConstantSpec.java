@@ -4,56 +4,50 @@ import com.dslplatform.json.parsers.JsSpecParser;
 import com.dslplatform.json.parsers.JsSpecParsers;
 import jsonvalues.JsValue;
 
-
 import java.util.Optional;
 
-import static jsonvalues.spec.ERROR_CODE.*;
+import static jsonvalues.spec.ERROR_CODE.FALSE_EXPECTED;
 
-class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredicate
-{
-  @Override
-  public JsSpec nullable()
-  {
-    return new JsFalseConstantSpec(required,
-                                   false);
-  }
+class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
+    JsFalseConstantSpec(final boolean required,
+                        final boolean nullable
+                       ) {
+        super(required,
+              nullable
+             );
+    }
 
-  @Override
-  public JsSpec optional()
-  {
-    return new JsFalseConstantSpec(false,
-                                   nullable);
-  }
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
 
-  @Override
-  public JsSpecParser parser()
-  {
-    return  JsSpecParsers.INSTANCE.ofFalse(nullable);
-  }
+    @Override
+    public JsSpec nullable() {
+        return new JsFalseConstantSpec(required,
+                                       false
+        );
+    }
 
-  @Override
-  public boolean isRequired()
-  {
-    return required;
-  }
+    @Override
+    public JsSpec optional() {
+        return new JsFalseConstantSpec(false,
+                                       nullable
+        );
+    }
 
-  JsFalseConstantSpec(final boolean required,
-                      final boolean nullable
-                     )
-  {
-    super(required,
-          nullable
-         );
-  }
+    @Override
+    public JsSpecParser parser() {
+        return JsSpecParsers.INSTANCE.ofFalse(nullable);
+    }
 
-  @Override
-  public Optional<Error> test(final JsValue value)
-  {
-    return Functions.testElem(JsValue::isFalse,
-                              FALSE_EXPECTED,
-                              required,
-                              nullable
-                             )
-                    .apply(value);
-  }
+    @Override
+    public Optional<Error> test(final JsValue value) {
+        return Functions.testElem(JsValue::isFalse,
+                                  FALSE_EXPECTED,
+                                  required,
+                                  nullable
+                                 )
+                        .apply(value);
+    }
 }

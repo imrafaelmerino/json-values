@@ -2,12 +2,10 @@ package jsonvalues;
 
 import com.fasterxml.jackson.core.JsonFactory;
 
-class JacksonFactory
-{
+class JacksonFactory {
 
-  private JacksonFactory()
-  {
-  }
+    static final JsonFactory INSTANCE = new JsonFactory();
 
-  static final JsonFactory INSTANCE = new JsonFactory();
+    private JacksonFactory() {
+    }
 }

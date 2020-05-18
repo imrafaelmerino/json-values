@@ -13,15 +13,13 @@ import java.util.concurrent.TimeUnit;
  * when we are sleeping.
  */
 
-public class ExecutorLaggingState extends ExecutorState
-{
+public class ExecutorLaggingState extends ExecutorState {
     public static final int SLEEP_TIME = Integer.getInteger("sleepTime",
                                                             10
                                                            );
 
     @Setup(Level.Invocation)
-    public void lag() throws InterruptedException
-    {
+    public void lag() throws InterruptedException {
         TimeUnit.MILLISECONDS.sleep(SLEEP_TIME);
     }
 }

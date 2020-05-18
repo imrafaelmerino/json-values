@@ -9,15 +9,13 @@ import java.util.function.Predicate;
 import static jsonvalues.Trampoline.done;
 import static jsonvalues.Trampoline.more;
 
-final class OpMapReduce<T>
-{
+final class OpMapReduce<T> {
     private final BiFunction<JsPair, Optional<T>, Optional<T>> accumulator;
 
     OpMapReduce(final Predicate<? super JsPair> predicate,
                 final Function<? super JsPair, T> map,
                 final BinaryOperator<T> op
-               )
-    {
+               ) {
         this.accumulator = (pair, acc) ->
         {
             if (!predicate.test(pair)) return acc;
@@ -30,8 +28,7 @@ final class OpMapReduce<T>
         };
     }
 
-    Optional<T> reduceAll(JsObj obj)
-    {
+    Optional<T> reduceAll(JsObj obj) {
         return reduceObj(JsPath.empty(),
                          reduceHeadJsonAndObjTail_()
                         ).apply(obj,
@@ -40,8 +37,7 @@ final class OpMapReduce<T>
                          .get();
     }
 
-    Optional<T> reduce(JsObj obj)
-    {
+    Optional<T> reduce(JsObj obj) {
         return reduceObj(JsPath.empty(),
                          reduceHeadJsonAndObjTail()
                         ).apply(obj,
@@ -50,8 +46,7 @@ final class OpMapReduce<T>
                          .get();
     }
 
-    Optional<T> reduceAll(JsArray arr)
-    {
+    Optional<T> reduceAll(JsArray arr) {
         return reduceArr(JsPath.empty()
                                .index(-1),
                          reduceHeadJsonAndArrayTail_()
@@ -61,8 +56,7 @@ final class OpMapReduce<T>
                          .get();
     }
 
-    Optional<T> reduce(JsArray arr)
-    {
+    Optional<T> reduce(JsArray arr) {
         return reduceArr(JsPath.empty()
                                .index(-1),
                          reduceHeadJsonAndArrayTail()
@@ -72,8 +66,7 @@ final class OpMapReduce<T>
                          .get();
     }
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail()
-    {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail() {
 
         return (headPath, headJson) -> (tail, acc) -> Trampoline.more(() -> reduceObj(headPath.init(),
                                                                                       reduceHeadJsonAndObjTail()
@@ -83,8 +76,7 @@ final class OpMapReduce<T>
                                                                      );
     }
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail()
-    {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail() {
 
         return (headPath, headJson) -> (tail, acc) -> Trampoline.more(() -> reduceArr(headPath,
                                                                                       reduceHeadJsonAndArrayTail()
@@ -94,37 +86,34 @@ final class OpMapReduce<T>
                                                                      );
     }
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail_()
-    {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail_() {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
                                                                                        headJson
                                                                                       )
                                                           ).flatMap(headAcc ->
-                                                                    reduceObj(headPath.init(),
-                                                                              reduceHeadJsonAndObjTail_()
-                                                                             ).
-                                                                              apply(tail,
-                                                                                    headAcc
-                                                                                   ));
+                                                                            reduceObj(headPath.init(),
+                                                                                      reduceHeadJsonAndObjTail_()
+                                                                                     ).
+                                                                                              apply(tail,
+                                                                                                    headAcc
+                                                                                                   ));
     }
 
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail_()
-    {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail_() {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
                                                                                        headJson
                                                                                       )
                                                           ).flatMap(headAcc ->
-                                                                    reduceArr(headPath,
-                                                                              reduceHeadJsonAndArrayTail_()
-                                                                             ).
-                                                                              apply(tail,
-                                                                                    headAcc
-                                                                                   ));
+                                                                            reduceArr(headPath,
+                                                                                      reduceHeadJsonAndArrayTail_()
+                                                                                     ).
+                                                                                              apply(tail,
+                                                                                                    headAcc
+                                                                                                   ));
     }
 
-    private BiFunction<JsPath, Json<?>, Trampoline<Optional<T>>> reduceJson(final Optional<T> acc)
-    {
+    private BiFunction<JsPath, Json<?>, Trampoline<Optional<T>>> reduceJson(final Optional<T> acc) {
 
         return (headPath, headJson) ->
         {
@@ -144,8 +133,7 @@ final class OpMapReduce<T>
 
     private BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>> reduceObj(final JsPath startingPath,
                                                                               final BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonTail
-                                                                             )
-    {
+                                                                             ) {
 
         return (obj, acc) -> obj.ifEmptyElse(done(acc),
                                              (head, tail) ->
@@ -178,8 +166,7 @@ final class OpMapReduce<T>
 
     private BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>> reduceArr(final JsPath startingPath,
                                                                                 final BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonTail
-                                                                               )
-    {
+                                                                               ) {
 
         return (arr, acc) -> arr.ifEmptyElse(done(acc),
                                              (head, tail) ->

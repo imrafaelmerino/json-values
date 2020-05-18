@@ -5,26 +5,22 @@ import java.util.function.Function;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.Trampoline.more;
 
-final class OpMapArrKeys extends OpMapKeys<JsArray>
-{
-    OpMapArrKeys(final JsArray json)
-    {
+final class OpMapArrKeys extends OpMapKeys<JsArray> {
+    OpMapArrKeys(final JsArray json) {
         super(json);
     }
 
     @Override
     Trampoline<JsArray> map(final Function<? super JsPair, String> fn,
                             final JsPath startingPath
-                           )
-    {
+                           ) {
         throw InternalError.opNotSupportedForArrays();
     }
 
     @Override
     Trampoline<JsArray> mapAll(final Function<? super JsPair, String> fn,
                                final JsPath startingPath
-                              )
-    {
+                              ) {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
@@ -42,7 +38,7 @@ final class OpMapArrKeys extends OpMapKeys<JsArray>
                                                                                                                                      .map(tailResult::prepend)),
                                                       headElem -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
                                                      )
-                                    .apply(head);
+                                            .apply(head);
                                 }
                                );
     }

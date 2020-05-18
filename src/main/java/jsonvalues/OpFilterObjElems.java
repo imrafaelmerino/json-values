@@ -5,18 +5,16 @@ import java.util.function.Predicate;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.Trampoline.more;
 
-final class OpFilterObjElems extends OpFilterElems<JsObj>
-{
-    OpFilterObjElems(final JsObj a)
-    {
+final class OpFilterObjElems extends OpFilterElems<JsObj> {
+    OpFilterObjElems(final JsObj a) {
         super(a
              );
     }
+
     @Override
     Trampoline<JsObj> filterAll(final JsPath startingPath,
                                 final Predicate<? super JsPair> predicate
-                               )
-    {
+                               ) {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
@@ -30,33 +28,33 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                                                                                                     predicate
                                                                                                                                                    )
                                                                                                                                          .map(headFiltered ->
-                                                                                                                                                       tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                                                      headFiltered
-                                                                                                                                                                     )
-                                                                                                                                                      )
+                                                                                                                                                      tailResult.set(JsPath.fromKey(head._1),
+                                                                                                                                                                     headFiltered
+                                                                                                                                                                    )
+                                                                                                                                             )
                                                                                              ),
                                                       headArr -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrElems(headArr).filterAll(headPath.index(-1),
                                                                                                                                                     predicate
                                                                                                                                                    )
                                                                                                                                          .map(headFiltered ->
-                                                                                                                                                       tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                                                      headFiltered
-                                                                                                                                                                     )
-                                                                                                                                                      )
+                                                                                                                                                      tailResult.set(JsPath.fromKey(head._1),
+                                                                                                                                                                     headFiltered
+                                                                                                                                                                    )
+                                                                                                                                             )
                                                                                              ),
                                                       headElem ->
-                                                                        predicate.test(JsPair.of(headPath,
-                                                                          headElem
-                                                                          )) ?
-                                                                                more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                           headElem
-                                                                                                                                          )
-                                                                                                             ) :
-                                                                                tailCall
+                                                              predicate.test(JsPair.of(headPath,
+                                                                                       headElem
+                                                                                      )) ?
+                                                              more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                                                                                                    headElem
+                                                                                                                   )
+                                                                                      ) :
+                                                              tailCall
 
 
                                                      )
-                                    .apply(head._2);
+                                            .apply(head._2);
 
                                 }
                                );
@@ -65,8 +63,7 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
     @Override
     Trampoline<JsObj> filter(final JsPath startingPath,
                              final Predicate<? super JsPair> predicate
-                            )
-    {
+                            ) {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
@@ -79,15 +76,15 @@ final class OpFilterObjElems extends OpFilterElems<JsObj>
                                                                                                                         headElem
                                                                                                                        )),
                                                       headElem ->
-                                                        predicate.test(JsPair.of(headPath,
-                                                          headElem
-                                                        )) ?
-                                                                                more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                           headElem
-                                                                                                                                          )):
-                                                                                tailCall
+                                                              predicate.test(JsPair.of(headPath,
+                                                                                       headElem
+                                                                                      )) ?
+                                                              more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
+                                                                                                                    headElem
+                                                                                                                   )) :
+                                                              tailCall
                                                      )
-                                    .apply(head._2);
+                                            .apply(head._2);
 
                                 }
                                );
