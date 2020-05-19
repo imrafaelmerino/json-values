@@ -19,9 +19,10 @@ final class OpMapArrObjs extends OpMapObjs<JsArray> {
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.inc();
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).map(fn,
-                                                                                                                          headPath
-                                                                                                                         ));
+                                    final Trampoline<JsArray> tailCall =
+                                            Trampoline.more(() -> new OpMapArrObjs(tail).map(fn,
+                                                                                             headPath
+                                                                                            ));
                                     return ifObjElse(headJson -> {
                                                          JsPair pair = JsPair.of(headPath,
                                                                                  headJson
@@ -30,7 +31,8 @@ final class OpMapArrObjs extends OpMapObjs<JsArray> {
                                                                                                                                    headJson
                                                                                                                                   )));
                                                      },
-                                                     headElem -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
+                                                     headElem ->
+                                                             more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
                                                     )
                                             .apply(head);
                                 }
@@ -43,10 +45,11 @@ final class OpMapArrObjs extends OpMapObjs<JsArray> {
         return json.ifEmptyElse(Trampoline.done(json),
                                 (head, tail) ->
                                 {
-                                    final JsPath              headPath = startingPath.inc();
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpMapArrObjs(tail).mapAll(fn,
-                                                                                                                             headPath
-                                                                                                                            ));
+                                    final JsPath headPath = startingPath.inc();
+                                    final Trampoline<JsArray> tailCall =
+                                            Trampoline.more(() -> new OpMapArrObjs(tail).mapAll(fn,
+                                                                                                headPath
+                                                                                               ));
                                     return ifJsonElse(
                                             headObj -> more(() -> tailCall).flatMap(tailResult -> {
                                                 JsValue headMapped = fn.apply(headPath,
@@ -59,13 +62,15 @@ final class OpMapArrObjs extends OpMapObjs<JsArray> {
                                                                                                  .map(tailResult::prepend);
                                                 return more(() -> tailCall).map(t -> t.prepend(headMapped));
                                             }),
-                                            headArr -> more(() -> tailCall).flatMap(tailResult -> new OpMapArrObjs(headArr)
-                                                    .mapAll(fn,
-                                                            headPath.index(-1)
-                                                           )
-                                                    .map(tailResult::prepend)),
-                                            headElem -> more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))
-                                                     ).apply(head);
+                                            headArr ->
+                                                    more(() -> tailCall).flatMap(tailResult ->
+                                                                                         new OpMapArrObjs(headArr)
+                                                                                                 .mapAll(fn,
+                                                                                                         headPath.index(-1)
+                                                                                                        )
+                                                                                                 .map(tailResult::prepend)),
+                                            headElem ->
+                                                    more(() -> tailCall).map(tailResult -> tailResult.prepend(headElem))).apply(head);
                                 }
 
                                );

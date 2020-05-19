@@ -22,9 +22,10 @@ final class OpFilterArrElems extends OpFilterElems<JsArray> {
 
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrElems(tail).filterAll(headPath,
-                                                                                                                                    predicate
-                                                                                                                                   ));
+                                    final Trampoline<JsArray> tailCall =
+                                            Trampoline.more(() -> new OpFilterArrElems(tail).filterAll(headPath,
+                                                                                                       predicate
+                                                                                                      ));
                                     return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjElems(headObj).filterAll(headPath,
                                                                                                                                                     predicate
                                                                                                                                                    )

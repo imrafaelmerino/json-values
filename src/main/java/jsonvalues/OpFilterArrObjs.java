@@ -49,9 +49,10 @@ final class OpFilterArrObjs extends OpFilterObjs<JsArray> {
                                 {
                                     final JsPath headPath = startingPath.inc();
 
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrObjs(tail).filterAll(headPath,
-                                                                                                                                   predicate
-                                                                                                                                  ));
+                                    final Trampoline<JsArray> tailCall =
+                                            Trampoline.more(() -> new OpFilterArrObjs(tail).filterAll(headPath,
+                                                                                                      predicate
+                                                                                                     ));
                                     return ifJsonElse(headObj -> predicate.test(headPath,
                                                                                 headObj
                                                                                ) ?

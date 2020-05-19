@@ -19,6 +19,7 @@
 
 .jsBigDec : creates JsBigDec from a number
     NUMBER                →  JsBigDec.of($expr$)
+    java.math.BigDecimal  →  JsBigDec.of($expr$)
 
 .jsBigInteger : creates JsBigInteger from an integral number
     java.lang.Byte        →  JsBigInt.of($expr$)
@@ -30,6 +31,8 @@
 
 .jsString : creates JsStr from an string
     java.lang.String      →  JsStr.of($expr$)
+    ANY                →  JsStr.of("$expr$")
+
 
 .jsBoolean : creates JsBool from a boolean
     java.lang.Boolean     →  JsBool.of($expr$)
@@ -62,6 +65,5 @@
 
 .jsGen: creates a JsObjGen with a Key
   java.lang.String   →  JsObjGen.of($expr$,$END$)
-
 
 

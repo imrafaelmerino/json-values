@@ -22,7 +22,8 @@ final class OpMapReduce<T> {
             final T mapped = map.apply(pair);
             final Optional<T> t = acc.map(it -> op.apply(it,
                                                          mapped
-                                                        ));
+                                                        )
+                                         );
             if (t.isPresent()) return t;
             return Optional.ofNullable(mapped);
         };
@@ -135,31 +136,34 @@ final class OpMapReduce<T> {
                                                                               final BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonTail
                                                                              ) {
 
-        return (obj, acc) -> obj.ifEmptyElse(done(acc),
-                                             (head, tail) ->
-                                             {
-                                                 final JsPath headPath = startingPath.key(head._1);
-                                                 return MatchExp.ifJsonElse(headJson -> reduceHeadJsonTail.apply(headPath,
-                                                                                                                 headJson
-                                                                                                                )
-                                                                                                          .apply(tail,
-                                                                                                                 acc
-                                                                                                                ),
-                                                                            headElem -> more(() -> reduceObj(startingPath,
-                                                                                                             reduceHeadJsonTail
-                                                                                                            ).apply(tail,
-                                                                                                                    accumulator.apply(JsPair.of(headPath,
-                                                                                                                                                headElem
-                                                                                                                                               ),
-                                                                                                                                      acc
-                                                                                                                                     )
-                                                                                                                   ))
+        return (obj, acc) ->
+                obj.ifEmptyElse(done(acc),
+                                (head, tail) ->
+                                {
+                                    final JsPath headPath = startingPath.key(head._1);
+                                    return MatchExp.ifJsonElse(headJson ->
+                                                                       reduceHeadJsonTail.apply(headPath,
+                                                                                                headJson
+                                                                                               )
+                                                                                         .apply(tail,
+                                                                                                acc
+                                                                                               ),
+                                                               headElem ->
+                                                                       more(() -> reduceObj(startingPath,
+                                                                                            reduceHeadJsonTail
+                                                                                           ).apply(tail,
+                                                                                                   accumulator.apply(JsPair.of(headPath,
+                                                                                                                               headElem
+                                                                                                                              ),
+                                                                                                                     acc
+                                                                                                                    )
+                                                                                                  ))
 
-                                                                           )
-                                                                .apply(head._2);
+                                                              )
+                                                   .apply(head._2);
 
-                                             }
-                                            );
+                                }
+                               );
 
 
     }
@@ -173,13 +177,15 @@ final class OpMapReduce<T> {
                                              {
                                                  final JsPath headPath = startingPath.inc();
 
-                                                 return MatchExp.ifJsonElse(json -> reduceHeadJsonTail.apply(headPath,
+                                                 return MatchExp.ifJsonElse(json ->
+                                                                                    reduceHeadJsonTail.apply(headPath,
                                                                                                              json
                                                                                                             )
                                                                                                       .apply(tail,
                                                                                                              acc
                                                                                                             ),
-                                                                            elem -> more(() -> reduceArr(headPath,
+                                                                            elem ->
+                                                                                    more(() -> reduceArr(headPath,
                                                                                                          reduceHeadJsonTail
                                                                                                         ).apply(tail,
                                                                                                                 accumulator.apply(JsPair.of(headPath,

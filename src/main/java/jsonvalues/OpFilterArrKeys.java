@@ -20,9 +20,10 @@ final class OpFilterArrKeys extends OpFilterKeys<JsArray> {
                                 (head, tail) ->
                                 {
                                     final JsPath headPath = startingPath.inc();
-                                    final Trampoline<JsArray> tailCall = Trampoline.more(() -> new OpFilterArrKeys(tail).filterAll(headPath,
-                                                                                                                                   predicate
-                                                                                                                                  ));
+                                    final Trampoline<JsArray> tailCall =
+                                            Trampoline.more(() -> new OpFilterArrKeys(tail).filterAll(headPath,
+                                                                                                      predicate
+                                                                                                     ));
                                     return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
                                                                                                                                                    predicate
                                                                                                                                                   )

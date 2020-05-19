@@ -23,9 +23,10 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj> {
                                 {
                                     final JsPath headPath = startingPath.key(head._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjObjs(tail).filter(startingPath,
-                                                                                                                              predicate
-                                                                                                                             ));
+                                    final Trampoline<JsObj> tailCall =
+                                            Trampoline.more(() -> new OpFilterObjObjs(tail).filter(startingPath,
+                                                                                                   predicate
+                                                                                                  ));
                                     return ifObjElse(json -> predicate.test(headPath,
                                                                             json
                                                                            ) ?
