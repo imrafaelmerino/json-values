@@ -2264,8 +2264,8 @@ public class JsObjGen implements JsGen<JsObj> {
      @param gen18 the mapping associated to the eighteenth key
      @param key19 the nineteenth key
      @param gen19 the mapping associated to the nineteenth key
-     @param key19 the twentieth key
-     @param gen19 the mapping associated to the twentieth key
+     @param key20 the twentieth key
+     @param gen20 the mapping associated to the twentieth key
      @return a JsObjGen
      */
     public static JsObjGen of(final String key1,
