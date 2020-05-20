@@ -1,14 +1,11 @@
 # JSON-VALUES
-## v8.0.0-RC2  ( Sun May 10 2020 21:02:13 GMT+0200 (Central European Summer Time) )
-
+## v8.0.0-RC3  ( Wed May 20 2020 15:29:57 GMT+0200 (Central European Summer Time) )
 
 ## Features
-  - 🎸 jsfuture and jsconsole 
-  - 🎸 jsspec jsgen jsfuture constructors of 15 bindings
-  - 🎸 more generators 
-   
+  - 🎸 optics: lenses, prisms and optionals
+
 ## Documentation
-  - ✏️ javadoc improved 
- 
+  - ✏️ javadoc improved
 
-
+## Breaking changes
+  - A lot of methods have been removed. I recommend use optics to manipulate jsons.

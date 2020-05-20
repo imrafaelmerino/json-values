@@ -2,13 +2,11 @@ package jsonvalues;
 
 import java.util.function.Predicate;
 
-abstract class OpFilterElems<T>
-{
+abstract class OpFilterElems<T> {
 
     final T json;
 
-    OpFilterElems(final T json)
-    {
+    OpFilterElems(final T json) {
         this.json = json;
     }
 

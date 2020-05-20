@@ -6,45 +6,40 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 
-class AnySpec implements JsValuePredicate
-{
+class AnySpec implements JsValuePredicate {
 
-  @Override
-  public JsSpec nullable()
-  {
-    return this;
-  }
+    final boolean required;
 
-  @Override
-  public JsSpec optional()
-  {
-    return new AnySpec(false);
-  }
+    AnySpec(final boolean required) {
+        this.required = required;
+    }
 
-  @Override
-  public JsSpecParser parser()
-  {
-    return JsSpecParsers.INSTANCE.ofValue();
-  }
+    @Override
+    public boolean isRequired() {
+        return required;
+    }
 
-  @Override
-  public boolean isRequired()
-  {
-    return required;
-  }
-  final boolean required;
+    @Override
+    public JsSpec nullable() {
+        return this;
+    }
 
-  AnySpec(final boolean required)
-  {
-    this.required = required;
-  }
+    @Override
+    public JsSpec optional() {
+        return new AnySpec(false);
+    }
 
-  @Override
-  public Optional<Error> test(final JsValue value)
-  {
+    @Override
+    public JsSpecParser parser() {
+        return JsSpecParsers.INSTANCE.ofValue();
+    }
 
-    if (value.isNothing() && required) return Optional.of(new Error(value,ERROR_CODE.REQUIRED));
-    return Optional.empty();
+    @Override
+    public Optional<Error> test(final JsValue value) {
 
-  }
+        if (value.isNothing() && required) return Optional.of(new Error(value,
+                                                                        ERROR_CODE.REQUIRED));
+        return Optional.empty();
+
+    }
 }

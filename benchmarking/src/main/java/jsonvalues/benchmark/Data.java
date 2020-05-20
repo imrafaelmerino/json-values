@@ -6,12 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.function.Supplier;
 
-public class Data
-{
-    private Data()
-    {
-    }
-
+public class Data {
     public static final Supplier<String> ARR_100;
     public static final Supplier<String> OBJ_100;
     public static final Supplier<String> ARR_1000;
@@ -23,8 +18,7 @@ public class Data
     public static final Supplier<String> ARR_1000000;
     public static final Supplier<String> OBJ_1000000;
 
-    static
-    {
+    static {
         OBJ_100 = () -> fileContent("obj100.json");
         ARR_100 = () -> fileContent("arr100.json");
         OBJ_1000 = () -> fileContent("obj1000.json");
@@ -37,30 +31,27 @@ public class Data
         ARR_1000000 = () -> fileContent("arr1000000.json");
     }
 
-    private static String fileContent(String name)
-    {
+    private Data() {
+    }
+
+    private static String fileContent(String name) {
         final InputStream stream = Data.class.getClassLoader()
                                              .getResourceAsStream(name);
 
-        try
-        {
+        try {
             return fromStream(stream);
-        }
-        catch (IOException e)
-        {
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
     }
 
-    private static String fromStream(InputStream in) throws IOException
-    {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-        StringBuilder out = new StringBuilder();
-        String newLine = System.getProperty("line.separator");
-        String line;
-        while ((line = reader.readLine()) != null)
-        {
+    private static String fromStream(InputStream in) throws IOException {
+        BufferedReader reader  = new BufferedReader(new InputStreamReader(in));
+        StringBuilder  out     = new StringBuilder();
+        String         newLine = System.getProperty("line.separator");
+        String         line;
+        while ((line = reader.readLine()) != null) {
             out.append(line);
             out.append(newLine);
         }

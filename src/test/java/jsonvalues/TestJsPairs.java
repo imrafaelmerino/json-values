@@ -3,12 +3,10 @@ package jsonvalues;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class TestJsPairs
-{
+public class TestJsPairs {
 
     @Test
-    public void test_creation_of_pair()
-    {
+    public void test_creation_of_pair() {
 
         Assertions.assertEquals(JsPair.of(JsPath.path("/a/b"),
                                           1

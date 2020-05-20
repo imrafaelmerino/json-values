@@ -1,130 +1,68 @@
-.path : creates a json path from a string
-    java.lang.String        →  JsPath.of($expr$)
 
-.fromKey : creates a json path from a key
-    java.lang.String        →  JsPath.fromKey($expr$)
+.jspath : creates a JsPath from a key
+    java.lang.String      →  JsPath.fromKey($expr$)
+    java.lang.Integer     →  JsPath.fromIndex($expr$)
+    NUMBER                →  JsPath.fromIndex($expr$)
 
+.jsInt : creates JsInt from an integer
+    java.lang.Byte        →  JsInt.of($expr$)
+    java.lang.Short       →  JsInt.of($expr$)
+    java.lang.Integer     →  JsInt.of($expr$)
+    NUMBER                →  JsInt.of($expr$)
 
-.fromIndex : convert a json path from an index
-    java.lang.Integer        →  JsPath.fromIndex($expr$)
-    NUMBER                   →  JsPath.fromIndex($expr$)
+.jsLong : creates JsLong from a long
+    java.lang.Byte        →  JsLong.of($expr$)
+    java.lang.Short       →  JsLong.of($expr$)
+    java.lang.Long        →  JsLong.of($expr$)
+    java.lang.Integer     →  JsLong.of($expr$)
+    NUMBER                →  JsLong.of($expr$)
 
-.toJsInt : convert to json int
-    java.lang.Integer        →  JsInt.of($expr$)
-    NUMBER                   →  JsInt.of($expr$)
+.jsBigDec : creates JsBigDec from a number
+    NUMBER                →  JsBigDec.of($expr$)
+    java.math.BigDecimal  →  JsBigDec.of($expr$)
 
-.toJsLong : convert to json long
-    java.lang.Long           →  JsLong.of($expr$)
-    NUMBER                   →  JsLong.of($expr$)
+.jsBigInteger : creates JsBigInteger from an integral number
+    java.lang.Byte        →  JsBigInt.of($expr$)
+    java.lang.Short       →  JsBigInt.of($expr$)
+    java.lang.Integer     →  JsBigInt.of($expr$)
+    java.lang.Long        →  JsBigInt.of($expr$)
+    java.math.BigInteger  →  JsBigInt.of($expr$)
+    NUMBER                →  JsBigInt.of($expr$)
 
-.toJsBigDec : convert to json big decimal
-    java.math.BigDecimal     →  JsBigDec.of($expr$)
-    NUMBER                   →  JsBigDec.of($expr$)
-
-.toJsBigInteger : convert to json big integer
-    java.math.BigDecimal     →  JsBigInt.of($expr$)
-    NUMBER                   →  JsBigInt.of($expr$)
-
-.toJsString : convert to json string
-    java.lang.String         →  JsStr.of($expr$)
-
-.toJsBoolean : convert to json boolean
-    java.lang.Boolean         →  JsBool.of($expr$)
-
-.toJsDouble : convert to json boolean
-    java.lang.Double         →  JsDouble.of($expr$)
-
-.toJsPair: creates a JsPair
-    java.lang.String        →  JsPair.of($expr$,$END$)
-    jsonvalues.JsPath       →  JsPair.of($expr$,$END$)
-    jsonvalues.JsValue       →  JsPair.of($END$,$expr$)
-
-.inJsArray: adds element into a json array
-    java.lang.String        →  JsArray.of($expr$,$END$)
-    NUMBER                  →  JsArray.of($expr$,$END$)
-    jsonvalues.JsPair       →  JsArray.of($expr$,$END$)
-
-.inMutableJsArray: adds element o pair into a json array
-    java.lang.String        →  JsArray._of_($expr$,$END$)
-    NUMBER                  →  JsArray._of_($expr$,$END$)
-    jsonvalues.JsPair       →  JsArray._of_($expr$,$END$)
-
-.inJsObj: adds pair into a json object
-    jsonvalues.JsPair       →  JsObj.of($expr$,$END$)
-
-.inMutableJsObj: adds pair into a json object
-    jsonvalues.JsPair       →  JsObj._of_($expr$,$END$)
+.jsString : creates JsStr from an string
+    java.lang.String      →  JsStr.of($expr$)
 
 
-.toJsArray: stream into JsArray
-    java.util.stream.Stream  →  $expr$.collect(JsArray.collector())
+.jsBoolean : creates JsBool from a boolean
+    java.lang.Boolean     →  JsBool.of($expr$)
 
-.toJsObj: stream into JsArray
-    java.util.stream.Stream  →  $expr$.collect(JsObj.collector())
+.jsDouble : creates JsDouble from a number
+    java.lang.Byte       →  JsDouble.of($expr$)
+    java.lang.Short      →  JsDouble.of($expr$)
+    java.lang.Integer    →  JsDouble.of($expr$)
+    java.lang.Long       →  JsDouble.of($expr$)
+    java.lang.Double     →  JsDouble.of($expr$)
+    NUMBER               →  JsDouble.of($expr$)
 
-.isJsInt: predicate to test if a JsValue is a JsInt
-    jsonvalues.JsValue → JsValue.ifInt.test($expr$)
-    jsonvalues.JsPair → JsPair.ifInt.test($expr$)
+.jsPair: creates a JsPair
+    java.lang.String       →  JsPair.of($expr$,$END$)
+    jsonvalues.JsPath      →  JsPair.of($expr$,$END$)
+    jsonvalues.JsValue     →  JsPair.of($END$,$expr$)
 
+.jsArray: creates a JsArray with an element
+    boolean                →  JsArray.of($expr$,$END$)
+    java.lang.String       →  JsArray.of($expr$,$END$)
+    NUMBER                 →  JsArray.of($expr$,$END$)
+    jsonvalues.JsPair      →  JsArray.of($expr$,$END$)
 
-.isJsBigInteger: predicate to test if a JsValue is a JsBigInteger
-    jsonvalues.JsValue → JsValue.ifBigInteger.test($expr$)
-    jsonvalues.JsPair → JsPair.ifBigInteger.test($expr$)
+.jsObj: creates a JsObj with an key
+   java.lang.String    →  JsObj.of($expr$,$END$)
+   jsonvalues.JsPair   →  JsObj.of($END$,$expr$)
 
-.isJsLong: predicate to test if a JsValue is a JsLong
-    jsonvalues.JsValue → JsValue.isLong.test($expr$)
-    jsonvalues.JsPair → JsPair.isLong.test($expr$)
+.jsSpec: creates a JsObjSpec with a key
+  java.lang.String   →  JsObjSpec.of($expr$,$END$)
 
-.isJsDouble: predicate to test if a JsValue is a JsDouble
-    jsonvalues.JsValue → JsValue.isDouble.test($expr$)
-    jsonvalues.JsPair → JsPair.isDouble.test($expr$)
+.jsGen: creates a JsObjGen with a Key
+  java.lang.String   →  JsObjGen.of($expr$,$END$)
 
-.isJsJson: predicate to test if a JsValue is a Json
-    jsonvalues.JsValue → JsValue.isJson.test($expr$)
-    jsonvalues.JsPair → JsPair.isJson.test($expr$)
-
-.isJsNull: predicate to test if a JsValue is a JsNull
-    jsonvalues.JsValue → JsValue.isNull.test($expr$)
-    jsonvalues.JsPair → JsPair.isNull.test($expr$)
-
-.isIntegral: predicate to test if a JsValue is an integral number
-    jsonvalues.JsValue → JsValue.isIntegral.test($expr$)
-    jsonvalues.JsPair → JsPair.isIntegral.test($expr$)
-
-.isNotJsNull: predicate to test if a JsValue is not a JsNull
-    jsonvalues.JsValue → JsValue.isNotNull.test($expr$)
-    jsonvalues.JsPair → JsPair.isNotNull.test($expr$)
-
-.isValue: predicate to test if a JsValue is not a container
-    jsonvalues.JsValue → JsValue.isValue.test($expr$)
-    jsonvalues.JsPair → JsPair.isValue.test($expr$)
-
-.isStr: predicate to test if a JsValue is a JsStr
-    jsonvalues.JsValue → JsValue.isStr.test($expr$)
-    jsonvalues.JsPair → JsPair.isStr.test($expr$)
-
-.isJsNumber: predicate to test if a JsValue is a JsNumber
-    jsonvalues.JsValue → JsValue.isNumber.test($expr$)
-    jsonvalues.JsPair → JsPair.isNumber.test($expr$)
-
-.isJsNothing: predicate to test if a JsValue is a JsNothing
-    jsonvalues.JsValue → JsValue.isNothing.test($expr$)
-    jsonvalues.JsPair → JsPair.isNothing.test($expr$)
-
-.isJsObj: predicate to test if a JsValue is a JsObj
-    jsonvalues.JsValue → JsValue.isObj.test($expr$)
-    jsonvalues.JsPair → JsPair.isObj.test($expr$)
-
-.isJsArr: predicate to test if a JsValue is a JsArray
-    jsonvalues.JsValue → JsValue.isArray.test($expr$)
-    jsonvalues.JsPair → JsPair.isArray.test($expr$)
-
-
-.isJsBoolean: predicate to test if a JsValue is a JsBoolean
-    jsonvalues.JsValue → JsValue.isBoolean.test($expr$)
-    jsonvalues.JsPair → JsValue.isBoolean.test($expr$)
-
-.isJsBigDecimal: predicate to test if a JsValue is a JsBigDecimal
-    jsonvalues.JsValue → JsValue.isDecimal.test($expr$)
-    jsonvalues.JsPair → JsPair.isDecimal.test($expr$)
 

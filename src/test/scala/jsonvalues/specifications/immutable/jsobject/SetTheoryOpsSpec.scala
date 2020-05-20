@@ -205,8 +205,7 @@ class SetTheoryOpsSpec extends BasePropSpec
                                          TYPE.LIST
                                          )
 
-              val a = JsPath.fromKey("a")
-              result.size(a).orElse(0) == 6 && result1.size(a).orElse(0) == 5 && result2.size(a).orElse(0) == 3
+              result.getArray("a").size() == 6 && result1.getArray("a").size() == 5 && result2.getArray("a").size() == 3
 
 
           }

@@ -27,41 +27,41 @@ class StreamCollectorSpec extends BasePropSpec
 
             List(
               testPredicateIf(p => p.value.isStr,
-                              pair => js.getOptStr(pair.path).get == pair.value.toJsStr.value
+                              pair => js.getStr(pair.path) == pair.value.toJsStr.value
                               ),
               testPredicateIf(p => p.value.isInt,
                               pair =>
                               {
                                 val n = pair.value.toJsInt.value
-                                (js.getOptInt(pair.path).getAsInt == n) &&
-                                (js.getOptLong(pair.path).getAsLong == n) &&
-                                (js.getOptBigInt(pair.path).get() == BigInteger.valueOf(n))
+                                (js.getInt(pair.path) == n) &&
+                                (js.getLong(pair.path) == n) &&
+                                (js.getBigInt(pair.path) == BigInteger.valueOf(n))
                               }
                               ),
               testPredicateIf(p => p.value.isLong,
                               pair =>
                               {
                                 val n = pair.value.toJsLong.value
-                                (js.getOptLong(pair.path).getAsLong == n) &&
-                                (js.getOptBigInt(pair.path).get() == BigInteger.valueOf(n))
+                                (js.getLong(pair.path) == n) &&
+                                (js.getBigInt(pair.path) == BigInteger.valueOf(n))
                               }
                               ),
               testPredicateIf(p => p.value.isDouble,
                               pair =>
                               {
                                 val n = pair.value.toJsDouble.value
-                                (js.getOptDouble(pair.path).getAsDouble == n) &&
-                                (js.getOptBigDec(pair.path).get() == java.math.BigDecimal.valueOf(n))
+                                (js.getDouble(pair.path) == n) &&
+                                (js.getBigDec(pair.path) == java.math.BigDecimal.valueOf(n))
                               }
                               ),
               testPredicateIf(p => p.value.isBigInt,
-                              pair => js.getOptBigInt(pair.path).get == pair.value.toJsBigInt.value
+                              pair => js.getBigInt(pair.path) == pair.value.toJsBigInt.value
                               ),
               testPredicateIf(pair => pair.value.isBigDec,
-                              pair => js.getOptBigDec(pair.path).get == pair.value.toJsBigDec.value
+                              pair => js.getBigDec(pair.path) == pair.value.toJsBigDec.value
                               ),
               testPredicateIf(pair => pair.value.isBool,
-                              pair => js.getOptBool(pair.path).get == pair.value.toJsBool.value
+                              pair => js.getBool(pair.path) == pair.value.toJsBool.value
                               )
               ).map(f => f(js))
               .reduce(_ && _)

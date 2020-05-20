@@ -9,64 +9,32 @@ import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
-import static jsonvalues.JsArray.TYPE.*;
+import static jsonvalues.JsArray.TYPE.SET;
 import static jsonvalues.JsBool.FALSE;
 import static jsonvalues.JsBool.TRUE;
-import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.JsPath.fromKey;
 import static jsonvalues.JsPath.path;
 
-public class TestJsObj
-{
+public class TestJsObj {
+
 
     @Test
-    public void test_append_immutable()
-    {
-        JsObj empty = JsObj.empty();
-
-        final JsObj obj = empty.append(path("/a/b"),
-                                       JsStr.of("hi")
-                                      );
-
-        Assertions.assertTrue(empty.isEmpty());
-
-        Assertions.assertEquals(JsArray.of("hi"),
-                                obj.getOptArray(path("/a/b"))
-                                   .get()
-                               );
-
-        final JsObj obj1 = obj.append(path("/a/b"),
-                                      JsStr.of("bye")
-                                     );
-
-        Assertions.assertEquals(Optional.of("bye"),
-                                obj1.getOptStr(path("/a/b/-1"))
-                               );
-
-        Assertions.assertEquals(Optional.of("hi"),
-                                obj1.getOptStr(path("/a/b/0"))
-                               );
-    }
-
-    @Test
-    public void test_creates_immutable_empty_object()
-    {
+    public void test_creates_empty_object() {
         JsObj obj = JsObj.empty();
         Assertions.assertTrue(obj.isEmpty());
 
-        final JsObj obj1 = obj.put(JsPath.fromKey("a"),
-                                   1
+        final JsObj obj1 = obj.set(JsPath.fromKey("a"),
+                                   JsInt.of(1)
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
-        Assertions.assertEquals(OptionalInt.of(1),
-                                obj1.getOptInt(JsPath.fromKey("a"))
-                               );
+        Assertions.assertTrue(obj1.getInt(JsPath.fromKey("a"))
+                                  .equals(1)
+                             );
     }
 
     @Test
-    public void test_creates_immutable_five_elements_object()
-    {
+    public void test_creates_five_elements_object() {
 
         JsObj obj = JsObj.of("a",
                              JsStr.of("A"),
@@ -109,58 +77,9 @@ public class TestJsObj
                                );
     }
 
-    @Test
-    public void test_creates_immutable_four_elements_object()
-    {
-        JsObj obj = JsObj.of("a",
-                             JsStr.of("A"),
-                             "b",
-                             JsStr.of("B"),
-                             "c",
-                             JsStr.of("C"),
-                             "h",
-                             NULL,
-                             "d",
-                             JsStr.of("D")
-                            );
-        Assertions.assertEquals(5,
-                                obj.size()
-                               );
-
-        final JsObj obj1 = obj.mapKeys(pair -> pair.path.last()
-                                                        .asKey().name + pair.value.toJsStr().value,
-                                       p -> p.value.isStr()
-                                      );// obj is mutable
-
-        Set<String> set = new HashSet<>();
-        set.addAll(Arrays.asList("aA",
-                                 "bB",
-                                 "cC",
-                                 "h",
-                                 "dD"
-                                ));
-        Assertions.assertEquals(set,
-                                obj1.keySet()
-
-                               );
-
-        Set<String> set1 = new HashSet<>();
-        set1.addAll(Arrays.asList("a",
-                                  "b",
-                                  "c",
-                                  "d",
-                                  "h"
-                                 ));
-        Assertions.assertEquals(set1,
-                                obj.keySet()
-
-                               );
-
-    }
 
     @Test
-    public void test_creates_immutable_object_from_pairs()
-    {
+    public void test_creates_object_from_pairs() {
 
         JsObj obj = JsObj.of(JsPair.of(fromKey("a"),
                                        JsInt.of(1)
@@ -187,16 +106,16 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        Assertions.assertEquals(OptionalInt.of(6),
-                                obj.getOptInt(path("/d/0/1"))
-                               );
+        Assertions.assertTrue(
+                obj.getInt(path("/d/0/1"))
+                   .equals(6)
+                             );
 
 
     }
 
     @Test
-    public void test_creates_immutable_three_elements_object()
-    {
+    public void test_creates_three_elements_object() {
         JsObj obj = JsObj.of("a",
                              JsLong.of(10),
                              "b",
@@ -208,7 +127,7 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.remove(JsPath.fromKey("a"));// obj is mutable
+        final JsObj obj1 = obj.delete(JsPath.fromKey("a"));
         Assertions.assertEquals(3,
                                 obj.size()
                                );
@@ -219,8 +138,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_creates_immutable_two_elements_object()
-    {
+    public void test_creates_two_elements_object() {
         JsObj obj = JsObj.of("a",
                              JsInt.of(1),
                              "b",
@@ -230,7 +148,7 @@ public class TestJsObj
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.remove(JsPath.fromKey("b"));// obj is mutable
+        final JsObj obj1 = obj.delete(JsPath.fromKey("b"));// obj is mutable
         Assertions.assertEquals(2,
                                 obj.size()
                                );
@@ -241,8 +159,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_equals()
-    {
+    public void test_equals() {
 
         JsObj obj = JsObj.of("a",
                              JsObj.of("b",
@@ -305,8 +222,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_equals_and_hashcode()
-    {
+    public void test_equals_and_hashcode() {
         final JsObj obj = JsObj.of("a",
                                    JsInt.of(1),
                                    "b",
@@ -336,15 +252,14 @@ public class TestJsObj
     }
 
     @Test
-    public void test_filter_elements_immutable() throws MalformedJson
-    {
+    public void test_filter_elements_immutable() throws MalformedJson {
 
         final JsObj obj = JsObj.parse("{\n"
-                                      + "  \"a\": 1,\n"
-                                      + "  \"b\": 2,\n"
-                                      + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
-                                      +
-                                      "}");
+                                              + "  \"a\": 1,\n"
+                                              + "  \"b\": 2,\n"
+                                              + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
+                                              +
+                                              "}");
 
         final JsObj result = obj.filterValues((pair) -> pair.value.toJsInt().value % 2 == 0);
 
@@ -363,8 +278,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_filter_jsons_from_immutable() throws MalformedJson
-    {
+    public void test_filter_jsons_from_immutable() throws MalformedJson {
         final JsObj obj = JsObj.of("a",
                                    JsObj.of("R",
                                             JsInt.of(1)
@@ -400,12 +314,12 @@ public class TestJsObj
                                                 return !o.containsPath(JsPath.fromKey("R"));
                                             });
         final JsObj result1 = obj.filterAllObjs((p, o) ->
-                                              {
-                                                  Assertions.assertEquals(o,
-                                                                          obj.get(p)
-                                                                         );
-                                                  return !o.containsPath(JsPath.fromKey("R"));
-                                              });
+                                                {
+                                                    Assertions.assertEquals(o,
+                                                                            obj.get(p)
+                                                                           );
+                                                    return !o.containsPath(JsPath.fromKey("R"));
+                                                });
 
 
         Assertions.assertEquals(JsObj.parse("{\"c\":[{\"R\":1},{\"T\":{\"R\":1},\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
@@ -417,8 +331,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_filter_keys_immutable()
-    {
+    public void test_filter_keys_immutable() {
         final Supplier<JsObj> obj = () -> JsObj.of("a",
                                                    JsObj.of("a1",
                                                             JsStr.of("A"),
@@ -450,14 +363,14 @@ public class TestJsObj
 
         final JsObj obj1 = obj.get()
                               .filterAllKeys(p ->
-                                           {
-                                               Assertions.assertEquals(p.value,
-                                                                       obj.get()
-                                                                          .get(p.path)
-                                                                      );
-                                               return !p.path.last()
-                                                             .isKey(name -> name.startsWith("b"));
-                                           }
+                                             {
+                                                 Assertions.assertEquals(p.value,
+                                                                         obj.get()
+                                                                            .get(p.path)
+                                                                        );
+                                                 return !p.path.last()
+                                                               .isKey(name -> name.startsWith("b"));
+                                             }
                                             );
         Assertions.assertFalse(obj1.streamAll()
                                    .anyMatch(p -> p.path.last()
@@ -483,8 +396,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_filter_values_from_immutable_object() throws MalformedJson
-    {
+    public void test_filter_values_from_object() throws MalformedJson {
 
         JsObj obj = JsObj.of("a",
                              JsInt.of(1),
@@ -517,8 +429,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_malformed_json() throws MalformedJson
-    {
+    public void test_malformed_json() throws MalformedJson {
         final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
                                                                     () -> JsObj.parse("")
                                                                    );
@@ -536,15 +447,14 @@ public class TestJsObj
     }
 
     @Test
-    public void test_map_elements_immutable() throws MalformedJson
-    {
+    public void test_map_elements_immutable() throws MalformedJson {
 
         final JsObj obj = JsObj.parse("{\n"
-                                      + "  \"a\": 1,\n"
-                                      + "  \"b\": 2,\n"
-                                      + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
-                                      +
-                                      "}");
+                                              + "  \"a\": 1,\n"
+                                              + "  \"b\": 2,\n"
+                                              + "  \"c\": [{\"d\": 3,\"e\": 4}, 5,6]\n"
+                                              +
+                                              "}");
 
         final JsObj result = obj.mapValues((pair) -> pair.value.toJsInt()
                                                                .map(i -> i + 10));
@@ -564,8 +474,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_map_json_immutable_obj() throws MalformedJson
-    {
+    public void test_map_json_obj() throws MalformedJson {
         JsObj obj = JsObj.of("a",
                              JsStr.of("A"),
                              "b",
@@ -594,47 +503,28 @@ public class TestJsObj
                             );
 
 
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.put(JsPath.fromKey("size"),
-                                                                                    json.size()
+        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
+                                                                                    JsInt.of(json.size())
                                                                                    );
-        final JsObj newObj = obj.mapAllObjs((p, o) ->
-                                          {
-                                              Assertions.assertEquals(o,
-                                                                      obj.get(p)
-                                                                     );
-                                              return addSizeFn.apply(p,
-                                                                     o
-                                                                    );
-                                          },
-                                            (p, o) -> o.isNotEmpty()
-                                           );
 
-        Assertions.assertNotEquals(obj,
-                                   newObj
-                                  );
-
-        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}\n")
-        ,
-                                newObj
-                               );
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-        ,
+                ,
                                 obj.mapAllObjs((p, o) ->
-                                             {
+                                               {
 
-                                                 Assertions.assertEquals(o,
-                                                                         obj.get(p)
-                                                                        );
-                                                 return addSizeFn.apply(p,
-                                                                        o
-                                                                       );
-                                             }
+                                                   Assertions.assertEquals(o,
+                                                                           obj.get(p)
+                                                                          );
+                                                   return addSizeFn.apply(p,
+                                                                          o
+                                                                         );
+                                               }
                                               )
                                );
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
-        ,
+                ,
                                 obj.mapObjs((p, o) ->
                                             {
 
@@ -648,53 +538,10 @@ public class TestJsObj
                                            )
                                );
 
-        JsObj obj1 = JsObj.of("a",
-                              JsObj.of("b",
-                                       JsStr.of("B"),
-                                       "c",
-                                       JsStr.of("C")
-                                      ),
-                              "b",
-                              JsObj.empty(),
-                              "c",
-                              JsArray.empty(),
-                              "d",
-                              JsObj.of("e",
-                                       JsStr.of("E"),
-                                       "f",
-                                       JsStr.of("F"),
-                                       "g",
-                                       JsObj.of("h",
-                                                JsStr.of("H"),
-                                                "i",
-                                                JsStr.of("I")
-                                               )
-                                      )
-                             );
-
-        final JsObj newObj1 = obj1.mapObjs((p, o) ->
-                                           {
-                                               Assertions.assertEquals(o,
-                                                                       obj1.get(p)
-                                                                      );
-                                               return addSizeFn.apply(p,
-                                                                      o
-                                                                     );
-                                           },
-                                           (p, o) -> o.isNotEmpty()
-                                          );
-
-
-        Assertions.assertEquals(JsObj.parse("{\"a\":{\"size\":2,\"b\":\"B\",\"c\":\"C\"},\"b\":{},\"c\":[],\"d\":{\"e\":\"E\",\"size\":3,\"f\":\"F\",\"g\":{\"i\":\"I\",\"h\":\"H\"}}}\n")
-        ,
-                                newObj1
-                               );
-
     }
 
     @Test
-    public void test_map_keys_to_uppercase_removing_trailing_white_spaces_immutable()
-    {
+    public void test_map_keys_to_uppercase_removing_trailing_white_spaces_immutable() {
         final JsObj obj = JsObj.of(" a ",
                                    JsObj.of(" a1 ",
                                             JsStr.of("A"),
@@ -721,14 +568,14 @@ public class TestJsObj
 
 
         final JsObj mapped = obj.mapAllKeys(p ->
-                                          {
-                                              Assertions.assertEquals(p.value,
-                                                                      obj.get(p.path)
-                                                                     );
-                                              return p.path.last()
-                                                           .asKey().name.trim()
-                                                                        .toUpperCase();
-                                          });
+                                            {
+                                                Assertions.assertEquals(p.value,
+                                                                        obj.get(p.path)
+                                                                       );
+                                                return p.path.last()
+                                                             .asKey().name.trim()
+                                                                          .toUpperCase();
+                                            });
 
         Assertions.assertFalse(mapped.streamAll()
                                      .map(it ->
@@ -746,8 +593,7 @@ public class TestJsObj
     }
 
     @Test
-    public void test_map_strings_to_lowercase_and_reduce()
-    {
+    public void test_map_strings_to_lowercase_and_reduce() {
 
         final JsObj obj = JsObj.of("a",
 
@@ -774,22 +620,23 @@ public class TestJsObj
 
 
         final JsObj obj1 = obj.mapAllValues(pair ->
-                                         {
-                                             Assertions.assertEquals(pair.value,
-                                                                     obj.get(pair.path)
-                                                                    );
-                                             return pair.mapIfStr(String::toLowerCase).value;
-                                         });
+                                            {
+                                                Assertions.assertEquals(pair.value,
+                                                                        obj.get(pair.path)
+                                                                       );
+                                                return JsStr.prism.modify(String::toLowerCase)
+                                                                  .apply(pair.value);
+                                            });
 
         final Optional<String> reduced_ = obj1.reduceAll(String::concat,
-                                                       p ->
-                                                       {
-                                                           Assertions.assertEquals(p.value,
-                                                                                   obj1.get(p.path)
-                                                                                  );
-                                                           return p.value.toJsStr().value;
-                                                       },
-                                                       p -> p.value.isStr()
+                                                         p ->
+                                                         {
+                                                             Assertions.assertEquals(p.value,
+                                                                                     obj1.get(p.path)
+                                                                                    );
+                                                             return p.value.toJsStr().value;
+                                                         },
+                                                         p -> p.value.isStr()
                                                         );
 
         final char[] chars_ = reduced_.get()
@@ -818,62 +665,9 @@ public class TestJsObj
                                );
     }
 
-    @Test
-    public void test_operations()
-    {
-
-        JsObj obj = JsObj.of(JsPair.of(path("/a/b/c"),
-                                       JsInt.of(1)
-                                      ),
-                             JsPair.of(path("/a/b/d"),
-                                       JsInt.of(2)
-                                      )
-                            );
-
-        Assertions.assertEquals(obj.appendAll(JsPath.fromIndex(0),
-                                              JsArray.of(1,
-                                                         2
-                                                        )
-                                             ),
-                                obj
-                               );
-
-        Assertions.assertEquals(obj.prependAll(JsPath.fromIndex(0),
-                                               JsArray.of(1,
-                                                          2
-                                                         )
-                                              ),
-                                obj
-                               );
-        Assertions.assertEquals(NOTHING,
-                                obj.get(JsPath.fromIndex(0))
-                               );
-        Assertions.assertEquals(obj,
-                                obj.put(JsPath.fromIndex(0),
-                                        a -> NULL
-                                       )
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/0"))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(JsPath.fromIndex(0))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/b/c/d"))
-                               );
-
-        Assertions.assertEquals(obj,
-                                obj.remove(path("/a/b/c/0"))
-                               );
-    }
 
     @Test
-    public void test_parse_into_immutable() throws MalformedJson
-    {
+    public void test_parse_into_immutable() throws MalformedJson {
         JsObj obj = JsObj.of(JsPair.of(path("/a/b/0"),
                                        NULL
                                       ),
@@ -906,238 +700,88 @@ public class TestJsObj
 
     }
 
-    @Test
-    public void test_prepend()
-    {
-
-        JsObj obj = JsObj.of("a",
-                             JsArray.of(TRUE),
-                             "b",
-                             JsArray.of(FALSE)
-                            );
-
-        final JsObj obj1 = obj.prepend(path("/a"),
-                                       TRUE
-                                      )
-                              .append(path("/a"),
-                                      FALSE
-                                     );
-        Assertions.assertEquals(JsArray.of(true,
-                                           true,
-                                           false
-                                          ),
-                                obj1.get(path("/a"))
-                               );
-
-        Assertions.assertEquals(3,
-                                obj1.size(path("/a"))
-                                    .getAsInt()
-                               );
-
-        final JsObj obj2 = obj.prepend(path("/a/b"),
-                                       JsStr.of("hi")
-                                      );
-        Assertions.assertEquals(JsArray.of("hi"),
-                                obj2.get(path("/a/b"))
-                               );
-
-
-        final JsObj obj3 = obj2.prepend(path("/a/b/3"),
-                                        JsStr.of("bye")
-                                       );
-        Assertions.assertEquals(JsArray.of("bye"),
-                                obj3
-                                .get(path("/a/b/3"))
-                               );
-
-        Assertions.assertEquals(JsStr.of("hi"),
-                                obj3.get(path("/a/b/0"))
-                               );
-        Assertions.assertEquals(NULL,
-                                obj3.get(path("/a/b/1"))
-                               );
-        Assertions.assertEquals(NULL,
-                                obj3.get(path("/a/b/2"))
-                               );
-
-        Assertions.assertEquals(JsArray.of(1),
-                                obj3.prepend(path("/a/b/3/1"),
-                                             JsInt.of(1)
-                                            )
-                                    .get(path("/a/b/3/1"))
-                               );
-
-
-    }
 
     @Test
-    public void test_prepend_all_immutable()
-    {
-        JsObj empty = JsObj.empty();
-
-        final JsArray xs = JsArray.of(1,
-                                      2,
-                                      3
-                                     );
-        final JsObj obj = empty.prependAll(path("/a/b"),
-                                           xs
-                                          );
-
-        Assertions.assertTrue(empty.isEmpty());
-
-        Assertions.assertEquals(xs,
-                                obj.get(path("/a/b"))
-                               );
-
-        final JsObj obj1 = obj.prependAll(path("/a/b"),
-                                          xs
-                                         );
-
-        Assertions.assertEquals(xs.prependAll(xs),
-                                obj1.get(path("/a/b"))
-                               );
-
-
-        final JsObj obj2 = empty.prependAll(path("/c/2"),
-                                            xs
-                                           );
-
-
-        Assertions.assertEquals(JsNull.NULL,
-                                obj2.get(path("/c/0"))
-                               );
-
-        Assertions.assertEquals(JsNull.NULL,
-                                obj2.get(path("/c/1"))
-                               );
-
-        Assertions.assertEquals(xs,
-                                obj2.get(path("/c/2"))
-                               );
-
-        Assertions.assertEquals(xs,
-                                empty.prependAll(path("/d/2"),
-                                                 xs
-                                                )
-                                     .get(path("/d/2"))
-                               );
-
-        final JsObj obj3 = obj2.prepend(path("/c/1"),
-                                        JsInt.of(1)
-                                       );
-
-        Assertions.assertEquals(JsInt.of(1),
-                                obj3.get(path("/c/1/0"))
-                               );
-    }
-
-    @Test
-    public void test_put_and_get()
-    {
+    public void test_put_and_get() {
         final JsObj empty = JsObj.empty();
-        final JsObj a = empty.put(JsPath.fromKey("a"),
+        final JsObj a = empty.set(JsPath.fromKey("a"),
                                   JsBigDec.of(BigDecimal.valueOf(0.1d))
                                  );
 
-        Assertions.assertEquals(OptionalDouble.of(0.1d),
-                                a.getOptDouble(fromKey("a"))
-                               );
-        Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.1d)),
-                                a.getOptBigDec(fromKey("a"))
-                               );
+        Assertions.assertTrue(
+                a.getDouble(fromKey("a"))
+                 .equals(0.1d)
+                             );
+        Assertions.assertTrue(
+                a.getBigDec(fromKey("a"))
+                 .equals(BigDecimal.valueOf(0.1d))
+                             );
     }
-
 
     @Test
-    public void testPutIfPresentDoesntInsertIfNotPresent(){
+    public void testJsObjFromIterable() {
 
-      JsObj empty = JsObj.empty();
+        Map<String, JsValue> map = new HashMap<>();
 
+        JsObj a = JsObj.ofIterable(map.entrySet());
 
-      JsObj a = empty.putIfPresent("a",1);
+        Assertions.assertEquals(JsObj.empty(),
+                                a
+                               );
 
-      Assertions.assertEquals(empty,a);
+        map.put("a",
+                JsInt.of(1)
+               );
+        map.put("b",
+                JsStr.of("hi")
+               );
 
-      JsObj b = empty.putIfPresent("b","hi");
-
-      Assertions.assertEquals(empty,b);
-
-      JsObj c = empty.putIfPresent("c",true);
-
-      Assertions.assertEquals(empty,c);
-
-
-      JsObj d = empty.putIfPresent("d",JsObj.empty());
-
-      Assertions.assertEquals(empty,d);
-
-      JsObj e = empty.putIfPresent("e",JsArray.empty());
-
-      Assertions.assertEquals(empty,e);
-
-      JsObj f = empty.putIfPresent("f",1L);
-
-      Assertions.assertEquals(empty,f);
-
-      JsObj g = empty.putIfPresent("g",1.5);
-
-      Assertions.assertEquals(empty,g);
-
-      JsObj h = empty.putIfPresent("h",BigInteger.TEN);
-
-      Assertions.assertEquals(empty,h);
-
-      JsObj i = empty.putIfPresent("i",BigDecimal.TEN);
-
-      Assertions.assertEquals(empty,i);
-
-      JsObj j = empty.putIfPresent("i",1.5);
-
-      Assertions.assertEquals(empty,j);
+        Assertions.assertEquals(
+                JsObj.ofIterable(map.entrySet()),
+                JsObj.of("a",
+                         JsInt.of(1),
+                         "b",
+                         JsStr.of("hi")
+                        )
+                               );
 
     }
 
-  @Test
-  public void testPutIfPresentInsertIfPresent(){
+    @Test
+    public void testJsObj() {
 
-    JsObj obj = JsObj.empty().put("a","hi");
+        JsObj o = JsObj.of("a",
+                           JsBigDec.of(BigDecimal.valueOf(1.5)),
+                           "b",
+                           JsBigInt.of(BigInteger.valueOf(Long.MAX_VALUE)),
+                           "c",
+                           JsDouble.of(1.5d),
+                           "d",
+                           JsLong.of(15L)
+                          );
 
-    JsObj a = obj.putIfPresent("a",1);
+        Assertions.assertNull(o.getStr("b"));
+        Assertions.assertNull(o.getInt("b"));
+        Assertions.assertNull(o.getBool("b"));
+        Assertions.assertNull(o.getObj("b"));
+        Assertions.assertNull(o.getDouble("b"));
+        Assertions.assertNull(o.getArray("b"));
+        Assertions.assertNull(o.getLong("c"));
 
-    Assertions.assertTrue(a.getInt("a")==1);
+        Assertions.assertEquals(BigDecimal.valueOf(1.5),
+                                o.getBigDec("a")
+                               );
+        Assertions.assertEquals(BigInteger.valueOf(Long.MAX_VALUE),
+                                o.getBigInt("b")
+                               );
+        Assertions.assertEquals(Double.valueOf(1.5),
+                                o.getDouble("c")
+                               );
+        Assertions.assertEquals(Long.valueOf(15L),
+                                o.getLong("d")
+                               );
 
-    JsObj b = obj.putIfPresent("a","hi");
+    }
 
-    Assertions.assertEquals(b.getStr("a"),"hi");
-
-    JsObj c =  obj.putIfPresent("a",true);
-
-    Assertions.assertEquals( c.getBool("a"),true);
-
-    JsObj d =  obj.putIfPresent("a",JsObj.empty());
-
-    Assertions.assertEquals( d.getObj("a"),JsObj.empty());
-
-    JsObj e =  obj.putIfPresent("a",JsArray.empty());
-
-    Assertions.assertEquals(e.getArray("a"),JsArray.empty());
-
-    JsObj f = obj.putIfPresent("a",1L);
-
-    Assertions.assertTrue(f.getLong("a")==1L);
-
-    JsObj g = obj.putIfPresent("a",1.5);
-
-    Assertions.assertTrue(g.getDouble("a")==1.5);
-
-    JsObj h = obj.putIfPresent("a",BigInteger.TEN);
-
-    Assertions.assertEquals(h.getBigInt("a"),BigInteger.TEN);
-
-    JsObj i = obj.putIfPresent("a",BigDecimal.TEN);
-
-    Assertions.assertEquals(i.getBigDec("a"),BigDecimal.TEN);
-
-  }
 
 }

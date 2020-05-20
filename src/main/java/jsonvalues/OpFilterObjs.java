@@ -2,13 +2,11 @@ package jsonvalues;
 
 import java.util.function.BiPredicate;
 
-abstract class OpFilterObjs<T>
-{
+abstract class OpFilterObjs<T> {
 
     T json;
 
-    OpFilterObjs(final T json)
-    {
+    OpFilterObjs(final T json) {
         this.json = json;
     }
 

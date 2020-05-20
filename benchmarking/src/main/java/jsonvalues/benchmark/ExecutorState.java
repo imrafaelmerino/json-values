@@ -11,19 +11,16 @@ import java.util.concurrent.Executors;
  */
 
 @State(Scope.Benchmark)
-public class ExecutorState
-{
+public class ExecutorState {
     public ExecutorService service;
 
     @Setup(Level.Trial)
-    public void up()
-    {
+    public void up() {
         service = Executors.newCachedThreadPool();
     }
 
     @TearDown(Level.Trial)
-    public void down()
-    {
+    public void down() {
         service.shutdown();
     }
 

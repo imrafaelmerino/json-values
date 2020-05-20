@@ -1,7 +1,5 @@
 package jsonvalues;
 
-import org.checkerframework.checker.nullness.qual.Nullable;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -15,67 +13,61 @@ import static java.util.Objects.requireNonNull;
 /**
  Represents an immutable json number of type double.
  */
-public final class JsDouble extends JsNumber implements Comparable<JsDouble>
-{
+public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     public static final int ID = 5;
 
 
-    @Override
-    public int id()
-    {
-        return ID;
-    }
+    /**
+     prism between the sum type JsValue and JsDouble
+     */
+    public static Prism<JsValue, Double> prism = new Prism<>(s ->
+                                                             {
+                                                                 if (s.isDouble())
+                                                                     return Optional.of(s.toJsDouble().value);
+                                                                 if (s.isDecimal()) return s.toJsBigDec()
+                                                                                            .doubleValueExact();
+                                                                 return Optional.empty();
+                                                             },
+                                                             JsDouble::of
+    );
     /**
      The double value.
      */
     public final double value;
 
-
-    private JsDouble(final double value)
-    {
+    private JsDouble(final double value) {
         this.value = value;
+    }
+
+    @Override
+    public int id() {
+        return ID;
+    }
+
+    @Override
+    public boolean isDouble() {
+        return true;
     }
 
     /**
      Compares two {@code JsDouble} objects numerically.
+
      @see Double#compareTo(Double)
      */
     @Override
-    public int compareTo(final JsDouble o)
-    {
+    public int compareTo(final JsDouble o) {
         return Double.compare(value,
                               requireNonNull(o).value
                              );
     }
 
     /**
-     Indicates whether some other object is "equal to" this json double. Numbers of different types
-     are equals if the have the same value.
-     @param that the reference object with which to compare.
-     @return true if that is a JsNumber with the same value as this JsDouble
-     */
-    @Override
-    public boolean equals(final @Nullable Object that)
-    {
-        if (this == that) return true;
-        if (that == null) return false;
-        if (!(that instanceof JsNumber)) return false;
-        final JsNumber number = (JsNumber) that;
-        if (number.isDouble()) return value == number.toJsDouble().value;
-        if (number.isLong()) return equals(number.toJsLong());
-        if (number.isInt()) return equals(number.toJsInt());
-        if (number.isBigInt()) return equals(number.toJsBigInt());
-        if (number.isBigDec()) return equals(number.toJsBigDec());
-        return false;
-    }
-
-    /**
      Returns the hashcode of this json double.
+
      @return the hashcode of this JsDouble
      */
     @Override
-    public int hashCode()
-    {
+    public int hashCode() {
         final JsBigDec bigDecimal = JsBigDec.of(BigDecimal.valueOf(this.value));
 
         final OptionalInt optInt = bigDecimal.intValueExact();
@@ -91,84 +83,62 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble>
     }
 
     /**
-     Maps this json double into another one.
-     @param fn the mapping function
-     @return a new JsDouble
-     */
-    public JsDouble map(DoubleUnaryOperator fn)
-    {
-        return JsDouble.of(requireNonNull(fn).applyAsDouble(value));
-    }
+     Indicates whether some other object is "equal to" this json double. Numbers of different types
+     are equals if the have the same value.
 
-
-    /**
-     * Static factory method to create a JsDouble from a double primitive type.
-     * @param n the double primitive type
-     * @return a new JsDouble
-     */
-    public static JsDouble of(double n)
-    {
-        return new JsDouble(n);
-    }
-
-
-
-    /**
-     Tests the value of this json double on a predicate.
-     @param predicate the predicate
-     @return true if this double satisfies the predicate
-     */
-    public boolean test(DoublePredicate predicate)
-    {
-        return predicate.test(value);
-    }
-
-
-    /**
-     * @return a string representation of this object.
-     * @see Double#toString() Double.toString
+     @param that the reference object with which to compare.
+     @return true if that is a JsNumber with the same value as this JsDouble
      */
     @Override
-    public String toString()
-    {
+    public boolean equals(final Object that) {
+        if (this == that) return true;
+        if (that == null) return false;
+        if (!(that instanceof JsNumber)) return false;
+        final JsNumber number = (JsNumber) that;
+        if (number.isDouble()) return value == number.toJsDouble().value;
+        if (number.isLong()) return equals(number.toJsLong());
+        if (number.isInt()) return equals(number.toJsInt());
+        if (number.isBigInt()) return equals(number.toJsBigInt());
+        if (number.isBigDec()) return equals(number.toJsBigDec());
+        return false;
+    }
+
+    /**
+     @return a string representation of this object.
+     @see Double#toString() Double.toString
+     */
+    @Override
+    public String toString() {
         return Double.toString(value);
     }
 
     /**
-     * Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty
-     * optional is returned if this {@code double} has a nonzero fractional part.
-     @return this double as an bigint wrapped in an Optional
+     returns true if this double and the specified long represent the same number
+
+     @param jsLong the specified JsLong
+     @return true if both JsElem are the same value
      */
-    Optional<BigInteger> bigIntegerExact()
-    {
-        try
-        {
-            return Optional.ofNullable(BigDecimal.valueOf(value)
-                                                 .toBigIntegerExact());
-        }
-        catch (ArithmeticException e)
-        {
-            return Optional.empty();
-        }
+    private boolean equals(JsLong jsLong) {
+        return requireNonNull(jsLong).equals(this);
     }
 
     /**
-     returns true if this double and the specified bigdecimal represent the same number
-     @param jsBigDec the specified JsBigDec
+     returns true if this double and the specified integer represent the same number
+
+     @param jsInt the specified JsInt
      @return true if both JsElem are the same value
      */
-    private boolean equals(JsBigDec jsBigDec)
-    {
-        return requireNonNull(jsBigDec).equals(this);
+    private boolean equals(JsInt jsInt) {
+        return requireNonNull(jsInt).equals(this);
     }
 
     /**
      returns true if this double and the specified biginteger represent the same number
+
      @param jsBigInt the specified JsBigInt
      @return true if both JsElem are the same value
      */
-     boolean equals(JsBigInt jsBigInt)
-    {
+    boolean equals(JsBigInt jsBigInt) {
 
         final Optional<BigInteger> y = bigIntegerExact();
         return y.isPresent() && y.get()
@@ -176,29 +146,58 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble>
     }
 
     /**
-     returns true if this double and the specified long represent the same number
-     @param jsLong the specified JsLong
+     returns true if this double and the specified bigdecimal represent the same number
+
+     @param jsBigDec the specified JsBigDec
      @return true if both JsElem are the same value
      */
-    private boolean equals(JsLong jsLong)
-    {
-        return requireNonNull(jsLong).equals(this);
+    private boolean equals(JsBigDec jsBigDec) {
+        return requireNonNull(jsBigDec).equals(this);
     }
 
     /**
-     returns true if this double and the specified integer represent the same number
-     @param jsInt the specified JsInt
-     @return true if both JsElem are the same value
+     Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty
+     optional is returned if this {@code double} has a nonzero fractional part.
+
+     @return this double as an bigint wrapped in an Optional
      */
-    private boolean equals(JsInt jsInt)
-    {
-        return requireNonNull(jsInt).equals(this);
+    Optional<BigInteger> bigIntegerExact() {
+        try {
+            return Optional.ofNullable(BigDecimal.valueOf(value)
+                                                 .toBigIntegerExact());
+        } catch (ArithmeticException e) {
+            return Optional.empty();
+        }
     }
 
-    @Override
-    public boolean isDouble()
-    {
-        return true;
+    /**
+     Maps this json double into another one.
+
+     @param fn the mapping function
+     @return a new JsDouble
+     */
+    public JsDouble map(DoubleUnaryOperator fn) {
+        return JsDouble.of(requireNonNull(fn).applyAsDouble(value));
+    }
+
+    /**
+     Static factory method to create a JsDouble from a double primitive type.
+
+     @param n the double primitive type
+     @return a new JsDouble
+     */
+    public static JsDouble of(double n) {
+        return new JsDouble(n);
+    }
+
+    /**
+     Tests the value of this json double on a predicate.
+
+     @param predicate the predicate
+     @return true if this double satisfies the predicate
+     */
+    public boolean test(DoublePredicate predicate) {
+        return predicate.test(value);
     }
 
 }
