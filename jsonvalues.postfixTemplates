@@ -31,7 +31,6 @@
 
 .jsString : creates JsStr from an string
     java.lang.String      →  JsStr.of($expr$)
-    ANY                →  JsStr.of("$expr$")
 
 
 .jsBoolean : creates JsBool from a boolean

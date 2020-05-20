@@ -56,11 +56,7 @@ json.filterValues(isNotNull)
 json.reduce(plus, ifInt)
 
 //RFC 6901
-json.putIfAbsent(path("/a/b"), ()-> getElem)
-
-json.appendIfPresent(path("/c/d"), ()-> getElem)
-
-json.prependAll(path("/a/b"), list)
+json.set(path("/a/b"), value)
 
 a.union(b, JsArray.TYPE.SET)
 a.union(b, JsArray.TYPE.LIST)
@@ -71,7 +67,7 @@ a.intersection(b)
 I'd argue that it's very simple, expressive and concise. And that plus the fact that it's a persistent
 data structure shows very well the essence of **json-values**.
 
-If you need more reasons, I'll give you more! Data generation and validation are extremely important in software.
+That was just a little taste! Data generation and validation are extremely important in software.
 If you struggle generating data for your tests, it slows you down and make your tests difficult to develop and maintain
 On the other hand, corrupt data can propagate throughout your system and cause a nightmare. Errors that blow up in your face
 are way better! If you think about it, the definition, validation, and generation of a JSON value could be
@@ -81,74 +77,46 @@ elements: values, generators, or specifications. Let's check out an example:
 ```
 // defining a json object
 
-JsObj person = JsObj.of("name", JsStr.of("Rafael"),
-                        "age", JsInt.of(37),
-                        "languages", JsArray.of("Haskell", "Scala", "Java", "Clojure")
-                        "github", JsStr.of("imrafaelmerino"),
-                        "profession", JsStr.of("frustrated consultant"),
-                        "address", JsObj.of("city", JsStr.of("Madrid"),
-                                            "location", JsArray.of(40.566, 87.987),
-                                            "country",JsStr.of("ES")
-                                            )
+var person = JsObj.of("name", JsStr.of("Rafael"),
+                      "age", JsInt.of(37),
+                      "languages", JsArray.of("Haskell", "Scala", "Java", "Clojure")
+                      "github", JsStr.of("imrafaelmerino"),
+                      "profession", JsStr.of("frustrated consultant"),
+                      "address", JsObj.of("city", JsStr.of("Madrid"),
+                                          "location", JsArray.of(40.566, 87.987),
+                                          "country",JsStr.of("ES").optional().nullable()
+                                          )
                         );
-
-// defining a json generator
-
-JsObjGen gen = JsObjGen.of("name", JsGens.alphabetic,
-                           "age",  JsGens.choose(18,100),
-                           "languages", JsGens.arrayOf(JsGens.str,10),
-                           "github", JsGens.alphanumeric.optional(),
-                           "profession", JsGens.oneOf(professions),
-                           "address", JsObjGen.of("city", JsGens.oneOf(cities),
-                                                  "location", JsGens.tuple(JsGens.decimal,
-                                                                           JsGens.decimal
-                                                                          ),
-                                                  "country",JsGens.oneOf(countries)
-                                                  )
-                           );
-
-// defining a future
-
-CompletableFuture<JsValue> nameFuture;
-CompletableFuture<JsValue> ageFuture;
-CompletableFuture<JsValue> languagesFuture;
-CompletableFuture<JsValue> handleFuture;
-CompletableFuture<JsValue> professionFuture;
-CompletableFuture<JsValue> addressFuture;
-CompletableFuture<JsValue> longitudeFuture;
-CompletableFuture<JsValue> latitudeFuture;
-CompletableFuture<JsValue> countryFuture;
-
-JsObjFuture objFut = JsObjFuture.of("name", () -> nameFuture,
-                                    "age", () -> ageFuture,
-                                    "languages", () -> languagesFuture,
-                                    "github", () -> handleFuture,
-                                    "profession", () -> professionFuture,
-                                    "address", () -> addressFuture,
-                                    "location", JsArrayFuture.of(() -> latitudeFuture,
-                                                                 () -> longitudeFuture
-                                                                ),
-                                    "country", () -> countryFuture
-                                    );
-
-CompletableFuture<JsObj> comFuture = objFut.get();
-
 
 // defining a json spec. strict means: keys different than the specified are not allowed
 
-JsObjSpec spec = JsObjSpec.strict("name", JsSpecs.str,
-                                  "age", JsSpecs.integer(n-> n>15 && n<100),
-                                  "languages", JsSpecs.arrayOfStr,
-                                  "github", JsSpecs.str.optional(),
-                                  "profession", JsSpecs.str,
-                                  "address", JsObjSpec.lenient("city", JsSpecs.str,
-                                                               "location", JsSpecs.tuple(JsSpecs.decimal,
-                                                                                         JsSpecs.decimal
-                                                                                         ),
-                                                               "country",JsSpecs.str
-                                                               )
-                                  );
+var spec = JsObjSpec.strict("name", JsSpecs.str,
+                            "age", JsSpecs.integer(n-> n>15 && n<100),
+                            "languages", JsSpecs.arrayOfStr,
+                            "github", JsSpecs.str.optional(),
+                            "profession", JsSpecs.str.nullable(),
+                            "address", JsObjSpec.lenient("city", JsSpecs.str,
+                                                         "location", JsSpecs.tuple(JsSpecs.decimal,
+                                                                                   JsSpecs.decimal
+                                                                                   ),
+                                                         "country",JsSpecs.str.optional().nullable()
+                                                         )
+                           );
 
+// defining a json generator
+
+var gen = JsObjGen.of("name", JsGens.alphabetic,
+                      "age",  JsGens.choose(18,100),
+                      "languages", JsGens.arrayOf(JsGens.str,10),
+                      "github", JsGens.alphanumeric.optional(),
+                      "profession", JsGens.oneOf(professions).nullable(),
+                      "address", JsObjGen.of("city", JsGens.oneOf(cities),
+                                             "location", JsGens.tuple(JsGens.decimal,
+                                                                      JsGens.decimal
+                                                                      ),
+                                             "country",JsGens.oneOf(countries).optional().nullable()
+                                             )
+                      );
 
 // if the object doesn't conform the spec, the errors and their locations are returned in a set
 
@@ -159,10 +127,10 @@ Set<JsErrorPair> errors = spec.test(person);
 byte[] jsonBytes = ...;
 String jsonStr = ...;
 
-JsObjParser parser = new JsObjParser(spec);
+var parser = new JsObjParser(spec);
 
-JsObj a = parser.parse(jsonBytes);
-JsObj b = parser.parse(jsonStr);
+var a = parser.parse(jsonBytes);
+var b = parser.parse(jsonStr);
 
 // given a generator you can define properties and test them using randomized inputs
 // this is a key concept in property-based-testing
@@ -188,40 +156,75 @@ public void testProperty(JsGen<JsObj> gen,
 
 ```
 
-As you can see, creating specs, futures and generators is as simple as creating raw JSON. Writing specs and
+As you can see, creating specs, generators is as simple as creating raw JSON. Writing specs and
 generators for our tests is child's play. It has enormous advantages for development, such as:
 
 * Increase productivity.
 * More readable code. The more readable code is, the easier it is to maintain and reason about that code.
 
-Sometimes you need to generate a Json which key-value pairs are not independent to each other.
-Consider the following example. If the generated value for the key 'a' is Nothing, then no element is inserted.
-When the key 'a' doesn't exist, then an integer between 0 and 10 is associated to the key 'b', and then
-the same integer plus one is associated to the key 'c':
+We can create futures as well following the same philosophy:
+
+```
+//given some futures
+
+CompletableFuture<JsValue> nameFut, ageFut, languagesFut, handleFut, professionFut, streetFut, lonFut, latFut, countryFut;
+
+// we can describe a functional effect that will return a Json
+
+var future = JsObjFuture.of("name", () -> nameFut,
+                            "age", () -> ageFut,
+                            "languages", () -> languagesFut,
+                            "github", () -> handleFut,
+                            "profession", () -> professionFut,
+                            "address", JsObjFuture.of("street", streetFut,
+                                                      "location", JsArrayFuture.of(() -> latFut,
+                                                                                   () -> lonFut
+                                                                                  ),
+                                                      "country", () -> countryFut
+                                                      )
+                            );
+
+// and then execute it
+
+CompletableFuture<JsObj> completableFuture = future.get();
 
 ```
 
-JsObjStateGen gen = JsObjStateGen.of("a", obj -> JsGens.alphabetic
-                                                       .optional(),
-                                     "b", JsStateGens.ifNotContains("a",
-                                                                    JsGens.choose(0,10)
-                                                                    ),
-                                     "c", JsStateGens.ifContains("b",
-                                                                  bVal-> single(bVal.toJsInt()
-                                                                                    .map(i -> i + 1)
-                                                                               )
-                                                                )
-                                     );`
+To put data in and get data out in a composable and concise way, we can use optics. Lenses, optionals and prism have been
+defined for every json type.
 
-//Some examples.examples
+```
+//let's define some optics to manipulate person Jsons
 
-{"b":3,"c":4}
-{"a":"okegwg"}
-{"b":5,"c":6}
-`````
+var nameLens = JsObj.optics.lens.str("name");
+var ageLens = JsObj.optics.lens.intNum("age");
+var languagesLens = JsObj.optics.lens.array("languages");
+var githubOpt = JsObj.optics.optional.str("name");
+var cityLens = JsObj.optics.lens.str(path("/address/city"));
+var latitudeLens = JsObj.optics.lens.doubleNum(path("/address/location/0"));
+var longitudeLens = JsObj.optics.lens.doubleNum(path("/address/location/1"));
+var countryLens = JsObj.optics.lens.value(path("/address/country"));
 
+// it's all about composition, expresiveness and error free code with no ceremony!
 
-This is just a quick intro, but I'd like to highlight that generators and specs are really powerful and composable.
+var incAge = i -> ageLens.modify.apply(n -> n+i);
+var addLanguage = lan -> languagesLens.modify.apply(a -> a.append(lan));
+var modifyLatitude = fn -> latitudLens.modify.apply(fn);
+var modifyLongitude = fn -> longitudeLens.modify.apply(fn);
+var setCountry = c -> countryLens.set.apply(c)
+var setName = n -> nameLens.set.apply(n)
+
+var fn = setName.apply("Philip").andThen(incAge.apply(1))
+                                .andThen(addLanguage.apply("Lisp"))
+                                .andThen(setCountry.apply("ES"))
+                                .andThen(modifyLatitude.apply(l -> l + 0.5))
+                                .andThen(modifyLongitude.apply(l -> l + 0.8));
+
+var newPerson =  fn.apply(person);
+
+```
+
+This is just a quick intro, but I'd like to highlight that generators, specs and optics are really powerful and composable.
 Furthermore, any spec can be defined in terms of predicates, which allows you to define any imaginable validation.
 
 ## <a name="notwhatfor"><a/> When not to use it

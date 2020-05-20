@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -55,6 +56,10 @@ public class Lens<S, O> {
       Optional.empty();
   }
 
+  public <A> Function<S,A> compose(Lens<O,A> other){
+      //TODO
+      return null;
+  }
 
   /**
    * check if there is a target and it satisfies the predicate
@@ -63,6 +68,7 @@ public class Lens<S, O> {
    * @return a predicate on the whole
    */
   public Predicate<S> exists(final Predicate<O> predicate) {
+      Objects.requireNonNull(predicate);
     return s -> predicate.test(get.apply(s));
   }
 

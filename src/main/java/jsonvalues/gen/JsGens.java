@@ -4,6 +4,9 @@ import io.vavr.Tuple2;
 import jsonvalues.*;
 
 import java.nio.charset.StandardCharsets;
+import java.time.Instant;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -35,14 +38,33 @@ public class JsGens {
      Generates a digit from 0-9
      */
     public static JsGen<JsStr> digit = choose(0,
-                                              9).map(i -> JsStr.of(Integer.toString(i.value)));
+                                              9
+                                             ).map(i -> JsStr.of(Integer.toString(i.value)));
+
+
+    /**
+     Generates a seq of digits of the given length
+     @param length the length of the string
+     @return a string generator
+     */
+    public static JsGen<JsStr> digits(int length) {
+        if(length<=0)throw new IllegalArgumentException("length not greater than zero");
+        return JsGens.array(digit,
+                            length
+                           )
+                     .map(arr -> JsStr.of(arr.stream()
+                                             .map(it -> it.value.toJsStr().value)
+                                             .collect(Collectors.joining()))
+                         );
+    }
 
 
     /**
      Generates a letter from a-z
      */
     public static JsGen<JsStr> letter = choose(0,
-                                               25).map(i -> JsStr.of(Character.toString(((char) i.value))));
+                                               25
+                                              ).map(i -> JsStr.of(Character.toString(((char) i.value))));
 
     /**
      Generates a positive integer (zero included)
@@ -332,7 +354,7 @@ public class JsGens {
         if (filtered.size() == 0) {
             throw new IllegalArgumentException("no items with positive weights");
         }
-        int total   = 0;
+        int                        total   = 0;
         TreeMap<Integer, JsGen<?>> treeMap = new TreeMap<>();
         for (Tuple2<Integer, JsGen<?>> t : filtered) {
             total += t._1;
@@ -362,5 +384,56 @@ public class JsGens {
         if (min > max) throw new IllegalArgumentException("min must be lower than max");
         return r -> () -> JsInt.of(requireNonNull(r).nextInt((max - min) + 1) + min);
     }
+
+
+    /**
+     generates an instant in UTC formatted with the ISO instant formatter (such as '2011-12-03T10:15:30Z'), between
+     an interval given by two date-time with a time-zone.
+
+     @param min the origin of the interval (inclusive)
+     @param max the bound of the interval (inclusive)
+     @return an instant generator
+     */
+
+    public static JsGen<JsStr> dateBetween(final ZonedDateTime min,
+                                           final ZonedDateTime max) {
+        if (requireNonNull(max).isBefore(requireNonNull(min)))
+            throw new IllegalArgumentException(min.format(DateTimeFormatter.ISO_INSTANT) + " is greater than " + max.format(DateTimeFormatter.ISO_INSTANT));
+
+        return dateBetween(min.toEpochSecond(),
+                           max.toEpochSecond());
+
+    }
+
+
+    /**
+     generates an instant in UTC formatted with the ISO instant formatter (such as '2011-12-03T10:15:30Z'), between
+     an interval given by two instants converted to the number of seconds from the epoch of 1970-01-01T00:00:00Z.
+
+     @param min the origin of the interval (inclusive)
+     @param max the bound of the interval (inclusive)
+     @return an instant generator
+     */
+    public static JsGen<JsStr> dateBetween(final long min,
+                                           final long max) {
+        if (requireNonNull(max) <= requireNonNull(min))
+            throw new IllegalArgumentException(max + " is greater than " + min);
+
+        return random -> () -> {
+
+            long seconds = requireNonNull(random).longs(1,
+                                                        min,
+                                                        max + 1
+                                                       )
+                                                 .findFirst()
+                                                 .getAsLong();
+
+            Instant instant = Instant.ofEpochSecond(seconds);
+
+
+            return JsStr.of(DateTimeFormatter.ISO_INSTANT.format(instant));
+        };
+    }
+
 
 }

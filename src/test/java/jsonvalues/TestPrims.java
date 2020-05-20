@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import com.sun.xml.internal.messaging.saaj.util.JAXMStreamSource;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -47,6 +46,8 @@ public class TestPrims {
 
 
         Assertions.assertEquals(Optional.empty(), JsInt.prism.getOptional.apply(JsStr.of("a")));
+        Assertions.assertTrue(JsInt.prism.isEmpty(JsStr.of("a")));
+        Assertions.assertTrue(JsInt.prism.nonEmpty(JsInt.of(1)));
 
         Assertions.assertEquals(JsInt.of(1), JsInt.prism.reverseGet.apply(1));
 
@@ -64,5 +65,32 @@ public class TestPrims {
         Assertions.assertEquals(JsInt.of(2),
                                 JsInt.prism.modify(it->it+1)
                                            .apply(JsInt.of(1)));
+    }
+
+
+    @Test
+    public void test_long_prism(){
+
+
+        Assertions.assertEquals(Optional.empty(), JsLong.prism.getOptional.apply(JsStr.of("a")));
+        Assertions.assertTrue(JsLong.prism.isEmpty(JsStr.of("a")));
+        Assertions.assertTrue(JsLong.prism.nonEmpty(JsLong.of(1)));
+
+        Assertions.assertEquals(JsLong.of(1), JsInt.prism.reverseGet.apply(1));
+
+        Assertions.assertEquals(Optional.of(1L),
+                                JsLong.prism.find(it -> it < 2)
+                                           .apply(JsLong.of(1)));
+        Assertions.assertEquals(true,
+                                JsLong.prism.exists(it ->it < 2)
+                                           .test(JsLong.of(1)));
+
+        Assertions.assertEquals(JsStr.of("a"),
+                                JsLong.prism.modify(it->it+1)
+                                           .apply(JsStr.of("a")));
+
+        Assertions.assertEquals(JsLong.of(2),
+                                JsLong.prism.modify(it->it+1)
+                                           .apply(JsLong.of(1)));
     }
 }

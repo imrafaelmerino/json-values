@@ -41,6 +41,7 @@ public class JsArraySupplier implements java.util.function.Supplier<JsArray> {
      @param tail the tail
      @return a new JsArraySupplier
      */
+    @SafeVarargs
     public static JsArraySupplier of(final Supplier<? extends JsValue> head,
                                      final Supplier<? extends JsValue>... tail
                                     ) {
@@ -60,7 +61,7 @@ public class JsArraySupplier implements java.util.function.Supplier<JsArray> {
 
     public JsArraySupplier append(final Supplier<? extends JsValue> future) {
         final JsArraySupplier arraySupplier = new JsArraySupplier();
-        arraySupplier.array = arraySupplier.array.append(future);
+        arraySupplier.array = this.array.append(future);
         return arraySupplier;
     }
 }

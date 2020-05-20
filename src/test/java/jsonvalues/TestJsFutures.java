@@ -111,7 +111,7 @@ public class TestJsFutures {
 
         final JsFuture<JsValue> a = () -> completedFuture(JsStr.of("a"));
         final JsObjFuture futA = JsObjFuture.empty()
-                                            .put("a",
+                                            .set("a",
                                                  a
                                                 );
 

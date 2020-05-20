@@ -1482,9 +1482,9 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                               head._2
         );
         for (final Tuple2<String, Supplier<? extends JsValue>> other : tail)
-            supplier = supplier.put(other._1,
-                          other._2
-                         );
+            supplier = supplier.set(other._1,
+                                    other._2
+                                   );
         return supplier;
     }
 
@@ -1494,7 +1494,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier the given supplier
      @return a new JsObjSupplier
      */
-    public JsObjSupplier put(final String key,
+    public JsObjSupplier set(final String key,
                              final Supplier<? extends JsValue> supplier
                             ) {
         final Map<String, Supplier<? extends JsValue>> a = bindings.put(requireNonNull(key),
@@ -1503,3 +1503,4 @@ public class JsObjSupplier implements Supplier<JsObj> {
         return new JsObjSupplier(a);
     }
 }
+

@@ -1488,7 +1488,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
                                           head._2
         );
         for (final Tuple2<String, JsFuture<?>> other : tail)
-            fut = fut.put(other._1,
+            fut = fut.set(other._1,
                           other._2
                          );
         return fut;
@@ -1501,7 +1501,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param future the given future
      @return a new JsObjFuture
      */
-    public JsObjFuture put(final String key,
+    public JsObjFuture set(final String key,
                            final JsFuture<?> future
                           ) {
         final Map<String, JsFuture<?>> a = bindings.put(requireNonNull(key),

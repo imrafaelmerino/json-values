@@ -358,6 +358,7 @@ public class TestGenerators {
 
     }
 
+
     @Test
     public void testDigits() {
 
@@ -379,6 +380,16 @@ public class TestGenerators {
 
 
     }
+
+    @Test
+    public void testDigitCode(){
+
+        test(JsGens.digits(10),value-> {
+            return value.toJsStr().value
+                        .length() == 10;
+        }, 100);
+    }
+
 
 
 }

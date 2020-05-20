@@ -13,6 +13,7 @@ import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import javax.swing.*;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -41,6 +42,7 @@ public class TestExample {
                                                            JsSpecs.str.nullable(),
                                                            "coordinates",
                                                            JsSpecs.tuple(JsSpecs.decimal,
+                                                                         JsSpecs.any,
                                                                          JsSpecs.decimal
                                                                         )
                                                           )
@@ -83,7 +85,9 @@ public class TestExample {
 
 
         JsStrLens<JsObj>       nameLens   = JsObj.optics.lens.str("name");
+
         Option<JsObj, String>  surnameOpt = JsObj.optics.optional.str("surname");
+
         Option<JsObj, Integer> ageOpt     = JsObj.optics.optional.intNum("age");
         JsStrLens<JsObj>       streetLens = JsObj.optics.lens.str(JsPath.path("/address/street"));
         JsValueLens<JsObj>     cityLens   = JsObj.optics.lens.value(JsPath.path("/address/city"));
@@ -115,6 +119,8 @@ public class TestExample {
                                                     .andThen(addLanguage.apply("Lisp"));
 
         JsObj newPerson = modifyPerson.apply(person);
+
+
         System.out.println(newPerson);
         Assertions.assertEquals(ageOpt.get.apply(newPerson),
                                 ageOpt.get.apply(person)
@@ -206,6 +212,17 @@ public class TestExample {
                                                               )
                                                  )
                                       );
+
+    }
+
+
+    public static void main(String[] args) {
+
+
+
+
+        System.out.println(JsStr.prism.modify(String::toLowerCase)
+                                      .apply(JsInt.of(1)));
 
     }
 }
