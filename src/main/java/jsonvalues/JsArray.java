@@ -37,9 +37,14 @@ import static jsonvalues.Trampoline.more;
 public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public static final int ID = 4;
     /**
-     optics defined for a Json array
+     lenses defined for a Json array
      */
-    public static final JsOptics.JsArrayOptics optics = JsOptics.array;
+    public static final JsOptics.JsArrayLenses lens = JsOptics.array.lens;
+    /**
+     optionals defined for a Json array
+     */
+    public static final JsOptics.JsArrayOptionals optional = JsOptics.array.optional;
+
     public static JsArray EMPTY = new JsArray(Vector.empty());
     /**
      prism between the sum type JsValue and JsArray
@@ -60,6 +65,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     JsArray(Vector<JsValue> seq) {
         this.seq = seq;
+    }
+
+    public JsArray(){
+        this.seq = Vector.empty();
     }
 
     public static JsArray empty() {

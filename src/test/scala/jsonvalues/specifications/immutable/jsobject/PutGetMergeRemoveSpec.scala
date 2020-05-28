@@ -1,7 +1,6 @@
 package jsonvalues.specifications.immutable.jsobject
 
 import java.math.BigInteger
-import java.util._
 import java.util.function.BiFunction
 import jsonvalues._
 import jsonvalues.specifications.BasePropSpec
@@ -151,67 +150,6 @@ class PutGetMergeRemoveSpec extends BasePropSpec
 
       }
       )
-  }
-
-
-
-
-
-  property("put if present replaces elements with null")
-  {
-    check(forAll(jsGen.jsObjGen)
-          { js =>
-
-            js.streamAll().allMatch(
-              it =>
-              {
-                JsObj.optics.lens.value(it.path)
-                  .setIfPresent
-                  .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
-                  .get(it.path)
-                  .equals(JsNull.NULL)
-
-              }
-              )
-
-
-          }
-          )
-  }
-
-  property("put if absent never inserts when element containsPath")
-  {
-    check(forAll(jsGen.jsObjGen)
-          { js =>
-
-            js.streamAll().allMatch(
-              it => JsObj.optics.lens.value(it.path)
-                .setIfAbsent
-                .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
-                .get(it.path)
-                .equals(it.value)
-              )
-
-
-          }
-          )
-  }
-
-  property("put if absent inserts when element doesnt exist")
-  {
-    check(forAll(jsPathGen.objectPathGen,
-                 jsGen.jsValueGen
-                 )
-          { (path,
-             elem
-            ) =>
-            JsObj.optics.lens.value(path)
-              .setIfAbsent
-              .apply(JsObj.empty(),ScalaToJava.supplier.apply(()=>elem))
-              .get(path)
-              .equals(elem)
-          }
-          )
   }
 
 

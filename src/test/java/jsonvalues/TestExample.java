@@ -84,21 +84,21 @@ public class TestExample {
                                 parser.parse(person.toPrettyString()));
 
 
-        JsStrLens<JsObj>       nameLens   = JsObj.optics.lens.str("name");
+        JsStrLens<JsObj>       nameLens   = JsObj.lens.str("name");
 
-        Option<JsObj, String>  surnameOpt = JsObj.optics.optional.str("surname");
+        Option<JsObj, String>  surnameOpt = JsObj.optional.str("surname");
 
-        Option<JsObj, Integer> ageOpt     = JsObj.optics.optional.intNum("age");
-        JsStrLens<JsObj>       streetLens = JsObj.optics.lens.str(JsPath.path("/address/street"));
-        JsValueLens<JsObj>     cityLens   = JsObj.optics.lens.value(JsPath.path("/address/city"));
+        Option<JsObj, Integer> ageOpt     = JsObj.optional.intNum("age");
+        JsStrLens<JsObj>       streetLens = JsObj.lens.str(JsPath.path("/address/street"));
+        JsValueLens<JsObj>     cityLens   = JsObj.lens.value(JsPath.path("/address/city"));
 
-        JsArrayLens<JsObj> languagesLens = JsObj.optics.lens.array("languages");
+        JsArrayLens<JsObj> languagesLens = JsObj.lens.array("languages");
 
-        JsValueLens<JsObj> numberLens = JsObj.optics.lens.value(JsPath.path("/address/number"));
+        JsValueLens<JsObj> numberLens = JsObj.lens.value(JsPath.path("/address/number"));
 
-        JsDoubleLens<JsObj> latitudeLens = JsObj.optics.lens.doubleNum(JsPath.path("/address/coordinates/0"));
+        JsDoubleLens<JsObj> latitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/0"));
 
-        JsDoubleLens<JsObj> longitudeLens = JsObj.optics.lens.doubleNum(JsPath.path("/address/coordinates/1"));
+        JsDoubleLens<JsObj> longitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/1"));
 
         IntFunction<Function<JsObj, JsObj>> incAge = n -> ageOpt.modify.apply(i -> i + n);
 
@@ -121,7 +121,6 @@ public class TestExample {
         JsObj newPerson = modifyPerson.apply(person);
 
 
-        System.out.println(newPerson);
         Assertions.assertEquals(ageOpt.get.apply(newPerson),
                                 ageOpt.get.apply(person)
                                           .map(i -> i + 1));

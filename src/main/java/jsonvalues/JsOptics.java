@@ -33,7 +33,7 @@ public class JsOptics {
          @param path the path where the value is located at
          @return a lens
          */
-        public JsValueLens<JsArray> value(final JsPath path) {
+        public Lens<JsArray,JsValue> value(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsValueLens<>(requireNonNull(path));
@@ -252,7 +252,7 @@ public class JsOptics {
      represents all the optics defined for a Json object
      */
     public static class JsObjOptics {
-        public final JsObjS optional = new JsObjS();
+        public final JsObjOptional optional = new JsObjOptional();
         public final JsObjLenses lens = new JsObjLenses();
     }
 
@@ -489,7 +489,7 @@ public class JsOptics {
     /**
      represents all the S defined for a Json object
      */
-    public static class JsObjS {
+    public static class JsObjOptional {
 
         /**
          optional that focus on the string located at a path in an object

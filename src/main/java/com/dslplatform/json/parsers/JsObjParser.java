@@ -40,21 +40,19 @@ final class JsObjParser extends AbstractJsObjParser {
             if (isEmptyObj(reader)) return EMPTY_OBJ;
 
             String key = reader.readKey();
-            HashMap<String, JsValue> map = EMPTY_MAP.put(key,
-                                                         valueDeserializer.value(reader
-                                                                                )
-                                                        );
+            JsObj map = EMPTY_OBJ.set(key,
+                                      valueDeserializer.value(reader)
+                                     );
             byte nextToken;
             while ((nextToken = reader.getNextToken()) == ',') {
                 reader.getNextToken();
                 key = reader.readKey();
-                map = map.put(key,
-                              valueDeserializer.value(reader
-                                                     )
+                map = map.set(key,
+                              valueDeserializer.value(reader)
                              );
             }
             if (nextToken != '}') throw reader.newParseError("Expecting '}' for map end");
-            return new JsObj(map);
+            return map;
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

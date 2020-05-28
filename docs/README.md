@@ -6,7 +6,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 [![Javadocs](https://www.javadoc.io/badge/com.github.imrafaelmerino/json-values.svg)](https://www.javadoc.io/doc/com.github.imrafaelmerino/json-values)
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/8.0.0-RC2)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/8.0.0-RC2/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/8.0.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/8.0.0/jar)
 [![](https://jitpack.io/v/imrafaelmerino/json-values.svg)](https://jitpack.io/#imrafaelmerino/json-values)
 
 [![Gitter](https://badges.gitter.im/json-values/community.svg)](https://gitter.im/json-values/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -196,14 +196,14 @@ defined for every json type.
 ```
 //let's define some optics to manipulate person Jsons
 
-var nameLens = JsObj.optics.lens.str("name");
-var ageLens = JsObj.optics.lens.intNum("age");
-var languagesLens = JsObj.optics.lens.array("languages");
-var githubOpt = JsObj.optics.optional.str("name");
-var cityLens = JsObj.optics.lens.str(path("/address/city"));
-var latitudeLens = JsObj.optics.lens.doubleNum(path("/address/location/0"));
-var longitudeLens = JsObj.optics.lens.doubleNum(path("/address/location/1"));
-var countryLens = JsObj.optics.lens.value(path("/address/country"));
+var nameLens = JsObj.lens.str("name");
+var ageLens = JsObj.lens.intNum("age");
+var languagesLens = JsObj.lens.array("languages");
+var githubOpt = JsObj.optional.str("name");
+var cityLens = JsObj.lens.str(path("/address/city"));
+var latitudeLens = JsObj.lens.doubleNum(path("/address/location/0"));
+var longitudeLens = JsObj.lens.doubleNum(path("/address/location/1"));
+var countryLens = JsObj.lens.value(path("/address/country"));
 
 // it's all about composition, expresiveness and error free code with no ceremony!
 
@@ -240,7 +240,7 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>8.0.0-RC2</version>
+  <version>8.0.0</version>
 </dependency>
 ```
 

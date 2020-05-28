@@ -4,9 +4,12 @@ import io.vavr.collection.Vector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Arrays;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -126,6 +129,17 @@ public final class JsPath implements Comparable<JsPath> {
         return EMPTY.index(i);
     }
 
+    /**
+     returns a JsPath from a set of keys
+     @param key the first key of the path
+     @param others the rest of the keys
+     @return a new JsPath
+     */
+    public static JsPath path(final String key,final String... others){
+
+        return new JsPath(Vector.<Position>empty().append(Key.of(Objects.requireNonNull(key))).appendAll(
+                   Arrays.stream(requireNonNull(others)).map(Key::of).collect(Collectors.toList())));
+    }
     public static JsPath path(final String path) {
         if (requireNonNull(path).equals("")) return EMPTY;
         if (path.equals("#")) return EMPTY;

@@ -6,7 +6,7 @@ package jsonvalues;
  *
  * @param <S> the type of the whole part, an array or an object
  */
-public class JsBoolLens<S extends Json<S>> extends Lens<S, Boolean> {
+class JsBoolLens<S extends Json<S>> extends Lens<S, Boolean> {
   JsBoolLens(final JsPath path) {
     super(json -> json.getBool(path),
       n -> json -> json.set(path, JsBool.of(n))

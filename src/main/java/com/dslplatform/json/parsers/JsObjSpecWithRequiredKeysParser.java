@@ -27,7 +27,8 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
             final Iterator<String> iterator = required.iterator();
             while (iterator.hasNext()) {
                 final String key = iterator.next();
-                if (!obj.containsKey(key)) throw reader.newParseError("Required key not found: " + key);
+                if (!obj.containsKey(key))
+                    throw reader.newParseError("Required key not found: " + key);
             }
             return obj;
         } catch (ParsingException e) {

@@ -2,7 +2,6 @@ package jsonvalues.gen;
 
 import io.vavr.Tuple2;
 import jsonvalues.*;
-
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZonedDateTime;

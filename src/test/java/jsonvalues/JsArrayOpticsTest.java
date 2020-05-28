@@ -18,7 +18,7 @@ public class JsArrayOpticsTest {
                                    )
                          );
 
-       JsBigIntLens<JsArray> lens = JsArray.optics.lens.integralNum(path);
+       JsBigIntLens<JsArray> lens = JsArray.lens.integralNum(path);
 
        Assertions.assertEquals( BigInteger.TEN,lens.get.apply(a));
 
@@ -47,7 +47,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsStrLens<JsArray> lens = JsArray.optics.lens.str(path);
+        JsStrLens<JsArray> lens = JsArray.lens.str(path);
 
         Assertions.assertEquals( "abc",lens.get.apply(a));
 
@@ -76,7 +76,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsDoubleLens<JsArray> lens = JsArray.optics.lens.doubleNum(path);
+        JsDoubleLens<JsArray> lens = JsArray.lens.doubleNum(path);
 
         Assertions.assertEquals( Double.valueOf(1.5),lens.get.apply(a));
 
@@ -103,7 +103,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsLongLens<JsArray> lens = JsArray.optics.lens.longNum(path);
+        JsLongLens<JsArray> lens = JsArray.lens.longNum(path);
 
         Assertions.assertEquals( Long.valueOf(Long.MAX_VALUE),lens.get.apply(a));
 
@@ -131,7 +131,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsIntLens<JsArray> lens = JsArray.optics.lens.intNum(path);
+        JsIntLens<JsArray> lens = JsArray.lens.intNum(path);
 
         Assertions.assertEquals( Integer.valueOf(Integer.MAX_VALUE),lens.get.apply(a));
 
@@ -159,7 +159,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsDecimalLens<JsArray> lens = JsArray.optics.lens.decimalNum(path);
+        JsDecimalLens<JsArray> lens = JsArray.lens.decimalNum(path);
 
         Assertions.assertEquals(new BigDecimal("1.11") ,lens.get.apply(a));
 
@@ -188,7 +188,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsBoolLens<JsArray> lens = JsArray.optics.lens.bool(path);
+        JsBoolLens<JsArray> lens = JsArray.lens.bool(path);
 
         Assertions.assertEquals(true ,lens.get.apply(a));
 
@@ -217,7 +217,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsObjLens<JsArray> lens = JsArray.optics.lens.obj(path);
+        JsObjLens<JsArray> lens = JsArray.lens.obj(path);
 
         Assertions.assertEquals(JsObj.empty() ,lens.get.apply(a));
 
@@ -250,7 +250,7 @@ public class JsArrayOpticsTest {
                                     )
                           );
 
-        JsArrayLens<JsArray> lens = JsArray.optics.lens.array(path);
+        JsArrayLens<JsArray> lens = JsArray.lens.array(path);
 
         Assertions.assertEquals(JsArray.empty() ,lens.get.apply(a));
 

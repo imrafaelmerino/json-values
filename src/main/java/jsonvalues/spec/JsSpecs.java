@@ -4,6 +4,8 @@ import jsonvalues.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -673,4 +675,8 @@ public class JsSpecs {
                              );
     }
 
+
+    public static <O extends JsValue> JsSpec oneOf(final List<O> cons){
+        return any(cons::contains);
+    }
 }

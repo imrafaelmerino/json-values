@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static jsonvalues.Functions.assertErrorIs;
@@ -489,7 +491,10 @@ public class TestJsObjSpec {
                                                                               ),
                                                                  "d",
                                                                  arraySuchThat(a -> a.head() == JsNull.NULL)
-                                                                )
+                                                                ),
+                                                "g", JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
+                                                                                 JsStr.of("B")
+                                                                                ))
                                                );
 
 
@@ -516,11 +521,11 @@ public class TestJsObjSpec {
                                                                    JsArray.of(JsNull.NULL,
                                                                               JsInt.of(1)
                                                                              )
-                                                                  )
+                                                                  ),
+                                                          "g",
+                                                          JsStr.of("A")
                                                          )
                                                 );
-
-        System.out.println(error);
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -591,7 +596,6 @@ public class TestJsObjSpec {
                                                          )
                                                 );
 
-        System.out.println(error);
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -696,8 +700,6 @@ public class TestJsObjSpec {
                                                                   )
                                                          )
                                                 );
-
-        System.out.println(error);
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -985,7 +987,6 @@ public class TestJsObjSpec {
                                                           )
                                                  );
 
-        System.out.println(result);
 
         Assertions.assertTrue(result
                                       .isEmpty()
@@ -1078,7 +1079,6 @@ public class TestJsObjSpec {
                                                           )
                                                  );
 
-        System.out.println(result);
         Assertions.assertTrue(result
                                       .isEmpty()
                              );
@@ -1131,7 +1131,6 @@ public class TestJsObjSpec {
                                                                       )
                                                            )
                                                   );
-        System.out.println(result1);
         Assertions.assertTrue(result1.isEmpty());
     }
 
@@ -1217,8 +1216,6 @@ public class TestJsObjSpec {
                                                         "b",
                                                         JsNull.NULL
                                                        ));
-
-        System.out.println(set);
 
         Assertions.assertTrue(set.isEmpty());
 
@@ -1352,8 +1349,6 @@ public class TestJsObjSpec {
                                                            "c",
                                                            TRUE
                                                           ));
-
-        System.out.println(errors);
 
         Assertions.assertFalse(errors.isEmpty());
 

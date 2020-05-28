@@ -5,6 +5,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A Lens is an optic that can be seen as a pair of functions:
  {@code
@@ -56,10 +58,6 @@ public class Lens<S, O> {
       Optional.empty();
   }
 
-  public <A> Function<S,A> compose(Lens<O,A> other){
-      //TODO
-      return null;
-  }
 
   /**
    * check if there is a target and it satisfies the predicate
@@ -72,5 +70,13 @@ public class Lens<S, O> {
     return s -> predicate.test(get.apply(s));
   }
 
+  public <T>  Option<S, T> compose(final Prism<O, T> prism) {
+        return new Option<>(json -> requireNonNull(prism).getOptional.apply(get.apply(json)),
+                            value -> json -> set.apply(prism.reverseGet.apply(value))
+                                                .apply(json)
+        );
+
+
+    }
 
 }

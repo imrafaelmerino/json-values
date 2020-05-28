@@ -537,6 +537,7 @@ public class TestSupplier {
                                            .append(() -> JsNull.NULL)
                                            .append(() -> JsStr.of("a"));
 
+
         Assertions.assertEquals(JsArray.of(JsNull.NULL,
                                            JsStr.of("a")), a.get());
     }

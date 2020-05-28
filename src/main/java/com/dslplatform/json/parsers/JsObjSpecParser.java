@@ -1,10 +1,8 @@
 package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
-import io.vavr.collection.HashMap;
 import io.vavr.collection.Map;
 import jsonvalues.JsObj;
-import jsonvalues.JsValue;
 
 import java.io.IOException;
 
@@ -29,12 +27,12 @@ class JsObjSpecParser extends AbstractJsObjParser {
             throwErrorIfStrictAndKeyMissing(reader,
                                             key
                                            );
-            HashMap<String, JsValue> map = EMPTY_MAP.put(key,
-                                                         parsers.getOrElse(key,
-                                                                           defaultParser
-                                                                          )
-                                                                .parse(reader)
-                                                        );
+            JsObj obj = EMPTY_OBJ.set(key,
+                                      parsers.getOrElse(key,
+                                                        defaultParser
+                                                       )
+                                             .parse(reader)
+                                     );
             byte nextToken;
             while ((nextToken = reader.getNextToken()) == ',') {
                 reader.getNextToken();
@@ -42,7 +40,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
                 throwErrorIfStrictAndKeyMissing(reader,
                                                 key
                                                );
-                map = map.put(key,
+                obj = obj.set(key,
                               parsers.getOrElse(key,
                                                 defaultParser
                                                )
@@ -51,7 +49,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
 
             }
             if (nextToken != '}') throw reader.newParseError("Expecting '}' for map end");
-            return new JsObj(map);
+            return obj;
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
         }

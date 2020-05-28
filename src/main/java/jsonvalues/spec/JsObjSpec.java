@@ -11,10 +11,10 @@ import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
-
 import java.util.HashSet;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.*;
 
 /**
@@ -161,6 +161,412 @@ public class JsObjSpec implements JsSpec {
             final JsSpec spec13,
             final String key14,
             final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final boolean strict
+                     ) {
+        this(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                strict
+            );
+        bindings = bindings.put(key16,
+                                spec16
+                               );
+    }
+
+    private JsObjSpec(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final boolean strict
+                     ) {
+        this(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                strict
+            );
+        bindings = bindings.put(key17,
+                                spec17
+                               );
+    }
+    private JsObjSpec(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final boolean strict
+                     ) {
+        this(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                strict
+            );
+        bindings = bindings.put(key18,
+                                spec18
+                               );
+    }
+
+
+    private JsObjSpec(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19,
+            final boolean strict
+                     ) {
+        this(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                strict
+            );
+        bindings = bindings.put(key19,
+                                spec19
+                               );
+    }
+
+
+    private JsObjSpec(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19,
+            final String key20,
+            final JsSpec spec20,
+            final boolean strict
+                     ) {
+        this(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                key19,
+                spec19,
+                strict
+            );
+        bindings = bindings.put(key20,
+                                spec20
+                               );
+    }
+
+    private JsObjSpec(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
             final boolean strict
                      ) {
         this(
@@ -257,6 +663,8 @@ public class JsObjSpec implements JsSpec {
                                 spec13
                                );
     }
+
+
 
     private JsObjSpec(
             final String key1,
@@ -2397,6 +2805,1214 @@ public class JsObjSpec implements JsSpec {
     }
 
     /**
+     static factory method to create a strict JsObjSpec of sixteen mappings. Strict means that different
+     keys than the defined are not allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec strict(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+             final String key16,
+            final JsSpec spec16
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                true
+        );
+    }
+
+    /**
+     static factory method to create a lenient JsObjSpec of sixteen mappings. Strict means that different
+     keys than the defined are allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec lenient(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                false
+        );
+    }
+
+
+    /**
+     static factory method to create a strict JsObjSpec of seventeen mappings. Strict means that different
+     keys than the defined are not allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec strict(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                true
+        );
+    }
+
+    /**
+     static factory method to create a lenient JsObjSpec of seventeen mappings. Lenient means that different
+     keys than the defined are allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec lenient(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                false
+        );
+    }
+
+    /**
+     static factory method to create a strict JsObjSpec of eighteen mappings. Strict means that different
+     keys than the defined are not allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec strict(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                true
+        );
+    }
+    /**
+     static factory method to create a lenient JsObjSpec of eighteen mappings. Lenient means that different
+     keys than the defined are allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec lenient(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                false
+        );
+    }
+    /**
+     static factory method to create a strict JsObjSpec of nineteen mappings. Strict means that different
+     keys than the defined are not allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @param key19  the nineteenth key
+     @param spec19 the mapping associated to the nineteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec strict(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                key19,
+                spec19,
+                true
+        );
+    }
+
+    /**
+     static factory method to create a lenient JsObjSpec of nineteen mappings. Lenient means that different
+     keys than the defined are allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @param key19  the nineteenth key
+     @param spec19 the mapping associated to the nineteenth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec lenient(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                key19,
+                spec19,
+                false
+        );
+    }
+
+    /**
+     static factory method to create a strict JsObjSpec of twenty mappings. Strict means that different
+     keys than the defined are not allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @param key19  the nineteenth key
+     @param spec19 the mapping associated to the nineteenth key
+     @param key20  the twentieth key
+     @param spec20 the mapping associated to the twentieth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec strict(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19,
+            final String key20,
+            final JsSpec spec20
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                key19,
+                spec19,
+                key20,
+                spec20,
+                true
+        );
+    }
+
+    /**
+     static factory method to create a lenient JsObjSpec of twenty mappings. Lenient means that different
+     keys than the defined are allowed
+
+     @param key1   the first key
+     @param spec1  the mapping associated to the first key
+     @param key2   the second key
+     @param spec2  the mapping associated to the second key
+     @param key3   the third key
+     @param spec3  the mapping associated to the third key
+     @param key4   the fourth key
+     @param spec4  the mapping associated to the fourth key
+     @param key5   the fifth key
+     @param spec5  the mapping associated to the fifth key
+     @param key6   the sixth key
+     @param spec6  the mapping associated to the sixth key
+     @param key7   the seventh key
+     @param spec7  the mapping associated to the seventh key
+     @param key8   the eighth key
+     @param spec8  the mapping associated to the eighth key
+     @param key9   the ninth key
+     @param spec9  the mapping associated to the ninth key
+     @param key10  the tenth key
+     @param spec10 the mapping associated to the eleventh key
+     @param key11  the eleventh key
+     @param spec11 the mapping associated to the eleventh key
+     @param key12  the twelfth key
+     @param spec12 the mapping associated to the twelfth key,
+     @param key13  the thirteenth key
+     @param spec13 the mapping associated to the thirteenth key
+     @param key14  the fourteenth key
+     @param spec14 the mapping associated to the fourteenth key
+     @param key15  the fifteenth key
+     @param spec15 the mapping associated to the fifteenth key
+     @param key16  the sixteenth key
+     @param spec16 the mapping associated to the sixteenth key
+     @param key17  the seventeenth key
+     @param spec17 the mapping associated to the seventeenth key
+     @param key18  the eighteenth key
+     @param spec18 the mapping associated to the eighteenth key
+     @param key19  the nineteenth key
+     @param spec19 the mapping associated to the nineteenth key
+     @param key20  the twentieth key
+     @param spec20 the mapping associated to the twentieth key
+     @return a JsObjSpec
+     */
+    public static JsObjSpec lenient(
+            final String key1,
+            final JsSpec spec1,
+            final String key2,
+            final JsSpec spec2,
+            final String key3,
+            final JsSpec spec3,
+            final String key4,
+            final JsSpec spec4,
+            final String key5,
+            final JsSpec spec5,
+            final String key6,
+            final JsSpec spec6,
+            final String key7,
+            final JsSpec spec7,
+            final String key8,
+            final JsSpec spec8,
+            final String key9,
+            final JsSpec spec9,
+            final String key10,
+            final JsSpec spec10,
+            final String key11,
+            final JsSpec spec11,
+            final String key12,
+            final JsSpec spec12,
+            final String key13,
+            final JsSpec spec13,
+            final String key14,
+            final JsSpec spec14,
+            final String key15,
+            final JsSpec spec15,
+            final String key16,
+            final JsSpec spec16,
+            final String key17,
+            final JsSpec spec17,
+            final String key18,
+            final JsSpec spec18,
+            final String key19,
+            final JsSpec spec19,
+            final String key20,
+            final JsSpec spec20
+                                  ) {
+        return new JsObjSpec(
+                key1,
+                spec1,
+                key2,
+                spec2,
+                key3,
+                spec3,
+                key4,
+                spec4,
+                key5,
+                spec5,
+                key6,
+                spec6,
+                key7,
+                spec7,
+                key8,
+                spec8,
+                key9,
+                spec9,
+                key10,
+                spec10,
+                key11,
+                spec11,
+                key12,
+                spec12,
+                key13,
+                spec13,
+                key14,
+                spec14,
+                key15,
+                spec15,
+                key16,
+                spec16,
+                key17,
+                spec17,
+                key18,
+                spec18,
+                key19,
+                spec19,
+                key20,
+                spec20,
+                false
+        );
+    }
+    /**
      static factory method to create a strict JsObjSpec of thirteen mappings. Strict means that different
      keys than the defined are not allowed
 
@@ -2600,5 +4216,22 @@ public class JsObjSpec implements JsSpec {
 
 
         return errors;
+    }
+
+    /**
+     add the given key spec to this
+     @param key the key
+     @param spec the spec
+     @return a new object spec
+     */
+    public JsObjSpec set(final String key,
+                         final JsSpec spec) {
+        return new JsObjSpec(bindings.put(requireNonNull(key),
+                                          requireNonNull(spec)
+                                         ),
+                             this.required,
+                             this.nullable,
+                             this.strict
+        );
     }
 }

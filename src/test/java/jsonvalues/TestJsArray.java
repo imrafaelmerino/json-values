@@ -835,7 +835,6 @@ public class TestJsArray {
                                );
 
         JsArray c = b.mapAllKeys(toUpperCase);
-        System.out.println(c);
 
         Assertions.assertTrue(c.streamAll()
                                .filter(p -> p.path.last()

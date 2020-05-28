@@ -155,69 +155,6 @@ class PutGetMergeRemoveSpec extends BasePropSpec
            )
   }
 
-
-
-
-  property("put if present replaces elements with null")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-
-            js.streamAll().allMatch(
-                                   it =>
-                                   {
-                                     JsArray.optics.lens.value(it.path)
-                                       .setIfPresent
-                                       .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
-                                       .get(it.path)
-                                       .equals(JsNull.NULL)
-
-                                   }
-                                   )
-
-
-          }
-          )
-  }
-
-  property("put if absent never inserts when element containsPath")
-  {
-    check(forAll(jsGen.jsArrGen)
-          { js =>
-
-            js.streamAll().allMatch(
-                                   it =>
-                                     JsArray.optics.lens.value(it.path)
-                                       .setIfAbsent
-                                       .apply(js,ScalaToJava.supplier.apply(()=>JsNull.NULL))
-                                       .get(it.path)
-                                       .equals(it.value)
-                                   )
-
-
-          }
-          )
-  }
-
-  property("put if absent inserts when element doesnt exist")
-  {
-    check(forAll(jsPathGen.arrayPathGen,
-                 jsGen.jsValueGen
-                 )
-          { (path,
-             elem
-            ) =>
-            JsArray.optics.lens.value(path)
-              .setIfAbsent
-              .apply(JsArray.empty(),ScalaToJava.supplier.apply(()=>elem))
-              .get(path)
-              .equals(elem)
-
-          }
-          )
-  }
-
-
   property("removes existing element and get function returns NOTHING")
   {
     check(forAll(jsPathGen.arrayPathGen,

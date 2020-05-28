@@ -34,9 +34,13 @@ import static jsonvalues.Trampoline.more;
 public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public static final JsObj EMPTY = new JsObj(HashMap.empty());
     /**
-     optics defined for a Json object
+     lenses defined for a Json object
      */
-    public static final JsOptics.JsObjOptics optics = JsOptics.obj;
+    public static final JsOptics.JsObjLenses lens = JsOptics.obj.lens;
+    /**
+     optionals defined for a Json object
+     */
+    public static final JsOptics.JsObjOptional optional = JsOptics.obj.optional;
     /**
      prism between the sum type JsValue and JsObj
      */
@@ -55,7 +59,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     private volatile String str;
 
-    public JsObj(final HashMap<String, JsValue> myMap) {
+    public JsObj(){
+        this.map = HashMap.empty();
+    }
+    JsObj(final HashMap<String, JsValue> myMap) {
         this.map = myMap;
     }
 
@@ -1835,9 +1842,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return union(a,
                      tail
                     ).map(it ->
-                                  JsValueLens.of(head._1).setIfAbsent.apply(it,
-                                                                            () -> head._2
-                                                                           )
+                                  JsValueLens.of(head._1).modify.apply(c-> c.isNothing() ? head._2 : c).apply(it)
+
                          );
 
     }

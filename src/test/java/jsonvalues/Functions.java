@@ -14,8 +14,7 @@ import static java.util.Objects.requireNonNull;
 
 public class Functions {
 
-    private Functions() {
-    }
+    private Functions() { }
 
     /**
      Returns a function that maps a json element if it's a json integer, returning the element otherwise
