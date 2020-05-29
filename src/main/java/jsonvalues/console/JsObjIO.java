@@ -4,8 +4,9 @@ import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.future.JsFuture;
 
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -14,15 +15,15 @@ import static java.util.Objects.requireNonNull;
 
 
 /**
- represents a supplier of a completable future than composes a json object from the user inputs in
- the standard console. It has the same recursive structure as a json object. Each key of the object
- has a supplier of a completable future associated that, when executed, prints out its path in the
- standard console and waits for the user to type in a value and press Enter. When the user fills out
+ represents a supplier of a completable future than composes a json object from the user inputs on
+ the console. It has the same recursive structure as a json object. Each key of the object
+ has a supplier of a completable future associated that, when executed, prints out its path on the
+ console and waits for the user to type in a value and press Enter. When the user fills out
  all the values, all the futures are completed and a json object is composed.
  */
 public class JsObjIO implements JsIO<JsObj>, Program<JsObj> {
 
-    private Map<String, JsIO<?>> bindings = new HashMap<>();
+    private Map<String, JsIO<?>> bindings = new LinkedHashMap<>();
 
     /**
      static factory method to create a JsObjIO of sixteen mappings
