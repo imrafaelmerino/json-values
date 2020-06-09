@@ -21,9 +21,9 @@ import static java.util.Objects.requireNonNull;
  standard console and waits for the user to type in a value and press Enter. When the user fills out
  all the values, all the futures are completed and a json array is composed.
  */
-public class JsArrayIO implements JsIO<JsArray>, Program<JsArray> {
+public class JsArrayConsole implements JsConsole<JsArray>, Program<JsArray> {
 
-    private List<JsIO<?>> seq = new ArrayList<>();
+    private List<JsConsole<?>> seq = new ArrayList<>();
 
     /**
      static factory method to create a JsArrayIO
@@ -32,10 +32,10 @@ public class JsArrayIO implements JsIO<JsArray>, Program<JsArray> {
      @param tail the tail
      @return a JsArrayIO
      */
-    public static JsArrayIO of(final JsIO<?> head,
-                               final JsIO<?>... tail
-                              ) {
-        final JsArrayIO array = new JsArrayIO();
+    public static JsArrayConsole tuple(final JsConsole<?> head,
+                                       final JsConsole<?>... tail
+                                      ) {
+        final JsArrayConsole array = new JsArrayConsole();
         array.seq.add(requireNonNull(head));
         array.seq.addAll(Arrays.asList(requireNonNull(tail)));
         return array;
@@ -60,8 +60,8 @@ public class JsArrayIO implements JsIO<JsArray>, Program<JsArray> {
             CompletableFuture<JsArray> result = CompletableFuture.completedFuture(JsArray.empty());
 
             for (int i = 0; i < seq.size(); i++) {
-                JsPath        p  = path.index(i);
-                final JsIO<?> io = seq.get(i);
+                JsPath             p  = path.index(i);
+                final JsConsole<?> io = seq.get(i);
                 result = result.thenApply(array ->
                                           {
                                               io

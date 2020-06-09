@@ -189,7 +189,7 @@ public class TestJsArray {
                                  JsStr.of("G")
                                 );
 
-        JsArray arr1 = arr.mapValues(p -> JsStr.prism.modify(s ->
+        JsArray arr1 = arr.mapValues(p -> JsStr.prism.modify.apply(s ->
                                                                      s.concat(String.valueOf(p.path.last()
                                                                                                    .asIndex().n)))
                                                      .apply(p.value));
@@ -218,7 +218,7 @@ public class TestJsArray {
                                  JsStr.of("c")
                                 );
 
-        final JsArray newArr = arr.mapValues(p -> JsStr.prism.modify(String::toUpperCase)
+        final JsArray newArr = arr.mapValues(p -> JsStr.prism.modify.apply(String::toUpperCase)
                                                              .apply(p.value));
 
         Assertions.assertNotEquals(arr,
@@ -242,7 +242,7 @@ public class TestJsArray {
                                  JsInt.of(2),
                                  JsObj.empty()
                                 );
-        JsArray newArr = arr.mapValues(p -> JsInt.prism.modify(i -> i + 10)
+        JsArray newArr = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 10)
                                                        .apply(p.value));
 
         Assertions.assertNotEquals(arr,
@@ -277,7 +277,7 @@ public class TestJsArray {
                                 );
 
 
-        final int result = arr.mapValues(p -> JsInt.prism.modify(i -> i + 100)
+        final int result = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 100)
                                                          .apply(p.value)
                                         )
                               .reduce(Integer::sum,
@@ -286,7 +286,7 @@ public class TestJsArray {
                                      )
                               .orElse(-1);
 
-        final int result1 = arr.mapValues(p -> JsInt.prism.modify(i -> i + 100)
+        final int result1 = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 100)
                                                           .apply(p.value))
                                .reduce(Integer::sum,
                                        pair -> pair.value.toJsInt().value,
@@ -304,7 +304,7 @@ public class TestJsArray {
                                );
 
 
-        final int result2 = arr.mapAllValues(p -> JsInt.prism.modify(i -> i + 100)
+        final int result2 = arr.mapAllValues(p -> JsInt.prism.modify.apply(i -> i + 100)
                                                              .apply(p.value))
                                .reduceAll(Integer::sum,
                                           pair -> pair.value.toJsInt().value,
@@ -312,7 +312,7 @@ public class TestJsArray {
                                          )
                                .orElse(-1);
 
-        final int result3 = arr.mapAllValues(p -> JsInt.prism.modify(i -> i + 100)
+        final int result3 = arr.mapAllValues(p -> JsInt.prism.modify.apply(i -> i + 100)
                                                              .apply(p.value)
                                             )
                                .reduceAll(Integer::sum,

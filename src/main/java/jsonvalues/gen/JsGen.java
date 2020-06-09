@@ -1,7 +1,6 @@
 package jsonvalues.gen;
 
 import jsonvalues.JsValue;
-import jsonvalues.gen.state.JsStateGen;
 
 import java.util.Objects;
 import java.util.Random;
@@ -137,24 +136,5 @@ public interface JsGen<R extends JsValue> extends Function<Random, Supplier<R>> 
                                                     ));
         };
     }
-
-    /**
-     Creates a new state generator that passes the result of this generator into the given function
-     `f`. `f` should return a new state generator. This allows you to create new state generators that
-     depend on the value of other generators.
-
-     @param f the function that returns state generators
-     @return a generator
-     */
-    default JsStateGen stateMap(final Function<R, JsStateGen> f) {
-        Objects.requireNonNull(f);
-        return o -> r -> () -> f.apply(JsGen.this.apply(requireNonNull(r))
-                                                 .get()
-                                      )
-                                .apply(requireNonNull(o))
-                                .apply(r)
-                                .get();
-    }
-
 
 }

@@ -250,7 +250,7 @@ public class TestsUnionAndIntersection {
 
     @Test
     public void test_map_values_array() throws MalformedJson {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify(String::toLowerCase)
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify.apply(String::toLowerCase)
                                                                         .apply(p.value);
 
 
@@ -300,7 +300,7 @@ public class TestsUnionAndIntersection {
 
     @Test
     public void test_map_values_obj() {
-        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify(String::toLowerCase)
+        final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify.apply(String::toLowerCase)
                                                                         .apply(p.value);
 
         JsObj obj = JsObj.of("a",

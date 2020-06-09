@@ -67,7 +67,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE)
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE)
                                                  );
 
 
@@ -94,7 +94,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE
                                                  );
 
@@ -123,7 +123,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE
                                                  );
@@ -153,7 +153,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL
@@ -185,7 +185,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -220,7 +220,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -257,7 +257,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -296,7 +296,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -337,7 +337,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -379,7 +379,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -423,7 +423,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -433,7 +433,7 @@ public class TestSupplier {
                                                   "l",()-> JsDouble.of(1.5),
                                                   "m",()->JsBigInt.of(BigInteger.TEN),
                                                   "n",()->JsBigDec.of(BigDecimal.TEN),
-                                                  "o",JsArraySupplier.of(()->JsBool.FALSE,()->JsNull.NULL)
+                                                  "o",JsArraySupplier.tuple(()->JsBool.FALSE, ()->JsNull.NULL)
                                                  );
 
 
@@ -469,7 +469,7 @@ public class TestSupplier {
                                                   () -> JsBool.TRUE,
                                                   "c", JsObjSupplier.of("d",()->JsNull.NULL),
                                                   "e",
-                                                  JsArraySupplier.of(()-> JsDouble.of(1.5),()->JsBool.FALSE),
+                                                  JsArraySupplier.tuple(()-> JsDouble.of(1.5), ()->JsBool.FALSE),
                                                   "f",()->JsBool.TRUE,
                                                   "g",()->JsBool.FALSE,
                                                   "h",()->JsNull.NULL,
@@ -479,7 +479,7 @@ public class TestSupplier {
                                                   "l",()-> JsDouble.of(1.5),
                                                   "m",()->JsBigInt.of(BigInteger.TEN),
                                                   "n",()->JsBigDec.of(BigDecimal.TEN),
-                                                  "o",JsArraySupplier.of(()->JsBool.FALSE,()->JsNull.NULL),
+                                                  "o",JsArraySupplier.tuple(()->JsBool.FALSE, ()->JsNull.NULL),
                                                   "p",()->JsNull.NULL
 
                                                  );

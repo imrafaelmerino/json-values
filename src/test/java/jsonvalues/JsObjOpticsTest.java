@@ -24,14 +24,14 @@ public class JsObjOpticsTest {
         JsObjLens<JsObj>    lenByKey  = JsObj.lens.obj("a");
 
 
-        Assertions.assertTrue(lenByKey.exists(it -> it.containsKey("b"))
+        Assertions.assertTrue(lenByKey.exists.apply(it -> it.containsKey("b"))
                                       .test(a));
 
 
         Assertions.assertEquals(Optional.of(JsObj.of("b",
                                                      JsObj.of("c",
                                                               JsBigInt.of(BigInteger.TEN)))),
-                                lenByKey.find(it -> it.containsKey("b"))
+                                lenByKey.find.apply(it -> it.containsKey("b"))
                                       .apply(a)
                                );
 

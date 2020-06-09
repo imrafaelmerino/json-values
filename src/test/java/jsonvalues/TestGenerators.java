@@ -4,7 +4,6 @@ import io.vavr.Tuple2;
 import jsonvalues.gen.JsGen;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;
-import jsonvalues.gen.state.JsStateGen;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
@@ -27,19 +26,6 @@ import static jsonvalues.spec.JsSpecs.*;
 
 public class TestGenerators {
 
-
-    public static void test(JsStateGen gen,
-                            Predicate<JsValue> condition,
-                            int times
-                           ) {
-        for (int i = 0; i < times; i++) {
-
-            final JsValue value = gen.apply(JsObj.empty())
-                                     .apply(new Random())
-                                     .get();
-            Assertions.assertTrue(condition.test(value));
-        }
-    }
 
     @Test
     public void test_js_array() {

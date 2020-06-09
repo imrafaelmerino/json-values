@@ -44,9 +44,9 @@ public class JsArraySupplier implements java.util.function.Supplier<JsArray> {
      @return a new JsArraySupplier
      */
     @SafeVarargs
-    public static JsArraySupplier of(final Supplier<? extends JsValue> head,
-                                     final Supplier<? extends JsValue>... tail
-                                    ) {
+    public static JsArraySupplier tuple(final Supplier<? extends JsValue> head,
+                                        final Supplier<? extends JsValue>... tail
+                                       ) {
         return new JsArraySupplier(requireNonNull(head),
                                    requireNonNull(tail)
         );

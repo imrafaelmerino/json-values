@@ -12,7 +12,7 @@ import java.util.function.Function;
  Represents a functional effect than when execute creates e JsValue
 
  @param <T> type of the JsValue returned */
-public interface JsIO<T extends JsValue> extends Function<JsPath, JsFuture<T>> {
+public interface JsConsole<T extends JsValue> extends Function<JsPath, JsFuture<T>> {
 
     /**
      @return consumer that accepts a path and prints out a message indicating to the user that they must

@@ -624,7 +624,7 @@ public class TestJsObj {
                                                 Assertions.assertEquals(pair.value,
                                                                         obj.get(pair.path)
                                                                        );
-                                                return JsStr.prism.modify(String::toLowerCase)
+                                                return JsStr.prism.modify.apply(String::toLowerCase)
                                                                   .apply(pair.value);
                                             });
 

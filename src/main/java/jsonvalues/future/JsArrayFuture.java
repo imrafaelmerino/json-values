@@ -44,9 +44,9 @@ public class JsArrayFuture implements JsFuture<JsArray> {
      @param tail the tail
      @return a new JsArrayFuture
      */
-    public static JsArrayFuture of(final JsFuture<?> head,
-                                   final JsFuture<?>... tail
-                                  ) {
+    public static JsArrayFuture tuple(final JsFuture<?> head,
+                                      final JsFuture<?>... tail
+                                     ) {
         return new JsArrayFuture(requireNonNull(head),
                                  requireNonNull(tail)
         );

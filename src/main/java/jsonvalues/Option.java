@@ -2,7 +2,6 @@ package jsonvalues;
 
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  An Optional is an optic that allows seeing into a structure and getting, setting, or modifying an optional focus.
@@ -32,16 +31,6 @@ public class Option<S, T> {
      */
     public final Function<Function<T, T>, Function<S, S>> modify;
 
-    /**
-     function to look into S, set a value for a focus T if it doesn't exist, and obtain the modified source
-     */
-    public final Function<Supplier<T>, Function<S, S>> setIfAbsent;
-
-    /**
-     function to look into S, set a value for a focus T if it does exist, and obtain the modified source
-     */
-    public final Function<Supplier<T>, Function<S, S>> setIfPresent;
-
     Option(final Function<S, Optional<T>> get,
            final Function<T, Function<S, S>> set
           ) {
@@ -55,24 +44,6 @@ public class Option<S, T> {
             return set.apply(f.apply(value.get()))
                       .apply(json);
         };
-
-        this.setIfAbsent = supplier -> json ->
-        {
-            final Optional<T> value = get.apply(json);
-            if (value.isPresent()) return json;
-            return set.apply(supplier.get())
-                      .apply(json);
-        };
-
-
-        this.setIfPresent = supplier -> json ->
-        {
-            final Optional<T> value = get.apply(json);
-            if (!value.isPresent()) return json;
-            return set.apply(supplier.get())
-                      .apply(json);
-        };
-
     }
 
 }

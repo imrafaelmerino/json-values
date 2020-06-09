@@ -2,6 +2,7 @@ package jsonvalues.console;
 
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.MyDslJson;
+import jsonvalues.JsNothing;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 import jsonvalues.future.JsFutures;
@@ -20,7 +21,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class JsIOs {
 
-    public static JsIO<JsValue> read(final JsSpec spec) {
+    public static JsConsole<JsValue> read(final JsSpec spec) {
         Objects.requireNonNull(spec);
         return path ->
         {
@@ -28,6 +29,7 @@ public class JsIOs {
                     JsFutures.retry(() -> completedFuture(readLine())
                                             .thenApply(s ->
                                                        {
+                                                           if(s.equals("")) return JsNothing.NOTHING;
                                                            final JsonReader<?> reader = MyDslJson.INSTANCE.getReader(s.getBytes());
                                                            try {
                                                                reader.getNextToken();

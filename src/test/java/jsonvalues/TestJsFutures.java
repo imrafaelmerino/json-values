@@ -40,13 +40,13 @@ public class TestJsFutures {
                                                                   io
                                                                  )),
                                             "d",
-                                            log(JsArrayFuture.of(log(() -> supplyAsync(() -> FALSE,
-                                                                                       computational
-                                                                                      )),
-                                                                 log(() -> supplyAsync(() -> FALSE,
+                                            log(JsArrayFuture.tuple(log(() -> supplyAsync(() -> FALSE,
+                                                                                          computational
+                                                                                         )),
+                                                                    log(() -> supplyAsync(() -> FALSE,
                                                                                        computational
                                                                                       ))
-                                                                )),
+                                                                   )),
                                             "e",
                                             log(JsObjFuture.of("a",
                                                                log(() -> supplyAsync(() -> JsNull.NULL,
@@ -145,7 +145,7 @@ public class TestJsFutures {
                                                         a
                                                        );
 
-        final JsArrayFuture futB = JsArrayFuture.of(a)
+        final JsArrayFuture futB = JsArrayFuture.tuple(a)
                                                 .executor(Executors.newSingleThreadExecutor());
 
 
