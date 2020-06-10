@@ -51,7 +51,7 @@
    by the user. However, imagine that the user wants to insert the name "Rafa" at /names/0 in an empty Json object:
 
  ```
- JsObj obj = JsObj.empty().put(path("/names/0"),"Rafa")
+ JsObj obj = JsObj.empty().set(path("/names/0"),JsStr.of("Rafa"))
  ```
 
  What is the expected result? According to the rfc6901, both:
@@ -149,3 +149,65 @@
  path("/")
  fromKey("")
  ```
+
+## <a name="jselem"></a> JsValue
+Every element in a Json is a _JsValue_. There is one for each json value described in [json.org](https://www.json.org):
+* _JsStr_ represents immutable strings.
+
+* The singletons _JsBool.TRUE_ and _JsBool.FALSE_ represent true and false.
+
+* The singleton _JsNull.NULL_ represents null.
+
+* _JsObj_ is a _Json_ that represents an object, which is an unordered set of name/value pairs.
+
+* _JsArray_ is a _Json_ that represents an array, which is an ordered collection of values.
+
+* _JsNumber_ represents immutable numbers. There are five different specializations:
+
+    * _JsInt_
+
+    * _JsLong_
+
+    * _JsDouble_
+
+    * _JsBigInt_
+
+    * _JsBigDec_
+
+* The singleton _JsNothing.NOTHING_ represents nothing. It's not part of any specification. It's a convenient type
+that makes certain functions that return a JsValue **total** on their arguments. For example, the function
+
+_JsValue get(JsPath)_
+
+is total because it returns a JsValue for every JsPath. If there is no element located at the
+specified path, it returns _NOTHING_. In other functions like
+
+_Json putIfPresent(Function<JsValue, JsValue>)_
+
+this type comes in handy as well because it's possible, just returning _NOTHING_, not to insert anything even if an element is present.
+
+## <a name="jspair"></a> JsPair
+There are different overloaded static factory methods to create pairs:
+```
+JsPair of(JsPath path, int value)
+JsPair of(JsPath path, double value)
+JsPair of(JsPath path, long value)
+JsPair of(JsPath path, boolean value)
+JsPair of(JsPath path, String value)
+JsPair of(JsPath path, JsValue value)
+```
+
+Pairs are immutable. You can get the path and value of a pair by direct field access:
+
+```
+JsPair pair = JsPair.of(path("/a/b/0"), "a");
+JsPath path = pair.path;
+JsValue value = pair.value;
+```
+
+Pairs can be mapped using:
+
+```
+JsPair mapPath(UnaryOperator<JsPath> fn)
+JsPair mapElem(UnaryOperator<JsValue> fn)
+```
