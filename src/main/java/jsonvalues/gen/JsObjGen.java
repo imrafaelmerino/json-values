@@ -9,7 +9,6 @@ import jsonvalues.JsValue;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
 
 /**
  represent a generator of Json objects.
@@ -2351,20 +2350,7 @@ public class JsObjGen implements JsGen<JsObj> {
                             gen20
         );
     }
-    @SafeVarargs
-    public static JsObjGen of(final Tuple2<String, JsGen<?>> pair,
-                              final Tuple2<String, JsGen<?>>... others
-                             ) {
 
-        JsObjGen gen = new JsObjGen(requireNonNull(pair)._1,
-                                    pair._2
-        );
-        for (final Tuple2<String, JsGen<?>> other : requireNonNull(others))
-            gen = gen.set(other._1,
-                          other._2
-                         );
-        return gen;
-    }
 
     public JsObjGen set(final String key,
                         final JsGen<?> gen

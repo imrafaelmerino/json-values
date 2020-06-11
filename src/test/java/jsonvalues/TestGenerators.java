@@ -76,43 +76,6 @@ public class TestGenerators {
         }
     }
 
-    @Test
-    public void test_pair_gen() {
-
-        JsObjGen gen = JsObjGen.of(new Tuple2<>("a",
-                                                JsGens.integer
-                                   ),
-                                   new Tuple2<>("b",
-                                                JsGens.str
-                                   ),
-                                   new Tuple2<>("c",
-                                                JsGens.bool
-                                   ),
-                                   new Tuple2<>("d",
-                                                alphabetic
-                                   ),
-                                   new Tuple2<>("e",
-                                                alphanumeric
-                                   )
-                                  );
-
-        test(gen,
-             v -> JsObjSpec.strict("a",
-                                   integer,
-                                   "b",
-                                   str,
-                                   "c",
-                                   bool,
-                                   "d",
-                                   str,
-                                   "e",
-                                   str
-                                  )
-                           .test(v.toJsObj())
-                           .isEmpty(),
-             1000
-            );
-    }
 
     @Test
     public void test_js_obj() {

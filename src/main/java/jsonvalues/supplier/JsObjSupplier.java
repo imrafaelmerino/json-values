@@ -1465,30 +1465,6 @@ public class JsObjSupplier implements Supplier<JsObj> {
     }
 
     /**
-     returns a JsObjSupplier from the list of given bindings
-
-     @param head the first key,supplier pair
-     @param tail the rest of the key,supplier  pairs
-     @return a new JsObjSupplier
-     */
-    @SafeVarargs
-    public static JsObjSupplier of(final Tuple2<String, Supplier<? extends JsValue>> head,
-                                   final Tuple2<String, Supplier<? extends JsValue>>... tail
-                                  ) {
-        requireNonNull(head);
-        requireNonNull(tail);
-
-        JsObjSupplier supplier = new JsObjSupplier(head._1,
-                                              head._2
-        );
-        for (final Tuple2<String, Supplier<? extends JsValue>> other : tail)
-            supplier = supplier.set(other._1,
-                                    other._2
-                                   );
-        return supplier;
-    }
-
-    /**
      returns a new object supplier inserting the given supplier at the given key
      @param key    the given key
      @param supplier the given supplier

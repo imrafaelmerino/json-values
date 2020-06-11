@@ -521,16 +521,6 @@ public class TestSupplier {
     }
 
     @Test
-    public void testFromTuples(){
-
-        JsObjSupplier supplier = JsObjSupplier.of(new Tuple2<>("a",
-                                                         () -> JsBool.TRUE),
-                                            new Tuple2<>("b",
-                                                         () -> JsBool.FALSE));
-
-        Assertions.assertEquals(JsObj.of("a",JsBool.TRUE,"b",JsBool.FALSE), supplier.get());
-    }
-    @Test
     public void testAppend(){
 
         JsArraySupplier a = JsArraySupplier.empty()

@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
 import jsonvalues.future.JsArrayFuture;
 import jsonvalues.future.JsFuture;
 import jsonvalues.future.JsObjFuture;
@@ -121,8 +120,7 @@ public class TestJsFutures {
                                             .executor(Executors.newSingleThreadExecutor());
 
 
-        final JsObjFuture futC = JsObjFuture.of(new Tuple2<>("a",
-                                                             a));
+        final JsObjFuture futC = JsObjFuture.of("a",a);
 
         Assertions.assertEquals(futA.get()
                                     .get(),

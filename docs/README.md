@@ -25,22 +25,22 @@
 ## <a name="introduction"><a/> Introduction
 Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures.
 
-One of the most important aspects of functional programming is immutable data structures, better known as values. Updating these structures using the copy-on-write approach is very inefficient, and this is the reason why persistent
+One of the most essential aspects of functional programming is immutable data structures, better known as values. Updating these structures using the copy-on-write approach is inefficient, and this is why persistent
 data structures were created. On the other hand, JSON is a lightweight, text-based, language-independent data interchange format. It's become so popular due to its simplicity.
 
-There are a lot of libraries out there to work with JSON in the JVM ecosystem; however, none of them use persistent data structures. In most cases, those libraries parse a string or array of bytes into an object. The thing is, why do that? JSON is a great structure.
-It's simple, easy to aggregate, ease to create, easy to reason about, so why create yet another abstraction over JSON? Moreover, there are many architectures that work with JSON end-to-end. Going from JSON to objects or strings back and forth is not very
-efficient, especially when copy-on-write is the only option to avoid mutation. All these points are way better elaborated in the talk [the value of values](https://www.youtube.com/watch?v=-6BsiVyC1kM), a masterpiece from Rich Hickey.
+There are many libraries out there to work with JSON in the JVM ecosystem; however, none of them use persistent data structures. In most cases, those libraries parse a string or array of bytes into an object. The thing is, why do that? JSON is a magnificent structure.
+It's simple, easy to aggregate, ease to create, easy to reason about, so why create yet another abstraction over JSON? Moreover, many architectures work with JSON end-to-end. Going from JSON to objects or strings back and forth is not
+efficient, especially when copy-on-write is the only option to avoid mutation.
 
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 * You need to deal with Jsons, and you want to program following a functional style, **using functions and immutable types (or values)**,
-but you can't benefit from all the advantages that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
-The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, streams... but, without immutability,
+but you can't benefit from all the advantage that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
+The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, and streams, but without immutability,
 something is still missing, and as _**Pat Helland**_ said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
 * You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and takes advantages of all the new features that were introduced
 in Java 8, like functions, suppliers, streams, and collectors, making json manipulation simple, fast, and efficient.
 * Simplicity matters, and I 'd argue that **json-values** is simple.
-* As a developer, I'm convinced that code should win arguments, so let me enumerate some examples.examples, where I
+* As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
 leave the functions passed in as arguments with no implementation for brevity reasons (go to the [project page](https://imrafaelmerino.github.io/json-values/) for further
 details)
 
@@ -64,14 +64,14 @@ a.union(b, JsArray.TYPE.MULTISET)
 
 a.intersection(b)
 ```
-I'd argue that it's very simple, expressive and concise. And that plus the fact that it's a persistent
+I'd argue that it's straightforward, expressive, and concise. And that plus the fact that it's a persistent
 data structure shows very well the essence of **json-values**.
 
-That was just a little taste! Data generation and validation are extremely important in software.
-If you struggle generating data for your tests, it slows you down and make your tests difficult to develop and maintain
+That was just a little taste! Data generation and validation are significant in software.
+If you struggle to generate data, it slows down the testing.
 On the other hand, corrupt data can propagate throughout your system and cause a nightmare. Errors that blow up in your face
 are way better! If you think about it, the definition, validation, and generation of a JSON value could be
-implemented using the same data structure; after all, the three of them are just bindings with different
+implemented using the same data structure; after all, the three are just bindings with different
 elements: values, generators, or specifications. Let's check out an example:
 
 ```
@@ -132,28 +132,6 @@ var parser = new JsObjParser(spec);
 var a = parser.parse(jsonBytes);
 var b = parser.parse(jsonStr);
 
-// given a generator you can define properties and test them using randomized inputs
-// this is a key concept in property-based-testing
-
-/**
-   @param gen generator to produce randomized input data
-   @param property a predicate that represents a property that the code under test  has to satisfy
-   @param times number of iterations that an input is generated and evaluated on the predicate
-*/
-public void testProperty(JsGen<JsObj> gen,
-                         Predicate<JsObj> property,
-                         int times
-                        )
-{
-    for (int i = 0; i < times; i++)
-    {
-      JsObj obj = gen.apply(new Random())
-                     .get();
-      Assertions.assertTrue(property.test(obj));
-    }
-}
-
-
 ```
 
 As you can see, creating specs, generators is as simple as creating raw JSON. Writing specs and
@@ -190,7 +168,7 @@ CompletableFuture<JsObj> completableFuture = future.get();
 
 ```
 
-To put data in and get data out in a composable and concise way, we can use optics. Lenses, optionals and prism have been
+We can use optics to put data in and get data out in a composable and concise way.Lenses, Optionals, and Prism have been
 defined for every json type.
 
 ```
@@ -244,8 +222,6 @@ Add the following dependency to your building tool:
 </dependency>
 ```
 
-## <a ><a/> Documentation
-Go to https://imrafaelmerino.github.io/json-values/
 ## <a name="wth"><a/> Want to help
 I've set up a separate document for [contributors](./CONTRIBUTING.md).
 ## <a name="develop"><a/> Develop

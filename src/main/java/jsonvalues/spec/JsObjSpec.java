@@ -43,25 +43,7 @@ public class JsObjSpec implements JsSpec {
         this.strict = strict;
     }
 
-    @SafeVarargs
-    private JsObjSpec(final boolean strict,
-                      final boolean required,
-                      final boolean nullable,
-                      final Tuple2<String, JsSpec> pair,
-                      final Tuple2<String, JsSpec>... others
-                     ) {
-        bindings = bindings.put(pair._1,
-                                pair._2
-                               );
-        for (Tuple2<String, JsSpec> p : others)
-            bindings = bindings.put(p._1,
-                                    p._2
-                                   );
-        this.strict = strict;
-        this.required = required;
-        this.nullable = nullable;
 
-    }
 
     private JsObjSpec(
             final String key1,
@@ -1071,30 +1053,6 @@ public class JsObjSpec implements JsSpec {
         this.strict = strict;
         this.required = required;
         this.nullable = nullable;
-    }
-
-    @SafeVarargs
-    public static JsObjSpec strict(final Tuple2<String, JsSpec> pair,
-                                   final Tuple2<String, JsSpec>... others
-                                  ) {
-        return new JsObjSpec(true,
-                             true,
-                             false,
-                             pair,
-                             others
-        );
-    }
-
-    @SafeVarargs
-    public static JsObjSpec lenient(final Tuple2<String, JsSpec> pair,
-                                    final Tuple2<String, JsSpec>... others
-                                   ) {
-        return new JsObjSpec(false,
-                             true,
-                             false,
-                             pair,
-                             others
-        );
     }
 
     /**

@@ -1470,29 +1470,6 @@ public class JsObjFuture implements JsFuture<JsObj> {
         return new JsObjFuture(HashMap.empty());
     }
 
-    /**
-     returns a JsObjFuture from the list of given bindings
-
-     @param head the first key,future pair
-     @param tail the rest of the key,future  pairs
-     @return a new JsObjFuture
-     */
-    @SafeVarargs
-    public static JsObjFuture of(final Tuple2<String, JsFuture<?>> head,
-                                 final Tuple2<String, JsFuture<?>>... tail
-                                ) {
-        requireNonNull(head);
-        requireNonNull(tail);
-
-        JsObjFuture fut = new JsObjFuture(head._1,
-                                          head._2
-        );
-        for (final Tuple2<String, JsFuture<?>> other : tail)
-            fut = fut.set(other._1,
-                          other._2
-                         );
-        return fut;
-    }
 
     /**
      returns a new object future inserting the given future at the given key

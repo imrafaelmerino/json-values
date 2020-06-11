@@ -29,7 +29,6 @@ deploy:
      - target/JAVADOC.zip
      - docs/CHANGELOG.md
      - docs/README.md
-     - docs/index.md
      - target/SOURCES.zip
    on:
      repo: imrafaelmerino/json-values

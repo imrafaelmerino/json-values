@@ -1,21 +1,14 @@
 package jsonvalues;
-
-import io.vavr.Tuple2;
-import jsonvalues.gen.JsGens;
-import jsonvalues.gen.JsObjGen;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
-
 import static jsonvalues.Functions.assertErrorIs;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -23,36 +16,6 @@ import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsObjSpec {
 
-    @Test
-    public void test_spec_from_pairs() {
-        final JsObjSpec spec = JsObjSpec.strict(new Tuple2<>("a",
-                                                             str
-                                                ),
-                                                new Tuple2<>("b",
-                                                             integral
-                                                ),
-                                                new Tuple2<>("c",
-                                                             decimal
-                                                )
-                                               );
-
-        final JsObjGen gen = JsObjGen.of(new Tuple2<>("a",
-                                                      JsGens.str
-                                         ),
-                                         new Tuple2<>("b",
-                                                      JsGens.integer
-                                         ),
-                                         new Tuple2<>("c",
-                                                      JsGens.decimal
-                                         )
-                                        );
-
-        TestGenerators.test(gen,
-                            v -> spec.test(v.toJsObj())
-                                     .isEmpty(),
-                            1000);
-
-    }
 
     @Test
     public void testIsStrSpec() {
