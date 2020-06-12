@@ -134,12 +134,6 @@ var b = parser.parse(jsonStr);
 
 ```
 
-As you can see, creating specs, generators is as simple as creating raw JSON. Writing specs and
-generators for our tests is child's play. It has enormous advantages for development, such as:
-
-* Increase productivity.
-* More readable code. The more readable code is, the easier it is to maintain and reason about that code.
-
 We can create futures as well following the same philosophy:
 
 ```
@@ -155,9 +149,9 @@ var future = JsObjFuture.of("name", () -> nameFut,
                             "github", () -> handleFut,
                             "profession", () -> professionFut,
                             "address", JsObjFuture.of("street", streetFut,
-                                                      "location", JsArrayFuture.of(() -> latFut,
-                                                                                   () -> lonFut
-                                                                                  ),
+                                                      "location", tuple(() -> latFut,
+                                                                        () -> lonFut
+                                                                       ),
                                                       "country", () -> countryFut
                                                       )
                             );
@@ -167,6 +161,33 @@ var future = JsObjFuture.of("name", () -> nameFut,
 CompletableFuture<JsObj> completableFuture = future.get();
 
 ```
+
+We can even create suppliers:
+
+```
+//given some suppliers
+
+Supplier<JsValue> name, age, languages, handle, profession, street, lon, lat, country;
+
+// we can describe a functional effect that will return a Json
+
+var supplier = JsObjSupplier.of("name", name,
+                                "age", age,
+                                "languages", languages,
+                                "github", handle,
+                                "profession", profession,
+                                "address", JsObjFuture.of("street", street,
+                                                          "location", tuple(lat,
+                                                                            lon
+                                                                           ),
+                                                          "country", country
+                                                          )
+                                );
+
+JsObj obj = supplier.get();
+
+```
+
 
 We can use optics to put data in and get data out in a composable and concise way.Lenses, Optionals, and Prism have been
 defined for every json type.
@@ -237,8 +258,9 @@ After the development of json-values, I published two more related projects:
 project I'm especially proud of. I think there is no Json generator more declarative, concise, and why not, beautiful in the
 whole wide world! If I'm wrong, please let me know!
 
-json-values uses the persistent data structures from [vavr](https://www.vavr.io/), [Jackson]() to parse a string/bytes into
+json-values uses the persistent data structures from [vavr](https://www.vavr.io/), [Jackson](https://github.com/FasterXML/jackson) to parse a string/bytes into
 a stream of tokens and [dsl-sjon](https://github.com/ngs-doo/dsl-json) to parse a string/bytes given a spec.
 
-
+I've written about json-values on my blog:
+* [The value of json values - Recursive data structures](http://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-recursive-data.html)
 

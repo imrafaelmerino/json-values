@@ -636,6 +636,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier3 the mapping associated to the third key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -665,6 +666,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier4 the mapping associated to the fourth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -700,6 +702,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier5 the mapping associated to the fifth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -741,6 +744,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier6 the mapping associated to the sixth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -788,6 +792,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier7 the mapping associated to the seventh key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -841,6 +846,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier8 the mapping associated to the eighth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -901,6 +907,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier9 the mapping associated to the ninth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -967,6 +974,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier10 the mapping associated to the tenth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -1039,6 +1047,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier11 the mapping associated to the eleventh key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -1117,6 +1126,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier12 the mapping associated to the twelfth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -1201,6 +1211,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier13 the mapping associated to the thirteenth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -1292,6 +1303,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier14 the mapping associated to the fourteenth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,
@@ -1389,6 +1401,7 @@ public class JsObjSupplier implements Supplier<JsObj> {
      @param supplier15 the mapping associated to the fifteenth key
      @return a JsObjSupplier
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSupplier of(final String key1,
                                    final Supplier<? extends JsValue> supplier1,
                                    final String key2,

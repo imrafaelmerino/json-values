@@ -642,6 +642,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut3 the mapping associated to the third key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -671,6 +672,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut4 the mapping associated to the fourth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -706,6 +708,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut5 the mapping associated to the fifth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -747,6 +750,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut6 the mapping associated to the sixth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -794,6 +798,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut7 the mapping associated to the seventh key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -847,6 +852,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut8 the mapping associated to the eighth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -907,6 +913,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut9 the mapping associated to the ninth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -973,6 +980,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut10 the mapping associated to the tenth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -1045,6 +1053,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut11 the mapping associated to the eleventh key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -1123,6 +1132,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut12 the mapping associated to the twelfth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -1207,6 +1217,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut13 the mapping associated to the thirteenth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -1298,6 +1309,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut14 the mapping associated to the fourteenth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,
@@ -1395,6 +1407,7 @@ public class JsObjFuture implements JsFuture<JsObj> {
      @param fut15 the mapping associated to the fifteenth key
      @return a JsObjFuture
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjFuture of(final String key1,
                                  final JsFuture<?> fut1,
                                  final String key2,

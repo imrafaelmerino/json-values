@@ -61,6 +61,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io16  the mapping associated to the sixteenth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -170,6 +171,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io15  the mapping associated to the fifteenth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -273,6 +275,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io14  the mapping associated to the fourteenth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -370,6 +373,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io13  the mapping associated to the thirteenth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -461,6 +465,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io12  the mapping associated to the twelfth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -546,6 +551,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io11  the mapping associated to the eleventh key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -625,6 +631,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io10  the mapping associated to the tenth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -698,6 +705,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io9  the mapping associated to the ninth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -765,6 +773,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io8  the mapping associated to the eight key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -826,6 +835,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io7  the mapping associated to the seventh key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -881,6 +891,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io6  the mapping associated to the sixth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -930,6 +941,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io5  the mapping associated to the fifth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -973,6 +985,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io4  the mapping associated to the forth key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,
@@ -1010,6 +1023,7 @@ public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
      @param io3  the mapping associated to the third key
      @return a JsObjIO
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjConsole of(final String key1,
                                   final JsConsole<?> io1,
                                   final String key2,

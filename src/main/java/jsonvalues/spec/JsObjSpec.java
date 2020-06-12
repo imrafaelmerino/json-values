@@ -44,7 +44,7 @@ public class JsObjSpec implements JsSpec {
     }
 
 
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -113,7 +113,7 @@ public class JsObjSpec implements JsSpec {
                                 spec15
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -186,7 +186,7 @@ public class JsObjSpec implements JsSpec {
                                 spec16
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -263,6 +263,7 @@ public class JsObjSpec implements JsSpec {
                                 spec17
                                );
     }
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -344,7 +345,7 @@ public class JsObjSpec implements JsSpec {
                                );
     }
 
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -430,7 +431,7 @@ public class JsObjSpec implements JsSpec {
                                );
     }
 
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -519,7 +520,7 @@ public class JsObjSpec implements JsSpec {
                                 spec20
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -584,7 +585,7 @@ public class JsObjSpec implements JsSpec {
                                 spec14
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -647,7 +648,7 @@ public class JsObjSpec implements JsSpec {
     }
 
 
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
             final JsSpec spec1,
@@ -705,7 +706,7 @@ public class JsObjSpec implements JsSpec {
                                );
     }
 
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(final String key,
                       final JsSpec spec,
                       final String key1,
@@ -756,7 +757,7 @@ public class JsObjSpec implements JsSpec {
                                 spec10
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -805,6 +806,7 @@ public class JsObjSpec implements JsSpec {
 
     }
 
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -848,6 +850,7 @@ public class JsObjSpec implements JsSpec {
                                );
     }
 
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -886,7 +889,7 @@ public class JsObjSpec implements JsSpec {
                                 spec7
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -921,7 +924,7 @@ public class JsObjSpec implements JsSpec {
                                 spec6
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -952,7 +955,7 @@ public class JsObjSpec implements JsSpec {
                                 spec5
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
                       JsSpec spec,
                       String key1,
@@ -979,7 +982,7 @@ public class JsObjSpec implements JsSpec {
                                 spec4
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(final String key,
                       final JsSpec spec,
                       final String key1,
@@ -1002,7 +1005,7 @@ public class JsObjSpec implements JsSpec {
                                 spec3
                                );
     }
-
+    @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             String key1,
             JsSpec spec1,
@@ -1151,6 +1154,7 @@ public class JsObjSpec implements JsSpec {
      @param spec3 the mapping associated to the third key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(final String key1,
                                    final JsSpec spec1,
                                    final String key2,
@@ -1180,6 +1184,7 @@ public class JsObjSpec implements JsSpec {
      @param spec3 the mapping associated to the third key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -1213,6 +1218,7 @@ public class JsObjSpec implements JsSpec {
      @param spec4 the mapping associated to the fourth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -1250,6 +1256,7 @@ public class JsObjSpec implements JsSpec {
      @param spec4 the mapping associated to the fourth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -1289,6 +1296,7 @@ public class JsObjSpec implements JsSpec {
      @param spec5 the mapping associated to the fifth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -1332,6 +1340,7 @@ public class JsObjSpec implements JsSpec {
      @param spec5 the mapping associated to the fifth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1377,6 +1386,7 @@ public class JsObjSpec implements JsSpec {
      @param spec6 the mapping associated to the sixth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -1426,6 +1436,7 @@ public class JsObjSpec implements JsSpec {
      @param spec6 the mapping associated to the sixth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1477,6 +1488,7 @@ public class JsObjSpec implements JsSpec {
      @param spec7 the mapping associated to the seventh key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -1532,6 +1544,7 @@ public class JsObjSpec implements JsSpec {
      @param spec7 the mapping associated to the seventh key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1589,6 +1602,7 @@ public class JsObjSpec implements JsSpec {
      @param spec8 the mapping associated to the eighth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -1650,6 +1664,7 @@ public class JsObjSpec implements JsSpec {
      @param spec8 the mapping associated to the eighth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1713,6 +1728,7 @@ public class JsObjSpec implements JsSpec {
      @param spec9 the mapping associated to the ninth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -1780,6 +1796,7 @@ public class JsObjSpec implements JsSpec {
      @param spec9 the mapping associated to the ninth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1822,7 +1839,7 @@ public class JsObjSpec implements JsSpec {
                 false
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -1896,6 +1913,7 @@ public class JsObjSpec implements JsSpec {
      @param spec10 the mapping associated to the eleventh key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -1971,6 +1989,7 @@ public class JsObjSpec implements JsSpec {
      @param spec11 the mapping associated to the eleventh key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
             JsSpec spec1,
@@ -2050,6 +2069,7 @@ public class JsObjSpec implements JsSpec {
      @param spec11 the mapping associated to the eleventh key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
             JsSpec spec1,
@@ -2131,6 +2151,7 @@ public class JsObjSpec implements JsSpec {
      @param spec12 the mapping associated to the twelfth key,
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -2216,6 +2237,7 @@ public class JsObjSpec implements JsSpec {
      @param spec12 the mapping associated to the twelfth key,
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -2303,6 +2325,7 @@ public class JsObjSpec implements JsSpec {
      @param spec13 the mapping associated to the thirteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -2396,6 +2419,7 @@ public class JsObjSpec implements JsSpec {
      @param spec14 the mapping associated to the fourteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -2493,6 +2517,7 @@ public class JsObjSpec implements JsSpec {
      @param spec14 the mapping associated to the fourteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -2592,6 +2617,7 @@ public class JsObjSpec implements JsSpec {
      @param spec15 the mapping associated to the fifteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -2695,6 +2721,7 @@ public class JsObjSpec implements JsSpec {
      @param spec15 the mapping associated to the fifteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -2800,6 +2827,7 @@ public class JsObjSpec implements JsSpec {
      @param spec16 the mapping associated to the sixteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -2909,6 +2937,7 @@ public class JsObjSpec implements JsSpec {
      @param spec16 the mapping associated to the sixteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -3021,6 +3050,7 @@ public class JsObjSpec implements JsSpec {
      @param spec17 the mapping associated to the seventeenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -3136,6 +3166,7 @@ public class JsObjSpec implements JsSpec {
      @param spec17 the mapping associated to the seventeenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -3253,6 +3284,7 @@ public class JsObjSpec implements JsSpec {
      @param spec18 the mapping associated to the eighteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -3373,6 +3405,7 @@ public class JsObjSpec implements JsSpec {
      @param spec18 the mapping associated to the eighteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -3495,6 +3528,7 @@ public class JsObjSpec implements JsSpec {
      @param spec19 the mapping associated to the nineteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -3622,6 +3656,7 @@ public class JsObjSpec implements JsSpec {
      @param spec19 the mapping associated to the nineteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -3751,6 +3786,7 @@ public class JsObjSpec implements JsSpec {
      @param spec20 the mapping associated to the twentieth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
@@ -3884,6 +3920,7 @@ public class JsObjSpec implements JsSpec {
      @param spec20 the mapping associated to the twentieth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
             final JsSpec spec1,
@@ -4002,6 +4039,7 @@ public class JsObjSpec implements JsSpec {
      @param spec13 the mapping associated to the thirteenth key
      @return a JsObjSpec
      */
+    @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
             final JsSpec spec1,
