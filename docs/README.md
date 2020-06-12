@@ -137,11 +137,7 @@ var b = parser.parse(jsonStr);
 We can create futures as well following the same philosophy:
 
 ```
-//given some futures
-
 CompletableFuture<JsValue> nameFut, ageFut, languagesFut, handleFut, professionFut, streetFut, lonFut, latFut, countryFut;
-
-// we can describe a functional effect that will return a Json
 
 var future = JsObjFuture.of("name", () -> nameFut,
                             "age", () -> ageFut,
@@ -156,8 +152,6 @@ var future = JsObjFuture.of("name", () -> nameFut,
                                                       )
                             );
 
-// and then execute it
-
 CompletableFuture<JsObj> completableFuture = future.get();
 
 ```
@@ -168,8 +162,6 @@ We can even create suppliers:
 //given some suppliers
 
 Supplier<JsValue> name, age, languages, handle, profession, street, lon, lat, country;
-
-// we can describe a functional effect that will return a Json
 
 var supplier = JsObjSupplier.of("name", name,
                                 "age", age,
@@ -193,31 +185,29 @@ We can use optics to put data in and get data out in a composable and concise wa
 defined for every json type.
 
 ```
-//let's define some optics to manipulate person Jsons
+Lens<JsObj,String> nameLens = JsObj.lens.str("name");
+Lens<JsObj,Integer> ageLens = JsObj.lens.intNum("age");
+Lens<JsObj,JsArray>   languagesLens = JsObj.lens.array("languages");
+Option<JsObj, String> githubOpt     = JsObj.optional.str("name");
+Lens<JsObj,String>    cityLens      = JsObj.lens.str(path("/address/city"));
+Lens<JsObj,Double> latitudeLens = JsObj.lens.doubleNum(path("/address/location/0"));
+Lens<JsObj,Double> longitudeLens = JsObj.lens.doubleNum(path("/address/location/1"));
+Lens<JsObj,JsValue> countryLens = JsObj.lens.value(path("/address/country"));
 
-var nameLens = JsObj.lens.str("name");
-var ageLens = JsObj.lens.intNum("age");
-var languagesLens = JsObj.lens.array("languages");
-var githubOpt = JsObj.optional.str("name");
-var cityLens = JsObj.lens.str(path("/address/city"));
-var latitudeLens = JsObj.lens.doubleNum(path("/address/location/0"));
-var longitudeLens = JsObj.lens.doubleNum(path("/address/location/1"));
-var countryLens = JsObj.lens.value(path("/address/country"));
+Function<Integer,Function<JsObj,JsObj>> incAge =
+                    i -> ageLens.modify.apply(n -> n+i);
+Function<String,Function<JsObj,JsObj>> addLanguage =
+                    lan -> languagesLens.modify.apply(a -> a.append(JsStr.of(lan)));
+Function<Function<Double,Double>,Function<JsObj,JsObj>> modifyLatitude = latitudeLens.modify::apply;
+Function<Function<Double,Double>,Function<JsObj,JsObj>> modifyLongitude = longitudeLens.modify::apply;
+Function<String,Function<JsObj,JsObj>> setCountry = c -> countryLens.set.apply(JsStr.of(c));
+Function<String,Function<JsObj,JsObj>> setName = nameLens.set::apply;
 
-// it's all about composition, expresiveness and error free code with no ceremony!
-
-var incAge = i -> ageLens.modify.apply(n -> n+i);
-var addLanguage = lan -> languagesLens.modify.apply(a -> a.append(lan));
-var modifyLatitude = fn -> latitudLens.modify.apply(fn);
-var modifyLongitude = fn -> longitudeLens.modify.apply(fn);
-var setCountry = c -> countryLens.set.apply(c)
-var setName = n -> nameLens.set.apply(n)
-
-var fn = setName.apply("Philip").andThen(incAge.apply(1))
-                                .andThen(addLanguage.apply("Lisp"))
-                                .andThen(setCountry.apply("ES"))
-                                .andThen(modifyLatitude.apply(l -> l + 0.5))
-                                .andThen(modifyLongitude.apply(l -> l + 0.8));
+Function<JsObj,JsObj> fn = setName.apply("Philip").andThen(incAge.apply(1))
+                                  .andThen(addLanguage.apply("Lisp"))
+                                  .andThen(setCountry.apply("ES"))
+                                  .andThen(modifyLatitude.apply(l -> l + 0.5))
+                                  .andThen(modifyLongitude.apply(l -> l + 0.8));
 
 var newPerson =  fn.apply(person);
 
