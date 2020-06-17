@@ -1,7 +1,11 @@
 # JSON-VALUES
-## v8.0.0  ( Thu Jun 11 2020 22:51:35 GMT+0200 (Central European Summer Time) )
+## v8.0.1  ( Wed Jun 17 2020 23:12:43 GMT+0200 (Central European Summer Time) )
 
-Brand-new release with a lot of break changes. A lot of methods have been removed. We'll manipulate
-Jsons with optics.
+
+## Features
+  - 🎸 set with padding
+  ([713823ad](https://github.com/imrafaelmerino/json-values/commit/713823adab0f3a769748b122a514048de64ae61a))
+
+
 
 
