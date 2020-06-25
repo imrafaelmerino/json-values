@@ -1,10 +1,9 @@
 # JSON-VALUES
-## v8.0.1  ( Wed Jun 17 2020 23:12:43 GMT+0200 (Central European Summer Time) )
+## v8.0.2  ( Thu Jun 25 2020 22:54:24 GMT+0200 (Central European Summer Time) )
 
 
-## Features
-  - 🎸 set with padding
-  ([713823ad](https://github.com/imrafaelmerino/json-values/commit/713823adab0f3a769748b122a514048de64ae61a))
+## Feature
+  - Optionals and Lenses can be composed
 
 
 
