@@ -60,6 +60,12 @@ public class Lens<S, O> {
   }
 
 
+    /**
+     Composing a Lens and a Prism returns and Optional
+     @param prism A Prism from the focus of the lens to the new focus of the Optional
+     @param <T> the type of the new focus of the Optional
+     @return an Optional
+     */
   public <T> Option<S, T> compose(final Prism<O, T> prism) {
         return new Option<>(json -> requireNonNull(prism).getOptional.apply(get.apply(json)),
                             value -> json -> set.apply(prism.reverseGet.apply(value))
@@ -67,6 +73,22 @@ public class Lens<S, O> {
         );
 
 
+    }
+
+    /**
+     Compose this lens with another one
+     @param other the other lens
+     @param <B> the type of the focus on the new lens
+     @return a new Lens
+     */
+    public <B> Lens<S,B> compose(final Lens<O,B> other){
+
+      return new Lens<>(this.get.andThen(other.get),
+                           b-> s -> {
+                               O o = other.set.apply(b).apply(this.get.apply(s));
+                               return this.set.apply(o).apply(s);
+                           }
+      );
     }
 
 }

@@ -46,6 +46,19 @@ public class Option<S, T> {
         };
     }
 
+
+    public <F> Option<S,F> compose(final Option<T,F> other){
+        return new Option<>(s -> {
+            Optional<T> t = this.get.apply(s);
+            if(t.isPresent()) return other.get.apply(t.get());
+            else return Optional.empty();
+        }, f -> s -> {
+            Optional<T> t = this.get.apply(s);
+            if(t.isPresent()) return this.set.apply(other.set.apply(f).apply(t.get())).apply(s);
+            else return s;
+        });
+    }
+
 }
 
 

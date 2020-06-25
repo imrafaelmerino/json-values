@@ -21,7 +21,6 @@
 - [Develop](#develop)
 - [Related projects](#rp)
 
-
 ## <a name="introduction"><a/> Introduction
 Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures.
 
@@ -180,41 +179,11 @@ JsObj obj = supplier.get();
 
 ```
 
+I've written about json-values on my [blog](http://blog.imrafaelmerino.dev):
+* [The value of json values - Recursive data structures](http://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-recursive-data.html)
+* [The value of json values - Optics](https://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-optics.html)
 
-We can use optics to put data in and get data out in a composable and concise way.Lenses, Optionals, and Prism have been
-defined for every json type.
 
-```
-Lens<JsObj,String> nameLens = JsObj.lens.str("name");
-Lens<JsObj,Integer> ageLens = JsObj.lens.intNum("age");
-Lens<JsObj,JsArray>   languagesLens = JsObj.lens.array("languages");
-Option<JsObj, String> githubOpt     = JsObj.optional.str("name");
-Lens<JsObj,String>    cityLens      = JsObj.lens.str(path("/address/city"));
-Lens<JsObj,Double> latitudeLens = JsObj.lens.doubleNum(path("/address/location/0"));
-Lens<JsObj,Double> longitudeLens = JsObj.lens.doubleNum(path("/address/location/1"));
-Lens<JsObj,JsValue> countryLens = JsObj.lens.value(path("/address/country"));
-
-Function<Integer,Function<JsObj,JsObj>> incAge =
-                    i -> ageLens.modify.apply(n -> n+i);
-Function<String,Function<JsObj,JsObj>> addLanguage =
-                    lan -> languagesLens.modify.apply(a -> a.append(JsStr.of(lan)));
-Function<Function<Double,Double>,Function<JsObj,JsObj>> modifyLatitude = latitudeLens.modify::apply;
-Function<Function<Double,Double>,Function<JsObj,JsObj>> modifyLongitude = longitudeLens.modify::apply;
-Function<String,Function<JsObj,JsObj>> setCountry = c -> countryLens.set.apply(JsStr.of(c));
-Function<String,Function<JsObj,JsObj>> setName = nameLens.set::apply;
-
-Function<JsObj,JsObj> fn = setName.apply("Philip").andThen(incAge.apply(1))
-                                  .andThen(addLanguage.apply("Lisp"))
-                                  .andThen(setCountry.apply("ES"))
-                                  .andThen(modifyLatitude.apply(l -> l + 0.5))
-                                  .andThen(modifyLongitude.apply(l -> l + 0.8));
-
-var newPerson =  fn.apply(person);
-
-```
-
-This is just a quick intro, but I'd like to highlight that generators, specs and optics are really powerful and composable.
-Furthermore, any spec can be defined in terms of predicates, which allows you to define any imaginable validation.
 
 ## <a name="notwhatfor"><a/> When not to use it
 **json-values** fits well in _pure_ OOP and incredibly well in FP, but NOT in _EOOP_, which stands for
@@ -235,10 +204,7 @@ Add the following dependency to your building tool:
 
 ## <a name="wth"><a/> Want to help
 I've set up a separate document for [contributors](./CONTRIBUTING.md).
-## <a name="develop"><a/> Develop
-I've set up a separate document for [developers](./developers.md). Things like why json-values is a one-package library, if it was developed using TDD or anything related to the
-development of the library can be found there. I'll be adding little by little more and more
-information.
+
 ## <a name="rp"><a/> Related projects
 “Ideas are like rabbits. You get a couple and learn how to handle them, and pretty soon you have a dozen.” – John Steinbeck
 
@@ -250,7 +216,4 @@ whole wide world! If I'm wrong, please let me know!
 
 json-values uses the persistent data structures from [vavr](https://www.vavr.io/), [Jackson](https://github.com/FasterXML/jackson) to parse a string/bytes into
 a stream of tokens and [dsl-sjon](https://github.com/ngs-doo/dsl-json) to parse a string/bytes given a spec.
-
-I've written about json-values on my blog:
-* [The value of json values - Recursive data structures](http://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-recursive-data.html)
 
