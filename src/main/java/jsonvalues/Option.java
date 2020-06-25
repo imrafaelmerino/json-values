@@ -47,6 +47,12 @@ public class Option<S, T> {
     }
 
 
+    /**
+     compose this optional with the given as parameter
+     @param other the other optional
+     @param <F> the type of the focus
+     @return a new optional
+     */
     public <F> Option<S,F> compose(final Option<T,F> other){
         return new Option<>(s -> {
             Optional<T> t = this.get.apply(s);
