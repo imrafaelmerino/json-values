@@ -1042,9 +1042,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
             JsonToken keyEvent = parser.nextToken();
             if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
-            return new JsObj(JsObj.parse(parser
-                                        )
-            );
+            return new JsObj(JsObj.parse(parser));
         } catch (IOException e) {
             throw new MalformedJson(e.getMessage());
         }
@@ -1563,8 +1561,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         if (thisEmpty != thatEmpty) return false;
 
         return keySet().stream()
-                       .allMatch(f ->
-                                         thatMap.map.get(f)
+                       .allMatch(f -> thatMap.map.get(f)
                                                     .map(it -> it.equals(map.get(f)
                                                                             .get())
                                                         )
@@ -1574,7 +1571,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     /**
-     // Single-check idiom  Item 83 from effective java
+     // Single-check idiom Item 83 from effective java
      */
     public final String toString() {
         String result = str;

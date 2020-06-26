@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Person",
+  "type": "object",
+  "properties": {
+    "firstName": {
+      "type": "string",
+      "description": "The person's first name."
+    },
+    "lastName": {
+      "type": "string",
+      "description": "The person's last name."
+    },
+    "age": {
+      "description": "Age in years which must be equal to or greater than zero.",
+      "type": "integer",
+      "minimum": 0
+    },
+    "latitude": {
+      "type": "number",
+      "minimum": -90,
+      "maximum": 90
+    },
+    "longitude": {
+      "type": "number",
+      "minimum": -180,
+      "maximum": 180
+    },
+    "fruits": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "numbers": {
+      "type": "array",
+      "items": {
+        "type": "integer"
+      }
+    },
+    "vegetables": {
+      "type": "array",
+      "items": {
+        "$ref": "#/definitions/veggie"
+      }
+    }
+  },
+  "definitions": {
+    "veggie": {
+      "type": "object",
+      "required": [
+        "veggieName",
+        "veggieLike"
+      ],
+      "properties": {
+        "veggieName": {
+          "type": "string",
+          "description": "The name of the vegetable"
+        },
+        "veggieLike": {
+          "type": "boolean",
+          "description": "Do I like this vegetable?"
+        }
+      }
+    }
+  }
+}

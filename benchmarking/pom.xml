@@ -3,27 +3,26 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values-benchmark</artifactId>
-    <version>1.0</version>
+    <version>${JSON-VALUES.VERSION}</version>
     <packaging>jar</packaging>
     <name>json-values-benchmark</name>
     <properties>
-        <ECLIPSE-COLLECTIONS.VERSION>10.0.0</ECLIPSE-COLLECTIONS.VERSION>
-        <VAVR.VERSION>1.0.0-alpha-3</VAVR.VERSION>
-        <JSON-VALUES.VERSION>8.0.0-RC2</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>8.0.2</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <JMH-VERSION>1.21</JMH-VERSION>
-        <JUNIT-VERSION>5.5.2</JUNIT-VERSION>
+        <JMH-VERSION>1.23</JMH-VERSION>
         <JAVAX-ANNOTATION-VERSION>1.3.2</JAVAX-ANNOTATION-VERSION>
         <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
         <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
-        <JACKSON-VERSION>2.11.0</JACKSON-VERSION>
+        <JACKSON-VERSION>2.11.1</JACKSON-VERSION>
+        <JSON-SCHEMA-VALIDATOR.VERSION>2.2.14</JSON-SCHEMA-VALIDATOR.VERSION>
+        <JUSTIFY.VERSION>2.1.0</JUSTIFY.VERSION>
     </properties>
     <dependencies>
       <dependency>
         <groupId>org.leadpony.justify</groupId>
         <artifactId>justify</artifactId>
-        <version>2.0.0</version>
+        <version>${JUSTIFY.VERSION}</version>
       </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
@@ -33,7 +32,7 @@
       <dependency>
         <groupId>com.github.java-json-tools</groupId>
         <artifactId>json-schema-validator</artifactId>
-        <version>2.2.11</version>
+        <version>${JSON-SCHEMA-VALIDATOR.VERSION}</version>
       </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
@@ -50,22 +49,23 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>${JAVAX-ANNOTATION-VERSION}</version>
         </dependency>
-        <dependency>
-            <groupId>com.github.imrafaelmerino</groupId>
-            <artifactId>json-values</artifactId>
-            <version>${JSON-VALUES.VERSION}</version>
-        </dependency>
-        <!-- https://mvnrepository.com/artifact/org.junit.jupiter/junit-jupiter-api -->
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>${JUNIT-VERSION}</version>
-            <scope>test</scope>
-        </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
             <version>${JACKSON-VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.imrafaelmerino</groupId>
+            <artifactId>json-values</artifactId>
+            <version>8.0.2</version>
+            <scope>compile</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.fasterxml.jackson.core</groupId>
+                    <artifactId>jackson-databind</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
     </dependencies>
     <build>
@@ -104,7 +104,7 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
-                            <finalName>json-values-benchmark</finalName>
+                            <finalName>json-values-benchmark-${version}</finalName>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.openjdk.jmh.Main</mainClass>
