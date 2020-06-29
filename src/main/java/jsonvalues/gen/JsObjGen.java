@@ -2,7 +2,9 @@ package jsonvalues.gen;
 
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.LinkedHashMap;
 import io.vavr.collection.Map;
+import io.vavr.collection.TreeMap;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
@@ -15,7 +17,7 @@ import java.util.function.Supplier;
  */
 public class JsObjGen implements JsGen<JsObj> {
 
-    private Map<String, JsGen<?>> bindings = HashMap.empty();
+    private Map<String, JsGen<?>> bindings = LinkedHashMap.empty();
 
     private JsObjGen(final Map<String, JsGen<?>> bindings) {
         this.bindings = bindings;

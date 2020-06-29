@@ -4,16 +4,19 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.Tuple2;
-import io.vavr.collection.HashMap;
+import io.vavr.collection.LinkedHashMap;
+import io.vavr.collection.Map;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.*;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.*;
 import java.util.stream.Stream;
-
 import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
@@ -32,7 +35,7 @@ import static jsonvalues.Trampoline.more;
  Java HashMap.
  */
 public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
-    public static final JsObj EMPTY = new JsObj(HashMap.empty());
+    public static final JsObj EMPTY = new JsObj(LinkedHashMap.empty());
     /**
      lenses defined for a Json object
      */
@@ -51,7 +54,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     @SuppressWarnings("squid:S3008")//EMPTY should be a valid name
     private static final JsPath EMPTY_PATH = JsPath.empty();
     private static final int ID = 3;
-    private final HashMap<String, JsValue> map;
+    private final Map<String, JsValue> map;
     private volatile int hascode;
     //squid:S3077: doesn't make any sese, volatile is perfectly valid here an as a matter of fact
     //is a recomendation from Efective Java to apply the idiom single check for lazy initialization
@@ -60,9 +63,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     private volatile String str;
 
     public JsObj(){
-        this.map = HashMap.empty();
+        this.map = LinkedHashMap.empty();
     }
-    JsObj(final HashMap<String, JsValue> myMap) {
+    JsObj(final Map<String, JsValue> myMap) {
         this.map = myMap;
     }
 
@@ -1019,9 +1022,9 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
-    public static JsObj ofIterable(final Iterable<Map.Entry<String, JsValue>> xs) {
+    public static JsObj ofIterable(final Iterable<java.util.Map.Entry<String, JsValue>> xs) {
         JsObj acc = JsObj.EMPTY;
-        for (Map.Entry<String, JsValue> x : requireNonNull(xs)) {
+        for (java.util.Map.Entry<String, JsValue> x : requireNonNull(xs)) {
 
             acc = acc.set(JsPath.fromKey(x.getKey()),
                           x.getValue()
@@ -1048,8 +1051,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         }
     }
 
-    static HashMap<String, JsValue> parse(final JsonParser parser) throws IOException {
-        HashMap<String, JsValue> map = HashMap.empty();
+    static Map<String, JsValue> parse(final JsonParser parser) throws IOException {
+        Map<String, JsValue> map = LinkedHashMap.empty();
         String                   key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
             JsValue elem;
@@ -1676,7 +1679,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     @SuppressWarnings("squid:S1602")
     private
         // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsValue> pmap) {
+    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final Map<String, JsValue> pmap) {
         return (head, tail) ->
         {
             return (!pmap.containsKey(head) || !pmap.get(head)

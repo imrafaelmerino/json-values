@@ -7,7 +7,7 @@
     <packaging>jar</packaging>
     <name>json-values-benchmark</name>
     <properties>
-        <JSON-VALUES.VERSION>8.0.2</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>8.1.0-RC1</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <JMH-VERSION>1.23</JMH-VERSION>
         <JAVAX-ANNOTATION-VERSION>1.3.2</JAVAX-ANNOTATION-VERSION>
@@ -19,21 +19,21 @@
         <JUSTIFY.VERSION>2.1.0</JUSTIFY.VERSION>
     </properties>
     <dependencies>
-      <dependency>
-        <groupId>org.leadpony.justify</groupId>
-        <artifactId>justify</artifactId>
-        <version>${JUSTIFY.VERSION}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.glassfish</groupId>
-        <artifactId>javax.json</artifactId>
-        <version>1.1.4</version>
-      </dependency>
-      <dependency>
-        <groupId>com.github.java-json-tools</groupId>
-        <artifactId>json-schema-validator</artifactId>
-        <version>${JSON-SCHEMA-VALIDATOR.VERSION}</version>
-      </dependency>
+        <dependency>
+            <groupId>org.leadpony.justify</groupId>
+            <artifactId>justify</artifactId>
+            <version>${JUSTIFY.VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.json</artifactId>
+            <version>1.1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.java-json-tools</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>${JSON-SCHEMA-VALIDATOR.VERSION}</version>
+        </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
@@ -49,7 +49,6 @@
             <artifactId>javax.annotation-api</artifactId>
             <version>${JAVAX-ANNOTATION-VERSION}</version>
         </dependency>
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -106,7 +105,8 @@
                         <configuration>
                             <finalName>json-values-benchmark-${version}</finalName>
                             <transformers>
-                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                <transformer
+                                        implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>org.openjdk.jmh.Main</mainClass>
                                 </transformer>
                             </transformers>

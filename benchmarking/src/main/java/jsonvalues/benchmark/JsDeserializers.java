@@ -1,6 +1,8 @@
 package jsonvalues.benchmark;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.networknt.schema.JsonSchema;
+import com.networknt.schema.JsonSchemaFactory;
 import jsonvalues.JsObj;
 import jsonvalues.spec.JsObjParser;
 import org.openjdk.jmh.annotations.*;
@@ -16,8 +18,6 @@ import static jsonvalues.benchmark.Conf.PERSON_SPEC;
 @BenchmarkMode(Mode.Throughput)
 @State(Scope.Benchmark)
 public class JsDeserializers {
-
-
 
     private final static ObjectMapper objectMapper = new ObjectMapper();
 
@@ -37,4 +37,5 @@ public class JsDeserializers {
     public void json_values(Blackhole bh) {
         bh.consume(JsObj.parse(PERSON_JSON));
     }
+
 }

@@ -3,10 +3,7 @@ package jsonvalues.spec;
 import com.dslplatform.json.parsers.JsSpecParser;
 import com.dslplatform.json.parsers.JsSpecParsers;
 import io.vavr.Tuple2;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.Map;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
+import io.vavr.collection.*;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
@@ -30,7 +27,7 @@ public class JsObjSpec implements JsSpec {
      */
     private final boolean required;
     private final boolean nullable;
-    Map<String, JsSpec> bindings = HashMap.empty();
+    Map<String, JsSpec> bindings = LinkedHashMap.empty();
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
                       boolean required,

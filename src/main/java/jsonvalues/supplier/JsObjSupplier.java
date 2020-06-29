@@ -2,6 +2,7 @@ package jsonvalues.supplier;
 
 import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
+import io.vavr.collection.LinkedHashMap;
 import io.vavr.collection.Map;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
@@ -15,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 public class JsObjSupplier implements Supplier<JsObj> {
 
 
-    private Map<String, Supplier<? extends JsValue>> bindings = HashMap.empty();
+    private Map<String, Supplier<? extends JsValue>> bindings = LinkedHashMap.empty();
 
     @Override
     public JsObj get() {
