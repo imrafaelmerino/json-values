@@ -6,7 +6,7 @@
 [![Commitizen friendly](https://img.shields.io/badge/commitizen-friendly-brightgreen.svg)](http://commitizen.github.io/cz-cli/)
 
 [![Javadocs](https://www.javadoc.io/badge/com.github.imrafaelmerino/json-values.svg)](https://www.javadoc.io/doc/com.github.imrafaelmerino/json-values)
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/8.0.2)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/8.0.2/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/8.1.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/8.1.0/jar)
 [![](https://jitpack.io/v/imrafaelmerino/json-values.svg)](https://jitpack.io/#imrafaelmerino/json-values)
 
 [![Gitter](https://badges.gitter.im/json-values/community.svg)](https://gitter.im/json-values/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -86,34 +86,35 @@ var person = JsObj.of("name", JsStr.of("Rafael"),
                         );
 
 // defining a json spec. strict means: keys different than the specified are not allowed
+var addressSpec=JsObjSpec.lenient("city", JsSpecs.str,
+                                  "country",JsSpecs.str.optional().nullable()
+                                  "location", JsSpecs.tuple(JsSpecs.decimal,
+                                                            JsSpecs.decimal
+                                                           )
+                                 );
 
 var spec = JsObjSpec.strict("name", JsSpecs.str,
                             "age", JsSpecs.integer(n-> n>15 && n<100),
                             "languages", JsSpecs.arrayOfStr,
                             "github", JsSpecs.str.optional(),
                             "profession", JsSpecs.str.nullable(),
-                            "address", JsObjSpec.lenient("city", JsSpecs.str,
-                                                         "location", JsSpecs.tuple(JsSpecs.decimal,
-                                                                                   JsSpecs.decimal
-                                                                                   ),
-                                                         "country",JsSpecs.str.optional().nullable()
-                                                         )
+                            "address", addressSpec
                            );
 
 // defining a json generator
-
+var addressGen = JsObjGen.of("city", JsGens.oneOf(cities),
+                             "country",JsGens.oneOf(countries).optional().nullable(),
+                             "location", JsGens.tuple(JsGens.decimal,
+                                                      JsGens.decimal
+                                                     )
+                            );
 var gen = JsObjGen.of("name", JsGens.alphabetic,
                       "age",  JsGens.choose(18,100),
                       "languages", JsGens.arrayOf(JsGens.str,10),
                       "github", JsGens.alphanumeric.optional(),
                       "profession", JsGens.oneOf(professions).nullable(),
-                      "address", JsObjGen.of("city", JsGens.oneOf(cities),
-                                             "location", JsGens.tuple(JsGens.decimal,
-                                                                      JsGens.decimal
-                                                                      ),
-                                             "country",JsGens.oneOf(countries).optional().nullable()
-                                             )
-                      );
+                      "address", addressGen
+                     );
 
 // if the object doesn't conform the spec, the errors and their locations are returned in a set
 
@@ -134,7 +135,8 @@ var b = parser.parse(jsonStr);
 We can create futures as well following the same philosophy:
 
 ```
-CompletableFuture<JsValue> nameFut, ageFut, languagesFut, handleFut, professionFut, streetFut, lonFut, latFut, countryFut;
+CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut,;
+CompletableFuture<JsValue> professionFut, streetFut, lonFut, latFut, countryFut;
 
 var future = JsObjFuture.of("name", () -> nameFut,
                             "age", () -> ageFut,
@@ -158,7 +160,8 @@ We can even create suppliers:
 ```
 //given some suppliers
 
-Supplier<JsValue> name, age, languages, handle, profession, street, lon, lat, country;
+Supplier<JsValue> name, age, languages, handle;
+Supplier<JsValue> profession, street, lon, lat, country;
 
 var supplier = JsObjSupplier.of("name", name,
                                 "age", age,
@@ -196,7 +199,7 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>8.0.2</version>
+  <version>8.1.0</version>
 </dependency>
 ```
 
