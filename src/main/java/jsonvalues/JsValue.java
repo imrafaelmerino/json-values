@@ -39,6 +39,28 @@ public interface JsValue {
     }
 
     /**
+     @return true if this JsValue is a JsBinary
+     */
+    default boolean isBinary() {
+        return false;
+    }
+
+    /**
+     @return true if this JsValue is a JsInstant
+     */
+    default boolean isInstant() {
+        return false;
+    }
+
+
+    /**
+     @return true if this JsValue is a JsInstant that satisfies the given predicate
+     */
+    default boolean isInstant(Predicate<Instant> predicate) {
+        return isInstant() && predicate.test(this.toJsInstant().value);
+    }
+
+    /**
      @return true if this JsValue is a JsBool
      */
     default boolean isBool() {
@@ -95,6 +117,31 @@ public interface JsValue {
             return ((JsInt) this);
         } catch (ClassCastException e) {
             throw UserError.isNotAJsInt(this);
+        }
+    }
+
+    /**
+     @return this JsValue as a JsInt
+     @throws UserError if this JsValue is not a JsInt
+     */
+    default JsInstant toJsInstant() {
+        try {
+            return ((JsInstant) this);
+        } catch (ClassCastException e) {
+            throw UserError.isNotAJsInstant(this);
+        }
+    }
+
+
+    /**
+     @return this JsValue as a JsBinary
+     @throws UserError if this JsValue is not a JsBinary
+     */
+    default JsBinary toJsBinary() {
+        try {
+            return ((JsBinary) this);
+        } catch (ClassCastException e) {
+            throw UserError.isNotAJsBinary(this);
         }
     }
 
@@ -327,20 +374,6 @@ public interface JsValue {
         }
     }
 
-    /**
-     @return true if this JsValue is a JsStr that contains an instant in the format {@link DateTimeFormatter#ISO_INSTANT}
-     */
-    default boolean isInstant() {
-        return isStr(str ->
-                     {
-                         try {
-                             Instant.parse(str);
-                             return true;
-                         } catch (Exception e) {
-                             return false;
-                         }
-                     });
-    }
 
     /**
      Returns true if this elem is a JsStr and satisfies the given predicate
@@ -369,129 +402,6 @@ public interface JsValue {
         } catch (ClassCastException e) {
             throw UserError.isNotAJsString(this);
         }
-    }
-
-    /**
-     Returns true if this elem is a JsStr that contains an Instant and  satisfies the given predicate
-
-     @param predicate the given predicate
-     @return true if this JsValue is a JsStr that contains an Instant and satisfies the predicate
-     */
-    default boolean isInstant(Predicate<Instant> predicate) {
-        return isStr(str ->
-                     {
-                         try {
-                             final Instant instant = Instant.parse(str);
-                             return predicate.test(instant);
-                         } catch (DateTimeParseException e) {
-                             return false;
-                         }
-
-
-                     });
-    }
-
-    /**
-     return true if this JsValue is a JsStr that contains a local date that can be parsed with the given formatter
-
-     @param formatter the given formatter
-     @return true if this JsValue is a JsStr that contains a local date that can be parsed with the given formatter
-     */
-    default boolean isLocalDate(DateTimeFormatter formatter) {
-        requireNonNull(formatter);
-        return isStr(str ->
-                     {
-                         try {
-                             LocalDate.parse(str,
-                                             formatter
-                                            );
-                             return true;
-                         } catch (Exception e) {
-                             return false;
-                         }
-                     }
-                    );
-    }
-
-    /**
-     return true if this JsValue is a JsStr that contains a local date that can be parsed with the given formatter
-     and satisfies the given predicate
-
-     @param formatter the given formatter
-     @param predicate the given predicate
-     @return true if this JsValue is a JsStr that contains a local date that can be parsed with the formatter
-     and satisfies the  predicate
-     */
-    default boolean isLocalDate(DateTimeFormatter formatter,
-                                Predicate<LocalDate> predicate
-                               ) {
-        requireNonNull(formatter);
-        requireNonNull(predicate);
-        return isStr(str ->
-                     {
-                         try {
-                             final LocalDate localDate = LocalDate.parse(str,
-                                                                         formatter
-                                                                        );
-                             return predicate.test(localDate);
-                         } catch (DateTimeParseException e) {
-                             return false;
-                         }
-
-
-                     });
-
-    }
-
-    /**
-     return true if this JsValue is a JsStr that contains a local date-time that can be parsed with the given formatter
-
-     @param formatter the given formatter
-     @return true if this JsValue is a JsStr that contains a local date-time that can be parsed with the given formatter
-     */
-    default boolean isLocalDateTime(DateTimeFormatter formatter) {
-        requireNonNull(formatter);
-        return isStr(str ->
-                     {
-                         try {
-                             LocalDateTime.parse(str,
-                                                 formatter
-                                                );
-                             return true;
-                         } catch (Exception e) {
-                             return false;
-                         }
-
-                     });
-    }
-
-    /**
-     return true if this JsValue is a JsStr that contains a local date-time that can be parsed with the given formatter
-     and satisfies the given predicate
-
-     @param formatter the given formatter
-     @param predicate the given predicate
-     @return true if this JsValue is a JsStr that contains a local date-time that can be parsed with the formatter
-     and satisfies the  predicate
-     */
-    default boolean isLocalDateTime(DateTimeFormatter formatter,
-                                    Predicate<LocalDateTime> predicate
-                                   ) {
-        requireNonNull(formatter);
-        requireNonNull(predicate);
-        return isStr(str ->
-                     {
-                         try {
-                             final LocalDateTime ldt = LocalDateTime.parse(str,
-                                                                           formatter
-                                                                          );
-                             return predicate.test(ldt);
-                         } catch (DateTimeParseException e) {
-                             return false;
-                         }
-
-
-                     });
     }
 
     /**

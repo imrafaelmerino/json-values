@@ -8,6 +8,7 @@ import jsonvalues.spec.Error;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.*;
 
@@ -666,6 +667,46 @@ public class JsSpecParsers {
                                                                         );
     }
 
+    public JsSpecParser ofBinary(boolean nullable) {
+        return getParser(PARSERS.binaryParser,
+                         nullable
+                        );
+    }
+
+    public JsSpecParser ofBinarySuchThat(Function<byte[], Optional<Error>> predicate,
+                                         boolean nullable
+                                        ) {
+
+        if (nullable) return reader ->
+        {
+            JsValue value = PARSERS.binaryParser.nullOrValue(reader);
+            if (value == JsNull.NULL) return value;
+            else {
+                testTypeAndSpec(v -> value.isBinary(),
+                                v -> v.toJsBinary().value,
+                                predicate::apply,
+                                () -> new IllegalStateException("JsBinaryDeserializer.nullOrValue didn't return neither null or a byte[] as expected.")
+                               ).apply(value)
+                                .ifPresent(e -> newParseException.apply(reader,
+                                                                        e
+                                                                       )
+                                          );
+
+                return value;
+            }
+
+        };
+        else return reader ->
+        {
+            JsBinary              value  = PARSERS.binaryParser.value(reader);
+            final Optional<Error> result = predicate.apply(value.value);
+            if (!result.isPresent()) return value;
+            else throw newParseException.apply(reader,
+                                               result.get()
+                                              );
+
+        };
+    }
 
     public JsSpecParser ofInt(boolean nullable) {
         return getParser(PARSERS.intParser,
@@ -709,4 +750,44 @@ public class JsSpecParsers {
     }
 
 
+    public JsSpecParser ofInstant(boolean nullable) {
+        return getParser(PARSERS.instantParser,
+                         nullable
+                        );
+    }
+
+    public JsSpecParser ofInstantSuchThat(Function<Instant, Optional<Error>> predicate,
+                                          boolean nullable
+                                         ) {
+
+        if (nullable) return reader ->
+        {
+            JsValue value = PARSERS.instantParser.nullOrValue(reader);
+            if (value == JsNull.NULL) return value;
+            else {
+                testTypeAndSpec(v -> value.isInstant(),
+                                v -> v.toJsInstant().value,
+                                predicate::apply,
+                                () -> new IllegalStateException("JsInstantDeserializer.nullOrValue didn't return neither null or an instant as expected.")
+                               ).apply(value)
+                                .ifPresent(e -> newParseException.apply(reader,
+                                                                        e
+                                                                       )
+                                          );
+
+                return value;
+            }
+
+        };
+        else return reader ->
+        {
+            JsInstant             value  = PARSERS.instantParser.value(reader);
+            final Optional<Error> result = predicate.apply(value.value);
+            if (!result.isPresent()) return value;
+            else throw newParseException.apply(reader,
+                                               result.get()
+                                              );
+
+        };
+    }
 }

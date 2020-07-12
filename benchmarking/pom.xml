@@ -17,6 +17,9 @@
         <JACKSON-VERSION>2.11.1</JACKSON-VERSION>
         <JSON-SCHEMA-VALIDATOR.VERSION>2.2.14</JSON-SCHEMA-VALIDATOR.VERSION>
         <JUSTIFY.VERSION>2.1.0</JUSTIFY.VERSION>
+        <VALIDATION-API.VERSION>2.0.1.Final</VALIDATION-API.VERSION>
+        <HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>6.1.5.Final</HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>
+        <HIBERNATE-VALIDATOR.VERSION>6.0.2.Final</HIBERNATE-VALIDATOR.VERSION>
     </properties>
     <dependencies>
         <dependency>
@@ -33,6 +36,26 @@
             <groupId>com.github.java-json-tools</groupId>
             <artifactId>json-schema-validator</artifactId>
             <version>${JSON-SCHEMA-VALIDATOR.VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${VALIDATION-API.VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${HIBERNATE-VALIDATOR.VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator-annotation-processor</artifactId>
+            <version>${HIBERNATE-VALIDATOR.VERSION}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>javax.el</artifactId>
+            <version>3.0.1-b11</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

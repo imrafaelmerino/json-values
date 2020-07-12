@@ -6,7 +6,7 @@
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
-    <version>8.1.0</version>
+    <version>8.2.0</version>
 
   <name>json-values</name>
     <description>json-values is a functional Java library to work with immutable jsons using persistent data structures.</description>
@@ -37,14 +37,14 @@
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
         <PLUGIN_SCALA_VERSION>4.0.1</PLUGIN_SCALA_VERSION>
         <PLUGIN_SCALA_TEST_VERSION>2.0.0</PLUGIN_SCALA_TEST_VERSION>
-        <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
-        <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
+        <COMPILER_SOURCE_VERSION>8</COMPILER_SOURCE_VERSION>
+        <COMPILER_TARGET_VERSION>8</COMPILER_TARGET_VERSION>
         <sonar.projectKey>json-values</sonar.projectKey>
         <JACOCO-MAVEN-PLUGIN.VERSION>0.8.4</JACOCO-MAVEN-PLUGIN.VERSION>
         <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
         <MAVEN-GPG-PLUGIN.VERSION>1.6</MAVEN-GPG-PLUGIN.VERSION>
         <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.8</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
-        <MAVEN-JAVADOC-PLUGIN.VERSION>3.1.1</MAVEN-JAVADOC-PLUGIN.VERSION>
+        <MAVEN-JAVADOC-PLUGIN.VERSION>3.2.0</MAVEN-JAVADOC-PLUGIN.VERSION>
         <MAVEN-SUREFIRE-PLUGIN.VERSION>2.22.0</MAVEN-SUREFIRE-PLUGIN.VERSION>
         <dsl-json.version>1.9.5</dsl-json.version>
         <vavr.version>0.10.3</vavr.version>
@@ -55,12 +55,12 @@
         <artifactId>vavr</artifactId>
         <version>${vavr.version}</version>
       </dependency>
-        <dependency>
+       <!-- <dependency>
             <groupId>org.scalacheck</groupId>
             <artifactId>scalacheck_2.12</artifactId>
             <version>${DEPENDENCY_SCALA_CHECK_VERSION}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <!-- https://mvnrepository.com/artifact/com.dslplatform/dsl-json -->
         <dependency>
             <groupId>com.dslplatform</groupId>
@@ -74,18 +74,18 @@
             <artifactId>jackson-core</artifactId>
             <version>${JACKSON-VERSION}</version>
         </dependency>
-        <dependency>
+      <!--  <dependency>
             <groupId>org.scalatest</groupId>
             <artifactId>scalatest_2.12</artifactId>
             <version>${DEPENDENCY_SCALA_TEST_VERSION}</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
+        </dependency>-->
+       <!-- <dependency>
             <groupId>org.scala-lang</groupId>
             <artifactId>scala-library</artifactId>
             <version>${DEPENDENCY_SCALA_VERSION}</version>
             <scope>test</scope>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -109,7 +109,7 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
-            <plugin>
+          <!--  <plugin>
                 <groupId>net.alchim31.maven</groupId>
                 <artifactId>scala-maven-plugin</artifactId>
                 <version>${PLUGIN_SCALA_VERSION}</version>
@@ -126,7 +126,7 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -136,7 +136,7 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
-            <plugin>
+           <!-- <plugin>
                 <groupId>org.scalatest</groupId>
                 <artifactId>scalatest-maven-plugin</artifactId>
                 <version>${PLUGIN_SCALA_TEST_VERSION}</version>
@@ -148,13 +148,14 @@
                         </goals>
                     </execution>
                 </executions>
-            </plugin>
+            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${MAVEN-JAVADOC-PLUGIN.VERSION}</version>
                 <configuration>
                     <source>8</source>
+                    <detectJavaApiLink>false</detectJavaApiLink>
                 </configuration>
                 <executions>
                     <execution>

@@ -4,7 +4,7 @@ import jsonvalues.*;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.Arrays;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.IntPredicate;
@@ -85,6 +85,20 @@ public class JsSpecs {
      */
     public static JsArraySpec array = new JsArrayOfValueSpec(true,
                                                              false
+    );
+
+    /**
+     non-nullable array spec
+     */
+    public static JsSpec binary = new JsBinarySpec(true,
+                                                   false
+    );
+
+    /**
+     non-nullable array spec
+     */
+    public static JsSpec instant = new JsInstantSpec(true,
+                                                     false
     );
     /**
      non-nullable array of long numbers spec
@@ -584,6 +598,48 @@ public class JsSpecs {
      @param predicate the predicate the json object is tested on
      @return a spec
      */
+    public static JsSpec binary(final Predicate<byte[]> predicate) {
+        return new JsBinarySuchThatSpec(true,
+                                        false,
+                                        s ->
+                                        {
+                                            if (requireNonNull(predicate).test(s))
+                                                return Optional.empty();
+                                            return Optional.of(new Error(JsBinary.of(s),
+                                                                         BINARY_CONDITION
+                                                               )
+                                                              );
+                                        }
+        );
+    }
+
+    /**
+     non-nullable json object that satisfies the given predicate
+
+     @param predicate the predicate the json object is tested on
+     @return a spec
+     */
+    public static JsSpec instant(final Predicate<Instant> predicate) {
+        return new JsInstantSuchThatSpec(true,
+                                         false,
+                                         s ->
+                                         {
+                                             if (requireNonNull(predicate).test(s))
+                                                 return Optional.empty();
+                                             return Optional.of(new Error(JsInstant.of(s),
+                                                                          INSTANT_CONDITION
+                                                                )
+                                                               );
+                                         }
+        );
+    }
+
+    /**
+     non-nullable json object that satisfies the given predicate
+
+     @param predicate the predicate the json object is tested on
+     @return a spec
+     */
     public static JsSpec obj(final Predicate<JsObj> predicate) {
         return new JsObjSuchThatSpec(true,
                                      false,
@@ -676,7 +732,7 @@ public class JsSpecs {
     }
 
 
-    public static <O extends JsValue> JsSpec oneOf(final List<O> cons){
+    public static <O extends JsValue> JsSpec oneOf(final List<O> cons) {
         return any(cons::contains);
     }
 }

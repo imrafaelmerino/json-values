@@ -2,9 +2,9 @@ package com.dslplatform.json.parsers;
 
 class JsParsers {
     public final static JsParsers PARSERS = new JsParsers();
-
-    ;
+    public final JsInstantParser instantParser;
     public final JsIntParser intParser;
+    public final JsBinaryParser binaryParser;
     public final JsLongParser longParser;
     public final JsIntegralParser integralParser;
     public final JsBoolParser boolParser;
@@ -23,7 +23,9 @@ class JsParsers {
     public final JsArrayOfStringParser arrayOfStrParser;
     public final JsArrayOfBoolParser arrayOfBoolParser;
     private JsParsers() {
+        instantParser = new JsInstantParser();
         intParser = new JsIntParser();
+        binaryParser = new JsBinaryParser();
         longParser = new JsLongParser();
         integralParser = new JsIntegralParser();
         boolParser = new JsBoolParser();

@@ -8,6 +8,7 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 
 import static java.time.format.DateTimeFormatter.*;
 
@@ -18,48 +19,17 @@ public class TestJsElems {
 
     @Test
     public void test_dates() {
-        Assertions.assertTrue(JsStr.of(Instant.now()
-                                              .toString())
-                                   .isInstant());
-        Assertions.assertFalse(JsStr.of(LocalDateTime.now()
-                                                     .toString())
-                                    .isInstant(i -> true));
-        Assertions.assertTrue(JsStr.of(Instant.now()
-                                              .toString())
-                                   .isInstant(i -> i.isBefore(Instant.now()
-                                                                     .plusSeconds(1))));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_TIME.format(LocalDateTime.now()))
-                                    .isInstant());
-        Assertions.assertTrue(JsStr.of(ISO_LOCAL_DATE.format(LocalDateTime.now()))
-                                   .isLocalDate(ISO_LOCAL_DATE));
-        Assertions.assertTrue(JsStr.of(ISO_LOCAL_DATE.format(LocalDateTime.now()))
-                                   .isLocalDate(ISO_LOCAL_DATE,
-                                                it -> it.isBefore(LocalDate.now()
-                                                                           .plusYears(1))
-                                               ));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_TIME.format(LocalDateTime.now()))
-                                    .isLocalDate(ISO_LOCAL_DATE));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_TIME.format(LocalDateTime.now()))
-                                    .isLocalDate(ISO_LOCAL_DATE,
-                                                 i -> true
-                                                ));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_TIME.format(LocalDateTime.now()))
-                                    .isInstant());
-        Assertions.assertTrue(JsStr.of(ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()))
-                                   .isLocalDateTime(ISO_LOCAL_DATE_TIME));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_DATE.format(LocalDate.now()))
-                                    .isLocalDateTime(ISO_LOCAL_DATE_TIME,
-                                                     i -> true
-                                                    ));
-        Assertions.assertFalse(JsStr.of(ISO_LOCAL_DATE.format(LocalDate.now()))
-                                    .isLocalDateTime(ISO_LOCAL_DATE_TIME
-                                                    ));
-        Assertions.assertTrue(JsStr.of(ISO_LOCAL_DATE_TIME.format(LocalDateTime.now()))
-                                   .isLocalDateTime(ISO_LOCAL_DATE_TIME,
-                                                    it -> it.isBefore(LocalDateTime.now()
-                                                                                   .plusYears(1))
-                                                   ));
+        Assertions.assertTrue(JsInstant.of(Instant.now())
+                                       .isInstant());
+
+        Assertions.assertTrue(JsInstant.of(Instant.now()
+                                          )
+                                       .isInstant(i -> i.isBefore(Instant.now()
+                                                                         .plusSeconds(1))));
+
     }
+
+
 
     @Test
     public void test_elements() {
