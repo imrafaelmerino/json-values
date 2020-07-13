@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 final class JsArrayOfValueParser extends JsArrayParser {
-    private JsValueParser parser;
+    private final JsValueParser parser;
 
     JsArrayOfValueParser(final JsValueParser parser) {
         super(Objects.requireNonNull(parser));

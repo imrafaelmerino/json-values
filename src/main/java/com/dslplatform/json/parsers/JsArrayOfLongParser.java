@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.LongFunction;
 
 final class JsArrayOfLongParser extends JsArrayParser {
-    private JsLongParser parser;
+    private final JsLongParser parser;
 
     JsArrayOfLongParser(final JsLongParser parser) {
         super(Objects.requireNonNull(parser));

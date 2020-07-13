@@ -54,16 +54,7 @@ abstract class JsArrayParser {
         }
     }
 
-    private JsArray appendNullOrValue(final JsonReader<?> reader,
-                                      final JsArray buffer
-                                     ) throws JsParserException {
-        try {
-            return reader.wasNull() ? buffer.append(JsNull.NULL) : buffer.append(parser.value(reader));
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage());
-        }
 
-    }
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
                                        final Function<JsArray, Optional<Error>> fn

@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 final class JsArrayOfIntegralParser extends JsArrayParser {
 
-    private JsIntegralParser parser;
+    private final JsIntegralParser parser;
 
     JsArrayOfIntegralParser(final JsIntegralParser parser) {
         super(Objects.requireNonNull(parser));

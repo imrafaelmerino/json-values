@@ -27,7 +27,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
                                                                     },
                                                                     JsInt::of
     );
-    private static final int ID = 9;
+    public static final int ID = 9;
     /**
      The integer value.
      */

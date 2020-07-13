@@ -11,6 +11,7 @@ import jsonvalues.JsArray.TYPE;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -53,7 +54,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
             );
     @SuppressWarnings("squid:S3008")//EMPTY should be a valid name
     private static final JsPath EMPTY_PATH = JsPath.empty();
-    private static final int ID = 3;
+    public static final int ID = 3;
     private final Map<String, JsValue> map;
     private volatile int hascode;
     //squid:S3077: doesn't make any sese, volatile is perfectly valid here an as a matter of fact
@@ -1451,6 +1452,22 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     /**
+     Returns the bytes located at the given key  or null if it doesn't exist or it's
+     not an array of bytes.
+
+     @param key the key
+     @return the bytes located at the given key or null
+     */
+    public byte[] getBinary(final String key) {
+        return JsBinary.prism.getOptional.apply(get(requireNonNull(key)))
+                                         .orElse(null);
+
+
+    }
+
+
+
+    /**
      Returns the big integer located at the given key as a big integer or null if it doesn't
      exist or it's not an integral number.
 
@@ -1460,6 +1477,21 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public BigInteger getBigInt(final String key) {
         return JsBigInt.prism.getOptional.apply(get(requireNonNull(key)))
                                          .orElse(null);
+
+    }
+
+
+    /**
+     Returns the instant located at the given key or null if it doesn't exist or it's
+     not an instant.
+
+     @param key the key
+     @return the instant located at the given key or null
+     */
+    public Instant getInstant(final String key) {
+        return JsInstant.prism.getOptional.apply(get(requireNonNull(key)))
+                                         .orElse(null);
+
 
     }
 

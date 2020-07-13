@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 
 
 public final class JsArraySerializer implements JsonWriter.WriteObject<JsArray> {
-    private JsValueSerializer valueSerializer;
+    private final JsValueSerializer valueSerializer;
 
     public JsArraySerializer(final JsValueSerializer valueSerializer) {
         this.valueSerializer = valueSerializer;

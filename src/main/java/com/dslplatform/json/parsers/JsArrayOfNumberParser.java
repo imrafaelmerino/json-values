@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 final class JsArrayOfNumberParser extends JsArrayParser {
 
-    private JsNumberParser parser;
+    private final JsNumberParser parser;
 
     JsArrayOfNumberParser(final JsNumberParser parser) {
         super(Objects.requireNonNull(parser));

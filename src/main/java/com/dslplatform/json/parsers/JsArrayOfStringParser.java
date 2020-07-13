@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 final class JsArrayOfStringParser extends JsArrayParser {
-    private JsStrParser parser;
+    private final JsStrParser parser;
 
     JsArrayOfStringParser(final JsStrParser parser) {
         super(Objects.requireNonNull(parser));

@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.function.IntFunction;
 
 final class JsArrayOfIntParser extends JsArrayParser {
-    private JsIntParser parser;
+    private final JsIntParser parser;
 
     JsArrayOfIntParser(final JsIntParser parser) {
         super(Objects.requireNonNull(parser));

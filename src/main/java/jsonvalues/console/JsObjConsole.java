@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class JsObjConsole implements JsConsole<JsObj>, Program<JsObj> {
 
-    private Map<String, JsConsole<?>> bindings = new LinkedHashMap<>();
+    private final Map<String, JsConsole<?>> bindings = new LinkedHashMap<>();
 
     /**
      static factory method to create a JsObjIO of sixteen mappings

@@ -83,13 +83,13 @@ public final class JsPath implements Comparable<JsPath> {
         if (it.isKey()) return Key.of(map.apply(it.asKey().name));
         else return it;
     };
-    private static UnaryOperator<String> escape = token -> token.replace("~1",
-                                                                         "/"
-                                                                        )
-                                                                .replace("~0",
+    private static final UnaryOperator<String> escape = token -> token.replace("~1",
+                                                                               "/"
+                                                                              )
+                                                                      .replace("~0",
                                                                          "~"
                                                                         );
-    private static UnaryOperator<String> decode = token ->
+    private static final UnaryOperator<String> decode = token ->
     {
         try {
             return URLDecoder.decode(token,

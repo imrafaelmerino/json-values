@@ -15,7 +15,7 @@ import java.util.function.Function;
 
 final class JsArrayOfDecimalParser extends JsArrayParser {
 
-    private JsDecimalParser parser;
+    private final JsDecimalParser parser;
 
     JsArrayOfDecimalParser(final JsDecimalParser parser) {
         super(Objects.requireNonNull(parser));

@@ -15,7 +15,6 @@ public class JsFutures {
      @return a new CompletableFuture wrapped in a supplier
      */
 
-    //TODO retornar supplier
     public static <R> Supplier<CompletableFuture<R>> retry(final Supplier<CompletableFuture<R>> supplier,
                                                            final int maxRetries) {
         Objects.requireNonNull(supplier);

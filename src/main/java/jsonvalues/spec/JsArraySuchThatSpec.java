@@ -12,7 +12,7 @@ import java.util.function.Function;
 class JsArraySuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
 
     final Function<JsArray, Optional<Error>> predicate;
-    private JsArrayOfValueSpec isArray;
+    private final JsArrayOfValueSpec isArray;
 
     JsArraySuchThatSpec(final Function<JsArray, Optional<Error>> predicate,
                         final boolean required,

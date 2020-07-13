@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 final class JsTupleGen implements JsGen<JsArray> {
-    private List<JsGen<?>> gens = new ArrayList<>();
+    private final List<JsGen<?>> gens = new ArrayList<>();
 
     JsTupleGen(final JsGen<?> gen,
                final JsGen<?>... others

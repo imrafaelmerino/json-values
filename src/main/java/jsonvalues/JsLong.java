@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
  Represents an immutable json number of type long.
  */
 public final class JsLong extends JsNumber implements Comparable<JsLong> {
-    private static final int ID = 7;
+    public static final int ID = 7;
 
     /**
      prism between the sum type JsValue and JsLong

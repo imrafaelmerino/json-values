@@ -54,7 +54,10 @@ public interface JsValue {
 
 
     /**
-     @return true if this JsValue is a JsInstant that satisfies the given predicate
+     Returns true if this elem is a JsInstant and satisfies the given predicate
+
+     @param predicate the given predicate
+     @return true if this JsValue is a JsInstant and satisfies the predicate
      */
     default boolean isInstant(Predicate<Instant> predicate) {
         return isInstant() && predicate.test(this.toJsInstant().value);

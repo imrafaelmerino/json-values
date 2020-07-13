@@ -2,11 +2,11 @@ package com.dslplatform.json.serializers;
 
 import com.dslplatform.json.JsonWriter;
 import com.dslplatform.json.NumberConverter;
-import jsonvalues.JsArray;
-import jsonvalues.JsObj;
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.Objects;
+
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 
 
 public final class JsValueSerializer {
@@ -27,56 +27,64 @@ public final class JsValueSerializer {
                   ) {
 
         switch (value.id()) {
-            case 0: {
+            case JsBool.ID: {
                 writer.writeAscii(Boolean.toString(value.toJsBool().value));
                 break;
             }
-            case 1: {
+            case JsNull.ID: {
                 writer.writeNull();
                 break;
             }
-            case 2: {
+            case JsStr.ID: {
                 writer.writeString(value.toJsStr().value);
                 break;
             }
-            case 3: {
+            case JsObj.ID: {
                 objectSerializer.write(writer,
                                        value.toJsObj()
                                       );
                 break;
             }
-            case 4: {
+            case JsArray.ID: {
                 arraySerializer.write(writer,
                                       value.toJsArray()
                                      );
                 break;
             }
-            case 5:
-            case 8: {
+            case JsDouble.ID:
+            case JsBigDec.ID: {
                 NumberConverter.serialize(value.toJsBigDec().value,
                                           writer
                                          );
                 break;
             }
-            case 6: {
+            case JsBigInt.ID: {
                 writer.writeAscii(value.toJsBigInt().value
                                           .toString());
 
                 break;
             }
-            case 7: {
+            case JsLong.ID: {
                 NumberConverter.serialize(value.toJsLong().value,
                                           writer
                                          );
                 break;
             }
-            case 9: {
+            case JsInt.ID: {
                 NumberConverter.serialize(value.toJsInt().value,
                                           writer
                                          );
                 break;
             }
 
+            case JsBinary.ID: {
+                writer.writeBinary(value.toJsBinary().value);
+                break;
+            }
+            case JsInstant.ID: {
+                writer.writeString(ISO_INSTANT.format(value.toJsInstant().value));
+                break;
+            }
             default:
                 throw new IllegalStateException("JsValue.id() not considered. Default branch of a switch statement was executed.");
 

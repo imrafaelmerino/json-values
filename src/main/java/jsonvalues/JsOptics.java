@@ -2,6 +2,7 @@ package jsonvalues;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 
 import static java.util.Objects.requireNonNull;
 
@@ -246,6 +247,52 @@ public class JsOptics {
         public JsArrayLens<JsArray> array(final int index) {
             return new JsArrayLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
+
+
+        /**
+         lens that focus on an array of bytes located at a path in an array
+
+         @param path the path where the bytes are located at
+         @return a lens
+         */
+        public JsBinaryLens<JsArray> binary(final JsPath path) {
+            if (path.head()
+                    .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
+            return new JsBinaryLens<>(requireNonNull(path));
+        }
+
+        /**
+         lens that focus on an array of bytes located at an index in an array
+
+         @param index the index where the bytes are located at
+         @return a lens
+         */
+        public JsBinaryLens<JsArray> binary(final int index) {
+            return new JsBinaryLens<>(requireNonNull(JsPath.fromIndex(index)));
+        }
+
+
+        /**
+         lens that focus on the array of bytes located at a path in an array
+
+         @param path the path where the bytes are located at
+         @return a lens
+         */
+        public JsInstantLens<JsArray> instant(final JsPath path) {
+            if (path.head()
+                    .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
+            return new JsInstantLens<>(requireNonNull(path));
+        }
+
+        /**
+         lens that focus on the array of bytes at an index in an array
+
+         @param index the index where the bytes are located at
+         @return a lens
+         */
+        public JsInstantLens<JsArray> instant(final int index) {
+            return new JsInstantLens<>(requireNonNull(JsPath.fromIndex(index)));
+        }
     }
 
     /**
@@ -484,6 +531,30 @@ public class JsOptics {
                                       .compose(JsArray.prism);
         }
 
+        /**
+         optional that focus on the instant located at a path in an array
+
+         @param path the path where the instant is located at
+         @return an optional
+         */
+        public Option<JsArray, Instant> instant(final JsPath path) {
+            if (path.head()
+                    .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
+
+            return JsOptics.array.lens.value(requireNonNull(path))
+                                      .compose(JsInstant.prism);
+        }
+
+        /**
+         optional that focus on the instant located at an index in an array
+
+         @param index the index where the instant is located at
+         @return an optional
+         */
+        public Option<JsArray, Instant> instant(final int index) {
+            return JsOptics.array.lens.value(index)
+                                      .compose(JsInstant.prism);
+        }
     }
 
     /**
@@ -715,6 +786,55 @@ public class JsOptics {
                                     .compose(JsArray.prism);
         }
 
+        /**
+         optional that focus on the array of bytes located at a path in an object
+
+         @param path the path where the bytes are located at
+         @return an optional
+         */
+        public Option<JsObj, byte[]> binary(final JsPath path) {
+            if (path.head()
+                    .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+
+            return JsOptics.obj.lens.value(requireNonNull(path))
+                                    .compose(JsBinary.prism);
+        }
+
+        /**
+         optional that focus on the array of bytes located at a key in an object
+
+         @param key the path where the bytes are located at
+         @return an optional
+         */
+        public Option<JsObj, byte[]> binary(final String key) {
+            return JsOptics.obj.lens.value(requireNonNull(key))
+                                    .compose(JsBinary.prism);
+        }
+
+        /**
+         optional that focus on the instant located at a path in an object
+
+         @param path the path where the instant is located at
+         @return an optional
+         */
+        public Option<JsObj, Instant> instant(final JsPath path) {
+            if (path.head()
+                    .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+
+            return JsOptics.obj.lens.value(requireNonNull(path))
+                                    .compose(JsInstant.prism);
+        }
+
+        /**
+         optional that focus on the instant located at a key in an object
+
+         @param key the path where the instant is located at
+         @return an optional
+         */
+        public Option<JsObj, Instant> instant(final String key) {
+            return JsOptics.obj.lens.value(requireNonNull(key))
+                                    .compose(JsInstant.prism);
+        }
     }
 
     /**
@@ -951,5 +1071,56 @@ public class JsOptics {
         public JsArrayLens<JsObj> array(final String key) {
             return new JsArrayLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
+
+
+
+
+        /**
+         lens that focus on an array of bytes located at a path in an object.
+
+         @param path the path where the array of bytes is located at
+         @return an optional
+         */
+        public JsBinaryLens<JsObj> binary(final JsPath path) {
+            if (path.head()
+                    .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+
+            return new JsBinaryLens<>(requireNonNull(path));
+        }
+
+        /**
+         lens that focus on an array of bytes located at a key in an object.
+
+         @param key the key where the array of bytes is located at
+         @return an optional
+         */
+        public JsBinaryLens<JsObj> binary(final String key) {
+            return new JsBinaryLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
+        }
+
+
+        /**
+         lens that focus on an instant located at a path in an object.
+
+         @param path the path where the instant is located at
+         @return an optional
+         */
+        public JsInstantLens<JsObj> instant(final JsPath path) {
+            if (path.head()
+                    .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+
+            return new JsInstantLens<>(requireNonNull(path));
+        }
+
+        /**
+         lens that focus on an instant located at a key in an object.
+
+         @param key the key where the instant is located at
+         @return an optional
+         */
+        public JsInstantLens<JsObj> instant(final String key) {
+            return new JsInstantLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
+        }
+
     }
 }

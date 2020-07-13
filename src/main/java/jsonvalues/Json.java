@@ -6,6 +6,7 @@ import jsonvalues.JsArray.TYPE;
 import java.io.OutputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Stream;
@@ -213,6 +214,29 @@ public interface Json<T extends Json<T>> extends JsValue {
 
     }
 
+    /**
+     Returns the bytes located at the given path or null if it doesn't exist.
+
+     @param path the path
+     @return the bytes located at the given JsPath or null
+     */
+    default byte[] getBinary(final JsPath path) {
+        return JsBinary.prism.getOptional.apply(get(requireNonNull(path)))
+                                       .orElse(null);
+
+    }
+
+    /**
+     Returns the instant located at the given path or null if it doesn't exist.
+
+     @param path the path
+     @return the instant located at the given JsPath or null
+     */
+    default Instant getInstant(final JsPath path) {
+        return JsInstant.prism.getOptional.apply(get(requireNonNull(path)))
+                                         .orElse(null);
+
+    }
 
     /**
      Returns the decimal number located at the given path as a double or null if it

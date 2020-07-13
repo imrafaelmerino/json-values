@@ -9,7 +9,7 @@ import java.util.Iterator;
 
 public final class JsObjSerializer implements JsonWriter.WriteObject<JsObj> {
 
-    private JsValueSerializer valueSerializer;
+    private final JsValueSerializer valueSerializer;
 
     public JsObjSerializer(final JsValueSerializer valueSerializer) {
         this.valueSerializer = valueSerializer;

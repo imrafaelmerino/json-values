@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class JsArrayConsole implements JsConsole<JsArray>, Program<JsArray> {
 
-    private List<JsConsole<?>> seq = new ArrayList<>();
+    private final List<JsConsole<?>> seq = new ArrayList<>();
 
     /**
      static factory method to create a JsArrayIO
