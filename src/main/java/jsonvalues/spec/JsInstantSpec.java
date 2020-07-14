@@ -6,6 +6,7 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 
+import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
@@ -44,7 +45,7 @@ class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
     @Override
     public Optional<Error> test(final JsValue value) {
         return Functions.testElem(JsValue::isInt,
-                                  INT_EXPECTED,
+                                  INSTANT_EXPECTED,
                                   required,
                                   nullable
                                  )

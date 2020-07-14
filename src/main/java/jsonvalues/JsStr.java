@@ -34,7 +34,7 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
                     return Optional.empty();
                 }
             },
-                        String::new
+                       bytes -> Base64.getEncoder().encodeToString(bytes)
             );
 
     public static final Prism<String, Instant> instantPrism =
@@ -144,4 +144,13 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
         return new JsStr(requireNonNull(str));
     }
 
+    @Override
+    public boolean isBinary() {
+        return JsStr.base64Prism.getOptional.apply(value).isPresent();
+    }
+
+    @Override
+    public boolean isInstant() {
+        return JsStr.instantPrism.getOptional.apply(value).isPresent();
+    }
 }

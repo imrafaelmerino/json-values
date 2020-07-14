@@ -6,6 +6,7 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 
+import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
@@ -44,7 +45,7 @@ class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
     @Override
     public Optional<Error> test(final JsValue value) {
         return Functions.testElem(JsValue::isBinary,
-                                  INT_EXPECTED,
+                                  BINARY_EXPECTED,
                                   required,
                                   nullable
                                  )

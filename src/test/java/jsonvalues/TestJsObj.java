@@ -825,6 +825,8 @@ public class TestJsObj {
 
         JsObj parsed = JsObj.parse(o.toString());
 
+        Assertions.assertEquals(parsed,o);
+
         Assertions.assertEquals(parsed
                                         .getStr("f"),
                                 Base64.getEncoder()

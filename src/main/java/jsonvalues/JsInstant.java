@@ -5,12 +5,21 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
-public class JsInstant implements JsValue{
+/**
+ Represents an immutable instant. An instant is not part of the Json specification. It it serialized into
+ its a string representation using ISO-8601 representation. A JsInstant and a JsStr are equals
+ if both represent the same date.
+ {@code
+ Instant a = Instant.now();
+ JsStr.of(a.toString()).equals(JsIntant.of(a)) // true
+ }
+ */
+public class JsInstant implements JsValue {
 
     public static final int ID = 11;
     public final Instant value;
 
-    public static JsInstant of(final Instant instant){
+    public static JsInstant of(final Instant instant) {
         return new JsInstant(Objects.requireNonNull(instant));
     }
 
@@ -22,9 +31,16 @@ public class JsInstant implements JsValue{
      prism between the sum type JsValue and JsInstant
      */
     public static Prism<JsValue, Instant> prism =
-            new Prism<>(s -> s.isInstant() ? Optional.of(s.toJsInstant().value) : Optional.empty(),
+            new Prism<>(s -> {
+                if (s.isInstant()) return Optional.of(s.toJsInstant().value);
+                if (s.isStr()) {
+                    return JsStr.instantPrism.getOptional.apply(s.toJsStr().value);
+                }
+                return Optional.empty();
+            },
                         JsInstant::of
             );
+
     @Override
     public int id() {
         return ID;
@@ -43,9 +59,13 @@ public class JsInstant implements JsValue{
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        final JsInstant jsInstant = (JsInstant) o;
-        return value.equals(jsInstant.value);
+        if (o == null) return false;
+        if (o instanceof JsValue) {
+            return JsInstant.prism.getOptional.apply(((JsValue) o))
+                                              .map(instant -> instant.equals(value))
+                                              .orElse(false);
+        }
+        return false;
     }
 
     @Override

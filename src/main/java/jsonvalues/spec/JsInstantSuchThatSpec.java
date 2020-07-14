@@ -8,7 +8,6 @@ import java.time.Instant;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
 class JsInstantSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
@@ -49,18 +48,18 @@ class JsInstantSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofInstantSuchThat(predicate,
-                                                         nullable
-                                                        );
+                                                        nullable
+                                                       );
     }
 
     @Override
     public Optional<Error> test(final JsValue value) {
         final Optional<Error> error = Functions.testElem(JsValue::isInstant,
-                                                                         INSTANT_EXPECTED,
-                                                                         required,
-                                                                         nullable
-                                                                        )
-                                                               .apply(value);
+                                                         INSTANT_EXPECTED,
+                                                         required,
+                                                         nullable
+                                                        )
+                                               .apply(value);
 
         if (error.isPresent() || value.isNull()) return error;
         return predicate.apply(value.toJsInstant().value);

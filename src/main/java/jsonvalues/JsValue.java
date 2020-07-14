@@ -39,14 +39,16 @@ public interface JsValue {
     }
 
     /**
-     @return true if this JsValue is a JsBinary
+     @return true if this JsValue is a JsBinary or a JsString which value is an array of
+     bytes encoded in base64
      */
     default boolean isBinary() {
         return false;
     }
 
     /**
-     @return true if this JsValue is a JsInstant
+     @return true if this JsValue is a JsInstant or a JsString which value is a
+     date formatted in ISO-8601
      */
     default boolean isInstant() {
         return false;
