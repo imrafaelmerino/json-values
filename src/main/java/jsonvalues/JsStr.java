@@ -1,7 +1,8 @@
 package jsonvalues;
 
-import com.sun.xml.internal.org.jvnet.mimepull.DecodingException;
-
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
@@ -30,12 +31,22 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
                     return Optional.of(Base64.getDecoder()
                                              .decode(s.getBytes()));
                 } catch (IllegalArgumentException e) {
-                    return  Optional.empty();
+                    return Optional.empty();
                 }
             },
                         String::new
             );
 
+    public static final Prism<String, Instant> instantPrism =
+            new Prism<>(s -> {
+                try {
+                    return Optional.of(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(s)));
+                } catch (DateTimeParseException e) {
+                    return Optional.empty();
+                }
+            },
+                        DateTimeFormatter.ISO_INSTANT::format
+            );
 
     /**
      The string value.

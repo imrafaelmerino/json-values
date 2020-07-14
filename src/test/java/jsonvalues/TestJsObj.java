@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Supplier;
@@ -626,7 +628,7 @@ public class TestJsObj {
                                                                         obj.get(pair.path)
                                                                        );
                                                 return JsStr.prism.modify.apply(String::toLowerCase)
-                                                                  .apply(pair.value);
+                                                                         .apply(pair.value);
                                             });
 
         final Optional<String> reduced_ = obj1.reduceAll(String::concat,
@@ -774,7 +776,7 @@ public class TestJsObj {
 
     @Test
     public void testJsObj() {
-        Instant now = Instant.now();
+        Instant now   = Instant.now();
         byte[]  bytes = "hola".getBytes();
         JsObj o = JsObj.of("a",
                            JsBigDec.of(BigDecimal.valueOf(1.5)),
@@ -817,23 +819,44 @@ public class TestJsObj {
                                );
 
         Assertions.assertTrue(
-                               Arrays.equals(o.getBinary("f"),"hola".getBytes())
-                               );
+                Arrays.equals(o.getBinary("f"),
+                              "hola".getBytes())
+                             );
 
         JsObj parsed = JsObj.parse(o.toString());
 
         Assertions.assertEquals(parsed
-                                     .getStr("f"),
-                                Base64.getEncoder().encodeToString("hola".getBytes()));
+                                        .getStr("f"),
+                                Base64.getEncoder()
+                                      .encodeToString("hola".getBytes())
+                               );
 
 
         Option<JsObj, byte[]> fOpt = JsObj.lens.str("f")
-                                            .compose(JsStr.base64Prism);
+                                               .compose(JsStr.base64Prism);
 
-       Assertions.assertTrue(Arrays.equals(fOpt.get.apply(parsed).get(),"hola".getBytes()));
+        Option<JsObj, Instant> eOpt = JsObj.lens.str("e")
+                                                .compose(JsStr.instantPrism);
+
+        Assertions.assertTrue(Arrays.equals(fOpt.get.apply(parsed)
+                                                    .get(),
+                                            "hola".getBytes()));
 
 
-       Assertions.assertTrue(!fOpt.get.apply(JsObj.of("f",JsStr.of("a"))).isPresent());
+        Assertions.assertTrue(!fOpt.get.apply(JsObj.of("f",
+                                                       JsStr.of("a")))
+                                       .isPresent());
+
+
+        Assertions.assertEquals(eOpt.get.apply(parsed)
+                                        .get(),
+                                now);
+
+        Assertions.assertTrue(!eOpt.get.apply(JsObj.of("e",
+                                                       JsStr.of(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now()))
+                                                      )
+                                             )
+                                       .isPresent());
     }
 
 
