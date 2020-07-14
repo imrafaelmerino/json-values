@@ -222,7 +222,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      */
     default byte[] getBinary(final JsPath path) {
         return JsBinary.prism.getOptional.apply(get(requireNonNull(path)))
-                                       .orElse(null);
+                                         .orElse(null);
 
     }
 

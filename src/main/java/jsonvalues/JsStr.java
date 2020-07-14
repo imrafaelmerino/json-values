@@ -1,5 +1,8 @@
 package jsonvalues;
 
+import com.sun.xml.internal.org.jvnet.mimepull.DecodingException;
+
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Predicate;
@@ -20,6 +23,20 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
             new Prism<>(s -> s.isStr() ? Optional.of(s.toJsStr().value) : Optional.empty(),
                         JsStr::of
             );
+
+    public static final Prism<String, byte[]> base64Prism =
+            new Prism<>(s -> {
+                try {
+                    return Optional.of(Base64.getDecoder()
+                                             .decode(s.getBytes()));
+                } catch (IllegalArgumentException e) {
+                    return  Optional.empty();
+                }
+            },
+                        String::new
+            );
+
+
     /**
      The string value.
      */

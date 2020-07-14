@@ -41,6 +41,8 @@ public class JsBinary implements JsValue {
             new Prism<>(s -> s.isBinary() ? Optional.of(s.toJsBinary().value) : Optional.empty(),
                         JsBinary::of
             );
+
+
     @Override
     public int id() {
         return ID;
