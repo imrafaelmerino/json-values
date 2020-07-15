@@ -478,4 +478,25 @@ public class JsObjOpticsTest {
                                                   .get("a")
                                );
     }
+
+    @Test
+    public void testValueLenses(){
+
+        JsValueLens<JsObj> b = JsObj.lens.value(JsPath.path("/a/b"));
+        JsValueLens<JsObj> head = JsObj.lens.value(JsPath.path("/a/c/0"));
+
+        JsObj obj = JsObj.of("a",
+                            JsObj.of("b",
+                                     JsBool.TRUE,
+                                     "c",
+                                     JsArray.of(JsNull.NULL)
+                                    )
+                           );
+        Assertions.assertEquals(JsBool.TRUE,b.get.apply(obj));
+        Assertions.assertEquals(JsNull.NULL,head.get.apply(obj));
+
+        Assertions.assertEquals(JsNothing.NOTHING,b.get.apply(JsObj.empty()));
+        Assertions.assertEquals(JsNothing.NOTHING,head.get.apply(JsObj.empty()));
+
+    }
 }

@@ -39,7 +39,7 @@ class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
     @Override
     public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofInt(nullable);
+        return JsSpecParsers.INSTANCE.ofInstant(nullable);
     }
 
     @Override

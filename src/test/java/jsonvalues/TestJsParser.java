@@ -9,6 +9,8 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Duration;
+import java.time.Instant;
 
 import static jsonvalues.spec.JsSpecs.*;
 
@@ -67,7 +69,8 @@ public class TestJsParser {
                                        JsArray.empty(),
                                        "j",
                                        JsArray.of(JsObj.of("a",
-                                                           JsStr.of("hi")))
+                                                           JsStr.of("hi")
+                                                          ))
                                       );
 
         final JsObj parsed = parser.parse(example
@@ -78,5 +81,69 @@ public class TestJsParser {
                                );
     }
 
+
+    @Test
+    public void testParseInstant() {
+
+        JsObjParser parser =
+                new JsObjParser(JsObjSpec.strict("a",
+                                                 instant,
+                                                 "b",
+                                                 instant(i -> i.isAfter(Instant.now()
+                                                                                .minus(Duration.ofDays(1))
+                                                                        )
+                                                        )
+                                                )
+                );
+
+        JsObj obj = JsObj.of("a",
+                            JsInstant.of(Instant.now()),
+                            "b",
+                            JsInstant.of(Instant.now())
+                           );
+        JsObj parse = parser.parse(obj.toString());
+
+        Assertions.assertEquals(JsInstant.class,
+                                parse.get("a")
+                                     .getClass()
+                               );
+        Assertions.assertEquals(JsInstant.class,
+                                parse.get("b")
+                                     .getClass()
+                               );
+
+        Assertions.assertEquals(obj,parse);
+    }
+
+
+    @Test
+    public void testParseBinary() {
+
+        JsObjParser parser =
+                new JsObjParser(JsObjSpec.strict("a",
+                                                 binary,
+                                                 "b",
+                                                 binary(i -> i.length <= 1024)
+                                                )
+                );
+
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("hola"),
+                             "b",
+                             JsBinary.of("foo".getBytes())
+                            );
+        JsObj parse = parser.parse(obj.toString());
+
+        Assertions.assertEquals(JsBinary.class,
+                                parse.get("a")
+                                     .getClass()
+                               );
+        Assertions.assertEquals(JsBinary.class,
+                                parse.get("b")
+                                     .getClass()
+                               );
+
+        Assertions.assertEquals(obj,parse);
+    }
 
 }

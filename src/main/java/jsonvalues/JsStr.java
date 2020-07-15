@@ -1,7 +1,6 @@
 package jsonvalues;
 
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
 import java.util.Objects;
@@ -40,12 +39,12 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
     public static final Prism<String, Instant> instantPrism =
             new Prism<>(s -> {
                 try {
-                    return Optional.of(Instant.from(DateTimeFormatter.ISO_INSTANT.parse(s)));
+                    return Optional.of(Instant.parse(s));
                 } catch (DateTimeParseException e) {
                     return Optional.empty();
                 }
             },
-                        DateTimeFormatter.ISO_INSTANT::format
+                        Instant::toString
             );
 
     /**
@@ -107,11 +106,20 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
-        if (that == null || getClass() != that.getClass()) return false;
-        final JsStr thatStr = (JsStr) that;
-        return Objects.equals(value,
-                              thatStr.value
-                             );
+        if (that == null ) return false;
+        if(that instanceof JsStr) {
+            final JsStr thatStr = (JsStr) that;
+            return Objects.equals(value,
+                                  thatStr.value
+                                 );
+        }
+        else if(that instanceof JsInstant){
+            return JsStr.instantPrism.reverseGet.apply(((JsInstant) that).value).equals(value);
+        }
+        else if(that instanceof JsBinary){
+            return JsStr.base64Prism.reverseGet.apply(((JsBinary) that).value).equals(value);
+        }
+        return false;
     }
 
     /**
