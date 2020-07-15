@@ -5,6 +5,8 @@ import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  Represents an immutable instant. An instant is not part of the Json specification. It it serialized into
  its a string representation using ISO-8601 representation. A JsInstant and a JsStr are equals
@@ -14,7 +16,7 @@ import java.util.Optional;
  JsStr.of(a.toString()).equals(JsIntant.of(a)) // true
  }
  */
-public class JsInstant implements JsValue {
+public class JsInstant implements JsValue,Comparable<JsInstant>{
 
     public static final int ID = 11;
     public final Instant value;
@@ -71,5 +73,11 @@ public class JsInstant implements JsValue {
     @Override
     public int hashCode() {
         return Objects.hash(value);
+    }
+
+    @Override
+    public int compareTo(final JsInstant o) {
+        return value.compareTo(requireNonNull(o).value);
+
     }
 }
