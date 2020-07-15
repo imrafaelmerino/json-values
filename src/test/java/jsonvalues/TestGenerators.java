@@ -10,6 +10,9 @@ import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+import java.time.ZonedDateTime;
+import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Set;
@@ -348,6 +351,19 @@ public class TestGenerators {
         }, 100);
     }
 
+    @Test
+    public void testDates(){
+
+       test(JsGens.dateBetween(ZonedDateTime.now(),ZonedDateTime.now().plus(Duration.ofDays(2))),
+            value -> value.isInstant(),100);
+    }
+
+
+    @Test
+    public void testBinary(){
+        test(JsGens.binary,
+             value -> value.isBinary() & value.toJsBinary().value.length<=1024, 100);
+    }
 
 
 }
