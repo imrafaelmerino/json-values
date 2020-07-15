@@ -2,6 +2,7 @@ package jsonvalues.gen;
 
 import io.vavr.Tuple2;
 import jsonvalues.*;
+
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.ZonedDateTime;
@@ -43,11 +44,12 @@ public class JsGens {
 
     /**
      Generates a seq of digits of the given length
+
      @param length the length of the string
      @return a string generator
      */
     public static JsGen<JsStr> digits(int length) {
-        if(length<=0)throw new IllegalArgumentException("length not greater than zero");
+        if (length <= 0) throw new IllegalArgumentException("length not greater than zero");
         return JsGens.array(digit,
                             length
                            )
@@ -128,6 +130,25 @@ public class JsGens {
                            );
         };
     }
+
+    /**
+     Generates an array of 1024 bytes
+     */
+    public static JsGen<JsBinary> binary =  binary(1024);
+
+    /**
+     Generates an array of bytes of the given length
+     @param length the number of bytes generated
+     @return an array of bytes generator
+     */
+    public static JsGen<JsBinary> binary(int length) {
+        return r -> () -> {
+            byte[] bytes = new byte[length];
+            r.nextBytes(bytes);
+            return JsBinary.of(bytes);
+        };
+    }
+
 
     /**
      Generates an alphabetic string of the given length
@@ -394,13 +415,14 @@ public class JsGens {
      @return an instant generator
      */
 
-    public static JsGen<JsStr> dateBetween(final ZonedDateTime min,
-                                           final ZonedDateTime max) {
+    public static JsGen<JsInstant> dateBetween(final ZonedDateTime min,
+                                               final ZonedDateTime max) {
         if (requireNonNull(max).isBefore(requireNonNull(min)))
             throw new IllegalArgumentException(min.format(DateTimeFormatter.ISO_INSTANT) + " is greater than " + max.format(DateTimeFormatter.ISO_INSTANT));
 
         return dateBetween(min.toEpochSecond(),
-                           max.toEpochSecond());
+                           max.toEpochSecond()
+                          );
 
     }
 
@@ -413,9 +435,9 @@ public class JsGens {
      @param max the bound of the interval (inclusive)
      @return an instant generator
      */
-    public static JsGen<JsStr> dateBetween(final long min,
-                                           final long max) {
-        if (requireNonNull(max) <= requireNonNull(min))
+    public static JsGen<JsInstant> dateBetween(final long min,
+                                               final long max) {
+        if (max <= min)
             throw new IllegalArgumentException(max + " is greater than " + min);
 
         return random -> () -> {
@@ -427,12 +449,11 @@ public class JsGens {
                                                  .findFirst()
                                                  .getAsLong();
 
-            Instant instant = Instant.ofEpochSecond(seconds);
-
-
-            return JsStr.of(DateTimeFormatter.ISO_INSTANT.format(instant));
+            return JsInstant.of(Instant.ofEpochSecond(seconds));
         };
     }
+
+
 
 
 }

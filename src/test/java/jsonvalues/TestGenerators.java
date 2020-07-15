@@ -5,6 +5,7 @@ import jsonvalues.gen.JsGen;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -215,7 +216,11 @@ public class TestGenerators {
                                    "m",
                                    characterAlpha,
                                    "n",
-                                   letter
+                                   letter,
+                                   "o",
+                                   JsGens.binary,
+                                   "p",
+                                   JsGens.dateBetween(0,1000)
                                   );
 
         JsObjSpec spec = JsObjSpec.lenient("a",
@@ -247,7 +252,11 @@ public class TestGenerators {
                                            "m",
                                            str(s -> s.length() == 1),
                                            "n",
-                                           str(s -> s.length() == 1)
+                                           str(s -> s.length() == 1),
+                                           "o",
+                                           JsSpecs.binary,
+                                           "p",
+                                           JsSpecs.instant
                                           );
 
         test(gen,
