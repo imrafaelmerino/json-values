@@ -35,12 +35,11 @@ efficient, especially when copy-on-write is the only option to avoid mutation.
 but you can't benefit from all the advantage that immutability brings to your code because **Java doesn't provide Persistent Data Structures**.
 The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, and streams, but without immutability,
 something is still missing, and as _**Pat Helland**_ said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
-* You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and takes advantages of all the new features that were introduced
+* You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and takes advantages of all the features that were introduced
 in Java 8, like functions, suppliers, streams, and collectors, making json manipulation simple, fast, and efficient.
 * Simplicity matters, and I 'd argue that **json-values** is simple.
 * As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
-leave the functions passed in as arguments with no implementation for brevity reasons (go to the [project page](https://imrafaelmerino.github.io/json-values/) for further
-details)
+leave the functions passed in as arguments with no implementation for brevity reasons. 
 
 ```
 json.mapKeys(toSneakeCase)
@@ -66,15 +65,13 @@ I'd argue that it's straightforward, expressive, and concise. And that plus the 
 data structure shows very well the essence of **json-values**.
 
 That was just a little taste! Data generation and validation are significant in software.
-If you struggle to generate data, it slows down the testing.
-On the other hand, corrupt data can propagate throughout your system and cause a nightmare. Errors that blow up in your face
-are way better! If you think about it, the definition, validation, and generation of a JSON value could be
-implemented using the same data structure; after all, the three are just bindings with different
-elements: values, generators, or specifications. Let's check out an example:
+If you think about it, the definition, validation, and generation of a JSON could be
+implemented using the same data structure; after all, the three of them are just bindings with different
+elements: values, generators, or specifications. Let's check out some examples.
+
+Defining a json object:
 
 ```
-// defining a json object
-
 var person = JsObj.of("name", JsStr.of("Rafael"),
                       "age", JsInt.of(37),
                       "languages", JsArray.of("Haskell", "Scala", "Java", "Clojure")
@@ -86,42 +83,37 @@ var person = JsObj.of("name", JsStr.of("Rafael"),
                                           )
                         );
 
-// defining a json spec. strict means: keys different than the specified are not allowed
-var addressSpec=JsObjSpec.lenient("city", JsSpecs.str,
-                                  "country",JsSpecs.str.optional().nullable()
-                                  "location", JsSpecs.tuple(JsSpecs.decimal,
-                                                            JsSpecs.decimal
-                                                           )
+```
+
+Defining a json spec; strict means: keys different from the specified are not allowed:
+
+```
+import static jsonvalues.spec.JsSpecs;
+
+var addressSpec=JsObjSpec.lenient("city", str,
+                                  "country",str.optional().nullable()
+                                  "location", tuple(decimal,
+                                                    decimal
+                                                   )
                                  );
 
-var spec = JsObjSpec.strict("name", JsSpecs.str,
-                            "age", JsSpecs.integer(n-> n>15 && n<100),
-                            "languages", JsSpecs.arrayOfStr,
-                            "github", JsSpecs.str.optional(),
-                            "profession", JsSpecs.str.nullable(),
+var spec = JsObjSpec.strict("name", str,
+                            "age", integer(n-> n>15 && n<100),
+                            "languages", arrayOfStr,
+                            "github", str.optional(),
+                            "profession", str.nullable(),
                             "address", addressSpec
                            );
-
-// defining a json generator
-var addressGen = JsObjGen.of("city", JsGens.oneOf(cities),
-                             "country",JsGens.oneOf(countries).optional().nullable(),
-                             "location", JsGens.tuple(JsGens.decimal,
-                                                      JsGens.decimal
-                                                     )
-                            );
-var gen = JsObjGen.of("name", JsGens.alphabetic,
-                      "age",  JsGens.choose(18,100),
-                      "languages", JsGens.arrayOf(JsGens.str,10),
-                      "github", JsGens.alphanumeric.optional(),
-                      "profession", JsGens.oneOf(professions).nullable(),
-                      "address", addressGen
-                     );
 
 // if the object doesn't conform the spec, the errors and their locations are returned in a set
 
 Set<JsErrorPair> errors = spec.test(person);
 
-// you can use a spec to parse a string! as soon as an error is found, the parsing ends.
+```
+
+We can use a spec to parse a string! As soon as an error is found, the parsing ends.
+
+```
 
 byte[] jsonBytes = ...;
 String jsonStr = ...;
@@ -133,7 +125,28 @@ var b = parser.parse(jsonStr);
 
 ```
 
-We can create futures as well following the same philosophy:
+Defining a json generator:
+
+```
+import static jsonvalues.gen.JsGens;
+
+var addressGen = JsObjGen.of("city", oneOf(cities),
+                             "country",oneOf(countries).optional().nullable(),
+                             "location", tuple(JsGens.decimal,
+                                               JsGens.decimal
+                                               )
+                            );
+var gen = JsObjGen.of("name", alphabetic,
+                      "age",  choose(18,100),
+                      "languages", arrayOf(JsGens.str,10),
+                      "github", alphanumeric.optional(),
+                      "profession", oneOf(professions).nullable(),
+                      "address", addressGen
+                     );
+
+```
+
+Defining a future following the same philosophy:
 
 ```
 CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut,;
@@ -159,7 +172,6 @@ CompletableFuture<JsObj> completableFuture = future.get();
 We can even create suppliers:
 
 ```
-//given some suppliers
 
 Supplier<JsValue> name, age, languages, handle;
 Supplier<JsValue> profession, street, lon, lat, country;
@@ -181,10 +193,14 @@ JsObj obj = supplier.get();
 
 ```
 
+It supports the standard Json types: number, null, object, array; There are five number especializations;
+int, long, double, decimal and biginteger. json-values adds support for instants and binary data. Instants 
+are serialized into its string representation according to ISO-8601 and the binary type is serialized into a 
+string encoded in base64.
+
 I've written about json-values on my [blog](http://blog.imrafaelmerino.dev):
 * [The value of json values - Recursive data structures](http://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-recursive-data.html)
 * [The value of json values - Optics](https://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-optics.html)
-
 
 
 ## <a name="notwhatfor"><a/> When not to use it
