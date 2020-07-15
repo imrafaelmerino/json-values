@@ -42,7 +42,7 @@ public final class UserError extends RuntimeException {
 
     static UserError isNotAJsInstant(final JsValue elem) {
         return new UserError(String.format(GENERAL_MESSAGE,
-                                           String.format("JsInstant expected, but %s was found",
+                                           String.format("JsInstant expected or a JsString representing an instant formatted in ISO-8601, but %s was found",
                                                          elem.getClass()
                                                         ),
                                            "call the guard condition isInstant() before invoking asJsInstant()"
@@ -51,7 +51,8 @@ public final class UserError extends RuntimeException {
 
     static UserError isNotAJsBinary(final JsValue elem) {
         return new UserError(String.format(GENERAL_MESSAGE,
-                                           String.format("JsBinary expected, but %s was found",
+                                           String.format("JsBinary expected or a JsString representing an array of bytes encoded in base64, " +
+                                                                 "but %s was found",
                                                          elem.getClass()
                                                         ),
                                            "call the guard condition isBinary() before invoking toJsBinary()"

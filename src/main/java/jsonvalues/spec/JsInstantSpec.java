@@ -44,7 +44,7 @@ class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
     @Override
     public Optional<Error> test(final JsValue value) {
-        return Functions.testElem(JsValue::isInt,
+        return Functions.testElem(JsValue::isInstant,
                                   INSTANT_EXPECTED,
                                   required,
                                   nullable

@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Optional;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -130,11 +131,13 @@ public interface JsValue {
      @throws UserError if this JsValue is not a JsInt
      */
     default JsInstant toJsInstant() {
-        try {
-            return ((JsInstant) this);
-        } catch (ClassCastException e) {
-            throw UserError.isNotAJsInstant(this);
+        if(this instanceof JsInstant) return ((JsInstant) this);
+        if(this instanceof JsStr) {
+            Optional<Instant> instant = JsStr.instantPrism.getOptional.apply(((JsStr) this).value);
+            if(instant.isPresent()) return JsInstant.of(instant.get());
         }
+
+        throw UserError.isNotAJsInstant(this);
     }
 
 
@@ -143,11 +146,13 @@ public interface JsValue {
      @throws UserError if this JsValue is not a JsBinary
      */
     default JsBinary toJsBinary() {
-        try {
-            return ((JsBinary) this);
-        } catch (ClassCastException e) {
+            if(this instanceof JsBinary) return ((JsBinary) this);
+            if(this instanceof JsStr) {
+                Optional<byte[]> bytes = JsStr.base64Prism.getOptional.apply(((JsStr) this).value);
+                if(bytes.isPresent()) return JsBinary.of(bytes.get());
+            }
+
             throw UserError.isNotAJsBinary(this);
-        }
     }
 
     /**

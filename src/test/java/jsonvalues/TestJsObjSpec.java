@@ -1,14 +1,19 @@
 package jsonvalues;
+
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Set;
+
 import static jsonvalues.Functions.assertErrorIs;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -455,9 +460,10 @@ public class TestJsObjSpec {
                                                                  "d",
                                                                  arraySuchThat(a -> a.head() == JsNull.NULL)
                                                                 ),
-                                                "g", JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
-                                                                                 JsStr.of("B")
-                                                                                ))
+                                                "g",
+                                                JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
+                                                                            JsStr.of("B")
+                                                                           ))
                                                );
 
 
@@ -1279,14 +1285,17 @@ public class TestJsObjSpec {
                                                );
 
         final Set<JsErrorPair> errors = spec.test(JsObj.of("b",
-                                                           JsObj.empty()));
+                                                           JsObj.empty()
+                                                          ));
 
         Assertions.assertEquals(1,
-                                errors.size());
+                                errors.size()
+                               );
         Assertions.assertEquals(JsPath.path("/b/c"),
                                 errors.stream()
                                       .findFirst()
-                                      .get().path);
+                                      .get().path
+                               );
 
     }
 
@@ -1314,6 +1323,75 @@ public class TestJsObjSpec {
                                                           ));
 
         Assertions.assertFalse(errors.isEmpty());
+
+
+    }
+
+    @Test
+    public void testBinarySpec() {
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          binary,
+                                          "b",
+                                          binary
+                                         );
+        Assertions.assertTrue(spec.test(JsObj.of("a",
+                                                 JsStr.of("hola"),
+                                                 "b",
+                                                 JsBinary.of("foo".getBytes())
+                                                ))
+                                  .isEmpty());
+
+        Set<JsErrorPair> result = spec.test(JsObj.of("a",
+                                                     JsStr.of("ñññ"),
+                                                     "b",
+                                                     JsInt.of(1)
+                                                    ));
+        Assertions.assertTrue(result.size() == 2);
+
+        Assertions.assertTrue(result.stream()
+                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.error.code.equals(BINARY_EXPECTED)));
+
+        Assertions.assertTrue(result.stream()
+                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.error.code.equals(BINARY_EXPECTED)));
+
+
+    }
+
+    @Test
+    public void testInstantSpec() {
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          instant,
+                                          "b",
+                                          instant
+                                         );
+
+        Set<JsErrorPair> errorPairs = spec.test(JsObj.of("a",
+                                                         JsInstant.of(Instant.now()),
+                                                         "b",
+                                                         JsStr.of(Instant.now()
+                                                                         .toString())
+                                                        ));
+        Assertions.assertTrue(errorPairs
+                                      .isEmpty());
+
+        Set<JsErrorPair> errorPairs1 = spec.test(JsObj.of("a",
+                                                          JsStr.of("hola"),
+                                                          "b",
+                                                          JsStr.of(LocalDateTime.now()
+                                                                                .toString())
+                                                         ));
+
+
+        Assertions.assertTrue(errorPairs1.size() == 2);
+
+
+        Assertions.assertTrue(errorPairs1.stream()
+                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.error.code.equals(INSTANT_EXPECTED)));
+
+        Assertions.assertTrue(errorPairs1.stream()
+                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.error.code.equals(INSTANT_EXPECTED)));
 
 
     }
