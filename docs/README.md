@@ -17,7 +17,6 @@
 - [When not to use it](#notwhatfor)
 - [Requirements](#requirements)
 - [Installation](#installation)
-- [Want to help](#wth)
 - [Related projects](#rp)
 
 ## <a name="introduction"><a/> Introduction
@@ -132,13 +131,13 @@ import static jsonvalues.gen.JsGens;
 
 var addressGen = JsObjGen.of("city", oneOf(cities),
                              "country",oneOf(countries).optional().nullable(),
-                             "location", tuple(JsGens.decimal,
-                                               JsGens.decimal
+                             "location", tuple(decimal,
+                                               decimal
                                                )
                             );
 var gen = JsObjGen.of("name", alphabetic,
                       "age",  choose(18,100),
-                      "languages", arrayOf(JsGens.str,10),
+                      "languages", arrayOf(str,10),
                       "github", alphanumeric.optional(),
                       "profession", oneOf(professions).nullable(),
                       "address", addressGen
@@ -193,15 +192,14 @@ JsObj obj = supplier.get();
 
 ```
 
-It supports the standard Json types: number, null, object, array; There are five number especializations;
+It supports the standard Json types: string, number, null, object, array; There are five number especializations:
 int, long, double, decimal and biginteger. json-values adds support for instants and binary data. Instants 
-are serialized into its string representation according to ISO-8601 and the binary type is serialized into a 
-string encoded in base64.
+are serialized into its string representation according to ISO-8601; and the binary type is serialized into a 
+string encoded in base 64.
 
 I've written about json-values on my [blog](http://blog.imrafaelmerino.dev):
 * [The value of json values - Recursive data structures](http://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-recursive-data.html)
 * [The value of json values - Optics](https://blog.imrafaelmerino.dev/2020/06/the-value-of-json-values-optics.html)
-
 
 ## <a name="notwhatfor"><a/> When not to use it
 **json-values** fits well in _pure_ OOP and incredibly well in FP, but NOT in _EOOP_, which stands for
@@ -219,9 +217,6 @@ Add the following dependency to your building tool:
   <version>8.2.0</version>
 </dependency>
 ```
-
-## <a name="wth"><a/> Want to help
-I've set up a separate document for [contributors](./CONTRIBUTING.md).
 
 ## <a name="rp"><a/> Related projects
 “Ideas are like rabbits. You get a couple and learn how to handle them, and pretty soon you have a dozen.” – John Steinbeck
