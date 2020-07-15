@@ -137,9 +137,9 @@ public class TestPrims {
 
     @Test
     public void test_instant_prism() {
-
        Assertions.assertTrue(JsInstant.prism.isEmpty.test(JsStr.of("a")));
        Assertions.assertTrue(JsInstant.prism.getOptional.apply(JsStr.of(Instant.now().toString())).isPresent());
        Assertions.assertFalse(JsInstant.prism.getOptional.apply(JsStr.of(LocalDateTime.now().toString())).isPresent());
+
     }
 }

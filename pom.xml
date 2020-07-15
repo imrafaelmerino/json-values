@@ -31,12 +31,7 @@
     <properties>
         <JACKSON-VERSION>2.11.0</JACKSON-VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <DEPENDENCY_SCALA_CHECK_VERSION>1.14.0</DEPENDENCY_SCALA_CHECK_VERSION>
-        <DEPENDENCY_SCALA_VERSION>2.12.8</DEPENDENCY_SCALA_VERSION>
-        <DEPENDENCY_SCALA_TEST_VERSION>3.0.7</DEPENDENCY_SCALA_TEST_VERSION>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
-        <PLUGIN_SCALA_VERSION>4.0.1</PLUGIN_SCALA_VERSION>
-        <PLUGIN_SCALA_TEST_VERSION>2.0.0</PLUGIN_SCALA_TEST_VERSION>
         <COMPILER_SOURCE_VERSION>8</COMPILER_SOURCE_VERSION>
         <COMPILER_TARGET_VERSION>8</COMPILER_TARGET_VERSION>
         <sonar.projectKey>json-values</sonar.projectKey>
@@ -55,37 +50,19 @@
         <artifactId>vavr</artifactId>
         <version>${vavr.version}</version>
       </dependency>
-       <!-- <dependency>
-            <groupId>org.scalacheck</groupId>
-            <artifactId>scalacheck_2.12</artifactId>
-            <version>${DEPENDENCY_SCALA_CHECK_VERSION}</version>
-            <scope>test</scope>
-        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/com.dslplatform/dsl-json -->
+
         <dependency>
             <groupId>com.dslplatform</groupId>
             <artifactId>dsl-json</artifactId>
             <version>${dsl-json.version}</version>
         </dependency>
-        <!-- https://mvnrepository.com/artifact/com.jsoniter/jsoniter -->
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
             <version>${JACKSON-VERSION}</version>
         </dependency>
-      <!--  <dependency>
-            <groupId>org.scalatest</groupId>
-            <artifactId>scalatest_2.12</artifactId>
-            <version>${DEPENDENCY_SCALA_TEST_VERSION}</version>
-            <scope>test</scope>
-        </dependency>-->
-       <!-- <dependency>
-            <groupId>org.scala-lang</groupId>
-            <artifactId>scala-library</artifactId>
-            <version>${DEPENDENCY_SCALA_VERSION}</version>
-            <scope>test</scope>
-        </dependency>-->
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
@@ -109,24 +86,6 @@
                     </compilerArgs>
                 </configuration>
             </plugin>
-          <!--  <plugin>
-                <groupId>net.alchim31.maven</groupId>
-                <artifactId>scala-maven-plugin</artifactId>
-                <version>${PLUGIN_SCALA_VERSION}</version>
-                <configuration>
-                    <recompileMode>incremental</recompileMode>
-                    <addJavacArgs>-deprecation</addJavacArgs>
-                    <addScalacArgs>-deprecation</addScalacArgs>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals>
-                            <goal>testCompile</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -136,19 +95,6 @@
                     <useSystemClassLoader>false</useSystemClassLoader>
                 </configuration>
             </plugin>
-           <!-- <plugin>
-                <groupId>org.scalatest</groupId>
-                <artifactId>scalatest-maven-plugin</artifactId>
-                <version>${PLUGIN_SCALA_TEST_VERSION}</version>
-                <executions>
-                    <execution>
-                        <id>test</id>
-                        <goals>
-                            <goal>test</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>-->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-javadoc-plugin</artifactId>
