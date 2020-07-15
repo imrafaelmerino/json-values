@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class JsArrayOpticsTest {
+public class TestJsArrayOptics {
 
    @Test
     public void testBigDecLenses() {
