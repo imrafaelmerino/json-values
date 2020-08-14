@@ -72,21 +72,21 @@ public class TestExample {
                                 parser.parse(person.toPrettyString()));
 
 
-        JsStrLens<JsObj>       nameLens   = JsObj.lens.str("name");
+        Lens<JsObj, String> nameLens = JsObj.lens.str("name");
 
         Option<JsObj, String>  surnameOpt = JsObj.optional.str("surname");
 
         Option<JsObj, Integer> ageOpt     = JsObj.optional.intNum("age");
-        JsStrLens<JsObj>       streetLens = JsObj.lens.str(JsPath.path("/address/street"));
-        JsValueLens<JsObj>     cityLens   = JsObj.lens.value(JsPath.path("/address/city"));
+        Lens<JsObj, String>  streetLens = JsObj.lens.str(JsPath.path("/address/street"));
+        Lens<JsObj, JsValue> cityLens   = JsObj.lens.value(JsPath.path("/address/city"));
 
-        JsArrayLens<JsObj> languagesLens = JsObj.lens.array("languages");
+        Lens<JsObj, JsArray> languagesLens = JsObj.lens.array("languages");
 
-        JsValueLens<JsObj> numberLens = JsObj.lens.value(JsPath.path("/address/number"));
+        Lens<JsObj, JsValue> numberLens = JsObj.lens.value(JsPath.path("/address/number"));
 
-        JsDoubleLens<JsObj> latitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/0"));
+        Lens<JsObj, Double> latitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/0"));
 
-        JsDoubleLens<JsObj> longitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/1"));
+        Lens<JsObj, Double> longitudeLens = JsObj.lens.doubleNum(JsPath.path("/address/coordinates/1"));
 
         IntFunction<Function<JsObj, JsObj>> incAge = n -> ageOpt.modify.apply(i -> i + n);
 

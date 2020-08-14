@@ -19,9 +19,9 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsValueLens<JsObj>  valueLens = JsObj.lens.value(path);
-        JsBigIntLens<JsObj> lens      = JsObj.lens.integralNum(path);
-        JsObjLens<JsObj>    lenByKey  = JsObj.lens.obj("a");
+        Lens<JsObj, JsValue>    valueLens = JsObj.lens.value(path);
+        Lens<JsObj, BigInteger> lens     = JsObj.lens.integralNum(path);
+        Lens<JsObj, JsObj>      lenByKey = JsObj.lens.obj("a");
 
 
         Assertions.assertTrue(lenByKey.exists.apply(it -> it.containsKey("b"))
@@ -73,7 +73,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsStrLens<JsObj> lens = JsObj.lens.str(path);
+        Lens<JsObj, String> lens = JsObj.lens.str(path);
 
         Assertions.assertEquals("abc",
                                 lens.get.apply(a));
@@ -104,7 +104,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsDoubleLens<JsObj> lens = JsObj.lens.doubleNum(path);
+        Lens<JsObj, Double> lens = JsObj.lens.doubleNum(path);
 
         Assertions.assertEquals(Double.valueOf(1.5),
                                 lens.get.apply(a));
@@ -134,7 +134,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsLongLens<JsObj> lens = JsObj.lens.longNum(path);
+        Lens<JsObj, Long> lens = JsObj.lens.longNum(path);
 
         Assertions.assertEquals(Long.valueOf(Long.MAX_VALUE),
                                 lens.get.apply(a));
@@ -164,7 +164,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsIntLens<JsObj> lens = JsObj.lens.intNum(path);
+        Lens<JsObj, Integer> lens = JsObj.lens.intNum(path);
 
         Assertions.assertEquals(Integer.valueOf(Integer.MAX_VALUE),
                                 lens.get.apply(a));
@@ -194,7 +194,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsDecimalLens<JsObj> lens = JsObj.lens.decimalNum(path);
+        Lens<JsObj, BigDecimal> lens = JsObj.lens.decimalNum(path);
 
         Assertions.assertEquals(new BigDecimal("1.11"),
                                 lens.get.apply(a));
@@ -226,7 +226,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsBoolLens<JsObj> lens = JsObj.lens.bool(path);
+        Lens<JsObj, Boolean> lens = JsObj.lens.bool(path);
 
         Assertions.assertEquals(true,
                                 lens.get.apply(a));
@@ -257,7 +257,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsObjLens<JsObj> lens = JsObj.lens.obj(path);
+        Lens<JsObj, JsObj> lens = JsObj.lens.obj(path);
 
         Assertions.assertEquals(JsObj.empty(),
                                 lens.get.apply(a));
@@ -298,7 +298,7 @@ public class TestJsObjOptics {
                                     )
                           );
 
-        JsArrayLens<JsObj> lens = JsObj.lens.array(path);
+        Lens<JsObj, JsArray> lens = JsObj.lens.array(path);
 
         Assertions.assertEquals(JsArray.empty(),
                                 lens.get.apply(a));
@@ -482,8 +482,8 @@ public class TestJsObjOptics {
     @Test
     public void testValueLenses(){
 
-        JsValueLens<JsObj> b = JsObj.lens.value(JsPath.path("/a/b"));
-        JsValueLens<JsObj> head = JsObj.lens.value(JsPath.path("/a/c/0"));
+        Lens<JsObj, JsValue> b    = JsObj.lens.value(JsPath.path("/a/b"));
+        Lens<JsObj, JsValue> head = JsObj.lens.value(JsPath.path("/a/c/0"));
 
         JsObj obj = JsObj.of("a",
                             JsObj.of("b",

@@ -23,6 +23,9 @@ public class TestLenses {
                                      )
                             );
 
+        Assertions.assertEquals(obj,compose.set.apply("a")
+                                   .apply(JsObj.empty()));
+
         Assertions.assertEquals("a",
                                 compose.get.apply(obj));
 
@@ -34,7 +37,7 @@ public class TestLenses {
     @Test
     public void test_binary_lens() {
 
-        JsBinaryLens<JsObj> binaryLens = JsObj.lens.binary("a");
+        Lens<JsObj, byte[]> binaryLens = JsObj.lens.binary("a");
 
 
         byte[] bytes = binaryLens.get.apply(JsObj.of("a",
@@ -52,7 +55,7 @@ public class TestLenses {
     @Test
     public void test_instant_lens() {
 
-        JsInstantLens<JsObj> intantLens = JsObj.lens.instant("a");
+        Lens<JsObj, Instant> intantLens = JsObj.lens.instant("a");
 
 
         Instant now = Instant.now();

@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -48,8 +49,8 @@ public class Lens<S, O> {
     public Lens(final Function<S, O> get,
                 final Function<O, Function<S, S>> set) {
 
-        this.set = set;
-        this.get = get;
+        this.set = requireNonNull(set);
+        this.get = requireNonNull(get);
         this.modify = f -> json -> set.apply(f.apply(get.apply(json)))
                                       .apply(json);
         this.find = predicate -> s -> predicate.test(get.apply(s)) ?
@@ -68,8 +69,8 @@ public class Lens<S, O> {
      */
     public <T> Option<S, T> compose(final Prism<O, T> prism) {
         return new Option<>(json -> requireNonNull(prism).getOptional.apply(get.apply(json)),
-                            value -> json -> set.apply(prism.reverseGet.apply(value))
-                                                .apply(json)
+                            value -> json -> set.apply(prism.reverseGet.apply(requireNonNull(value)))
+                                                .apply(requireNonNull(json))
         );
 
 
@@ -86,9 +87,11 @@ public class Lens<S, O> {
 
         return new Lens<>(this.get.andThen(other.get),
                           b -> s -> {
-                              O o = other.set.apply(b)
-                                             .apply(this.get.apply(s));
-                              return this.set.apply(o)
+                              O o = this.get.apply(requireNonNull(s));
+                              if (o == null) return s;
+                              O newO = other.set.apply(requireNonNull(b))
+                                                .apply(o);
+                              return this.set.apply(newO)
                                              .apply(s);
                           }
         );

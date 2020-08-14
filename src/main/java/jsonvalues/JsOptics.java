@@ -34,7 +34,7 @@ public class JsOptics {
          @param path the path where the value is located at
          @return a lens
          */
-        public Lens<JsArray,JsValue> value(final JsPath path) {
+        public Lens<JsArray, JsValue> value(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsValueLens<>(requireNonNull(path));
@@ -46,7 +46,7 @@ public class JsOptics {
          @param index the index where the value is located at
          @return a lens
          */
-        public JsValueLens<JsArray> value(final int index) {
+        public Lens<JsArray, JsValue>value(final int index) {
             return new JsValueLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -56,7 +56,7 @@ public class JsOptics {
          @param path the path where the string is located at
          @return a lens
          */
-        public JsStrLens<JsArray> str(final JsPath path) {
+        public Lens<JsArray, String> str(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsStrLens<>(requireNonNull(path));
@@ -68,7 +68,7 @@ public class JsOptics {
          @param index the index where the string is located at
          @return a lens
          */
-        public JsStrLens<JsArray> str(final int index) {
+        public Lens<JsArray, String>  str(final int index) {
             return new JsStrLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -78,7 +78,7 @@ public class JsOptics {
          @param path the path where the boolean is located at
          @return a lens
          */
-        public JsBoolLens<JsArray> bool(final JsPath path) {
+        public Lens<JsArray, Boolean> bool(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsBoolLens<>(requireNonNull(path));
@@ -90,7 +90,7 @@ public class JsOptics {
          @param index the index where the boolean is located at
          @return a lens
          */
-        public JsBoolLens<JsArray> bool(final int index) {
+        public Lens<JsArray, Boolean>  bool(final int index) {
             return new JsBoolLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -100,7 +100,7 @@ public class JsOptics {
          @param path the path where the long number is located at
          @return a lens
          */
-        public JsLongLens<JsArray> longNum(final JsPath path) {
+        public Lens<JsArray, Long>  longNum(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsLongLens<>(requireNonNull(path));
@@ -112,7 +112,7 @@ public class JsOptics {
          @param index the index where the long number is located at
          @return a lens
          */
-        public JsLongLens<JsArray> longNum(final int index) {
+        public Lens<JsArray, Long> longNum(final int index) {
             return new JsLongLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -122,7 +122,7 @@ public class JsOptics {
          @param path the path where the integer number is located at
          @return a lens
          */
-        public JsIntLens<JsArray> intNum(final JsPath path) {
+        public Lens<JsArray, Integer> intNum(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsIntLens<>(requireNonNull(path));
@@ -134,7 +134,7 @@ public class JsOptics {
          @param index the index where the integer number is located at
          @return a lens
          */
-        public JsIntLens<JsArray> intNum(final int index) {
+        public Lens<JsArray, Integer> intNum(final int index) {
             return new JsIntLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -144,7 +144,7 @@ public class JsOptics {
          @param path the path where the double number is located at
          @return a lens
          */
-        public JsDoubleLens<JsArray> doubleNum(final JsPath path) {
+        public Lens<JsArray, Double> doubleNum(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsDoubleLens<>(requireNonNull(path));
@@ -156,7 +156,7 @@ public class JsOptics {
          @param index the index where the double number is located at
          @return a lens
          */
-        public JsDoubleLens<JsArray> doubleNum(final int index) {
+        public Lens<JsArray, Double> doubleNum(final int index) {
             return new JsDoubleLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -166,7 +166,7 @@ public class JsOptics {
          @param path the path where the decimal number is located at
          @return a lens
          */
-        public JsDecimalLens<JsArray> decimalNum(final JsPath path) {
+        public Lens<JsArray, BigDecimal> decimalNum(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsDecimalLens<>(requireNonNull(path));
@@ -178,7 +178,7 @@ public class JsOptics {
          @param index the index where the decimal number is located at
          @return a lens
          */
-        public JsDecimalLens<JsArray> decimalNum(final int index) {
+        public Lens<JsArray, BigDecimal> decimalNum(final int index) {
             return new JsDecimalLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -188,7 +188,7 @@ public class JsOptics {
          @param path the path where the integral number is located at
          @return a lens
          */
-        public JsBigIntLens<JsArray> integralNum(final JsPath path) {
+        public Lens<JsArray, BigInteger> integralNum(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsBigIntLens<>(requireNonNull(path));
@@ -200,7 +200,7 @@ public class JsOptics {
          @param index the index where the integral number is located at
          @return a lens
          */
-        public JsBigIntLens<JsArray> integralNum(final int index) {
+        public Lens<JsArray, BigInteger> integralNum(final int index) {
             return new JsBigIntLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -210,7 +210,7 @@ public class JsOptics {
          @param path the path where the json object is located at
          @return a lens
          */
-        public JsObjLens<JsArray> obj(final JsPath path) {
+        public Lens<JsArray, JsObj> obj(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsObjLens<>(requireNonNull(path));
@@ -222,7 +222,7 @@ public class JsOptics {
          @param index the index where the json object is located at
          @return a lens
          */
-        public JsObjLens<JsArray> obj(final int index) {
+        public Lens<JsArray, JsObj>  obj(final int index) {
             return new JsObjLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -232,7 +232,7 @@ public class JsOptics {
          @param path the path where the json array is located at
          @return a lens
          */
-        public JsArrayLens<JsArray> array(final JsPath path) {
+        public Lens<JsArray, JsArray>  array(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsArrayLens<>(requireNonNull(path));
@@ -244,7 +244,7 @@ public class JsOptics {
          @param index the index where the json array is located at
          @return a lens
          */
-        public JsArrayLens<JsArray> array(final int index) {
+        public Lens<JsArray, JsArray>  array(final int index) {
             return new JsArrayLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -255,7 +255,7 @@ public class JsOptics {
          @param path the path where the bytes are located at
          @return a lens
          */
-        public JsBinaryLens<JsArray> binary(final JsPath path) {
+        public Lens<JsArray, byte[]>  binary(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsBinaryLens<>(requireNonNull(path));
@@ -267,7 +267,7 @@ public class JsOptics {
          @param index the index where the bytes are located at
          @return a lens
          */
-        public JsBinaryLens<JsArray> binary(final int index) {
+        public Lens<JsArray, byte[]> binary(final int index) {
             return new JsBinaryLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
 
@@ -278,7 +278,7 @@ public class JsOptics {
          @param path the path where the bytes are located at
          @return a lens
          */
-        public JsInstantLens<JsArray> instant(final JsPath path) {
+        public Lens<JsArray, Instant> instant(final JsPath path) {
             if (path.head()
                     .isKey()) throw UserError.pathHeadIsNotAnIndex(path);
             return new JsInstantLens<>(requireNonNull(path));
@@ -290,7 +290,7 @@ public class JsOptics {
          @param index the index where the bytes are located at
          @return a lens
          */
-        public JsInstantLens<JsArray> instant(final int index) {
+        public Lens<JsArray, Instant>  instant(final int index) {
             return new JsInstantLens<>(requireNonNull(JsPath.fromIndex(index)));
         }
     }
@@ -848,7 +848,7 @@ public class JsOptics {
          @param path the path where the value is located at
          @return an optional
          */
-        public JsValueLens<JsObj> value(final JsPath path) {
+        public Lens<JsObj, JsValue> value(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -861,7 +861,7 @@ public class JsOptics {
          @param key the key where the value is located at
          @return an optional
          */
-        public JsValueLens<JsObj> value(final String key) {
+        public Lens<JsObj, JsValue> value(final String key) {
             return new JsValueLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -871,7 +871,7 @@ public class JsOptics {
          @param path the path where the string is located at
          @return an optional
          */
-        public JsStrLens<JsObj> str(final JsPath path) {
+        public Lens<JsObj, String> str(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -884,7 +884,7 @@ public class JsOptics {
          @param key the key where the string is located at
          @return an optional
          */
-        public JsStrLens<JsObj> str(final String key) {
+        public Lens<JsObj, String> str(final String key) {
             return new JsStrLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -894,7 +894,7 @@ public class JsOptics {
          @param path the path where the boolean is located at
          @return an optional
          */
-        public JsBoolLens<JsObj> bool(final JsPath path) {
+        public Lens<JsObj, Boolean> bool(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -907,7 +907,7 @@ public class JsOptics {
          @param key the key where the boolean is located at
          @return an optional
          */
-        public JsBoolLens<JsObj> bool(final String key) {
+        public Lens<JsObj, Boolean> bool(final String key) {
             return new JsBoolLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -917,7 +917,7 @@ public class JsOptics {
          @param path the path where the long number is located at
          @return an optional
          */
-        public JsLongLens<JsObj> longNum(final JsPath path) {
+        public Lens<JsObj, Long>  longNum(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -930,7 +930,7 @@ public class JsOptics {
          @param key the key where the long number is located at
          @return an optional
          */
-        public JsLongLens<JsObj> longNum(final String key) {
+        public Lens<JsObj, Long> longNum(final String key) {
             return new JsLongLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -940,7 +940,7 @@ public class JsOptics {
          @param path the path where the integer number is located at
          @return an optional
          */
-        public JsIntLens<JsObj> intNum(final JsPath path) {
+        public Lens<JsObj, Integer>  intNum(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -953,7 +953,7 @@ public class JsOptics {
          @param key the key where the integer number is located at
          @return an optional
          */
-        public JsIntLens<JsObj> intNum(final String key) {
+        public Lens<JsObj, Integer> intNum(final String key) {
             return new JsIntLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -963,7 +963,7 @@ public class JsOptics {
          @param path the path where the double number is located at
          @return an optional
          */
-        public JsDoubleLens<JsObj> doubleNum(final JsPath path) {
+        public Lens<JsObj, Double> doubleNum(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -976,7 +976,7 @@ public class JsOptics {
          @param key the key where the double number is located at
          @return an optional
          */
-        public JsDoubleLens<JsObj> doubleNum(final String key) {
+        public Lens<JsObj, Double> doubleNum(final String key) {
             return new JsDoubleLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -986,7 +986,7 @@ public class JsOptics {
          @param path the path where the decimal number is located at
          @return an optional
          */
-        public JsDecimalLens<JsObj> decimalNum(final JsPath path) {
+        public Lens<JsObj, BigDecimal> decimalNum(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -999,7 +999,7 @@ public class JsOptics {
          @param key the key where the decimal number is located at
          @return an optional
          */
-        public JsDecimalLens<JsObj> decimalNum(final String key) {
+        public Lens<JsObj, BigDecimal> decimalNum(final String key) {
             return new JsDecimalLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -1009,7 +1009,7 @@ public class JsOptics {
          @param path the path where the integral number is located at
          @return an optional
          */
-        public JsBigIntLens<JsObj> integralNum(final JsPath path) {
+        public Lens<JsObj, BigInteger> integralNum(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -1022,7 +1022,7 @@ public class JsOptics {
          @param key the key where the integral number is located at
          @return an optional
          */
-        public JsBigIntLens<JsObj> integralNum(final String key) {
+        public Lens<JsObj, BigInteger> integralNum(final String key) {
             return new JsBigIntLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -1032,7 +1032,7 @@ public class JsOptics {
          @param path the path where the json object is located at
          @return an optional
          */
-        public JsObjLens<JsObj> obj(final JsPath path) {
+        public Lens<JsObj, JsObj> obj(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -1045,7 +1045,7 @@ public class JsOptics {
          @param key the key where the json object is located at
          @return an optional
          */
-        public JsObjLens<JsObj> obj(final String key) {
+        public Lens<JsObj, JsObj> obj(final String key) {
             return new JsObjLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -1055,7 +1055,7 @@ public class JsOptics {
          @param path the path where the json array is located at
          @return an optional
          */
-        public JsArrayLens<JsObj> array(final JsPath path) {
+        public Lens<JsObj, JsArray> array(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -1068,11 +1068,9 @@ public class JsOptics {
          @param key the key where the json array is located at
          @return an optional
          */
-        public JsArrayLens<JsObj> array(final String key) {
+        public Lens<JsObj, JsArray>  array(final String key) {
             return new JsArrayLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
-
-
 
 
         /**
@@ -1081,7 +1079,7 @@ public class JsOptics {
          @param path the path where the array of bytes is located at
          @return an optional
          */
-        public JsBinaryLens<JsObj> binary(final JsPath path) {
+        public Lens<JsObj, byte[]>  binary(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -1094,7 +1092,7 @@ public class JsOptics {
          @param key the key where the array of bytes is located at
          @return an optional
          */
-        public JsBinaryLens<JsObj> binary(final String key) {
+        public Lens<JsObj, byte[]>  binary(final String key) {
             return new JsBinaryLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
@@ -1105,7 +1103,7 @@ public class JsOptics {
          @param path the path where the instant is located at
          @return an optional
          */
-        public JsInstantLens<JsObj> instant(final JsPath path) {
+        public Lens<JsObj, Instant>  instant(final JsPath path) {
             if (path.head()
                     .isIndex()) throw UserError.pathHeadIsNotAKey(requireNonNull(path));
 
@@ -1118,7 +1116,7 @@ public class JsOptics {
          @param key the key where the instant is located at
          @return an optional
          */
-        public JsInstantLens<JsObj> instant(final String key) {
+        public Lens<JsObj, Instant>  instant(final String key) {
             return new JsInstantLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
         }
 
