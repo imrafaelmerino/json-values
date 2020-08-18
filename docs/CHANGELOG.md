@@ -1,10 +1,14 @@
 # JSON-VALUES
-## v8.3.0  ( Fri Aug 14 2020 02:37:38 GMT+0200 (Central European Summer Time) )
+## v8.4.0  ( Tue Aug 18 2020 22:00:48 GMT+0200 (Central European Summer Time) )
 
 
 ## Bug Fixes
-  - 🐛 lenses methods returns impls, nullpointer compose
-  ([be84679e](https://github.com/imrafaelmerino/json-values/commit/be84679e796dea2f883363470338265c32d14b7b))
+  - 🐛 hashcode and equals methods in JsErrorPair and Error
+  ([5de87935](https://github.com/imrafaelmerino/json-values/commit/5de879356eafd5c3c168c9709b737d03f4cb10bb))
+
+## Features
+  - 🎸 JsGens.cons and JsSpec.const methods
+  ([3f9b0d1d](https://github.com/imrafaelmerino/json-values/commit/3f9b0d1d56d51beb18606169900a5c1b237d7859))
 
 
 
