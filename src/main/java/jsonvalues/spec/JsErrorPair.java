@@ -2,6 +2,8 @@ package jsonvalues.spec;
 
 import jsonvalues.JsPath;
 
+import java.util.Objects;
+
 import static java.util.Objects.requireNonNull;
 
 public class JsErrorPair {
@@ -29,5 +31,21 @@ public class JsErrorPair {
                 "path=" + path +
                 ", error=" + error +
                 ')';
+    }
+
+    @Override
+    public boolean equals(final Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        final JsErrorPair that = (JsErrorPair) o;
+        return path.equals(that.path) &&
+                error.equals(that.error);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(path,
+                            error
+                           );
     }
 }
