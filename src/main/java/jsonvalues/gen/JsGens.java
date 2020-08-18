@@ -453,7 +453,15 @@ public class JsGens {
         };
     }
 
-
+    /**
+     generates a constant
+     @param value the constant
+     @return a generator
+     */
+    public static JsGen<JsValue> cons(final JsValue value){
+        requireNonNull(value);
+        return random -> () -> value;
+    }
 
 
 }

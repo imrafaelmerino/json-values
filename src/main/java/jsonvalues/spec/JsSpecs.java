@@ -163,6 +163,24 @@ public class JsSpecs {
     }
 
     /**
+     a required and non nullable spec that specifies a constant
+     @param value the constant
+     @return a spec
+     */
+    public static JsSpec cons(JsValue value){
+        return new AnySuchThatSpec(true,
+                                   v ->
+                                   {
+                                       if (requireNonNull(value).equals(v)) return Optional.empty();
+                                       return Optional.of(new Error(v,
+                                                                    CONSTANT_CONDITION
+                                                          )
+                                                         );
+                                   }
+        );
+    }
+
+    /**
      non-nullable string that satisfies the given predicate
 
      @param predicate the predicate

@@ -1,9 +1,7 @@
 package jsonvalues;
 
-import jsonvalues.spec.JsErrorPair;
-import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsSpec;
-import jsonvalues.spec.JsSpecs;
+import jsonvalues.spec.Error;
+import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -1394,5 +1392,28 @@ public class TestJsObjSpec {
                                          .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.error.code.equals(INSTANT_EXPECTED)));
 
 
+    }
+
+    @Test
+    public void testConstantSpec() {
+
+        Set<JsErrorPair> errorPairSet = cons(JsStr.of("hi")).test(JsPath.empty(),
+                                                                  JsInt.of(1)
+                                                                 );
+
+
+        Assertions.assertTrue(errorPairSet.contains(JsErrorPair.of(JsPath.empty(),
+                                                                   new Error(JsInt.of(1),
+                                                                             CONSTANT_CONDITION
+                                                                   )
+                                                                  )
+                                                   ));
+
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          cons(JsInt.of(2)).optional()
+                                         );
+
+        Assertions.assertTrue(spec.test(JsObj.empty()).isEmpty());
     }
 }

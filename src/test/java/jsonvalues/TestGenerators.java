@@ -5,9 +5,7 @@ import jsonvalues.gen.JsGen;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.gen.TestProperty;
-import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,14 +13,14 @@ import org.junit.jupiter.api.Test;
 import java.time.Duration;
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.time.temporal.TemporalAmount;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.Set;
-import java.util.function.Predicate;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
+import static jsonvalues.gen.JsGens.oneOf;
 import static jsonvalues.gen.JsGens.*;
 import static jsonvalues.spec.JsSpecs.bool;
 import static jsonvalues.spec.JsSpecs.decimal;
@@ -33,6 +31,13 @@ import static jsonvalues.spec.JsSpecs.*;
 
 public class TestGenerators {
 
+
+    private static final <O> Consumer<O> failureConsumer() {
+        return v -> {
+            System.out.println(v);
+            Assertions.fail("generated obj doesnt satisfy spec");
+        };
+    }
 
     @Test
     public void test_js_array() {
@@ -53,23 +58,22 @@ public class TestGenerators {
                                             );
 
         TestProperty.test(gen,
-             v -> JsObjSpec.strict("a",
-                                   arrayOfStrSuchThat(a -> a.size() <= 10).optional()
-                                                                          .nullable(),
-                                   "b",
-                                   arrayOfIntSuchThat(a -> a.size() <= 10).nullable()
-                                                                          .optional()
-                                  )
-                           .test(v.toJsObj())
-                           .isEmpty()
+                          v -> JsObjSpec.strict("a",
+                                                arrayOfStrSuchThat(a -> a.size() <= 10).optional()
+                                                                                       .nullable(),
+                                                "b",
+                                                arrayOfIntSuchThat(a -> a.size() <= 10).nullable()
+                                                                                       .optional()
+                                               )
+                                        .test(v.toJsObj())
+                                        .isEmpty()
                 ,
                           v -> {
                               System.out.println(v);
                               Assertions.fail("generated obj doesn satisfy spec");
                           }
-            );
+                         );
     }
-
 
 
     @Test
@@ -88,24 +92,24 @@ public class TestGenerators {
                                         );
 
         TestProperty.test(gen,
-             v -> JsObjSpec.strict("a",
-                                   integer,
-                                   "b",
-                                   str(s -> s.length() <= 10),
-                                   "c",
-                                   str(s -> s.length() <= 10),
-                                   "d",
-                                   tuple(integer,
-                                         str(s -> s.length() <= 10)
-                                        )
-                                  )
-                           .test(v.toJsObj())
-                           .isEmpty(),
-                           v -> {
-                               System.out.println(v);
-                               Assertions.fail("generated obj doesn satisfy spec");
-                           }
-                    );
+                          v -> JsObjSpec.strict("a",
+                                                integer,
+                                                "b",
+                                                str(s -> s.length() <= 10),
+                                                "c",
+                                                str(s -> s.length() <= 10),
+                                                "d",
+                                                tuple(integer,
+                                                      str(s -> s.length() <= 10)
+                                                     )
+                                               )
+                                        .test(v.toJsObj())
+                                        .isEmpty(),
+                          v -> {
+                              System.out.println(v);
+                              Assertions.fail("generated obj doesn satisfy spec");
+                          }
+                         );
 
 
     }
@@ -142,34 +146,34 @@ public class TestGenerators {
                                   );
 
         TestProperty.test(gen,
-             a ->
-                     JsObjSpec.strict("a",
-                                      arrayOfStr,
-                                      "b",
-                                      tuple(str,
-                                            bool,
-                                            integer
-                                           ),
-                                      "c",
-                                      JsObjSpec.strict("a",
-                                                       any(v -> v.isStr() || v.isBool())
-                                                      ),
-                                      "d",
-                                      bool,
-                                      "e",
-                                      str.optional(),
-                                      "f",
-                                      any(v -> v.isStr() || v.isIntegral()),
-                                      "g",
-                                      str(b -> b.equals("a"))
-                                     )
-                              .test(a.toJsObj())
-                              .isEmpty(),
+                          a ->
+                                  JsObjSpec.strict("a",
+                                                   arrayOfStr,
+                                                   "b",
+                                                   tuple(str,
+                                                         bool,
+                                                         integer
+                                                        ),
+                                                   "c",
+                                                   JsObjSpec.strict("a",
+                                                                    any(v -> v.isStr() || v.isBool())
+                                                                   ),
+                                                   "d",
+                                                   bool,
+                                                   "e",
+                                                   str.optional(),
+                                                   "f",
+                                                   any(v -> v.isStr() || v.isIntegral()),
+                                                   "g",
+                                                   str(b -> b.equals("a"))
+                                                  )
+                                           .test(a.toJsObj())
+                                           .isEmpty(),
                           v -> {
                               System.out.println(v);
                               Assertions.fail("generated obj doesn satisfy spec");
                           }
-            );
+                         );
     }
 
     @Test
@@ -206,13 +210,18 @@ public class TestGenerators {
                                                ),
                                    "k",
                                    frequency(new Tuple2<>(1,
-                                                          JsGens.str),
+                                                          JsGens.str
+                                             ),
                                              new Tuple2<>(1,
-                                                          JsGens.longInteger)),
+                                                          JsGens.longInteger
+                                             )
+                                            ),
                                    "l",
                                    arrayDistinct(choose(1,
-                                                        10),
-                                                 5),
+                                                        10
+                                                       ),
+                                                 5
+                                                ),
                                    "m",
                                    characterAlpha,
                                    "n",
@@ -220,7 +229,10 @@ public class TestGenerators {
                                    "o",
                                    JsGens.binary.optional(),
                                    "p",
-                                   JsGens.dateBetween(0,1000).optional()
+                                   JsGens.dateBetween(0,
+                                                      1000
+                                                     )
+                                         .optional()
                                   );
 
         JsObjSpec spec = JsObjSpec.lenient("a",
@@ -260,38 +272,42 @@ public class TestGenerators {
                                           );
 
         TestProperty.test(gen,
-             v -> spec.test(v.toJsObj())
-                      .isEmpty()
+                          v -> spec.test(v.toJsObj())
+                                   .isEmpty()
                 ,
                           v -> {
                               System.out.println(v);
                               Assertions.fail("generated obj doesn satisfy spec");
                           }
-            );
+                         );
 
-        TestProperty.test(gen,v -> {
-            String s = v.toString();
-            return v.equals(JsObj.parse(s));
-        },
+        TestProperty.test(gen,
+                          v -> {
+                              String s = v.toString();
+                              return v.equals(JsObj.parse(s));
+                          },
                           v -> {
                               System.out.println(v);
                               Assertions.fail("generated obj doesn satisfy spec");
-                          });
+                          }
+                         );
     }
 
     @Test
     public void testSamples() {
 
-        JsObjGen  gen  = JsObjGen.of("a",
-                                     JsGens.str,
-                                     "b",
-                                     JsGens.integer.optional()
-                                                   .nullable());
+        JsObjGen gen = JsObjGen.of("a",
+                                   JsGens.str,
+                                   "b",
+                                   JsGens.integer.optional()
+                                                 .nullable()
+                                  );
         JsObjSpec spec = JsObjSpec.strict("a",
                                           str,
                                           "b",
                                           integer.optional()
-                                                 .nullable());
+                                                 .nullable()
+                                         );
 
         final Supplier<JsObj> supplier = gen.sample();
 
@@ -338,64 +354,64 @@ public class TestGenerators {
                                                  );
 
         TestProperty.test(array,
-             it -> it.toJsArray()
-                     .size() == 10,
-                          v -> {
-                              System.out.println(v);
-                              Assertions.fail("generated obj doesn satisfy spec");
-                          });
+                          it -> it.toJsArray()
+                                  .size() == 10,
+                          failureConsumer()
+                         );
 
         TestProperty.test(array,
-             value -> JsSpecs.arrayOfStr(it -> it.length() == 1)
-                             .test(value.toJsArray())
-                             .isEmpty(),
-                          v -> {
-                              System.out.println(v);
-                              Assertions.fail("generated obj doesn satisfy spec");
-                          }
-            );
+                          value -> JsSpecs.arrayOfStr(it -> it.length() == 1)
+                                          .test(value.toJsArray())
+                                          .isEmpty(),
+                          failureConsumer()
+                         );
 
 
     }
 
     @Test
-    public void testDigitCode(){
+    public void testDigitCode() {
 
-        TestProperty.test(JsGens.digits(10),value-> {
-            return value.toJsStr().value
-                        .length() == 10;
-        },
-                          v -> {
-                              System.out.println(v);
-                              Assertions.fail("generated obj doesn satisfy spec");
-                          });
+        TestProperty.test(JsGens.digits(10),
+                          value -> value.toJsStr().value
+                                  .length() == 10,
+                          failureConsumer()
+                         );
     }
 
     @Test
-    public void testDates(){
+    public void testDates() {
 
-       TestProperty.test(JsGens.dateBetween(ZonedDateTime.now(),ZonedDateTime.now().plus(Duration.ofDays(2))),
-            value -> value.isInstant(),
-                         v -> {
-                             System.out.println(v);
-                             Assertions.fail("generated obj doesn satisfy spec");
-                         });
+        TestProperty.test(JsGens.dateBetween(ZonedDateTime.now(),
+                                             ZonedDateTime.now()
+                                                          .plus(Duration.ofDays(2))
+                                            ),
+                          JsInstant::isInstant,
+                          failureConsumer()
+                         );
     }
 
 
     @Test
-    public void testBinary(){
+    public void testBinary() {
         TestProperty.test(JsGens.binary,
-             value -> value.isBinary() & value.toJsBinary().value.length<=1024,
-                          v -> {
-                              System.out.println(v);
-                              Assertions.fail("generated obj doesn satisfy spec");
-                          });
+                          value -> value.isBinary() & value.toJsBinary().value.length <= 1024,
+                          failureConsumer()
+                         );
+    }
+
+    @Test
+    public void testConsGen() {
+
+        TestProperty.test(JsGens.cons(JsStr.of("hi")),
+                          v -> v.equals(JsStr.of("hi")),
+                          failureConsumer()
+                         );
     }
 
     public static void main(String[] args) {
         JsInstant instant = JsInstant.of(Instant.parse("1970-01-01T00:02:20Z"));
-        JsStr str = JsStr.of("1970-01-01T00:02:20Z");
+        JsStr     str     = JsStr.of("1970-01-01T00:02:20Z");
 
         System.out.println(instant.equals(str));
     }
