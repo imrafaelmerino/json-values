@@ -44,7 +44,7 @@ public class JsBinary implements JsValue {
     /**
      prism between the sum type JsValue and JsBinary
      */
-    public static Prism<JsValue, byte[]> prism =
+    public static final Prism<JsValue, byte[]> prism =
             new Prism<>(s -> {
                 if(s.isBinary())return Optional.of(s.toJsBinary().value);
                 if(s.isStr()){

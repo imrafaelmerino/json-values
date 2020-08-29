@@ -11,6 +11,7 @@ import java.util.function.Function;
  a Json
 
  @param <O> the type of the Json, either an object or an array */
+@SuppressWarnings("squid:S106")
 public interface Program<O extends Json<?>> {
 
 

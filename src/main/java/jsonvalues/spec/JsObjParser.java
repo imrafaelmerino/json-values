@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.parsers.JsParserException;
 import com.dslplatform.json.parsers.JsSpecParser;
 import jsonvalues.JsObj;
 

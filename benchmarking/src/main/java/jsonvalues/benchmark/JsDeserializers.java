@@ -66,7 +66,7 @@ public class JsDeserializers {
     }
 
     @Benchmark
-    public void json_schema_validator(Blackhole bh) throws JsonProcessingException, ProcessingException {
+    public void json_schema_validator(Blackhole bh) throws  ProcessingException {
         JsonNode json = objectMapper.readTree(PERSON_JSON);
         bh.consume(schema.validate(json));
     }

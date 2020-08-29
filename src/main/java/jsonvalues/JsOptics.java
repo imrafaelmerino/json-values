@@ -11,6 +11,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class JsOptics {
 
+    private JsOptics(){}
 
     public static final JsObjOptics obj = new JsObjOptics();
     public static final JsArrayOptics array = new JsArrayOptics();

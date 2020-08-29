@@ -76,12 +76,10 @@ public class Prism<S, T> {
                 else return v;
             };
         };
-        this.modifyOpt = f -> {
-            return v ->
-            {
-                final Optional<T> opt = getOptional.apply(v);
-                return opt.map(t -> reverseGet.apply(f.apply(t)));
-            };
+        this.modifyOpt = f -> v ->
+        {
+            final Optional<T> opt = getOptional.apply(v);
+            return opt.map(t -> reverseGet.apply(f.apply(t)));
         };
         this.isEmpty = target -> !getOptional.apply(target)
                                              .isPresent();

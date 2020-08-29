@@ -113,7 +113,7 @@ public class JsTupleSpec implements JsArraySpec {
             return errors;
         }
         JsArray              array     = value.toJsArray();
-        final Vector<JsSpec> specs     = tupleSpec.specs;
+        final Vector<JsSpec> tupleSpecs     = tupleSpec.specs;
         final int            specsSize = tupleSpec.specs.size();
         if (specsSize > 0 && array.size() > specsSize && tupleSpec.strict) {
             errors.add(JsErrorPair.of(parent.tail()
@@ -129,7 +129,7 @@ public class JsTupleSpec implements JsArraySpec {
 
         for (int i = 0; i < specsSize; i++) {
             currentPath = currentPath.inc();
-            final JsSpec spec = specs.get(i);
+            final JsSpec spec = tupleSpecs.get(i);
             errors.addAll(spec.test(currentPath,
                                     array.get(i)));
         }

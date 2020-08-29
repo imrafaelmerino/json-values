@@ -2,7 +2,6 @@ package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.ParsingException;
-import io.vavr.collection.HashMap;
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;

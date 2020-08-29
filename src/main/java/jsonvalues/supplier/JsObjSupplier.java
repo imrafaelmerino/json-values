@@ -29,6 +29,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
     }
 
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -94,6 +96,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -156,6 +160,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
     }
 
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -213,6 +219,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -266,6 +274,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -315,6 +325,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -360,6 +372,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -401,6 +415,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -439,6 +455,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
     }
 
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -472,6 +490,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -501,6 +521,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,
@@ -526,6 +548,8 @@ public class JsObjSupplier implements Supplier<JsObj> {
                                );
     }
 
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
     private JsObjSupplier(final String key,
                           final Supplier<? extends JsValue> supplier,
                           final String key1,

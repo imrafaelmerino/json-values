@@ -32,7 +32,7 @@ public final class JsValueSerializer {
                 writer.writeNull();
                 break;
             }
-            case JsStr.ID: {
+            case JsStr.TYPE_ID: {
                 writer.writeString(value.toJsStr().value);
                 break;
             }
@@ -42,7 +42,7 @@ public final class JsValueSerializer {
                                       );
                 break;
             }
-            case JsArray.ID: {
+            case JsArray.TYPE_ID: {
                 arraySerializer.write(writer,
                                       value.toJsArray()
                                      );

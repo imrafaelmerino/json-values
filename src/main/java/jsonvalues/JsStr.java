@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsStr implements JsValue, Comparable<JsStr> {
 
-    public static final int ID = 2;
+    public static final int TYPE_ID = 2;
     /**
      prism between the sum type JsValue and JsStr
      */
@@ -58,7 +58,7 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

@@ -2,9 +2,7 @@ package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
 import com.dslplatform.json.ParsingException;
-import io.vavr.collection.HashMap;
 import jsonvalues.JsObj;
-import jsonvalues.JsValue;
 import jsonvalues.spec.Error;
 
 import java.io.IOException;

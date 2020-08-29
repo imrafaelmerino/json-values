@@ -34,7 +34,7 @@ import static jsonvalues.Trampoline.more;
  Represents a json array, which is an ordered list of elements.
  */
 public class JsArray implements Json<JsArray>, Iterable<JsValue> {
-    public static final int ID = 4;
+    public static final int TYPE_ID = 4;
     /**
      lenses defined for a Json array
      */
@@ -1048,9 +1048,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
+    @Override
     public boolean isArray() {
         return true;
     }

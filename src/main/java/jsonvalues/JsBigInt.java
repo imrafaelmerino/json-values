@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     public static final int TYPE_ID = 6;
-    public static Prism<JsValue, BigInteger> prism =
+    public static final Prism<JsValue, BigInteger> prism =
             new Prism<>(s ->
                         {
                             if (s.isLong())

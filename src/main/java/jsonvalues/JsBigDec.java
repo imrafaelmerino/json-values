@@ -21,7 +21,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     /**
      prism between the sum type JsValue and JsBigDec
      */
-    public static Prism<JsValue, BigDecimal> prism = new Prism<>(s ->
+    public static final Prism<JsValue, BigDecimal> prism = new Prism<>(s ->
                                                                  {
                                                                      if (s.isDouble())
                                                                          return Optional.of(BigDecimal.valueOf(s.toJsDouble().value));
@@ -235,10 +235,10 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
      @see BigDecimal#doubleValue()
      */
     Optional<Double> doubleValueExact() {
-        final double value = this.value.doubleValue();
-        if (value == Double.NEGATIVE_INFINITY) return Optional.empty();
-        if (value == Double.POSITIVE_INFINITY) return Optional.empty();
-        return Optional.of(value);
+        final double number = this.value.doubleValue();
+        if (number == Double.NEGATIVE_INFINITY) return Optional.empty();
+        if (number == Double.POSITIVE_INFINITY) return Optional.empty();
+        return Optional.of(number);
 
     }
 

@@ -1,10 +1,7 @@
 package jsonvalues.benchmark;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 
-import javax.annotation.Nullable;
 import javax.validation.constraints.*;
-import java.util.ArrayList;
 import java.util.List;
 
 public class PersonWithAnnotations {

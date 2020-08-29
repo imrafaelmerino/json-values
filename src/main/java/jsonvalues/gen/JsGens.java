@@ -20,6 +20,7 @@ public class JsGens {
     private static final int A = 97;
     private static final int ZERO = 48;
     private static final String LENGTH_EQUAL_ZERO_ERROR = "length must be greater than zero.";
+    private static final String SIZE_NEGATIVE_ERROR_MESSAGE = "size negative";
 
     private JsGens(){}
 
@@ -289,7 +290,7 @@ public class JsGens {
     public static JsGen<JsArray> array(final JsGen<?> gen,
                                        final int size
                                       ) {
-        if (size < 0) throw new IllegalArgumentException("size negative");
+        if (size < 0) throw new IllegalArgumentException(SIZE_NEGATIVE_ERROR_MESSAGE);
         return JsArrayGen.of(requireNonNull(gen),
                              size
                             );
@@ -307,7 +308,7 @@ public class JsGens {
     public static JsGen<JsArray> arrayDistinct(final JsGen<?> gen,
                                                final int size
                                               ) {
-        if (size < 0) throw new IllegalArgumentException("size negative");
+        if (size < 0) throw new IllegalArgumentException(SIZE_NEGATIVE_ERROR_MESSAGE);
 
         return arrayDistinct(requireNonNull(gen),
                              size,
@@ -330,7 +331,7 @@ public class JsGens {
                                                final int maxTries
                                               ) {
         requireNonNull(gen);
-        if (size < 0) throw new IllegalArgumentException("size negative");
+        if (size < 0) throw new IllegalArgumentException(SIZE_NEGATIVE_ERROR_MESSAGE);
         if (maxTries < 0) throw new IllegalArgumentException("maxTries negative");
 
         return r -> () ->

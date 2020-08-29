@@ -4122,19 +4122,19 @@ public class JsObjSpec implements JsSpec {
     @Override
     public JsSpecParser parser() {
         Map<String, JsSpecParser> parsers  = HashMap.empty();
-        Vector<String>            required = Vector.empty();
+        Vector<String>            requiredKeys = Vector.empty();
         for (final String key : bindings.keySet()) {
 
             final JsSpec spec = bindings.get(key)
                                         .get();
-            if (spec.isRequired()) required = required.append(key);
+            if (spec.isRequired()) requiredKeys = requiredKeys.append(key);
             parsers = parsers.put(key,
                                   spec.parser()
                                  );
         }
 
 
-        return JsSpecParsers.INSTANCE.ofObjSpec(required,
+        return JsSpecParsers.INSTANCE.ofObjSpec(requiredKeys,
                                                 parsers,
                                                 nullable,
                                                 strict

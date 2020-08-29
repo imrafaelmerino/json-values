@@ -16,136 +16,137 @@ import static jsonvalues.spec.ERROR_CODE.*;
 
 public class JsSpecs {
 
+    private JsSpecs(){}
     /**
      spec that is conformed by any value
      */
-    public static JsSpec any = new AnySpec(true);
+    public static final JsSpec any = new AnySpec(true);
     /**
      non-nullable string
      */
-    public static JsSpec str = new JsStrSpec(true,
+    public static final JsSpec str = new JsStrSpec(true,
                                              false
     );
     /**
      non-nullable number
      */
-    public static JsSpec number = new JsNumberSpec(true,
+    public static final JsSpec number = new JsNumberSpec(true,
                                                    false
     );
     /**
      non-nullable boolean
      */
-    public static JsSpec bool = new JsBooleanSpec(true,
+    public static final JsSpec bool = new JsBooleanSpec(true,
                                                   false
     );
     /**
      non-nullable decimal number
      */
-    public static JsSpec decimal = new JsDecimalSpec(true,
+    public static final JsSpec decimal = new JsDecimalSpec(true,
                                                      false
     );
     /**
      non-nullable integral number
      */
-    public static JsSpec integral = new JsIntegralSpec(true,
+    public static final JsSpec integral = new JsIntegralSpec(true,
                                                        false
     );
     /**
      non-nullable long number
      */
-    public static JsSpec longInteger = new JsLongSpec(true,
+    public static final JsSpec longInteger = new JsLongSpec(true,
                                                       false
     );
     /**
      non-nullable integer number
      */
-    public static JsSpec integer = new JsIntSpec(true,
+    public static final JsSpec integer = new JsIntSpec(true,
                                                  false
     );
     /**
      true constant spec
      */
-    public static JsSpec TRUE = new JsTrueConstantSpec(true,
+    public static final JsSpec TRUE = new JsTrueConstantSpec(true,
                                                        false
     );
     /**
      false constant spec
      */
-    public static JsSpec FALSE = new JsFalseConstantSpec(true,
+    public static final JsSpec FALSE = new JsFalseConstantSpec(true,
                                                          false
     );
     /**
      non-nullable json object spec
      */
-    public static JsSpec obj = new IsJsObjSpec(true,
+    public static final JsSpec obj = new IsJsObjSpec(true,
                                                false
     );
     /**
      non-nullable array spec
      */
-    public static JsArraySpec array = new JsArrayOfValueSpec(true,
+    public static final JsArraySpec array = new JsArrayOfValueSpec(true,
                                                              false
     );
 
     /**
      non-nullable array spec
      */
-    public static JsSpec binary = new JsBinarySpec(true,
+    public static final JsSpec binary = new JsBinarySpec(true,
                                                    false
     );
 
     /**
      non-nullable array spec
      */
-    public static JsSpec instant = new JsInstantSpec(true,
+    public static final JsSpec instant = new JsInstantSpec(true,
                                                      false
     );
     /**
      non-nullable array of long numbers spec
      */
-    public static JsArraySpec arrayOfLong = new JsArrayOfLongSpec(true,
+    public static final JsArraySpec arrayOfLong = new JsArrayOfLongSpec(true,
                                                                   false
     );
     /**
      non-nullable array of integer numbers spec
      */
-    public static JsArraySpec arrayOfInt = new JsArrayOfIntSpec(true,
+    public static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(true,
                                                                 false
     );
     /**
      non-nullable array of strings spec
      */
-    public static JsArraySpec arrayOfStr = new JsArrayOfStrSpec(true,
+    public static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(true,
                                                                 false
     );
     /**
      non-nullable array of booleans spec
      */
-    public static JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(true,
+    public static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(true,
                                                                   false
     );
     /**
      non-nullable array of decimal numbers spec
      */
-    public static JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(true,
+    public static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(true,
                                                                     false
     );
     /**
      non-nullable array of numbers spec
      */
-    public static JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(true,
+    public static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(true,
                                                                       false
     );
     /**
      non-nullable array of integral numbers spec
      */
-    public static JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(true,
+    public static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(true,
                                                                           false
     );
     /**
      non-nullable array of objects spec
      */
-    public static JsArraySpec arrayOfObj = new JsArrayOfObjSpec(true,
+    public static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(true,
                                                                 false
     );
 

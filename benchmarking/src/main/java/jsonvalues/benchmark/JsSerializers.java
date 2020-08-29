@@ -9,8 +9,6 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.infra.Blackhole;
-
-import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import static jsonvalues.benchmark.Conf.PERSON_JSON;

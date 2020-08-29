@@ -4,7 +4,6 @@ import io.vavr.Tuple2;
 import io.vavr.collection.HashMap;
 import io.vavr.collection.LinkedHashMap;
 import io.vavr.collection.Map;
-import io.vavr.collection.TreeMap;
 import jsonvalues.JsObj;
 
 import java.util.concurrent.CompletableFuture;

@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import com.dslplatform.json.serializers.SerializerException;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.OutputStream;

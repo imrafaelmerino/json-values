@@ -31,7 +31,7 @@ final class OpMapReduce<T> {
 
     Optional<T> reduceAll(JsObj obj) {
         return reduceObj(JsPath.empty(),
-                         reduceHeadJsonAndObjTail_()
+                         reduceAllHeadJsonAndObjTail()
                         ).apply(obj,
                                 Optional.empty()
                                )
@@ -50,7 +50,7 @@ final class OpMapReduce<T> {
     Optional<T> reduceAll(JsArray arr) {
         return reduceArr(JsPath.empty()
                                .index(-1),
-                         reduceHeadJsonAndArrayTail_()
+                         reduceAllHeadJsonAndArrayTail()
                         ).apply(arr,
                                 Optional.empty()
                                )
@@ -87,13 +87,13 @@ final class OpMapReduce<T> {
                                                                      );
     }
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndObjTail_() {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsObj, Optional<T>, Trampoline<Optional<T>>>> reduceAllHeadJsonAndObjTail() {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
                                                                                        headJson
                                                                                       )
                                                           ).flatMap(headAcc ->
                                                                             reduceObj(headPath.init(),
-                                                                                      reduceHeadJsonAndObjTail_()
+                                                                                      reduceAllHeadJsonAndObjTail()
                                                                                      ).
                                                                                               apply(tail,
                                                                                                     headAcc
@@ -101,13 +101,13 @@ final class OpMapReduce<T> {
     }
 
 
-    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceHeadJsonAndArrayTail_() {
+    private BiFunction<JsPath, Json<?>, BiFunction<JsArray, Optional<T>, Trampoline<Optional<T>>>> reduceAllHeadJsonAndArrayTail() {
         return (headPath, headJson) -> (tail, acc) -> more(() -> reduceJson(acc).apply(headPath,
                                                                                        headJson
                                                                                       )
                                                           ).flatMap(headAcc ->
                                                                             reduceArr(headPath,
-                                                                                      reduceHeadJsonAndArrayTail_()
+                                                                                      reduceAllHeadJsonAndArrayTail()
                                                                                      ).
                                                                                               apply(tail,
                                                                                                     headAcc
@@ -119,12 +119,12 @@ final class OpMapReduce<T> {
         return (headPath, headJson) ->
         {
             if (headJson.isObj()) return reduceObj(headPath,
-                                                   reduceHeadJsonAndObjTail_()
+                                                   reduceAllHeadJsonAndObjTail()
                                                   ).apply(headJson.toJsObj(),
                                                           acc
                                                          );
             return reduceArr(headPath.index(-1),
-                             reduceHeadJsonAndArrayTail_()
+                             reduceAllHeadJsonAndArrayTail()
                             ).apply(headJson.toJsArray(),
                                     acc
                                    );
