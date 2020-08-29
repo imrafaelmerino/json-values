@@ -12,8 +12,8 @@ import static java.util.Objects.requireNonNull;
 public class JsOptics {
 
 
-    public static JsObjOptics obj = new JsObjOptics();
-    public static JsArrayOptics array = new JsArrayOptics();
+    public static final JsObjOptics obj = new JsObjOptics();
+    public static final JsArrayOptics array = new JsArrayOptics();
 
     /**
      represents all the optics defined for a Json array

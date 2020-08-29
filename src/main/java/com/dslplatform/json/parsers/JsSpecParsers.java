@@ -16,7 +16,7 @@ import static com.dslplatform.json.parsers.JsParsers.PARSERS;
 
 public class JsSpecParsers {
 
-    public final static JsSpecParsers INSTANCE = new JsSpecParsers();
+    public static final JsSpecParsers INSTANCE = new JsSpecParsers();
     private final BiFunction<JsonReader<?>, Error, JsParserException> newParseException;
 
 

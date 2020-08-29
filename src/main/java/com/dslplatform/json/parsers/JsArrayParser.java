@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 abstract class JsArrayParser {
 
-    final static JsArray EMPTY = JsArray.empty();
+    static final JsArray EMPTY = JsArray.empty();
     private final AbstractParser parser;
 
     public JsArrayParser(final AbstractParser parser) {

@@ -44,7 +44,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public static final JsOptics.JsArrayOptionals optional = JsOptics.array.optional;
 
-    public static JsArray EMPTY = new JsArray(Vector.empty());
+    public static final JsArray EMPTY = new JsArray(Vector.empty());
     /**
      prism between the sum type JsValue and JsArray
      */

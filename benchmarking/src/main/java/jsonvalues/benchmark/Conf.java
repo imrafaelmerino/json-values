@@ -18,7 +18,7 @@ public class Conf
     public static final String PERSON_JSON;
     public static final String PERSON_jSON_SCHEMA;
 
-    public final static JsObjSpec PERSON_SPEC;
+    public static final JsObjSpec PERSON_SPEC;
 
     static {
         Predicate<JsArray> greaterThanOne = a -> a.size() > 1;

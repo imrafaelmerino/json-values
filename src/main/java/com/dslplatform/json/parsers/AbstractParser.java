@@ -8,7 +8,7 @@ import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
 abstract class AbstractParser {
-    final static JsObj EMPTY_OBJ = JsObj.empty();
+    static final JsObj EMPTY_OBJ = JsObj.empty();
 
     JsValue nullOrValue(final JsonReader<?> reader) throws JsParserException {
         try {

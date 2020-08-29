@@ -1,7 +1,7 @@
 package com.dslplatform.json.parsers;
 
 class JsParsers {
-    public final static JsParsers PARSERS = new JsParsers();
+    public static final JsParsers PARSERS = new JsParsers();
     public final JsInstantParser instantParser;
     public final JsIntParser intParser;
     public final JsBinaryParser binaryParser;
