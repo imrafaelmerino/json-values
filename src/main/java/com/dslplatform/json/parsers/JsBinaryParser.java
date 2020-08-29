@@ -7,7 +7,7 @@ import java.io.IOException;
 
 final class JsBinaryParser extends AbstractParser {
     @Override
-    JsBinary value(final JsonReader<?> reader) throws JsParserException {
+    JsBinary value(final JsonReader<?> reader){
         try {
             return JsBinary.of(reader.readBase64());
         } catch (IOException e) {

@@ -52,12 +52,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
             new Prism<>(s -> s.isObj() ? Optional.of(s.toJsObj()) : Optional.empty(),
                         o -> o
             );
-    @SuppressWarnings("squid:S3008")//EMPTY should be a valid name
+    @SuppressWarnings("squid:S3008")//EMPTY_PATH should be a valid name
     private static final JsPath EMPTY_PATH = JsPath.empty();
-    public static final int ID = 3;
+    public static final int TYPE_ID = 3;
     private final Map<String, JsValue> map;
     private volatile int hascode;
-    //squid:S3077: doesn't make any sese, volatile is perfectly valid here an as a matter of fact
+    //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
     //is a recomendation from Efective Java to apply the idiom single check for lazy initialization
     @SuppressWarnings("squid:S3077")
 
@@ -1041,7 +1041,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      @return a JsOb object
      @throws MalformedJson if the string doesnt represent a json object
      */
-    public static JsObj parse(final String str) throws MalformedJson {
+    public static JsObj parse(final String str){
 
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
             JsonToken keyEvent = parser.nextToken();
@@ -1617,9 +1617,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
+    @Override
     public boolean isObj() {
         return true;
     }
@@ -1719,10 +1720,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                     .isEmpty())
                     ||
                     (
-                            (tail.head()
+                            tail.head()
                                  .isKey() && !pmap.get(head)
                                                   .filter(JsValue::isArray)
-                                                  .isEmpty())
+                                                  .isEmpty()
                     )
                     ||
                     (tail.head()
@@ -1783,6 +1784,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
      @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
+    @SuppressWarnings("squid:S3008")//ARRAY_AS should be a valid name
     public final JsObj unionAll(final JsObj that,
                                 final TYPE ARRAY_AS
                                ) {

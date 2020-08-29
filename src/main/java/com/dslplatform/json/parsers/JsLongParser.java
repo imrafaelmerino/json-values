@@ -12,7 +12,7 @@ import java.util.function.LongFunction;
 final class JsLongParser extends AbstractParser {
 
     @Override
-    JsLong value(final JsonReader<?> reader) throws JsParserException {
+    JsLong value(final JsonReader<?> reader){
         try {
             return JsLong.of(MyNumberConverter.parseLong(reader));
         } catch (IOException e) {
@@ -22,7 +22,7 @@ final class JsLongParser extends AbstractParser {
 
     JsLong valueSuchThat(final JsonReader<?> reader,
                          final LongFunction<Optional<Error>> fn
-                        ) throws JsParserException {
+                        ){
         try {
             final long            value  = MyNumberConverter.parseLong(reader);
             final Optional<Error> result = fn.apply(value);

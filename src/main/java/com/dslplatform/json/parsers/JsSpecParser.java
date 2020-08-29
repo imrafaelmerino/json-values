@@ -7,5 +7,5 @@ import jsonvalues.JsValue;
 @FunctionalInterface
 public interface JsSpecParser {
 
-    JsValue parse(JsonReader<?> reader) throws JsParserException;
+    JsValue parse(JsonReader<?> reader);
 }

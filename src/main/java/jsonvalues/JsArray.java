@@ -48,7 +48,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      prism between the sum type JsValue and JsArray
      */
-    public static Prism<JsValue, JsArray> prism =
+    public static final Prism<JsValue, JsArray> prism =
             new Prism<>(
                     s -> s.isArray() ? Optional.of(s.toJsArray()) : Optional.empty(),
                     a -> a
@@ -370,7 +370,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      @return a JsArray
      @throws MalformedJson if the string doesnt represent a json array
      */
-    public static JsArray parse(final String str) throws MalformedJson {
+    public static JsArray parse(final String str){
 
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
             final JsonToken keyEvent = parser.nextToken();

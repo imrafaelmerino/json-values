@@ -22,7 +22,7 @@ final class JsArrayOfStringParser extends JsArrayParser {
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
                                     final Function<String, Optional<Error>> fn
-                                   ) throws JsParserException {
+                                   ){
         try {
             return reader.wasNull() ? JsNull.NULL : arrayEachSuchThat(reader,
                                                                       fn
@@ -36,7 +36,7 @@ final class JsArrayOfStringParser extends JsArrayParser {
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
                               final Function<String, Optional<Error>> fn
-                             ) throws JsParserException {
+                             ){
         try {
             if (ifIsEmptyArray(reader)) return EMPTY;
 

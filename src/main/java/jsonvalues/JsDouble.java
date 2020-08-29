@@ -14,21 +14,21 @@ import static java.util.Objects.requireNonNull;
  Represents an immutable json number of type double.
  */
 public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
-    public static final int ID = 5;
+    public static final int TYPE_ID = 5;
 
 
     /**
      prism between the sum type JsValue and JsDouble
      */
-    public static Prism<JsValue, Double> prism = new Prism<>(s ->
-                                                             {
-                                                                 if (s.isDouble())
-                                                                     return Optional.of(s.toJsDouble().value);
-                                                                 if (s.isDecimal()) return s.toJsBigDec()
-                                                                                            .doubleValueExact();
-                                                                 return Optional.empty();
-                                                             },
-                                                             JsDouble::of
+    public static final Prism<JsValue, Double> prism = new Prism<>(s ->
+                                                                   {
+                                                                       if (s.isDouble())
+                                                                           return Optional.of(s.toJsDouble().value);
+                                                                       if (s.isDecimal()) return s.toJsBigDec()
+                                                                                                  .doubleValueExact();
+                                                                       return Optional.empty();
+                                                                   },
+                                                                   JsDouble::of
     );
     /**
      The double value.
@@ -41,7 +41,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

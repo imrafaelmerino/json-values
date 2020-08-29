@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 final class JsIntegralParser extends AbstractParser {
     @Override
-    JsBigInt value(final JsonReader<?> reader) throws JsParserException {
+    JsBigInt value(final JsonReader<?> reader){
         try {
 
             return JsBigInt.of(MyNumberConverter.parseDecimal(reader)
@@ -25,7 +25,7 @@ final class JsIntegralParser extends AbstractParser {
 
     JsBigInt valueSuchThat(final JsonReader<?> reader,
                            final Function<BigInteger, Optional<Error>> fn
-                          ) throws JsParserException {
+                          ){
         try {
             final BigInteger value = MyNumberConverter.parseDecimal(reader)
                                                       .toBigIntegerExact();

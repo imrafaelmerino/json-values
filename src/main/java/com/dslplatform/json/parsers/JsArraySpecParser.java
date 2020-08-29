@@ -16,7 +16,7 @@ public final class JsArraySpecParser {
         this.parsers = parsers;
     }
 
-    public JsValue nullOrArray(final JsonReader<?> reader) throws JsParserException {
+    public JsValue nullOrArray(final JsonReader<?> reader){
         try {
             return reader.wasNull() ? JsNull.NULL : array(reader);
         } catch (ParsingException e) {
@@ -25,7 +25,7 @@ public final class JsArraySpecParser {
     }
 
 
-    public JsArray array(final JsonReader<?> reader) throws JsParserException {
+    public JsArray array(final JsonReader<?> reader){
         try {
             if (reader.last() != '[') throw reader.newParseError("Expecting '[' for list start");
             reader.getNextToken();

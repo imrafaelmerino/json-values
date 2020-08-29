@@ -31,7 +31,7 @@ final class JsValueParser extends AbstractParser {
     JsValue valueSuchThat(final JsonReader<?> reader,
                           final Function<JsValue, Optional<Error>> fn
 
-                         ) throws JsParserException {
+                         ){
         try {
             final JsValue         value  = value(reader);
             final Optional<Error> result = fn.apply(value);
@@ -45,7 +45,7 @@ final class JsValueParser extends AbstractParser {
     }
 
     @Override
-    JsValue value(final JsonReader<?> reader) throws JsParserException {
+    JsValue value(final JsonReader<?> reader){
         try {
             switch (reader.last()) {
                 case 't':

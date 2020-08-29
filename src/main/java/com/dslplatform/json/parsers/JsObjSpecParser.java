@@ -20,7 +20,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
     }
 
     @Override
-    JsObj value(final JsonReader<?> reader) throws JsParserException {
+    JsObj value(final JsonReader<?> reader){
         try {
             if (isEmptyObj(reader)) return EMPTY_OBJ;
             String key = reader.readKey();

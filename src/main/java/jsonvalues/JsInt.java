@@ -27,7 +27,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
                                                                     },
                                                                     JsInt::of
     );
-    public static final int ID = 9;
+    public static final int TYPE_ID = 9;
     /**
      The integer value.
      */
@@ -39,7 +39,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

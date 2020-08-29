@@ -40,7 +40,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsObj parseToJsObj(final byte[] bytes,
                               final JsSpecParser parser
-                             ) throws JsParserException {
+                             ){
         JsonReader<?> reader = getReader(bytes);
         try {
             reader.getNextToken();
@@ -64,7 +64,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsArray deserializeToJsArray(final byte[] bytes,
                                         final JsSpecParser parser
-                                       ) throws JsParserException {
+                                       ){
         JsonReader<?> reader = getReader(bytes);
         try {
             reader.getNextToken();
@@ -80,7 +80,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
     public JsObj parseToJsObj(final InputStream is,
                               final JsSpecParser parser
 
-                             ) throws JsParserException {
+                             ){
         JsonReader<?> reader = getReader(is);
         try {
             reader.getNextToken();
@@ -93,7 +93,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
         }
     }
 
-    public JsonReader<?> getReader(final InputStream is) throws JsParserException {
+    public JsonReader<?> getReader(final InputStream is){
         try {
             return localReader.get()
                               .process(is);
@@ -105,7 +105,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsArray deserializeToJsArray(final InputStream is,
                                         final JsSpecParser parser
-                                       ) throws SerializerException {
+                                       ){
         JsonReader<?> reader = getReader(is);
         try {
             reader.getNextToken();
@@ -118,7 +118,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
         }
     }
 
-    public byte[] serialize(final Json<?> json) throws SerializerException {
+    public byte[] serialize(final Json<?> json){
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             INSTANCE.serialize(json,
@@ -133,7 +133,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public void serialize(final Json<?> json,
                           final OutputStream ouputstream
-                         ) throws SerializerException {
+                         ){
         try {
             super.serialize(json,
                             requireNonNull(ouputstream)

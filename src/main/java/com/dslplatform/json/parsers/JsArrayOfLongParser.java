@@ -22,7 +22,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
                                     final LongFunction<Optional<Error>> fn
-                                   ) throws JsParserException {
+                                   ){
         try {
             return reader.wasNull() ? JsNull.NULL : arrayEachSuchThat(reader,
                                                                       fn
@@ -36,7 +36,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
                               final LongFunction<Optional<Error>> fn
-                             ) throws JsParserException {
+                             ){
         try {
             if (ifIsEmptyArray(reader)) return EMPTY;
 

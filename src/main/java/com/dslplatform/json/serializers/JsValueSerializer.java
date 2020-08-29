@@ -24,11 +24,11 @@ public final class JsValueSerializer {
                   ) {
 
         switch (value.id()) {
-            case JsBool.ID: {
+            case JsBool.TYPE_ID: {
                 writer.writeAscii(Boolean.toString(value.toJsBool().value));
                 break;
             }
-            case JsNull.ID: {
+            case JsNull.TYPE_ID: {
                 writer.writeNull();
                 break;
             }
@@ -36,7 +36,7 @@ public final class JsValueSerializer {
                 writer.writeString(value.toJsStr().value);
                 break;
             }
-            case JsObj.ID: {
+            case JsObj.TYPE_ID: {
                 objectSerializer.write(writer,
                                        value.toJsObj()
                                       );
@@ -48,37 +48,37 @@ public final class JsValueSerializer {
                                      );
                 break;
             }
-            case JsDouble.ID:
-            case JsBigDec.ID: {
+            case JsDouble.TYPE_ID:
+            case JsBigDec.TYPE_ID: {
                 NumberConverter.serialize(value.toJsBigDec().value,
                                           writer
                                          );
                 break;
             }
-            case JsBigInt.ID: {
+            case JsBigInt.TYPE_ID: {
                 writer.writeAscii(value.toJsBigInt().value
                                           .toString());
 
                 break;
             }
-            case JsLong.ID: {
+            case JsLong.TYPE_ID: {
                 NumberConverter.serialize(value.toJsLong().value,
                                           writer
                                          );
                 break;
             }
-            case JsInt.ID: {
+            case JsInt.TYPE_ID: {
                 NumberConverter.serialize(value.toJsInt().value,
                                           writer
                                          );
                 break;
             }
 
-            case JsBinary.ID: {
+            case JsBinary.TYPE_ID: {
                 writer.writeBinary(value.toJsBinary().value);
                 break;
             }
-            case JsInstant.ID: {
+            case JsInstant.TYPE_ID: {
                 writer.writeString(value.toJsInstant().value.toString());
                 break;
             }

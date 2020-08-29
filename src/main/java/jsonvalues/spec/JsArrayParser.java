@@ -48,7 +48,7 @@ public class JsArrayParser {
      @param str a Json array serialized in a string
      @return a try computation with the result
      */
-    public JsArray parse(String str) throws JsParserException {
+    public JsArray parse(String str){
         return MyDslJson.INSTANCE.deserializeToJsArray(requireNonNull(str).getBytes(),
                                                        this.parser
                                                       );
@@ -63,7 +63,7 @@ public class JsArrayParser {
      @param inputstream the input stream of bytes
      @return a try computation with the result
      */
-    public JsArray parse(InputStream inputstream) throws JsParserException {
+    public JsArray parse(InputStream inputstream){
         return MyDslJson.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
                                                        this.parser
                                                       );

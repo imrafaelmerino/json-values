@@ -7,7 +7,7 @@ import java.util.Optional;
  Represents an immutable json boolean. Only two instances are created: {@link #FALSE} and {@link #TRUE}
  */
 public final class JsBool implements JsValue {
-    public static final int ID = 0;
+    public static final int TYPE_ID = 0;
     /**
      The singleton false value.
      */
@@ -19,7 +19,7 @@ public final class JsBool implements JsValue {
     /**
      prism between the sum type JsValue and JsBool
      */
-    public static Prism<JsValue, Boolean> prism =
+    public static final Prism<JsValue, Boolean> prism =
             new Prism<>(s -> s.isBool() ? Optional.of(s.toJsBool().value) : Optional.empty(),
                         JsBool::of
             );
@@ -45,7 +45,7 @@ public final class JsBool implements JsValue {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

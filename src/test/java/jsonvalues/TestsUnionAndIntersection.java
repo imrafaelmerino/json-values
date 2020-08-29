@@ -12,7 +12,7 @@ import static jsonvalues.JsNull.NULL;
 public class TestsUnionAndIntersection {
 
     @Test
-    public void test_1_testUnion() throws MalformedJson {
+    public void test_1_testUnion(){
 
 
         JsObj a = JsObj.parse("{\"a\": 1, \"c\": [{\"d\": 1}]}");
@@ -51,7 +51,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_2_testUnion() throws MalformedJson {
+    public void test_2_testUnion(){
 
 
         JsObj a = JsObj.parse("{\"a\": [1, 2]}");
@@ -88,7 +88,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_3_testUnion() throws MalformedJson {
+    public void test_3_testUnion(){
 
 
         JsArray a = JsArray.parse("[\"1\", \"2\"]");
@@ -130,7 +130,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_4_testUnion() throws MalformedJson {
+    public void test_4_testUnion(){
 
 
         JsObj a = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}]}");
@@ -169,7 +169,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_5_testUnion() throws MalformedJson {
+    public void test_5_testUnion(){
 
 
         JsObj a = JsObj.parse("{\"a\":1, \"b\":[1,2,3], \"c\":[ {\"d\":1,\"e\":[1,2]}, {\"f\":2,\"g\":[\"a\",\"b\",\"c\"]} ]}");
@@ -208,7 +208,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_1_testIntersection() throws MalformedJson {
+    public void test_1_testIntersection(){
 
 
         JsObj a = JsObj.parse("{\"a\":1,\"b\":2}");
@@ -228,7 +228,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_2_testIntersection() throws MalformedJson {
+    public void test_2_testIntersection(){
 
 
         JsObj a = JsObj.parse("{\"b\":{\"a\":1,\"b\":2,\"c\":[{\"a\":1,\"b\":[1,2]},{\"b\":2},{\"c\":3}]}}");
@@ -249,7 +249,7 @@ public class TestsUnionAndIntersection {
 
 
     @Test
-    public void test_map_values_array() throws MalformedJson {
+    public void test_map_values_array(){
         final Function<JsPair, JsValue> toLowerCaseFn = p -> JsStr.prism.modify.apply(String::toLowerCase)
                                                                         .apply(p.value);
 
@@ -379,7 +379,7 @@ public class TestsUnionAndIntersection {
 
 
     @Test
-    public void test_readme_union() throws MalformedJson {
+    public void test_readme_union(){
         JsObj a = JsObj.parse("{\"a\":1, \"c\": [{ \"d\":1 }] }");
         JsObj b = JsObj.parse("{\"b\":2, \"c\": [{ \"e\":2 }] }");
         JsObj c = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 }, { \"e\":2 }] }");
@@ -429,7 +429,7 @@ public class TestsUnionAndIntersection {
     }
 
     @Test
-    public void test_readme_intersection() throws MalformedJson {
+    public void test_readme_intersection(){
 
         JsObj a = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1,2]}, {\"b\":2}, {\"c\":3}] } }");
         JsObj b = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1]  }, {\"b\":2}] } }");

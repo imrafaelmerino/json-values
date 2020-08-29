@@ -31,7 +31,7 @@ public class JsObjParser {
      @param bytes a Json object serialized in an array of bytes
      @return a try computation with the result
      */
-    public JsObj parse(byte[] bytes) throws JsParserException {
+    public JsObj parse(byte[] bytes){
         return INSTANCE.parseToJsObj(requireNonNull(bytes),
                                      parser
                                     );
@@ -47,7 +47,7 @@ public class JsObjParser {
      @param str a Json object serialized in a string
      @return a try computation with the result
      */
-    public JsObj parse(String str) throws JsParserException {
+    public JsObj parse(String str){
 
         return INSTANCE.parseToJsObj(requireNonNull(str).getBytes(),
                                      parser
@@ -63,7 +63,7 @@ public class JsObjParser {
      @param inputstream the input stream of bytes
      @return a try computation with the result
      */
-    public JsObj parse(InputStream inputstream) throws JsParserException {
+    public JsObj parse(InputStream inputstream){
         return INSTANCE.parseToJsObj(requireNonNull(inputstream),
                                      parser
                                     );

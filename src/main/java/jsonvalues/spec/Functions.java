@@ -10,6 +10,9 @@ import java.util.function.Predicate;
 import static jsonvalues.spec.ERROR_CODE.*;
 
 class Functions {
+
+    private Functions(){}
+
     static Function<JsValue, Optional<Error>> testElem(final Predicate<JsValue> elemCondition,
                                                        final ERROR_CODE errorCode,
                                                        final boolean required,

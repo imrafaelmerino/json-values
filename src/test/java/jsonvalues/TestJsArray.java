@@ -121,7 +121,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_create_json_array_from_one_or_more_pairs() throws MalformedJson {
+    public void test_create_json_array_from_one_or_more_pairs(){
 
         final JsArray arr = JsArray.of(JsPair.of(JsPath.fromIndex(0),
                                                  JsInt.of(1)
@@ -376,7 +376,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_filter_jsons() throws MalformedJson {
+    public void test_filter_jsons(){
         JsArray arr = JsArray.of(JsObj.of("a",
                                           NULL
                                          ),
@@ -457,7 +457,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_intersection() throws MalformedJson {
+    public void test_intersection(){
 
         final JsArray arr1 = JsArray.parse("[{\"a\": 1, \"b\": [1,2,2]}]");
         final JsArray arr2 = JsArray.parse("[{\"a\": 1, \"b\": [1,2]}]");
@@ -531,7 +531,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_map_json() throws MalformedJson {
+    public void test_map_json(){
 
         JsArray arr = JsArray.of(JsObj.of("a",
                                           JsInt.of(1),
@@ -588,7 +588,7 @@ public class TestJsArray {
 
 
     @Test
-    public void test_map_json_with_predicate() throws MalformedJson {
+    public void test_map_json_with_predicate(){
 
         JsArray arr = JsArray.of(JsObj.of("a",
                                           JsInt.of(1),
@@ -669,7 +669,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_parse_string_into_json_array() throws MalformedJson {
+    public void test_parse_string_into_json_array(){
 
         Assertions.assertEquals(JsArray.of(1,
                                            2
@@ -805,7 +805,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_parse_array_of_bigints() throws MalformedJson {
+    public void test_parse_array_of_bigints(){
         final JsArray arr = JsArray.parse("[-8354817123538400257,9223372036854775807,-1,0,-8871622059039849388]");
 
         Assertions.assertEquals(JsArray.parse(arr.toString()),

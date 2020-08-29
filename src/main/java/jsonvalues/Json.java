@@ -537,7 +537,7 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param ouputstream the output stream
      */
-    default void serialize(final OutputStream ouputstream) throws SerializerException {
+    default void serialize(final OutputStream ouputstream){
         INSTANCE.serialize(this,
                            requireNonNull(ouputstream)
                           );
@@ -549,7 +549,7 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @return this Json serialized into an array of bytes
      */
-    default byte[] serialize() throws SerializerException {
+    default byte[] serialize(){
         return INSTANCE.serialize(this);
     }
 

@@ -6,7 +6,7 @@ import java.io.IOException;
 
 abstract class AbstractJsObjParser extends AbstractParser {
 
-    protected boolean isEmptyObj(final JsonReader<?> reader) throws JsParserException {
+    protected boolean isEmptyObj(final JsonReader<?> reader){
         try {
             if (reader.last() != '{') throw reader.newParseError("Expecting '{' for map start");
             byte nextToken = reader.getNextToken();

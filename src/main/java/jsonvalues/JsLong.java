@@ -10,12 +10,12 @@ import static java.util.Objects.requireNonNull;
  Represents an immutable json number of type long.
  */
 public final class JsLong extends JsNumber implements Comparable<JsLong> {
-    public static final int ID = 7;
+    public static final int TYPE_ID = 7;
 
     /**
      prism between the sum type JsValue and JsLong
      */
-    public static Prism<JsValue, Long> prism = new Prism<>(s ->
+    public static final Prism<JsValue, Long> prism = new Prism<>(s ->
                                                            {
                                                                if (s.isLong())
                                                                    return Optional.of(s.toJsLong().value);
@@ -39,7 +39,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

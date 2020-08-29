@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
 
-    public static final int ID = 8;
+    public static final int TYPE_ID = 8;
 
     /**
      prism between the sum type JsValue and JsBigDec
@@ -42,7 +42,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

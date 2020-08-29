@@ -15,7 +15,7 @@ final class JsNumberParser extends AbstractParser {
 
     JsNumber valueSuchThat(final JsonReader<?> reader,
                            final Function<JsNumber, Optional<Error>> fn
-                          ) throws JsParserException {
+                          ){
         try {
             final JsNumber        value  = value(reader);
             final Optional<Error> result = fn.apply(value);
@@ -29,7 +29,7 @@ final class JsNumberParser extends AbstractParser {
     }
 
     @Override
-    JsNumber value(final JsonReader<?> reader) throws JsParserException {
+    JsNumber value(final JsonReader<?> reader){
         final Number number;
         try {
             number = NumberConverter.deserializeNumber(reader);

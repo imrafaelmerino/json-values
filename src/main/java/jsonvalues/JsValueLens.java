@@ -1,7 +1,5 @@
 package jsonvalues;
 
-import java.util.function.BiFunction;
-import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 

@@ -93,6 +93,7 @@ public class JsTupleSpec implements JsArraySpec {
                    );
     }
 
+    @Override
     public Set<JsErrorPair> test(final JsArray array) {
         return test(JsPath.empty(),
                     array);

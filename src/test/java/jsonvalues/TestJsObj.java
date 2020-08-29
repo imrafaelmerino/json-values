@@ -255,7 +255,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_filter_elements_immutable() throws MalformedJson {
+    public void test_filter_elements_immutable(){
 
         final JsObj obj = JsObj.parse("{\n"
                                               + "  \"a\": 1,\n"
@@ -281,7 +281,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_filter_jsons_from_immutable() throws MalformedJson {
+    public void test_filter_jsons_from_immutable(){
         final JsObj obj = JsObj.of("a",
                                    JsObj.of("R",
                                             JsInt.of(1)
@@ -399,7 +399,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_filter_values_from_object() throws MalformedJson {
+    public void test_filter_values_from_object(){
 
         JsObj obj = JsObj.of("a",
                              JsInt.of(1),
@@ -432,7 +432,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_malformed_json() throws MalformedJson {
+    public void test_malformed_json(){
         final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
                                                                     () -> JsObj.parse("")
                                                                    );
@@ -450,7 +450,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_map_elements_immutable() throws MalformedJson {
+    public void test_map_elements_immutable(){
 
         final JsObj obj = JsObj.parse("{\n"
                                               + "  \"a\": 1,\n"
@@ -477,7 +477,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_map_json_obj() throws MalformedJson {
+    public void test_map_json_obj(){
         JsObj obj = JsObj.of("a",
                              JsStr.of("A"),
                              "b",
@@ -670,7 +670,7 @@ public class TestJsObj {
 
 
     @Test
-    public void test_parse_into_immutable() throws MalformedJson {
+    public void test_parse_into_immutable(){
         JsObj obj = JsObj.of(JsPair.of(path("/a/b/0"),
                                        NULL
                                       ),

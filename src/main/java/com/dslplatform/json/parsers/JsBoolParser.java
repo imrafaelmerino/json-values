@@ -8,7 +8,7 @@ import jsonvalues.JsValue;
 
 final class JsBoolParser extends AbstractParser {
 
-    JsBool value(final JsonReader<?> reader) throws JsParserException {
+    JsBool value(final JsonReader<?> reader){
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
             else if (reader.wasFalse()) return JsBool.FALSE;
@@ -21,7 +21,7 @@ final class JsBoolParser extends AbstractParser {
         }
     }
 
-    JsValue nullOrTrue(final JsonReader<?> reader) throws JsParserException {
+    JsValue nullOrTrue(final JsonReader<?> reader){
         try {
             return reader.wasNull() ? JsNull.NULL : True(reader);
         } catch (ParsingException e) {
@@ -30,7 +30,7 @@ final class JsBoolParser extends AbstractParser {
         }
     }
 
-    JsBool True(final JsonReader<?> reader) throws JsParserException {
+    JsBool True(final JsonReader<?> reader){
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
             throw reader.newParseErrorAt("Found invalid boolean value. True was expected.",
@@ -42,7 +42,7 @@ final class JsBoolParser extends AbstractParser {
         }
     }
 
-    JsValue nullOrFalse(final JsonReader<?> reader) throws JsParserException {
+    JsValue nullOrFalse(final JsonReader<?> reader){
         try {
             return reader.wasNull() ? JsNull.NULL : False(reader);
         } catch (ParsingException e) {
@@ -51,7 +51,7 @@ final class JsBoolParser extends AbstractParser {
         }
     }
 
-    public JsBool False(final JsonReader<?> reader) throws JsParserException {
+    public JsBool False(final JsonReader<?> reader){
         try {
             if (reader.wasFalse()) return JsBool.FALSE;
             throw reader.newParseErrorAt("Found invalid boolean value. False was expected.",

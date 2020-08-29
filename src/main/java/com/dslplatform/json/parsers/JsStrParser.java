@@ -11,7 +11,7 @@ import java.util.function.Function;
 
 final class JsStrParser extends AbstractParser {
     @Override
-    JsStr value(final JsonReader<?> reader) throws JsParserException {
+    JsStr value(final JsonReader<?> reader){
         try {
             return JsStr.of(StringConverter.deserialize(reader));
         } catch (IOException e) {
@@ -23,7 +23,7 @@ final class JsStrParser extends AbstractParser {
 
     JsStr valueSuchThat(final JsonReader<?> reader,
                         final Function<String, Optional<Error>> fn
-                       ) throws JsParserException {
+                       ){
         try {
             final String          value  = StringConverter.deserialize(reader);
             final Optional<Error> result = fn.apply(value);

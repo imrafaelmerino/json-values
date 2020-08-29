@@ -16,7 +16,6 @@ final class JsTupleGen implements JsGen<JsArray> {
     JsTupleGen(final JsGen<?> gen,
                final JsGen<?>... others
               ) {
-        ;
         gens.add(requireNonNull(gen));
         gens.addAll(Arrays.asList(requireNonNull(others)));
     }

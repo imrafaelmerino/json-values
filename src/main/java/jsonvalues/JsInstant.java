@@ -18,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class JsInstant implements JsValue,Comparable<JsInstant>{
 
-    public static final int ID = 11;
+    public static final int TYPE_ID = 11;
     public final Instant value;
 
     public static JsInstant of(final Instant instant) {
@@ -32,7 +32,7 @@ public class JsInstant implements JsValue,Comparable<JsInstant>{
     /**
      prism between the sum type JsValue and JsInstant
      */
-    public static Prism<JsValue, Instant> prism =
+    public static final Prism<JsValue, Instant> prism =
             new Prism<>(s -> {
                 if (s.isInstant()) return Optional.of(s.toJsInstant().value);
                 if (s.isStr()) {
@@ -45,7 +45,7 @@ public class JsInstant implements JsValue,Comparable<JsInstant>{
 
     @Override
     public int id() {
-        return ID;
+        return TYPE_ID;
     }
 
     @Override

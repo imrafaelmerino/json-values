@@ -20,7 +20,7 @@ abstract class JsArrayParser {
         this.parser = parser;
     }
 
-    JsValue nullOrArray(final JsonReader<?> reader) throws JsParserException {
+    JsValue nullOrArray(final JsonReader<?> reader){
         try {
             return reader.wasNull() ? JsNull.NULL : array(reader);
         } catch (ParsingException e) {
@@ -28,7 +28,7 @@ abstract class JsArrayParser {
         }
     }
 
-    public JsArray array(final JsonReader<?> reader) throws JsParserException {
+    public JsArray array(final JsonReader<?> reader){
         try {
             if (ifIsEmptyArray(reader)) return EMPTY;
             JsArray buffer = EMPTY.append(parser.value(reader));
@@ -43,7 +43,7 @@ abstract class JsArrayParser {
         }
     }
 
-    boolean ifIsEmptyArray(final JsonReader<?> reader) throws JsParserException {
+    boolean ifIsEmptyArray(final JsonReader<?> reader){
         try {
             if (reader.last() != '[')
                 throw reader.newParseError("Expecting '[' for list start");
@@ -58,7 +58,7 @@ abstract class JsArrayParser {
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
                                        final Function<JsArray, Optional<Error>> fn
-                                      ) throws JsParserException {
+                                      ){
         try {
             return reader.wasNull() ? JsNull.NULL : arraySuchThat(reader,
                                                                   fn
@@ -70,7 +70,7 @@ abstract class JsArrayParser {
 
     public JsArray arraySuchThat(final JsonReader<?> reader,
                                  final Function<JsArray, Optional<Error>> fn
-                                ) throws JsParserException {
+                                ){
         try {
             final JsArray         array  = array(reader);
             final Optional<Error> result = fn.apply(array);

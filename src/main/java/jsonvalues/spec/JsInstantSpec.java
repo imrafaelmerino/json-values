@@ -7,7 +7,6 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
-import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
     JsInstantSpec(final boolean required,

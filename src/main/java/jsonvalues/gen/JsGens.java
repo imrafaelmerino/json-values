@@ -21,6 +21,8 @@ public class JsGens {
     private static final int ZERO = 48;
     private static final String LENGTH_EQUAL_ZERO_ERROR = "length must be greater than zero.";
 
+    private JsGens(){}
+
     /**
      Generates character from 0-255
      */
@@ -251,7 +253,7 @@ public class JsGens {
      @return a generator
      */
     public static <O extends JsValue> JsGen<O> oneOf(final List<O> list) {
-        if (requireNonNull(list).size() == 0)
+        if (requireNonNull(list).isEmpty())
             throw new RuntimeException("list empty. No value can be generated");
 
         return r -> () ->
@@ -372,7 +374,7 @@ public class JsGens {
                                                                .filter(it -> it._1 > 0)
                                                                .collect(Collectors.toList());
         if (requireNonNull(freq)._1 > 0) filtered.add(freq);
-        if (filtered.size() == 0) {
+        if (filtered.isEmpty()) {
             throw new IllegalArgumentException("no items with positive weights");
         }
         int                        total   = 0;

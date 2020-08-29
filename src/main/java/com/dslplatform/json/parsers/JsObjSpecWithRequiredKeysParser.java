@@ -21,7 +21,7 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
     }
 
     @Override
-    JsObj value(final JsonReader<?> reader) throws JsParserException {
+    JsObj value(final JsonReader<?> reader){
         try {
             final JsObj            obj      = super.value(reader);
             final Iterator<String> iterator = required.iterator();

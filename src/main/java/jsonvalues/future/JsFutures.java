@@ -6,6 +6,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 public class JsFutures {
+    private JsFutures(){}
     /**
      it creates a new future that retries a number of times the given one when an exception is produced
 

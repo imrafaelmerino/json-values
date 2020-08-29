@@ -21,6 +21,7 @@ import static java.util.concurrent.CompletableFuture.completedFuture;
 
 public class JsIOs {
 
+    private JsIOs(){}
     public static JsConsole<JsValue> read(final JsSpec spec) {
         Objects.requireNonNull(spec);
         return path ->
