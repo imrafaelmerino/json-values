@@ -41,7 +41,9 @@
         <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.8</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
         <MAVEN-JAVADOC-PLUGIN.VERSION>3.2.0</MAVEN-JAVADOC-PLUGIN.VERSION>
         <MAVEN-SUREFIRE-PLUGIN.VERSION>2.22.0</MAVEN-SUREFIRE-PLUGIN.VERSION>
-        <dsl-json.version>1.9.5</dsl-json.version>
+        <MY-DSL-JSON.VERSION>0.1</MY-DSL-JSON.VERSION>
+        <DSL-JSON.VERSION>1.9.5</DSL-JSON.VERSION>
+
         <vavr.version>0.10.3</vavr.version>
     </properties>
     <dependencies>
@@ -54,7 +56,13 @@
         <dependency>
             <groupId>com.dslplatform</groupId>
             <artifactId>dsl-json</artifactId>
-            <version>${dsl-json.version}</version>
+            <version>${DSL-JSON.VERSION}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.imrafaelmerino</groupId>
+            <artifactId>mydsl-json</artifactId>
+            <version>${MY-DSL-JSON.VERSION}</version>
         </dependency>
 
         <dependency>
