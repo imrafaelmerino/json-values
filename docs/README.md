@@ -41,7 +41,7 @@ in Java 8, like functions, suppliers, streams, and collectors, making json manip
 * As a developer, I'm convinced that code should win arguments, so let me enumerate some examples, where I
 leave the functions passed in as arguments with no implementation for brevity reasons. 
 
-```
+```java
 json.mapKeys(toSneakeCase)
 
 json.mapValues(trim, ifStr)
@@ -71,7 +71,7 @@ elements: values, generators, or specifications. Let's check out some examples.
 
 Defining a json object:
 
-```
+```java
 var person = JsObj.of("name", JsStr.of("Rafael"),
                       "age", JsInt.of(37),
                       "languages", JsArray.of("Haskell", "Scala", "Java", "Clojure")
@@ -79,7 +79,7 @@ var person = JsObj.of("name", JsStr.of("Rafael"),
                       "profession", JsStr.of("frustrated consultant"),
                       "address", JsObj.of("city", JsStr.of("Madrid"),
                                           "location", JsArray.of(40.566, 87.987),
-                                          "country",JsStr.of("ES").optional().nullable()
+                                          "country",JsStr.of("ES")
                                           )
                         );
 
@@ -87,7 +87,7 @@ var person = JsObj.of("name", JsStr.of("Rafael"),
 
 Defining a json spec; strict means: keys different from the specified are not allowed:
 
-```
+```java
 import static jsonvalues.spec.JsSpecs;
 
 var addressSpec=JsObjSpec.lenient("city", str,
@@ -113,7 +113,7 @@ Set<JsErrorPair> errors = spec.test(person);
 
 We can use a spec to parse a string! As soon as an error is found, the parsing ends.
 
-```
+```java
 
 byte[] jsonBytes = ...;
 String jsonStr = ...;
@@ -127,7 +127,7 @@ var b = parser.parse(jsonStr);
 
 Defining a json generator:
 
-```
+```java
 import static jsonvalues.gen.JsGens;
 
 var addressGen = JsObjGen.of("city", oneOf(cities),
@@ -148,7 +148,7 @@ var gen = JsObjGen.of("name", alphabetic,
 
 Defining a future following the same philosophy:
 
-```
+```java
 CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut,;
 CompletableFuture<JsValue> professionFut, streetFut, lonFut, latFut, countryFut;
 
@@ -171,7 +171,7 @@ CompletableFuture<JsObj> completableFuture = future.get();
 
 We can even create suppliers:
 
-```
+```java
 
 Supplier<JsValue> name, age, languages, handle;
 Supplier<JsValue> profession, street, lon, lat, country;
