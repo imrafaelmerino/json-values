@@ -149,7 +149,7 @@ var gen = JsObjGen.of("name", alphabetic,
 Defining a future following the same philosophy:
 
 ```java
-CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut,;
+CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut;
 CompletableFuture<JsValue> professionFut, streetFut, lonFut, latFut, countryFut;
 
 var future = JsObjFuture.of("name", () -> nameFut,
