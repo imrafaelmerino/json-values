@@ -18,6 +18,7 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Related projects](#rp)
+- [Release process](#release)
 
 ## <a name="introduction"><a/> Introduction
 Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures.
@@ -230,3 +231,8 @@ whole wide world! If I'm wrong, please let me know!
 json-values uses the persistent data structures from [vavr](https://www.vavr.io/), [Jackson](https://github.com/FasterXML/jackson) to parse a string/bytes into
 a stream of tokens and [dsl-sjon](https://github.com/ngs-doo/dsl-json) to parse a string/bytes given a spec.
 
+## <a name="release"><a/> Release process
+Every time a tagged commit is pushed into master, a Travis CI build will be triggered automatically and start the release process,
+deploying to Maven repositories and GitHub Releases. See the Travis conf file .travis.yml for
+further details. On the other hand, the master branch is read-only, and all the commits should be pushed to
+master through pull requests. 
