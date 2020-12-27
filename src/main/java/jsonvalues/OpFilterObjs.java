@@ -10,11 +10,11 @@ abstract class OpFilterObjs<T> {
         this.json = json;
     }
 
-    abstract Trampoline<T> filter(final JsPath startingPath,
-                                  final BiPredicate<? super JsPath, ? super JsObj> predicate
-                                 );
+    abstract T filter(final JsPath startingPath,
+                      final BiPredicate<? super JsPath, ? super JsObj> predicate
+                     );
 
-    abstract Trampoline<T> filterAll(final JsPath startingPath,
-                                     final BiPredicate<? super JsPath, ? super JsObj> predicate
-                                    );
+    abstract T filterAll(final JsPath startingPath,
+                         final BiPredicate<? super JsPath, ? super JsObj> predicate
+                        );
 }

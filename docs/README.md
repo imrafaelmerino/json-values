@@ -147,28 +147,7 @@ var gen = JsObjGen.of("name", alphabetic,
 
 ```
 
-Defining a future following the same philosophy:
 
-```java
-CompletableFuture<JsValue> nameFut, ageFut, languagesFut,handleFut;
-CompletableFuture<JsValue> professionFut, streetFut, lonFut, latFut, countryFut;
-
-var future = JsObjFuture.of("name", () -> nameFut,
-                            "age", () -> ageFut,
-                            "languages", () -> languagesFut,
-                            "github", () -> handleFut,
-                            "profession", () -> professionFut,
-                            "address", JsObjFuture.of("street", streetFut,
-                                                      "location", tuple(() -> latFut,
-                                                                        () -> lonFut
-                                                                       ),
-                                                      "country", () -> countryFut
-                                                      )
-                            );
-
-CompletableFuture<JsObj> completableFuture = future.get();
-
-```
 
 We can even create suppliers:
 

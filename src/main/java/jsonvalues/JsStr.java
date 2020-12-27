@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
 /**
  Represents an immutable json string.
  */
-public final class JsStr implements JsValue, Comparable<JsStr> {
+public final class JsStr extends JsPrimitive implements  Comparable<JsStr> {
 
     public static final int TYPE_ID = 2;
     /**
@@ -59,6 +59,11 @@ public final class JsStr implements JsValue, Comparable<JsStr> {
     @Override
     public int id() {
         return TYPE_ID;
+    }
+
+    @Override
+    public JsPrimitive toJsPrimitive() {
+        return this;
     }
 
     @Override

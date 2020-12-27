@@ -1,22 +1,22 @@
 package jsonvalues;
 
-import java.util.function.Predicate;
+import java.util.function.BiPredicate;
 
 abstract class OpFilterElems<T> {
 
-    final T json;
+     T json;
 
     OpFilterElems(final T json) {
         this.json = json;
     }
 
-    abstract Trampoline<T> filterAll(final JsPath startingPath,
-                                     final Predicate<? super JsPair> predicate
-                                    );
+    abstract T filterAll(final JsPath startingPath,
+                         final BiPredicate<? super JsPath,? super JsValue> predicate
+                        );
 
-    abstract Trampoline<T> filter(final JsPath startingPath,
-                                  final Predicate<? super JsPair> predicate
-                                 );
+    abstract T filter(final JsPath startingPath,
+                      final BiPredicate<? super JsPath,? super JsValue> predicate
+                     );
 
 
 }

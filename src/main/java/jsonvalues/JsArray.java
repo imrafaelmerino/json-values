@@ -10,7 +10,9 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -66,7 +68,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         this.seq = seq;
     }
 
-    public JsArray(){
+    public JsArray() {
         this.seq = Vector.empty();
     }
 
@@ -370,7 +372,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      @return a JsArray
      @throws MalformedJson if the string doesnt represent a json array
      */
-    public static JsArray parse(final String str){
+    public static JsArray parse(final String str) {
 
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
             final JsonToken keyEvent = parser.nextToken();
@@ -493,11 +495,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         final JsValue otherHead = b.head();
         final JsArray otherTail = b.tail();
 
-        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsList(tail,
-                                                                                  otherTail
-                                                                                 );
+        final Trampoline<Trampoline<JsArray>> tailCall =
+                () -> intersectionAsList(tail,
+                                         otherTail
+                                        );
 
-        if (head.equals(otherHead)) return more(tailCall).map(it -> it.prepend(head));
+        if (head.equals(otherHead))
+            return more(tailCall).map(it -> it.prepend(head));
 
         return more(tailCall);
 
@@ -583,33 +587,35 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public final JsArray appendAll(final JsArray array) {
         return appendAllBackTrampoline(this,
                                        requireNonNull(array)
-                                      ).get();
+                                      );
 
 
     }
 
-    private Trampoline<JsArray> appendAllBackTrampoline(final JsArray arr1,
-                                                        final JsArray arr2
-                                                       ) {
+    private JsArray appendAllBackTrampoline(JsArray arr1,
+                                            final JsArray arr2
+                                           ) {
         assert arr1 != null;
         assert arr2 != null;
-        if (arr2.isEmpty()) return Trampoline.done(arr1);
-        if (arr1.isEmpty()) return Trampoline.done(arr2);
-        return Trampoline.more(() -> appendAllBackTrampoline(arr1.append(arr2.head()),
-                                                             arr2.tail()
-                                                            ));
+        if (arr2.isEmpty()) return arr1;
+        if (arr1.isEmpty()) return arr2;
+        for (final JsValue value : arr2) {
+            arr1 = arr1.append(value);
+        }
+        return arr1;
     }
 
-    private Trampoline<JsArray> appendAllFrontTrampoline(final JsArray arr1,
-                                                         final JsArray arr2
-                                                        ) {
+    private JsArray appendAllFrontTrampoline(JsArray arr1,
+                                             JsArray arr2
+                                            ) {
         assert arr1 != null;
         assert arr2 != null;
-        if (arr2.isEmpty()) return Trampoline.done(arr1);
-        if (arr1.isEmpty()) return Trampoline.done(arr2);
-        return Trampoline.more(() -> appendAllFrontTrampoline(arr1.prepend(arr2.last()),
-                                                              arr2.init()
-                                                             ));
+        if (arr2.isEmpty()) return arr1;
+        if (arr1.isEmpty()) return arr2;
+        for (final JsValue value : arr1) {
+            arr2 = arr2.append(value);
+        }
+        return arr2;
     }
 
     /**
@@ -654,6 +660,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                         );
     }
 
+    @Override
     public final boolean containsValue(final JsValue el) {
         return seq.contains(requireNonNull(el));
     }
@@ -664,114 +671,138 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         final JsValue e    = get(path.head());
         final JsPath  tail = path.tail();
         if (tail.isEmpty()) return e;
-        if (e.isNotJson()) return NOTHING;
+        if (e.isPrimitive()) return NOTHING;
         return e.toJson()
                 .get(tail);
     }
 
-    public final JsArray filterValues(final Predicate<? super JsPair> filter) {
-        return new OpFilterArrElems(this).filter(JsPath.empty()
-                                                       .index(-1),
+    @Override
+    public final JsArray filterValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+        return new OpFilterArrElems(this).filter(JsPath.empty(),
                                                  requireNonNull(filter)
-                                                )
-
-                                         .get();
+                                                );
     }
 
-    public final JsArray filterAllValues(final Predicate<? super JsPair> filter) {
-        return new OpFilterArrElems(this).filterAll(JsPath.empty()
-                                                          .index(-1),
+    @Override
+    public final JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+        return new OpFilterArrElems(this).filterAll(JsPath.empty(),
                                                     requireNonNull(filter)
-                                                   )
-
-                                         .get();
+                                                   );
     }
 
-    public final JsArray filterKeys(final Predicate<? super JsPair> filter) {
+    @Override
+    public final JsArray filterKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
         return this;
     }
 
-    public final JsArray filterAllKeys(final Predicate<? super JsPair> filter) {
-        return new OpFilterArrKeys(this).filterAll(JsPath.empty()
-                                                         .index(-1),
+    @Override
+    public final JsArray filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+        return new OpFilterArrKeys(this).filterAll(JsPath.empty(),
                                                    filter
-                                                  )
-                                        .get();
+                                                  );
     }
 
+    @Override
     public final JsArray filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filter(JsPath.empty()
-                                                      .index(-1),
+        return new OpFilterArrObjs(this).filter(JsPath.empty(),
                                                 requireNonNull(filter)
-                                               )
-
-                                        .get();
+                                               );
     }
 
+    @Override
     public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filterAll(JsPath.empty()
-                                                         .index(-1),
+        return new OpFilterArrObjs(this).filterAll(JsPath.empty(),
                                                    requireNonNull(filter)
-                                                  )
-                                        .get();
+                                                  );
     }
 
+    @Override
     public final boolean isEmpty() {
         return seq.isEmpty();
     }
 
-    public final JsArray mapValues(final Function<? super JsPair, ? extends JsValue> fn) {
+    @Override
+    public final JsArray mapValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return new OpMapArrElems(this).map(requireNonNull(fn),
                                            JsPath.empty()
                                                  .index(-1)
-                                          )
-                                      .get();
+                                          );
 
     }
 
-    public JsArray mapAllValues(final Function<? super JsPair, ? extends JsValue> fn) {
+    @Override
+    public JsArray mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return new OpMapArrElems(this).mapAll(requireNonNull(fn),
                                               JsPath.empty()
                                                     .index(-1)
-                                             )
-                                      .get();
+                                             );
     }
 
-    public final JsArray mapKeys(final Function<? super JsPair, String> fn) {
+    @Override
+    public final JsArray mapKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return this;
     }
 
-    public final JsArray mapAllKeys(final Function<? super JsPair, String> fn) {
+    @Override
+    public final JsArray mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
                                              JsPath.empty()
                                                    .index(-1)
-                                            )
-                                     .get();
+                                            );
     }
 
+    @Override
     public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return new OpMapArrObjs(this).map(requireNonNull(fn),
                                           JsPath.empty()
-                                                .index(-1)
-                                         )
-                                     .get();
+
+                                         );
     }
 
+    @Override
     public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
                                              JsPath.empty()
-                                                   .index(-1)
-                                            )
-                                     .get();
+
+                                            );
     }
 
     @Override
     public JsArray set(final JsPath path,
                        final JsValue element) {
-        return set(path, element,
-                   NULL);
+        return set(path,
+                   element,
+                   NULL
+                  );
     }
 
+    public JsArray set(final int index,
+                       final JsValue element) {
+        return set(index,
+                   element,
+                   NULL
+                  );
+    }
+
+    public final JsArray set(final int index,
+                             final JsValue value,
+                             final JsValue padElement
+                            ) {
+
+        requireNonNull(value);
+
+        return ifNothingElse(() -> this,
+                             elem -> new JsArray(nullPadding(index,
+                                                             seq,
+                                                             elem,
+                                                             padElement
+                                                            ))
+                            )
+                .apply(value);
+
+    }
+
+    @Override
     public final JsArray set(final JsPath path,
                              final JsValue value,
                              final JsValue padElement
@@ -829,9 +860,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
+    @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final Function<? super JsPair, R> map,
-                                        final Predicate<? super JsPair> predicate
+                                        final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                        ) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
@@ -841,9 +873,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
+    @Override
     public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
-                                           final Function<? super JsPair, R> map,
-                                           final Predicate<? super JsPair> predicate
+                                           final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                           ) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
@@ -852,6 +885,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
+    @Override
     public final JsArray delete(final JsPath path) {
         if (requireNonNull(path).isEmpty()) return this;
         return path.head()
@@ -875,16 +909,19 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
+    @Override
     public final int size() {
         return seq.size();
     }
 
+    @Override
     public Stream<JsPair> streamAll() {
         return streamOfArr(this,
                            JsPath.empty()
                           );
     }
 
+    @Override
     public Stream<JsPair> stream() {
         return IntStream.range(0,
                                size()
@@ -933,6 +970,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      the hashcode once calculated. the object is immutable and it won't change
      Single-check idiom  Item 83 from Effective Java
      */
+    @Override
     @SuppressWarnings("squid:S1206")
 
     public final int hashCode() {
@@ -942,6 +980,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return result;
     }
 
+    @Override
     public final boolean equals(final Object that) {
         if (!(that instanceof JsArray)) return false;
         if (this == that) return true;
@@ -961,23 +1000,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      // Single-check idiom  Item 83 from effective java
      */
+    @Override
     public final String toString() {
         String result = str;
         if (result == null)
             str = result = new String(INSTANCE.serialize(this));
 
         return result;
-    }
-
-    <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                  final BiFunction<JsValue, JsArray, Trampoline<T>> fn
-                                 ) {
-        if (this.isEmpty()) return empty;
-        final JsValue head = this.head();
-        final JsArray tail = this.tail();
-        return fn.apply(head,
-                        tail
-                       );
     }
 
     /**
@@ -1056,6 +1085,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return true;
     }
 
+    @Override
     public final Iterator<JsValue> iterator() {
         return seq.iterator();
     }
@@ -1098,7 +1128,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public final JsArray prependAll(final JsArray array) {
         return appendAllFrontTrampoline(this,
                                         requireNonNull(array)
-                                       ).get();
+                                       );
 
     }
 
@@ -1108,7 +1138,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return (index, tail) ->
         {
             return index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
-                                                                    .isNotJson()
+                                                                    .isPrimitive()
                     ||
                     (tail.head()
                          .isKey() && pseq.get(index)
@@ -1207,30 +1237,30 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return nullPaddingTrampoline(index,
                                      arr,
                                      e,
-                                    pad
-                                    ).get();
+                                     pad
+                                    );
     }
 
-    private Trampoline<Vector<JsValue>> nullPaddingTrampoline(final int i,
-                                                              final Vector<JsValue> arr,
-                                                              final JsValue e,
-                                                              final JsValue pad
-                                                             ) {
+    private Vector<JsValue> nullPaddingTrampoline(final int i,
+                                                  Vector<JsValue> arr,
+                                                  final JsValue e,
+                                                  final JsValue pad
+                                                 ) {
 
-        if (i == arr.size()) return Trampoline.done(arr.append(e));
+        if (i == arr.size()) return arr.append(e);
 
-        if (i == -1) return Trampoline.done(arr.update(seq.size() - 1,
-                                                       e
-                                                      ));
+        if (i == -1) return arr.update(seq.size() - 1,
+                                       e
+                                      );
 
-        if (i < arr.size()) return Trampoline.done(arr.update(i,
-                                                              e
-                                                             ));
-        return Trampoline.more(() -> nullPaddingTrampoline(i,
-                                                           arr.append(pad),
-                                                           e,
-                                                           pad
-                                                          ));
+        if (i < arr.size()) return arr.update(i,
+                                              e
+                                             );
+        for (int j = arr.size(); j < i; j++) {
+            arr = arr.append(pad);
+        }
+        return arr.append(e);
+
     }
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
@@ -1299,7 +1329,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
          */
         MULTISET
     }
-
 
 
 }

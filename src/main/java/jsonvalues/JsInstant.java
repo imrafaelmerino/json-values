@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  JsStr.of(a.toString()).equals(JsIntant.of(a)) // true
  }
  */
-public class JsInstant implements JsValue,Comparable<JsInstant>{
+public class JsInstant  extends JsPrimitive implements Comparable<JsInstant>{
 
     public static final int TYPE_ID = 11;
     public final Instant value;
@@ -46,6 +46,11 @@ public class JsInstant implements JsValue,Comparable<JsInstant>{
     @Override
     public int id() {
         return TYPE_ID;
+    }
+
+    @Override
+    public JsPrimitive toJsPrimitive() {
+        return this;
     }
 
     @Override

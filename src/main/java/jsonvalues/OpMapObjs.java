@@ -9,11 +9,11 @@ abstract class OpMapObjs<T> {
         this.json = json;
     }
 
-    abstract Trampoline<T> map(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
-                               final JsPath startingPath
-                              );
+    abstract T map(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
+                   final JsPath startingPath
+                  );
 
-    abstract Trampoline<T> mapAll(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
-                                  final JsPath startingPath
-                                 );
+    abstract T mapAll(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
+                      final JsPath startingPath
+                     );
 }

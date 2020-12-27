@@ -4,7 +4,7 @@ package jsonvalues;
 /**
  Represents null, which a valid json value. It's a singleton, only the instance JsNull.NULL exists.
  */
-public final class JsNull implements JsValue {
+public final class JsNull extends JsPrimitive {
     public static final int TYPE_ID = 1;
     /**
      The singleton null value.
@@ -17,6 +17,11 @@ public final class JsNull implements JsValue {
     @Override
     public int id() {
         return TYPE_ID;
+    }
+
+    @Override
+    public JsPrimitive toJsPrimitive() {
+        return this;
     }
 
     @Override

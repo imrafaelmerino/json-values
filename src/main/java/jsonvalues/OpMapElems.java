@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 abstract class OpMapElems<T> {
     T json;
@@ -9,13 +9,13 @@ abstract class OpMapElems<T> {
         this.json = json;
     }
 
-    abstract Trampoline<T> map(final Function<? super JsPair, ? extends JsValue> fn,
-                               final JsPath path
-                              );
+    abstract T map(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
+                   final JsPath path
+                  );
 
-    abstract Trampoline<T> mapAll(final Function<? super JsPair, ? extends JsValue> fn,
-                                  final JsPath path
-                                 );
+    abstract T mapAll(final BiFunction<? super JsPath,? super  JsPrimitive, ? extends JsValue> fn,
+                      final JsPath path
+                     );
 
 
 }

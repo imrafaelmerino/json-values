@@ -104,6 +104,15 @@ public final class UserError extends RuntimeException {
                                           ));
     }
 
+    static UserError isNotAJsPrimitive(final JsValue elem) {
+        return new UserError(String.format(GENERAL_MESSAGE,
+                                           String.format("JsPrimitive expected, but %s was found",
+                                                         elem.getClass()
+                                                        ),
+                                           "call the guard condition isJsPrimitive() before invoking toJsPrimitive()"
+                                          ));
+    }
+
     static UserError isNotAJsNumber(final JsValue elem) {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsNumber expected, but %s was found",

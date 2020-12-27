@@ -1,9 +1,8 @@
 package jsonvalues;
 
-import java.util.function.Predicate;
+import io.vavr.Tuple2;
 
-import static jsonvalues.MatchExp.ifJsonElse;
-import static jsonvalues.Trampoline.more;
+import java.util.function.BiPredicate;
 
 final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
 
@@ -12,67 +11,53 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
     }
 
     @Override
-    Trampoline<JsObj> filterAll(final JsPath startingPath,
-                                final Predicate<? super JsPair> predicate
-                               ) {
-        return json.ifEmptyElse(Trampoline.done(json),
-                                (head, tail) ->
-                                {
-                                    final JsPath headPath = startingPath.key(head._1);
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filterAll(startingPath,
-                                                                                                                                 predicate
-                                                                                                                                ));
-                                    return
-                                            predicate.test(JsPair.of(headPath,
-                                                                     head._2
-                                                                    )) ?
-                                            ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
-                                                                                                                                                    predicate
-                                                                                                                                                   )
-                                                                                                                                         .map(headMapped ->
-                                                                                                                                                      tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                                                     headMapped
-                                                                                                                                                                    )
-                                                                                                                                             )),
-                                                       headArray -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrKeys(headArray).filterAll(headPath.index(-1),
-                                                                                                                                                        predicate
-                                                                                                                                                       )
-                                                                                                                                             .map(headMapped ->
-                                                                                                                                                          tailResult.set(JsPath.fromKey(head._1),
-                                                                                                                                                                         headMapped
-                                                                                                                                                                        )
-                                                                                                                                                 )),
-                                                       headElem -> more(() -> tailCall).map(it -> it.set(JsPath.fromKey(head._1),
-                                                                                                         headElem
-                                                                                                        ))
-                                                      )
-                                                    .apply(head._2) :
-                                            tailCall;
-                                }
+    JsObj filterAll(final JsPath startingPath,
+                    final BiPredicate<? super JsPath, ? super JsValue> predicate
+                   ) {
+        for (final Tuple2<String, JsValue> next : json) {
+            final JsPath headPath = startingPath.key(next._1);
+
+            if (predicate.negate()
+                         .test(headPath,
+                               next._2
+                              )) {
+
+                json = json.delete(next._1);
+            }
+            else if (next._2.isObj())
+                json = json.set(next._1,
+                                new OpFilterObjKeys(next._2.toJsObj()).filterAll(headPath,
+                                                                                 predicate
+                                                                                )
                                );
+
+            else if (next._2.isArray())
+                json = json.set(next._1,
+                                new OpFilterArrKeys(next._2.toJsArray()).filterAll(headPath,
+                                                                                   predicate
+                                                                                  )
+                               );
+
+
+        }
+
+        return json;
+
     }
 
     @Override
-    Trampoline<JsObj> filter(final Predicate<? super JsPair> predicate
-                            ) {
-        return json.ifEmptyElse(Trampoline.done(json),
-                                (head, tail) ->
-                                {
-                                    final JsPath headPath = JsPath.empty()
-                                                                  .key(head._1);
+    JsObj filter(final BiPredicate<? super JsPath, ? super JsValue> predicate) {
+        if (json.isEmpty()) return json;
+        for (final Tuple2<String, JsValue> next : json) {
+            if (predicate.negate()
+                         .test(JsPath.fromKey(next._1),
+                               next._2
+                              )) {
+                json = json.delete(next._1);
 
-                                    final Trampoline<JsObj> tailCall = Trampoline.more(() -> new OpFilterObjKeys(tail).filter(predicate));
-                                    return predicate.test(JsPair.of(headPath,
-                                                                    head._2
-                                                                   )) ?
-                                           more(() -> tailCall).map(tailResult -> tailResult.set(JsPath.fromKey(head._1),
-                                                                                                 head._2
-                                                                                                )) :
-
-
-                                           tailCall;
-                                }
-                               );
+            }
+        }
+        return json;
     }
 
 

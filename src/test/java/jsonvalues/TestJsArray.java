@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import static jsonvalues.JsArray.TYPE.*;
 import static jsonvalues.JsBool.FALSE;
@@ -20,18 +20,20 @@ public class TestJsArray {
 
 
     @Test
-    public void test_set_and_get_with_padding(){
+    public void test_set_and_get_with_padding() {
 
         JsArray array = JsArray.empty()
-                             .set(JsPath.fromIndex(2),
-                                  JsInt.of(1),
-                                  JsInt.of(0));
-        Assertions.assertTrue(array.getInt(JsPath.fromIndex(0))==0);
-        Assertions.assertTrue(array.getInt(JsPath.fromIndex(1))==0);
-        Assertions.assertTrue(array.getInt(JsPath.fromIndex(2))==1);
+                               .set(JsPath.fromIndex(2),
+                                    JsInt.of(1),
+                                    JsInt.of(0)
+                                   );
+        Assertions.assertTrue(array.getInt(JsPath.fromIndex(0)) == 0);
+        Assertions.assertTrue(array.getInt(JsPath.fromIndex(1)) == 0);
+        Assertions.assertTrue(array.getInt(JsPath.fromIndex(2)) == 1);
 
 
     }
+
     @Test
     public void test_contains_element_in_js_array() {
         JsArray arr = JsArray.of(JsInt.of(1),
@@ -89,7 +91,7 @@ public class TestJsArray {
                                  JsStr.of("c"),
                                  JsInt.of(10)
                                 );
-        JsArray arr1 = arr.filterValues(p -> p.value.isIntegral());
+        JsArray arr1 = arr.filterValues((path, val) -> val.isIntegral());
 
         Assertions.assertNotEquals(arr,
                                    arr1
@@ -121,7 +123,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_create_json_array_from_one_or_more_pairs(){
+    public void test_create_json_array_from_one_or_more_pairs() {
 
         final JsArray arr = JsArray.of(JsPair.of(JsPath.fromIndex(0),
                                                  JsInt.of(1)
@@ -154,7 +156,7 @@ public class TestJsArray {
 
     @Test
     public void test_create_one_element_json_array() {
-        JsArray arr  = JsArray.of(NULL);
+        JsArray arr = JsArray.of(NULL);
         JsArray arr1 = arr.prepend(JsStr.of("a"),
                                    JsInt.of(10)
                                   );
@@ -170,9 +172,9 @@ public class TestJsArray {
     @Test
     public void testPrepend() {
         JsArray empty = JsArray.empty();
-        JsArray a     = empty.prepend(JsStr.of("a"),
-                                      JsInt.of(1)
-                                     );
+        JsArray a = empty.prepend(JsStr.of("a"),
+                                  JsInt.of(1)
+                                 );
         Assertions.assertEquals(JsInt.of(1),
                                 a.last()
                                );
@@ -203,10 +205,9 @@ public class TestJsArray {
                                  JsStr.of("G")
                                 );
 
-        JsArray arr1 = arr.mapValues(p -> JsStr.prism.modify.apply(s ->
-                                                                     s.concat(String.valueOf(p.path.last()
-                                                                                                   .asIndex().n)))
-                                                     .apply(p.value));
+        JsArray arr1 = arr.mapValues((p, val) -> JsStr.prism.modify.apply(s -> s.concat(String.valueOf(p.last()
+                                                                                                        .asIndex().n)))
+                                                                   .apply(val));
 
         Assertions.assertNotEquals(arr,
                                    arr1
@@ -232,8 +233,8 @@ public class TestJsArray {
                                  JsStr.of("c")
                                 );
 
-        final JsArray newArr = arr.mapValues(p -> JsStr.prism.modify.apply(String::toUpperCase)
-                                                             .apply(p.value));
+        final JsArray newArr = arr.mapValues((p, val) -> JsStr.prism.modify.apply(String::toUpperCase)
+                                                                           .apply(val));
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -256,8 +257,8 @@ public class TestJsArray {
                                  JsInt.of(2),
                                  JsObj.empty()
                                 );
-        JsArray newArr = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 10)
-                                                       .apply(p.value));
+        JsArray newArr = arr.mapValues((p, val) -> JsInt.prism.modify.apply(i -> i + 10)
+                                                                     .apply(val));
 
         Assertions.assertNotEquals(arr,
                                    newArr
@@ -291,20 +292,20 @@ public class TestJsArray {
                                 );
 
 
-        final int result = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 100)
-                                                         .apply(p.value)
+        final int result = arr.mapValues((path, val) -> JsInt.prism.modify.apply(i -> i + 100)
+                                                                          .apply(val)
                                         )
                               .reduce(Integer::sum,
-                                      pair -> pair.value.toJsInt().value,
-                                      p -> p.value.isInt()
+                                      (p, v) -> v.toJsInt().value,
+                                      (p, v) -> v.isInt()
                                      )
                               .orElse(-1);
 
-        final int result1 = arr.mapValues(p -> JsInt.prism.modify.apply(i -> i + 100)
-                                                          .apply(p.value))
+        final int result1 = arr.mapValues((p, val) -> JsInt.prism.modify.apply(i -> i + 100)
+                                                                        .apply(val))
                                .reduce(Integer::sum,
-                                       pair -> pair.value.toJsInt().value,
-                                       p -> p.value.isInt()
+                                       (p, v) -> v.toJsInt().value,
+                                       (p, v) -> v.isInt()
                                       )
                                .orElse(-1);
 
@@ -318,20 +319,20 @@ public class TestJsArray {
                                );
 
 
-        final int result2 = arr.mapAllValues(p -> JsInt.prism.modify.apply(i -> i + 100)
-                                                             .apply(p.value))
+        final int result2 = arr.mapAllValues((p, val) -> JsInt.prism.modify.apply(i -> i + 100)
+                                                                           .apply(val))
                                .reduceAll(Integer::sum,
-                                          pair -> pair.value.toJsInt().value,
-                                          p -> p.value.isInt()
+                                          (p, v) -> v.toJsInt().value,
+                                          (p, v) -> v.isInt()
                                          )
                                .orElse(-1);
 
-        final int result3 = arr.mapAllValues(p -> JsInt.prism.modify.apply(i -> i + 100)
-                                                             .apply(p.value)
+        final int result3 = arr.mapAllValues((p, val) -> JsInt.prism.modify.apply(i -> i + 100)
+                                                                           .apply(val)
                                             )
                                .reduceAll(Integer::sum,
-                                          pair -> pair.value.toJsInt().value,
-                                          p -> p.value.isInt()
+                                          (p, v) -> v.toJsInt().value,
+                                          (p, v) -> v.isInt()
                                          )
                                .orElse(-1);
         Assertions.assertEquals(406,
@@ -376,7 +377,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_filter_jsons(){
+    public void test_filter_jsons() {
         JsArray arr = JsArray.of(JsObj.of("a",
                                           NULL
                                          ),
@@ -457,7 +458,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_intersection(){
+    public void test_intersection() {
 
         final JsArray arr1 = JsArray.parse("[{\"a\": 1, \"b\": [1,2,2]}]");
         final JsArray arr2 = JsArray.parse("[{\"a\": 1, \"b\": [1,2]}]");
@@ -531,7 +532,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_map_json(){
+    public void test_map_json() {
 
         JsArray arr = JsArray.of(JsObj.of("a",
                                           JsInt.of(1),
@@ -588,7 +589,7 @@ public class TestJsArray {
 
 
     @Test
-    public void test_map_json_with_predicate(){
+    public void test_map_json_with_predicate() {
 
         JsArray arr = JsArray.of(JsObj.of("a",
                                           JsInt.of(1),
@@ -669,7 +670,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_parse_string_into_json_array(){
+    public void test_parse_string_into_json_array() {
 
         Assertions.assertEquals(JsArray.of(1,
                                            2
@@ -713,8 +714,8 @@ public class TestJsArray {
                                         );
 
         final Optional<String> result = array.reduceAll(String::concat,
-                                                        p -> p.value.toJsStr().value,
-                                                        p -> p.value.isStr()
+                                                        (p, v) -> v.toJsStr().value,
+                                                        (p, v) -> v.isStr()
                                                        );
 
         final char[] chars = result.get()
@@ -726,8 +727,8 @@ public class TestJsArray {
                                );
 
         final Optional<String> result1 = array.reduce(String::concat,
-                                                      p -> p.value.toJsStr().value,
-                                                      p -> p.value.isStr()
+                                                      (p, v) -> v.toJsStr().value,
+                                                      (p, v) -> v.isStr()
                                                      );
 
         final char[] chars1 = result1.get()
@@ -805,7 +806,7 @@ public class TestJsArray {
     }
 
     @Test
-    public void test_parse_array_of_bigints(){
+    public void test_parse_array_of_bigints() {
         final JsArray arr = JsArray.parse("[-8354817123538400257,9223372036854775807,-1,0,-8871622059039849388]");
 
         Assertions.assertEquals(JsArray.parse(arr.toString()),
@@ -824,8 +825,8 @@ public class TestJsArray {
                                4
                               );
 
-        Function<JsPair, String> toUpperCase = p -> p.path.last()
-                                                          .asKey().name.toUpperCase();
+        BiFunction<JsPath, JsValue, String> toUpperCase = (path, val) -> path.last()
+                                                                             .asKey().name.toUpperCase();
         Assertions.assertEquals(a,
                                 a.mapKeys(toUpperCase)
                                );
@@ -857,7 +858,7 @@ public class TestJsArray {
                                                  .asKey().name)
                                .allMatch(key -> key.toUpperCase()
                                                    .equals(key)));
-        ;
+
     }
 
 

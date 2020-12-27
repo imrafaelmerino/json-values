@@ -22,6 +22,11 @@ public final class JsNothing implements JsValue {
     }
 
     @Override
+    public JsPrimitive toJsPrimitive() {
+        throw UserError.isNotAJsPrimitive(JsNothing.NOTHING);
+    }
+
+    @Override
     public boolean isNothing() {
         return true;
     }

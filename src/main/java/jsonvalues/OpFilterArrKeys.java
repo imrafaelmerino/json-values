@@ -1,9 +1,6 @@
 package jsonvalues;
 
-import java.util.function.Predicate;
-
-import static jsonvalues.MatchExp.ifJsonElse;
-import static jsonvalues.Trampoline.more;
+import java.util.function.BiPredicate;
 
 final class OpFilterArrKeys extends OpFilterKeys<JsArray> {
 
@@ -13,34 +10,39 @@ final class OpFilterArrKeys extends OpFilterKeys<JsArray> {
     }
 
     @Override
-    Trampoline<JsArray> filterAll(final JsPath startingPath,
-                                  final Predicate<? super JsPair> predicate
-                                 ) {
-        return json.ifEmptyElse(Trampoline.done(json),
-                                (head, tail) ->
-                                {
-                                    final JsPath headPath = startingPath.inc();
-                                    final Trampoline<JsArray> tailCall =
-                                            Trampoline.more(() -> new OpFilterArrKeys(tail).filterAll(headPath,
-                                                                                                      predicate
-                                                                                                     ));
-                                    return ifJsonElse(headObj -> more(() -> tailCall).flatMap(tailResult -> new OpFilterObjKeys(headObj).filterAll(headPath,
-                                                                                                                                                   predicate
-                                                                                                                                                  )
-                                                                                                                                        .map(tailResult::prepend)),
-                                                      headArr -> more(() -> tailCall).flatMap(tailResult -> new OpFilterArrKeys(headArr).filterAll(headPath.index(-1),
-                                                                                                                                                   predicate
-                                                                                                                                                  )),
-                                                      headElem -> more(() -> tailCall).map(it -> it.prepend(headElem))
-                                                     )
-                                            .apply(head);
-                                }
+    JsArray filterAll(final JsPath startingPath,
+                      final BiPredicate<? super JsPath, ? super JsValue> predicate
+                     ) {
+        for (int i = json.size() - 1; i >= 0; i--) {
+
+            JsValue value = json.get(i);
+
+            if (value.isObj()) {
+                final JsPath headPath = startingPath.index(i);
+                json = json.set(i,
+                                new OpFilterObjKeys(value.toJsObj()).filterAll(headPath,
+                                                                               predicate
+                                                                              )
                                );
+            }
+            else if (value.isArray()) {
+                final JsPath headPath = startingPath.index(i);
+                json = json.set(i,
+                                new OpFilterArrKeys(value.toJsArray()).filterAll(headPath.index(-1),
+                                                                                 predicate
+                                                                                )
+                               );
+
+            }
+
+
+        }
+        return json;
+
     }
 
     @Override
-    Trampoline<JsArray> filter(final Predicate<? super JsPair> predicate
-                              ) {
+    JsArray filter(final BiPredicate<? super JsPath, ? super JsValue> predicate) {
         throw InternalError.opNotSupportedForArrays();
     }
 

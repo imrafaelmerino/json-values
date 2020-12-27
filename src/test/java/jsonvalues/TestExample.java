@@ -1,8 +1,5 @@
 package jsonvalues;
 
-import jsonvalues.console.JsArrayConsole;
-import jsonvalues.console.JsIOs;
-import jsonvalues.console.JsObjConsole;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.spec.JsErrorPair;
@@ -14,7 +11,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 import java.util.Set;
-import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
@@ -45,11 +41,19 @@ public class TestExample {
                                                           )
                                          );
 
-        JsObj person = JsObj.of("name", JsStr.of("Rafael"),
-                                "surname", JsStr.of("Merino García"),
-                                "languages", JsArray.of("Java", "Clojure", "Scala"),
-                                "age", JsInt.of(37),
-                                "address", JsObj.of("street",
+        JsObj person = JsObj.of("name",
+                                JsStr.of("Rafael"),
+                                "surname",
+                                JsStr.of("Merino García"),
+                                "languages",
+                                JsArray.of("Java",
+                                           "Clojure",
+                                           "Scala"
+                                          ),
+                                "age",
+                                JsInt.of(37),
+                                "address",
+                                JsObj.of("street",
                                          JsStr.of("Elm Street"),
                                          "number",
                                          JsInt.of(12),
@@ -66,19 +70,20 @@ public class TestExample {
 
         Set<JsErrorPair> test = spec.test(person);
         Assertions.assertTrue(test
-                                  .isEmpty());
+                                      .isEmpty());
 
         Assertions.assertEquals(person,
-                                parser.parse(person.toPrettyString()));
+                                parser.parse(person.toPrettyString())
+                               );
 
 
         Lens<JsObj, String> nameLens = JsObj.lens.str("name");
 
-        Option<JsObj, String>  surnameOpt = JsObj.optional.str("surname");
+        Option<JsObj, String> surnameOpt = JsObj.optional.str("surname");
 
         Option<JsObj, Integer> ageOpt     = JsObj.optional.intNum("age");
-        Lens<JsObj, String>  streetLens = JsObj.lens.str(JsPath.path("/address/street"));
-        Lens<JsObj, JsValue> cityLens   = JsObj.lens.value(JsPath.path("/address/city"));
+        Lens<JsObj, String>    streetLens = JsObj.lens.str(JsPath.path("/address/street"));
+        Lens<JsObj, JsValue>   cityLens   = JsObj.lens.value(JsPath.path("/address/city"));
 
         Lens<JsObj, JsArray> languagesLens = JsObj.lens.array("languages");
 
@@ -112,23 +117,30 @@ public class TestExample {
 
         Assertions.assertEquals(ageOpt.get.apply(newPerson),
                                 ageOpt.get.apply(person)
-                                          .map(i -> i + 1));
+                                          .map(i -> i + 1)
+                               );
 
 
-        Assertions.assertEquals(nameLens.get.apply(newPerson),"RAFAEL");
+        Assertions.assertEquals(nameLens.get.apply(newPerson),
+                                "RAFAEL");
         Assertions.assertEquals(surnameOpt.get.apply(newPerson),
-                                Optional.ofNullable("MERINO GARCÍA"));
+                                Optional.ofNullable("MERINO GARCÍA")
+                               );
 
 
-        Assertions.assertEquals(latitudeLens.get.apply(newPerson),Double.valueOf(47.9));
-        Assertions.assertEquals(longitudeLens.get.apply(newPerson),Double.valueOf(20.6));
+        Assertions.assertEquals(latitudeLens.get.apply(newPerson),
+                                Double.valueOf(47.9));
+        Assertions.assertEquals(longitudeLens.get.apply(newPerson),
+                                Double.valueOf(20.6));
 
         Assertions.assertEquals(cityLens.get.apply(newPerson),
-                                JsStr.of("Madrid"));
+                                JsStr.of("Madrid")
+                               );
 
 
-        Assertions.assertEquals(streetLens.get.apply(newPerson),"Las cruces"
-                                );
+        Assertions.assertEquals(streetLens.get.apply(newPerson),
+                                "Las cruces"
+                               );
 
 
         Assertions.assertEquals(numberLens.get.apply(newPerson),
@@ -143,7 +155,11 @@ public class TestExample {
                                    "surname",
                                    JsGens.alphabetic.optional(),
                                    "languages",
-                                   JsGens.choose(1,10).flatMap(n -> JsGens.array(JsGens.alphabetic, n.value)),
+                                   JsGens.choose(1,
+                                                 10)
+                                         .flatMap(n -> JsGens.array(JsGens.alphabetic,
+                                                                    n.value
+                                                                   )),
                                    "age",
                                    JsGens.choose(16,
                                                  100
@@ -166,54 +182,7 @@ public class TestExample {
                                                            )
                                               )
                                   );
-
-
-
-        JsObjConsole consoleIO = JsObjConsole.of("name",
-                                                 JsIOs.read(JsSpecs.str),
-                                                 "surname",
-                                                 JsIOs.read(JsSpecs.str),
-                                                 "age",
-                                                 JsIOs.read(JsSpecs.integer),
-                                                 "address",
-                                                 JsObjConsole.of("street",
-                                                                 JsIOs.read(JsSpecs.str),
-                                                                 "number",
-                                                                 JsIOs.read(JsSpecs.str),
-                                                                 "coordinates",
-                                                                 JsArrayConsole.tuple(JsIOs.read(JsSpecs.decimal),
-                                                                                      JsIOs.read(JsSpecs.decimal)
-                                                                                     )
-                                                                )
-                                                );
-
     }
 
 
-    public static void main(String[] args) throws ExecutionException, InterruptedException {
-
-
-
-
-        JsObjConsole consoleIO = JsObjConsole.of("name",
-                                                 JsIOs.read(JsSpecs.str),
-                                                 "surname",
-                                                 JsIOs.read(JsSpecs.str),
-                                                 "age",
-                                                 JsIOs.read(JsSpecs.integer),
-                                                 "address",
-                                                 JsObjConsole.of("street",
-                                                                 JsIOs.read(JsSpecs.str),
-                                                                 "number",
-                                                                 JsIOs.read(JsSpecs.str),
-                                                                 "coordinates",
-                                                                 JsArrayConsole.tuple(JsIOs.read(JsSpecs.decimal),
-                                                                                      JsIOs.read(JsSpecs.decimal)
-                                                                                     )
-                                                                )
-                                                );
-
-        System.out.println(consoleIO.exec());
-
-    }
 }

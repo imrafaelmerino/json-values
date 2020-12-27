@@ -42,6 +42,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
         return TYPE_ID;
     }
 
+
     @Override
     public boolean isLong() {
         return true;

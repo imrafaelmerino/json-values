@@ -14,7 +14,7 @@ import static java.util.Objects.requireNonNull;
  JsBinary.of(bytes).equals(JsStr.of(base64)); // true
  }
  */
-public class JsBinary implements JsValue {
+public class JsBinary extends JsPrimitive {
     public static final int TYPE_ID = 10;
     public final byte[] value;
 
@@ -59,6 +59,11 @@ public class JsBinary implements JsValue {
     @Override
     public int id() {
         return TYPE_ID;
+    }
+
+    @Override
+    public JsPrimitive toJsPrimitive() {
+        return this;
     }
 
     @Override

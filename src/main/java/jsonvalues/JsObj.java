@@ -16,8 +16,11 @@ import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.*;
+import java.util.function.BiFunction;
+import java.util.function.BiPredicate;
+import java.util.function.BinaryOperator;
 import java.util.stream.Stream;
+
 import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
@@ -63,9 +66,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     private volatile String str;
 
-    public JsObj(){
+    public JsObj() {
         this.map = LinkedHashMap.empty();
     }
+
     JsObj(final Map<String, JsValue> myMap) {
         this.map = myMap;
     }
@@ -1041,7 +1045,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      @return a JsOb object
      @throws MalformedJson if the string doesnt represent a json object
      */
-    public static JsObj parse(final String str){
+    public static JsObj parse(final String str) {
 
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
             JsonToken keyEvent = parser.nextToken();
@@ -1054,7 +1058,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     static Map<String, JsValue> parse(final JsonParser parser) throws IOException {
         Map<String, JsValue> map = LinkedHashMap.empty();
-        String                   key = parser.nextFieldName();
+        String               key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
             JsValue elem;
             switch (parser.nextToken()
@@ -1134,6 +1138,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return map.containsKey(key);
     }
 
+    @Override
     public final boolean containsValue(final JsValue el) {
         return stream().anyMatch(p -> p.value.equals(Objects.requireNonNull(el)));
     }
@@ -1166,111 +1171,111 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                              );
         final JsPath tail = path.tail();
         if (tail.isEmpty()) return e;
-        if (e.isNotJson()) return NOTHING;
+        if (e.isPrimitive()) return NOTHING;
         return e.toJson()
                 .get(tail);
     }
 
-    public final JsObj filterValues(final Predicate<? super JsPair> filter) {
+    @Override
+    public final JsObj filterValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
         return new OpFilterObjElems(this).filter(JsPath.empty(),
                                                  requireNonNull(filter)
-                                                )
-
-                                         .get();
+                                                );
     }
 
-    public final JsObj filterAllValues(final Predicate<? super JsPair> filter) {
+    @Override
+    public final JsObj filterAllValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
         return new OpFilterObjElems(this).filterAll(JsPath.empty(),
                                                     requireNonNull(filter)
-                                                   )
-
-                                         .get();
+                                                   );
 
     }
 
-    public final JsObj filterKeys(final Predicate<? super JsPair> filter) {
-        return new OpFilterObjKeys(this).filter(filter)
-                                        .get();
+    @Override
+    public final JsObj filterKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+        return new OpFilterObjKeys(this).filter(filter);
 
     }
 
-    public JsObj filterAllKeys(final Predicate<? super JsPair> filter) {
+    @Override
+    public JsObj filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
         return new OpFilterObjKeys(this).filterAll(JsPath.empty(),
                                                    filter
-                                                  )
-                                        .get();
+                                                  );
     }
 
+    @Override
     public final JsObj filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return new OpFilterObjObjs(this).filter(JsPath.empty(),
                                                 requireNonNull(filter)
-                                               )
-
-                                        .get();
+                                               );
     }
 
+    @Override
     public final JsObj filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return new OpFilterObjObjs(this).filterAll(JsPath.empty(),
                                                    requireNonNull(filter)
-                                                  )
-
-                                        .get();
+                                                  );
 
     }
 
+    @Override
     public final boolean isEmpty() {
         return map.isEmpty();
     }
 
-    public final JsObj mapValues(final Function<? super JsPair, ? extends JsValue> fn) {
+    @Override
+    public final JsObj mapValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return new OpMapObjElems(this).map(requireNonNull(fn),
                                            EMPTY_PATH
-                                          )
-                                      .get();
+                                          );
     }
 
-    public final JsObj mapAllValues(final Function<? super JsPair, ? extends JsValue> fn) {
+    @Override
+    public final JsObj mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return new OpMapObjElems(this).mapAll(requireNonNull(fn),
                                               EMPTY_PATH
-                                             )
-                                      .get();
+                                             );
     }
 
-    public final JsObj mapKeys(final Function<? super JsPair, String> fn) {
+    @Override
+    public final JsObj mapKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return new OpMapObjKeys(this).map(requireNonNull(fn),
                                           EMPTY_PATH
-                                         )
-                                     .get();
+                                         );
     }
 
-    public final JsObj mapAllKeys(final Function<? super JsPair, String> fn) {
+    @Override
+    public final JsObj mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return new OpMapObjKeys(this).mapAll(requireNonNull(fn),
                                              EMPTY_PATH
-                                            )
-                                     .get();
+                                            );
     }
 
+    @Override
     public final JsObj mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return new OpMapObjObjs(this).map(requireNonNull(fn),
                                           JsPath.empty()
-                                         )
-                                     .get();
+                                         );
     }
 
+    @Override
     public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return new OpMapObjObjs(this).mapAll(requireNonNull(fn),
                                              JsPath.empty()
-                                            )
-                                     .get();
+                                            );
     }
 
     @Override
     public JsObj set(final JsPath path,
                      final JsValue element) {
-        return set(path, element,
-                   NULL);
+        return set(path,
+                   element,
+                   NULL
+                  );
     }
 
+    @Override
     public final JsObj set(final JsPath path,
                            final JsValue value,
                            final JsValue padElement
@@ -1322,9 +1327,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
+    @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final Function<? super JsPair, R> map,
-                                        final Predicate<? super JsPair> predicate
+                                        final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                        ) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
@@ -1332,9 +1338,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).reduce(this);
     }
 
+    @Override
     public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
-                                           final Function<? super JsPair, R> map,
-                                           final Predicate<? super JsPair> predicate
+                                           final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                           ) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
@@ -1343,6 +1350,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
+    @Override
     public final JsObj delete(final JsPath path) {
         if (requireNonNull(path).isEmpty()) return this;
         return path.head()
@@ -1365,16 +1373,19 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
+    @Override
     public final int size() {
         return map.size();
     }
 
+    @Override
     public final Stream<JsPair> streamAll() {
         return streamOfObj(this,
                            JsPath.empty()
                           );
     }
 
+    @Override
     public final Stream<JsPair> stream() {
         return this.keySet()
                    .stream()
@@ -1466,7 +1477,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
 
-
     /**
      Returns the big integer located at the given key as a big integer or null if it doesn't
      exist or it's not an integral number.
@@ -1490,7 +1500,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      */
     public Instant getInstant(final String key) {
         return JsInstant.prism.getOptional.apply(get(requireNonNull(key)))
-                                         .orElse(null);
+                                          .orElse(null);
 
 
     }
@@ -1576,8 +1586,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      the hashcode once calculated. the object is immutable and it won't change
      Single-check idiom  Item 83 from Effective Java
      */
+    @Override
     @SuppressWarnings("squid:S1206")
-
     public final int hashCode() {
         int result = hascode;
         if (result == 0)
@@ -1585,6 +1595,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return result;
     }
 
+    @Override
     public final boolean equals(final Object that) {
         if (!(that instanceof JsObj)) return false;
         if (this == that) return true;
@@ -1597,17 +1608,18 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
         return keySet().stream()
                        .allMatch(f -> thatMap.map.get(f)
-                                                    .map(it -> it.equals(map.get(f)
-                                                                            .get())
-                                                        )
-                                                    .getOrElse(false) && thatMap.keySet()
-                                                                                .stream()
-                                                                                .allMatch(map::containsKey));
+                                                 .map(it -> it.equals(map.get(f)
+                                                                         .get())
+                                                     )
+                                                 .getOrElse(false) && thatMap.keySet()
+                                                                             .stream()
+                                                                             .allMatch(map::containsKey));
     }
 
     /**
      // Single-check idiom Item 83 from effective java
      */
+    @Override
     public final String toString() {
         String result = str;
         if (result == null)
@@ -1623,23 +1635,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     @Override
     public boolean isObj() {
         return true;
-    }
-
-    <T> Trampoline<T> ifEmptyElse(final Trampoline<T> empty,
-                                  final BiFunction<Tuple2<String, JsValue>, JsObj, Trampoline<T>> fn
-                                 ) {
-
-
-        if (this.isEmpty()) return empty;
-
-        final Tuple2<String, JsValue> head = this.head();
-
-        final JsObj tail = this.tail();
-
-        return fn.apply(head,
-                        tail
-                       );
-
     }
 
     /**
@@ -1716,14 +1711,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return (head, tail) ->
         {
             return (!pmap.containsKey(head) || !pmap.get(head)
-                                                    .filter(JsValue::isNotJson)
+                                                    .filter(JsValue::isPrimitive)
                                                     .isEmpty())
                     ||
                     (
                             tail.head()
-                                 .isKey() && !pmap.get(head)
-                                                  .filter(JsValue::isArray)
-                                                  .isEmpty()
+                                .isKey() && !pmap.get(head)
+                                                 .filter(JsValue::isArray)
+                                                 .isEmpty()
                     )
                     ||
                     (tail.head()
@@ -1887,7 +1882,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return union(a,
                      tail
                     ).map(it ->
-                                  JsValueLens.of(head._1).modify.apply(c-> c.isNothing() ? head._2 : c).apply(it)
+                                  JsValueLens.of(head._1).modify.apply(c -> c.isNothing() ? head._2 : c)
+                                                                .apply(it)
 
                          );
 
@@ -1938,8 +1934,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
 
     }
-
-
 
 
 }

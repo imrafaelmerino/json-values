@@ -35,6 +35,8 @@ public interface JsValue {
         }
     }
 
+    JsPrimitive toJsPrimitive();
+
     /**
      @return true if this JsValue is a JsBinary or a JsString which value is an array of
      bytes encoded in base64
@@ -243,7 +245,7 @@ public interface JsValue {
     /**
      @return true if this JsValue is a not a Json (neither JsObj nor JsArray)
      */
-    default boolean isNotJson() {
+    default boolean isPrimitive() {
         return !isJson();
     }
 
