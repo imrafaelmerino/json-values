@@ -3,6 +3,7 @@ package jsonvalues;
 import io.vavr.Tuple2;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 final class OpMapObjKeys extends OpMapKeys<JsObj> {
     OpMapObjKeys(final JsObj json) {
@@ -19,6 +20,19 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
             final String keyMapped = fn.apply(headPath,
                                               next._2
                                              );
+            result = result.set(keyMapped,
+                                next._2
+                               );
+
+        }
+        return result;
+    }
+
+    @Override
+    JsObj map(final Function<? super String, String> fn) {
+        JsObj result = JsObj.empty();
+        for (final Tuple2<String, JsValue> next : json) {
+            final String keyMapped = fn.apply(next._1);
             result = result.set(keyMapped,
                                 next._2
                                );
@@ -65,5 +79,36 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
         }
         return result;
 
+    }
+
+    @Override
+    JsObj mapAll(final Function<? super String, String> fn) {
+        JsObj result = JsObj.empty();
+
+        for (final Tuple2<String, JsValue> next : json) {
+            final String keyMapped = fn.apply(next._1);
+            if (next._2.isObj()) {
+                result = result.set(keyMapped,
+                                    new OpMapObjKeys(next._2.toJsObj()).mapAll(fn
+                                                                              )
+                                   );
+            }
+            else if (next._2.isArray()) {
+                result = result.set(keyMapped,
+                                    new OpMapArrKeys(next._2.toJsArray()).mapAll(fn)
+                                   );
+            }
+            else {
+                result = result.set(keyMapped,
+                                    next._2
+                                   )
+
+
+                ;
+            }
+
+
+        }
+        return result;
     }
 }

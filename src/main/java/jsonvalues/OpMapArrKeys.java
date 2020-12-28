@@ -1,6 +1,7 @@
 package jsonvalues;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 final class OpMapArrKeys extends OpMapKeys<JsArray> {
     OpMapArrKeys(final JsArray json) {
@@ -12,6 +13,12 @@ final class OpMapArrKeys extends OpMapKeys<JsArray> {
                 final JsPath startingPath
                ) {
         throw InternalError.opNotSupportedForArrays();
+    }
+
+    @Override
+    JsArray map(final Function<? super String, String> fn) {
+        throw InternalError.opNotSupportedForArrays();
+
     }
 
     @Override
@@ -41,5 +48,25 @@ final class OpMapArrKeys extends OpMapKeys<JsArray> {
         }
         return json;
 
+    }
+
+    @Override
+    JsArray mapAll(final Function<? super String, String> fn) {
+        for (int i = 0; i < json.size(); i++) {
+            JsValue value = json.get(i);
+            if (value.isObj()) {
+                json = json.set(i,
+                                new OpMapObjKeys(value.toJsObj()).mapAll(fn)
+                               );
+            }
+            else if (value.isArray()) {
+                json = json.set(i,
+                                new OpMapArrKeys(value.toJsArray()).mapAll(fn)
+                               );
+            }
+
+
+        }
+        return json;
     }
 }

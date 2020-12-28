@@ -2,25 +2,24 @@ package jsonvalues;
 
 import io.vavr.Tuple2;
 
-import java.util.Iterator;
 import java.util.Optional;
 import java.util.function.*;
 
 
 final class OpMapReduce<T> {
-    private final BiFunction<JsPath, JsPrimitive, UnaryOperator<Optional<T>>> accumulator;
+    private final Function<JsPrimitive, UnaryOperator<Optional<T>>> accumulator;
 
-    OpMapReduce(final BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
-                final BiFunction<? super JsPath, ? super JsPrimitive, T> map,
+    OpMapReduce(final Predicate<? super JsPrimitive> predicate,
+                final Function<? super JsPrimitive, T> map,
                 final BinaryOperator<T> op
                ) {
-        this.accumulator = (path, value) -> acc ->
+        this.accumulator = value -> acc ->
         {
-            if (!predicate.test(path,
-                                value
+            if (!predicate.test(
+                    value
                                )) return acc;
-            final T mapped = map.apply(path,
-                                       value
+            final T mapped = map.apply(
+                    value
                                       );
             final Optional<T> t = acc.map(it -> op.apply(it,
                                                          mapped
@@ -32,61 +31,55 @@ final class OpMapReduce<T> {
     }
 
     Optional<T> reduceAll(JsObj obj) {
-        return reduceAllObj(JsPath.empty()).apply(obj,
-                                                  Optional.empty()
-                                                 );
+        return reduceAllObj().apply(obj,
+                                    Optional.empty()
+                                   );
     }
 
     Optional<T> reduce(JsObj obj) {
-        return reduceObj(JsPath.empty()
+        return reduceObj(
                         ).apply(obj,
                                 Optional.empty()
                                );
     }
 
     Optional<T> reduceAll(JsArray arr) {
-        return reduceAllArr(JsPath.empty()
-                                  .index(-1)
+        return reduceAllArr(
                            ).apply(arr,
                                    Optional.empty()
                                   );
     }
 
     Optional<T> reduce(JsArray arr) {
-        return reduceArr(JsPath.empty()
-                               .index(-1)
+        return reduceArr(
                         ).apply(arr,
                                 Optional.empty()
                                );
     }
 
 
-    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceAllObj(final JsPath startingPath) {
+    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceAllObj() {
 
         return (obj, acc) ->
         {
-            if (obj.isEmpty()) return acc;
-            Iterator<Tuple2<String, JsValue>> iterator = obj.iterator();
-            while (iterator.hasNext()) {
-                Tuple2<String, JsValue> head     = iterator.next();
-                final JsPath            headPath = startingPath.key(head._1);
+            for (final Tuple2<String, JsValue> head : obj) {
                 if (head._2.isObj()) {
-                    acc = reduceAllObj(startingPath.key(head._1)).apply(head._2.toJsObj(),
-                                                                        acc
-                                                                       );
+                    acc = reduceAllObj().apply(head._2.toJsObj(),
+                                               acc
+                                              );
 
 
                 }
 
                 else if (head._2.isArray()) {
-                    acc = reduceAllArr(startingPath.index(-1)).apply(head._2.toJsArray(),
-                                                                     acc
-                                                                    );
+                    acc = reduceAllArr().apply(head._2.toJsArray(),
+                                               acc
+                                              );
                 }
 
                 else {
-                    acc = accumulator.apply(headPath,
-                                            head._2.toJsPrimitive()
+                    acc = accumulator.apply(
+                            head._2.toJsPrimitive()
                                            )
                                      .apply(acc);
                 }
@@ -100,28 +93,27 @@ final class OpMapReduce<T> {
 
     }
 
-    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceAllArr(final JsPath startingPath) {
+    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceAllArr() {
 
         return (arr, acc) -> {
-            final JsPath headPath = startingPath.inc();
 
             for (final JsValue value : arr) {
                 if (value.isObj()) {
-                    acc = reduceAllObj(headPath).apply(value.toJsObj(),
-                                                       acc
-                                                      );
+                    acc = reduceAllObj().apply(value.toJsObj(),
+                                               acc
+                                              );
 
 
                 }
 
                 else if (value.isArray()) {
-                    acc = reduceAllArr(headPath).apply(value.toJsArray(),
-                                                       acc
-                                                      );
+                    acc = reduceAllArr().apply(value.toJsArray(),
+                                               acc
+                                              );
                 }
                 else {
-                    acc = accumulator.apply(headPath,
-                                            value.toJsPrimitive()
+                    acc = accumulator.apply(
+                            value.toJsPrimitive()
                                            )
                                      .apply(acc);
                 }
@@ -134,19 +126,14 @@ final class OpMapReduce<T> {
     }
 
 
-    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceObj(final JsPath startingPath) {
+    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceObj() {
 
         return (obj, acc) ->
         {
-            if (obj.isEmpty()) return acc;
-            Iterator<Tuple2<String, JsValue>> iterator = obj.iterator();
-            while (iterator.hasNext()) {
-                Tuple2<String, JsValue> head = iterator.next();
+            for (final Tuple2<String, JsValue> head : obj) {
                 if (head._2.isPrimitive()) {
-                    final JsPath headPath = startingPath.key(head._1);
-
-                    acc = accumulator.apply(headPath,
-                                            head._2.toJsPrimitive()
+                    acc = accumulator.apply(
+                            head._2.toJsPrimitive()
                                            )
                                      .apply(acc);
                 }
@@ -160,23 +147,18 @@ final class OpMapReduce<T> {
 
     }
 
-    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceArr(final JsPath startingPath) {
+    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceArr() {
 
         return (arr, acc) -> {
-
             for (final JsValue value : arr) {
-
                 if (value.isPrimitive()) {
-                    final JsPath headPath = startingPath.inc();
-
-                    acc = accumulator.apply(headPath,
-                                            value.toJsPrimitive()
+                    acc = accumulator.apply(
+                            value.toJsPrimitive()
                                            )
                                      .apply(acc
                                            );
                 }
             }
-
             return acc;
         };
     }

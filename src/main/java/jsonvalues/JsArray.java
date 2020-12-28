@@ -10,9 +10,7 @@ import java.math.BigInteger;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.BiFunction;
-import java.util.function.BiPredicate;
-import java.util.function.BinaryOperator;
+import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -677,21 +675,37 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray filterValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+    public final JsArray filterValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
         return new OpFilterArrElems(this).filter(JsPath.empty(),
                                                  requireNonNull(filter)
                                                 );
     }
 
     @Override
-    public final JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+    public JsArray filterValues(final Predicate<? super JsPrimitive> filter) {
+        return new OpFilterArrElems(this).filter(requireNonNull(filter));
+    }
+
+    @Override
+    public final JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
         return new OpFilterArrElems(this).filterAll(JsPath.empty(),
                                                     requireNonNull(filter)
                                                    );
     }
 
     @Override
+    public JsArray filterAllValues(final Predicate<? super JsPrimitive> filter) {
+        return new OpFilterArrElems(this).filterAll(requireNonNull(filter)
+                                                   );
+    }
+
+    @Override
     public final JsArray filterKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+        return this;
+    }
+
+    @Override
+    public JsArray filterKeys(final Predicate<? super String> filter) {
         return this;
     }
 
@@ -703,6 +717,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
+    public JsArray filterAllKeys(final Predicate<? super String> filter) {
+        return new OpFilterArrKeys(this).filterAll(filter);
+    }
+
+    @Override
     public final JsArray filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return new OpFilterArrObjs(this).filter(JsPath.empty(),
                                                 requireNonNull(filter)
@@ -710,9 +729,23 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
+    public JsArray filterObjs(final Predicate<? super JsObj> filter) {
+        return new OpFilterArrObjs(this).filter(
+                requireNonNull(filter)
+                                               );
+    }
+
+    @Override
     public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return new OpFilterArrObjs(this).filterAll(JsPath.empty(),
                                                    requireNonNull(filter)
+                                                  );
+    }
+
+    @Override
+    public JsArray filterAllObjs(final Predicate<? super JsObj> filter) {
+        return new OpFilterArrObjs(this).filterAll(
+                requireNonNull(filter)
                                                   );
     }
 
@@ -731,6 +764,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
+    public JsArray mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
+        return new OpMapArrElems(this).map(requireNonNull(fn));
+    }
+
+    @Override
     public JsArray mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return new OpMapArrElems(this).mapAll(requireNonNull(fn),
                                               JsPath.empty()
@@ -739,7 +777,17 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
+    public JsArray mapAllValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
+        return new OpMapArrElems(this).mapAll(requireNonNull(fn));
+    }
+
+    @Override
     public final JsArray mapKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
+        return this;
+    }
+
+    @Override
+    public JsArray mapKeys(final Function<? super String, String> fn) {
         return this;
     }
 
@@ -752,9 +800,21 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
+    public JsArray mapAllKeys(final Function<? super String, String> fn) {
+        return new OpMapArrKeys(this).mapAll(requireNonNull(fn));
+    }
+
+    @Override
     public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return new OpMapArrObjs(this).map(requireNonNull(fn),
                                           JsPath.empty()
+
+                                         );
+    }
+
+    @Override
+    public JsArray mapObjs(final Function<? super JsObj, JsValue> fn) {
+        return new OpMapArrObjs(this).map(requireNonNull(fn)
 
                                          );
     }
@@ -765,6 +825,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                              JsPath.empty()
 
                                             );
+    }
+
+    @Override
+    public JsArray mapAllObjs(final Function<? super JsObj, JsValue> fn) {
+        return new OpMapArrObjs(this).mapAll(requireNonNull(fn));
     }
 
     @Override
@@ -791,7 +856,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
         requireNonNull(value);
 
-        return ifNothingElse(() -> this,
+        return ifNothingElse(() -> this.delete(index),
                              elem -> new JsArray(nullPadding(index,
                                                              seq,
                                                              elem,
@@ -816,7 +881,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                           {
                               final JsPath tail = path.tail();
 
-                              return tail.isEmpty() ? ifNothingElse(() -> this,
+                              return tail.isEmpty() ? ifNothingElse(() -> this.delete(index),
                                                                     elem -> new JsArray(nullPadding(index,
                                                                                                     seq,
                                                                                                     elem,
@@ -865,12 +930,22 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                         final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                         final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                        ) {
+        return new OpMapReducePair<>(requireNonNull(predicate),
+                                     map,
+                                     op
+        ).reduce(this);
+
+
+    }
+
+    @Override
+    public <R> Optional<R> reduce(final BinaryOperator<R> op,
+                                  final Function<? super JsPrimitive, R> map,
+                                  final Predicate<? super JsPrimitive> predicate) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
                                  op
         ).reduce(this);
-
-
     }
 
     @Override
@@ -878,11 +953,21 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                            final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                            final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                           ) {
+        return new OpMapReducePair<>(requireNonNull(predicate),
+                                     map,
+                                     op
+        ).reduceAll(this);
+
+    }
+
+    @Override
+    public <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                                     final Function<? super JsPrimitive, R> map,
+                                     final Predicate<? super JsPrimitive> predicate) {
         return new OpMapReduce<>(requireNonNull(predicate),
                                  map,
                                  op
         ).reduceAll(this);
-
     }
 
     @Override

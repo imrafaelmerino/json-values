@@ -1,6 +1,7 @@
 package jsonvalues;
 
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 final class OpFilterArrObjs extends OpFilterObjs<JsArray> {
 
@@ -68,6 +69,55 @@ final class OpFilterArrObjs extends OpFilterObjs<JsArray> {
         return json;
 
 
+    }
+
+    @Override
+    JsArray filter(final Predicate<? super JsObj> predicate) {
+        for (int i = json.size() - 1; i >= 0; i--) {
+
+
+            JsValue value = json.get(i);
+
+            if (value.isObj()) {
+                if (predicate.negate()
+                             .test(value.toJsObj()
+                                  )) json = json.delete(i);
+            }
+
+        }
+
+        return json;
+    }
+
+    @Override
+    JsArray filterAll(final Predicate<? super JsObj> predicate) {
+        for (int i = json.size() - 1; i >= 0; i--) {
+
+
+            JsValue value = json.get(i);
+
+            if (value.isObj()) {
+                if (predicate.negate()
+                             .test(
+                                   value.toJsObj()
+                                  )) json = json.delete(i);
+                else json = json.set(i,
+                                     new OpFilterObjObjs(value.toJsObj()).filterAll(
+                                                                                    predicate
+                                                                                   )
+                                    );
+            }
+            else if (value.isArray()) {
+                json = json.set(i,
+                                new OpFilterArrObjs(value.toJsArray()).filterAll(
+                                                                                 predicate
+                                                                                )
+                               );
+            }
+
+        }
+
+        return json;
     }
 
 

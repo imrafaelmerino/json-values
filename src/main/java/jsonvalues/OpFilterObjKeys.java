@@ -3,6 +3,7 @@ package jsonvalues;
 import io.vavr.Tuple2;
 
 import java.util.function.BiPredicate;
+import java.util.function.Predicate;
 
 final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
 
@@ -47,11 +48,48 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
 
     @Override
     JsObj filter(final BiPredicate<? super JsPath, ? super JsValue> predicate) {
-        if (json.isEmpty()) return json;
         for (final Tuple2<String, JsValue> next : json) {
             if (predicate.negate()
                          .test(JsPath.fromKey(next._1),
                                next._2
+                              )) {
+                json = json.delete(next._1);
+
+            }
+        }
+        return json;
+    }
+
+    @Override
+    JsObj filterAll(final Predicate<? super String> predicate) {
+        for (final Tuple2<String, JsValue> next : json) {
+
+            if (predicate.negate()
+                         .test(next._1)) {
+
+                json = json.delete(next._1);
+            }
+            else if (next._2.isObj())
+                json = json.set(next._1,
+                                new OpFilterObjKeys(next._2.toJsObj()).filterAll(predicate)
+                               );
+
+            else if (next._2.isArray())
+                json = json.set(next._1,
+                                new OpFilterArrKeys(next._2.toJsArray()).filterAll(predicate)
+                               );
+
+
+        }
+
+        return json;
+    }
+
+    @Override
+    JsObj filter(final Predicate<? super String> predicate) {
+        for (final Tuple2<String, JsValue> next : json) {
+            if (predicate.negate()
+                         .test(next._1
                               )) {
                 json = json.delete(next._1);
 

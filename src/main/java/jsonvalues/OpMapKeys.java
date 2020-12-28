@@ -1,6 +1,7 @@
 package jsonvalues;
 
 import java.util.function.BiFunction;
+import java.util.function.Function;
 
 abstract class OpMapKeys<T> {
     T json;
@@ -13,7 +14,11 @@ abstract class OpMapKeys<T> {
                    final JsPath startingPath
                   );
 
+    abstract T map(final Function<? super String, String> fn);
+
     abstract T mapAll(final BiFunction<? super JsPath, ? super JsValue, String> fn,
                       final JsPath startingPath
                      );
+    abstract T mapAll(final Function<? super String, String> fn);
+
 }

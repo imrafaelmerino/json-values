@@ -27,11 +27,11 @@ public class TestJsObj {
         JsObj obj = JsObj.empty();
         Assertions.assertTrue(obj.isEmpty());
 
-        final JsObj obj1 = obj.set(JsPath.fromKey("a"),
+        final JsObj obj1 = obj.set("a",
                                    JsInt.of(1)
                                   );// obj is mutable
         Assertions.assertTrue(obj.isEmpty());
-        Assertions.assertTrue(obj1.getInt(JsPath.fromKey("a"))
+        Assertions.assertTrue(obj1.getInt("a")
                                   .equals(1)
                              );
     }
@@ -130,7 +130,7 @@ public class TestJsObj {
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.delete(JsPath.fromKey("a"));
+        final JsObj obj1 = obj.delete("a");
         Assertions.assertEquals(3,
                                 obj.size()
                                );
@@ -151,7 +151,7 @@ public class TestJsObj {
                                 obj.size()
                                );
 
-        final JsObj obj1 = obj.delete(JsPath.fromKey("b"));// obj is mutable
+        final JsObj obj1 = obj.delete("b");// obj is mutable
         Assertions.assertEquals(2,
                                 obj.size()
                                );
@@ -506,7 +506,7 @@ public class TestJsObj {
                             );
 
 
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set(JsPath.fromKey("size"),
+        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set("size",
                                                                                     JsInt.of(json.size())
                                                                                    );
 
@@ -570,29 +570,35 @@ public class TestJsObj {
                                   );
 
 
-        final JsObj mapped = obj.mapAllKeys((path, val) ->
-                                            {
-                                                Assertions.assertEquals(val,
-                                                                        obj.get(path)
-                                                                       );
-                                                return path.last()
-                                                           .asKey().name.trim()
-                                                                        .toUpperCase();
-                                            });
 
-        Assertions.assertFalse(mapped.streamAll()
-                                     .map(it ->
-                                          {
-                                              final String name = it.path.last()
-                                                                         .asKey().name;
-                                              return name.contains(" ") || name.chars()
-                                                                               .mapToObj(Character::isLowerCase)
-                                                                               .findAny()
-                                                                               .orElse(false);
-                                          })
-                                     .findFirst()
-                                     .orElse(false));
+        Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapAllKeys((path, val) ->
+                                                                      {
+                                                                          Assertions.assertEquals(val,
+                                                                                                  obj.get(path)
+                                                                                                 );
+                                                                          return path.last()
+                                                                                     .asKey().name.trim()
+                                                                                                  .toUpperCase();
+                                                                      })));
 
+
+        Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapAllKeys(key -> key.trim().toUpperCase())));
+
+    }
+
+     Boolean anyKeyLetterIsLowerCase(final JsObj mapped) {
+        return mapped.streamAll()
+                     .map(it ->
+                          {
+                              final String name = it.path.last()
+                                                         .asKey().name;
+                              return name.contains(" ") || name.chars()
+                                                               .mapToObj(Character::isLowerCase)
+                                                               .findAny()
+                                                               .orElse(false);
+                          })
+                     .findFirst()
+                     .orElse(false);
     }
 
     @Test

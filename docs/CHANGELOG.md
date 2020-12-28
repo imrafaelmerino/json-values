@@ -1,5 +1,5 @@
 # JSON-VALUES
-## v8.4.0  ( Tue Aug 18 2020 22:00:48 GMT+0200 (Central European Summer Time) )
+## v9.0.0  ( Tue Aug 18 2020 22:00:48 GMT+0200 (Central European Summer Time) )
 
 
 ## Bug Fixes
