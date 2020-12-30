@@ -1,9 +1,10 @@
 package jsonvalues;
 
 
-import com.sun.org.apache.xml.internal.security.utils.Base64;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import java.util.Base64;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -1174,7 +1175,8 @@ public class TestJsArray {
         byte[] bytes = "hola".getBytes();
 
         JsArray array = JsArray.of(JsStr.of("a"),
-                                   JsStr.of(Base64.encode(bytes)),
+                                   JsStr.of(Base64.getEncoder()
+                                                  .encodeToString(bytes)),
                                    JsBinary.of(bytes)
                                   );
 

@@ -120,7 +120,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterValues(BiPredicate) how to filter the pairs of values of only the first level
      */
     T filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter);
 
@@ -129,7 +128,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterValues(BiPredicate) how to filter the pairs of values of only the first level
      */
     T filterAllValues(final Predicate<? super JsPrimitive> filter);
 
@@ -148,7 +146,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
-     @see #filterKeys(BiPredicate) how to filter the keys of only the first level
      */
     T filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter);
 
@@ -158,7 +155,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
-     @see #filterKeys(BiPredicate) how to filter the keys of only the first level
      */
     T filterAllKeys(final Predicate<? super String> filter);
 
@@ -169,7 +165,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair in the first level of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterAllObjs(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
      */
     T filterObjs(final Predicate<? super JsObj> filter);
 
@@ -178,7 +173,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterObjs(BiPredicate) how to filter the pair of jsons of only the first level
      */
     T filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter);
 
@@ -187,7 +181,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param filter the predicate which takes as the input every JsPair of this json
      @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterObjs(BiPredicate) how to filter the pair of jsons of only the first level
      */
     T filterAllObjs(final Predicate<? super JsObj> filter);
 
@@ -532,7 +525,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      @param predicate the predicate that determines what JsValue will be mapped and reduced
      @param <R>       the type of the operands of the operator
      @return an {@link Optional} describing the result of the reduction
-     @see #reduce(BinaryOperator, BiFunction, BiPredicate) to apply the reduction only in the first level
      */
     <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                               final Function<? super JsPrimitive, R> map,
