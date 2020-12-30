@@ -29,8 +29,7 @@ import static jsonvalues.JsNull.NULL;
 import static jsonvalues.JsObj.streamOfObj;
 import static jsonvalues.MatchExp.ifJsonElse;
 import static jsonvalues.MatchExp.ifNothingElse;
-import static jsonvalues.Trampoline.done;
-import static jsonvalues.Trampoline.more;
+
 
 /**
  Represents a json array, which is an ordered list of elements.
@@ -459,10 +458,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    private static Trampoline<JsArray> intersection(JsArray a,
-                                                    JsArray b,
-                                                    JsArray.TYPE ARRAY_AS
-                                                   ) {
+    private static JsArray intersection(JsArray a,
+                                        JsArray b,
+                                        JsArray.TYPE ARRAY_AS
+                                       ) {
         switch (ARRAY_AS) {
             case SET:
                 return intersectionAsSet(a,
@@ -482,101 +481,86 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
-    private static Trampoline<JsArray> intersectionAsList(JsArray a,
-                                                          JsArray b
-                                                         ) {
+    private static JsArray intersectionAsList(JsArray a,
+                                              JsArray b
+                                             ) {
 
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
 
-        final JsValue head = a.head();
-        final JsArray tail = a.tail();
+        JsArray result = JsArray.empty();
+        for (int i = 0; i < a.size(); i++) {
+            JsValue aVal = a.get(i);
+            JsValue bVal = b.get(i);
+            if (aVal.isNothing() || bVal.isNothing()) return result;
+            if (aVal.equals(bVal)) result = result.append(aVal);
+        }
 
-        final JsValue otherHead = b.head();
-        final JsArray otherTail = b.tail();
-
-        final Trampoline<Trampoline<JsArray>> tailCall =
-                () -> intersectionAsList(tail,
-                                         otherTail
-                                        );
-
-        if (head.equals(otherHead))
-            return more(tailCall).map(it -> it.prepend(head));
-
-        return more(tailCall);
-
+        return result;
 
     }
 
-    private static Trampoline<JsArray> intersectionAsMultiSet(JsArray a,
-                                                              JsArray b
-                                                             ) {
-
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
-
-        final JsValue head = a.head();
-        final JsArray tail = a.tail();
-
-        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsMultiSet(tail,
-                                                                                      b
-                                                                                     );
-
-        if (b.containsValue(head)) return more(tailCall).map(it -> it.prepend(head));
-
-        return more(tailCall);
-    }
-
-    private static Trampoline<JsArray> intersectionAsSet(JsArray a,
-                                                         JsArray b
-                                                        ) {
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
-
-        final JsValue head = a.head();
-        final JsArray tail = a.tail();
-
-        final Trampoline<Trampoline<JsArray>> tailCall = () -> intersectionAsSet(tail,
-                                                                                 b
-                                                                                );
-
-        if (b.containsValue(head) && !tail.containsValue(head))
-            return more(tailCall).map(it -> it.prepend(head));
-
-        return more(tailCall);
-    }
-
-    private static Trampoline<JsArray> unionAsList(final JsArray a,
-                                                   final JsArray b
-                                                  ) {
-        if (b.isEmpty()) return done(a);
-        if (a.isEmpty()) return done(b);
-        final Trampoline<JsArray> tailCall = unionAsList(a.tail(),
-                                                         b.tail()
-                                                        );
-        return more(() -> tailCall).map(it -> it.prepend(a.head()));
-    }
-
-    private static Trampoline<JsArray> unionAsMultiSet(final JsArray a,
-                                                       final JsArray b
-                                                      ) {
-        if (b.isEmpty()) return done(a);
-        if (a.isEmpty()) return done(b);
-        return more(() -> () -> a.appendAll(b));
-    }
-
-    private static Trampoline<JsArray> unionAsSet(final JsArray a,
+    private static JsArray intersectionAsMultiSet(final JsArray a,
                                                   final JsArray b
                                                  ) {
-        if (b.isEmpty()) return done(a);
-        if (a.isEmpty()) return done(b);
-        JsValue last = b.last();
-        final Trampoline<JsArray> initCall = unionAsSet(a,
-                                                        b.init()
-                                                       );
-        if (!a.containsValue(last))
-            return more(() -> initCall).map(it -> it.append(last));
-        return more(() -> initCall);
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
+
+        JsArray result = JsArray.empty();
+        for (JsValue it : a) {
+            if (b.containsValue(it))
+                result = result.append(it);
+        }
+
+        return result;
+    }
+
+    private static JsArray intersectionAsSet(final JsArray a,
+                                             final JsArray b
+                                            ) {
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
+
+        JsArray result = JsArray.empty();
+        for (JsValue it : a) {
+            if (b.containsValue(it) && !result.containsValue(it)) result = result.append(it);
+        }
+        return result;
+    }
+
+    private static JsArray unionAsList(final JsArray a,
+                                       final JsArray b
+                                      ) {
+        if (a.isEmpty()) return b;
+        JsArray result = a;
+        for (int i = a.size(); i < b.size(); i++) {
+            result = result.append(b.get(i));
+        }
+        return result;
+    }
+
+    private static JsArray unionAsMultiSet(final JsArray a,
+                                           final JsArray b
+                                          ) {
+        return a.appendAll(b);
+
+    }
+
+    private static JsArray unionAsSet(final JsArray a,
+                                      final JsArray b
+                                     ) {
+        if (b.isEmpty()) return a;
+        if (a.isEmpty()) return b;
+
+        JsArray result = JsArray.empty();
+        for (final JsValue value : a) {
+            if (!result.containsValue(value)) result = result.append(value);
+        }
+        for (final JsValue value : b) {
+            if (!result.containsValue(value)) result = result.append(value);
+        }
+
+        return result;
     }
 
     /**
@@ -1347,7 +1331,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return intersection(this,
                             requireNonNull(that),
                             requireNonNull(ARRAY_AS)
-                           ).get();
+                           );
     }
 
     /**
@@ -1361,7 +1345,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public JsArray intersectionAll(final JsArray that) {
         return intersectionAll(this,
                                requireNonNull(that)
-                              ).get();
+                              );
     }
 
     @Override
@@ -1467,7 +1451,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return union(this,
                      requireNonNull(that),
                      requireNonNull(ARRAY_AS)
-                    ).get();
+                    );
     }
 
     /**
@@ -1484,37 +1468,40 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                  ) {
         return unionAll(this,
                         requireNonNull(that)
-                       ).get();
+                       );
     }
 
-    private Trampoline<JsArray> intersectionAll(final JsArray a,
-                                                final JsArray b
-                                               ) {
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
+    private JsArray intersectionAll(final JsArray a,
+                                    final JsArray b
+                                   ) {
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
 
-        final JsValue head      = a.head();
-        final JsValue otherHead = b.head();
+        JsArray result = JsArray.empty();
 
-        final Trampoline<JsArray> tailCall = intersectionAsList(a.tail(),
-                                                                b.tail()
-                                                               );
+        for (int i = 0; i < a.size(); i++) {
+            final JsValue head      = a.get(i);
+            final JsValue otherHead = b.get(i);
+            if (head.isJson() && head.isSameType(otherHead)) {
+                final Json<?> obj  = head.toJson();
+                final Json<?> obj1 = otherHead.toJson();
+                result = result.set(i,
+                                    OpIntersectionJsons.intersectionAll(obj,
+                                                                        obj1,
+                                                                        JsArray.TYPE.LIST
+                                                                       )
+                                   );
 
-        if (head.isJson() && head.isSameType(otherHead)) {
-            final Json<?> obj  = head.toJson();
-            final Json<?> obj1 = otherHead.toJson();
 
-            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
-                                                                                                                obj1,
-                                                                                                                JsArray.TYPE.LIST
-                                                                                                               ));
-
-            return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
+            }
+            else if (head.equals(otherHead))
+                result = result.set(i,
+                                    head
+                                   );
 
         }
-        else if (head.equals(otherHead))
-            return more(() -> tailCall).map(it -> it.prepend(head));
-        else return more(() -> tailCall);
+
+        return result;
     }
 
     private Vector<JsValue> nullPadding(final int index,
@@ -1555,10 +1542,10 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    private Trampoline<JsArray> union(JsArray a,
-                                      JsArray b,
-                                      JsArray.TYPE ARRAY_AS
-                                     ) {
+    private JsArray union(JsArray a,
+                          JsArray b,
+                          JsArray.TYPE ARRAY_AS
+                         ) {
         switch (ARRAY_AS) {
             case SET:
                 return unionAsSet(a,
@@ -1577,28 +1564,32 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         }
     }
 
-    private Trampoline<JsArray> unionAll(final JsArray a,
-                                         final JsArray b
-                                        ) {
-        if (b.isEmpty()) return done(a);
-        if (a.isEmpty()) return done(b);
-        final JsValue head      = a.head();
-        final JsValue otherHead = b.head();
-        final Trampoline<JsArray> tailCall = unionAll(a.tail(),
-                                                      b.tail()
-                                                     );
-        if (head.isJson() && head.isSameType(otherHead)) {
-            final Json<?> obj  = head.toJson();
-            final Json<?> obj1 = otherHead.toJson();
-            Trampoline<? extends Json<?>> headCall =
-                    more(() -> () -> new OpUnionJsons().unionAll(obj,
-                                                                 obj1,
-                                                                 JsArray.TYPE.LIST
-                                                                ));
-            return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
+    private JsArray unionAll(final JsArray a,
+                             final JsArray b
+                            ) {
+        if (b.isEmpty()) return a;
+        if (a.isEmpty()) return b;
+        JsArray result = a;
+        for (int i = 0; i < b.size(); i++) {
+            final JsValue head      = a.get(i);
+            final JsValue otherHead = b.get(i);
+            if (head.isJson() && head.isSameType(otherHead)) {
+                final Json<?> obj  = head.toJson();
+                final Json<?> obj1 = otherHead.toJson();
+                result = result.set(i,
+                                    OpUnionJsons.unionAll(obj,
+                                                          obj1,
+                                                          JsArray.TYPE.LIST
+                                                         )
+                                   );
 
+            }
+            else if(!otherHead.isNothing() && head.isNothing()) result = result.append(otherHead);
         }
-        return more(() -> tailCall).map(it -> it.prepend(head));
+
+        return result;
+
+
     }
 
 

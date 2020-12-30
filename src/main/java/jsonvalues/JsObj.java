@@ -28,8 +28,6 @@ import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
-import static jsonvalues.Trampoline.done;
-import static jsonvalues.Trampoline.more;
 
 /**
  Represents a json object, which is an unordered set of name/element pairs. Two implementations are
@@ -1827,7 +1825,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return intersection(this,
                             that,
                             ARRAY_AS
-                           ).get();
+                           );
     }
 
     /**
@@ -1844,12 +1842,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public JsObj intersectionAll(final JsObj that,
                                  final TYPE ARRAY_AS
                                 ) {
-        requireNonNull(that);
-        requireNonNull(ARRAY_AS);
+
         return intersectionAll(this,
-                               that,
-                               ARRAY_AS
-                              ).get();
+                               requireNonNull(that),
+                               requireNonNull(ARRAY_AS)
+                              );
     }
 
     @SuppressWarnings("squid:S1602")
@@ -1893,7 +1890,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                             ) {
         return union(this,
                      requireNonNull(that)
-                    ).get();
+                    );
 
     }
 
@@ -1920,146 +1917,105 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                                  that,
                                                                  ARRAY_AS
                                                                 )
-                                                          .get()
                                                  )
                           );
 
     }
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    private Trampoline<JsObj> intersection(final JsObj a,
-                                           final JsObj b,
-                                           final JsArray.TYPE ARRAY_AS
-                                          ) {
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
-        Tuple2<String, JsValue> head = a.head();
-        JsObj                   tail = a.tail();
-        final Trampoline<Trampoline<JsObj>> tailCall = () -> intersection(tail,
-                                                                          b,
-                                                                          ARRAY_AS
-                                                                         );
-        final JsValue bElem = b.get(head._1);
+    private JsObj intersection(final JsObj a,
+                               final JsObj b,
+                               final JsArray.TYPE ARRAY_AS
+                              ) {
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
 
-        return ((bElem.isJson() && bElem.toJson()
+        JsObj result = JsObj.empty();
+        for (final Tuple2<String, JsValue> head : a) {
+            final JsValue bElem = b.get(head._1);
+            if ((bElem.isJson() && bElem.toJson()
                                         .equals(head._2,
                                                 ARRAY_AS
-                                               )) || bElem.equals(head._2)) ?
-               more(tailCall).map(it -> it.set(head._1,
-                                               head._2
-                                              )) :
-               more(tailCall);
+                                               )) || bElem.equals(head._2))
+                result = result.set(head._1,
+                                    head._2
+                                   );
+        }
+        return result;
     }
 
     @SuppressWarnings({"squid:S00117",}) // ARRAY_AS should be a valid name for an enum constant
-    private Trampoline<JsObj> intersectionAll(final JsObj a,
-                                              final JsObj b,
-                                              final JsArray.TYPE ARRAY_AS
-                                             ) {
-        if (a.isEmpty()) return done(a);
-        if (b.isEmpty()) return done(b);
-        Tuple2<String, JsValue> head = a.head();
+    private JsObj intersectionAll(final JsObj a,
+                                  final JsObj b,
+                                  final JsArray.TYPE ARRAY_AS
+                                 ) {
+        if (a.isEmpty()) return a;
+        if (b.isEmpty()) return b;
+        JsObj result = JsObj.empty();
+        for (final Tuple2<String, JsValue> aVal : a) {
 
-        JsObj tail = a.tail();
+            if(b.containsKey(aVal._1)){
+                final JsValue bVal = b.get(aVal._1);
 
-        final Trampoline<JsObj> tailCall = more(() -> intersectionAll(tail,
-                                                                      b,
-                                                                      ARRAY_AS
-                                                                     ));
-        if (b.containsKey(head._1)) {
-            final JsValue headOtherElement = b.get(head._1);
-            if (headOtherElement.equals(head._2)) {
-                return more(() -> intersectionAll(tail,
-                                                  b.tail(),
-                                                  ARRAY_AS
-                                                 )).map(it -> it.set(head._1,
-                                                                     head._2
-                                                                    ));
-
-            }
-            else if (head._2
-                    .isJson() && head._2
-                    .isSameType(headOtherElement)) {//different but same container
-                Json<?> obj = head._2
-                        .toJson();
-                Json<?> obj1 = headOtherElement.toJson();
-
-                Trampoline<? extends Json<?>> headCall =
-                        more(() -> () -> new OpIntersectionJsons().intersectionAll(obj,
-                                                                                   obj1,
+                if(bVal.equals(aVal._2))result=result.set(aVal._1,aVal._2);
+                else if(bVal.isJson() && bVal.isSameType(aVal._2)){
+                   result = result.set(aVal._1,OpIntersectionJsons.intersectionAll(aVal._2.toJson(),
+                                                                                   bVal.toJson(),
                                                                                    ARRAY_AS
                                                                                   )
-                            );
-                return more(() -> tailCall).flatMap(json -> headCall
-                                                            .map(it -> json.set(head._1,
-                                                                                it
-                                                                               )
-                                                                )
-                                                   );
+                                      );
+                }
             }
 
         }
-        return tailCall;
+
+        return result;
+
     }
 
-    private Trampoline<JsObj> union(JsObj a,
-                                    JsObj b
-                                   ) {
-        if (b.isEmpty()) return done(a);
-        Tuple2<String, JsValue> head = b.head();
-        JsObj                   tail = b.tail();
-        return union(a,
-                     tail
-                    ).map(it ->
-                                  JsValueLens.of(head._1).modify.apply(c -> c.isNothing() ? head._2 : c)
-                                                                .apply(it)
+    private JsObj union(JsObj a,
+                        JsObj b
+                       ) {
+        if (b.isEmpty()) return a;
+        JsObj result = a;
+        for (final Tuple2<String, JsValue> head : b) {
+            if (!a.containsKey(head._1)) result = result.set(head._1,
+                                                             head._2
+                                                            );
+        }
 
-                         );
+        return result;
 
     }
 
     //squid:S00117 ARRAY_AS should be a valid name
-    private Trampoline<JsObj> unionAll(final JsObj a,
-                                       final JsObj b,
-                                       final JsArray.TYPE ARRAY_AS
-                                      ) {
+    private JsObj unionAll(final JsObj a,
+                           final JsObj b,
+                           final JsArray.TYPE ARRAY_AS
+                          ) {
 
-        if (b.isEmpty()) return done(a);
-        Tuple2<String, JsValue> head = b.head();
-        JsObj                   tail = b.tail();
-        Trampoline<JsObj> tailCall = more(() -> unionAll(a,
-                                                         tail,
-                                                         ARRAY_AS
-                                                        ));
-        return ifNothingElse(() -> more(() -> tailCall).map(it -> it.set(head._1,
-                                                                         head._2
-                                                                        )),
-                             MatchExp.ifPredicateElse(e -> e.isJson() && e.isSameType(head._2),
-                                                      it ->
-                                                      {
-                                                          Json<?> obj = a.get(head._1)
-                                                                         .toJson();
-                                                          Json<?> obj1 = head._2.toJson();
+        if (b.isEmpty()) return a;
+        JsObj result = a;
+        for (final Tuple2<String, JsValue> bVal : b) {
+            if (!a.containsKey(bVal._1))
+                result = result.set(bVal._1,
+                                    bVal._2
+                                   );
+            JsValue aVal = a.get(bVal._1);
+            if (aVal.isJson() && aVal.isSameType(bVal._2)) {
+                Json<?> aJson = aVal.toJson();
+                Json<?> bJson = bVal._2.toJson();
 
-                                                          Trampoline<? extends Json<?>> headCall =
-                                                                  more(() -> () -> new OpUnionJsons().unionAll(obj,
-                                                                                                               obj1,
-                                                                                                               ARRAY_AS
-                                                                                                              )
-                                                                      );
-                                                          return more(() -> tailCall)
-                                                                  .flatMap(tailResult -> headCall.map(headUnion_ ->
-                                                                                                              tailResult.set(head._1,
-                                                                                                                             headUnion_
-                                                                                                                            )
-                                                                                                     )
-                                                                          );
-                                                      },
-                                                      it -> tailCall
-                                                     )
-                            )
-                .apply(a.get(head._1));
+                result = result.set(bVal._1,
+                                    OpUnionJsons.unionAll(aJson,
+                                                          bJson,
+                                                          ARRAY_AS
+                                                         )
+                                   );
+            }
+        }
 
+        return result;
 
     }
 

@@ -31,11 +31,6 @@ final class InternalError extends RuntimeException {
     }
 
 
-    static InternalError opNotSupportedForArrays() {
-        return new InternalError("A JsArray doesn't have keys. Don't call this method.");
-    }
-
-
     static InternalError tokenNotExpected(String token) {
         return new InternalError(String.format("token %s not expected during parsing",
                                                token

@@ -23,15 +23,18 @@ public class TestLenses {
                                      )
                             );
 
-        Assertions.assertEquals(obj,compose.set.apply("a")
-                                   .apply(JsObj.empty()));
+        Assertions.assertEquals(obj,
+                                compose.set.apply("a")
+                                           .apply(JsObj.empty()));
 
         Assertions.assertEquals("a",
-                                compose.get.apply(obj));
+                                compose.get.apply(obj)
+                               );
 
         Assertions.assertEquals("b",
                                 compose.get.apply(compose.set.apply("b")
-                                                             .apply(obj)));
+                                                             .apply(obj))
+                               );
     }
 
     @Test

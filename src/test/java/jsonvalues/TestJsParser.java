@@ -90,17 +90,17 @@ public class TestJsParser {
                                                  instant,
                                                  "b",
                                                  instant(i -> i.isAfter(Instant.now()
-                                                                                .minus(Duration.ofDays(1))
-                                                                        )
+                                                                               .minus(Duration.ofDays(1))
+                                                                       )
                                                         )
                                                 )
                 );
 
         JsObj obj = JsObj.of("a",
-                            JsInstant.of(Instant.now()),
-                            "b",
-                            JsInstant.of(Instant.now())
-                           );
+                             JsInstant.of(Instant.now()),
+                             "b",
+                             JsInstant.of(Instant.now())
+                            );
         JsObj parse = parser.parse(obj.toString());
 
         Assertions.assertEquals(JsInstant.class,
@@ -112,7 +112,8 @@ public class TestJsParser {
                                      .getClass()
                                );
 
-        Assertions.assertEquals(obj,parse);
+        Assertions.assertEquals(obj,
+                                parse);
     }
 
 
@@ -143,7 +144,8 @@ public class TestJsParser {
                                      .getClass()
                                );
 
-        Assertions.assertEquals(obj,parse);
+        Assertions.assertEquals(obj,
+                                parse);
     }
 
 }
