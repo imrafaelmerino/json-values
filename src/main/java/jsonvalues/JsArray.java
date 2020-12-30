@@ -570,16 +570,16 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      @return a new JsArray
      */
     public final JsArray appendAll(final JsArray array) {
-        return appendAllBackTrampoline(this,
-                                       requireNonNull(array)
-                                      );
+        return appendAllBack(this,
+                             requireNonNull(array)
+                            );
 
 
     }
 
-    private JsArray appendAllBackTrampoline(JsArray arr1,
-                                            final JsArray arr2
-                                           ) {
+    private JsArray appendAllBack(JsArray arr1,
+                                  final JsArray arr2
+                                 ) {
         assert arr1 != null;
         assert arr2 != null;
         if (arr2.isEmpty()) return arr1;
@@ -590,9 +590,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return arr1;
     }
 
-    private JsArray appendAllFrontTrampoline(JsArray arr1,
-                                             JsArray arr2
-                                            ) {
+    private JsArray appendAllFront(JsArray arr1,
+                                   JsArray arr2
+                                  ) {
         assert arr1 != null;
         assert arr2 != null;
         if (arr2.isEmpty()) return arr1;
@@ -1399,9 +1399,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      @return a new JsArray
      */
     public final JsArray prependAll(final JsArray array) {
-        return appendAllFrontTrampoline(this,
-                                        requireNonNull(array)
-                                       );
+        return appendAllFront(this,
+                              requireNonNull(array)
+                             );
 
     }
 
