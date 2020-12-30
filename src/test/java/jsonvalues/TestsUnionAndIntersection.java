@@ -2,9 +2,6 @@ package jsonvalues;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-import java.util.function.BiFunction;
-
 import static jsonvalues.JsArray.TYPE.*;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNull.NULL;
@@ -250,9 +247,6 @@ public class TestsUnionAndIntersection {
 
     @Test
     public void test_map_values_array() {
-        final BiFunction<JsPath, JsPrimitive, JsValue> toLowerCaseFn =
-                (p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                              .apply(val);
 
 
         JsArray array = JsArray.of(JsStr.of("A"),
@@ -260,7 +254,8 @@ public class TestsUnionAndIntersection {
                                    JsStr.of("B")
                                   );
 
-        final JsArray newArray = array.mapValues(toLowerCaseFn
+        final JsArray newArray = array.mapValues((i, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                               .apply(val)
                                                 );
 
         Assertions.assertNotEquals(array,
@@ -290,7 +285,8 @@ public class TestsUnionAndIntersection {
                                             )
                                    );
 
-        final JsArray newArray1 = array1.mapAllValues(toLowerCaseFn);
+        final JsArray newArray1 = array1.mapAllValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                                    .apply(val));
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                 ,
                                 newArray1
@@ -301,9 +297,7 @@ public class TestsUnionAndIntersection {
 
     @Test
     public void test_map_values_obj() {
-        final BiFunction<JsPath, JsPrimitive, JsValue> toLowerCaseFn =
-                (p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                              .apply(val);
+
 
         JsObj obj = JsObj.of("a",
                              JsStr.of("A"),
@@ -311,7 +305,8 @@ public class TestsUnionAndIntersection {
                              JsStr.of("B")
                             );
 
-        final JsObj newObj = obj.mapValues(toLowerCaseFn);
+        final JsObj newObj = obj.mapValues( (p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                          .apply(val));
 
         Assertions.assertNotEquals(obj,
                                    newObj
@@ -327,7 +322,8 @@ public class TestsUnionAndIntersection {
                                         )
                              );
 
-        final JsObj newObj1 = obj1.mapAllValues(toLowerCaseFn);
+        final JsObj newObj1 = obj1.mapAllValues( (p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                               .apply(val));
 
         Assertions.assertNotEquals(obj1,
                                    newObj1
@@ -343,8 +339,7 @@ public class TestsUnionAndIntersection {
                              JsStr.of("B")
                             );
 
-        final JsObj newObj = obj.mapKeys((path, val) -> path.last()
-                                                            .asKey().name.toUpperCase());
+        final JsObj newObj = obj.mapKeys((key, val) -> key.toUpperCase());
 
         Assertions.assertNotEquals(newObj,
                                    obj

@@ -5,22 +5,17 @@ import io.vavr.Tuple2;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-final class OpFilterObjObjs extends OpFilterObjs<JsObj> {
+final class OpFilterObjObjs {
 
 
-    OpFilterObjObjs(final JsObj json) {
-        super(json);
-    }
+    static JsObj filter(JsObj json,
+                        final BiPredicate<? super String, ? super JsObj> predicate
 
-    @Override
-    JsObj filter(final JsPath startingPath,
-                 final BiPredicate<? super JsPath, ? super JsObj> predicate
-
-                ) {
+                       ) {
         for (final Tuple2<String, JsValue> next : json) {
             if (next._2.isObj()) {
                 if (predicate.negate()
-                             .test(startingPath.key(next._1),
+                             .test(next._1,
                                    next._2.toJsObj()
                                   )) {
                     json = json.delete(next._1);
@@ -30,10 +25,10 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filterAll(final JsPath startingPath,
-                    final BiPredicate<? super JsPath, ? super JsObj> predicate
-                   ) {
+    static JsObj filterAll(JsObj json,
+                           final JsPath startingPath,
+                           final BiPredicate<? super JsPath, ? super JsObj> predicate
+                          ) {
         for (final Tuple2<String, JsValue> next : json) {
             if (next._2.isObj()) {
                 JsPath path = startingPath.key(next._1);
@@ -45,26 +40,28 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj> {
                 }
                 else {
                     json = json.set(next._1,
-                                    new OpFilterObjObjs(next._2.toJsObj()).filterAll(path,
-                                                                                     predicate
-                                                                                    )
+                                    filterAll(next._2.toJsObj(),
+                                              path,
+                                              predicate
+                                             )
                                    );
                 }
             }
             else if (next._2.isArray()) {
                 JsPath path = startingPath.key(next._1);
                 json = json.set(next._1,
-                                new OpFilterArrObjs(next._2.toJsArray()).filterAll(path,
-                                                                                   predicate
-                                                                                  )
+                                OpFilterArrObjs.filterAll(next._2.toJsArray(),
+                                                          path,
+                                                          predicate
+                                                         )
                                );
             }
         }
         return json;
     }
 
-    @Override
-    JsObj filter(final Predicate<? super JsObj> predicate) {
+    static JsObj filter(JsObj json,
+                        final Predicate<? super JsObj> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             if (next._2.isObj()) {
                 if (predicate.negate()
@@ -77,29 +74,28 @@ final class OpFilterObjObjs extends OpFilterObjs<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filterAll(final Predicate<? super JsObj> predicate) {
+    static JsObj filterAll(JsObj json,
+                           final Predicate<? super JsObj> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             if (next._2.isObj()) {
                 if (predicate.negate()
-                             .test(
-                                     next._2.toJsObj()
+                             .test(next._2.toJsObj()
                                   )) {
                     json = json.delete(next._1);
                 }
                 else {
                     json = json.set(next._1,
-                                    new OpFilterObjObjs(next._2.toJsObj()).filterAll(
-                                            predicate
-                                                                                    )
+                                    filterAll(next._2.toJsObj(),
+                                              predicate
+                                             )
                                    );
                 }
             }
             else if (next._2.isArray()) {
                 json = json.set(next._1,
-                                new OpFilterArrObjs(next._2.toJsArray()).filterAll(
-                                        predicate
-                                                                                  )
+                                OpFilterArrObjs.filterAll(next._2.toJsArray(),
+                                                          predicate
+                                                         )
                                );
             }
         }

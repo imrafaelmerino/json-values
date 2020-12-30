@@ -3,22 +3,16 @@ package jsonvalues;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-final class OpMapArrElems extends OpMapElems<JsArray> {
-    OpMapArrElems(final JsArray json) {
-        super(json);
-    }
+final class OpMapArrElems {
 
-    @Override
-    JsArray map(final BiFunction<? super JsPath,? super  JsPrimitive, ? extends JsValue> fn,
-                final JsPath startingPath
-               ) {
-        if (json.isEmpty()) return json;
+    static JsArray map(JsArray json,
+                       final BiFunction<? super Integer, ? super JsPrimitive, ? extends JsValue> fn
+                      ) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
             JsValue value = json.get(i);
             if (value.isPrimitive()) {
-                final JsPath headPath = startingPath.index(i);
-                JsValue headMapped = fn.apply(headPath,
+                JsValue headMapped = fn.apply(i,
                                               value.toJsPrimitive()
                                              );
                 json = json.set(i,
@@ -31,25 +25,27 @@ final class OpMapArrElems extends OpMapElems<JsArray> {
         return json;
     }
 
-    @Override
-    JsArray mapAll(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
-                   final JsPath startingPath
-                  ) {
+    static JsArray mapAll(JsArray json,
+                          final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
+                          final JsPath startingPath
+                         ) {
         for (int i = json.size() - 1; i >= 0; i--) {
             final JsPath headPath = startingPath.index(i);
             JsValue      value    = json.get(i);
             if (value.isObj()) {
                 json = json.set(i,
-                                new OpMapObjElems(value.toJsObj()).mapAll(fn,
-                                                                          headPath
-                                                                         )
+                                OpMapObjElems.mapAll(value.toJsObj(),
+                                                     fn,
+                                                     headPath
+                                                    )
                                );
             }
             else if (value.isArray()) {
                 json = json.set(i,
-                                new OpMapArrElems(value.toJsArray()).mapAll(fn,
-                                                                            headPath
-                                                                           )
+                                mapAll(value.toJsArray(),
+                                       fn,
+                                       headPath
+                                      )
                                );
             }
             else {
@@ -68,19 +64,22 @@ final class OpMapArrElems extends OpMapElems<JsArray> {
 
     }
 
-    @Override
-    JsArray mapAll(final Function<? super JsPrimitive, ? extends JsValue> fn) {
+    static JsArray mapAll(JsArray json,
+                          final Function<? super JsPrimitive, ? extends JsValue> fn) {
         for (int i = json.size() - 1; i >= 0; i--) {
-            JsValue      value    = json.get(i);
+            JsValue value = json.get(i);
             if (value.isObj()) {
                 json = json.set(i,
-                                new OpMapObjElems(value.toJsObj()).mapAll(fn)
+                                OpMapObjElems.mapAll(value.toJsObj(),
+                                                     fn
+                                                    )
                                );
             }
             else if (value.isArray()) {
                 json = json.set(i,
-                                new OpMapArrElems(value.toJsArray()).mapAll(fn
-                                                                           )
+                                OpMapArrElems.mapAll(value.toJsArray(),
+                                                     fn
+                                                    )
                                );
             }
             else {
@@ -96,9 +95,8 @@ final class OpMapArrElems extends OpMapElems<JsArray> {
         return json;
     }
 
-    @Override
-    JsArray map(final Function<? super JsPrimitive, ? extends JsValue> fn) {
-        if (json.isEmpty()) return json;
+    static JsArray map(JsArray json,
+                       final Function<? super JsPrimitive, ? extends JsValue> fn) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
             JsValue value = json.get(i);

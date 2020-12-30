@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
-import java.util.function.BiFunction;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static jsonvalues.JsArray.TYPE.SET;
@@ -37,7 +37,7 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_creates_five_elements_object() {
+    public void test_creates_five_elements_object_and_map_keys_with_path() {
 
         JsObj obj = JsObj.of("a",
                              JsStr.of("A"),
@@ -54,8 +54,7 @@ public class TestJsObj {
         Assertions.assertEquals(5,
                                 obj.size()
                                );
-        final JsObj obj1 = obj.mapKeys((path, val) -> path.last()
-                                                          .asKey().name.toUpperCase());
+        final JsObj obj1 = obj.mapKeys((key, val) -> key.toUpperCase());
 
         Set<String> set = new HashSet<>();
         set.addAll(Arrays.asList("A",
@@ -80,6 +79,48 @@ public class TestJsObj {
                                );
     }
 
+    @Test
+    public void test_creates_five_elements_object_and_map_keys() {
+
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("A"),
+                             "b",
+                             JsStr.of("B"),
+                             "c",
+                             JsStr.of("C"),
+                             "d",
+                             JsStr.of("D"),
+                             "e",
+                             JsStr.of("E")
+                            );
+
+        Assertions.assertEquals(5,
+                                obj.size()
+                               );
+        final JsObj obj1 = obj.mapKeys((Function<String, String>) String::toUpperCase);
+
+        Set<String> set = new HashSet<>();
+        set.addAll(Arrays.asList("A",
+                                 "B",
+                                 "C",
+                                 "D",
+                                 "E"
+                                ));
+
+        Assertions.assertEquals(set,
+                                obj1.keySet()
+                               );
+        Set<String> set1 = new HashSet<>();
+        set1.addAll(Arrays.asList("a",
+                                  "b",
+                                  "c",
+                                  "d",
+                                  "e"
+                                 ));
+        Assertions.assertEquals(set1,
+                                obj.keySet()
+                               );
+    }
 
     @Test
     public void test_creates_object_from_pairs() {
@@ -266,7 +307,7 @@ public class TestJsObj {
 
         final JsObj result = obj.filterValues((path, val) -> val.toJsInt().value % 2 == 0);
 
-        final JsObj result_ = obj.filterAllValues((path, val) -> val.toJsInt().value % 2 == 0);
+        final JsObj result_ = obj.filterAllValues(val -> val.toJsInt().value % 2 == 0);
 
 
         Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4,\"d\":3},5,6]}"),
@@ -281,7 +322,48 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_filter_jsons_from_immutable() {
+    public void test_filter_jsons() {
+        final JsObj obj = JsObj.of("a",
+                                   JsObj.of("R",
+                                            JsInt.of(1)
+                                           ),
+                                   "b",
+                                   JsObj.of("R",
+                                            JsInt.of(1)
+                                           ),
+                                   "c",
+                                   JsArray.of(JsObj.of("R",
+                                                       JsInt.of(1)
+                                                      ),
+                                              JsObj.of("S",
+                                                       JsInt.of(1),
+                                                       "T",
+                                                       JsObj.of("R",
+                                                                JsInt.of(1)
+                                                               )
+                                                      )
+                                             ),
+                                   "d",
+                                   JsObj.of("d",
+                                            JsInt.of(3)
+                                           ),
+                                   "e",
+                                   NULL
+                                  );
+        final JsObj result  = obj.filterObjs(o -> !o.containsKey("R"));
+        final JsObj result1 = obj.filterAllObjs(o -> !o.containsKey("R"));
+
+
+        Assertions.assertEquals(JsObj.parse("{\"c\":[{\"R\":1},{\"T\":{\"R\":1},\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
+                                result
+                               );
+        Assertions.assertEquals(JsObj.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
+                                result1
+                               );
+    }
+
+    @Test
+    public void test_filter_jsons_with_path() {
         final JsObj obj = JsObj.of("a",
                                    JsObj.of("R",
                                             JsInt.of(1)
@@ -314,14 +396,14 @@ public class TestJsObj {
                                                 Assertions.assertEquals(o,
                                                                         obj.get(p)
                                                                        );
-                                                return !o.containsPath(JsPath.fromKey("R"));
+                                                return !o.containsKey("R");
                                             });
         final JsObj result1 = obj.filterAllObjs((p, o) ->
                                                 {
                                                     Assertions.assertEquals(o,
                                                                             obj.get(p)
                                                                            );
-                                                    return !o.containsPath(JsPath.fromKey("R"));
+                                                    return !o.containsKey("R");
                                                 });
 
 
@@ -334,7 +416,64 @@ public class TestJsObj {
     }
 
     @Test
-    public void test_filter_keys_immutable() {
+    public void test_filter_keys() {
+        final Supplier<JsObj> obj = () -> JsObj.of("a",
+                                                   JsObj.of("a1",
+                                                            JsStr.of("A"),
+                                                            "b1",
+                                                            JsStr.of("B")
+                                                           ),
+                                                   "b2",
+                                                   JsStr.of("C"),
+                                                   "d",
+                                                   JsObj.of("d1",
+                                                            JsStr.of("D"),
+                                                            "e1",
+                                                            JsArray.of(JsObj.of("f",
+                                                                                JsStr.of("F1")
+                                                                               ),
+                                                                       TRUE,
+                                                                       JsObj.of("b3",
+                                                                                JsStr.of("G1"),
+                                                                                "c",
+                                                                                JsStr.of("G2")
+                                                                               ),
+                                                                       FALSE
+                                                                      )
+                                                           ),
+                                                   "b4",
+                                                   JsStr.of("F")
+                                                  );
+
+
+        final JsObj obj1 = obj.get()
+                              .filterAllKeys(key -> !key.startsWith("b"));
+        Assertions.assertFalse(obj1.streamAll()
+                                   .anyMatch(p -> p.path.last()
+                                                        .isKey(name -> name.startsWith("b"))));
+
+        final JsObj obj2 = obj.get()
+                              .filterKeys(key -> !key.startsWith("b"));
+        Assertions.assertFalse(obj2.stream()
+                                   .anyMatch(p -> p.path.last()
+                                                        .isKey(name -> name.startsWith("b"))
+                                            ));
+
+
+        final JsObj obj3 = obj.get()
+                              .filterKeys(key ->
+                                                  !key.startsWith("b")
+                                         );
+        Assertions.assertFalse(obj3.stream()
+                                   .anyMatch(p -> p.path.last()
+                                                        .isKey(name -> name.startsWith("b"))
+                                            ));
+
+
+    }
+
+    @Test
+    public void test_filter_keys_with_path() {
         final Supplier<JsObj> obj = () -> JsObj.of("a",
                                                    JsObj.of("a1",
                                                             JsStr.of("A"),
@@ -380,17 +519,26 @@ public class TestJsObj {
                                                         .isKey(name -> name.startsWith("b"))));
 
         final JsObj obj2 = obj.get()
-                              .filterKeys((path, val) ->
+                              .filterKeys((key, val) ->
                                           {
                                               Assertions.assertEquals(val,
                                                                       obj.get()
-                                                                         .get(path)
+                                                                         .get(key)
                                                                      );
-                                              return !path.last()
-                                                          .isKey(name -> name.startsWith("b"));
+                                              return !key.startsWith("b");
                                           }
                                          );
         Assertions.assertFalse(obj2.stream()
+                                   .anyMatch(p -> p.path.last()
+                                                        .isKey(name -> name.startsWith("b"))
+                                            ));
+
+
+        final JsObj obj3 = obj.get()
+                              .filterKeys(key ->
+                                                  !key.startsWith("b")
+                                         );
+        Assertions.assertFalse(obj3.stream()
                                    .anyMatch(p -> p.path.last()
                                                         .isKey(name -> name.startsWith("b"))
                                             ));
@@ -459,11 +607,11 @@ public class TestJsObj {
                                               +
                                               "}");
 
-        final JsObj result = obj.mapValues((p, val) -> val.toJsInt()
-                                                          .map(i -> i + 10));
+        final JsObj result = obj.mapValues(val -> val.toJsInt()
+                                                     .map(i -> i + 10));
 
-        final JsObj result_ = obj.mapAllValues((p, val) -> val.toJsInt()
-                                                              .map(i -> i + 10));
+        final JsObj result_ = obj.mapAllValues(val -> val.toJsInt()
+                                                         .map(i -> i + 10));
 
         Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":4,\"d\":3},5,6]}\n"),
                                 result
@@ -506,9 +654,69 @@ public class TestJsObj {
                             );
 
 
-        final BiFunction<JsPath, JsObj, JsObj> addSizeFn = (path, json) -> json.set("size",
-                                                                                    JsInt.of(json.size())
-                                                                                   );
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+                ,
+                                obj.mapAllObjs(o ->
+                                               {
+
+
+                                                   return o.set("size",
+                                                                JsInt.of(o.size())
+                                                               );
+                                               }
+                                              )
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+                ,
+                                obj.mapAllObjs(o -> o.set("size",
+                                                          JsInt.of(o.size())
+                                                         )
+                                              )
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+                ,
+                                obj.mapObjs(o ->
+                                            {
+                                                return o.set("size",
+                                                             JsInt.of(o.size())
+                                                            );
+                                            }
+                                           )
+                               );
+
+
+    }
+
+    @Test
+    public void test_map_json_obj_with_path() {
+        JsObj obj = JsObj.of("a",
+                             JsStr.of("A"),
+                             "b",
+                             JsObj.empty(),
+                             "c",
+                             JsArray.empty(),
+                             "h",
+                             JsArray.of(JsObj.of("c",
+                                                 JsStr.of("C"),
+                                                 "d",
+                                                 JsStr.of("D")
+                                                ),
+                                        NULL,
+                                        JsObj.of("d",
+                                                 JsStr.of("D"),
+                                                 "e",
+                                                 JsStr.of("E"),
+                                                 "f",
+                                                 JsObj.of("g",
+                                                          JsStr.of("G"),
+                                                          "h",
+                                                          JsStr.of("H")
+                                                         )
+                                                )
+                                       )
+                            );
 
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
@@ -519,27 +727,39 @@ public class TestJsObj {
                                                    Assertions.assertEquals(o,
                                                                            obj.get(p)
                                                                           );
-                                                   return addSizeFn.apply(p,
-                                                                          o
-                                                                         );
+                                                   return o.set("size",
+                                                                JsInt.of(o.size())
+                                                               );
+                                               }
+                                              )
+                               );
+
+        Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
+                ,
+                                obj.mapAllObjs((p, o) -> {
+                                                   Assertions.assertEquals(o,
+                                                                           obj.get(p)
+                                                                          );
+                                                   return o.set("size",
+                                                                JsInt.of(o.size())
+                                                               );
                                                }
                                               )
                                );
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
                 ,
-                                obj.mapObjs((p, o) ->
-                                            {
-
+                                obj.mapObjs((p, o) -> {
                                                 Assertions.assertEquals(o,
                                                                         obj.get(p)
                                                                        );
-                                                return addSizeFn.apply(p,
-                                                                       o
-                                                                      );
+                                                return o.set("size",
+                                                             JsInt.of(o.size())
+                                                            );
                                             }
                                            )
                                );
+
 
     }
 
@@ -570,7 +790,6 @@ public class TestJsObj {
                                   );
 
 
-
         Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapAllKeys((path, val) ->
                                                                       {
                                                                           Assertions.assertEquals(val,
@@ -582,11 +801,12 @@ public class TestJsObj {
                                                                       })));
 
 
-        Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapAllKeys(key -> key.trim().toUpperCase())));
+        Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapAllKeys(key -> key.trim()
+                                                                                .toUpperCase())));
 
     }
 
-     Boolean anyKeyLetterIsLowerCase(final JsObj mapped) {
+    Boolean anyKeyLetterIsLowerCase(final JsObj mapped) {
         return mapped.streamAll()
                      .map(it ->
                           {
@@ -674,6 +894,63 @@ public class TestJsObj {
                                );
     }
 
+    @Test
+    public void test_map_strings_to_lowercase_and_reduce_without_path() {
+
+        final JsObj obj = JsObj.of("a",
+
+                                   JsObj.of("a1",
+                                            JsStr.of("A"),
+                                            "b1",
+                                            JsStr.of("B")
+                                           ),
+                                   "n",
+                                   JsInt.of(1),
+                                   "c",
+                                   JsStr.of("C"),
+                                   "d",
+                                   JsObj.of("d1",
+                                            JsStr.of("D"),
+                                            "e1",
+                                            JsStr.of("E"),
+                                            "g",
+                                            JsInt.of(2)
+                                           ),
+                                   "f",
+                                   JsStr.of("F")
+                                  );
+
+
+        final JsObj obj1 = obj.mapAllValues(val ->
+                                            {
+                                                return JsStr.prism.modify.apply(String::toLowerCase)
+                                                                         .apply(val);
+                                            });
+
+        final Optional<String> reduced_ = obj1.reduceAll(String::concat,
+                                                         v -> v.toJsStr().value,
+                                                         JsValue::isStr
+                                                        );
+
+        final char[] chars_ = reduced_.get()
+                                      .toCharArray();
+        Arrays.sort(chars_);
+        Assertions.assertEquals("abcdef",
+                                new String(chars_)
+                               );
+
+        final Optional<String> reduced = obj1.reduce(String::concat,
+                                                     v -> v.toJsStr().value,
+                                                     JsValue::isStr
+                                                    );
+
+        final char[] chars = reduced.get()
+                                    .toCharArray();
+        Arrays.sort(chars);
+        Assertions.assertEquals("cf",
+                                new String(chars)
+                               );
+    }
 
     @Test
     public void test_parse_into_immutable() {
@@ -713,7 +990,7 @@ public class TestJsObj {
     @Test
     public void test_set_and_get() {
         final JsObj empty = JsObj.empty();
-        final JsObj a = empty.set(JsPath.fromKey("a"),
+        final JsObj a = empty.set("a",
                                   JsBigDec.of(BigDecimal.valueOf(0.1d))
                                  );
 
@@ -873,5 +1150,95 @@ public class TestJsObj {
                                        .isPresent());
     }
 
+    @Test
+    public void testGetMethods() {
 
+        JsObj a = JsObj.of("a",
+                           JsInt.of(1),
+                           "b",
+                           JsStr.of("hi"),
+                           "c",
+                           JsBool.TRUE,
+                           "d",
+                           JsLong.of(1),
+                           "e",
+                           JsDouble.of(1.5),
+                           "f",
+                           JsBigInt.of(BigInteger.TEN),
+                           "g",
+                           JsBigDec.of(BigDecimal.TEN),
+                           "h",
+                           JsArray.of(JsStr.of("bye"),
+                                      JsInt.of(1),
+                                      JsBool.FALSE,
+                                      JsLong.of(1L)
+                                     ),
+                           "i",
+                           JsObj.of("a",
+                                    JsInt.of(1),
+                                    "b",
+                                    JsArray.of(1,
+                                               2,
+                                               3
+                                              ),
+                                    "c",
+                                    JsObj.empty()
+                                   )
+                          );
+
+        Assertions.assertTrue(1 == a.getInt("a"));
+        Assertions.assertEquals("hi",
+                                a.getStr("b")
+                               );
+        Assertions.assertEquals(true,
+                                a.getBool("c")
+                               );
+        Assertions.assertTrue(1L == a.getLong("d"));
+        Assertions.assertTrue(1.5 == a.getDouble("e"));
+        Assertions.assertEquals(BigInteger.TEN,
+                                a.getBigInt("f")
+                               );
+        Assertions.assertEquals(BigDecimal.TEN,
+                                a.getBigDec("g")
+                               );
+        Assertions.assertEquals(JsArray.of(1,
+                                           2,
+                                           3
+                                          ),
+                                a.getArray(JsPath.path("/i/b"))
+                               );
+
+        Assertions.assertEquals(JsObj.empty(),
+                                a.getObj(JsPath.path("/i/c"))
+                               );
+
+        Assertions.assertNull(a.getInt("b"));
+        Assertions.assertNull(a.getLong("b"));
+        Assertions.assertNull(a.getBigDec("b"));
+        Assertions.assertNull(a.getBigInt("b"));
+        Assertions.assertNull(a.getBool("b"));
+        Assertions.assertNull(a.getObj("b"));
+        Assertions.assertNull(a.getArray("b"));
+
+        Assertions.assertNull(
+                a.getInt("b")
+                             );
+        Assertions.assertEquals(null,
+                                a.getLong("b")
+                               );
+        Assertions.assertNull(
+                a.getBigDec("b")
+                             );
+        Assertions.assertNull(a.getBigInt("b")
+                             );
+        Assertions.assertNull(
+                a.getBool("b")
+                             );
+        Assertions.assertNull(
+                a.getObj("b")
+                             );
+        Assertions.assertNull(
+                a.getArray("b"));
+
+    }
 }

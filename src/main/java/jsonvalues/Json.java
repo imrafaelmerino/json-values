@@ -104,16 +104,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
     }
 
-    /**
-     Filters the pairs of elements in the first level of this json, removing those that don't ifPredicateElse
-     the predicate.
-
-     @param filter the predicate which takes as the input every JsPair in the first level of this json
-     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterAllValues(BiPredicate) how to filter the pair of elements of the whole json and not only the first level
-     */
-    T filterValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter);
-
 
     /**
      Filters the pairs of elements in the first level of this json, removing those that don't ifPredicateElse
@@ -143,14 +133,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      */
     T filterAllValues(final Predicate<? super JsPrimitive> filter);
 
-    /**
-     Filters the keys in the first level of this json, removing those that don't ifPredicateElse the predicate.
-
-     @param filter the predicate which takes as the input every JsPair in the first level of this json
-     @return same this instance if all the keys satisfy the predicate or a new filtered json of the same type T
-     @see #filterAllKeys(BiPredicate) how to filter the keys of the whole json and not only the first level
-     */
-    T filterKeys(final BiPredicate<? super JsPath, ? super JsValue> filter);
 
     /**
      Filters the keys in the first level of this json, removing those that don't ifPredicateElse the predicate.
@@ -179,16 +161,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      @see #filterKeys(BiPredicate) how to filter the keys of only the first level
      */
     T filterAllKeys(final Predicate<? super String> filter);
-
-    /**
-     Filters the pair of jsons in the first level of this json, removing those that don't ifPredicateElse
-     the predicate.
-
-     @param filter the predicate which takes as the input every JsPair in the first level of this json
-     @return same this instance if all the pairs satisfy the predicate or a new filtered json of the same type T
-     @see #filterAllObjs(BiPredicate) how to filter the pair of jsons of the whole json and not only the first level
-     */
-    T filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter);
 
 
     /**
@@ -405,25 +377,12 @@ public interface Json<T extends Json<T>> extends JsValue {
         return o;
     }
 
-    /**
-     Maps the values in the first level of this json.
-
-     @param fn the mapping function
-     @return a new mapped json of the same type T
-     @see #mapObjs(BiFunction) to map jsons
-     @see #mapKeys(BiFunction) to map keys of json objects
-     @see #mapAllValues(BiFunction) to map all the values and not only the first level
-     */
-    T mapValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn);
 
     /**
      Maps the values in the first level of this json.
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapObjs(BiFunction) to map jsons
-     @see #mapKeys(BiFunction) to map keys of json objects
-     @see #mapAllValues(BiFunction) to map all the values and not only the first level
      */
     T mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn);
 
@@ -433,9 +392,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllObjs(BiFunction) to map jsons
-     @see #mapAllKeys(BiFunction) to map keys of json objects
-     @see #mapValues(BiFunction) to map only the first level
      */
     T mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn);
 
@@ -444,9 +400,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllObjs(BiFunction) to map jsons
-     @see #mapAllKeys(BiFunction) to map keys of json objects
-     @see #mapValues(BiFunction) to map only the first level
      */
     T mapAllValues(final Function<? super JsPrimitive, ? extends JsValue> fn);
 
@@ -456,21 +409,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapValues(BiFunction) to map values
-     @see #mapObjs(BiFunction) to map jsons
-     @see #mapAllKeys(BiFunction) to map all the keys and not only the first level
-     */
-    T mapKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn);
-
-
-    /**
-     Maps the keys in the first level of this json.
-
-     @param fn the mapping function
-     @return a new mapped json of the same type T
-     @see #mapValues(BiFunction) to map values
-     @see #mapObjs(BiFunction) to map jsons
-     @see #mapAllKeys(BiFunction) to map all the keys and not only the first level
      */
     T mapKeys(final Function<? super String, String> fn);
 
@@ -479,9 +417,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllValues(BiFunction) to map values
-     @see #mapAllObjs(BiFunction) to map jsons
-     @see #mapKeys(BiFunction) to map only the first level
      */
     T mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn);
 
@@ -491,9 +426,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllValues(BiFunction) to map values
-     @see #mapAllObjs(BiFunction) to map jsons
-     @see #mapKeys(BiFunction) to map only the first level
      */
     T mapAllKeys(final Function<? super String, String> fn);
 
@@ -503,21 +435,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the  mapping function
      @return a new mapped json of the same type T
-     @see #mapValues(BiFunction) to map values
-     @see #mapKeys(BiFunction) to map keys of json objects
-     @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
-     */
-    T mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn);
-
-
-    /**
-     Maps the jsons in the first level of this json.
-
-     @param fn the  mapping function
-     @return a new mapped json of the same type T
-     @see #mapValues(BiFunction) to map values
-     @see #mapKeys(BiFunction) to map keys of json objects
-     @see #mapAllObjs(BiFunction) to map all the jsons and not only the first level
      */
     T mapObjs(final Function<? super JsObj, JsValue> fn);
 
@@ -526,9 +443,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllValues(BiFunction) to map values
-     @see #mapAllKeys(BiFunction) to map keys of json objects
-     @see #mapObjs(BiFunction) to map only the first level
      */
     T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn);
 
@@ -537,9 +451,6 @@ public interface Json<T extends Json<T>> extends JsValue {
 
      @param fn the mapping function
      @return a new mapped json of the same type T
-     @see #mapAllValues(BiFunction) to map values
-     @see #mapAllKeys(BiFunction) to map keys of json objects
-     @see #mapObjs(BiFunction) to map only the first level
      */
     T mapAllObjs(final Function<? super JsObj, JsValue> fn);
 
@@ -578,21 +489,7 @@ public interface Json<T extends Json<T>> extends JsValue {
                   );
     }
 
-    /**
-     Performs a reduction on the values that satisfy the predicate in the first level of this json. The reduction is performed mapping
-     each value with the mapping function and then applying the operator
 
-     @param op        the operator upon two objects of type R
-     @param map       the mapping function which produces an object of type R from a JsValue
-     @param predicate the predicate that determines what JsValue will be mapped and reduced
-     @param <R>       the type of the operands of the operator
-     @return an {@link Optional} describing the of of the reduction
-     @see #reduceAll(BinaryOperator, BiFunction, BiPredicate) to apply the reduction in all the Json and not only in the first level
-     */
-    <R> Optional<R> reduce(final BinaryOperator<R> op,
-                           final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                          );
 
     /**
      Performs a reduction on the values that satisfy the predicate in the first level of this json. The reduction is performed mapping
@@ -619,7 +516,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      @param predicate the predicate that determines what JsValue will be mapped and reduced
      @param <R>       the type of the operands of the operator
      @return an {@link Optional} describing the result of the reduction
-     @see #reduce(BinaryOperator, BiFunction, BiPredicate) to apply the reduction only in the first level
      */
     <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                               final BiFunction<? super JsPath, ? super JsPrimitive, R> map,

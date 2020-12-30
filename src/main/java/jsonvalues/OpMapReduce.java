@@ -6,160 +6,321 @@ import java.util.Optional;
 import java.util.function.*;
 
 
-final class OpMapReduce<T> {
-    private final Function<JsPrimitive, UnaryOperator<Optional<T>>> accumulator;
+final class OpMapReduce {
 
-    OpMapReduce(final Predicate<? super JsPrimitive> predicate,
-                final Function<? super JsPrimitive, T> map,
-                final BinaryOperator<T> op
-               ) {
-        this.accumulator = value -> acc ->
-        {
-            if (!predicate.test(
-                    value
-                               )) return acc;
-            final T mapped = map.apply(
-                    value
-                                      );
-            final Optional<T> t = acc.map(it -> op.apply(it,
-                                                         mapped
-                                                        )
-                                         );
-            if (t.isPresent()) return t;
-            return Optional.ofNullable(mapped);
-        };
-    }
-
-    Optional<T> reduceAll(JsObj obj) {
-        return reduceAllObj().apply(obj,
-                                    Optional.empty()
-                                   );
-    }
-
-    Optional<T> reduce(JsObj obj) {
-        return reduceObj(
-                        ).apply(obj,
-                                Optional.empty()
-                               );
-    }
-
-    Optional<T> reduceAll(JsArray arr) {
-        return reduceAllArr(
-                           ).apply(arr,
-                                   Optional.empty()
+    static <T> Optional<T> reduceAllObj(final JsObj obj,
+                                        final Predicate<? super JsPrimitive> predicate,
+                                        final Function<? super JsPrimitive, T> map,
+                                        final BinaryOperator<T> op,
+                                        Optional<T> acc) {
+        for (final Tuple2<String, JsValue> head : obj) {
+            if (head._2.isObj()) {
+                acc = reduceAllObj(head._2.toJsObj(),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
                                   );
-    }
-
-    Optional<T> reduce(JsArray arr) {
-        return reduceArr(
-                        ).apply(arr,
-                                Optional.empty()
-                               );
-    }
-
-
-    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceAllObj() {
-
-        return (obj, acc) ->
-        {
-            for (final Tuple2<String, JsValue> head : obj) {
-                if (head._2.isObj()) {
-                    acc = reduceAllObj().apply(head._2.toJsObj(),
-                                               acc
-                                              );
-
-
-                }
-
-                else if (head._2.isArray()) {
-                    acc = reduceAllArr().apply(head._2.toJsArray(),
-                                               acc
-                                              );
-                }
-
-                else {
-                    acc = accumulator.apply(
-                            head._2.toJsPrimitive()
-                                           )
-                                     .apply(acc);
-                }
-
+            }
+            else if (head._2.isArray()) {
+                acc = reduceAllArr(head._2.toJsArray(),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+            else {
+                acc = reducer(head._2.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
             }
 
-            return acc;
+        }
+        return acc;
+    }
 
-        };
+    static <T> Optional<T> reduceAllArr(final JsArray arr,
+                                        final Predicate<? super JsPrimitive> predicate,
+                                        final Function<? super JsPrimitive, T> map,
+                                        final BinaryOperator<T> op,
+                                        Optional<T> acc) {
+        for (final JsValue value : arr) {
+            if (value.isObj()) {
+                acc = reduceAllObj(value.toJsObj(),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
 
+            else if (value.isArray()) {
+                acc = reduceAllArr(value.toJsArray(),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+            else {
+                acc = reducer(
+                        value.toJsPrimitive(),
+                        acc,
+                        predicate,
+                        map,
+                        op
+                             );
+            }
+        }
+        return acc;
+    }
+
+    static <T> Optional<T> reduceObj(final JsObj obj,
+                                     final Predicate<? super JsPrimitive> predicate,
+                                     final Function<? super JsPrimitive, T> map,
+                                     final BinaryOperator<T> op,
+                                     Optional<T> acc) {
+
+        for (final Tuple2<String, JsValue> head : obj) {
+            if (head._2.isPrimitive()) {
+                acc = reducer(head._2.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
+            }
+        }
+        return acc;
 
     }
 
-    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceAllArr() {
+    private static <T> Optional<T> reducer(final JsPrimitive value,
+                                           final Optional<T> acc,
+                                           final Predicate<? super JsPrimitive> predicate,
+                                           final Function<? super JsPrimitive, T> map,
+                                           final BinaryOperator<T> op) {
 
-        return (arr, acc) -> {
-
-            for (final JsValue value : arr) {
-                if (value.isObj()) {
-                    acc = reduceAllObj().apply(value.toJsObj(),
-                                               acc
-                                              );
-
-
-                }
-
-                else if (value.isArray()) {
-                    acc = reduceAllArr().apply(value.toJsArray(),
-                                               acc
-                                              );
-                }
-                else {
-                    acc = accumulator.apply(
-                            value.toJsPrimitive()
-                                           )
-                                     .apply(acc);
-                }
-            }
-
-            return acc;
-        };
-
+        if (!predicate.test(value)) return acc;
+        final T mapped = map.apply(value);
+        final Optional<T> t = acc.map(it -> op.apply(it,
+                                                     mapped
+                                                    )
+                                     );
+        if (t.isPresent()) return t;
+        return Optional.ofNullable(mapped);
 
     }
 
+    static <T> Optional<T> reduceArr(final JsArray arr,
+                                     final Predicate<? super JsPrimitive> predicate,
+                                     final Function<? super JsPrimitive, T> map,
+                                     final BinaryOperator<T> op,
+                                     Optional<T> acc) {
 
-    private BiFunction<JsObj, Optional<T>, Optional<T>> reduceObj() {
-
-        return (obj, acc) ->
-        {
-            for (final Tuple2<String, JsValue> head : obj) {
-                if (head._2.isPrimitive()) {
-                    acc = accumulator.apply(
-                            head._2.toJsPrimitive()
-                                           )
-                                     .apply(acc);
-                }
-
+        for (final JsValue value : arr) {
+            if (value.isPrimitive()) {
+                acc = reducer(value.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
             }
+        }
+        return acc;
+    }
 
-            return acc;
-
-        };
-
+    static <T> Optional<T> reduceObj(final JsObj obj,
+                                     final BiPredicate<? super String, ? super JsPrimitive> predicate,
+                                     final BiFunction<? super String, ? super JsPrimitive, T> map,
+                                     final BinaryOperator<T> op) {
+        Optional<T> acc = Optional.empty();
+        for (final Tuple2<String, JsValue> head : obj) {
+            if (head._2.isPrimitive()) {
+                acc = reducer(head._1,
+                              head._2.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
+            }
+        }
+        return acc;
 
     }
 
-    private BiFunction<JsArray, Optional<T>, Optional<T>> reduceArr() {
+    private static <T> Optional<T> reducer(final String key,
+                                           final JsPrimitive value,
+                                           final Optional<T> acc,
+                                           final BiPredicate<? super String, ? super JsPrimitive> predicate,
+                                           final BiFunction<? super String, ? super JsPrimitive, T> map,
+                                           final BinaryOperator<T> op) {
+        if (!predicate.test(key,
+                            value
+                           )) return acc;
+        final T mapped = map.apply(key,
+                                   value
+                                  );
+        final Optional<T> t = acc.map(it -> op.apply(it,
+                                                     mapped
+                                                    )
+                                     );
+        if (t.isPresent()) return t;
+        return Optional.ofNullable(mapped);
 
-        return (arr, acc) -> {
-            for (final JsValue value : arr) {
-                if (value.isPrimitive()) {
-                    acc = accumulator.apply(
-                            value.toJsPrimitive()
-                                           )
-                                     .apply(acc
-                                           );
-                }
+    }
+
+    static <T> Optional<T> reduceArr(final JsArray arr,
+                                     final BiPredicate<? super Integer, ? super JsPrimitive> predicate,
+                                     final BiFunction<? super Integer, ? super JsPrimitive, T> map,
+                                     final BinaryOperator<T> op) {
+        Optional<T> acc = Optional.empty();
+
+        for (int i = 0; i < arr.size(); i++) {
+            JsValue value = arr.get(i);
+            if (value.isPrimitive()) {
+                acc = reducer(i,
+                              value.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
             }
-            return acc;
-        };
+        }
+
+        return acc;
+    }
+
+    private static <T> Optional<T> reducer(final int i,
+                                           final JsPrimitive value,
+                                           final Optional<T> acc,
+                                           final BiPredicate<? super Integer, ? super JsPrimitive> predicate,
+                                           final BiFunction<? super Integer, ? super JsPrimitive, T> map,
+                                           final BinaryOperator<T> op) {
+
+        if (!predicate.test(i,
+                            value
+                           )) return acc;
+        final T mapped = map.apply(i,
+                                   value
+                                  );
+        final Optional<T> t = acc.map(it -> op.apply(it,
+                                                     mapped
+                                                    )
+                                     );
+        if (t.isPresent()) return t;
+        return Optional.ofNullable(mapped);
+
+    }
+
+    private static <T> Optional<T> reducer(final JsPath path,
+                                           final JsPrimitive value,
+                                           final Optional<T> acc,
+                                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
+                                           final BiFunction<? super JsPath, ? super JsPrimitive, T> map,
+                                           final BinaryOperator<T> op) {
+
+        if (!predicate.test(path,
+                            value
+                           )) return acc;
+        final T mapped = map.apply(path,
+                                   value
+                                  );
+        final Optional<T> t = acc.map(it -> op.apply(it,
+                                                     mapped
+                                                    )
+                                     );
+        if (t.isPresent()) return t;
+        return Optional.ofNullable(mapped);
+    }
+
+    static <T> Optional<T> reduceAllObj(final JsObj obj,
+                                        final JsPath startingPath,
+                                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
+                                        final BiFunction<? super JsPath, ? super JsPrimitive, T> map,
+                                        final BinaryOperator<T> op,
+                                        Optional<T> acc) {
+
+        for (final Tuple2<String, JsValue> head : obj) {
+            final JsPath headPath = startingPath.key(head._1);
+            if (head._2.isObj()) {
+                acc = reduceAllObj(head._2.toJsObj(),
+                                   startingPath.key(head._1),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+            else if (head._2.isArray()) {
+                acc = reduceAllArr(head._2.toJsArray(),
+                                   startingPath.index(-1),
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+            else {
+                acc = reducer(headPath,
+                              head._2.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
+            }
+        }
+        return acc;
+    }
+
+    static <T> Optional<T> reduceAllArr(final JsArray arr,
+                                        final JsPath startingPath,
+                                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
+                                        final BiFunction<? super JsPath, ? super JsPrimitive, T> map,
+                                        final BinaryOperator<T> op,
+                                        Optional<T> acc) {
+
+        for (final JsValue value : arr) {
+            final JsPath headPath = startingPath.inc();
+
+            if (value.isObj()) {
+                acc = reduceAllObj(value.toJsObj(),
+                                   headPath,
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+
+            else if (value.isArray()) {
+                acc = reduceAllArr(value.toJsArray(),
+                                   headPath,
+                                   predicate,
+                                   map,
+                                   op,
+                                   acc
+                                  );
+            }
+            else {
+                acc = reducer(headPath,
+                              value.toJsPrimitive(),
+                              acc,
+                              predicate,
+                              map,
+                              op
+                             );
+            }
+        }
+        return acc;
     }
 }
+

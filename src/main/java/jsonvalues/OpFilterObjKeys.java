@@ -5,16 +5,13 @@ import io.vavr.Tuple2;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
+final class OpFilterObjKeys {
 
-    OpFilterObjKeys(final JsObj json) {
-        super(json);
-    }
 
-    @Override
-    JsObj filterAll(final JsPath startingPath,
-                    final BiPredicate<? super JsPath, ? super JsValue> predicate
-                   ) {
+    static JsObj filterAll(JsObj json,
+                           final JsPath startingPath,
+                           final BiPredicate<? super JsPath, ? super JsValue> predicate
+                          ) {
         for (final Tuple2<String, JsValue> next : json) {
             final JsPath headPath = startingPath.key(next._1);
 
@@ -27,16 +24,18 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
             }
             else if (next._2.isObj())
                 json = json.set(next._1,
-                                new OpFilterObjKeys(next._2.toJsObj()).filterAll(headPath,
-                                                                                 predicate
-                                                                                )
+                                filterAll(next._2.toJsObj(),
+                                          headPath,
+                                          predicate
+                                         )
                                );
 
             else if (next._2.isArray())
                 json = json.set(next._1,
-                                new OpFilterArrKeys(next._2.toJsArray()).filterAll(headPath,
-                                                                                   predicate
-                                                                                  )
+                                OpFilterArrKeys.filterAll(next._2.toJsArray(),
+                                                          headPath,
+                                                          predicate
+                                                         )
                                );
 
 
@@ -46,11 +45,11 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
 
     }
 
-    @Override
-    JsObj filter(final BiPredicate<? super JsPath, ? super JsValue> predicate) {
+    static JsObj filter(JsObj json,
+                        final BiPredicate<? super String, ? super JsValue> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             if (predicate.negate()
-                         .test(JsPath.fromKey(next._1),
+                         .test(next._1,
                                next._2
                               )) {
                 json = json.delete(next._1);
@@ -60,8 +59,8 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filterAll(final Predicate<? super String> predicate) {
+    static JsObj filterAll(JsObj json,
+                           final Predicate<? super String> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
 
             if (predicate.negate()
@@ -71,12 +70,16 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
             }
             else if (next._2.isObj())
                 json = json.set(next._1,
-                                new OpFilterObjKeys(next._2.toJsObj()).filterAll(predicate)
+                                filterAll(next._2.toJsObj(),
+                                          predicate
+                                         )
                                );
 
             else if (next._2.isArray())
                 json = json.set(next._1,
-                                new OpFilterArrKeys(next._2.toJsArray()).filterAll(predicate)
+                                OpFilterArrKeys.filterAll(next._2.toJsArray(),
+                                                          predicate
+                                                         )
                                );
 
 
@@ -85,8 +88,8 @@ final class OpFilterObjKeys extends OpFilterKeys<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filter(final Predicate<? super String> predicate) {
+    static JsObj filter(JsObj json,
+                        final Predicate<? super String> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             if (predicate.negate()
                          .test(next._1

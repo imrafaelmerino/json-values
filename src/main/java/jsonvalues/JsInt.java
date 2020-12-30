@@ -13,20 +13,21 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     /**
      prism between the sum type JsValue and JsInt
      */
-    public static final Prism<JsValue, Integer> prism = new Prism<>(s ->
-                                                                    {
-                                                                        if (s.isInt())
-                                                                            return Optional.of(s.toJsInt().value);
-                                                                        if (s.isLong())
-                                                                            return s.toJsLong()
-                                                                                    .intValueExact();
-                                                                        if (s.isBigInt())
-                                                                            return s.toJsBigInt()
-                                                                                    .intValueExact();
-                                                                        return Optional.empty();
-                                                                    },
-                                                                    JsInt::of
-    );
+    public static final Prism<JsValue, Integer> prism =
+            new Prism<>(s ->
+                        {
+                            if (s.isInt())
+                                return Optional.of(s.toJsInt().value);
+                            if (s.isLong())
+                                return s.toJsLong()
+                                        .intValueExact();
+                            if (s.isBigInt())
+                                return s.toJsBigInt()
+                                        .intValueExact();
+                            return Optional.empty();
+                        },
+                        JsInt::of
+            );
     public static final int TYPE_ID = 9;
     /**
      The integer value.

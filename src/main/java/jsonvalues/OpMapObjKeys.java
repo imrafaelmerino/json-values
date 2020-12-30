@@ -5,19 +5,14 @@ import io.vavr.Tuple2;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-final class OpMapObjKeys extends OpMapKeys<JsObj> {
-    OpMapObjKeys(final JsObj json) {
-        super(json);
-    }
+final class OpMapObjKeys {
 
-    @Override
-    JsObj map(final BiFunction<? super JsPath, ? super JsValue, String> fn,
-              final JsPath startingPath
-             ) {
+    static JsObj map(JsObj json,
+                     final BiFunction<? super String, ? super JsValue, String> fn
+                    ) {
         JsObj result = JsObj.empty();
         for (final Tuple2<String, JsValue> next : json) {
-            final JsPath headPath = startingPath.key(next._1);
-            final String keyMapped = fn.apply(headPath,
+            final String keyMapped = fn.apply(next._1,
                                               next._2
                                              );
             result = result.set(keyMapped,
@@ -28,8 +23,8 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
         return result;
     }
 
-    @Override
-    JsObj map(final Function<? super String, String> fn) {
+    static JsObj map(JsObj json,
+                     final Function<? super String, String> fn) {
         JsObj result = JsObj.empty();
         for (final Tuple2<String, JsValue> next : json) {
             final String keyMapped = fn.apply(next._1);
@@ -41,10 +36,10 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
         return result;
     }
 
-    @Override
-    JsObj mapAll(final BiFunction<? super JsPath, ? super JsValue, String> fn,
-                 final JsPath startingPath
-                ) {
+    static JsObj mapAll(JsObj json,
+                        final BiFunction<? super JsPath, ? super JsValue, String> fn,
+                        final JsPath startingPath
+                       ) {
         JsObj result = JsObj.empty();
 
         for (final Tuple2<String, JsValue> next : json) {
@@ -54,25 +49,24 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
                                              );
             if (next._2.isObj()) {
                 result = result.set(keyMapped,
-                                    new OpMapObjKeys(next._2.toJsObj()).mapAll(fn,
-                                                                               headPath
-                                                                              )
+                                    mapAll(next._2.toJsObj(),
+                                           fn,
+                                           headPath
+                                          )
                                    );
             }
             else if (next._2.isArray()) {
                 result = result.set(keyMapped,
-                                    new OpMapArrKeys(next._2.toJsArray()).mapAll(fn,
-                                                                                 headPath.index(-1)
-                                                                                )
+                                    OpMapArrKeys.mapAll(next._2.toJsArray(),
+                                                        fn,
+                                                        headPath.index(-1)
+                                                       )
                                    );
             }
             else {
                 result = result.set(keyMapped,
                                     next._2
-                                   )
-
-
-                ;
+                                   );
             }
 
 
@@ -81,30 +75,30 @@ final class OpMapObjKeys extends OpMapKeys<JsObj> {
 
     }
 
-    @Override
-    JsObj mapAll(final Function<? super String, String> fn) {
+    static JsObj mapAll(JsObj json,
+                        final Function<? super String, String> fn) {
         JsObj result = JsObj.empty();
 
         for (final Tuple2<String, JsValue> next : json) {
             final String keyMapped = fn.apply(next._1);
             if (next._2.isObj()) {
                 result = result.set(keyMapped,
-                                    new OpMapObjKeys(next._2.toJsObj()).mapAll(fn
-                                                                              )
+                                    mapAll(next._2.toJsObj(),
+                                           fn
+                                          )
                                    );
             }
             else if (next._2.isArray()) {
                 result = result.set(keyMapped,
-                                    new OpMapArrKeys(next._2.toJsArray()).mapAll(fn)
+                                    OpMapArrKeys.mapAll(next._2.toJsArray(),
+                                                        fn
+                                                       )
                                    );
             }
             else {
                 result = result.set(keyMapped,
                                     next._2
-                                   )
-
-
-                ;
+                                   );
             }
 
 

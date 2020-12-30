@@ -6,7 +6,9 @@ import com.fasterxml.jackson.core.JsonTokenId;
 import io.vavr.collection.Vector;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
 import java.util.Optional;
@@ -572,7 +574,8 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         final Trampoline<JsArray> initCall = unionAsSet(a,
                                                         b.init()
                                                        );
-        if (!a.containsValue(last)) return more(() -> initCall).map(it -> it.append(last));
+        if (!a.containsValue(last))
+            return more(() -> initCall).map(it -> it.append(last));
         return more(() -> initCall);
     }
 
@@ -647,6 +650,188 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                                  .allMatch(this::containsValue);
     }
 
+    /**
+     Returns the integral number located at the given index as an integer or null if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+
+     @param index the index
+     @return the integral number located at the given index or null
+     */
+    public Integer getInt(final int index) {
+
+        if (index == -1 && !seq.isEmpty())
+            return JsInt.prism.getOptional.apply(seq.last())
+                                          .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsInt.prism.getOptional.apply(seq.get(index))
+                                             .orElse(null);
+
+    }
+
+
+    /**
+     Returns the long number located at the given index as an long or null if it
+     doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an long.
+
+     @param index the index
+     @return the long number located at the given index or null
+     */
+    public Long getLong(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsLong.prism.getOptional.apply(seq.last())
+                                                                          .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsLong.prism.getOptional.apply(seq.get(index))
+                                              .orElse(null);
+
+    }
+
+    /**
+     Returns the string located at the given index  or null if it doesn't exist.
+
+     @param index the index
+     @return the string located at the given index or null
+     */
+    public String getStr(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsStr.prism.getOptional.apply(seq.last())
+                                                                         .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsStr.prism.getOptional.apply(seq.get(index))
+                                             .orElse(null);
+
+    }
+
+    /**
+     Returns the instant located at the given index or null if it doesn't exist or it's not an instant.
+     If the element is an instant formatted as a string, it's returned as an instant as well.
+
+     @param index the given index
+     @return an instant
+     */
+    public Instant getInstant(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsInstant.prism.getOptional.apply(seq.last())
+                                                                             .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsInstant.prism.getOptional.apply(seq.get(index))
+                                                 .orElse(null);
+
+    }
+
+    /**
+     Returns the array of bytes located at the given index or null if it doesn't exist or it's not an array of bytes.
+     If the element is a string in base64, it's returned as an array of bytes as well.
+
+     @param index the given index
+     @return an array of bytes
+     */
+    public byte[] getBinary(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsBinary.prism.getOptional.apply(seq.last())
+                                                                            .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsBinary.prism.getOptional.apply(seq.get(index))
+                                                .orElse(null);
+
+    }
+
+    /**
+     Returns the boolean located at the given index  or null if it doesn't exist.
+
+     @param index the index
+     @return the boolean located at the given index or null
+     */
+    public Boolean getBool(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsBool.prism.getOptional.apply(seq.last())
+                                                                          .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsBool.prism.getOptional.apply(seq.get(index))
+                                              .orElse(null);
+
+    }
+
+
+    /**
+     Returns the number located at the given index as a double or null if it
+     doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
+     to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
+     the precision of the BigDecimal
+
+     @param index the index
+     @return the double number located at the given index or null
+     */
+    public Double getDouble(final int index) {
+
+        if (index == -1 && !seq.isEmpty()) return JsDouble.prism.getOptional.apply(seq.last())
+                                                                            .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsDouble.prism.getOptional.apply(seq.get(index))
+                                                .orElse(null);
+
+    }
+
+
+    /**
+     Returns the number located at the given index as a big decimal or null if
+     it doesn't exist or it's not a decimal number.
+
+     @param index the index
+     @return the decimal number located at the given index or null
+     */
+    public BigDecimal getBigDec(final int index) {
+        if (index == -1 && !seq.isEmpty()) return JsBigDec.prism.getOptional.apply(seq.last())
+                                                                            .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsBigDec.prism.getOptional.apply(seq.get(index))
+                                                .orElse(null);
+    }
+
+    /**
+     Returns the number located at the given index as a big integer or null if
+     it doesn't exist or it's not an integral number.
+
+     @param index the index
+     @return the integral number located at the given index or null
+     */
+    public BigInteger getBigInt(final int index) {
+        if (index == -1 && !seq.isEmpty())
+            return JsBigInt.prism.getOptional.apply(seq.last())
+                                             .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsBigInt.prism.getOptional.apply(seq.get(index))
+                                                .orElse(null);
+    }
+
+    /**
+     Returns the object located at the given index  or null if it doesn't exist or it's not a json object.
+
+     @param index the index
+     @return the object located at the given index or null
+     */
+    public JsObj getObj(final int index) {
+        if (index == -1 && !seq.isEmpty()) return JsObj.prism.getOptional.apply(seq.last())
+                                                                         .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsObj.prism.getOptional.apply(seq.get(index))
+                                             .orElse(null);
+    }
+
+    /**
+     Returns the array located at the given index or null if it doesn't exist or it's not a json array.
+
+     @param index the index
+     @return the array located at the given index or null
+     */
+    public JsArray getArray(final int index) {
+        if (index == -1 && !seq.isEmpty()) return JsArray.prism.getOptional.apply(seq.last())
+                                                                           .orElse(null);
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+               null : JsArray.prism.getOptional.apply(seq.get(index))
+                                               .orElse(null);
+    }
+
     private JsValue get(final Position pos) {
         return requireNonNull(pos).match(key -> JsNothing.NOTHING,
                                          index ->
@@ -674,33 +859,35 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                 .get(tail);
     }
 
-    @Override
-    public final JsArray filterValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
-        return new OpFilterArrElems(this).filter(JsPath.empty(),
-                                                 requireNonNull(filter)
-                                                );
+    public final JsArray filterValues(final BiPredicate<? super Integer, ? super JsPrimitive> filter) {
+        return OpFilterArrElems.filter(this,
+                                       requireNonNull(filter)
+                                      );
     }
 
     @Override
     public JsArray filterValues(final Predicate<? super JsPrimitive> filter) {
-        return new OpFilterArrElems(this).filter(requireNonNull(filter));
+        return OpFilterArrElems.filter(this,
+                                       requireNonNull(filter)
+                                      );
     }
 
     @Override
     public final JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
-        return new OpFilterArrElems(this).filterAll(JsPath.empty(),
-                                                    requireNonNull(filter)
-                                                   );
+        return OpFilterArrElems.filterAll(this,
+                                          JsPath.empty(),
+                                          requireNonNull(filter)
+                                         );
     }
 
     @Override
     public JsArray filterAllValues(final Predicate<? super JsPrimitive> filter) {
-        return new OpFilterArrElems(this).filterAll(requireNonNull(filter)
-                                                   );
+        return OpFilterArrElems.filterAll(this,
+                                          requireNonNull(filter)
+                                         );
     }
 
-    @Override
-    public final JsArray filterKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+    public final JsArray filterKeys(final BiPredicate<? super String, ? super JsValue> filter) {
         return this;
     }
 
@@ -711,42 +898,45 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     @Override
     public final JsArray filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
-        return new OpFilterArrKeys(this).filterAll(JsPath.empty(),
-                                                   filter
-                                                  );
+        return OpFilterArrKeys.filterAll(this,
+                                         JsPath.empty(),
+                                         filter
+                                        );
     }
 
     @Override
     public JsArray filterAllKeys(final Predicate<? super String> filter) {
-        return new OpFilterArrKeys(this).filterAll(filter);
+        return OpFilterArrKeys.filterAll(this,
+                                         filter
+                                        );
     }
 
-    @Override
-    public final JsArray filterObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filter(JsPath.empty(),
-                                                requireNonNull(filter)
-                                               );
+    public final JsArray filterObjs(final BiPredicate<? super Integer, ? super JsObj> filter) {
+        return OpFilterArrObjs.filter(this,
+                                      requireNonNull(filter)
+                                     );
     }
 
     @Override
     public JsArray filterObjs(final Predicate<? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filter(
-                requireNonNull(filter)
-                                               );
+        return OpFilterArrObjs.filter(this,
+                                      requireNonNull(filter)
+                                     );
     }
 
     @Override
     public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filterAll(JsPath.empty(),
-                                                   requireNonNull(filter)
-                                                  );
+        return OpFilterArrObjs.filterAll(this,
+                                         JsPath.empty(),
+                                         requireNonNull(filter)
+                                        );
     }
 
     @Override
     public JsArray filterAllObjs(final Predicate<? super JsObj> filter) {
-        return new OpFilterArrObjs(this).filterAll(
-                requireNonNull(filter)
-                                                  );
+        return OpFilterArrObjs.filterAll(this,
+                                         requireNonNull(filter)
+                                        );
     }
 
     @Override
@@ -754,35 +944,37 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return seq.isEmpty();
     }
 
-    @Override
-    public final JsArray mapValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
-        return new OpMapArrElems(this).map(requireNonNull(fn),
-                                           JsPath.empty()
-                                                 .index(-1)
-                                          );
+    public final JsArray mapValues(final BiFunction<? super Integer, ? super JsPrimitive, ? extends JsValue> fn) {
+        return OpMapArrElems.map(this,
+                                 requireNonNull(fn)
+                                );
 
     }
 
     @Override
     public JsArray mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
-        return new OpMapArrElems(this).map(requireNonNull(fn));
+        return OpMapArrElems.map(this,
+                                 requireNonNull(fn)
+                                );
     }
 
     @Override
     public JsArray mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
-        return new OpMapArrElems(this).mapAll(requireNonNull(fn),
-                                              JsPath.empty()
-                                                    .index(-1)
-                                             );
+        return OpMapArrElems.mapAll(this,
+                                    requireNonNull(fn),
+                                    JsPath.empty()
+                                          .index(-1)
+                                   );
     }
 
     @Override
     public JsArray mapAllValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
-        return new OpMapArrElems(this).mapAll(requireNonNull(fn));
+        return OpMapArrElems.mapAll(this,
+                                    requireNonNull(fn)
+                                   );
     }
 
-    @Override
-    public final JsArray mapKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
+    public final JsArray mapKeys(final BiFunction<? super String, ? super JsValue, String> fn) {
         return this;
     }
 
@@ -793,43 +985,48 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     @Override
     public final JsArray mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
-        return new OpMapArrKeys(this).mapAll(requireNonNull(fn),
-                                             JsPath.empty()
-                                                   .index(-1)
-                                            );
+        return OpMapArrKeys.mapAll(this,
+                                   requireNonNull(fn),
+                                   JsPath.empty()
+                                         .index(-1)
+                                  );
     }
 
     @Override
     public JsArray mapAllKeys(final Function<? super String, String> fn) {
-        return new OpMapArrKeys(this).mapAll(requireNonNull(fn));
+        return OpMapArrKeys.mapAll(this,
+                                   requireNonNull(fn)
+                                  );
     }
 
-    @Override
-    public final JsArray mapObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
-        return new OpMapArrObjs(this).map(requireNonNull(fn),
-                                          JsPath.empty()
-
-                                         );
+    public final JsArray mapObjs(final BiFunction<? super Integer, ? super JsObj, JsValue> fn) {
+        return OpMapArrObjs.map(this,
+                                requireNonNull(fn)
+                               );
     }
 
     @Override
     public JsArray mapObjs(final Function<? super JsObj, JsValue> fn) {
-        return new OpMapArrObjs(this).map(requireNonNull(fn)
+        return OpMapArrObjs.map(this,
+                                requireNonNull(fn)
 
-                                         );
+                               );
     }
 
     @Override
     public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
-        return new OpMapArrObjs(this).mapAll(requireNonNull(fn),
-                                             JsPath.empty()
+        return OpMapArrObjs.mapAll(this,
+                                   requireNonNull(fn),
+                                   JsPath.empty()
 
-                                            );
+                                  );
     }
 
     @Override
     public JsArray mapAllObjs(final Function<? super JsObj, JsValue> fn) {
-        return new OpMapArrObjs(this).mapAll(requireNonNull(fn));
+        return OpMapArrObjs.mapAll(this,
+                                   requireNonNull(fn)
+                                  );
     }
 
     @Override
@@ -925,15 +1122,15 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
-    @Override
     public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+                                        final BiFunction<? super Integer, ? super JsPrimitive, R> map,
+                                        final BiPredicate<? super Integer, ? super JsPrimitive> predicate
                                        ) {
-        return new OpMapReducePair<>(requireNonNull(predicate),
+        return OpMapReduce.reduceArr(this,
+                                     requireNonNull(predicate),
                                      map,
                                      op
-        ).reduce(this);
+                                    );
 
 
     }
@@ -942,10 +1139,12 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                   final Function<? super JsPrimitive, R> map,
                                   final Predicate<? super JsPrimitive> predicate) {
-        return new OpMapReduce<>(requireNonNull(predicate),
-                                 map,
-                                 op
-        ).reduce(this);
+        return OpMapReduce.reduceArr(this,
+                                     requireNonNull(predicate),
+                                     map,
+                                     op,
+                                     Optional.empty()
+                                    );
     }
 
     @Override
@@ -953,10 +1152,13 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                            final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                            final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
                                           ) {
-        return new OpMapReducePair<>(requireNonNull(predicate),
-                                     map,
-                                     op
-        ).reduceAll(this);
+        return OpMapReduce.reduceAllArr(this,
+                                        JsPath.fromIndex(-1),
+                                        requireNonNull(predicate),
+                                        map,
+                                        op,
+                                        Optional.empty()
+                                       );
 
     }
 
@@ -964,10 +1166,12 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                                      final Function<? super JsPrimitive, R> map,
                                      final Predicate<? super JsPrimitive> predicate) {
-        return new OpMapReduce<>(requireNonNull(predicate),
-                                 map,
-                                 op
-        ).reduceAll(this);
+        return OpMapReduce.reduceAllArr(this,
+                                        requireNonNull(predicate),
+                                        map,
+                                        op,
+                                        Optional.empty()
+                                       );
     }
 
     @Override
@@ -1044,6 +1248,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public JsValue get(final int i) {
         try {
+            if (i == -1 && !this.seq.isEmpty()) return this.seq.last();
             return seq.get(i);
         } catch (IndexOutOfBoundsException e) {
             return NOTHING;
@@ -1057,7 +1262,6 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     @Override
     @SuppressWarnings("squid:S1206")
-
     public final int hashCode() {
         int result = hashcode;
         if (result == 0)
@@ -1239,7 +1443,9 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     public final JsArray delete(final int index) {
         if (index < -1) throw new IllegalArgumentException("index must be >= -1");
-        return delete(JsPath.fromIndex(index));
+        final int maxIndex = seq.size() - 1;
+        if (index > maxIndex) return this;
+        return new JsArray(index == -1 ? seq.removeAt(maxIndex) : seq.removeAt(index));
     }
 
     /**
@@ -1384,10 +1590,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         if (head.isJson() && head.isSameType(otherHead)) {
             final Json<?> obj  = head.toJson();
             final Json<?> obj1 = otherHead.toJson();
-            Trampoline<? extends Json<?>> headCall = more(() -> () -> new OpUnionJsons().unionAll(obj,
-                                                                                                  obj1,
-                                                                                                  JsArray.TYPE.LIST
-                                                                                                 ));
+            Trampoline<? extends Json<?>> headCall =
+                    more(() -> () -> new OpUnionJsons().unionAll(obj,
+                                                                 obj1,
+                                                                 JsArray.TYPE.LIST
+                                                                ));
             return more(() -> tailCall).flatMap(tailResult -> headCall.map(tailResult::prepend));
 
         }

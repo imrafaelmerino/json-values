@@ -5,22 +5,15 @@ import io.vavr.Tuple2;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
-final class OpMapObjElems extends OpMapElems<JsObj> {
-    OpMapObjElems(final JsObj json) {
-        super(json);
-    }
+final class OpMapObjElems {
 
-    @Override
-    JsObj map(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
-              final JsPath startingPath
-             ) {
-        if (json.isEmpty()) return json;
+    static JsObj map(JsObj json,
+                     final BiFunction<? super String, ? super JsPrimitive, ? extends JsValue> fn
+                    ) {
         for (final Tuple2<String, JsValue> tuple : json) {
 
             if (tuple._2.isPrimitive()) {
-                final JsPath headPath = startingPath.key(tuple._1);
-
-                JsValue headMapped = fn.apply(headPath,
+                JsValue headMapped = fn.apply(tuple._1,
                                               tuple._2.toJsPrimitive()
                                              );
                 json = json.set(tuple._1,
@@ -34,9 +27,8 @@ final class OpMapObjElems extends OpMapElems<JsObj> {
 
     }
 
-    @Override
-    JsObj map(final Function<? super JsPrimitive, ? extends JsValue> fn) {
-        if (json.isEmpty()) return json;
+    static JsObj map(JsObj json,
+                     final Function<? super JsPrimitive, ? extends JsValue> fn) {
         for (final Tuple2<String, JsValue> tuple : json) {
             if (tuple._2.isPrimitive()) {
                 JsValue headMapped = fn.apply(tuple._2.toJsPrimitive());
@@ -51,24 +43,25 @@ final class OpMapObjElems extends OpMapElems<JsObj> {
 
     }
 
-    @Override
-    JsObj mapAll(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
-                 final JsPath startingPath
-                ) {
-        if (json.isEmpty()) return json;
+    static JsObj mapAll(JsObj json,
+                        final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
+                        final JsPath startingPath
+                       ) {
         for (final Tuple2<String, JsValue> tuple : json) {
             if (tuple._2.isObj()) {
                 json = json.set(tuple._1,
-                                new OpMapObjElems(tuple._2.toJsObj()).mapAll(fn,
-                                                                             startingPath.key(tuple._1)
-                                                                            )
+                                mapAll(tuple._2.toJsObj(),
+                                       fn,
+                                       startingPath.key(tuple._1)
+                                      )
                                );
             }
             else if (tuple._2.isArray()) {
                 json = json.set(tuple._1,
-                                new OpMapArrElems(tuple._2.toJsArray()).mapAll(fn,
-                                                                               startingPath.key(tuple._1)
-                                                                              )
+                                OpMapArrElems.mapAll(tuple._2.toJsArray(),
+                                                     fn,
+                                                     startingPath.key(tuple._1)
+                                                    )
                                );
             }
             else {
@@ -87,18 +80,22 @@ final class OpMapObjElems extends OpMapElems<JsObj> {
 
     }
 
-    @Override
-    JsObj mapAll(final Function<? super JsPrimitive, ? extends JsValue> fn) {
+    static JsObj mapAll(JsObj json,
+                        final Function<? super JsPrimitive, ? extends JsValue> fn) {
         if (json.isEmpty()) return json;
         for (final Tuple2<String, JsValue> tuple : json) {
             if (tuple._2.isObj()) {
                 json = json.set(tuple._1,
-                                new OpMapObjElems(tuple._2.toJsObj()).mapAll(fn)
+                                mapAll(tuple._2.toJsObj(),
+                                       fn
+                                      )
                                );
             }
             else if (tuple._2.isArray()) {
                 json = json.set(tuple._1,
-                                new OpMapArrElems(tuple._2.toJsArray()).mapAll(fn)
+                                OpMapArrElems.mapAll(tuple._2.toJsArray(),
+                                                     fn
+                                                    )
                                );
             }
             else {

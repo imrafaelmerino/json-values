@@ -5,15 +5,12 @@ import io.vavr.Tuple2;
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
 
-final class OpFilterObjElems extends OpFilterElems<JsObj> {
-    OpFilterObjElems(final JsObj a) {
-        super(a);
-    }
+final class OpFilterObjElems {
 
-    @Override
-    JsObj filterAll(final JsPath startingPath,
-                    final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                   ) {
+    static JsObj filterAll(JsObj json,
+                           final JsPath startingPath,
+                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+                          ) {
         for (final Tuple2<String, JsValue> next : json) {
             final JsPath headPath = startingPath.key(next._1);
 
@@ -21,16 +18,17 @@ final class OpFilterObjElems extends OpFilterElems<JsObj> {
 
             if (headElem.isObj()) {
                 json = json.set(next._1,
-                                new OpFilterObjElems(headElem.toJsObj())
-                                        .filterAll(headPath,
-                                                   predicate
-                                                  )
+                                filterAll(headElem.toJsObj(),
+                                          headPath,
+                                          predicate
+                                         )
                                );
             }
             else if (headElem.isArray()) {
                 json = json.set(next._1,
-                                new OpFilterArrElems(headElem.toJsArray())
-                                        .filterAll(headPath,
+                                OpFilterArrElems
+                                        .filterAll(headElem.toJsArray(),
+                                                   headPath,
                                                    predicate
                                                   )
                                );
@@ -50,16 +48,14 @@ final class OpFilterObjElems extends OpFilterElems<JsObj> {
 
     }
 
-    @Override
-    JsObj filter(final JsPath startingPath,
-                 final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                ) {
+    static JsObj filter(JsObj json,
+                        final BiPredicate<? super String, ? super JsPrimitive> predicate
+                       ) {
         for (final Tuple2<String, JsValue> next : json) {
             JsValue headElem = next._2;
             if (headElem.isPrimitive()) {
-                final JsPath headPath = startingPath.key(next._1);
                 if (predicate.negate()
-                             .test(headPath,
+                             .test(next._1,
                                    headElem.toJsPrimitive()
                                   )) {
 
@@ -72,22 +68,25 @@ final class OpFilterObjElems extends OpFilterElems<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filterAll(final Predicate<? super JsPrimitive> predicate) {
+    static JsObj filterAll(JsObj json,
+                           final Predicate<? super JsPrimitive> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
 
             JsValue headElem = next._2;
 
             if (headElem.isObj()) {
                 json = json.set(next._1,
-                                new OpFilterObjElems(headElem.toJsObj())
-                                        .filterAll(predicate)
+                                filterAll(headElem.toJsObj(),
+                                          predicate
+                                         )
                                );
             }
             else if (headElem.isArray()) {
                 json = json.set(next._1,
-                                new OpFilterArrElems(headElem.toJsArray())
-                                        .filterAll(predicate)
+                                OpFilterArrElems
+                                        .filterAll(headElem.toJsArray(),
+                                                   predicate
+                                                  )
                                );
             }
 
@@ -103,8 +102,8 @@ final class OpFilterObjElems extends OpFilterElems<JsObj> {
         return json;
     }
 
-    @Override
-    JsObj filter(final Predicate<? super JsPrimitive> predicate) {
+    static JsObj filter(JsObj json,
+                        final Predicate<? super JsPrimitive> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             JsValue headElem = next._2;
             if (headElem.isPrimitive()) {

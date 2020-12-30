@@ -54,9 +54,10 @@ public final class Index implements Position {
     @Override
     public int compareTo(final Position o) {
         if (requireNonNull(o)
-                .isIndex()) return Integer.compare(n,
-                                                   o.asIndex().n
-                                                  );
+                .isIndex())
+            return Integer.compare(n,
+                                   o.asIndex().n
+                                  );
         return toString().compareTo(o.asKey().name);
     }
 
