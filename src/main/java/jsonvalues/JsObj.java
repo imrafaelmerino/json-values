@@ -1463,6 +1463,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
+    public final Stream<JsValue> streamValues() {
+        return map.values().toJavaStream();
+    }
+
+
+    @Override
     public final Stream<JsPair> stream() {
         return this.keySet()
                    .stream()

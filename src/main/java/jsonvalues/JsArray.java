@@ -1209,6 +1209,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
+    @Override
+    public Stream<JsValue> streamValues() {
+        return seq.toJavaStream();
+    }
+
     private boolean yContainsX(final Vector<JsValue> x,
                                final Vector<JsValue> y
                               ) {

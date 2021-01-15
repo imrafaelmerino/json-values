@@ -572,6 +572,8 @@ public interface Json<T extends Json<T>> extends JsValue {
                        .count();
     }
 
+    Stream<JsValue> streamValues();
+
     /**
      Returns a stream over the pairs of elements in the first level of this json object.
 
