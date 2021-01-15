@@ -1235,4 +1235,71 @@ public class TestJsObjParser {
 
     }
 
+
+    @Test
+    public void testYamlToObj(){
+        //language=yaml
+        String yaml = "Resources:\n" +
+                "  Ec2Instance:\n" +
+                "    Type: 'AWS::EC2::Instance'\n" +
+                "    Properties:\n" +
+                "      SecurityGroups:\n" +
+                "        - !Ref InstanceSecurityGroup\n" +
+                "      KeyName: mykey\n" +
+                "      ImageId: ''\n" +
+                "  InstanceSecurityGroup:\n" +
+                "    Type: 'AWS::EC2::SecurityGroup'\n" +
+                "    Properties:\n" +
+                "      GroupDescription: Enable SSH access via port 22\n" +
+                "      SecurityGroupIngress:\n" +
+                "        - IpProtocol: tcp\n" +
+                "          FromPort: '22'\n" +
+                "          ToPort: 22\n" +
+                "          CidrIp: 0.0.0.0/0";
+
+        JsObj obj = JsObj.parseYaml(yaml);
+
+        Assertions.assertEquals("AWS::EC2::SecurityGroup",
+                                obj.getStr(JsPath.path("/Resources/InstanceSecurityGroup/Type")));
+        Assertions.assertEquals("InstanceSecurityGroup",
+                                obj.getStr(JsPath.path("/Resources/Ec2Instance/Properties/SecurityGroups/0")));
+        Assertions.assertEquals("0.0.0.0/0",
+                                obj.getStr(JsPath.path("/Resources/InstanceSecurityGroup/Properties/SecurityGroupIngress/0/CidrIp")));
+
+        Assertions.assertEquals(new Integer(22),
+                                obj.getInt(JsPath.path("/Resources/InstanceSecurityGroup/Properties/SecurityGroupIngress/0/ToPort")));
+    }
+
+    @Test
+    public void testYamlToArray(){
+    String yaml = "- Resources:\n" +
+            "    Ec2Instance:\n" +
+            "      Type: 'AWS::EC2::Instance'\n" +
+            "      Properties:\n" +
+            "        SecurityGroups:\n" +
+            "          - InstanceSecurityGroup\n" +
+            "        KeyName: mykey\n" +
+            "        ImageId: ''\n" +
+            "    InstanceSecurityGroup:\n" +
+            "      Type: 'AWS::EC2::SecurityGroup'\n" +
+            "      Properties:\n" +
+            "        GroupDescription: Enable SSH access via port 22\n" +
+            "        SecurityGroupIngress:\n" +
+            "          - IpProtocol: tcp\n" +
+            "            FromPort: '22'\n" +
+            "            ToPort: 22\n" +
+            "            CidrIp: 0.0.0.0/0";
+
+
+        JsArray arr = JsArray.parseYaml(yaml);
+
+        Assertions.assertEquals("AWS::EC2::SecurityGroup",
+                                arr.getStr(JsPath.path("/0/Resources/InstanceSecurityGroup/Type")));
+        Assertions.assertEquals("InstanceSecurityGroup",
+                                arr.getStr(JsPath.path("/0/Resources/Ec2Instance/Properties/SecurityGroups/0")));
+        Assertions.assertEquals("0.0.0.0/0",
+                                arr.getStr(JsPath.path("/0/Resources/InstanceSecurityGroup/Properties/SecurityGroupIngress/0/CidrIp")));
+        Assertions.assertEquals(new Integer(22),
+                                arr.getInt(JsPath.path("/0/Resources/InstanceSecurityGroup/Properties/SecurityGroupIngress/0/ToPort")));
+    }
 }

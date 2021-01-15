@@ -6,7 +6,7 @@
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
-    <version>9.0.0-RC1</version>
+    <version>9.0.0-RC2</version>
 
   <name>json-values</name>
     <description>json-values is a functional Java library to work with immutable jsons using persistent data structures.</description>
@@ -43,13 +43,14 @@
         <MAVEN-SUREFIRE-PLUGIN.VERSION>2.22.0</MAVEN-SUREFIRE-PLUGIN.VERSION>
         <MY-DSL-JSON.VERSION>0.1</MY-DSL-JSON.VERSION>
         <DSL-JSON.VERSION>1.9.7</DSL-JSON.VERSION>
-        <vavr.version>0.10.3</vavr.version>
+        <VAVR.VERSION>0.10.3</VAVR.VERSION>
+        <JACKSON-DATAFORMAT-YAML.VERSION>2.9.5</JACKSON-DATAFORMAT-YAML.VERSION>
     </properties>
     <dependencies>
       <dependency>
         <groupId>io.vavr</groupId>
         <artifactId>vavr</artifactId>
-        <version>${vavr.version}</version>
+        <version>${VAVR.VERSION}</version>
       </dependency>
 
         <dependency>
@@ -70,11 +71,18 @@
             <version>${JACKSON-VERSION}</version>
         </dependency>
 
+
+
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
             <version>5.3.2</version>
             <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.dataformat</groupId>
+            <artifactId>jackson-dataformat-yaml</artifactId>
+            <version>${JACKSON-DATAFORMAT-YAML.VERSION}</version>
         </dependency>
     </dependencies>
     <build>

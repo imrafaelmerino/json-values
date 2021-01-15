@@ -1077,6 +1077,24 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         }
     }
 
+    /**
+     Tries to parse a YAML string into an immutable object.
+
+     @param str the YAML to be parsed
+     @return a JsOb object
+     @throws MalformedJson if the string doesnt represent a json object
+     */
+    public static JsObj parseYaml(final String str) {
+
+        try (JsonParser parser = JacksonFactory.YAML_FACTORY.createParser(requireNonNull(str))) {
+            JsonToken keyEvent = parser.nextToken();
+            if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
+            return new JsObj(JsObj.parse(parser));
+        } catch (IOException e) {
+            throw new MalformedJson(e.getMessage());
+        }
+    }
+
     static Map<String, JsValue> parse(final JsonParser parser) throws IOException {
         Map<String, JsValue> map = LinkedHashMap.empty();
         String               key = parser.nextFieldName();
@@ -1461,6 +1479,12 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                            JsPath.empty()
                           );
     }
+
+    @Override
+    public final Stream<JsValue> streamValues() {
+        return map.values().toJavaStream();
+    }
+
 
     @Override
     public final Stream<JsPair> stream() {

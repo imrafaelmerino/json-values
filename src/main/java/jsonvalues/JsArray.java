@@ -365,6 +365,27 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
+     Tries to parse the YAML string into an immutable json array.
+
+     @param str the YAML to be parsed
+     @return a JsArray
+     @throws MalformedJson if the string doesnt represent a json array
+     */
+    public static JsArray parseYaml(final String str) {
+
+        try (JsonParser parser = JacksonFactory.YAML_FACTORY.createParser(requireNonNull(str))) {
+            final JsonToken keyEvent = parser.nextToken();
+            if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
+            return new JsArray(parse(parser
+                                    ));
+        } catch (IOException e) {
+
+            throw new MalformedJson(e.getMessage());
+        }
+
+    }
+
+    /**
      Tries to parse the string into an immutable json array.
 
      @param str the string to be parsed
@@ -1207,6 +1228,11 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                                       );
                                   });
 
+    }
+
+    @Override
+    public Stream<JsValue> streamValues() {
+        return seq.toJavaStream();
     }
 
     private boolean yContainsX(final Vector<JsValue> x,
