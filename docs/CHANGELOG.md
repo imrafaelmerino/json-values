@@ -1,9 +1,10 @@
 # JSON-VALUES
-## v9.0.0-RC2  ( Fri Jan 15 2021 18:58:37 GMT+0100 (Central European Standard Time) )
+## v9.0.0  ( Sat Jan 30 2021 20:39:00 GMT+0100 (Central European Standard Time) )
 
-## Features
-  - 🎸 streamValues methods
-  ([900da162](https://github.com/imrafaelmerino/json-values/commit/900da162a328a704b878f405b28a8da5983e30d1))
+
+## Refactor
+  - 💡 remove mydsl-json dependency
+  ([66c7a1de](https://github.com/imrafaelmerino/json-values/commit/66c7a1de4646a250f3680a4ea840c1fd4e0b0a54))
 
 
 
