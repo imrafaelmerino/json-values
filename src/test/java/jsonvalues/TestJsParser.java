@@ -48,7 +48,7 @@ public class TestJsParser {
 
 
         final JsObj example = JsObj.of("a",
-                                       JsStr.of("a"),
+                                       JsStr.of("001"),
                                        "b",
                                        JsInt.of(10),
                                        "c",
@@ -73,8 +73,7 @@ public class TestJsParser {
                                                           ))
                                       );
 
-        final JsObj parsed = parser.parse(example
-                                                  .toString());
+        final JsObj parsed = parser.parse(example.toString());
 
         Assertions.assertEquals(parsed,
                                 example

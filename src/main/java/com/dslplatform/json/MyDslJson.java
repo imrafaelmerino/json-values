@@ -150,7 +150,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             INSTANCE.serialize(json,
-                               new MyPrettifyOutputStream(baos)
+                               new PrettifyOutputStream(baos)
                               );
             return baos.toString(StandardCharsets.UTF_8.name());
         } catch (IOException e) {

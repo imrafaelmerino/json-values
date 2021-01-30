@@ -1,7 +1,7 @@
 package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
-import com.dslplatform.json.MyNumberConverter;
+import com.dslplatform.json.NumberConverter;
 import jsonvalues.JsBigDec;
 import jsonvalues.spec.Error;
 
@@ -14,9 +14,9 @@ import java.util.function.Function;
 final class JsDecimalParser extends AbstractParser {
 
     @Override
-    JsBigDec value(final JsonReader<?> reader){
+    JsBigDec value(final JsonReader<?> reader) {
         try {
-            return JsBigDec.of(MyNumberConverter.parseDecimal(reader));
+            return JsBigDec.of(NumberConverter.deserializeDecimal(reader));
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
         }
@@ -24,9 +24,9 @@ final class JsDecimalParser extends AbstractParser {
 
     JsBigDec valueSuchThat(final JsonReader<?> reader,
                            final Function<BigDecimal, Optional<Error>> fn
-                          ){
+                          ) {
         try {
-            final BigDecimal      value  = MyNumberConverter.parseDecimal(reader);
+            final BigDecimal      value  = NumberConverter.deserializeDecimal(reader);
             final Optional<Error> result = fn.apply(value);
             if (!result.isPresent()) return JsBigDec.of(value);
             throw reader.newParseError(result.toString());

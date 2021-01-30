@@ -1,11 +1,12 @@
 package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
-import com.dslplatform.json.MyNumberConverter;
+import com.dslplatform.json.NumberConverter;
 import com.dslplatform.json.ParsingException;
 import jsonvalues.JsInt;
 import jsonvalues.spec.Error;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.IntFunction;
 
@@ -13,8 +14,8 @@ final class JsIntParser extends AbstractParser {
     @Override
     JsInt value(final JsonReader<?> reader){
         try {
-            return JsInt.of(MyNumberConverter.parseInt(reader));
-        } catch (ParsingException e) {
+            return JsInt.of(NumberConverter.deserializeInt(reader));
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -23,11 +24,11 @@ final class JsIntParser extends AbstractParser {
                         final IntFunction<Optional<Error>> fn
                        ){
         try {
-            final int             value  = MyNumberConverter.parseInt(reader);
+            final int             value  = NumberConverter.deserializeInt(reader);
             final Optional<Error> result = fn.apply(value);
             if (!result.isPresent()) return JsInt.of(value);
             throw reader.newParseError(result.toString());
-        } catch (ParsingException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 
         }

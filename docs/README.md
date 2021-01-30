@@ -44,15 +44,22 @@ in Java 8, like functions, suppliers, streams, and collectors, making json manip
 leave the functions passed in as arguments with no implementation for brevity reasons. 
 
 ```java
-json.mapKeys(toSneakeCase)
+JsObj a = JsOJsObj.parse(json)
+JsObj b = JsOJsObj.parseYaml(yaml)
 
-json.mapValues(trim, ifStr)
+// first level        
+json.mapAKeys(toSneakeCase)
 
-json.filterKeys(key.startsWith("_field"))
+// traverses all the elements       
+json.mapAllKeys(toSneakeCase)
 
-json.filterValues(isNotNull)
+json.mapAllValues(trim, ifStr)
 
-json.reduce(plus, ifInt)
+json.filterAllKeys(key.startsWith("_field"))
+
+json.filterAllValues(isNotNull)
+
+json.reduceAll(plus, ifInt)
 
 //RFC 6901
 json.set(path("/a/b"), value)
