@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.parsers.JsSpecParser;
+import com.dslplatform.json.JsSpecParser;
 import jsonvalues.JsObj;
 
 import java.io.InputStream;

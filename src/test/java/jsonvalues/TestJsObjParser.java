@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import com.dslplatform.json.parsers.JsParserException;
+import com.dslplatform.json.JsParserException;
 import jsonvalues.gen.JsGen;
 import jsonvalues.gen.JsGens;
 import jsonvalues.gen.JsObjGen;

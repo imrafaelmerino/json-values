@@ -14,6 +14,7 @@ public interface Position extends Comparable<Position> {
     /**
      {@inheritDoc}
      */
+    @Override
     int compareTo(final Position o);
 
     /**

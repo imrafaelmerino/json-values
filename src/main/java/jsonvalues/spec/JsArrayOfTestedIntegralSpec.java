@@ -1,7 +1,7 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.parsers.JsSpecParser;
-import com.dslplatform.json.parsers.JsSpecParsers;
+import com.dslplatform.json.JsSpecParser;
+import com.dslplatform.json.JsSpecParsers;
 import jsonvalues.JsValue;
 
 import java.math.BigInteger;

@@ -10,6 +10,7 @@ import java.util.Set;
 
 interface JsValuePredicate extends JsSpec {
 
+    @Override
     default Set<JsErrorPair> test(final JsPath parentPath,
                                   final JsValue value
                                  ) {

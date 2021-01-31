@@ -10,7 +10,8 @@ import java.math.BigDecimal;
  "123" -> 123
  which I consider it's a mistake. The change consists of throwing an error
  */
-public abstract class MyNumberConverter {
+@SuppressWarnings("rawtypes")
+ abstract class MyNumberConverter {
 
     private final static int[] DIGITS = new int[1000];
     private final static int[] DIFF = {111, 222, 444, 888, 1776};

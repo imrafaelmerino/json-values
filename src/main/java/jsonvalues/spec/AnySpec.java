@@ -1,7 +1,7 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.parsers.JsSpecParser;
-import com.dslplatform.json.parsers.JsSpecParsers;
+import com.dslplatform.json.JsSpecParser;
+import com.dslplatform.json.JsSpecParsers;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -37,8 +37,10 @@ class AnySpec implements JsValuePredicate {
     @Override
     public Optional<Error> test(final JsValue value) {
 
-        if (value.isNothing() && required) return Optional.of(new Error(value,
-                                                                        ERROR_CODE.REQUIRED));
+        if (value.isNothing() && required)
+            return Optional.of(new Error(value,
+                                         ERROR_CODE.REQUIRED
+            ));
         return Optional.empty();
 
     }

@@ -8,6 +8,5 @@ class JacksonFactory {
 
     static final YAMLFactory YAML_FACTORY = new YAMLFactory();
 
-    private JacksonFactory() {
-    }
+    private JacksonFactory() {}
 }

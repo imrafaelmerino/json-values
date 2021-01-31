@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.parsers.JsSpecParser;
+import com.dslplatform.json.JsSpecParser;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 

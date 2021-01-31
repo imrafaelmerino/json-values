@@ -1,11 +1,5 @@
 package com.dslplatform.json;
 
-import com.dslplatform.json.parsers.JsParserException;
-import com.dslplatform.json.parsers.JsSpecParser;
-import com.dslplatform.json.serializers.JsArraySerializer;
-import com.dslplatform.json.serializers.JsObjSerializer;
-import com.dslplatform.json.serializers.JsValueSerializer;
-import com.dslplatform.json.serializers.SerializerException;
 import jsonvalues.JsArray;
 import jsonvalues.JsObj;
 import jsonvalues.Json;
