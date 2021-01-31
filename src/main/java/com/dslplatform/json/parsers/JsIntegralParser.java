@@ -1,7 +1,7 @@
 package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
-import com.dslplatform.json.NumberConverter;
+import com.dslplatform.json.MyNumberConverter;
 import jsonvalues.JsBigInt;
 import jsonvalues.spec.Error;
 
@@ -15,8 +15,8 @@ final class JsIntegralParser extends AbstractParser {
     JsBigInt value(final JsonReader<?> reader) {
         try {
 
-            return JsBigInt.of(NumberConverter.deserializeDecimal(reader)
-                                              .toBigIntegerExact());
+            return JsBigInt.of(MyNumberConverter.deserializeDecimal(reader)
+                                                .toBigIntegerExact());
 
         } catch (ArithmeticException | IOException e) {
             throw new JsParserException(reader.newParseError("Integral number expected"));
@@ -27,8 +27,8 @@ final class JsIntegralParser extends AbstractParser {
                            final Function<BigInteger, Optional<Error>> fn
                           ) {
         try {
-            final BigInteger value = NumberConverter.deserializeDecimal(reader)
-                                                    .toBigIntegerExact();
+            final BigInteger value = MyNumberConverter.deserializeDecimal(reader)
+                                                      .toBigIntegerExact();
             final Optional<Error> result = fn.apply(value);
             if (!result.isPresent()) return JsBigInt.of(value);
             throw reader.newParseError(result.toString());

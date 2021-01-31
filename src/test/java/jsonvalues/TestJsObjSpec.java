@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import com.dslplatform.json.parsers.JsParserException;
 import jsonvalues.spec.Error;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
@@ -1414,6 +1415,52 @@ public class TestJsObjSpec {
                                           cons(JsInt.of(2)).optional()
                                          );
 
-        Assertions.assertTrue(spec.test(JsObj.empty()).isEmpty());
+        Assertions.assertTrue(spec.test(JsObj.empty())
+                                  .isEmpty());
+    }
+
+
+    @Test
+    public void test() {
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          longInteger,
+                                          "b",
+                                          integer
+                                         );
+
+        Set<JsErrorPair> errors = spec.test(JsObj.of("a",
+                                                     JsStr.of("123"),
+                                                     "b",
+                                                     JsStr.of("234")
+                                                    ));
+
+        System.out.println(errors);
+        Assertions.assertEquals(2,
+                                errors.size());
+
+    }
+
+    @Test
+    public void test_parse() {
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          longInteger,
+                                          "b",
+                                          integer
+                                         );
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        JsObj jsObj = JsObj.of("a",
+                               JsStr.of("123"),
+                               "b",
+                               JsStr.of("234")
+                              );
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse(jsObj.toString())
+                                );
+
     }
 }

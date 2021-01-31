@@ -1,7 +1,7 @@
 package com.dslplatform.json.parsers;
 
 import com.dslplatform.json.JsonReader;
-import com.dslplatform.json.NumberConverter;
+import com.dslplatform.json.MyNumberConverter;
 import com.dslplatform.json.ParsingException;
 import jsonvalues.*;
 import jsonvalues.spec.Error;
@@ -32,7 +32,7 @@ final class JsNumberParser extends AbstractParser {
     JsNumber value(final JsonReader<?> reader){
         final Number number;
         try {
-            number = NumberConverter.deserializeNumber(reader);
+            number = MyNumberConverter.deserializeNumber(reader);
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

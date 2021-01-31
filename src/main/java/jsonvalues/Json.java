@@ -51,13 +51,26 @@ json.putIfAbsent(path,supplier)
  @see JsArray to work with jsons that are arrays */
 public interface Json<T extends Json<T>> extends JsValue {
 
+
     /**
      Converts the string representation of this Json to a pretty print version
+     It's indented using whitespaces
+
+     @param indentLength indented with this number of spaces
+     @return pretty print version of the string representation of this Json
+     */
+    default String toPrettyString(int indentLength) {
+        return INSTANCE.toPrettyString(this,indentLength);
+    }
+
+    /**
+     Converts the string representation of this Json to a pretty print version.
+     It's indented using whitespaces
 
      @return pretty print version of the string representation of this Json
      */
     default String toPrettyString() {
-        return INSTANCE.toPrettyString(this);
+        return INSTANCE.toPrettyString(this,2);
     }
 
 

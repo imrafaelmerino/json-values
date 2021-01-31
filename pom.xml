@@ -40,9 +40,10 @@
         <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.8</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
         <MAVEN-JAVADOC-PLUGIN.VERSION>3.2.0</MAVEN-JAVADOC-PLUGIN.VERSION>
         <MAVEN-SUREFIRE-PLUGIN.VERSION>2.22.0</MAVEN-SUREFIRE-PLUGIN.VERSION>
-        <DSL-JSON.VERSION>1.9.7</DSL-JSON.VERSION>
+        <DSL-JSON.VERSION>1.9.8</DSL-JSON.VERSION>
         <VAVR.VERSION>0.10.3</VAVR.VERSION>
         <JACKSON-DATAFORMAT-YAML.VERSION>2.9.5</JACKSON-DATAFORMAT-YAML.VERSION>
+        <DSL-JSON-JAVA8.VERSION>1.9.3</DSL-JSON-JAVA8.VERSION>
     </properties>
     <dependencies>
       <dependency>
@@ -57,12 +58,6 @@
             <version>${DSL-JSON.VERSION}</version>
         </dependency>
 
-
-        <dependency>
-            <groupId>com.dslplatform</groupId>
-            <artifactId>dsl-json-java8</artifactId>
-            <version>1.9.3</version>
-        </dependency>
 
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -1,6 +1,6 @@
 package com.dslplatform.json.serializers;
 import com.dslplatform.json.JsonWriter;
-import com.dslplatform.json.NumberConverter;
+import com.dslplatform.json.MyNumberConverter;
 import jsonvalues.*;
 import java.util.Objects;
 
@@ -50,9 +50,9 @@ public final class JsValueSerializer {
             }
             case JsDouble.TYPE_ID:
             case JsBigDec.TYPE_ID: {
-                NumberConverter.serialize(value.toJsBigDec().value,
-                                          writer
-                                         );
+                MyNumberConverter.serialize(value.toJsBigDec().value,
+                                            writer
+                                           );
                 break;
             }
             case JsBigInt.TYPE_ID: {
@@ -62,15 +62,15 @@ public final class JsValueSerializer {
                 break;
             }
             case JsLong.TYPE_ID: {
-                NumberConverter.serialize(value.toJsLong().value,
-                                          writer
-                                         );
+                MyNumberConverter.serialize(value.toJsLong().value,
+                                            writer
+                                           );
                 break;
             }
             case JsInt.TYPE_ID: {
-                NumberConverter.serialize(value.toJsInt().value,
-                                          writer
-                                         );
+                MyNumberConverter.serialize(value.toJsInt().value,
+                                            writer
+                                           );
                 break;
             }
 

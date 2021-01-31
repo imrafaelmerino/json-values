@@ -9,6 +9,7 @@ import com.dslplatform.json.serializers.SerializerException;
 import jsonvalues.JsArray;
 import jsonvalues.JsObj;
 import jsonvalues.Json;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -40,7 +41,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsObj parseToJsObj(final byte[] bytes,
                               final JsSpecParser parser
-                             ){
+                             ) {
         JsonReader<?> reader = getReader(bytes);
         try {
             reader.getNextToken();
@@ -64,7 +65,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsArray deserializeToJsArray(final byte[] bytes,
                                         final JsSpecParser parser
-                                       ){
+                                       ) {
         JsonReader<?> reader = getReader(bytes);
         try {
             reader.getNextToken();
@@ -80,7 +81,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
     public JsObj parseToJsObj(final InputStream is,
                               final JsSpecParser parser
 
-                             ){
+                             ) {
         JsonReader<?> reader = getReader(is);
         try {
             reader.getNextToken();
@@ -93,7 +94,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
         }
     }
 
-    public JsonReader<?> getReader(final InputStream is){
+    public JsonReader<?> getReader(final InputStream is) {
         try {
             return localReader.get()
                               .process(is);
@@ -105,7 +106,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public JsArray deserializeToJsArray(final InputStream is,
                                         final JsSpecParser parser
-                                       ){
+                                       ) {
         JsonReader<?> reader = getReader(is);
         try {
             reader.getNextToken();
@@ -118,7 +119,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
         }
     }
 
-    public byte[] serialize(final Json<?> json){
+    public byte[] serialize(final Json<?> json) {
         try {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
             INSTANCE.serialize(json,
@@ -133,7 +134,7 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     public void serialize(final Json<?> json,
                           final OutputStream ouputstream
-                         ){
+                         ) {
         try {
             super.serialize(json,
                             requireNonNull(ouputstream)
@@ -144,17 +145,23 @@ public final class MyDslJson<Object> extends DslJson<Object> {
 
     }
 
-    public String toPrettyString(final Json<?> json) {
+
+    public String toPrettyString(final Json<?> json,
+                                 int indentLength) {
 
         try {
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
             INSTANCE.serialize(json,
-                               new PrettifyOutputStream(baos)
+                               new MyPrettifyOutputStream(baos,
+                                                          MyPrettifyOutputStream.IndentType.SPACES,
+                                                          indentLength)
                               );
             return baos.toString(StandardCharsets.UTF_8.name());
         } catch (IOException e) {
             throw new SerializerException(e);
         }
     }
+
+
 }
