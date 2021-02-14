@@ -1,13 +1,14 @@
 # JSON-VALUES
-## v9.0.1  ( Sun Jan 31 2021 11:53:55 GMT+0100 (Central European Standard Time) )
+## v9.0.2  ( Sun Feb 14 2021 16:13:16 GMT+0100 (Central European Standard Time) )
 
+
+## Bug Fixes
+  - 🐛 -1 index must point to the last element of an array
+  ([3fe0ff1e](https://github.com/imrafaelmerino/json-values/commit/3fe0ff1e3dfb1231ae258bbde8402a9fd53e6960))
+    
 ## Features
-  - 🎸 new method toPrettyString
-  ([586aaf4a](https://github.com/imrafaelmerino/json-values/commit/586aaf4aa9e8fd9b3e0bd962866a702a23a2156d))
-
-## Refactor
-  - 💡 remove public modifier from classes
-  ([67904797](https://github.com/imrafaelmerino/json-values/commit/67904797ea1096810d97385fbf2dbe083d1a1348))
+  - 🎸 map function JsInstant
+  ([15bb08a1](https://github.com/imrafaelmerino/json-values/commit/15bb08a14568ff108349b4f4559ae7642868790c))
 
 
 

@@ -9,7 +9,7 @@
 
 [![Javadocs](https://www.javadoc.io/badge/com.github.imrafaelmerino/json-values.svg)](https://www.javadoc.io/doc/com.github.imrafaelmerino/json-values)
 
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/9.0.1)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/9.0.1/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/9.0.2)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/9.0.2/jar)
 [![](https://jitpack.io/v/imrafaelmerino/json-values.svg)](https://jitpack.io/#imrafaelmerino/json-values)
 
 [![Gitter](https://badges.gitter.im/json-values/community.svg)](https://gitter.im/json-values/community?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
@@ -178,7 +178,7 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>9.0.1</version>
+  <version>9.0.2</version>
 </dependency>
 ```
 
