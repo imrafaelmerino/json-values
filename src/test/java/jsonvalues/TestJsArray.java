@@ -1,15 +1,15 @@
 package jsonvalues;
 
 
-
+import com.sun.org.apache.bcel.internal.generic.ANEWARRAY;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import java.util.Base64;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -1309,5 +1309,33 @@ public class TestJsArray {
         Assertions.assertEquals(array,
                                 array.filterKeys((k, v) -> false)
                                );
+    }
+
+    @Test
+    public void test_minus_one_index_points_last_element() {
+
+        JsArray array = JsArray.of(1,
+                                   2,
+                                   3
+                                  );
+
+        Assertions.assertTrue(array.getInt(-1) == 3);
+    }
+
+
+    @Test
+    public void test_set_minus_one_index_points_last_element() {
+
+        JsArray array = JsArray.of(1,
+                                   2,
+                                   3
+                                  );
+
+        JsArray newArray = array.set(JsPath.fromIndex(-1),
+                                JsInt.of(4)
+                               );
+        Assertions.assertTrue(4 == newArray.getInt(3)
+                             );
+
     }
 }
