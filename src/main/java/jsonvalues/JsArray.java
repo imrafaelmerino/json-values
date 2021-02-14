@@ -1531,41 +1531,27 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     private Vector<JsValue> nullPadding(final int index,
-                                        final Vector<JsValue> arr,
+                                        Vector<JsValue> arr,
                                         final JsValue e,
                                         final JsValue pad
                                        ) {
         assert arr != null;
         assert e != null;
 
-        return nullPaddingTrampoline(index,
-                                     arr,
-                                     e,
-                                     pad
-                                    );
-    }
+        if (index == -1) return arr.append(e);
+        if (index == arr.size()) return arr.append(e);
 
-    private Vector<JsValue> nullPaddingTrampoline(final int i,
-                                                  Vector<JsValue> arr,
-                                                  final JsValue e,
-                                                  final JsValue pad
-                                                 ) {
 
-        if (i == arr.size()) return arr.append(e);
-
-        if (i == -1) return arr.update(seq.size() - 1,
-                                       e
-                                      );
-
-        if (i < arr.size()) return arr.update(i,
+        if (index < arr.size()) return arr.update(index,
                                               e
                                              );
-        for (int j = arr.size(); j < i; j++) {
+        for (int j = arr.size(); j < index; j++) {
             arr = arr.append(pad);
         }
         return arr.append(e);
-
     }
+
+
 
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
     private JsArray union(JsArray a,
@@ -1610,7 +1596,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                    );
 
             }
-            else if(!otherHead.isNothing() && head.isNothing()) result = result.append(otherHead);
+            else if (!otherHead.isNothing() && head.isNothing()) result = result.append(otherHead);
         }
 
         return result;
