@@ -4,6 +4,7 @@ import java.time.Instant;
 import java.time.format.DateTimeFormatter;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,6 +28,10 @@ public class JsInstant  extends JsPrimitive implements Comparable<JsInstant>{
 
     private JsInstant(final Instant value) {
         this.value = value;
+    }
+
+    public JsInstant map(Function<Instant,Instant> fn){
+        return JsInstant.of(Objects.requireNonNull(fn).apply(value));
     }
 
     /**
