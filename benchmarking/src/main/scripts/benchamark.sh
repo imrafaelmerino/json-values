@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 java -Xms256m \
--jar releases/9.0.2/benchmark-9.0.2-zulu-8.jar \
--rff results/9.0.2/zulu/deserializer/zulu-r8-c8.json \
+-jar releases/9.1.0/benchmark-9.1.0-zulu-8.jar \
+-rff results/9.1.0/zulu/deserializer/zulu-r8-c8.json \
 -rf json \
 jsonvalues\.benchmark\.JsDeserializers
 

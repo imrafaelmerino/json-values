@@ -9,7 +9,7 @@
  <li>the checked {@link jsonvalues.MalformedJson}, when a string can not be parsed into a json.</li>
  <li>the unchecked NullPointerException, when a method different than equals receives a null parameter.</li>
  </ul>
- All the methods which name ends with an underscore are applied to the whole json recursively, and not only
+ All the methods which name ends with all are applied to the whole json recursively, and not only
  to its first level. For example:
  <pre>
  {@code
