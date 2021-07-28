@@ -380,7 +380,7 @@ public class TestGenerators {
     }
 
     @Test
-    public void testDates() {
+    public void testDatesBetween() {
 
         TestProperty.test(JsGens.dateBetween(ZonedDateTime.now(),
                                              ZonedDateTime.now()
@@ -391,6 +391,14 @@ public class TestGenerators {
                          );
     }
 
+    @Test
+    public void testDates() {
+
+        TestProperty.test(JsGens.date,
+                          JsInstant::isInstant,
+                          failureConsumer()
+        );
+    }
 
     @Test
     public void testBinary() {

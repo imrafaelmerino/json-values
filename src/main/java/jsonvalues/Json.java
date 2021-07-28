@@ -419,9 +419,9 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return the integral number located at the given JsPath or null
      */
     default Integer getInt(final JsPath path,
-                           Supplier<Integer> orElse) {
+                           final Supplier<Integer> orElse) {
         return JsInt.prism.getOptional.apply(get(requireNonNull(path)))
-                                      .orElseGet(orElse);
+                                      .orElseGet(requireNonNull(orElse));
 
     }
 
