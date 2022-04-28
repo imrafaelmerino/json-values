@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import com.dslplatform.json.MyDslJson;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
@@ -11,6 +12,7 @@ import jsonvalues.JsArray.TYPE;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Iterator;
 import java.util.Objects;
@@ -1967,7 +1969,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public final String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(INSTANCE.serialize(this));
+            str = result = new String(MyDslJson.INSTANCE.serialize(this),
+                                      StandardCharsets.UTF_8);
         return result;
     }
 

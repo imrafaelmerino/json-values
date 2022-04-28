@@ -5,6 +5,7 @@ import com.dslplatform.json.JsSpecParser;
 import jsonvalues.JsArray;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
@@ -48,7 +49,7 @@ public class JsArrayParser {
      @return a try computation with the result
      */
     public JsArray parse(String str){
-        return MyDslJson.INSTANCE.deserializeToJsArray(requireNonNull(str).getBytes(),
+        return MyDslJson.INSTANCE.deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
                                                        this.parser
                                                       );
     }

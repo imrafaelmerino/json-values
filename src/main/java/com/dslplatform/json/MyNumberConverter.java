@@ -3,6 +3,7 @@ package com.dslplatform.json;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.nio.charset.StandardCharsets;
 
 /**
  Modified class from dsl-json library.
@@ -541,7 +542,7 @@ import java.math.BigDecimal;
     }
 
     private static final byte MINUS = '-';
-    private static final byte[] MIN_INT = "-2147483648".getBytes();
+    private static final byte[] MIN_INT = "-2147483648".getBytes(StandardCharsets.UTF_8);
 
     public static void serialize(final int value,
                                  final JsonWriter sw) {

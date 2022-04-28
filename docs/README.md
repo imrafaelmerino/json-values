@@ -178,7 +178,7 @@ Add the following dependency to your building tool:
 <dependency>
   <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>9.1.0</version>
+  <version>9.2.0</version>
 </dependency>
 ```
 
