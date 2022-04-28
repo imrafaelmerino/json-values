@@ -53,7 +53,7 @@ public class Lens<S, O> {
         this.modify = f -> json -> set.apply(f.apply(get.apply(json)))
                                       .apply(json);
         this.find = predicate -> s -> predicate.test(get.apply(s)) ?
-                                      Optional.of((get.apply(s))) :
+                                      Optional.of(get.apply(s)) :
                                       Optional.empty();
         this.exists = predicate -> s -> predicate.test(get.apply(s));
     }

@@ -1,5 +1,6 @@
 package jsonvalues;
 
+import com.dslplatform.json.MyDslJson;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.OutputStream;
@@ -61,8 +62,8 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return pretty print version of the string representation of this Json
      */
     default String toPrettyString(int indentLength) {
-        return INSTANCE.toPrettyString(this,
-                                       indentLength);
+        return MyDslJson.INSTANCE.toPrettyString(this,
+                                                 indentLength);
     }
 
     /**

@@ -4,6 +4,7 @@ import com.dslplatform.json.JsSpecParser;
 import jsonvalues.JsObj;
 
 import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 
 import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static java.util.Objects.requireNonNull;
@@ -48,7 +49,7 @@ public class JsObjParser {
      */
     public JsObj parse(String str){
 
-        return INSTANCE.parseToJsObj(requireNonNull(str).getBytes(),
+        return INSTANCE.parseToJsObj(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
                                      parser
                                     );
     }

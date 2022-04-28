@@ -1004,40 +1004,40 @@ public class JsObjSpec implements JsSpec {
     }
     @SuppressWarnings("squid:S00107")
     private JsObjSpec(
+            String key,
+            JsSpec spec,
             String key1,
             JsSpec spec1,
             String key2,
             JsSpec spec2,
-            String key3,
-            JsSpec spec3,
             boolean strict
                      ) {
         this(
+                key,
+                spec,
                 key1,
                 spec1,
-                key2,
-                spec2,
                 strict
             );
-        bindings = bindings.put(key3,
-                                spec3
+        bindings = bindings.put(key2,
+                                spec2
                                );
     }
 
-    private JsObjSpec(final String key1,
+    private JsObjSpec(final String key,
+                      final JsSpec spec,
+                      final String key1,
                       final JsSpec spec1,
-                      final String key2,
-                      final JsSpec spec2,
                       final boolean strict
                      ) {
-        this(key1,
-             spec1,
+        this(key,
+             spec,
              strict,
              true,
              false
             );
-        bindings = bindings.put(key2,
-                                spec2
+        bindings = bindings.put(key1,
+                                spec1
                                );
     }
 

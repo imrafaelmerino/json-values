@@ -31,8 +31,8 @@
         <JACKSON-VERSION>2.12.0</JACKSON-VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
-        <COMPILER_SOURCE_VERSION>8</COMPILER_SOURCE_VERSION>
-        <COMPILER_TARGET_VERSION>8</COMPILER_TARGET_VERSION>
+        <COMPILER_SOURCE_VERSION>11</COMPILER_SOURCE_VERSION>
+        <COMPILER_TARGET_VERSION>11</COMPILER_TARGET_VERSION>
         <sonar.projectKey>json-values</sonar.projectKey>
         <JACOCO-MAVEN-PLUGIN.VERSION>0.8.4</JACOCO-MAVEN-PLUGIN.VERSION>
         <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
@@ -44,6 +44,7 @@
         <VAVR.VERSION>0.10.3</VAVR.VERSION>
         <JACKSON-DATAFORMAT-YAML.VERSION>2.9.5</JACKSON-DATAFORMAT-YAML.VERSION>
         <DSL-JSON-JAVA8.VERSION>1.9.3</DSL-JSON-JAVA8.VERSION>
+        <ERROR-PRONE.VERSION>2.13.1</ERROR-PRONE.VERSION>
     </properties>
     <dependencies>
       <dependency>
@@ -85,13 +86,28 @@
                 <version>${PLUGIN_COMPILER_VERSION}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>${COMPILER_SOURCE_VERSION}</source>
-                    <target>${COMPILER_TARGET_VERSION}</target>
+                    <source>11</source>
+                    <target>11</target>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
+                        <arg>-XDcompilePolicy=simple</arg>
+                        <arg>-Xplugin:ErrorProne</arg>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>com.google.errorprone</groupId>
+                            <artifactId>error_prone_core</artifactId>
+                            <version>${ERROR-PRONE.VERSION}</version>
+                        </path>
+                        <!-- Other annotation processors go here.
+
+                        If 'annotationProcessorPaths' is set, processors will no longer be
+                        discovered on the regular -classpath; see also 'Using Error Prone
+                        together with other annotation processors' below. -->
+                    </annotationProcessorPaths>
                 </configuration>
+
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
