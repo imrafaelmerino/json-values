@@ -1165,7 +1165,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                                                                               pair.path
                                                                                              ),
                                                                                              e -> Stream.of(pair)
-                                                        )
+                                                                                 )
                                                                                  .apply(pair.value))
         );
 
@@ -1465,7 +1465,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                                                    json.delete(tail)
                                                          )),
                                                          e -> this
-                                     )
+                                             )
                                              .apply(map.get(key)
                                                        .get());
                           },
@@ -1945,7 +1945,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public final boolean equals(final Object that) {
         if (!(that instanceof JsObj)) return false;
         if (this == that) return true;
-        if (getClass() != that.getClass()) return false;
         final JsObj thatMap = (JsObj) that;
         final boolean thisEmpty = isEmpty();
         final boolean thatEmpty = thatMap.isEmpty();

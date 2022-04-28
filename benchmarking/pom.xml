@@ -95,7 +95,7 @@
         <dependency>
             <groupId>com.github.imrafaelmerino</groupId>
             <artifactId>json-values</artifactId>
-            <version>9.0.1</version>
+            <version>${JSON-VALUES.VERSION}</version>
             <scope>compile</scope>
             <exclusions>
                 <exclusion>

@@ -63,7 +63,8 @@ public interface Json<T extends Json<T>> extends JsValue {
      */
     default String toPrettyString(int indentLength) {
         return MyDslJson.INSTANCE.toPrettyString(this,
-                                       indentLength);
+                                                 indentLength);
+
     }
 
     /**
@@ -74,7 +75,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      */
     default String toPrettyString() {
         return MyDslJson.INSTANCE.toPrettyString(this,
-                                       2);
+                                                 2);
     }
 
 

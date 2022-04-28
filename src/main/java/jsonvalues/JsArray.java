@@ -466,7 +466,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                                              array.size()
                                                  ).mapToObj(pair -> JsPair.of(path.index(pair),
                                                                               array.get(Index.of(pair))
-                                                 ))
+                                                  ))
                                                   .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
                                                                                                         pair.path
                                                                                        ),
@@ -474,7 +474,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                                                                                         pair.path
                                                                                        ),
                                                                                        e -> Stream.of(pair)
-                                                           )
+                                                                           )
                                                                            .apply(pair.value)
                                                   )
         );
@@ -645,7 +645,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
         if (array.isEmpty()) return false;
         return IntStream.range(0,
                                size()
-        )
+                        )
                         .mapToObj(i -> get(Index.of(i)))
                         .allMatch(elem ->
                                   {
@@ -654,7 +654,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                       return true;
                                   }) && IntStream.range(0,
                                                         array.size()
-        )
+                                                 )
                                                  .mapToObj(i -> array.get(Index.of(i)))
                                                  .allMatch(this::containsValue);
     }
@@ -993,7 +993,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * Returns the number located at the given index as a big integer or the default value provided
      * if  it doesn't exist or it's not an integral number.
      *
-     * @param index the index
+     * @param index  the index
      * @param orElse the default value provided
      * @return the integral number located at the given index or null
      */
@@ -1464,7 +1464,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public Stream<JsPair> stream() {
         return IntStream.range(0,
                                size()
-        )
+                        )
                         .mapToObj(i ->
                                   {
                                       final JsPath path = JsPath.fromIndex(i);
