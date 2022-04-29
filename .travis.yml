@@ -36,7 +36,6 @@ deploy:
 addons:
   sonarcloud:
     organization: "imrafaelmerino"
-    token: Dghyu/zrDiHTb9WsaVsEefEFBYfp++QvZxCfeTkhlkJ2qaMFN+miUiK83cCXY4w97guvpWDaApo5VeF8dk2YisBmvIK2cVQXa1lBePgYNdsYYqVZ0rtKMdEKUn0Z4HwsxuOh5P1YcOG323Zlgd33RY8BloMtkp/4WPXvG+tgpZvQX7m5lZuJILWfDQO/VUV2Aeac7Ahsl3FQ9jaLWBcq2DdEgeLpwlQ6KmDVPHMGrTSDf45wb+9IhnfGBl+3yToIKvvGXSHRrRmRbmnhCYXwQprnNqjD2hvE9xG3f5nDSMI+JOPq/50H8+Hgi+Wc3lOslStAsrYUGOJaNMqWDwG3ajUR2tWdoZNpxiGovM/uP5VqGneSlB+zPgAFb+l39JD+GdxIgXT7D+qInx0S7zGIWO/2jaYrAMUYP5vjmgRm5GGILCFyDRd6NV8hapX65dRn5uMvdnEB9q50YwqLX/7lc13TTjNaSPBw0dCBQF5gaUsu0O84CiancInbOjvATUVmqNVKcoD/IUlNIf9PyAufVa4TDBiaXX0UJhz9hyMTPJNRmwt5VHaOAdhxAHyBkeEBDDMTJIdoh1THQVKk8pDW2mmIxAYVkwCzua7eOx7x+hF+d6k4LBXyk/c53qiD0+vE2w0ysMZAsC/bbvyiigYt92mEJOa7aCeuOtNG+dfpP+w=
 
 script:
 - mvn clean verify sonar:sonar  -Pcoverage -Dsonar.projectKey=imrafaelmerino_json-values
