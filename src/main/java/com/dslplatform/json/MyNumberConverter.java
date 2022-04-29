@@ -20,6 +20,8 @@ import java.nio.charset.StandardCharsets;
     private final static int[] DIFF = {111, 222, 444, 888, 1776};
     private final static int[] ERROR = {50, 100, 200, 400, 800};
     private final static int[] SCALE_10 = {10000, 1000, 100, 10, 1};
+
+    @SuppressWarnings("FloatingPointLiteralPrecision")
     private final static double[] POW_10 = {
             1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9,
             1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
@@ -786,7 +788,7 @@ import java.nio.charset.StandardCharsets;
         buf[pos + 2] = (byte) v;
     }
 
-    private static final byte[] MIN_LONG = "-9223372036854775808".getBytes();
+    private static final byte[] MIN_LONG = "-9223372036854775808".getBytes(StandardCharsets.UTF_8);
 
     public static void serialize(final long value,
                                  final JsonWriter sw) {
@@ -884,7 +886,7 @@ import java.nio.charset.StandardCharsets;
                     );
             return pos + 9;
         }
-        final int r4 = (int) (q3 - q4 * 1000);
+        final int r4 = (int) (q3 - q4 * 1000L);
         final int q5 = q4 / 1000;
         if (q5 == 0) {
             final int v1 = DIGITS[r1];

@@ -12,11 +12,11 @@ import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsIntegralSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    final Function<BigInteger, Optional<Error>> predicate;
+    final Function<BigInteger, Optional<JsError>> predicate;
 
     JsIntegralSuchThatSpec(final boolean required,
                            final boolean nullable,
-                           final Function<BigInteger, Optional<Error>> predicate
+                           final Function<BigInteger, Optional<JsError>> predicate
                           ) {
         super(required,
               nullable
@@ -53,13 +53,13 @@ class JsIntegralSuchThatSpec extends AbstractPredicateSpec implements JsValuePre
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
-                                                                         INTEGRAL_EXPECTED,
-                                                                         required,
-                                                                         nullable
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
+                                                                           INTEGRAL_EXPECTED,
+                                                                           required,
+                                                                           nullable
                                                                         )
-                                                               .apply(value);
+                                                                 .apply(value);
 
         if (error.isPresent() || value.isNull()) return error;
         return predicate.apply(value.toJsBigInt().value);

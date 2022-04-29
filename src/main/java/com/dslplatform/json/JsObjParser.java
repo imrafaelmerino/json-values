@@ -1,7 +1,7 @@
 package com.dslplatform.json;
 
 import jsonvalues.JsObj;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -16,11 +16,11 @@ final class JsObjParser extends AbstractJsObjParser {
     }
 
     JsObj valueSuchThat(final JsonReader<?> reader,
-                        final Function<JsObj, Optional<Error>> fn
+                        final Function<JsObj, Optional<JsError>> fn
                        ){
         try {
             final JsObj           value  = value(reader);
-            final Optional<Error> result = fn.apply(value);
+            final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return value;
             throw reader.newParseError(result.toString());
         } catch (ParsingException e) {

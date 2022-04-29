@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
-public class JsArrayParser {
+public final class JsArrayParser {
 
     private final JsSpecParser parser;
 

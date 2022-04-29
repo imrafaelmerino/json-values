@@ -11,11 +11,11 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsNumberSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    final Function<JsNumber, Optional<Error>> predicate;
+    final Function<JsNumber, Optional<JsError>> predicate;
 
     JsNumberSuchThatSpec(final boolean required,
                          final boolean nullable,
-                         final Function<JsNumber, Optional<Error>> predicate
+                         final Function<JsNumber, Optional<JsError>> predicate
                         ) {
         super(required,
               nullable
@@ -52,13 +52,13 @@ class JsNumberSuchThatSpec extends AbstractPredicateSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> error = jsonvalues.spec.Functions.testElem(JsValue::isNumber,
-                                                                         NUMBER_EXPECTED,
-                                                                         required,
-                                                                         nullable
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isNumber,
+                                                                           NUMBER_EXPECTED,
+                                                                           required,
+                                                                           nullable
                                                                         )
-                                                               .apply(value);
+                                                                 .apply(value);
 
         if (error.isPresent() || value.isNull()) return error;
         return predicate.apply(value.toJsNumber());

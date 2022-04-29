@@ -35,11 +35,11 @@ class AnySpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
 
         if (value.isNothing() && required)
-            return Optional.of(new Error(value,
-                                         ERROR_CODE.REQUIRED
+            return Optional.of(new JsError(value,
+                                           ERROR_CODE.REQUIRED
             ));
         return Optional.empty();
 

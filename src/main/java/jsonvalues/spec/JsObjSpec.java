@@ -17,7 +17,7 @@ import static jsonvalues.spec.ERROR_CODE.*;
 /**
  Represents a specification of a Json object
  */
-public class JsObjSpec implements JsSpec {
+public final class JsObjSpec implements JsSpec {
 
     final boolean strict;
     /**
@@ -4167,8 +4167,8 @@ public class JsObjSpec implements JsSpec {
         if (parentValue.isNull() && nullable) return errors;
         if (!parentValue.isObj()) {
             errors.add(JsErrorPair.of(parent,
-                                      new Error(parentValue,
-                                                OBJ_EXPECTED
+                                      new JsError(parentValue,
+                                                  OBJ_EXPECTED
                                       )
                                      ));
             return errors;
@@ -4185,8 +4185,8 @@ public class JsObjSpec implements JsSpec {
             if (spec == null) {
                 if (parentObjSpec.strict) {
                     errors.add(JsErrorPair.of(currentPath,
-                                              new Error(value,
-                                                        SPEC_MISSING
+                                              new JsError(value,
+                                                          SPEC_MISSING
                                               )
                                              ));
                 }
@@ -4200,8 +4200,8 @@ public class JsObjSpec implements JsSpec {
                                                                  .map(p -> p._1);
         for (final String requiredField : requiredFields) {
             if (!json.containsKey(requiredField)) errors.add(JsErrorPair.of(parent.key(requiredField),
-                                                                            new Error(JsNothing.NOTHING,
-                                                                                      REQUIRED
+                                                                            new JsError(JsNothing.NOTHING,
+                                                                                        REQUIRED
                                                                             )
                                                                            )
                                                             );

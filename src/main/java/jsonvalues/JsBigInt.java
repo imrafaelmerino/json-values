@@ -9,7 +9,7 @@ import java.util.function.UnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- Represents an immutable json number of type BigInteger.
+ * Represents an immutable json number of type BigInteger.
  */
 public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     public static final int TYPE_ID = 6;
@@ -27,7 +27,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
                         JsBigInt::of
             );
     /**
-     the big integer value.
+     * the big integer value.
      */
     public final BigInteger value;
 
@@ -46,9 +46,9 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     Compares two {@code JsBigInt} objects numerically.
-
-     @see JsBigInt#compareTo(JsBigInt)
+     * Compares two {@code JsBigInt} objects numerically.
+     *
+     * @see JsBigInt#compareTo(JsBigInt)
      */
     @Override
     public int compareTo(final JsBigInt o) {
@@ -56,9 +56,9 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     Returns the hashcode of this json big integer.
-
-     @return the hashcode of this JsBigInt
+     * Returns the hashcode of this json big integer.
+     *
+     * @return the hashcode of this JsBigInt
      */
     @Override
     public int hashCode() {
@@ -66,38 +66,34 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
         if (optInt.isPresent()) return optInt.get();
 
         final Optional<Long> optLong = longValueExact();
-        if (optLong.isPresent())
-            return JsLong.of(optLong.get())
-                         .hashCode();
-
-        return value.hashCode();
+        return optLong.map(aLong -> JsLong.of(aLong)
+                                          .hashCode()).orElseGet(value::hashCode);
 
     }
 
     /**
-     Indicates whether some other object is "equal to" this json big integer. Numbers of different
-     types are equals if the have the same value.
-
-     @param that the reference object with which to compare.
-     @return true if that is a JsNumber with the same value as this
+     * Indicates whether some other object is "equal to" this json big integer. Numbers of different
+     * types are equals if the have the same value.
+     *
+     * @param that the reference object with which to compare.
+     * @return true if that is a JsNumber with the same value as this
      */
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
-        if (that == null) return false;
         if (!(that instanceof JsNumber)) return false;
         final JsNumber number = (JsNumber) that;
         if (number.isBigInt()) return value.equals(number.toJsBigInt().value);
-        if (number.isInt()) return equals(number.toJsInt());
-        if (number.isLong()) return equals(number.toJsLong());
-        if (number.isBigDec()) return equals(number.toJsBigDec());
-        if (number.isDouble()) return equals(number.toJsDouble());
+        if (number.isInt()) return intEquals(number.toJsInt());
+        if (number.isLong()) return longEquals(number.toJsLong());
+        if (number.isBigDec()) return bigDecEquals(number.toJsBigDec());
+        if (number.isDouble()) return doubleEquals(number.toJsDouble());
         return false;
     }
 
     /**
-     @return a string representation of the bigint value.
-     @see BigInteger#toString() BigInteger.toString
+     * @return a string representation of the bigint value.
+     * @see BigInteger#toString() BigInteger.toString
      */
     @Override
     public String toString() {
@@ -105,51 +101,51 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     returns true if this biginteger and the specified integer represent the same number
-
-     @param jsInt the specified JsInt
-     @return true if both JsValue are the same value
+     * returns true if this biginteger and the specified integer represent the same number
+     *
+     * @param jsInt the specified JsInt
+     * @return true if both JsValue are the same value
      */
-    boolean equals(JsInt jsInt) {
+    boolean intEquals(JsInt jsInt) {
         final Optional<Integer> optional = intValueExact();
         return optional.isPresent() && optional.get() == requireNonNull(jsInt).value;
     }
 
     /**
-     returns true if this bigint and the specified long represent the same number
-
-     @param jsLong the specified JsLong
-     @return true if both JsValue are the same value
+     * returns true if this bigint and the specified long represent the same number
+     *
+     * @param jsLong the specified JsLong
+     * @return true if both JsValue are the same value
      */
-    boolean equals(JsLong jsLong) {
-        final Optional<Long> optional = longValueExact();
+    boolean longEquals(JsLong jsLong) {
+        Optional<Long> optional = longValueExact();
         return optional.isPresent() && optional.get() == requireNonNull(jsLong).value;
     }
 
     /**
-     returns true if this bigint and the specified bigdecimal represent the same number
-
-     @param jsBigDec the specified JsBigDec
-     @return true if both JsValue are the same value
+     * returns true if this bigint and the specified bigdecimal represent the same number
+     *
+     * @param jsBigDec the specified JsBigDec
+     * @return true if both JsValue are the same value
      */
-    private boolean equals(JsBigDec jsBigDec) {
-        return requireNonNull(jsBigDec).equals(this);
+    private boolean bigDecEquals(JsBigDec jsBigDec) {
+        return requireNonNull(jsBigDec).bigIntEquals(this);
     }
 
     /**
-     returns true if this bigint and the specified double represent the same number
-
-     @param jsDouble the specified JsDouble
-     @return true if both JsValue are the same value
+     * returns true if this bigint and the specified double represent the same number
+     *
+     * @param jsDouble the specified JsDouble
+     * @return true if both JsValue are the same value
      */
-    private boolean equals(JsDouble jsDouble) {
-        return requireNonNull(jsDouble).equals(this);
+    private boolean doubleEquals(JsDouble jsDouble) {
+        return requireNonNull(jsDouble).bigIntEquals(this);
     }
 
     /**
-     Returns the value of this biginteger; or an empty optional if the value overflows an {@code int}.
-
-     @return this biginteger as an int wrapped in an OptionalInt
+     * Returns the value of this biginteger; or an empty optional if the value overflows an {@code int}.
+     *
+     * @return this biginteger as an int wrapped in an OptionalInt
      */
     Optional<Integer> intValueExact() {
         try {
@@ -161,9 +157,9 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     Returns the value of this biginteger; or an empty optional if the value overflows an {@code long}.
-
-     @return this biginteger as an long wrapped in an OptionalLong
+     * Returns the value of this biginteger; or an empty optional if the value overflows an {@code long}.
+     *
+     * @return this biginteger as an long wrapped in an OptionalLong
      */
     Optional<Long> longValueExact() {
         try {
@@ -175,30 +171,30 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     Maps this json bigint into another one.
-
-     @param fn the mapping function
-     @return a new JsBigInt
+     * Maps this json bigint into another one.
+     *
+     * @param fn the mapping function
+     * @return a new JsBigInt
      */
     public JsBigInt map(UnaryOperator<BigInteger> fn) {
         return JsBigInt.of(requireNonNull(fn).apply(value));
     }
 
     /**
-     Static factory method to create a JsBigInt from BigInteger objects.
-
-     @param n the big integer
-     @return a new JsBigInt
+     * Static factory method to create a JsBigInt from BigInteger objects.
+     *
+     * @param n the big integer
+     * @return a new JsBigInt
      */
     public static JsBigInt of(BigInteger n) {
         return new JsBigInt(requireNonNull(n));
     }
 
     /**
-     Tests the value of this json bigint on a predicate.
-
-     @param predicate the predicate
-     @return true if this big integer satisfies the predicate
+     * Tests the value of this json bigint on a predicate.
+     *
+     * @param predicate the predicate
+     * @return true if this big integer satisfies the predicate
      */
     public boolean test(Predicate<BigInteger> predicate) {
         return requireNonNull(predicate).test(value);

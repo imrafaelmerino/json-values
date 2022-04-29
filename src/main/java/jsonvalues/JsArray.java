@@ -18,7 +18,6 @@ import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
@@ -36,7 +35,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
 /**
  * Represents a json array, which is an ordered list of elements.
  */
-public class JsArray implements Json<JsArray>, Iterable<JsValue> {
+public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public static final int TYPE_ID = 4;
     /**
      * lenses defined for a Json array
@@ -447,7 +446,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                     elem = NULL;
                     break;
                 default:
-                    throw InternalError.tokenNotExpected(token.name());
+                    throw JsValuesInternalError.tokenNotExpected(token.name());
             }
             root = root.append(elem);
         }
@@ -501,7 +500,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                               b
                 );
             default:
-                throw InternalError.arrayOptionNotImplemented(ARRAY_AS.name());
+                throw JsValuesInternalError.arrayOptionNotImplemented(ARRAY_AS.name());
         }
 
     }
@@ -1818,7 +1817,7 @@ public class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                        b
                 );
             default:
-                throw InternalError.arrayOptionNotImplemented(ARRAY_AS.name());
+                throw JsValuesInternalError.arrayOptionNotImplemented(ARRAY_AS.name());
         }
     }
 

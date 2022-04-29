@@ -14,10 +14,10 @@ import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
 
 /**
- Represents a specification of every element of a Json array. It allows to define
- tuples and the schema of every of its elements.
+ * Represents a specification of every element of a Json array. It allows to define
+ * tuples and the schema of every of its elements.
  */
-public class JsTupleSpec implements JsArraySpec {
+public final class JsTupleSpec implements JsArraySpec {
 
     private final boolean required;
     private final boolean nullable;
@@ -28,12 +28,13 @@ public class JsTupleSpec implements JsArraySpec {
         this(specs,
              true,
              false
-            );
+        );
     }
+
     private JsTupleSpec(final Vector<JsSpec> specs,
                         boolean required,
                         boolean nullable
-                       ) {
+    ) {
         this.specs = specs;
         this.required = required;
         this.nullable = nullable;
@@ -41,7 +42,7 @@ public class JsTupleSpec implements JsArraySpec {
 
     static JsTupleSpec of(JsSpec spec,
                           JsSpec... others
-                         ) {
+    ) {
         Vector<JsSpec> specs = Vector.empty();
         specs = specs.append(spec);
         for (JsSpec s : others) specs = specs.append(s);
@@ -78,19 +79,19 @@ public class JsTupleSpec implements JsArraySpec {
         }
         return JsSpecParsers.INSTANCE.ofArraySpec(parsers,
                                                   nullable
-                                                 );
+        );
     }
 
     @Override
     public Set<JsErrorPair> test(final JsPath parentPath,
                                  final JsValue value
-                                ) {
+    ) {
         return test(JsPath.empty()
                           .append(JsPath.fromIndex(-1)),
                     this,
                     new HashSet<>(),
                     value
-                   );
+        );
     }
 
     @Override
@@ -103,33 +104,32 @@ public class JsTupleSpec implements JsArraySpec {
                                   final JsTupleSpec tupleSpec,
                                   final Set<JsErrorPair> errors,
                                   final JsValue value
-                                 ) {
+    ) {
         if (value.isNull() && nullable) return errors;
 
         if (!value.isArray()) {
             errors.add(JsErrorPair.of(parent,
-                                      new Error(value,
-                                                ARRAY_EXPECTED)));
+                                      new JsError(value,
+                                                  ARRAY_EXPECTED)));
             return errors;
         }
-        JsArray              array     = value.toJsArray();
-        final Vector<JsSpec> tupleSpecs     = tupleSpec.specs;
-        final int            specsSize = tupleSpec.specs.size();
+        JsArray array = value.toJsArray();
+        int specsSize = tupleSpec.specs.size();
         if (specsSize > 0 && array.size() > specsSize && tupleSpec.strict) {
             errors.add(JsErrorPair.of(parent.tail()
                                             .index(specsSize),
-                                      new Error(array.get(specsSize),
-                                                SPEC_MISSING
+                                      new JsError(array.get(specsSize),
+                                                  SPEC_MISSING
                                       )
-                                     )
-                      );
+                       )
+            );
             return errors;
         }
         JsPath currentPath = parent;
 
         for (int i = 0; i < specsSize; i++) {
             currentPath = currentPath.inc();
-            final JsSpec spec = tupleSpecs.get(i);
+            final JsSpec spec = tupleSpec.specs.get(i);
             errors.addAll(spec.test(currentPath,
                                     array.get(i)));
         }

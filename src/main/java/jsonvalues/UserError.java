@@ -216,14 +216,6 @@ public final class UserError extends RuntimeException {
                                           ));
     }
 
-    static UserError trampolineNotCompleted() {
-        return new UserError(String.format(GENERAL_MESSAGE,
-                                           "trampoline not completed",
-                                           "Before calling the method get() on a trampoline, make sure a Trampoline.done() status is returned"
-                                          ));
-    }
-
-
     public static UserError pathHeadIsNotAnIndex(JsPath path) {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            "Path head is not an index: " + path,

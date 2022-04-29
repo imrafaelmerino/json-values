@@ -23,6 +23,7 @@ public interface JsValue {
     int id();
 
     /**
+     Returns this JsValue as a JsBool
      @return this JsValue as a JsBool
      @throws UserError if this JsValue is not a JsBool
      */
@@ -38,6 +39,8 @@ public interface JsValue {
     JsPrimitive toJsPrimitive();
 
     /**
+     Returns true if this JsValue is a JsBinary or a JsString which value is an array of
+
      @return true if this JsValue is a JsBinary or a JsString which value is an array of
      bytes encoded in base64
      */
@@ -46,8 +49,10 @@ public interface JsValue {
     }
 
     /**
-     @return true if this JsValue is a JsInstant or a JsString which value is a
-     date formatted in ISO-8601
+     * Returns true if this JsValue is a JsInstant or a JsString which value is a
+     * date formatted in ISO-8601
+     * @return true if this JsValue is a JsInstant or a JsString which value is a
+     * date formatted in ISO-8601
      */
     default boolean isInstant() {
         return false;
@@ -65,6 +70,7 @@ public interface JsValue {
     }
 
     /**
+     * Returns true if this JsValue is a JsBool
      @return true if this JsValue is a JsBool
      */
     default boolean isBool() {
@@ -82,14 +88,16 @@ public interface JsValue {
     }
 
     /**
-     @return true if this JsValue is a JsBool and it's true
+     * Returns true if this JsValue is a JsBool, and it's true
+     @return true if this JsValue is a JsBool, and it's true
      */
     default boolean isTrue() {
         return false;
     }
 
     /**
-     @return true if this JsValue is a JsBool and it's false
+     * Returns true if this JsValue is a JsBool, and it's false
+     @return true if this JsValue is a JsBool, and it's false
      */
     default boolean isFalse() {
         return false;
@@ -106,6 +114,7 @@ public interface JsValue {
     }
 
     /**
+     * Returns true if this JsValue is a JsInt
      @return true if this JsValue is a JsInt
      */
     default boolean isInt() {
@@ -113,6 +122,7 @@ public interface JsValue {
     }
 
     /**
+     * Returns this JsValue as a JsInt
      @return this JsValue as a JsInt
      @throws UserError if this JsValue is not a JsInt
      */
@@ -125,7 +135,8 @@ public interface JsValue {
     }
 
     /**
-     @return this JsValue as a JsInt
+     *   Returns this JsValue as a JsInstant
+     @return this JsValue as a JsInstant
      @throws UserError if this JsValue is not a JsInt
      */
     default JsInstant toJsInstant() {
@@ -140,6 +151,7 @@ public interface JsValue {
 
 
     /**
+     * Returns  this JsValue as a JsBinary
      @return this JsValue as a JsBinary
      @throws UserError if this JsValue is not a JsBinary
      */
@@ -164,6 +176,8 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsDouble
+
      @return true if this JsValue is a JsDouble
      */
     default boolean isDouble() {
@@ -171,6 +185,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsDouble
      @return this JsValue as a JsDouble
      @throws UserError if this JsValue is not a JsDouble
      */
@@ -193,6 +208,8 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsBigDec
+
      @return true if this JsValue is a JsBigDec
      */
     default boolean isBigDec() {
@@ -200,6 +217,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsBigDec
      @return this JsValue as a JsBigDec
      @throws UserError if this JsValue is not a JsBigDec or a JsDouble
      */
@@ -223,6 +241,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsLong
      @return true if this JsValue is a JsLong
      */
     default boolean isLong() {
@@ -230,6 +249,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsLong
      @return this JsValue as a JsLong
      @throws UserError if this JsValue is not a JsLong or a JsInt
      */
@@ -243,6 +263,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a not a Json (neither JsObj nor JsArray)
      @return true if this JsValue is a not a Json (neither JsObj nor JsArray)
      */
     default boolean isPrimitive() {
@@ -250,6 +271,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a Json (JsObj or JsArray)
      @return true if this JsValue is a Json (JsObj or JsArray)
      */
     default boolean isJson() {
@@ -257,6 +279,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsObj
      @return true if this JsValue is a JsObj
      */
     default boolean isObj() {
@@ -264,6 +287,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsArray
      @return true if this JsValue is a JsArray
      */
 
@@ -282,6 +306,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a Json
      @return this JsValue as a Json
      @throws UserError if this JsValue is not a JsObj or a JsArray
      */
@@ -296,6 +321,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsObj
      @return this JsValue as a JsObj
      @throws UserError if this JsValue is not a JsObj
      */
@@ -308,6 +334,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsArray
      @return this JsValue as a JsArray
      @throws UserError if this JsValue is not a JsArray
      */
@@ -340,6 +367,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsStr
      @return this JsValue as a JsStr
      @throws UserError if this JsValue is not a JsStr
      */
@@ -362,6 +390,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsBigInt
      @return true if this JsValue is a JsBigInt
      */
     default boolean isBigInt() {
@@ -369,6 +398,7 @@ public interface JsValue {
     }
 
     /**
+     Retruns this JsValue as a JsBigInt
      @return this JsValue as a JsBigInt
      @throws UserError if this JsValue is not a JsBigInt or JsLong or JsInt
      */
@@ -394,6 +424,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this JsValue is a JsStr
      @return true if this JsValue is a JsStr
      */
     default boolean isStr() {
@@ -401,6 +432,7 @@ public interface JsValue {
     }
 
     /**
+     Returns this JsValue as a JsStr
      @return this JsValue as a JsStr
      @throws UserError if this JsValue is not a JsStr
      */
@@ -413,6 +445,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this element is an integral number (JsInt or JsLong or JsBigInt)
      @return true if this element is an integral number (JsInt or JsLong or JsBigInt)
      */
     default boolean isIntegral() {
@@ -420,6 +453,7 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this element is an decimal number (JsDouble or JsBigDec)
      @return true if this element is an decimal number (JsDouble or JsBigDec)
      */
     default boolean isDecimal() {
@@ -427,6 +461,7 @@ public interface JsValue {
     }
 
     /**
+     Return true if this element is not null
      @return true if this element is not null
      */
     default boolean isNotNull() {
@@ -434,6 +469,8 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this element is null
+
      @return true if this element is null
      */
     default boolean isNull() {
@@ -441,6 +478,8 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this element is not JsNothing
+
      @return true if this element is not JsNothing
      */
     default boolean isNotNothing() {
@@ -448,6 +487,8 @@ public interface JsValue {
     }
 
     /**
+     Returns true if this element is JsNothing
+
      @return true if this element is JsNothing
      */
     default boolean isNothing() {
@@ -455,13 +496,17 @@ public interface JsValue {
     }
 
     /**
-     @return true if this element is  not a number
+     Returns true if this element is not a number
+
+     @return true if this element is not a number
      */
     default boolean isNotNumber() {
         return !isNumber();
     }
 
     /**
+     Returns true if this element is a number
+
      @return true if this element is a number
      */
     default boolean isNumber() {

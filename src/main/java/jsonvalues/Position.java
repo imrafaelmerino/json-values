@@ -12,12 +12,6 @@ import java.util.function.Predicate;
  */
 public interface Position extends Comparable<Position> {
     /**
-     {@inheritDoc}
-     */
-    @Override
-    int compareTo(final Position o);
-
-    /**
      Returns true if this position is a key and its name tested on a given predicate is true.
 
      @param predicate the give predicate

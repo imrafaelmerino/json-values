@@ -6,7 +6,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- represents the index of a value in an json array.
+ represents the index of a value in a json array.
  */
 public final class Index implements Position {
 
@@ -64,7 +64,7 @@ public final class Index implements Position {
     /**
      throws an UserError exception.
 
-     @throws UserError an Index can't be casted into a Key
+     @throws UserError an Index can't be cast into a Key
      */
     @Override
     public Key asKey() {

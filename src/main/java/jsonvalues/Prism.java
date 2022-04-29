@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 
  @param <S> the source of a prism
  @param <T> the target of a prism */
-public class Prism<S, T> {
+public final class Prism<S, T> {
     /**
      get the target of a Prism or nothing if there is no target
      */

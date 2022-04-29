@@ -6,9 +6,11 @@
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
-    <version>9.3.0</version>
+    <version>10.0.0</version>
     <name>json-values</name>
-    <description>json-values is a functional Java library to work with immutable jsons using persistent data structures.</description>
+    <description>json-values is a functional Java library to work with immutable Json using persistent data
+        structures.
+    </description>
     <url>https://github.com/imrafaelmerino/json-values</url>
     <licenses>
         <license>
@@ -28,11 +30,11 @@
         <url>https://github.com/imrafaelmerino/json-values.git</url>
     </scm>
     <properties>
-        <JACKSON-VERSION>2.12.0</JACKSON-VERSION>
+        <JACKSON-VERSION>2.13.2</JACKSON-VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
-        <COMPILER_SOURCE_VERSION>11</COMPILER_SOURCE_VERSION>
-        <COMPILER_TARGET_VERSION>11</COMPILER_TARGET_VERSION>
+        <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
+        <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
         <sonar.projectKey>json-values</sonar.projectKey>
         <JACOCO-MAVEN-PLUGIN.VERSION>0.8.4</JACOCO-MAVEN-PLUGIN.VERSION>
         <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
@@ -40,18 +42,17 @@
         <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.8</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
         <MAVEN-JAVADOC-PLUGIN.VERSION>3.2.0</MAVEN-JAVADOC-PLUGIN.VERSION>
         <MAVEN-SUREFIRE-PLUGIN.VERSION>2.22.0</MAVEN-SUREFIRE-PLUGIN.VERSION>
-        <DSL-JSON.VERSION>1.9.8</DSL-JSON.VERSION>
-        <VAVR.VERSION>0.10.3</VAVR.VERSION>
-        <JACKSON-DATAFORMAT-YAML.VERSION>2.9.5</JACKSON-DATAFORMAT-YAML.VERSION>
-        <DSL-JSON-JAVA8.VERSION>1.9.3</DSL-JSON-JAVA8.VERSION>
+        <DSL-JSON.VERSION>1.9.9</DSL-JSON.VERSION>
+        <VAVR.VERSION>0.10.4</VAVR.VERSION>
         <ERROR-PRONE.VERSION>2.13.1</ERROR-PRONE.VERSION>
+        <JUNIT-JUPITER-API.VERSION>5.8.2</JUNIT-JUPITER-API.VERSION>
     </properties>
     <dependencies>
-      <dependency>
-        <groupId>io.vavr</groupId>
-        <artifactId>vavr</artifactId>
-        <version>${VAVR.VERSION}</version>
-      </dependency>
+        <dependency>
+            <groupId>io.vavr</groupId>
+            <artifactId>vavr</artifactId>
+            <version>${VAVR.VERSION}</version>
+        </dependency>
 
         <dependency>
             <groupId>com.dslplatform</groupId>
@@ -69,13 +70,13 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter-api</artifactId>
-            <version>5.3.2</version>
+            <version>${JUNIT-JUPITER-API.VERSION}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
-            <version>${JACKSON-DATAFORMAT-YAML.VERSION}</version>
+            <version>${JACKSON-VERSION}</version>
         </dependency>
     </dependencies>
     <build>
@@ -86,26 +87,12 @@
                 <version>${PLUGIN_COMPILER_VERSION}</version>
                 <configuration>
                     <encoding>UTF-8</encoding>
-                    <source>11</source>
-                    <target>11</target>
+                    <source>${COMPILER_SOURCE_VERSION}</source>
+                    <target>${COMPILER_TARGET_VERSION}</target>
                     <showWarnings>true</showWarnings>
                     <compilerArgs>
-                        <arg>-XDcompilePolicy=simple</arg>
-                        <arg>-Xplugin:ErrorProne</arg>
                         <arg>-Xlint:all</arg>
                     </compilerArgs>
-                    <annotationProcessorPaths>
-                        <path>
-                            <groupId>com.google.errorprone</groupId>
-                            <artifactId>error_prone_core</artifactId>
-                            <version>${ERROR-PRONE.VERSION}</version>
-                        </path>
-                        <!-- Other annotation processors go here.
-
-                        If 'annotationProcessorPaths' is set, processors will no longer be
-                        discovered on the regular -classpath; see also 'Using Error Prone
-                        together with other annotation processors' below. -->
-                    </annotationProcessorPaths>
                 </configuration>
 
             </plugin>

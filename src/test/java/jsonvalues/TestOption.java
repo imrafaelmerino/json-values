@@ -44,14 +44,4 @@ public class TestOption {
     }
 
 
-
-
-    Option<JsObj,JsObj> address = JsObj.optional.obj("address");;
-
-    Option<JsObj,JsArray> coordinates = JsObj.optional.array("coordinates");
-
-    Option<JsArray,Double> latitude = JsArray.optional.doubleNum(0);
-
-    Option<JsObj, Double> personLatitude = address.compose(coordinates)
-                                                  .compose(latitude);
 }

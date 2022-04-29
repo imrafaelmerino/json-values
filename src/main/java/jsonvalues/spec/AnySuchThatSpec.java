@@ -10,10 +10,10 @@ import java.util.function.Function;
 class AnySuchThatSpec implements JsValuePredicate {
 
     private final boolean required;
-    private final Function<JsValue, Optional<Error>> predicate;
+    private final Function<JsValue, Optional<JsError>> predicate;
 
     AnySuchThatSpec(final boolean required,
-                    final Function<JsValue, Optional<Error>> predicate
+                    final Function<JsValue, Optional<JsError>> predicate
                    ) {
         this.required = required;
         this.predicate = predicate;
@@ -42,10 +42,10 @@ class AnySuchThatSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
 
-        if (value.isNothing() && required) return Optional.of(new Error(value,
-                                                                        ERROR_CODE.REQUIRED));
+        if (value.isNothing() && required) return Optional.of(new JsError(value,
+                                                                          ERROR_CODE.REQUIRED));
         return predicate.apply(value);
 
     }

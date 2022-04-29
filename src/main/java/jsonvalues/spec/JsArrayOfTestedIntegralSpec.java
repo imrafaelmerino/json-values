@@ -11,9 +11,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    private final Function<BigInteger, Optional<Error>> predicate;
+    private final Function<BigInteger, Optional<JsError>> predicate;
 
-    JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<Error>> predicate,
+    JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<JsError>> predicate,
                                 final boolean required,
                                 final boolean nullable
                                ) {
@@ -52,12 +52,12 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isIntegral()) return predicate.apply(v.toJsBigInt().value);
-                                                    else return Optional.of(new Error(v,
-                                                                                      INTEGRAL_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        INTEGRAL_EXPECTED
                                                                             )
                                                                            );
                                                 },

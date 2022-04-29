@@ -10,9 +10,9 @@ import java.util.function.IntFunction;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    final IntFunction<Optional<Error>> predicate;
+    final IntFunction<Optional<JsError>> predicate;
 
-    JsArrayOfTestedIntSpec(final IntFunction<Optional<Error>> predicate,
+    JsArrayOfTestedIntSpec(final IntFunction<Optional<JsError>> predicate,
                            final boolean required,
                            final boolean nullable
                           ) {
@@ -51,13 +51,13 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
 
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isInt()) return predicate.apply(v.toJsInt().value);
-                                                    else return Optional.of(new Error(v,
-                                                                                      INT_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        INT_EXPECTED
                                                                             )
                                                                            );
                                                 },

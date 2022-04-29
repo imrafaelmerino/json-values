@@ -12,7 +12,7 @@ public class TestJson {
     @Test
     public void testSet(){
 
-        Json json = JsObj.empty();
+        Json<?> json = JsObj.empty();
 
         JsPath path = JsPath.path("/a/b/c");
 
@@ -21,7 +21,7 @@ public class TestJson {
 
         JsPath first = JsPath.path("/a/b/1");
         JsPath second = JsPath.path("/a/b/0");
-        Json json1 = json.set(first,
+        Json<?> json1 = json.set(first,
                           JsStr.of("b"));
         Assertions.assertEquals("b", json1.getStr(first));
         Assertions.assertEquals(JsNull.NULL, json1.get(second));
@@ -95,10 +95,12 @@ public class TestJson {
         Assertions.assertEquals(JsObj.EMPTY,
                                 a.getObj(JsPath.path("/a"),
                                          () -> JsObj.EMPTY));
-        Assertions.assertTrue(BigDecimal.TEN == a.getBigDec(JsPath.path("/a"),
-                                                            () -> BigDecimal.TEN));
-        Assertions.assertTrue(BigInteger.ONE == a.getBigInt(JsPath.path("/a"),
-                                                            () -> BigInteger.TEN));
+        Assertions.assertSame(BigDecimal.TEN,
+                              a.getBigDec(JsPath.path("/a"),
+                                          () -> BigDecimal.TEN));
+        Assertions.assertSame(BigInteger.ONE,
+                              a.getBigInt(JsPath.path("/a"),
+                                          () -> BigInteger.TEN));
 
         Assertions.assertEquals("hi",
                                 a.getStr(JsPath.path("/b"))

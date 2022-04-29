@@ -43,12 +43,12 @@ class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePred
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isIntegral()) return Optional.empty();
-                                                    else return Optional.of(new Error(v,
-                                                                                      INTEGRAL_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        INTEGRAL_EXPECTED
                                                     ));
                                                 },
                                                 required,

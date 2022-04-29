@@ -10,9 +10,9 @@ import java.util.function.LongFunction;
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    private final LongFunction<Optional<Error>> predicate;
+    private final LongFunction<Optional<JsError>> predicate;
 
-    JsArrayOfTestedLongSpec(final LongFunction<Optional<Error>> predicate,
+    JsArrayOfTestedLongSpec(final LongFunction<Optional<JsError>> predicate,
                             final boolean required,
                             final boolean nullable
                            ) {
@@ -51,13 +51,13 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isLong() || v.isInt())
                                                         return predicate.apply(v.toJsLong().value);
-                                                    else return Optional.of(new Error(v,
-                                                                                      LONG_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        LONG_EXPECTED
                                                                             )
                                                                            );
                                                 },

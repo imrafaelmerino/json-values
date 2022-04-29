@@ -123,7 +123,7 @@ public class TestExample {
         Assertions.assertEquals(nameLens.get.apply(newPerson),
                                 "RAFAEL");
         Assertions.assertEquals(surnameOpt.get.apply(newPerson),
-                                Optional.ofNullable("MERINO GARCÍA")
+                                Optional.of("MERINO GARCÍA")
                                );
 
 
@@ -147,41 +147,6 @@ public class TestExample {
                                );
     }
 
-//    @Test
-//    public void test_gen() {
-//        JsObjGen gen = JsObjGen.of("name",
-//                                   JsGens.alphabetic,
-//                                   "surname",
-//                                   JsGens.alphabetic.optional(),
-//                                   "languages",
-//                                   JsGens.choose(1,
-//                                                 10)
-//                                         .flatMap(n -> JsGens.array(JsGens.alphabetic,
-//                                                                    n.value
-//                                                                   )),
-//                                   "age",
-//                                   JsGens.choose(16,
-//                                                 100
-//                                                )
-//                                         .optional(),
-//                                   "address",
-//                                   JsObjGen.of("street",
-//                                               JsGens.alphabetic,
-//                                               "number",
-//                                               JsGens.oneOf(JsGens.choose(0,
-//                                                                          1000
-//                                                                         ),
-//                                                            JsGens.alphanumeric
-//                                                           ),
-//                                               "city",
-//                                               JsGens.alphabetic.nullable(),
-//                                               "coordinates",
-//                                               JsGens.tuple(JsGens.decimal,
-//                                                            JsGens.decimal
-//                                                           )
-//                                              )
-//                                  );
-//    }
 
 
 }

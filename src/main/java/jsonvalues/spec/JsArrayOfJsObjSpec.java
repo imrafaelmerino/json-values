@@ -72,8 +72,8 @@ public class JsArrayOfJsObjSpec implements JsSpec, JsArraySpec {
         if (value.isNull() && nullable) return errors;
         if (!value.isArray()) {
             errors.add(JsErrorPair.of(parentPath,
-                                      new Error(value,
-                                                ARRAY_EXPECTED)));
+                                      new JsError(value,
+                                                  ARRAY_EXPECTED)));
             return errors;
         }
         return apply(parentPath.index(-1),

@@ -1,7 +1,7 @@
 package com.dslplatform.json;
 
 import jsonvalues.*;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -10,11 +10,11 @@ import java.util.function.Function;
 final class JsNumberParser extends AbstractParser {
 
     JsNumber valueSuchThat(final JsonReader<?> reader,
-                           final Function<JsNumber, Optional<Error>> fn
+                           final Function<JsNumber, Optional<JsError>> fn
                           ){
         try {
             final JsNumber        value  = value(reader);
-            final Optional<Error> result = fn.apply(value);
+            final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return value;
             throw reader.newParseError(result.toString());
         } catch (ParsingException e) {
@@ -44,7 +44,7 @@ final class JsNumberParser extends AbstractParser {
         }
         else if (number instanceof BigDecimal)
             return JsBigDec.of(((BigDecimal) number));
-        throw new JsParserException("internal error: not condisered " + number.getClass());
+        throw new JsParserException("internal error: not considered " + number.getClass());
     }
 
 

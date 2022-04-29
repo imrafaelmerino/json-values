@@ -10,11 +10,11 @@ import java.util.function.LongFunction;
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 class JsLongSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    final LongFunction<Optional<Error>> predicate;
+    final LongFunction<Optional<JsError>> predicate;
 
     JsLongSuchThatSpec(final boolean required,
                        final boolean nullable,
-                       final LongFunction<Optional<Error>> predicate
+                       final LongFunction<Optional<JsError>> predicate
                       ) {
         super(required,
               nullable
@@ -51,13 +51,13 @@ class JsLongSuchThatSpec extends AbstractPredicateSpec implements JsValuePredica
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> error = jsonvalues.spec.Functions.testElem(JsValue::isLong,
-                                                                         LONG_EXPECTED,
-                                                                         required,
-                                                                         nullable
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isLong,
+                                                                           LONG_EXPECTED,
+                                                                           required,
+                                                                           nullable
                                                                         )
-                                                               .apply(value);
+                                                                 .apply(value);
 
         if (error.isPresent() || value.isNull()) return error;
         return predicate.apply(value.toJsLong().value);

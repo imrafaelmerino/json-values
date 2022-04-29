@@ -8,9 +8,9 @@ import java.util.Optional;
 import java.util.function.Function;
 
 class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    private final Function<JsValue, Optional<Error>> predicate;
+    private final Function<JsValue, Optional<JsError>> predicate;
 
-    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<Error>> predicate,
+    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<JsError>> predicate,
                              final boolean required,
                              final boolean nullable
                             ) {
@@ -49,7 +49,7 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(predicate,
                                                 required,
                                                 nullable

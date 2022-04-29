@@ -43,11 +43,11 @@ class JsArrayOfDecimalSpec extends AbstractPredicateSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> {
                                                     if (v.isDecimal()) return Optional.empty();
-                                                    else return Optional.of(new Error(v,
-                                                                                      DECIMAL_EXPECTED));
+                                                    else return Optional.of(new JsError(v,
+                                                                                        DECIMAL_EXPECTED));
                                                 },
                                                 required,
                                                 nullable

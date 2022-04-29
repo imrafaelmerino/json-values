@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -130,7 +131,7 @@ public class TestJsParser {
         JsObj obj = JsObj.of("a",
                              JsStr.of("hola"),
                              "b",
-                             JsBinary.of("foo".getBytes())
+                             JsBinary.of("foo".getBytes(StandardCharsets.UTF_8))
                             );
         JsObj parse = parser.parse(obj.toString());
 

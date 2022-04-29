@@ -42,11 +42,11 @@ class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredic
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> {
                                                     if (v.isNumber()) return Optional.empty();
-                                                    else return Optional.of(new Error(v,
-                                                                                      NUMBER_EXPECTED));
+                                                    else return Optional.of(new JsError(v,
+                                                                                        NUMBER_EXPECTED));
                                                 },
                                                 required,
                                                 nullable

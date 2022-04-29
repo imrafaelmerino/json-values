@@ -15,13 +15,11 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
@@ -36,7 +34,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * provided, an immutable which uses the persistent Scala HashMap, and a mutable which uses the conventional
  * Java HashMap.
  */
-public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
+public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public static final JsObj EMPTY = new JsObj(LinkedHashMap.empty());
     /**
      * lenses defined for a Json object
@@ -1131,8 +1129,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                     elem = new JsArray(JsArray.parse(parser));
                     break;
                 default:
-                    throw InternalError.tokenNotExpected(parser.currentToken()
-                                                               .name());
+                    throw JsValuesInternalError.tokenNotExpected(parser.currentToken()
+                                                                       .name());
             }
             map = map.put(key,
                           elem
@@ -1946,10 +1944,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         if (!(that instanceof JsObj)) return false;
         if (this == that) return true;
         final JsObj thatMap = (JsObj) that;
-        final boolean thisEmpty = isEmpty();
-        final boolean thatEmpty = thatMap.isEmpty();
-        if (thisEmpty && thatEmpty) return true;
-        if (thisEmpty != thatEmpty) return false;
+        if (isEmpty()) return thatMap.isEmpty();
 
         return keySet().stream()
                        .allMatch(f -> thatMap.map.get(f)
@@ -2054,23 +2049,21 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         // curly braces makes IntelliJ to format the code in a more legible way
     BiPredicate<String, JsPath> isReplaceWithEmptyJson(final Map<String, JsValue> pmap) {
         return (head, tail) ->
-        {
-            return (!pmap.containsKey(head) || !pmap.get(head)
-                                                    .filter(JsValue::isPrimitive)
-                                                    .isEmpty())
-                    ||
-                    (
-                            tail.head()
-                                .isKey() && !pmap.get(head)
-                                                 .filter(JsValue::isArray)
-                                                 .isEmpty()
-                    )
-                    ||
-                    (tail.head()
-                         .isIndex() && !pmap.get(head)
-                                            .filter(JsValue::isObj)
-                                            .isEmpty());
-        };
+                (!pmap.containsKey(head) || !pmap.get(head)
+                                                 .filter(JsValue::isPrimitive)
+                                                 .isEmpty())
+                        ||
+                        (
+                                tail.head()
+                                    .isKey() && !pmap.get(head)
+                                                     .filter(JsValue::isArray)
+                                                     .isEmpty()
+                        )
+                        ||
+                        (tail.head()
+                             .isIndex() && !pmap.get(head)
+                                                .filter(JsValue::isObj)
+                                                .isEmpty());
     }
 
     @Override

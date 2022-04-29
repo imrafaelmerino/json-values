@@ -42,11 +42,11 @@ class JsArrayOfLongSpec extends AbstractPredicateSpec implements JsValuePredicat
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> {
                                                     if (v.isInt() || v.isLong()) return Optional.empty();
-                                                    else return Optional.of(new Error(v,
-                                                                                      LONG_EXPECTED));
+                                                    else return Optional.of(new JsError(v,
+                                                                                        LONG_EXPECTED));
                                                 },
                                                 required,
                                                 nullable

@@ -3,7 +3,7 @@ package com.dslplatform.json;
 import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -19,7 +19,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final LongFunction<Optional<Error>> fn
+                                    final LongFunction<Optional<JsError>> fn
                                    ){
         try {
             return reader.wasNull() ? JsNull.NULL : arrayEachSuchThat(reader,
@@ -33,7 +33,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
 
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final LongFunction<Optional<Error>> fn
+                              final LongFunction<Optional<JsError>> fn
                              ){
         try {
             if (ifIsEmptyArray(reader)) return EMPTY;

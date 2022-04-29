@@ -4,7 +4,7 @@ import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -21,7 +21,7 @@ final class JsArrayOfObjParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final Function<JsObj, Optional<Error>> fn
+                                    final Function<JsObj, Optional<JsError>> fn
                                    ){
         try {
             return reader.wasNull() ? JsNull.NULL : arrayEachSuchThat(reader,
@@ -35,7 +35,7 @@ final class JsArrayOfObjParser extends JsArrayParser {
 
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final Function<JsObj, Optional<Error>> fn
+                              final Function<JsObj, Optional<JsError>> fn
                              ){
         try {
             if (ifIsEmptyArray(reader)) return EMPTY;

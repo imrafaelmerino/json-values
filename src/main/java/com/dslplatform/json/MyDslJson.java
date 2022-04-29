@@ -127,11 +127,11 @@ public final class MyDslJson<A> extends DslJson<A> {
     }
 
     public void serialize(final Json<?> json,
-                          final OutputStream ouputstream
+                          final OutputStream outputstream
                          ) {
         try {
             super.serialize(json,
-                            requireNonNull(ouputstream)
+                            requireNonNull(outputstream)
                            );
         } catch (IOException e) {
             throw new SerializerException(e);

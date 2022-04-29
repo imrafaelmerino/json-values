@@ -1,7 +1,7 @@
 package com.dslplatform.json;
 
 import jsonvalues.JsStr;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -20,11 +20,11 @@ final class JsStrParser extends AbstractParser {
 
 
     JsStr valueSuchThat(final JsonReader<?> reader,
-                        final Function<String, Optional<Error>> fn
+                        final Function<String, Optional<JsError>> fn
                        ){
         try {
             final String          value  = StringConverter.deserialize(reader);
-            final Optional<Error> result = fn.apply(value);
+            final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsStr.of(value);
             throw reader.newParseError(result.toString());
         } catch (IOException e) {

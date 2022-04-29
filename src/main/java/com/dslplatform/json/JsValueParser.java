@@ -3,7 +3,7 @@ package com.dslplatform.json;
 import jsonvalues.JsBool;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -27,12 +27,12 @@ final class JsValueParser extends AbstractParser {
     }
 
     JsValue valueSuchThat(final JsonReader<?> reader,
-                          final Function<JsValue, Optional<Error>> fn
+                          final Function<JsValue, Optional<JsError>> fn
 
                          ){
         try {
             final JsValue         value  = value(reader);
-            final Optional<Error> result = fn.apply(value);
+            final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return value;
             throw reader.newParseError(result.toString());
         } catch (ParsingException e) {

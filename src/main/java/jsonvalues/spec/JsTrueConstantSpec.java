@@ -43,7 +43,7 @@ class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredica
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isTrue,
                                   TRUE_EXPECTED,
                                   required,

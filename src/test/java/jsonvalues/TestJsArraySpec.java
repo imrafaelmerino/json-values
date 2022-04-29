@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
-import static jsonvalues.Functions.assertErrorIs;
+import static jsonvalues.Fun.assertErrorIs;
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
 import static jsonvalues.spec.JsSpecs.*;
 

@@ -1,7 +1,7 @@
 package com.dslplatform.json;
 
 import jsonvalues.JsInt;
-import jsonvalues.spec.Error;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -18,11 +18,11 @@ final class JsIntParser extends AbstractParser {
     }
 
     JsInt valueSuchThat(final JsonReader<?> reader,
-                        final IntFunction<Optional<Error>> fn
+                        final IntFunction<Optional<JsError>> fn
                        ){
         try {
             final int             value  = MyNumberConverter.deserializeInt(reader);
-            final Optional<Error> result = fn.apply(value);
+            final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsInt.of(value);
             throw reader.newParseError(result.toString());
         } catch (IOException e) {

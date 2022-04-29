@@ -68,7 +68,7 @@ public final class Key implements Position {
     /**
      throws an UserError exception.
 
-     @throws UserError a Key can't be casted into an Index
+     @throws UserError a Key can't be cast into an Index
      */
     @Override
     public Index asIndex() {

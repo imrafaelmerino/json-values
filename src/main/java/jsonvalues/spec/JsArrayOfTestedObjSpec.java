@@ -11,9 +11,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    final Function<JsObj, Optional<Error>> predicate;
+    final Function<JsObj, Optional<JsError>> predicate;
 
-    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<Error>> predicate,
+    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<JsError>> predicate,
                            final boolean required,
                            final boolean nullable
                           ) {
@@ -52,12 +52,12 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isObj()) return predicate.apply(v.toJsObj());
-                                                    else return Optional.of(new Error(v,
-                                                                                      OBJ_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        OBJ_EXPECTED
                                                                             )
                                                                            );
                                                 },

@@ -9,10 +9,10 @@ import java.util.Optional;
 import java.util.function.Function;
 
 class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    private final Function<JsArray, Optional<Error>> predicate;
-    private JsArrayOfStrSpec isArrayOfString;
+    private final Function<JsArray, Optional<JsError>> predicate;
+    private final JsArrayOfStrSpec isArrayOfString;
 
-    JsArrayOfStrSuchThatSpec(final Function<JsArray, Optional<Error>> predicate,
+    JsArrayOfStrSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                              final boolean required,
                              final boolean nullable
                             ) {
@@ -54,8 +54,8 @@ class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> result = isArrayOfString.test(value);
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> result = isArrayOfString.test(value);
         if (result.isPresent() || value.isNull()) return result;
         return predicate.apply(value.toJsArray());
     }

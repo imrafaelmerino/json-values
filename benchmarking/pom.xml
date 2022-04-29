@@ -3,49 +3,53 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values-benchmark</artifactId>
-    <version>9.3.0</version>
+    <version>10.0.0</version>
     <packaging>jar</packaging>
     <name>json-values-benchmark</name>
     <properties>
         <JSON-VALUES.VERSION>9.1.0</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <JMH-VERSION>1.27</JMH-VERSION>
+        <JMH-VERSION>1.35</JMH-VERSION>
         <JAVAX-ANNOTATION-VERSION>1.3.2</JAVAX-ANNOTATION-VERSION>
         <COMPILER_SOURCE_VERSION>1.8</COMPILER_SOURCE_VERSION>
         <COMPILER_TARGET_VERSION>1.8</COMPILER_TARGET_VERSION>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>
-        <JACKSON-VERSION>2.12.1</JACKSON-VERSION>
+        <JACKSON-VERSION>2.13.2.2</JACKSON-VERSION>
         <JSON-SCHEMA-VALIDATOR.VERSION>2.2.14</JSON-SCHEMA-VALIDATOR.VERSION>
         <JUSTIFY.VERSION>3.1.0</JUSTIFY.VERSION>
         <VALIDATION-API.VERSION>2.0.1.Final</VALIDATION-API.VERSION>
-        <HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>7.0.1.Final</HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>
-        <HIBERNATE-VALIDATOR.VERSION>7.0.1.Final</HIBERNATE-VALIDATOR.VERSION>
+        <HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>7.0.4.Final</HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>
+        <HIBERNATE-VALIDATOR.VERSION>7.0.4.Final</HIBERNATE-VALIDATOR.VERSION>
+        <JAVAX.JSON.VERSION>1.1.4</JAVAX.JSON.VERSION>
+        <JAKARTA.JSON.VERSION>2.0.1</JAKARTA.JSON.VERSION>
+        <JAKARTA.JSON.BIND-API.VERSION>2.0.0</JAKARTA.JSON.BIND-API.VERSION>
+        <JAVAX.EL.VERSION>3.0.1-b11</JAVAX.EL.VERSION>
     </properties>
     <dependencies>
         <dependency>
             <groupId>jakarta.json.bind</groupId>
             <artifactId>jakarta.json.bind-api</artifactId>
-            <version>2.0.0-RC2</version>
+            <version>${JAKARTA.JSON.BIND-API.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>jakarta.json</artifactId>
-            <version>2.0.0</version>
+            <version>${JAKARTA.JSON.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.leadpony.justify</groupId>
             <artifactId>justify</artifactId>
-            <version>3.1.0</version>
+            <version>${JUSTIFY.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>5.2.5.Final</version>
+            <version>${HIBERNATE-VALIDATOR.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.json</artifactId>
-            <version>1.1.4</version>
+            <version>${JAVAX.JSON.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>com.github.java-json-tools</groupId>
@@ -60,7 +64,7 @@
         <dependency>
             <groupId>org.hibernate.validator</groupId>
             <artifactId>hibernate-validator</artifactId>
-            <version>7.0.1.Final</version>
+            <version>${HIBERNATE-VALIDATOR.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.hibernate.validator</groupId>
@@ -70,7 +74,7 @@
         <dependency>
             <groupId>org.glassfish</groupId>
             <artifactId>javax.el</artifactId>
-            <version>3.0.1-b11</version>
+            <version>${JAVAX.EL.VERSION}</version>
         </dependency>
         <dependency>
             <groupId>org.openjdk.jmh</groupId>

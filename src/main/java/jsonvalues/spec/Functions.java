@@ -13,46 +13,46 @@ class Functions {
 
     private Functions(){}
 
-    static Function<JsValue, Optional<Error>> testElem(final Predicate<JsValue> elemCondition,
-                                                       final ERROR_CODE errorCode,
-                                                       final boolean required,
-                                                       final boolean nullable
+    static Function<JsValue, Optional<JsError>> testElem(final Predicate<JsValue> elemCondition,
+                                                         final ERROR_CODE errorCode,
+                                                         final boolean required,
+                                                         final boolean nullable
                                                       ) {
 
         return value ->
         {
-            final Optional<Error> error = testFlags(required,
-                                                    nullable
+            final Optional<JsError> error = testFlags(required,
+                                                      nullable
                                                    ).apply(value);
             if (error.isPresent() || value.isNull()) return error;
-            if (!elemCondition.test(value)) return Optional.of(new Error(value,
-                                                                         errorCode
+            if (!elemCondition.test(value)) return Optional.of(new JsError(value,
+                                                                           errorCode
                                                                )
                                                               );
             return Optional.empty();
         };
     }
 
-    private static Function<JsValue, Optional<Error>> testFlags(boolean required,
-                                                                boolean nullable
+    private static Function<JsValue, Optional<JsError>> testFlags(boolean required,
+                                                                  boolean nullable
                                                                ) {
         return value ->
         {
-            if (value.isNothing() && required) return Optional.of(new Error(value,
-                                                                            REQUIRED
+            if (value.isNothing() && required) return Optional.of(new JsError(value,
+                                                                              REQUIRED
                                                                   )
                                                                  );
-            if (value.isNull() && !nullable) return Optional.of(new Error(value,
-                                                                          NULL
+            if (value.isNull() && !nullable) return Optional.of(new JsError(value,
+                                                                            NULL
                                                                 )
                                                                );
             return Optional.empty();
         };
     }
 
-    static Function<JsValue, Optional<Error>> testArrayOfTestedValue(final Function<JsValue, Optional<Error>> elemCondition,
-                                                                     final boolean required,
-                                                                     final boolean nullable
+    static Function<JsValue, Optional<JsError>> testArrayOfTestedValue(final Function<JsValue, Optional<JsError>> elemCondition,
+                                                                       final boolean required,
+                                                                       final boolean nullable
                                                                     ) {
 
         return testArrayPredicate(required,
@@ -60,7 +60,7 @@ class Functions {
                                   array ->
                                   {
                                       for (final JsValue next : array) {
-                                          final Optional<Error> result = elemCondition.apply(next);
+                                          final Optional<JsError> result = elemCondition.apply(next);
                                           if (result.isPresent()) return result;
                                       }
                                       return Optional.empty();
@@ -68,31 +68,31 @@ class Functions {
                                  );
     }
 
-    private static Function<JsValue, Optional<Error>> testArrayPredicate(final boolean required,
-                                                                         final boolean nullable,
-                                                                         final Function<JsArray, Optional<Error>> validation
+    private static Function<JsValue, Optional<JsError>> testArrayPredicate(final boolean required,
+                                                                           final boolean nullable,
+                                                                           final Function<JsArray, Optional<JsError>> validation
                                                                         ) {
         return value ->
         {
-            final Optional<Error> errors = testArray(required,
-                                                     nullable
+            final Optional<JsError> errors = testArray(required,
+                                                       nullable
                                                     ).apply(value);
             if (errors.isPresent() || value.isNull()) return errors;
             return validation.apply(value.toJsArray());
         };
     }
 
-    static Function<JsValue, Optional<Error>> testArray(boolean required,
-                                                        boolean nullable
+    static Function<JsValue, Optional<JsError>> testArray(boolean required,
+                                                          boolean nullable
                                                        ) {
         return value ->
         {
-            final Optional<Error> error = testFlags(required,
-                                                    nullable
+            final Optional<JsError> error = testFlags(required,
+                                                      nullable
                                                    ).apply(value);
             if (error.isPresent()) return error;
-            return value.isNull() || value.isArray() ? Optional.empty() : Optional.of(new Error(value,
-                                                                                                ARRAY_EXPECTED
+            return value.isNull() || value.isArray() ? Optional.empty() : Optional.of(new JsError(value,
+                                                                                                  ARRAY_EXPECTED
             ));
         };
 

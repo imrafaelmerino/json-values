@@ -1,6 +1,5 @@
 package com.dslplatform.json;
 
-import com.dslplatform.json.JsonReader;
 import jsonvalues.JsValue;
 
 

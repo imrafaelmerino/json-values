@@ -11,9 +11,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    final Function<BigDecimal, Optional<Error>> predicate;
+    final Function<BigDecimal, Optional<JsError>> predicate;
 
-    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<Error>> predicate,
+    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
                                final boolean required,
                                final boolean nullable
                               ) {
@@ -52,13 +52,13 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isDouble() || v.isBigDec())
                                                         return predicate.apply(v.toJsBigDec().value);
-                                                    else return Optional.of(new Error(v,
-                                                                                      DECIMAL_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        DECIMAL_EXPECTED
                                                                             )
                                                                            );
                                                 },

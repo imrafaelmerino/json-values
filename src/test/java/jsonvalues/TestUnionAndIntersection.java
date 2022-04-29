@@ -6,11 +6,10 @@ import static jsonvalues.JsArray.TYPE.*;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNull.NULL;
 
-public class TestsUnionAndIntersection {
+public class TestUnionAndIntersection {
 
     @Test
     public void test_1_testUnion() {
-
 
         JsObj a = JsObj.parse("{\"a\": 1, \"c\": [{\"d\": 1}]}");
 

@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 /**
  represents optics defined for json objects and arrays
  */
-public class JsOptics {
+public final class JsOptics {
 
     private JsOptics(){}
 

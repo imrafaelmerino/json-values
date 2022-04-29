@@ -22,9 +22,7 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
     JsObj value(final JsonReader<?> reader){
         try {
             final JsObj            obj      = super.value(reader);
-            final Iterator<String> iterator = required.iterator();
-            while (iterator.hasNext()) {
-                final String key = iterator.next();
+            for (String key : required) {
                 if (!obj.containsKey(key))
                     throw reader.newParseError("Required key not found: " + key);
             }

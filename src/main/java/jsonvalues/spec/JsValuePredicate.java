@@ -23,6 +23,6 @@ interface JsValuePredicate extends JsSpec {
         return errors;
     }
 
-    Optional<Error> test(final JsValue value);
+    Optional<JsError> test(final JsValue value);
 
 }

@@ -42,11 +42,11 @@ class JsArrayOfStrSpec extends AbstractPredicateSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> {
                                                     if (v.isStr()) return Optional.empty();
-                                                    else return Optional.of(new Error(v,
-                                                                                      STRING_EXPECTED));
+                                                    else return Optional.of(new JsError(v,
+                                                                                        STRING_EXPECTED));
                                                 },
                                                 required,
                                                 nullable

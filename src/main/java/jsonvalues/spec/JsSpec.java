@@ -8,22 +8,28 @@ import java.util.Set;
 
 public interface JsSpec {
     /**
-     @return whether or not the key is optional.
+     Returns whether the key is optional.
+
+     @return whether the key is optional.
      */
     boolean isRequired();
 
     /**
+     Returns the same spec with the nullable flag enabled
      @return the same spec with the nullable flag enabled
      */
     JsSpec nullable();
 
 
     /**
+     * Returns the same spec with the optional flag enabled
      @return the same spec with the optional flag enabled
      */
     JsSpec optional();
 
     /**
+     Returns the deserializer used during the parsing process to parse an array of bytes or string
+
      @return the deserializer used during the parsing process to parse an array of bytes or string
      into a json value
      */

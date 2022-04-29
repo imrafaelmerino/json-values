@@ -2,19 +2,10 @@ package jsonvalues;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 
-import static java.time.format.DateTimeFormatter.*;
-
-/**
- *
- */
 public class TestJsElems {
 
     @Test
@@ -38,7 +29,7 @@ public class TestJsElems {
         Assertions.assertTrue(JsBigInt.of(BigInteger.ONE)
                                       .test(i -> i.equals(BigInteger.ONE)));
         Assertions.assertTrue(JsBigDec.of(BigDecimal.ONE)
-                                      .test(i -> i.equals(BigDecimal.ONE)));
+                                      .test(i -> i.compareTo(BigDecimal.ONE) == 0));
         Assertions.assertTrue(JsStr.of("abcd")
                                    .test(s -> s.length() == 4));
 
@@ -90,11 +81,11 @@ public class TestJsElems {
                                         .hashCode()
                                );
 
-        Assertions.assertEquals(JsDouble.of(100_000_000_000L)
+        Assertions.assertEquals(JsDouble.of(100_000_000_000d)
                                         .hashCode(),
                                 JsLong.of(100_000_000_000L)
                                       .hashCode());
-        Assertions.assertEquals(JsDouble.of(100_000_000_000L)
+        Assertions.assertEquals(JsDouble.of(100_000_000_000d)
                                         .hashCode(),
                                 JsBigInt.of(new BigInteger("100000000000"))
                                         .hashCode());

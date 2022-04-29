@@ -42,7 +42,7 @@ class JsStrSpec extends AbstractPredicateSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isStr,
                                   STRING_EXPECTED,
                                   required,

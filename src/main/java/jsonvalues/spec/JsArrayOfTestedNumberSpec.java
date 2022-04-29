@@ -11,9 +11,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    private final Function<JsNumber, Optional<Error>> predicate;
+    private final Function<JsNumber, Optional<JsError>> predicate;
 
-    JsArrayOfTestedNumberSpec(final Function<JsNumber, Optional<Error>> predicate,
+    JsArrayOfTestedNumberSpec(final Function<JsNumber, Optional<JsError>> predicate,
                               final boolean required,
                               final boolean nullable
                              ) {
@@ -52,12 +52,12 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isNumber()) return predicate.apply(v.toJsNumber());
-                                                    else return Optional.of(new Error(v,
-                                                                                      NUMBER_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        NUMBER_EXPECTED
                                                                             )
                                                                            );
                                                 },

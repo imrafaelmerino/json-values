@@ -6,7 +6,7 @@ import java.io.OutputStream;
 import java.util.Arrays;
 
 /**
- Modified class from dsl-java8-json library.
+ * Modified class from dsl-java8-json library.
  */
 final class MyPrettifyOutputStream extends OutputStream {
     private static final int INDENT_CACHE_SIZE = 257;
@@ -32,7 +32,7 @@ final class MyPrettifyOutputStream extends OutputStream {
     MyPrettifyOutputStream(OutputStream out,
                            IndentType indentType,
                            int indentLength
-                          ) {
+    ) {
         if (indentLength < 1) throw new IllegalArgumentException("'indentLength' must be >= 1");
         this.out = out;
         this.indentType = indentType;
@@ -40,51 +40,43 @@ final class MyPrettifyOutputStream extends OutputStream {
     }
 
     @Override
-    public final void write(final int b) throws IOException {
+    public void write(final int b) throws IOException {
         if (inString) {
             if (b == '"' && !inEscape) {
                 inString = false;
-            }
-            else {
+            } else {
                 inEscape = !inEscape && b == '\\';
             }
             out.write(b);
-        }
-        else if (b == '"') {
+        } else if (b == '"') {
             inString = true;
             if (beginObjectOrList) {
                 writeNewLineWithIndent();
                 beginObjectOrList = false;
             }
             out.write(b);
-        }
-        else if (b == ',') {
+        } else if (b == ',') {
             out.write(',');
             writeNewLineWithIndent();
-        }
-        else if (b == ':') {
+        } else if (b == ':') {
             out.write(':');
             out.write(' ');
-        }
-        else if (b == '{' || b == '[') {
+        } else if (b == '{' || b == '[') {
             if (beginObjectOrList) {
                 writeNewLineWithIndent();
             }
             beginObjectOrList = true;
             currentIndent += indentLength;
             out.write(b);
-        }
-        else if (b == '}' || b == ']') {
+        } else if (b == '}' || b == ']') {
             currentIndent -= indentLength;
             if (beginObjectOrList) {
                 beginObjectOrList = false;
-            }
-            else {
+            } else {
                 writeNewLineWithIndent();
             }
             out.write(b);
-        }
-        else if (!WHITESPACE[b]) {
+        } else if (!WHITESPACE[b]) {
             if (beginObjectOrList) {
                 writeNewLineWithIndent();
                 beginObjectOrList = false;
@@ -94,10 +86,10 @@ final class MyPrettifyOutputStream extends OutputStream {
     }
 
     @Override
-    public final void write(final byte[] bytes,
-                            final int off,
-                            final int len
-                           ) throws IOException {
+    public void write(final byte[] bytes,
+                      final int off,
+                      final int len
+    ) throws IOException {
         int start = off;
 
         for (int i = off; i < off + len; i++) {
@@ -106,35 +98,30 @@ final class MyPrettifyOutputStream extends OutputStream {
             if (inString) {
                 if (b == '"' && !inEscape) {
                     inString = false;
-                }
-                else {
+                } else {
                     inEscape = !inEscape && b == '\\';
                 }
-            }
-            else if (b == '"') {
+            } else if (b == '"') {
                 inString = true;
                 if (beginObjectOrList) {
                     writeNewLineWithIndent();
                     beginObjectOrList = false;
                 }
-            }
-            else if (b == ',') {
+            } else if (b == ',') {
                 out.write(bytes,
                           start,
                           i - start + 1
-                         );
+                );
                 start = i + 1;
                 writeNewLineWithIndent();
-            }
-            else if (b == ':') {
+            } else if (b == ':') {
                 out.write(bytes,
                           start,
                           i - start + 1
-                         );
+                );
                 start = i + 1;
                 out.write(' ');
-            }
-            else if (b == '{' || b == '[') {
+            } else if (b == '{' || b == '[') {
                 if (beginObjectOrList) {
                     writeNewLineWithIndent();
                 }
@@ -143,32 +130,28 @@ final class MyPrettifyOutputStream extends OutputStream {
                 out.write(bytes,
                           start,
                           i - start + 1
-                         );
+                );
                 start = i + 1;
-            }
-            else if (b == '}' || b == ']') {
+            } else if (b == '}' || b == ']') {
                 currentIndent -= indentLength;
                 out.write(bytes,
                           start,
                           i - start
-                         );
+                );
                 if (beginObjectOrList) {
                     beginObjectOrList = false;
-                }
-                else {
+                } else {
                     writeNewLineWithIndent();
                 }
                 out.write(b);
                 start = i + 1;
-            }
-            else if (WHITESPACE[b]) {
+            } else if (WHITESPACE[b]) {
                 out.write(bytes,
                           start,
                           i - start
-                         );
+                );
                 start = i + 1;
-            }
-            else if (beginObjectOrList) {
+            } else if (beginObjectOrList) {
                 writeNewLineWithIndent();
                 beginObjectOrList = false;
             }
@@ -179,7 +162,7 @@ final class MyPrettifyOutputStream extends OutputStream {
             out.write(bytes,
                       start,
                       remaining
-                     );
+            );
         }
     }
 
@@ -189,9 +172,8 @@ final class MyPrettifyOutputStream extends OutputStream {
             out.write(indentType.cache,
                       0,
                       size
-                     );
-        }
-        else {
+            );
+        } else {
             final byte[] cache = indentType.cache;
             out.write(cache);
             int remaining = size - INDENT_CACHE_SIZE;
@@ -200,20 +182,20 @@ final class MyPrettifyOutputStream extends OutputStream {
                     out.write(cache,
                               1,
                               remaining
-                             );
+                    );
                     break;
-                }
-                else {
+                } else {
                     out.write(cache,
                               1,
                               INDENT_CACHE_SIZE - 1
-                             );
+                    );
                     remaining -= INDENT_CACHE_SIZE - 1;
                 }
             }
         }
     }
 
+    @SuppressWarnings("ImmutableEnumChecker")
     public enum IndentType {
         SPACES((byte) ' '),
         TABS((byte) '\t');
@@ -227,7 +209,7 @@ final class MyPrettifyOutputStream extends OutputStream {
                         1,
                         cache.length,
                         b
-                       );
+            );
         }
     }
 }

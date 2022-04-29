@@ -5,8 +5,10 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.function.Function;
@@ -29,11 +31,10 @@ public class TestJsObj {
 
         final JsObj obj1 = obj.set("a",
                                    JsInt.of(1)
-        );// obj is mutable
-        Assertions.assertTrue(obj.isEmpty());
-        Assertions.assertTrue(obj1.getInt("a")
-                                  .equals(1)
         );
+        Assertions.assertTrue(obj.isEmpty());
+        Assertions.assertEquals(1,
+                                (int) obj1.getInt("a"));
     }
 
     @Test
@@ -56,23 +57,21 @@ public class TestJsObj {
         );
         final JsObj obj1 = obj.mapKeys((key, val) -> key.toUpperCase());
 
-        Set<String> set = new HashSet<>();
-        set.addAll(Arrays.asList("A",
-                                 "B",
-                                 "C",
-                                 "D",
-                                 "E"
+        Set<String> set = new HashSet<>(Arrays.asList("A",
+                                                      "B",
+                                                      "C",
+                                                      "D",
+                                                      "E"
         ));
 
         Assertions.assertEquals(set,
                                 obj1.keySet()
         );
-        Set<String> set1 = new HashSet<>();
-        set1.addAll(Arrays.asList("a",
-                                  "b",
-                                  "c",
-                                  "d",
-                                  "e"
+        Set<String> set1 = new HashSet<>(Arrays.asList("a",
+                                                       "b",
+                                                       "c",
+                                                       "d",
+                                                       "e"
         ));
         Assertions.assertEquals(set1,
                                 obj.keySet()
@@ -99,23 +98,21 @@ public class TestJsObj {
         );
         final JsObj obj1 = obj.mapKeys((Function<String, String>) String::toUpperCase);
 
-        Set<String> set = new HashSet<>();
-        set.addAll(Arrays.asList("A",
-                                 "B",
-                                 "C",
-                                 "D",
-                                 "E"
+        Set<String> set = new HashSet<>(Arrays.asList("A",
+                                                      "B",
+                                                      "C",
+                                                      "D",
+                                                      "E"
         ));
 
         Assertions.assertEquals(set,
                                 obj1.keySet()
         );
-        Set<String> set1 = new HashSet<>();
-        set1.addAll(Arrays.asList("a",
-                                  "b",
-                                  "c",
-                                  "d",
-                                  "e"
+        Set<String> set1 = new HashSet<>(Arrays.asList("a",
+                                                       "b",
+                                                       "c",
+                                                       "d",
+                                                       "e"
         ));
         Assertions.assertEquals(set1,
                                 obj.keySet()
@@ -150,10 +147,8 @@ public class TestJsObj {
                                 obj.size()
         );
 
-        Assertions.assertTrue(
-                obj.getInt(path("/d/0/1"))
-                   .equals(6)
-        );
+        Assertions.assertEquals(6,
+                                (int) obj.getInt(path("/d/0/1")));
 
 
     }
@@ -233,25 +228,6 @@ public class TestJsObj {
                               JsArray.of("a",
                                          "b",
                                          "c",
-                                         "a",
-                                         "b",
-                                         "c"
-                              )
-        );
-        JsObj obj3 = JsObj.of("a",
-                              JsObj.of("b",
-                                       JsArray.of(3,
-                                                  2,
-                                                  1,
-                                                  1,
-                                                  2,
-                                                  3
-                                       )
-                              ),
-                              "b",
-                              JsArray.of("c",
-                                         "b",
-                                         "a",
                                          "a",
                                          "b",
                                          "c"
@@ -657,13 +633,9 @@ public class TestJsObj {
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
                 ,
                                 obj.mapAllObjs(o ->
-                                               {
-
-
-                                                   return o.set("size",
-                                                                JsInt.of(o.size())
-                                                   );
-                                               }
+                                                       o.set("size",
+                                                             JsInt.of(o.size())
+                                                       )
                                 )
         );
 
@@ -678,11 +650,9 @@ public class TestJsObj {
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"f\":{\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
                 ,
                                 obj.mapObjs(o ->
-                                            {
-                                                return o.set("size",
-                                                             JsInt.of(o.size())
-                                                );
-                                            }
+                                                    o.set("size",
+                                                          JsInt.of(o.size())
+                                                    )
                                 )
         );
 
@@ -922,10 +892,8 @@ public class TestJsObj {
 
 
         final JsObj obj1 = obj.mapAllValues(val ->
-                                            {
-                                                return JsStr.prism.modify.apply(String::toLowerCase)
-                                                                         .apply(val);
-                                            });
+                                                    JsStr.prism.modify.apply(String::toLowerCase)
+                                                                      .apply(val));
 
         final Optional<String> reduced_ = obj1.reduceAll(String::concat,
                                                          v -> v.toJsStr().value,
@@ -998,10 +966,9 @@ public class TestJsObj {
                 a.getDouble(fromKey("a"))
                  .equals(0.1d)
         );
-        Assertions.assertTrue(
-                a.getBigDec(fromKey("a"))
-                 .equals(BigDecimal.valueOf(0.1d))
-        );
+        Assertions.assertEquals(0,
+                                a.getBigDec(fromKey("a"))
+                                 .compareTo(BigDecimal.valueOf(0.1d)));
     }
 
     @Test
@@ -1060,7 +1027,7 @@ public class TestJsObj {
     @Test
     public void testJsObj() {
         Instant now = Instant.now();
-        byte[] bytes = "hola".getBytes();
+        byte[] bytes = "hola".getBytes(StandardCharsets.UTF_8);
         JsObj o = JsObj.of("a",
                            JsBigDec.of(BigDecimal.valueOf(1.5)),
                            "b",
@@ -1076,40 +1043,55 @@ public class TestJsObj {
         );
 
         Assertions.assertNull(o.getStr("b"));
-        Assertions.assertEquals("a",o.getStr("bye",()->"a"));
+        Assertions.assertEquals("a",
+                                o.getStr("bye",
+                                         () -> "a"));
         Assertions.assertNull(o.getInt("b"));
         Assertions.assertEquals(1,
                                 (int) o.getInt("b",
                                                () -> 1));
         Assertions.assertNull(o.getBool("b"));
-        Assertions.assertFalse(o.getBool("b",()->false));
+        Assertions.assertFalse(o.getBool("b",
+                                         () -> false));
 
         Assertions.assertNull(o.getObj("b"));
-        Assertions.assertEquals(JsObj.empty(),o.getObj("b",()->JsObj.empty()));
+        Assertions.assertEquals(JsObj.empty(),
+                                o.getObj("b",
+                                         JsObj::empty));
 
         Assertions.assertNull(o.getDouble("b"));
-        Assertions.assertEquals(1.5,(double)o.getDouble("b",()->1.5));
+        Assertions.assertEquals(1.5,
+                                (double) o.getDouble("b",
+                                                     () -> 1.5));
 
         Assertions.assertNull(o.getArray("b"));
-        Assertions.assertEquals(JsArray.empty(),o.getArray("b",()->JsArray.empty()));
+        Assertions.assertEquals(JsArray.empty(),
+                                o.getArray("b",
+                                           JsArray::empty));
 
         Assertions.assertNull(o.getLong("c"));
-        Assertions.assertEquals(10L,(long)o.getLong("c",()->10L));
+        Assertions.assertEquals(10L,
+                                (long) o.getLong("c",
+                                                 () -> 10L));
 
         Assertions.assertNull(o.getStr("e"));
-        Assertions.assertEquals("hi",o.getStr("e",()->"hi"));
+        Assertions.assertEquals("hi",
+                                o.getStr("e",
+                                         () -> "hi"));
 
         Assertions.assertEquals(BigDecimal.valueOf(1.5),
                                 o.getBigDec("a")
         );
         Assertions.assertEquals(BigDecimal.ONE,
-                                o.getBigDec("hi",()->BigDecimal.ONE)
+                                o.getBigDec("hi",
+                                            () -> BigDecimal.ONE)
         );
         Assertions.assertEquals(BigInteger.valueOf(Long.MAX_VALUE),
                                 o.getBigInt("b")
         );
         Assertions.assertEquals(BigInteger.TEN,
-                                o.getBigInt("bye",()->BigInteger.TEN)
+                                o.getBigInt("bye",
+                                            () -> BigInteger.TEN)
         );
         Assertions.assertEquals(Double.valueOf(1.5),
                                 o.getDouble("c")
@@ -1127,11 +1109,8 @@ public class TestJsObj {
                                              () -> Instant.MAX)
         );
 
-        Assertions.assertTrue(
-                Arrays.equals(o.getBinary("f"),
-                              "hola".getBytes()
-                )
-        );
+        Assertions.assertArrayEquals(o.getBinary("f"),
+                                     "hola".getBytes(StandardCharsets.UTF_8));
 
         JsObj parsed = JsObj.parse(o.toString());
 
@@ -1141,7 +1120,7 @@ public class TestJsObj {
 
         Assertions.assertEquals(parsed.getStr("f"),
                                 Base64.getEncoder()
-                                      .encodeToString("hola".getBytes())
+                                      .encodeToString("hola".getBytes(StandardCharsets.UTF_8))
         );
 
 
@@ -1151,13 +1130,12 @@ public class TestJsObj {
         Option<JsObj, Instant> eOpt = JsObj.lens.str("e")
                                                 .compose(JsStr.instantPrism);
 
-        Assertions.assertTrue(Arrays.equals(fOpt.get.apply(parsed)
-                                                    .get(),
-                                            "hola".getBytes()
-        ));
+        Assertions.assertArrayEquals(fOpt.get.apply(parsed)
+                                             .get(),
+                                     "hola".getBytes(StandardCharsets.UTF_8));
 
 
-        Assertions.assertTrue(!fOpt.get.apply(JsObj.of("f",
+        Assertions.assertFalse(fOpt.get.apply(JsObj.of("f",
                                                        JsStr.of("a")
                                    ))
                                        .isPresent());
@@ -1168,8 +1146,8 @@ public class TestJsObj {
                                 now
         );
 
-        Assertions.assertTrue(!eOpt.get.apply(JsObj.of("e",
-                                                       JsStr.of(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now()))
+        Assertions.assertFalse(eOpt.get.apply(JsObj.of("e",
+                                                       JsStr.of(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now(ZoneId.systemDefault())))
                                               )
                                    )
                                        .isPresent());
@@ -1211,15 +1189,17 @@ public class TestJsObj {
                            )
         );
 
-        Assertions.assertTrue(1 == a.getInt("a"));
+        Assertions.assertEquals(1,
+                                (int) a.getInt("a"));
         Assertions.assertEquals("hi",
                                 a.getStr("b")
         );
         Assertions.assertEquals(true,
                                 a.getBool("c")
         );
-        Assertions.assertTrue(1L == a.getLong("d"));
-        Assertions.assertTrue(1.5 == a.getDouble("e"));
+        Assertions.assertEquals(1L,
+                                (long) a.getLong("d"));
+        Assertions.assertTrue(a.getDouble("e") == 1.5d);
         Assertions.assertEquals(BigInteger.TEN,
                                 a.getBigInt("f")
         );
@@ -1248,9 +1228,7 @@ public class TestJsObj {
         Assertions.assertNull(
                 a.getInt("b")
         );
-        Assertions.assertEquals(null,
-                                a.getLong("b")
-        );
+        Assertions.assertNull(a.getLong("b"));
         Assertions.assertNull(
                 a.getBigDec("b")
         );

@@ -6,20 +6,20 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class JsErrorPair {
+public final class JsErrorPair {
 
     public final JsPath path;
-    public final Error error;
+    public final JsError error;
 
     private JsErrorPair(final JsPath path,
-                        final Error error
-                       ) {
+                        final JsError error
+    ) {
         this.path = path;
         this.error = error;
     }
 
     public static JsErrorPair of(final JsPath path,
-                                 final Error error) {
+                                 final JsError error) {
         return new JsErrorPair(requireNonNull(path),
                                requireNonNull(error)
         );
@@ -36,7 +36,7 @@ public class JsErrorPair {
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (!(o instanceof JsErrorPair)) return false;
         final JsErrorPair that = (JsErrorPair) o;
         return path.equals(that.path) &&
                 error.equals(that.error);
@@ -46,6 +46,6 @@ public class JsErrorPair {
     public int hashCode() {
         return Objects.hash(path,
                             error
-                           );
+        );
     }
 }

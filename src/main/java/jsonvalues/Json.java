@@ -11,7 +11,6 @@ import java.util.Optional;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.dslplatform.json.MyDslJson.INSTANCE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -766,11 +765,11 @@ public interface Json<T extends Json<T>> extends JsValue {
     /**
      * Serializes this Json into the given output stream, no returning anything
      *
-     * @param ouputstream the output stream
+     * @param outputstream the output stream
      */
-    default void serialize(final OutputStream ouputstream) {
-        INSTANCE.serialize(this,
-                           requireNonNull(ouputstream)
+    default void serialize(final OutputStream outputstream) {
+        MyDslJson.INSTANCE.serialize(this,
+                                     requireNonNull(outputstream)
         );
     }
 
@@ -781,7 +780,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return this Json serialized into an array of bytes
      */
     default byte[] serialize() {
-        return INSTANCE.serialize(this);
+        return MyDslJson.INSTANCE.serialize(this);
     }
 
 

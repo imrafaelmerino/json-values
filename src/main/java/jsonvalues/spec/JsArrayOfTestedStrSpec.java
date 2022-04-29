@@ -10,9 +10,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    final Function<String, Optional<Error>> predicate;
+    final Function<String, Optional<JsError>> predicate;
 
-    JsArrayOfTestedStrSpec(final Function<String, Optional<Error>> predicate,
+    JsArrayOfTestedStrSpec(final Function<String, Optional<JsError>> predicate,
                            final boolean required,
                            final boolean nullable
                           ) {
@@ -51,12 +51,12 @@ class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePre
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                 {
                                                     if (v.isStr()) return predicate.apply(v.toJsStr().value);
-                                                    else return Optional.of(new Error(v,
-                                                                                      STRING_EXPECTED
+                                                    else return Optional.of(new JsError(v,
+                                                                                        STRING_EXPECTED
                                                                             )
                                                                            );
                                                 },

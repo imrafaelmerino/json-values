@@ -10,10 +10,10 @@ import java.util.function.Function;
 
 class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
 
-    private final Function<JsArray, Optional<Error>> predicate;
-    private JsArrayOfDecimalSpec isArrayOfDecimal;
+    private final Function<JsArray, Optional<JsError>> predicate;
+    private final JsArrayOfDecimalSpec isArrayOfDecimal;
 
-    JsArrayOfDecimalSuchThatSpec(final Function<JsArray, Optional<Error>> predicate,
+    JsArrayOfDecimalSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                                  final boolean required,
                                  final boolean nullable
                                 ) {
@@ -56,8 +56,8 @@ class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsVa
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> result = isArrayOfDecimal.test(value);
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> result = isArrayOfDecimal.test(value);
         if (result.isPresent() || value.isNull()) return result;
         return predicate.apply(value.toJsArray());
     }

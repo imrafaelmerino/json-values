@@ -1,6 +1,4 @@
 package com.dslplatform.json;
-import com.dslplatform.json.JsonWriter;
-import com.dslplatform.json.MyNumberConverter;
 import jsonvalues.*;
 import java.util.Objects;
 

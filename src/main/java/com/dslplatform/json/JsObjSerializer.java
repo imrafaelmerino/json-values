@@ -5,9 +5,10 @@ import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
 import java.util.Iterator;
-import java.util.Objects;
 
- final class JsObjSerializer implements JsonWriter.WriteObject<JsObj> {
+import static java.util.Objects.requireNonNull;
+
+final class JsObjSerializer implements JsonWriter.WriteObject<JsObj> {
 
     private final JsValueSerializer valueSerializer;
 
@@ -19,8 +20,8 @@ import java.util.Objects;
     public void write(final JsonWriter sw,
                       final JsObj value
                      ) {
+        int size = requireNonNull(value).size();
         sw.writeByte(JsonWriter.OBJECT_START);
-        final int size = Objects.requireNonNull(value).size();
         if (size > 0) {
             final Iterator<Tuple2<String, JsValue>> iterator = value.iterator();
             Tuple2<String, JsValue>                 kv       = iterator.next();

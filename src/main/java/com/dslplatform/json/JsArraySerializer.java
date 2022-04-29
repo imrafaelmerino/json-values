@@ -3,10 +3,11 @@ package com.dslplatform.json;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
-import java.util.Objects;
+
+import static java.util.Objects.requireNonNull;
 
 
- final class JsArraySerializer implements JsonWriter.WriteObject<JsArray> {
+final class JsArraySerializer implements JsonWriter.WriteObject<JsArray> {
     private final JsValueSerializer valueSerializer;
 
     public JsArraySerializer(final JsValueSerializer valueSerializer) {
@@ -17,8 +18,8 @@ import java.util.Objects;
     public void write(final JsonWriter writer,
                       final JsArray list
                      ) {
+        int size = requireNonNull(list).size();
         writer.writeByte(JsonWriter.ARRAY_START);
-        final int size = Objects.requireNonNull(list).size();
         if (size != 0) {
             final JsValue first = list.get(0);
             valueSerializer.serialize(writer,

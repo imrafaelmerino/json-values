@@ -43,7 +43,7 @@ class JsDecimalSpec extends AbstractPredicateSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
+    public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isDecimal,
                                   DECIMAL_EXPECTED,
                                   required,

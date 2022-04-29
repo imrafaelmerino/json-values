@@ -22,19 +22,5 @@ class JsValueLens<S extends Json<S>> extends Lens<S, JsValue> {
 
     }
 
-    static JsValueLens<JsObj> of(final String key) {
-        return new JsValueLens<>(JsPath.fromKey(requireNonNull(key)));
-    }
-
-    static JsValueLens<JsArray> of(int index) {
-        return new JsValueLens<>(JsPath.fromIndex(index));
-    }
-
-    static <R extends Json<R>> JsValueLens<R> of(JsPath path) {
-        return new JsValueLens<>(path);
-    }
-
-
-
 
 }

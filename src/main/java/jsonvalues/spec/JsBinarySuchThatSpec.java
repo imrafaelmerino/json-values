@@ -11,11 +11,11 @@ import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
 class JsBinarySuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    final Function<byte[], Optional<Error>> predicate;
+    final Function<byte[], Optional<JsError>> predicate;
 
     JsBinarySuchThatSpec(final boolean required,
                          final boolean nullable,
-                         final Function<byte[], Optional<Error>> predicate
+                         final Function<byte[], Optional<JsError>> predicate
                         ) {
         super(required,
               nullable
@@ -52,13 +52,13 @@ class JsBinarySuchThatSpec extends AbstractPredicateSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Error> test(final JsValue value) {
-        final Optional<Error> error = Functions.testElem(JsValue::isBinary,
-                                                         BINARY_EXPECTED,
-                                                         required,
-                                                         nullable
+    public Optional<JsError> test(final JsValue value) {
+        final Optional<JsError> error = Functions.testElem(JsValue::isBinary,
+                                                           BINARY_EXPECTED,
+                                                           required,
+                                                           nullable
                                                         )
-                                               .apply(value);
+                                                 .apply(value);
 
         if (error.isPresent() || value.isNull()) return error;
         return predicate.apply(value.toJsBinary().value);
