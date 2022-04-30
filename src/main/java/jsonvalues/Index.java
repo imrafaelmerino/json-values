@@ -30,17 +30,12 @@ public final class Index implements Position {
     }
 
     /**
-     Returns a new instance witch represents the given index in an array. The special index -1
-     points to the last element of an array.
+     Returns a new instance witch represents the given index in an array.
 
      @param index the given position
      @return an Index object
-     @throws IndexOutOfBoundsException if the index is less than -1
      */
     public static Index of(final int index) {
-        if (index < -1) throw new IndexOutOfBoundsException(String.format("%s is not between [-1,U+221E)",
-                                                                          index
-                                                                         ));
         return new Index(index);
     }
 

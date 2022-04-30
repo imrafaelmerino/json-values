@@ -75,17 +75,14 @@ public class TestJsArray {
                                  JsStr.of("D"),
                                  JsStr.of("E")
         );
-        JsArray arr1 = arr.set(-1,
-                               JsStr.of("F")
-        );
+        JsArray arr1 = arr.set(0,
+                               JsStr.of("H"));
 
         Assertions.assertNotEquals(arr,
-                                   arr1
-        );
+                                   arr1);
 
-        Assertions.assertEquals(JsStr.of("F"),
-                                arr1.get(-1)
-        );
+        Assertions.assertEquals(JsStr.of("H"),
+                                arr1.get(0));
 
     }
 
@@ -127,7 +124,7 @@ public class TestJsArray {
                                                        JsInt.of(1)
                                          )
         );
-        JsArray newArr = arr.delete(-1);
+        JsArray newArr = arr.init();
 
         Assertions.assertEquals(2,
                                 arr.size()
@@ -1073,6 +1070,7 @@ public class TestJsArray {
         Assertions.assertNull(a.getBigInt(-1));
 
         Assertions.assertNull(a.getInt(1));
+
         Assertions.assertEquals(Integer.valueOf(1),
                                 a.getInt(0)
         );
@@ -1108,8 +1106,17 @@ public class TestJsArray {
                                 a.getArray(7)
         );
         Assertions.assertEquals(JsArray.empty(),
-                                a.getArray(-1)
-        );
+                                a.getArray(10,
+                                           JsArray::empty));
+        Assertions.assertEquals(1,
+                                a.getInt(100,
+                                         () -> 1));
+        Assertions.assertEquals("a",
+                                a.getStr(100,
+                                         () -> "a"));
+        Assertions.assertEquals(Long.MAX_VALUE,
+                                a.getLong(100,
+                                          () -> Long.MAX_VALUE));
     }
 
     @Test
@@ -1123,9 +1130,6 @@ public class TestJsArray {
 
         Assertions.assertEquals(now,
                                 array.getInstant(1)
-        );
-        Assertions.assertEquals(now,
-                                array.getInstant(-1)
         );
         Assertions.assertNull(array.getInstant(0));
 
@@ -1143,8 +1147,6 @@ public class TestJsArray {
 
         Assertions.assertArrayEquals(bytes,
                                      array.getBinary(1));
-        Assertions.assertArrayEquals(bytes,
-                                     array.getBinary(-1));
 
         Assertions.assertNull(array.getBinary(0));
     }
@@ -1266,18 +1268,6 @@ public class TestJsArray {
         Assertions.assertEquals(array,
                                 array.filterKeys((k, v) -> false)
         );
-    }
-
-    @Test
-    public void test_minus_one_index_points_last_element() {
-
-        JsArray array = JsArray.of(1,
-                                   2,
-                                   3
-        );
-
-        Assertions.assertEquals(3,
-                                (int) array.getInt(-1));
     }
 
 

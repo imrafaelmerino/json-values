@@ -64,10 +64,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     private volatile String str;
 
-    public JsObj() {
-        this.map = LinkedHashMap.empty();
-    }
-
     JsObj(final Map<String, JsValue> myMap) {
         this.map = myMap;
     }
