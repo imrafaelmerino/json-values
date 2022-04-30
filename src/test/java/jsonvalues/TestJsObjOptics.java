@@ -20,7 +20,7 @@ public class TestJsObjOptics {
         );
 
         Lens<JsObj, JsValue> valueLens = JsObj.lens.value(path);
-        Lens<JsObj, BigInteger> lens = JsObj.lens.integralNum(path);
+        Lens<JsObj, BigInteger> lens = JsObj.lens.bigIntNum(path);
         Lens<JsObj, JsObj> lenByKey = JsObj.lens.obj("a");
 
 

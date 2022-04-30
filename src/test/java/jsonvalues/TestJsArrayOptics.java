@@ -18,7 +18,7 @@ public class TestJsArrayOptics {
                                )
         );
 
-        Lens<JsArray, BigInteger> lens = JsArray.lens.integralNum(path);
+        Lens<JsArray, BigInteger> lens = JsArray.lens.bigIntNum(path);
 
         Assertions.assertEquals(BigInteger.TEN,
                                 lens.get.apply(a));
