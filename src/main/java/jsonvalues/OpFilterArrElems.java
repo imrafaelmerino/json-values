@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 final class OpFilterArrElems {
 
+    private OpFilterArrElems(){}
 
     static JsArray filter(JsArray json,
                           final BiPredicate<? super Integer, ? super JsPrimitive> predicate

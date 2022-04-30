@@ -7,7 +7,7 @@ import java.util.function.Predicate;
 
 final class OpFilterObjKeys {
 
-
+    private OpFilterObjKeys(){}
     static JsObj filterAll(JsObj json,
                            final JsPath startingPath,
                            final BiPredicate<? super JsPath, ? super JsValue> predicate

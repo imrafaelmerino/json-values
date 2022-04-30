@@ -34,7 +34,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * provided, an immutable which uses the persistent Scala HashMap, and a mutable which uses the conventional
  * Java HashMap.
  */
-public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
+public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     public static final JsObj EMPTY = new JsObj(LinkedHashMap.empty());
     /**
      * lenses defined for a Json object
@@ -1056,7 +1056,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
                 .apply(requireNonNull(value));
     }
 
-    public final JsObj delete(final String key) {
+    public JsObj delete(final String key) {
         if (!map.containsKey(requireNonNull(key))) return this;
         return new JsObj(map.remove(key));
     }
@@ -1170,7 +1170,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final boolean containsValue(final JsValue el) {
+    public boolean containsValue(final JsValue el) {
         return stream().anyMatch(p -> p.value.equals(requireNonNull(el)));
     }
 
@@ -1179,7 +1179,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      *
      * @return a Set containing each key of this JsObj
      */
-    public final Set<String> keySet() {
+    public Set<String> keySet() {
         return map.keySet()
                   .toJavaSet();
     }
@@ -1215,7 +1215,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
+    public JsObj filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
         return OpFilterObjElems.filterAll(this,
                                           JsPath.empty(),
                                           requireNonNull(filter)
@@ -1261,7 +1261,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
+    public JsObj filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return OpFilterObjObjs.filterAll(this,
                                          JsPath.empty(),
                                          requireNonNull(filter)
@@ -1277,7 +1277,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return map.isEmpty();
     }
 
@@ -1289,7 +1289,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
+    public JsObj mapAllValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn) {
         return OpMapObjElems.mapAll(this,
                                     requireNonNull(fn),
                                     EMPTY_PATH
@@ -1311,7 +1311,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
+    public JsObj mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return OpMapObjKeys.mapAll(this,
                                    requireNonNull(fn),
                                    EMPTY_PATH
@@ -1333,7 +1333,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
+    public JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return OpMapObjObjs.mapAll(this,
                                    requireNonNull(fn),
                                    JsPath.empty()
@@ -1348,7 +1348,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj set(final JsPath path,
+    public JsObj set(final JsPath path,
                            final JsValue value,
                            final JsValue padElement
 
@@ -1423,7 +1423,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+    public <R> Optional<R> reduceAll(final BinaryOperator<R> op,
                                            final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                            final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
     ) {
@@ -1450,7 +1450,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final JsObj delete(final JsPath path) {
+    public JsObj delete(final JsPath path) {
         if (requireNonNull(path).isEmpty()) return this;
         return path.head()
                    .match(key ->
@@ -1474,25 +1474,25 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return map.size();
     }
 
     @Override
-    public final Stream<JsPair> streamAll() {
+    public Stream<JsPair> streamAll() {
         return streamOfObj(this,
                            JsPath.empty()
         );
     }
 
     @Override
-    public final Stream<JsValue> streamValues() {
+    public Stream<JsValue> streamValues() {
         return map.values().toJavaStream();
     }
 
 
     @Override
-    public final Stream<JsPair> stream() {
+    public Stream<JsPair> stream() {
         return this.keySet()
                    .stream()
                    .map(f ->
@@ -1506,38 +1506,38 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
                    );
     }
 
-    public final JsObj filterValues(final BiPredicate<? super String, ? super JsPrimitive> filter) {
+    public JsObj filterValues(final BiPredicate<? super String, ? super JsPrimitive> filter) {
         return OpFilterObjElems.filter(this,
                                        requireNonNull(filter)
         );
     }
 
-    public final JsObj filterKeys(final BiPredicate<? super String, ? super JsValue> filter) {
+    public JsObj filterKeys(final BiPredicate<? super String, ? super JsValue> filter) {
         return OpFilterObjKeys.filter(this,
                                       filter
         );
 
     }
 
-    public final JsObj filterObjs(final BiPredicate<? super String, ? super JsObj> filter) {
+    public JsObj filterObjs(final BiPredicate<? super String, ? super JsObj> filter) {
         return OpFilterObjObjs.filter(this,
                                       requireNonNull(filter)
         );
     }
 
-    public final JsObj mapValues(final BiFunction<? super String, ? super JsPrimitive, ? extends JsValue> fn) {
+    public JsObj mapValues(final BiFunction<? super String, ? super JsPrimitive, ? extends JsValue> fn) {
         return OpMapObjElems.map(this,
                                  requireNonNull(fn)
         );
     }
 
-    public final JsObj mapKeys(final BiFunction<? super String, ? super JsValue, String> fn) {
+    public JsObj mapKeys(final BiFunction<? super String, ? super JsValue, String> fn) {
         return OpMapObjKeys.map(this,
                                 requireNonNull(fn)
         );
     }
 
-    public final JsObj mapObjs(final BiFunction<? super String, ? super JsObj, JsValue> fn) {
+    public JsObj mapObjs(final BiFunction<? super String, ? super JsObj, JsValue> fn) {
         return OpMapObjObjs.map(this,
                                 requireNonNull(fn)
         );
@@ -1554,7 +1554,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * @return an {@link Optional} describing the of of the reduction
      * @see #reduceAll(BinaryOperator, BiFunction, BiPredicate) to apply the reduction in all the Json and not only in the first level
      */
-    public final <R> Optional<R> reduce(final BinaryOperator<R> op,
+    public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                         final BiFunction<? super String, ? super JsPrimitive, R> map,
                                         final BiPredicate<? super String, ? super JsPrimitive> predicate
     ) {
@@ -1932,7 +1932,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      */
     @Override
     @SuppressWarnings("squid:S1206")
-    public final int hashCode() {
+    public int hashCode() {
         int result = hascode;
         if (result == 0)
             hascode = result = map.hashCode();
@@ -1940,7 +1940,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
     }
 
     @Override
-    public final boolean equals(final Object that) {
+    public boolean equals(final Object that) {
         if (!(that instanceof JsObj)) return false;
         if (this == that) return true;
         final JsObj thatMap = (JsObj) that;
@@ -1960,7 +1960,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * // Single-check idiom Item 83 from effective java
      */
     @Override
-    public final String toString() {
+    public String toString() {
         String result = str;
         if (result == null)
             str = result = new String(MyDslJson.INSTANCE.serialize(this),
@@ -1986,7 +1986,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * @return an arbitrary {@code Map.Entry<String,JsValue>} of this JsObj
      * @throws UserError if this json object is empty
      */
-    public final Tuple2<String, JsValue> head() {
+    public Tuple2<String, JsValue> head() {
         return map.head();
     }
 
@@ -1996,7 +1996,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * @return a new JsObj
      * @throws UserError if this json object is empty
      */
-    public final JsObj tail() {
+    public JsObj tail() {
         return new JsObj(map.tail());
     }
 
@@ -2079,7 +2079,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * @param that the given json object
      * @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
-    public final JsObj union(final JsObj that
+    public JsObj union(final JsObj that
     ) {
         return union(this,
                      requireNonNull(that)
@@ -2099,7 +2099,7 @@ public final class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue
      * @return a new JsObj of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S3008")//ARRAY_AS should be a valid name
-    public final JsObj unionAll(final JsObj that,
+    public JsObj unionAll(final JsObj that,
                                 final TYPE ARRAY_AS
     ) {
         requireNonNull(that);

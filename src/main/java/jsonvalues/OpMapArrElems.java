@@ -5,6 +5,8 @@ import java.util.function.Function;
 
 final class OpMapArrElems {
 
+    private OpMapArrElems(){}
+
     static JsArray map(JsArray json,
                        final BiFunction<? super Integer, ? super JsPrimitive, ? extends JsValue> fn
                       ) {

@@ -5,26 +5,31 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 
 public class TestJson {
 
 
     @Test
-    public void testSet(){
+    public void testSet() {
 
         Json<?> json = JsObj.empty();
 
         JsPath path = JsPath.path("/a/b/c");
 
-        Assertions.assertEquals("a", json.set(path, JsStr.of("a")).getStr(path));
+        Assertions.assertEquals("a",
+                                json.set(path,
+                                         JsStr.of("a")).getStr(path));
 
 
         JsPath first = JsPath.path("/a/b/1");
         JsPath second = JsPath.path("/a/b/0");
         Json<?> json1 = json.set(first,
-                          JsStr.of("b"));
-        Assertions.assertEquals("b", json1.getStr(first));
-        Assertions.assertEquals(JsNull.NULL, json1.get(second));
+                                 JsStr.of("b"));
+        Assertions.assertEquals("b",
+                                json1.getStr(first));
+        Assertions.assertEquals(JsNull.NULL,
+                                json1.get(second));
 
     }
 
@@ -40,12 +45,15 @@ public class TestJson {
         );
 
         JsPath path = JsPath.path("/a,b");
-        Assertions.assertEquals(JsNothing.NOTHING,obj.set(path, JsNothing.NOTHING).get(path));
+        Assertions.assertEquals(JsNothing.NOTHING,
+                                obj.set(path,
+                                        JsNothing.NOTHING).get(path));
     }
 
     @Test
     public void testGetMethods() {
 
+        final Instant now = Instant.now();
         Json<JsObj> a = JsObj.of("a",
                                  JsInt.of(1),
                                  "b",
@@ -76,17 +84,25 @@ public class TestJson {
                                           ),
                                           "c",
                                           JsObj.empty()
-                                 )
+                                 ),
+                                 "j", JsInstant.of(now)
         );
 
-        Assertions.assertTrue(1 == a.getInt(JsPath.path("/a")));
-        Assertions.assertTrue(100 == a.getInt(JsPath.path("/apple"),()->100));
+        Assertions.assertEquals(now,
+                                 a.getInstant(JsPath.path("/j")));
+
+        Assertions.assertEquals(1,
+                                (int) a.getInt(JsPath.path("/a")));
+        Assertions.assertEquals(100,
+                                (int) a.getInt(JsPath.path("/apple"),
+                                               () -> 100));
 
         Assertions.assertEquals("default",
                                 a.getStr(JsPath.path("/a"),
                                          () -> "default"));
-        Assertions.assertTrue(1L == a.getLong(JsPath.path("/a"),
-                                              () -> 2L));
+        Assertions.assertEquals(1L,
+                                (long) a.getLong(JsPath.path("/a"),
+                                                 () -> 2L));
         Assertions.assertTrue(a.getBool(JsPath.path("/a"),
                                         () -> true));
         Assertions.assertEquals(JsArray.EMPTY,
@@ -109,27 +125,34 @@ public class TestJson {
                                 a.getBool(JsPath.path("/c"))
         );
         Assertions.assertEquals(true,
-                                a.getBool(JsPath.path("/hi"),()->true)
+                                a.getBool(JsPath.path("/hi"),
+                                          () -> true)
         );
-        Assertions.assertTrue(1L == a.getLong(JsPath.path("/d")));
-        Assertions.assertTrue(10L == a.getLong(JsPath.path("/dime"),()->10L));
+        Assertions.assertEquals(1L,
+                                (long) a.getLong(JsPath.path("/d")));
+        Assertions.assertEquals(10L,
+                                (long) a.getLong(JsPath.path("/dime"),
+                                                 () -> 10L));
 
         Assertions.assertTrue(1.5 == a.getDouble(JsPath.path("/e")));
-        Assertions.assertTrue(10.5 == a.getDouble(JsPath.path("/table"),()->10.5));
+        Assertions.assertTrue(10.5 == a.getDouble(JsPath.path("/table"),
+                                                  () -> 10.5));
 
         Assertions.assertEquals(BigInteger.TEN,
                                 a.getBigInt(JsPath.path("/f"))
         );
 
         Assertions.assertEquals(BigInteger.ONE,
-                                a.getBigInt(JsPath.path("/yes"),()->BigInteger.ONE)
+                                a.getBigInt(JsPath.path("/yes"),
+                                            () -> BigInteger.ONE)
         );
         Assertions.assertEquals(BigDecimal.TEN,
                                 a.getBigDec(JsPath.path("/g"))
         );
 
         Assertions.assertEquals(BigDecimal.ONE,
-                                a.getBigDec(JsPath.path("/bye"),()->BigDecimal.ONE)
+                                a.getBigDec(JsPath.path("/bye"),
+                                            () -> BigDecimal.ONE)
         );
         Assertions.assertEquals(JsArray.of(1,
                                            2,

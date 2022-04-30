@@ -7,6 +7,8 @@ import java.util.function.Function;
 
 final class OpMapObjObjs {
 
+    private OpMapObjObjs(){}
+
     static JsObj map(JsObj json,
                      final BiFunction<? super String, ? super JsObj, JsValue> fn
                     ) {

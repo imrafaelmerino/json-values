@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import java.io.UnsupportedEncodingException;
 
 /**
  Exception that models an internal error made by a developer of json-values. An issue in GitHub should be open reporting
@@ -24,11 +23,6 @@ final class JsValuesInternalError extends RuntimeException {
                                                        option
                                               ));
     }
-
-    static JsValuesInternalError encodingNotSupported(final UnsupportedEncodingException e) {
-        return new JsValuesInternalError(e);
-    }
-
 
     static JsValuesInternalError tokenNotExpected(String token) {
         return new JsValuesInternalError(String.format("token %s not expected during parsing",

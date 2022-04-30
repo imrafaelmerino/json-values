@@ -11,7 +11,7 @@ import java.util.function.Function;
  - get: S      => Optional[T]
  - set: (T, S) => S
  }
- A Optional could also be defined as a weaker Lens and weaker Prism
+ An Optional could also be defined as a weaker Lens and weaker Prism
 
  @param <S> the source of an optional
  @param <T> the target of an optional */
@@ -27,7 +27,7 @@ public class Option<S, T> {
     public final Function<T, Function<S, S>> set;
 
     /**
-     modify the target of an optional with a function if it exists, returing the same source otherwise
+     modify the target of an optional with a function if it exists, returning the same source otherwise
      */
     public final Function<Function<T, T>, Function<S, S>> modify;
 

@@ -82,7 +82,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
 
     /**
      Indicates whether some other object is "equal to" this json big decimal. Numbers of different
-     types are equals if the have the same value.
+     types are equals if they have the same value.
 
      @param that the reference object with which to compare.
      @return true if that is a JsNumber with the same value as this
@@ -101,7 +101,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     @return a string representation of the bigdec value
+     @return a string representation of the big-decimal value
      @see BigDecimal#toString() BigDecimal.toString
      */
     @Override
@@ -110,7 +110,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     returns true if this bigdecimal and the specified biginteger represent the same number
+     returns true if this big-decimal and the specified biginteger represent the same number
 
      @param jsBigInt the specified JsBigInt
      @return true if both JsValue are the same value
@@ -122,7 +122,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     returns true if this bigdecimal and the specified integer represent the same number
+     returns true if this big-decimal and the specified integer represent the same number
 
      @param jsInt the specified JsInt
      @return true if both JsValue are the same value
@@ -133,7 +133,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     returns true if this bigdecimal and the specified long represent the same number
+     returns true if this big-decimal and the specified long represent the same number
 
      @param jsLong the specified JsLong
      @return true if both JsValue are the same value
@@ -144,7 +144,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     returns true if this bigdecimal and the specified double represent the same number
+     returns true if this big-decimal and the specified double represent the same number
 
      @param jsDouble the specified JsDouble
      @return true if both JsValue are the same value
@@ -157,9 +157,9 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     Returns the value of this bigdecimal; or an empty optional if the value overflows an {@code biginteger}.
+     Returns the value of this big-decimal; or an empty optional if the value overflows an {@code biginteger}.
 
-     @return this bigdecimal as an biginteger wrapped in an OptionalInt
+     @return this big-decimal as a biginteger wrapped in an OptionalInt
      */
     Optional<BigInteger> bigIntegerExact() {
         try {
@@ -171,9 +171,9 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     Returns the value of this bigdecimal; or an empty optional if the value overflows an {@code int}.
+     Returns the value of this big-decimal; or an empty optional if the value overflows an {@code int}.
 
-     @return this bigdecimal as an int wrapped in an OptionalInt
+     @return this big-decimal as an int wrapped in an OptionalInt
      */
     OptionalInt intValueExact() {
         try {
@@ -184,9 +184,9 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     Returns the value of this bigdecimal; or an empty optional if the value overflows an {@code long}.
+     Returns the value of this big-decimal; or an empty optional if the value overflows an {@code long}.
 
-     @return this bigdecimal as an long wrapped in an OptionalLong
+     @return this big-decimal as a long wrapped in an OptionalLong
      */
     OptionalLong longValueExact() {
         try {
@@ -218,7 +218,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     Tests the value of this json bigdec on a predicate
+     Tests the value of this json big-decimal on a predicate
 
      @param predicate the predicate
      @return true if this big decimal satisfies the predicate
@@ -228,9 +228,9 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     Returns the value of this bigdecimal; or an empty optional if the value overflows an {@code double}.
+     Returns the value of this big-decimal; or an empty optional if the value overflows an {@code double}.
 
-     @return this bigdecimal as an double wrapped in an OptionalDouble
+     @return this big-decimal as a double wrapped in an OptionalDouble
      @see BigDecimal#doubleValue()
      */
     Optional<Double> doubleValueExact() {

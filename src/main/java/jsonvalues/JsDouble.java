@@ -11,14 +11,14 @@ import java.util.function.DoubleUnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- Represents an immutable json number of type double.
+ * Represents an immutable json number of type double.
  */
 public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     public static final int TYPE_ID = 5;
 
 
     /**
-     prism between the sum type JsValue and JsDouble
+     * prism between the sum type JsValue and JsDouble
      */
     public static final Prism<JsValue, Double> prism = new Prism<>(s ->
                                                                    {
@@ -31,7 +31,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
                                                                    JsDouble::of
     );
     /**
-     The double value.
+     * The double value.
      */
     public final double value;
 
@@ -50,21 +50,21 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     Compares two {@code JsDouble} objects numerically.
-
-     @see Double#compareTo(Double)
+     * Compares two {@code JsDouble} objects numerically.
+     *
+     * @see Double#compareTo(Double)
      */
     @Override
     public int compareTo(final JsDouble o) {
         return Double.compare(value,
                               requireNonNull(o).value
-                             );
+        );
     }
 
     /**
-     Returns the hashcode of this json double.
-
-     @return the hashcode of this JsDouble
+     * Returns the hashcode of this json double.
+     *
+     * @return the hashcode of this JsDouble
      */
     @Override
     public int hashCode() {
@@ -83,11 +83,11 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     Indicates whether some other object is "equal to" this json double. Numbers of different types
-     are equals if the have the same value.
-
-     @param that the reference object with which to compare.
-     @return true if that is a JsNumber with the same value as this JsDouble
+     * Indicates whether some other object is "equal to" this json double. Numbers of different types
+     * are equals if they have the same value.
+     *
+     * @param that the reference object with which to compare.
+     * @return true if that is a JsNumber with the same value as this JsDouble
      */
     @Override
     public boolean equals(final Object that) {
@@ -103,8 +103,8 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     @return a string representation of this object.
-     @see Double#toString() Double.toString
+     * @return a string representation of this object.
+     * @see Double#toString() Double.toString
      */
     @Override
     public String toString() {
@@ -112,30 +112,30 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     returns true if this double and the specified long represent the same number
-
-     @param jsLong the specified JsLong
-     @return true if both JsValue are the same value
+     * returns true if this double and the specified long represent the same number
+     *
+     * @param jsLong the specified JsLong
+     * @return true if both JsValue are the same value
      */
     private boolean longEquals(JsLong jsLong) {
         return requireNonNull(jsLong).doubleEquals(this);
     }
 
     /**
-     returns true if this double and the specified integer represent the same number
-
-     @param jsInt the specified JsInt
-     @return true if both JsValue are the same value
+     * returns true if this double and the specified integer represent the same number
+     *
+     * @param jsInt the specified JsInt
+     * @return true if both JsValue are the same value
      */
     private boolean intEquals(JsInt jsInt) {
         return requireNonNull(jsInt).doubleEquals(this);
     }
 
     /**
-     returns true if this double and the specified biginteger represent the same number
-
-     @param jsBigInt the specified JsBigInt
-     @return true if both JsValue are the same value
+     * returns true if this double and the specified biginteger represent the same number
+     *
+     * @param jsBigInt the specified JsBigInt
+     * @return true if both JsValue are the same value
      */
     boolean bigIntEquals(JsBigInt jsBigInt) {
 
@@ -145,55 +145,55 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     returns true if this double and the specified bigdecimal represent the same number
-
-     @param jsBigDec the specified JsBigDec
-     @return true if both JsValue are the same value
+     * returns true if this double and the specified big-decimal represent the same number
+     *
+     * @param jsBigDec the specified JsBigDec
+     * @return true if both JsValue are the same value
      */
     private boolean bigDecEquals(JsBigDec jsBigDec) {
         return requireNonNull(jsBigDec).doubleEquals(this);
     }
 
     /**
-     Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty
-     optional is returned if this {@code double} has a nonzero fractional part.
-
-     @return this double as an bigint wrapped in an Optional
+     * Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty
+     * optional is returned if this {@code double} has a nonzero fractional part.
+     *
+     * @return this double as a bigint wrapped in an Optional
      */
     Optional<BigInteger> bigIntegerExact() {
         try {
-            return Optional.ofNullable(BigDecimal.valueOf(value)
-                                                 .toBigIntegerExact());
+            return Optional.of(BigDecimal.valueOf(value)
+                                         .toBigIntegerExact());
         } catch (ArithmeticException e) {
             return Optional.empty();
         }
     }
 
     /**
-     Maps this json double into another one.
-
-     @param fn the mapping function
-     @return a new JsDouble
+     * Maps this json double into another one.
+     *
+     * @param fn the mapping function
+     * @return a new JsDouble
      */
     public JsDouble map(DoubleUnaryOperator fn) {
         return JsDouble.of(requireNonNull(fn).applyAsDouble(value));
     }
 
     /**
-     Static factory method to create a JsDouble from a double primitive type.
-
-     @param n the double primitive type
-     @return a new JsDouble
+     * Static factory method to create a JsDouble from a double primitive type.
+     *
+     * @param n the double primitive type
+     * @return a new JsDouble
      */
     public static JsDouble of(double n) {
         return new JsDouble(n);
     }
 
     /**
-     Tests the value of this json double on a predicate.
-
-     @param predicate the predicate
-     @return true if this double satisfies the predicate
+     * Tests the value of this json double on a predicate.
+     *
+     * @param predicate the predicate
+     * @return true if this double satisfies the predicate
      */
     public boolean test(DoublePredicate predicate) {
         return predicate.test(value);

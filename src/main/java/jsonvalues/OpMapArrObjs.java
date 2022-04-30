@@ -4,6 +4,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 
 final class OpMapArrObjs {
+    private OpMapArrObjs(){}
 
     static JsArray map(JsArray json,
                        final BiFunction<? super Integer, ? super JsObj, JsValue> fn

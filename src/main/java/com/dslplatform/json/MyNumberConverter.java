@@ -15,6 +15,7 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("rawtypes")
  abstract class MyNumberConverter {
 
+    private MyNumberConverter(){}
 
     private final static int[] DIGITS = new int[1000];
     private final static int[] DIFF = {111, 222, 444, 888, 1776};

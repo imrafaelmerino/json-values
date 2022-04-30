@@ -2,6 +2,9 @@ package jsonvalues;
 
 final class OpIntersectionJsons {
 
+    private OpIntersectionJsons(){}
+
+
     //squid:S1452 -> private method not exposed to the user. the wildcard allows to refactor some code, and Json<?> has only two possible types: JsObj or JsArr
     //squid:S00117 -> ARRAY_AS should be a valid name
     @SuppressWarnings({"squid:S1452", "squid:S00117"})

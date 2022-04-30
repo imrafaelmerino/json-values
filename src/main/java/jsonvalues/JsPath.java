@@ -287,7 +287,7 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * returns the last position <code>this</code> JsPath if it's not empty or a exception otherwise.
+     * returns the last position <code>this</code> JsPath if it's not empty or an exception otherwise.
      *
      * @return the last position the JsPath witch is an object of type Position representing and Index or a Key
      * @throws UserError if the JsPath is empty

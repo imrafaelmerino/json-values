@@ -5,18 +5,19 @@ import java.util.function.Predicate;
 
 final class OpFilterArrObjs {
 
+    private OpFilterArrObjs() {
+    }
 
     static JsArray filter(JsArray json,
                           final BiPredicate<? super Integer, ? super JsObj> predicate
-                         ) {
-
+    ) {
         for (int i = json.size() - 1; i >= 0; i--) {
             JsValue value = json.get(i);
-            if (value.isObj()) {
-                if (predicate.negate()
-                             .test(i,
-                                   value.toJsObj()
-                                  )) json = json.delete(i);
+            if (value.isObj() && predicate.negate()
+                                          .test(i,
+                                                value.toJsObj()
+                                          )) {
+                json = json.delete(i);
             }
 
         }
@@ -29,7 +30,7 @@ final class OpFilterArrObjs {
                              final JsPath startingPath,
                              final BiPredicate<? super JsPath, ? super JsObj> predicate
 
-                            ) {
+    ) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
 
@@ -40,21 +41,20 @@ final class OpFilterArrObjs {
                 if (predicate.negate()
                              .test(path,
                                    value.toJsObj()
-                                  )) json = json.delete(i);
+                             )) json = json.delete(i);
                 else json = json.set(i,
                                      OpFilterObjObjs.filterAll(value.toJsObj(),
                                                                path,
                                                                predicate
-                                                              )
-                                    );
-            }
-            else if (value.isArray()) {
+                                     )
+                );
+            } else if (value.isArray()) {
                 json = json.set(i,
                                 filterAll(value.toJsArray(),
                                           startingPath.index(i),
                                           predicate
-                                         )
-                               );
+                                )
+                );
             }
 
         }
@@ -73,7 +73,7 @@ final class OpFilterArrObjs {
             if (value.isObj()) {
                 if (predicate.negate()
                              .test(value.toJsObj()
-                                  )) json = json.delete(i);
+                             )) json = json.delete(i);
             }
 
         }
@@ -92,19 +92,18 @@ final class OpFilterArrObjs {
                 if (predicate.negate()
                              .test(
                                      value.toJsObj()
-                                  )) json = json.delete(i);
+                             )) json = json.delete(i);
                 else json = json.set(i,
                                      OpFilterObjObjs.filterAll(value.toJsObj(),
                                                                predicate
-                                                              )
-                                    );
-            }
-            else if (value.isArray()) {
+                                     )
+                );
+            } else if (value.isArray()) {
                 json = json.set(i,
                                 filterAll(value.toJsArray(),
                                           predicate
-                                         )
-                               );
+                                )
+                );
             }
 
         }

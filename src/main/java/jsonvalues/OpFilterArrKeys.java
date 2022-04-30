@@ -5,6 +5,7 @@ import java.util.function.Predicate;
 
 final class OpFilterArrKeys {
 
+    private OpFilterArrKeys(){}
 
     static JsArray filterAll(JsArray json,
                              final JsPath startingPath,

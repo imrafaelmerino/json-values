@@ -16,24 +16,24 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      BigInteger.TEN
-                                    )
-                          );
+                           )
+        );
 
-        Lens<JsObj, JsValue>    valueLens = JsObj.lens.value(path);
-        Lens<JsObj, BigInteger> lens     = JsObj.lens.integralNum(path);
-        Lens<JsObj, JsObj>      lenByKey = JsObj.lens.obj("a");
+        Lens<JsObj, JsValue> valueLens = JsObj.lens.value(path);
+        Lens<JsObj, BigInteger> lens = JsObj.lens.integralNum(path);
+        Lens<JsObj, JsObj> lenByKey = JsObj.lens.obj("a");
 
 
         Assertions.assertTrue(lenByKey.exists.apply(it -> it.containsKey("b"))
-                                      .test(a));
+                                             .test(a));
 
 
         Assertions.assertEquals(Optional.of(JsObj.of("b",
                                                      JsObj.of("c",
                                                               JsBigInt.of(BigInteger.TEN)))),
                                 lenByKey.find.apply(it -> it.containsKey("b"))
-                                      .apply(a)
-                               );
+                                             .apply(a)
+        );
 
         Assertions.assertEquals(BigInteger.TEN,
                                 lens.get.apply(a));
@@ -43,8 +43,8 @@ public class TestJsObjOptics {
                                      .set("b",
                                           JsObj.of("c",
                                                    JsBigInt.of(BigInteger.valueOf(10L))
-                                                  )
-                                         ),
+                                          )
+                                     ),
                                 lenByKey.get.apply(a));
 
 
@@ -70,8 +70,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      "abc"
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, String> lens = JsObj.lens.str(path);
 
@@ -101,8 +101,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      1.5
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, Double> lens = JsObj.lens.doubleNum(path);
 
@@ -131,8 +131,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      Long.MAX_VALUE
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, Long> lens = JsObj.lens.longNum(path);
 
@@ -161,8 +161,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      Integer.MAX_VALUE
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, Integer> lens = JsObj.lens.intNum(path);
 
@@ -191,8 +191,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      JsBigDec.of(new BigDecimal("1.11"))
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, BigDecimal> lens = JsObj.lens.decimalNum(path);
 
@@ -223,8 +223,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      JsBool.TRUE
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, Boolean> lens = JsObj.lens.bool(path);
 
@@ -254,8 +254,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      JsObj.empty()
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, JsObj> lens = JsObj.lens.obj(path);
 
@@ -265,25 +265,25 @@ public class TestJsObjOptics {
 
         JsObj b = lens.set.apply(JsObj.of("a",
                                           JsInt.of(1)
-                                         ))
+                      ))
                           .apply(a);
 
         Assertions.assertEquals(JsObj.of("a",
                                          JsInt.of(1)
-                                        ),
+                                ),
                                 lens.get.apply(b));
 
         JsObj c = lens.modify.apply(i -> i.set("b",
                                                JsStr.of("hi")
-                                              ))
+                      ))
                              .apply(b);
 
         Assertions.assertEquals(JsObj.of("a",
                                          JsInt.of(1)
-                                        )
+                                     )
                                      .set("b",
                                           JsStr.of("hi")
-                                         ),
+                                     ),
                                 lens.get.apply(c));
 
 
@@ -295,8 +295,8 @@ public class TestJsObjOptics {
         JsPath path = JsPath.path("/a/b/c");
         JsObj a = JsObj.of(JsPair.of(path,
                                      JsArray.empty()
-                                    )
-                          );
+                           )
+        );
 
         Lens<JsObj, JsArray> lens = JsObj.lens.array(path);
 
@@ -318,7 +318,7 @@ public class TestJsObjOptics {
         Assertions.assertEquals(JsArray.empty()
                                        .append(JsInt.of(1),
                                                JsInt.of(2)
-                                              ),
+                                       ),
                                 lens.get.apply(c));
 
 
@@ -331,27 +331,27 @@ public class TestJsObjOptics {
 
         Assertions.assertEquals(optionalStr.get.apply(JsObj.empty()),
                                 Optional.empty()
-                               );
+        );
         Assertions.assertEquals(optionalStr.get.apply(JsObj.empty()
                                                            .set("a",
                                                                 JsInt.of(1)
-                                                               )),
+                                                           )),
                                 Optional.empty()
-                               );
+        );
 
         JsObj s = JsObj.empty()
                        .set("a",
                             JsStr.of("a")
-                           );
+                       );
         Assertions.assertEquals(Optional.of("a"),
                                 optionalStr.get.apply(s)
-                               );
+        );
 
         Assertions.assertEquals(JsStr.of("A"),
                                 optionalStr.modify.apply(String::toUpperCase)
                                                   .apply(s)
                                                   .get("a")
-                               );
+        );
     }
 
 
@@ -362,27 +362,27 @@ public class TestJsObjOptics {
 
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()),
                                 Optional.empty()
-                               );
+        );
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()
                                                            .set("a",
                                                                 JsStr.of("1")
-                                                               )),
+                                                           )),
                                 Optional.empty()
-                               );
+        );
 
         JsObj s = JsObj.empty()
                        .set("a",
                             JsInt.of(1)
-                           );
+                       );
         Assertions.assertEquals(Optional.of(1),
                                 optionalInt.get.apply(s)
-                               );
+        );
 
         Assertions.assertEquals(JsInt.of(2),
                                 optionalInt.modify.apply(i -> i + 1)
                                                   .apply(s)
                                                   .get("a")
-                               );
+        );
     }
 
 
@@ -393,58 +393,59 @@ public class TestJsObjOptics {
 
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()),
                                 Optional.empty()
-                               );
+        );
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()
                                                            .set("a",
                                                                 JsStr.of("1")
-                                                               )),
+                                                           )),
                                 Optional.empty()
-                               );
+        );
 
         JsObj s = JsObj.empty()
                        .set("a",
                             JsLong.of(Long.MAX_VALUE)
-                           );
+                       );
         Assertions.assertEquals(Optional.of(Long.MAX_VALUE),
                                 optionalInt.get.apply(s)
-                               );
+        );
 
         Assertions.assertEquals(JsLong.of(Long.MAX_VALUE - 1),
                                 optionalInt.modify.apply(i -> i - 1)
                                                   .apply(s)
                                                   .get("a")
-                               );
+        );
     }
 
 
     @Test
     public void testDoubleOptional() {
 
-        Option<JsObj, Double> optionalInt = JsObj.optional.doubleNum("a");
+        Option<JsObj, Double> optionalInt =
+                JsObj.optional.doubleNum("a");
 
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()),
                                 Optional.empty()
-                               );
+        );
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()
                                                            .set("a",
                                                                 JsStr.of("1")
-                                                               )),
+                                                           )),
                                 Optional.empty()
-                               );
+        );
 
         JsObj s = JsObj.empty()
                        .set("a",
                             JsDouble.of(1.5)
-                           );
+                       );
         Assertions.assertEquals(Optional.of(1.5),
                                 optionalInt.get.apply(s)
-                               );
+        );
 
         Assertions.assertEquals(JsDouble.of(2.5),
                                 optionalInt.modify.apply(i -> i + 1)
                                                   .apply(s)
                                                   .get("a")
-                               );
+        );
     }
 
 
@@ -453,50 +454,70 @@ public class TestJsObjOptics {
 
         Option<JsObj, BigDecimal> optionalInt = JsObj.optional.decimalNum("a");
 
+        Option<JsObj, BigDecimal> optionalDec = JsObj.optional.decimalNum(JsPath.path("/b/c"));
+
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()),
                                 Optional.empty()
-                               );
+        );
+        Assertions.assertEquals(optionalDec.get.apply(JsObj.empty()),
+                                Optional.empty()
+        );
         Assertions.assertEquals(optionalInt.get.apply(JsObj.empty()
                                                            .set("a",
                                                                 JsStr.of("1")
-                                                               )),
+                                                           )),
                                 Optional.empty()
-                               );
+        );
+
+        Assertions.assertEquals(optionalDec.get.apply(JsObj.empty()
+                                                           .set("b",
+                                                                JsObj.of("c",
+                                                                          JsStr.of("hi"))
+                                                           )),
+                                Optional.empty()
+        );
 
         JsObj s = JsObj.empty()
                        .set("a",
                             JsBigDec.of(BigDecimal.valueOf(1.5))
-                           );
+                       ).set("b",JsObj.of("c",JsBigDec.of(BigDecimal.valueOf(0.5))));
         Assertions.assertEquals(Optional.of(BigDecimal.valueOf(1.5)),
                                 optionalInt.get.apply(s)
-                               );
+        );
+        Assertions.assertEquals(Optional.of(BigDecimal.valueOf(0.5)),
+                                optionalDec.get.apply(s)
+        );
 
         Assertions.assertEquals(JsBigDec.of(BigDecimal.valueOf(2.5)),
                                 optionalInt.modify.apply(i -> i.plus()
                                                                .add(BigDecimal.valueOf(1)))
                                                   .apply(s)
                                                   .get("a")
-                               );
+        );
     }
 
     @Test
-    public void testValueLenses(){
+    public void testValueLenses() {
 
-        Lens<JsObj, JsValue> b    = JsObj.lens.value(JsPath.path("/a/b"));
+        Lens<JsObj, JsValue> b = JsObj.lens.value(JsPath.path("/a/b"));
         Lens<JsObj, JsValue> head = JsObj.lens.value(JsPath.path("/a/c/0"));
 
         JsObj obj = JsObj.of("a",
-                            JsObj.of("b",
-                                     JsBool.TRUE,
-                                     "c",
-                                     JsArray.of(JsNull.NULL)
-                                    )
-                           );
-        Assertions.assertEquals(JsBool.TRUE,b.get.apply(obj));
-        Assertions.assertEquals(JsNull.NULL,head.get.apply(obj));
+                             JsObj.of("b",
+                                      JsBool.TRUE,
+                                      "c",
+                                      JsArray.of(JsNull.NULL)
+                             )
+        );
+        Assertions.assertEquals(JsBool.TRUE,
+                                b.get.apply(obj));
+        Assertions.assertEquals(JsNull.NULL,
+                                head.get.apply(obj));
 
-        Assertions.assertEquals(JsNothing.NOTHING,b.get.apply(JsObj.empty()));
-        Assertions.assertEquals(JsNothing.NOTHING,head.get.apply(JsObj.empty()));
+        Assertions.assertEquals(JsNothing.NOTHING,
+                                b.get.apply(JsObj.empty()));
+        Assertions.assertEquals(JsNothing.NOTHING,
+                                head.get.apply(JsObj.empty()));
 
     }
 }

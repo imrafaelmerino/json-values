@@ -7,10 +7,13 @@ import java.util.function.Predicate;
 
 final class OpFilterObjElems {
 
+    private OpFilterObjElems() {
+    }
+
     static JsObj filterAll(JsObj json,
                            final JsPath startingPath,
                            final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                          ) {
+    ) {
         for (final Tuple2<String, JsValue> next : json) {
             final JsPath headPath = startingPath.key(next._1);
 
@@ -21,23 +24,20 @@ final class OpFilterObjElems {
                                 filterAll(headElem.toJsObj(),
                                           headPath,
                                           predicate
-                                         )
-                               );
-            }
-            else if (headElem.isArray()) {
+                                )
+                );
+            } else if (headElem.isArray()) {
                 json = json.set(next._1,
                                 OpFilterArrElems
                                         .filterAll(headElem.toJsArray(),
                                                    headPath,
                                                    predicate
-                                                  )
-                               );
-            }
-
-            else if (predicate.negate()
-                              .test(headPath,
-                                    headElem.toJsPrimitive()
-                                   )) {
+                                        )
+                );
+            } else if (predicate.negate()
+                                .test(headPath,
+                                      headElem.toJsPrimitive()
+                                )) {
 
                 json = json.delete(next._1);
             }
@@ -50,17 +50,14 @@ final class OpFilterObjElems {
 
     static JsObj filter(JsObj json,
                         final BiPredicate<? super String, ? super JsPrimitive> predicate
-                       ) {
+    ) {
         for (final Tuple2<String, JsValue> next : json) {
             JsValue headElem = next._2;
-            if (headElem.isPrimitive()) {
-                if (predicate.negate()
-                             .test(next._1,
-                                   headElem.toJsPrimitive()
-                                  )) {
-
-                    json = json.delete(next._1);
-                }
+            if (headElem.isPrimitive() && predicate.negate()
+                                                   .test(next._1,
+                                                         headElem.toJsPrimitive()
+                                                   )) {
+                json = json.delete(next._1);
             }
 
         }
@@ -78,21 +75,18 @@ final class OpFilterObjElems {
                 json = json.set(next._1,
                                 filterAll(headElem.toJsObj(),
                                           predicate
-                                         )
-                               );
-            }
-            else if (headElem.isArray()) {
+                                )
+                );
+            } else if (headElem.isArray()) {
                 json = json.set(next._1,
                                 OpFilterArrElems
                                         .filterAll(headElem.toJsArray(),
                                                    predicate
-                                                  )
-                               );
-            }
-
-            else if (predicate.negate()
-                              .test(headElem.toJsPrimitive()
-                                   )) {
+                                        )
+                );
+            } else if (predicate.negate()
+                                .test(headElem.toJsPrimitive()
+                                )) {
 
                 json = json.delete(next._1);
             }
@@ -106,13 +100,10 @@ final class OpFilterObjElems {
                         final Predicate<? super JsPrimitive> predicate) {
         for (final Tuple2<String, JsValue> next : json) {
             JsValue headElem = next._2;
-            if (headElem.isPrimitive()) {
-                if (predicate.negate()
-                             .test(headElem.toJsPrimitive()
-                                  )) {
-
+            if (headElem.isPrimitive() && predicate.negate()
+                                                   .test(headElem.toJsPrimitive()
+                                                   )) {
                     json = json.delete(next._1);
-                }
             }
 
         }

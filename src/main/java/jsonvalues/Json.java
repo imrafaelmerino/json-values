@@ -541,12 +541,6 @@ public interface Json<T extends Json<T>> extends JsValue {
         return !isEmpty();
     }
 
-    default T map(final UnaryOperator<T> fn) {
-        //this is an instance of T (recursive type)
-        @SuppressWarnings("unchecked") T o = fn.apply((T) this);
-        return o;
-    }
-
 
     /**
      * Maps the values in the first level of this json.

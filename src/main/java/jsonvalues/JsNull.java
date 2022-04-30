@@ -2,7 +2,7 @@ package jsonvalues;
 
 
 /**
- Represents null, which a valid json value. It's a singleton, only the instance JsNull.NULL exists.
+ Represents null, which a valid json value. It's a singleton, only the instance {@link jsonvalues.JsNull#NULL} exists.
  */
 public final class JsNull extends JsPrimitive {
     public static final int TYPE_ID = 1;

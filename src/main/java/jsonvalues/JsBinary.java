@@ -5,7 +5,7 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- Represents an array of bytes. This type is not part of the Json specification. It it serialized into
+ Represents an array of bytes. This type is not part of the Json specification. It is serialized into
  a string using Base64 encoding scheme. A JsBinary and a JsStr are equals if the string is the array
  of bytes encoded in base64.
  {@code

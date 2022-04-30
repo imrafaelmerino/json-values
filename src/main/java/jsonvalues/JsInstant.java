@@ -9,12 +9,12 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- Represents an immutable instant. An instant is not part of the Json specification. It it serialized into
- its a string representation using ISO-8601 representation. A JsInstant and a JsStr are equals
+ Represents an immutable instant. An instant is not part of the Json specification. It is serialized into
+ it's a string representation using ISO-8601 representation. A JsInstant and a JsStr are equals
  if both represent the same date.
  {@code
  Instant a = Instant.now();
- JsStr.of(a.toString()).equals(JsIntant.of(a)) // true
+ JsStr.of(a.toString()).equals(JsInstant.of(a)) // true
  }
  */
 public final class JsInstant  extends JsPrimitive implements Comparable<JsInstant>{

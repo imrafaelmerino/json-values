@@ -72,7 +72,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
 
     /**
      Indicates whether some other object is "equal to" this json integer. Numbers of different types
-     are equals if the have the same value.
+     are equals if they have the same value.
 
      @param that the reference object with which to compare.
      @return true if that is a JsNumber with the same value as this JsInt.
@@ -121,7 +121,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     }
 
     /**
-     returns true if this integer and the specified bigdecimal represent the same number
+     returns true if this integer and the specified big-decimal represent the same number
 
      @param jsBigDec the specified JsBigDec
      @return true if both JsValue are the same value

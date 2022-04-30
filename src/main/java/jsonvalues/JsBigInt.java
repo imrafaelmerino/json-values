@@ -73,7 +73,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
 
     /**
      * Indicates whether some other object is "equal to" this json big integer. Numbers of different
-     * types are equals if the have the same value.
+     * types are equals if they have the same value.
      *
      * @param that the reference object with which to compare.
      * @return true if that is a JsNumber with the same value as this
@@ -123,7 +123,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     * returns true if this bigint and the specified bigdecimal represent the same number
+     * returns true if this bigint and the specified big-decimal represent the same number
      *
      * @param jsBigDec the specified JsBigDec
      * @return true if both JsValue are the same value
@@ -159,7 +159,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     /**
      * Returns the value of this biginteger; or an empty optional if the value overflows an {@code long}.
      *
-     * @return this biginteger as an long wrapped in an OptionalLong
+     * @return this biginteger as a long wrapped in an OptionalLong
      */
     Optional<Long> longValueExact() {
         try {

@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  - get: S      => O i.e. from an S, we can extract an O
  - set: (O, S) => S i.e. from an S and a O, we obtain a S. Unless a prism, to go back to S we need another S.
  }
- Typically a Lens can be defined between a Product (e.g. record, tuple) and one of its component.
+ Typically, a Lens can be defined between a Product (e.g. record, tuple) and one of its component.
  Given a lens there are essentially three things you might want to do:
  -view the subpart
  -modify the whole by changing the subpart

@@ -17,7 +17,7 @@ final class MatchExp {
 
 
     /**
-     return a matching expression to extract objs and arrays out of json elements.
+     return a matching expression to extract obs and arrays out of json elements.
 
      @param ifObj   function to be applied if the JsValue is a JsObj
      @param ifArr   function to be applied if the JsValue is not a JsArr
@@ -39,7 +39,7 @@ final class MatchExp {
     }
 
     /**
-     return a matching expression to extract jsons out of json elements.
+     return a matching expression to extract json out of json elements.
 
      @param ifJson    function to be applied if the JsValue is a Json
      @param ifNotJson function to be applied if the JsValue is not a Json

@@ -171,8 +171,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param others more optional JsValue to be added to the back
      * @return a new JsArray
      */
-    public final JsArray append(final JsValue e,
-                                final JsValue... others
+    public JsArray append(final JsValue e,
+                          final JsValue... others
     ) {
         Vector<JsValue> acc = this.seq.append(requireNonNull(e));
         for (JsValue other : requireNonNull(others)) acc = acc.append(requireNonNull(other));
@@ -593,7 +593,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param array the JsArray of elements to be added to the back
      * @return a new JsArray
      */
-    public final JsArray appendAll(final JsArray array) {
+    public JsArray appendAll(final JsArray array) {
         return appendAllBack(this,
                              requireNonNull(array)
         );
@@ -1089,7 +1089,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final boolean containsValue(final JsValue el) {
+    public boolean containsValue(final JsValue el) {
         return seq.contains(requireNonNull(el));
     }
 
@@ -1104,7 +1104,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                 .get(tail);
     }
 
-    public final JsArray filterValues(final BiPredicate<? super Integer, ? super JsPrimitive> filter) {
+    public JsArray filterValues(final BiPredicate<? super Integer, ? super JsPrimitive> filter) {
         return OpFilterArrElems.filter(this,
                                        requireNonNull(filter)
         );
@@ -1118,7 +1118,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
+    public JsArray filterAllValues(final BiPredicate<? super JsPath, ? super JsPrimitive> filter) {
         return OpFilterArrElems.filterAll(this,
                                           JsPath.empty(),
                                           requireNonNull(filter)
@@ -1132,7 +1132,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
-    public final JsArray filterKeys(final BiPredicate<? super String, ? super JsValue> filter) {
+    public JsArray filterKeys(final BiPredicate<? super String, ? super JsValue> filter) {
         return this;
     }
 
@@ -1142,7 +1142,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
+    public JsArray filterAllKeys(final BiPredicate<? super JsPath, ? super JsValue> filter) {
         return OpFilterArrKeys.filterAll(this,
                                          JsPath.empty(),
                                          filter
@@ -1156,7 +1156,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
-    public final JsArray filterObjs(final BiPredicate<? super Integer, ? super JsObj> filter) {
+    public JsArray filterObjs(final BiPredicate<? super Integer, ? super JsObj> filter) {
         return OpFilterArrObjs.filter(this,
                                       requireNonNull(filter)
         );
@@ -1170,7 +1170,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
+    public JsArray filterAllObjs(final BiPredicate<? super JsPath, ? super JsObj> filter) {
         return OpFilterArrObjs.filterAll(this,
                                          JsPath.empty(),
                                          requireNonNull(filter)
@@ -1185,11 +1185,11 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final boolean isEmpty() {
+    public boolean isEmpty() {
         return seq.isEmpty();
     }
 
-    public final JsArray mapValues(final BiFunction<? super Integer, ? super JsPrimitive, ? extends JsValue> fn) {
+    public JsArray mapValues(final BiFunction<? super Integer, ? super JsPrimitive, ? extends JsValue> fn) {
         return OpMapArrElems.map(this,
                                  requireNonNull(fn)
         );
@@ -1219,7 +1219,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
-    public final JsArray mapKeys(final BiFunction<? super String, ? super JsValue, String> fn) {
+    public JsArray mapKeys(final BiFunction<? super String, ? super JsValue, String> fn) {
         return this;
     }
 
@@ -1229,7 +1229,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
+    public JsArray mapAllKeys(final BiFunction<? super JsPath, ? super JsValue, String> fn) {
         return OpMapArrKeys.mapAll(this,
                                    requireNonNull(fn),
                                    JsPath.empty()
@@ -1244,7 +1244,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
-    public final JsArray mapObjs(final BiFunction<? super Integer, ? super JsObj, JsValue> fn) {
+    public JsArray mapObjs(final BiFunction<? super Integer, ? super JsObj, JsValue> fn) {
         return OpMapArrObjs.map(this,
                                 requireNonNull(fn)
         );
@@ -1259,7 +1259,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
+    public JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
         return OpMapArrObjs.mapAll(this,
                                    requireNonNull(fn),
                                    JsPath.empty()
@@ -1291,9 +1291,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
-    public final JsArray set(final int index,
-                             final JsValue value,
-                             final JsValue padElement
+    public JsArray set(final int index,
+                       final JsValue value,
+                       final JsValue padElement
     ) {
 
         requireNonNull(value);
@@ -1310,9 +1310,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray set(final JsPath path,
-                             final JsValue value,
-                             final JsValue padElement
+    public JsArray set(final JsPath path,
+                       final JsValue value,
+                       final JsValue padElement
     ) {
 
         requireNonNull(value);
@@ -1368,9 +1368,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
-    public final <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                        final BiFunction<? super Integer, ? super JsPrimitive, R> map,
-                                        final BiPredicate<? super Integer, ? super JsPrimitive> predicate
+    public <R> Optional<R> reduce(final BinaryOperator<R> op,
+                                  final BiFunction<? super Integer, ? super JsPrimitive, R> map,
+                                  final BiPredicate<? super Integer, ? super JsPrimitive> predicate
     ) {
         return OpMapReduce.reduceArr(this,
                                      requireNonNull(predicate),
@@ -1394,9 +1394,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final <R> Optional<R> reduceAll(final BinaryOperator<R> op,
-                                           final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+    public <R> Optional<R> reduceAll(final BinaryOperator<R> op,
+                                     final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                                     final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
     ) {
         return OpMapReduce.reduceAllArr(this,
                                         JsPath.fromIndex(-1),
@@ -1421,7 +1421,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final JsArray delete(final JsPath path) {
+    public JsArray delete(final JsPath path) {
         if (requireNonNull(path).isEmpty()) return this;
         return path.head()
                    .match(head -> this,
@@ -1448,7 +1448,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final int size() {
+    public int size() {
         return seq.size();
     }
 
@@ -1516,7 +1516,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     @Override
     @SuppressWarnings("squid:S1206")
-    public final int hashCode() {
+    public int hashCode() {
         int result = hashcode;
         if (result == 0)
             hashcode = result = seq.hashCode();
@@ -1524,7 +1524,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final boolean equals(final Object that) {
+    public boolean equals(final Object that) {
         if (!(that instanceof JsArray)) return false;
         if (this == that) return true;
         final Vector<JsValue> thatSeq = ((JsArray) that).seq;
@@ -1544,7 +1544,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * // Single-check idiom  Item 83 from effective java
      */
     @Override
-    public final String toString() {
+    public String toString() {
         String result = str;
         if (result == null)
             str = result = new String(MyDslJson.INSTANCE.serialize(this),
@@ -1559,7 +1559,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return the first JsValue of this JsArray
      * @throws UserError if this JsArray is empty
      */
-    public final JsValue head() {
+    public JsValue head() {
         return seq.head();
     }
 
@@ -1569,7 +1569,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a JsArray consisting of all the elements of this JsArray except the head
      * @throws UserError if this JsArray is empty.
      */
-    public final JsArray tail() {
+    public JsArray tail() {
         return new JsArray(seq.tail());
     }
 
@@ -1579,7 +1579,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return JsArray with all the JsValue except the last one
      * @throws UserError if this JsArray is empty
      */
-    public final JsArray init() {
+    public JsArray init() {
         return new JsArray(seq.init());
     }
 
@@ -1596,8 +1596,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    public final JsArray intersection(final JsArray that,
-                                      final TYPE ARRAY_AS
+    public JsArray intersection(final JsArray that,
+                                final TYPE ARRAY_AS
     ) {
         return intersection(this,
                             requireNonNull(that),
@@ -1630,7 +1630,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public final Iterator<JsValue> iterator() {
+    public Iterator<JsValue> iterator() {
         return seq.iterator();
     }
 
@@ -1640,7 +1640,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return the last JsValue of this JsArray
      * @throws UserError if this JsArray is empty
      */
-    public final JsValue last() {
+    public JsValue last() {
 
         return seq.last();
     }
@@ -1652,8 +1652,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param others more optional JsValue to be added to the front
      * @return a new JsArray
      */
-    public final JsArray prepend(final JsValue e,
-                                 final JsValue... others
+    public JsArray prepend(final JsValue e,
+                           final JsValue... others
     ) {
         Vector<JsValue> acc = seq;
         for (int i = 0, othersLength = requireNonNull(others).length; i < othersLength; i++) {
@@ -1669,7 +1669,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param array the JsArray of elements to be added to the front
      * @return a new JsArray
      */
-    public final JsArray prependAll(final JsArray array) {
+    public JsArray prependAll(final JsArray array) {
         return appendAllFront(this,
                               requireNonNull(array)
         );
@@ -1680,23 +1680,21 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     // curly braces makes IntelliJ to format the code in a more legible way
     private BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsValue> pseq) {
         return (index, tail) ->
-        {
-            return index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
-                                                                    .isPrimitive()
-                    ||
-                    (tail.head()
-                         .isKey() && pseq.get(index)
-                                         .isArray()
-                    )
-                    ||
-                    (tail.head()
-                         .isIndex() && pseq.get(index)
-                                           .isObj()
-                    );
-        };
+                index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
+                                                                 .isPrimitive()
+                        ||
+                        (tail.head()
+                             .isKey() && pseq.get(index)
+                                             .isArray()
+                        )
+                        ||
+                        (tail.head()
+                             .isIndex() && pseq.get(index)
+                                               .isObj()
+                        );
     }
 
-    public final JsArray delete(final int index) {
+    public JsArray delete(final int index) {
         if (index < -1) throw new IllegalArgumentException("index must be >= -1");
         final int maxIndex = seq.size() - 1;
         if (index > maxIndex) return this;
@@ -1718,8 +1716,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a new json array of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    public final JsArray union(final JsArray that,
-                               final JsArray.TYPE ARRAY_AS
+    public JsArray union(final JsArray that,
+                         final JsArray.TYPE ARRAY_AS
     ) {
         return union(this,
                      requireNonNull(that),
@@ -1737,7 +1735,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a new JsArray of the same type as the inputs (mutable or immutable)
      */
     @SuppressWarnings("squid:S00100")
-    public final JsArray unionAll(final JsArray that
+    public JsArray unionAll(final JsArray that
     ) {
         return unionAll(this,
                         requireNonNull(that)

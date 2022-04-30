@@ -10,8 +10,8 @@ public final class JsError {
 
     public JsError(final JsValue value,
                    final ERROR_CODE code) {
-        this.code = code;
-        this.value = value;
+        this.code = Objects.requireNonNull(code);
+        this.value = Objects.requireNonNull(value);
     }
 
 

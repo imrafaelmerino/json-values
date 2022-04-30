@@ -8,6 +8,8 @@ import java.util.function.*;
 
 final class OpMapReduce {
 
+    private OpMapReduce(){}
+
     static <T> Optional<T> reduceAllObj(final JsObj obj,
                                         final Predicate<? super JsPrimitive> predicate,
                                         final Function<? super JsPrimitive, T> map,

@@ -1,6 +1,5 @@
 package com.dslplatform.json;
 
-import io.vavr.collection.Iterator;
 import io.vavr.collection.Map;
 import io.vavr.collection.Vector;
 import jsonvalues.JsObj;
