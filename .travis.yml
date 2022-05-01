@@ -36,7 +36,7 @@ deploy:
 addons:
   sonarcloud:
     organization: "imrafaelmerino"
-script:
-  - mvn clean verify sonar:sonar  -Pcoverage -Dsonar.projectKey=imrafaelmerino_json-values
 
+script:
+  - sonar-scanner -Dsonar.verbose=true -X
 
