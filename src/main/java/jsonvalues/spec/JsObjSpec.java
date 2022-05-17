@@ -4102,14 +4102,26 @@ public final class JsObjSpec implements JsSpec {
         return optionalFields;
     }
 
-    public JsObjSpec setOptionals(String field,
-                                  String... fields) {
+    public JsObjSpec setOptionals(final String field,
+                                  final String... fields) {
         JsObjSpec spec = new JsObjSpec(bindings,
                                        nullable,
                                        strict);
-        spec.optionalFields.add(field);
-        spec.optionalFields.addAll(Arrays.stream(fields).collect(Collectors.toList()));
+        spec.optionalFields
+                .add(requireNonNull(field));
+        spec.optionalFields
+                .addAll(Arrays.stream(requireNonNull(fields))
+                              .collect(Collectors.toList()));
         return spec;
+    }
+
+    public JsObjSpec setOptionals(final List<String> optionals) {
+        JsObjSpec spec = new JsObjSpec(bindings,
+                                       nullable,
+                                       strict);
+        spec.optionalFields.addAll(requireNonNull(optionals));
+        return spec;
+
     }
 
     @Override
@@ -4126,7 +4138,6 @@ public final class JsObjSpec implements JsSpec {
         Map<String, JsSpecParser> parsers = new LinkedHashMap<>();
         List<String> requiredKeys = new ArrayList<>();
         for (String key : bindings.keySet()) {
-
             JsSpec spec = bindings.get(key);
             if (!optionalFields.contains(key)) requiredKeys.add(key);
             parsers.put(key,

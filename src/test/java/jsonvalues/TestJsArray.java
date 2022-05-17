@@ -32,11 +32,11 @@ public class TestJsArray {
                                     JsInt.of(0)
                                );
         Assertions.assertEquals(0,
-                                (int) array.getInt(0));
+                                array.getInt(0));
         Assertions.assertEquals(0,
-                                (int) array.getInt(1));
+                                array.getInt(1));
         Assertions.assertEquals(1,
-                                (int) array.getInt(2));
+                                array.getInt(2));
 
 
     }
@@ -121,10 +121,10 @@ public class TestJsArray {
     public void test_create_json_array_from_one_or_more_pairs() {
 
         final JsArray arr = JsArray.of(new Pair<>(JsPath.fromIndex(0),
-                                                 JsInt.of(1)
+                                                  JsInt.of(1)
                                        ),
                                        new Pair<>(JsPath.fromIndex(2),
-                                                 JsInt.of(3)
+                                                  JsInt.of(3)
                                        )
         );
         Assertions.assertEquals(JsArray.of(JsInt.of(1),
@@ -135,10 +135,10 @@ public class TestJsArray {
         );
 
         final JsArray arr1 = JsArray.of(new Pair<>(path("/0/a"),
-                                                  JsInt.of(1)
+                                                   JsInt.of(1)
                                         ),
                                         new Pair<>(path("/2/b"),
-                                                  JsInt.of(3)
+                                                   JsInt.of(3)
                                         )
         );
 
@@ -963,9 +963,9 @@ public class TestJsArray {
 
         Assertions.assertTrue(c.streamAll()
                                .filter(p -> p.first().last()
-                                                  .isKey())
+                                             .isKey())
                                .map(it -> it.first().last()
-                                                 .asKey().name)
+                                            .asKey().name)
                                .allMatch(key -> key.toUpperCase()
                                                    .equals(key)));
 
@@ -1013,9 +1013,9 @@ public class TestJsArray {
 
         Assertions.assertTrue(c.streamAll()
                                .filter(p -> p.first().last()
-                                                  .isKey())
+                                             .isKey())
                                .map(it -> it.first().last()
-                                                 .asKey().name)
+                                            .asKey().name)
                                .allMatch(key -> key.toUpperCase()
                                                    .equals(key)));
 
@@ -1023,7 +1023,6 @@ public class TestJsArray {
 
     @Test
     public void test_get_by_index() {
-
         JsArray a = JsArray.of(JsInt.of(1),
                                JsStr.of("a"),
                                JsLong.of(Long.MAX_VALUE),
@@ -1040,8 +1039,7 @@ public class TestJsArray {
         Assertions.assertNull(a.getBigDec(-1));
 
         Assertions.assertNull(a.getDouble(1));
-        Assertions.assertTrue(a.getDouble(5) == 3.5
-        );
+        Assertions.assertTrue(a.getDouble(5) == 3.5);
         Assertions.assertNull(a.getDouble(-1));
 
         Assertions.assertNull(a.getBigInt(1));
@@ -1229,6 +1227,76 @@ public class TestJsArray {
         Assertions.assertEquals(array,
                                 array.filterKeys((k, v) -> false)
         );
+    }
+
+    @Test
+    public void getPrimitivesWithDefaultValue() {
+
+        Instant now = Instant.now();
+
+        byte[] bytes = "hi".getBytes(StandardCharsets.UTF_8);
+
+        JsArray array = JsArray.of(JsObj.of("a",
+                                            JsStr.of("hi")));
+        JsObj obj = JsObj.of("a",
+                             NULL);
+        JsArray arr = JsArray.of(JsInt.of(1),
+                                 array,
+                                 JsLong.of(Long.MAX_VALUE),
+                                 TRUE,
+                                 JsStr.of("bye!"),
+                                 JsBigDec.of(BigDecimal.valueOf(1.5d)),
+                                 JsDouble.of(0.5),
+                                 JsInstant.of(now),
+                                 JsBinary.of(bytes),
+                                 JsBigInt.of(BigInteger.valueOf(Integer.MAX_VALUE)),
+                                 obj
+        );
+
+        Assertions.assertEquals(1,
+                                arr.getInt(0,
+                                           () -> 0));
+
+        Assertions.assertEquals(array,
+                                arr.getArray(1,
+                                             JsArray::empty));
+
+        Assertions.assertEquals(Long.MAX_VALUE,
+                                arr.getLong(2,
+                                            () -> 0L));
+
+        Assertions.assertEquals(true,
+                                arr.getBool(3,
+                                            () -> false));
+
+        Assertions.assertEquals("bye!",
+                                arr.getStr(4,
+                                           () -> "hi!"));
+
+        Assertions.assertEquals(BigDecimal.valueOf(1.5d),
+                                arr.getBigDec(5,
+                                              () -> BigDecimal.ZERO));
+
+        Assertions.assertEquals(0.5d,
+                                arr.getDouble(6,
+                                              () -> 0.5d));
+
+        Assertions.assertEquals(now,
+                                arr.getInstant(7,
+                                               Instant::now));
+
+        Assertions.assertEquals(bytes,
+                                arr.getBinary(8,
+                                              () -> bytes));
+
+        Assertions.assertEquals(BigInteger.valueOf(Integer.MAX_VALUE),
+                                arr.getBigInt(9,
+                                              () -> BigInteger.ONE));
+
+        Assertions.assertEquals(obj,
+                                arr.getObj(10,
+                                           () -> obj));
+
     }
 
 
