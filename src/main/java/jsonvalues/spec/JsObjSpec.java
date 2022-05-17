@@ -4137,11 +4137,11 @@ public final class JsObjSpec implements JsSpec {
     public JsSpecParser parser() {
         Map<String, JsSpecParser> parsers = new LinkedHashMap<>();
         List<String> requiredKeys = new ArrayList<>();
-        for (String key : bindings.keySet()) {
-            JsSpec spec = bindings.get(key);
+        for (Map.Entry<String, JsSpec> entry : bindings.entrySet()) {
+            String key = entry.getKey();
             if (!optionalFields.contains(key)) requiredKeys.add(key);
             parsers.put(key,
-                        spec.parser()
+                        entry.getValue().parser()
             );
         }
 
