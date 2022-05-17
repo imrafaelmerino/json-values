@@ -9,10 +9,9 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 class IsJsObjSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    IsJsObjSpec(final boolean required,
-                final boolean nullable
+    IsJsObjSpec(final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -21,8 +20,7 @@ class IsJsObjSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
     @Override
     public JsSpec nullable() {
-        return new IsJsObjSpec(required,
-                               true
+        return new IsJsObjSpec(true
         );
     }
 
@@ -36,7 +34,6 @@ class IsJsObjSpec extends AbstractPredicateSpec implements JsValuePredicate {
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isObj,
                                   OBJ_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

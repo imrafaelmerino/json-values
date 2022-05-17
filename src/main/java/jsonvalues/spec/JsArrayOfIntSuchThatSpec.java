@@ -13,13 +13,12 @@ class JsArrayOfIntSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     private final JsArrayOfIntSpec isArrayOfInt;
 
     JsArrayOfIntSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
-                             final boolean required,
                              final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
-        this.isArrayOfInt = new JsArrayOfIntSpec(required,
+        this.isArrayOfInt = new JsArrayOfIntSpec(
                                                  nullable
         );
         this.predicate = predicate;
@@ -31,7 +30,6 @@ class JsArrayOfIntSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     @Override
     public JsSpec nullable() {
         return new JsArrayOfIntSuchThatSpec(predicate,
-                                            required,
                                             true
         );
     }

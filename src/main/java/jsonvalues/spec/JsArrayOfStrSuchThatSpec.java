@@ -13,13 +13,12 @@ class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     private final JsArrayOfStrSpec isArrayOfString;
 
     JsArrayOfStrSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
-                             final boolean required,
                              final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
-        this.isArrayOfString = new JsArrayOfStrSpec(required,
+        this.isArrayOfString = new JsArrayOfStrSpec(
                                                     nullable
         );
         this.predicate = predicate;
@@ -28,7 +27,6 @@ class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     @Override
     public JsSpec nullable() {
         return new JsArrayOfStrSuchThatSpec(predicate,
-                                            required,
                                             true
         );
     }

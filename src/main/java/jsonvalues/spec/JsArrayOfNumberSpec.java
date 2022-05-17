@@ -9,10 +9,10 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfNumberSpec(final boolean required,
+    JsArrayOfNumberSpec(
                         final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -21,7 +21,7 @@ class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredic
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfNumberSpec(required,
+        return new JsArrayOfNumberSpec(
                                        true
         );
     }
@@ -39,7 +39,6 @@ class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredic
                                                     else return Optional.of(new JsError(v,
                                                                                         NUMBER_EXPECTED));
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

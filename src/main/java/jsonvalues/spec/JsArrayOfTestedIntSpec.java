@@ -13,10 +13,9 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
     final IntFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedIntSpec(final IntFunction<Optional<JsError>> predicate,
-                           final boolean required,
                            final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -26,7 +25,6 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedIntSpec(predicate,
-                                          required,
                                           true
         );
     }
@@ -50,7 +48,6 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

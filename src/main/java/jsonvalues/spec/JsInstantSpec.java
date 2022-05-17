@@ -9,10 +9,9 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
 class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsInstantSpec(final boolean required,
-                  final boolean nullable
+    JsInstantSpec(final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -20,7 +19,7 @@ class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
     @Override
     public JsSpec nullable() {
-        return new JsInstantSpec(required,
+        return new JsInstantSpec(
                                  true
         );
     }
@@ -35,7 +34,6 @@ class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isInstant,
                                   INSTANT_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

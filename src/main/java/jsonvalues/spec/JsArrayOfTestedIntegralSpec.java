@@ -14,10 +14,9 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     private final Function<BigInteger, Optional<JsError>> predicate;
 
     JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<JsError>> predicate,
-                                final boolean required,
                                 final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -26,7 +25,6 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedIntegralSpec(predicate,
-                                               required,
                                                true
         );
     }
@@ -48,7 +46,6 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

@@ -14,10 +14,9 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     private final Function<JsNumber, Optional<JsError>> predicate;
 
     JsArrayOfTestedNumberSpec(final Function<JsNumber, Optional<JsError>> predicate,
-                              final boolean required,
                               final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -26,7 +25,6 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedNumberSpec(predicate,
-                                             required,
                                              true
         );
     }
@@ -48,7 +46,6 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

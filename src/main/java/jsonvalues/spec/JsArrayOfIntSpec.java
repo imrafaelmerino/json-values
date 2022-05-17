@@ -11,10 +11,10 @@ import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
 
 
-    JsArrayOfIntSpec(final boolean required,
+    JsArrayOfIntSpec(
                      final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -23,7 +23,7 @@ class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntSpec(required,
+        return new JsArrayOfIntSpec(
                                     true
         );
     }
@@ -41,7 +41,6 @@ class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate
                                                     else return Optional.of(new JsError(v,
                                                                                         INT_EXPECTED));
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

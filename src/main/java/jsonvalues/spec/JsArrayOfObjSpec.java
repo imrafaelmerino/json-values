@@ -9,10 +9,10 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 class JsArrayOfObjSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfObjSpec(final boolean required,
+    JsArrayOfObjSpec(
                      final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -20,7 +20,7 @@ class JsArrayOfObjSpec extends AbstractPredicateSpec implements JsValuePredicate
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfObjSpec(required,
+        return new JsArrayOfObjSpec(
                                     true
         );
     }
@@ -39,7 +39,6 @@ class JsArrayOfObjSpec extends AbstractPredicateSpec implements JsValuePredicate
                                                     else return Optional.of(new JsError(v,
                                                                                         OBJ_EXPECTED));
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

@@ -23,127 +23,119 @@ public final class JsSpecs {
     /**
      * non-nullable string
      */
-    public static final JsSpec str = new JsStrSpec(true,
+    public static final JsSpec str = new JsStrSpec(
                                                    false
     );
     /**
      * non-nullable number
      */
-    public static final JsSpec number = new JsNumberSpec(true,
+    public static final JsSpec number = new JsNumberSpec(
                                                          false
     );
     /**
      * non-nullable boolean
      */
-    public static final JsSpec bool = new JsBooleanSpec(true,
+    public static final JsSpec bool = new JsBooleanSpec(
                                                         false
     );
     /**
      * non-nullable decimal number
      */
-    public static final JsSpec decimal = new JsDecimalSpec(true,
+    public static final JsSpec decimal = new JsDecimalSpec(
                                                            false
     );
     /**
      * non-nullable integral number
      */
-    public static final JsSpec integral = new JsIntegralSpec(true,
+    public static final JsSpec integral = new JsIntegralSpec(
                                                              false
     );
     /**
      * non-nullable long number
      */
-    public static final JsSpec longInteger = new JsLongSpec(true,
+    public static final JsSpec longInteger = new JsLongSpec(
                                                             false
     );
     /**
      * non-nullable integer number
      */
-    public static final JsSpec integer = new JsIntSpec(true,
+    public static final JsSpec integer = new JsIntSpec(
                                                        false
     );
     /**
      * true constant spec
      */
-    public static final JsSpec TRUE = new JsTrueConstantSpec(true,
+    public static final JsSpec TRUE = new JsTrueConstantSpec(
                                                              false
     );
     /**
      * false constant spec
      */
-    public static final JsSpec FALSE = new JsFalseConstantSpec(true,
+    public static final JsSpec FALSE = new JsFalseConstantSpec(
                                                                false
     );
     /**
      * non-nullable json object spec
      */
-    public static final JsSpec obj = new IsJsObjSpec(true,
-                                                     false
-    );
+    public static final JsSpec obj = new IsJsObjSpec(false);
     /**
      * non-nullable array spec
      */
-    public static final JsArraySpec array = new JsArrayOfValueSpec(true,
+    public static final JsArraySpec array = new JsArrayOfValueSpec(
                                                                    false
     );
     /**
      * non-nullable array spec
      */
-    public static final JsSpec binary = new JsBinarySpec(true,
-                                                         false
-    );
+    public static final JsSpec binary = new JsBinarySpec(false);
     /**
      * non-nullable array spec
      */
-    public static final JsSpec instant = new JsInstantSpec(true,
+    public static final JsSpec instant = new JsInstantSpec(
                                                            false
     );
     /**
      * non-nullable array of long numbers spec
      */
-    public static final JsArraySpec arrayOfLong = new JsArrayOfLongSpec(true,
+    public static final JsArraySpec arrayOfLong = new JsArrayOfLongSpec(
                                                                         false
     );
     /**
      * non-nullable array of integer numbers spec
      */
-    public static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(true,
+    public static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(
                                                                       false
     );
     /**
      * non-nullable array of strings spec
      */
-    public static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(true,
+    public static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(
                                                                       false
     );
     /**
      * non-nullable array of booleans spec
      */
-    public static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(true,
-                                                                        false
-    );
+    public static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(false);
     /**
      * non-nullable array of decimal numbers spec
      */
-    public static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(true,
-                                                                          false
-    );
+    public static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(false);
     /**
      * non-nullable array of numbers spec
      */
-    public static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(true,
+    public static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(
                                                                             false
     );
     /**
      * non-nullable array of integral numbers spec
      */
-    public static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(true,
+    public static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(
                                                                                 false
     );
     /**
      * non-nullable array of objects spec
      */
-    public static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(true,
+    public static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(
                                                                       false
     );
     private JsSpecs() {
@@ -168,8 +160,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec cons(JsValue value) {
-        return new AnySuchThatSpec(true,
-                                   v ->
+        return new AnySuchThatSpec(v ->
                                    {
                                        if (requireNonNull(value).equals(v)) return Optional.empty();
                                        return Optional.of(new JsError(v,
@@ -187,7 +178,7 @@ public final class JsSpecs {
      * @return a JsSpec
      */
     public static JsSpec str(final Predicate<String> predicate) {
-        return new JsStrSuchThatSpec(true,
+        return new JsStrSuchThatSpec(
                                      false,
                                      s ->
                                      {
@@ -207,7 +198,7 @@ public final class JsSpecs {
      * @return a JsSpec
      */
     public static JsSpec number(final Predicate<JsNumber> predicate) {
-        return new JsNumberSuchThatSpec(true,
+        return new JsNumberSuchThatSpec(
                                         false,
                                         s ->
                                         {
@@ -233,7 +224,6 @@ public final class JsSpecs {
                                                                                ARRAY_CONDITION
                                                 ));
                                             },
-                                            true,
                                             false
         );
 
@@ -256,7 +246,6 @@ public final class JsSpecs {
                                                                                  DECIMAL_CONDITION
                                                   ));
                                               },
-                                              true,
                                               false
         );
     }
@@ -276,7 +265,6 @@ public final class JsSpecs {
                                                                                    ARRAY_CONDITION
                                                     ));
                                                 },
-                                                true,
                                                 false
         );
     }
@@ -297,7 +285,6 @@ public final class JsSpecs {
                                                                                   INTEGRAL_CONDITION
                                                    ));
                                                },
-                                               true,
                                                false
         );
     }
@@ -317,7 +304,6 @@ public final class JsSpecs {
                                                                         )
                                                      );
                                                  },
-                                                 true,
                                                  false
         );
     }
@@ -338,7 +324,6 @@ public final class JsSpecs {
                                                                     )
                                                  );
                                              },
-                                             true,
                                              false
         );
     }
@@ -358,7 +343,6 @@ public final class JsSpecs {
                                                                       )
                                                    );
                                                },
-                                               true,
                                                false
         );
     }
@@ -380,7 +364,6 @@ public final class JsSpecs {
                                                                  )
                                               );
                                           },
-                                          true,
                                           false
         );
 
@@ -401,7 +384,6 @@ public final class JsSpecs {
                                                                    )
                                                 );
                                             },
-                                            true,
                                             false
         );
 
@@ -415,7 +397,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec integer(final IntPredicate predicate) {
-        return new JsIntSuchThatSpec(true,
+        return new JsIntSuchThatSpec(
                                      false,
                                      s ->
                                      {
@@ -442,7 +424,6 @@ public final class JsSpecs {
                                                                                ARRAY_CONDITION
                                                 ));
                                             },
-                                            true,
                                             false
         );
     }
@@ -461,7 +442,6 @@ public final class JsSpecs {
                                                                                VALUE_CONDITION
                                                 ));
                                             },
-                                            true,
                                             false
         );
     }
@@ -482,7 +462,6 @@ public final class JsSpecs {
                                                                   )
                                                );
                                            },
-                                           true,
                                            false
         );
     }
@@ -503,7 +482,6 @@ public final class JsSpecs {
                                                                     )
                                                  );
                                              },
-                                             true,
                                              false
         );
     }
@@ -515,7 +493,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec longInteger(final LongPredicate predicate) {
-        return new JsLongSuchThatSpec(true,
+        return new JsLongSuchThatSpec(
                                       false,
                                       s ->
                                       {
@@ -535,7 +513,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec decimal(final Predicate<BigDecimal> predicate) {
-        return new JsDecimalSuchThatSpec(true,
+        return new JsDecimalSuchThatSpec(
                                          false,
                                          s ->
                                          {
@@ -555,7 +533,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec integral(final Predicate<BigInteger> predicate) {
-        return new JsIntegralSuchThatSpec(true,
+        return new JsIntegralSuchThatSpec(
                                           false,
                                           s ->
                                           {
@@ -584,7 +562,6 @@ public final class JsSpecs {
                                                                  )
                                               );
                                           },
-                                          true,
                                           false
         );
     }
@@ -598,8 +575,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec any(final Predicate<JsValue> predicate) {
-        return new AnySuchThatSpec(true,
-                                   v ->
+        return new AnySuchThatSpec(v ->
                                    {
                                        if (requireNonNull(predicate).test(v)) return Optional.empty();
                                        return Optional.of(new JsError(v,
@@ -617,7 +593,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec binary(final Predicate<byte[]> predicate) {
-        return new JsBinarySuchThatSpec(true,
+        return new JsBinarySuchThatSpec(
                                         false,
                                         s ->
                                         {
@@ -638,7 +614,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec instant(final Predicate<Instant> predicate) {
-        return new JsInstantSuchThatSpec(true,
+        return new JsInstantSuchThatSpec(
                                          false,
                                          s ->
                                          {
@@ -659,7 +635,7 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec obj(final Predicate<JsObj> predicate) {
-        return new JsObjSuchThatSpec(true,
+        return new JsObjSuchThatSpec(
                                      false,
                                      s ->
                                      {
@@ -687,7 +663,6 @@ public final class JsSpecs {
                                                                     )
                                                  );
                                              },
-                                             true,
                                              false
         );
     }
@@ -707,7 +682,6 @@ public final class JsSpecs {
                                                               )
                                            );
                                        },
-                                       true,
                                        false
         );
 
@@ -728,7 +702,6 @@ public final class JsSpecs {
                                                                  )
                                               );
                                           },
-                                          true,
                                           false
         );
 

@@ -8,9 +8,6 @@ import java.util.Optional;
 
 class AnySpec implements JsValuePredicate {
 
-
-
-
     @Override
     public JsSpec nullable() {
         return this;

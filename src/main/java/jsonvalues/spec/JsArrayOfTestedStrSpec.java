@@ -13,10 +13,9 @@ class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePre
     final Function<String, Optional<JsError>> predicate;
 
     JsArrayOfTestedStrSpec(final Function<String, Optional<JsError>> predicate,
-                           final boolean required,
                            final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -25,7 +24,6 @@ class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePre
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedStrSpec(predicate,
-                                          required,
                                           true
         );
     }
@@ -48,7 +46,6 @@ class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePre
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

@@ -9,10 +9,10 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsIntSpec(final boolean required,
+    JsIntSpec(
               final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -21,7 +21,7 @@ class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
     @Override
     public JsSpec nullable() {
-        return new JsIntSpec(required,
+        return new JsIntSpec(
                              true
         );
     }
@@ -37,7 +37,6 @@ class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isInt,
                                   INT_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

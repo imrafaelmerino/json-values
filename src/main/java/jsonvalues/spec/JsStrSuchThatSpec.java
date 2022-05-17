@@ -14,20 +14,17 @@ class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     final Function<String, Optional<JsError>> predicate;
 
-    JsStrSuchThatSpec(final boolean required,
-                      final boolean nullable,
+    JsStrSuchThatSpec(final boolean nullable,
                       final Function<String, Optional<JsError>> predicate
     ) {
-        super(required,
-              nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsStrSuchThatSpec(required,
+        return new JsStrSuchThatSpec(
                                      true,
                                      predicate
         );
@@ -45,7 +42,6 @@ class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
     public Optional<JsError> test(final JsValue value) {
         final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isStr,
                                                                            STRING_EXPECTED,
-                                                                           required,
                                                                            nullable
                                                   )
                                                                  .apply(value);

@@ -9,10 +9,10 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.FALSE_EXPECTED;
 
 class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsFalseConstantSpec(final boolean required,
+    JsFalseConstantSpec(
                         final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -20,7 +20,7 @@ class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredic
 
     @Override
     public JsSpec nullable() {
-        return new JsFalseConstantSpec(required,
+        return new JsFalseConstantSpec(
                                        false
         );
     }
@@ -34,7 +34,6 @@ class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredic
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isFalse,
                                   FALSE_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

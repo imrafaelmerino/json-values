@@ -9,18 +9,16 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
 class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsBinarySpec(final boolean required,
-                 final boolean nullable
+    JsBinarySpec(final boolean nullable
     ) {
-        super(required,
-              nullable
+        super(nullable
         );
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsBinarySpec(required,
+        return new JsBinarySpec(
                                 true
         );
     }
@@ -34,7 +32,6 @@ class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isBinary,
                                   BINARY_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

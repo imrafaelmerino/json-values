@@ -13,10 +13,9 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     private final LongFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedLongSpec(final LongFunction<Optional<JsError>> predicate,
-                            final boolean required,
                             final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -25,7 +24,6 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedLongSpec(predicate,
-                                           required,
                                            true
         );
     }
@@ -48,7 +46,6 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

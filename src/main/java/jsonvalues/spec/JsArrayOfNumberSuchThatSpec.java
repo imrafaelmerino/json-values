@@ -14,15 +14,12 @@ class JsArrayOfNumberSuchThatSpec extends AbstractPredicateSpec implements JsVal
     private final JsArrayOfNumberSpec isArrayOfNumber;
 
     JsArrayOfNumberSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
-                                final boolean required,
                                 final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
-        this.isArrayOfNumber = new JsArrayOfNumberSpec(required,
-                                                       nullable
-        );
+        this.isArrayOfNumber = new JsArrayOfNumberSpec(nullable);
         this.predicate = predicate;
     }
 
@@ -30,7 +27,6 @@ class JsArrayOfNumberSuchThatSpec extends AbstractPredicateSpec implements JsVal
     @Override
     public JsSpec nullable() {
         return new JsArrayOfNumberSuchThatSpec(predicate,
-                                               required,
                                                true
         );
     }

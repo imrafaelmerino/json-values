@@ -30,7 +30,7 @@ public final class JsObjSpec implements JsSpec {
     final boolean strict;
     private final boolean nullable;
     Map<String, JsSpec> bindings = LinkedHashMap.empty();
-    private List<String> optionalFields = new ArrayList<>();
+    private final List<String> optionalFields = new ArrayList<>();
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
                       boolean nullable,

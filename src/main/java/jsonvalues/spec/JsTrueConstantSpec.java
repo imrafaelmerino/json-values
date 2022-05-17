@@ -10,10 +10,10 @@ import static jsonvalues.spec.ERROR_CODE.TRUE_EXPECTED;
 
 class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    JsTrueConstantSpec(final boolean required,
+    JsTrueConstantSpec(
                        final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
     }
@@ -22,7 +22,7 @@ class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredica
 
     @Override
     public JsSpec nullable() {
-        return new JsTrueConstantSpec(required,
+        return new JsTrueConstantSpec(
                                       true
         );
     }
@@ -36,7 +36,6 @@ class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredica
     public Optional<JsError> test(final JsValue value) {
         return Functions.testElem(JsValue::isTrue,
                                   TRUE_EXPECTED,
-                                  required,
                                   nullable
                         )
                         .apply(value);

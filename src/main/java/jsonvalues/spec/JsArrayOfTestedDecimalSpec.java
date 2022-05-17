@@ -14,10 +14,9 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
-                               final boolean required,
                                final boolean nullable
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -26,7 +25,6 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedDecimalSpec(predicate,
-                                              required,
                                               true
         );
     }
@@ -49,7 +47,6 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
                                                                             )
                                                     );
                                                 },
-                                                required,
                                                 nullable
                         )
                         .apply(value);

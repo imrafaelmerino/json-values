@@ -12,11 +12,11 @@ import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
     final IntFunction<Optional<JsError>> predicate;
 
-    JsIntSuchThatSpec(final boolean required,
+    JsIntSuchThatSpec(
                       final boolean nullable,
                       final IntFunction<Optional<JsError>> predicate
     ) {
-        super(required,
+        super(
               nullable
         );
         this.predicate = predicate;
@@ -25,7 +25,7 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     @Override
     public JsSpec nullable() {
-        return new JsIntSuchThatSpec(required,
+        return new JsIntSuchThatSpec(
                                      true,
                                      predicate
         );
@@ -42,7 +42,6 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
     public Optional<JsError> test(final JsValue value) {
         final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isInt,
                                                                            INT_EXPECTED,
-                                                                           required,
                                                                            nullable
                                                   )
                                                                  .apply(value);
