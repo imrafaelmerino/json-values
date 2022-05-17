@@ -10,20 +10,14 @@ import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 class JsDecimalSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    JsDecimalSpec(
-                  final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsDecimalSpec(final boolean nullable) {
+        super(nullable);
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsDecimalSpec(
-                                 true
-        );
+        return new JsDecimalSpec(true);
     }
 
 

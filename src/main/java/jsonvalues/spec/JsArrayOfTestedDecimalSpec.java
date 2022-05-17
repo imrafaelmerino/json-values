@@ -17,7 +17,7 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
                                final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -39,14 +39,12 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isDouble() || v.isBigDec())
-                                                        return predicate.apply(v.toJsBigDec().value);
-                                                    else return Optional.of(new JsError(v,
-                                                                                        DECIMAL_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isDouble() || v.isBigDec() ?
+                                                        predicate.apply(v.toJsBigDec().value) :
+                                                        Optional.of(new JsError(v,
+                                                                                DECIMAL_EXPECTED
+                                                                    )
+                                                        ),
                                                 nullable
                         )
                         .apply(value);

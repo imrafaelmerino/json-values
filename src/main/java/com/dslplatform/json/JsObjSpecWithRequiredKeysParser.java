@@ -1,14 +1,16 @@
 package com.dslplatform.json;
 
-import io.vavr.collection.Map;
-import io.vavr.collection.Vector;
+
 import jsonvalues.JsObj;
 
+import java.util.List;
+import java.util.Map;
+
 final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
-    private final Vector<String> required;
+    private final List<String> required;
 
 
-    JsObjSpecWithRequiredKeysParser(final Vector<String> required,
+    JsObjSpecWithRequiredKeysParser(final List<String> required,
                                     final Map<String, JsSpecParser> parsers,
                                     final boolean strict
     ) {

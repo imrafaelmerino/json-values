@@ -15,15 +15,10 @@ class JsArrayOfLongSuchThatSpec extends AbstractPredicateSpec implements JsValue
     JsArrayOfLongSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                               final boolean nullable
     ) {
-        super(
-              nullable
-        );
-        this.isArrayOfLong = new JsArrayOfLongSpec(
-                                                   nullable
-        );
+        super(nullable);
+        this.isArrayOfLong = new JsArrayOfLongSpec(nullable);
         this.predicate = predicate;
     }
-
 
 
     @Override
@@ -44,7 +39,8 @@ class JsArrayOfLongSuchThatSpec extends AbstractPredicateSpec implements JsValue
     @Override
     public Optional<JsError> test(final JsValue value) {
         final Optional<JsError> result = isArrayOfLong.test(value);
-        if (result.isPresent() || value.isNull()) return result;
-        return predicate.apply(value.toJsArray());
+        return result.isPresent() || value.isNull() ?
+               result :
+               predicate.apply(value.toJsArray());
     }
 }

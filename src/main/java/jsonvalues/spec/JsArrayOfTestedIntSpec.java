@@ -16,7 +16,7 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
                            final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -41,13 +41,13 @@ class JsArrayOfTestedIntSpec extends AbstractPredicateSpec implements JsValuePre
     public Optional<JsError> test(final JsValue value) {
 
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isInt()) return predicate.apply(v.toJsInt().value);
-                                                    else return Optional.of(new JsError(v,
-                                                                                        INT_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isInt() ?
+                                                        predicate.apply(v.toJsInt().value) :
+                                                        Optional.of(new JsError(v,
+                                                                                INT_EXPECTED
+                                                                    )
+                                                        )
+                                ,
                                                 nullable
                         )
                         .apply(value);

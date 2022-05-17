@@ -23,26 +23,26 @@ class Functions {
         return value ->
         {
             final Optional<JsError> error = testFlags(nullable).apply(value);
-            if (error.isPresent() || value.isNull()) return error;
-            if (!elemCondition.test(value)) return Optional.of(new JsError(value,
-                                                                           errorCode
-                                                               )
-            );
-            return Optional.empty();
+            return error.isPresent() || value.isNull() ?
+                   error :
+                   elemCondition.test(value) ?
+                   Optional.empty() :
+                   Optional.of(new JsError(value,
+                                           errorCode
+                               )
+                   );
         };
     }
 
     private static Function<JsValue, Optional<JsError>> testFlags(boolean nullable
     ) {
         return value ->
-        {
-
-            if (value.isNull() && !nullable) return Optional.of(new JsError(value,
-                                                                            NULL
-                                                                )
-            );
-            return Optional.empty();
-        };
+                value.isNull() && !nullable ?
+                Optional.of(new JsError(value,
+                                        NULL
+                            )
+                ) :
+                Optional.empty();
     }
 
     static Function<JsValue, Optional<JsError>> testArrayOfTestedValue(final Function<JsValue, Optional<JsError>> elemCondition,
@@ -68,8 +68,9 @@ class Functions {
         {
             final Optional<JsError> errors = testArray(nullable
             ).apply(value);
-            if (errors.isPresent() || value.isNull()) return errors;
-            return validation.apply(value.toJsArray());
+            return errors.isPresent() || value.isNull() ?
+                   errors :
+                   validation.apply(value.toJsArray());
         };
     }
 
@@ -77,10 +78,10 @@ class Functions {
     ) {
         return value ->
         {
-            final Optional<JsError> error = testFlags(nullable
-            ).apply(value);
-            if (error.isPresent()) return error;
-            return value.isNull() || value.isArray() ?
+            final Optional<JsError> error = testFlags(nullable).apply(value);
+            return error.isPresent() ?
+                   error :
+                   value.isNull() || value.isArray() ?
                    Optional.empty() :
                    Optional.of(new JsError(value,
                                            ARRAY_EXPECTED

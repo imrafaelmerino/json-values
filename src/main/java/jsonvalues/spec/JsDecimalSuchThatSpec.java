@@ -14,11 +14,11 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsDecimalSuchThatSpec(
-                          final boolean nullable,
-                          final Function<BigDecimal, Optional<JsError>> predicate
+            final boolean nullable,
+            final Function<BigDecimal, Optional<JsError>> predicate
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -27,8 +27,8 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
     @Override
     public JsSpec nullable() {
         return new JsDecimalSuchThatSpec(
-                                         true,
-                                         predicate
+                true,
+                predicate
         );
     }
 
@@ -48,7 +48,8 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
                                                   )
                                                                  .apply(value);
 
-        if (error.isPresent() || value.isNull()) return error;
-        return predicate.apply(value.toJsBigDec().value);
+        return error.isPresent() || value.isNull() ?
+               error :
+               predicate.apply(value.toJsBigDec().value);
     }
 }

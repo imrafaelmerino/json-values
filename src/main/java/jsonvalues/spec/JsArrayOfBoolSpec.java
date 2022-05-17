@@ -21,7 +21,6 @@ class JsArrayOfBoolSpec extends AbstractPredicateSpec implements JsValuePredicat
     }
 
 
-
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfBool(nullable);
@@ -29,13 +28,11 @@ class JsArrayOfBoolSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        return Functions.testArrayOfTestedValue(v -> {
-                                                    if (v.isBool()) return Optional.empty();
-                                                    else return Optional.of(new JsError(v,
-                                                                                        BOOLEAN_EXPECTED));
-                                                },
-                                                nullable
-                        )
+        return Functions.testArrayOfTestedValue(v -> v.isBool() ?
+                                                     Optional.empty() :
+                                                     Optional.of(new JsError(v,
+                                                                             BOOLEAN_EXPECTED)),
+                                                nullable)
                         .apply(value);
     }
 }

@@ -2,12 +2,14 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import jsonvalues.JsBigDec;
 import jsonvalues.JsNumber;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.Function;
 
+import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
@@ -17,7 +19,7 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
                               final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -39,13 +41,12 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isNumber()) return predicate.apply(v.toJsNumber());
-                                                    else return Optional.of(new JsError(v,
-                                                                                        NUMBER_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isNumber() ?
+                                                        predicate.apply(v.toJsNumber()) :
+                                                        Optional.of(new JsError(v,
+                                                                                NUMBER_EXPECTED
+                                                                    )
+                                                        ),
                                                 nullable
                         )
                         .apply(value);

@@ -9,12 +9,8 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsNumberSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsNumberSpec(
-                 final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsNumberSpec(final boolean nullable) {
+        super(nullable);
     }
 
 

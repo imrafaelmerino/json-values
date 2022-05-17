@@ -11,7 +11,6 @@ import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-
     final Function<String, Optional<JsError>> predicate;
 
     JsStrSuchThatSpec(final boolean nullable,
@@ -25,8 +24,8 @@ class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
     @Override
     public JsSpec nullable() {
         return new JsStrSuchThatSpec(
-                                     true,
-                                     predicate
+                true,
+                predicate
         );
     }
 
@@ -40,13 +39,14 @@ class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isStr,
-                                                                           STRING_EXPECTED,
-                                                                           nullable
-                                                  )
-                                                                 .apply(value);
+        final Optional<JsError> error = Functions.testElem(JsValue::isStr,
+                                                           STRING_EXPECTED,
+                                                           nullable
+                                                 )
+                                                 .apply(value);
 
-        if (error.isPresent() || value.isNull()) return error;
-        return predicate.apply(value.toJsStr().value);
+        return error.isPresent() || value.isNull() ?
+               error :
+               predicate.apply(value.toJsStr().value);
     }
 }

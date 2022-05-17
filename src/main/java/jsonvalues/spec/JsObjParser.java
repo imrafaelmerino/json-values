@@ -3,10 +3,8 @@ package jsonvalues.spec;
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.MyDslJson;
 import jsonvalues.JsObj;
-
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
 import static java.util.Objects.requireNonNull;
 
 public final class JsObjParser {

@@ -1,26 +1,12 @@
 package jsonvalues;
 
 
-import fun.optic.Prism;
-
-import java.util.Optional;
-
 import static java.util.Objects.requireNonNull;
 
 /**
  * represents the index of a value in a json array.
  */
 public final class Index implements Position {
-
-    /**
-     * prism between the sum type Position and Index
-     */
-    public static final Prism<Position, Integer> prism = new Prism<>(
-            pos -> pos.isIndex() ?
-                   Optional.of(pos.asIndex().n) :
-                   Optional.empty(),
-            Index::of
-    );
 
     /**
      * The index number.

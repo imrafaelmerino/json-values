@@ -1,16 +1,16 @@
 package com.dslplatform.json;
 
-import io.vavr.collection.Vector;
 import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 
 import java.io.IOException;
+import java.util.List;
 
 public final class JsArraySpecParser {
-    private final Vector<JsSpecParser> parsers;
+    private final List<JsSpecParser> parsers;
 
-    public JsArraySpecParser(final Vector<JsSpecParser> parsers) {
+    public JsArraySpecParser(final List<JsSpecParser> parsers) {
         this.parsers = parsers;
     }
 

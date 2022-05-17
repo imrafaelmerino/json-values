@@ -17,12 +17,8 @@ class JsArraySuchThatSpec extends AbstractPredicateSpec implements JsValuePredic
     JsArraySuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                         final boolean nullable
     ) {
-        super(
-              nullable
-        );
-        this.isArray = new JsArrayOfValueSpec(
-                                              nullable
-        );
+        super(nullable);
+        this.isArray = new JsArrayOfValueSpec(nullable);
         this.predicate = predicate;
     }
 
@@ -44,7 +40,8 @@ class JsArraySuchThatSpec extends AbstractPredicateSpec implements JsValuePredic
     @Override
     public Optional<JsError> test(final JsValue value) {
         final Optional<JsError> result = isArray.test(value);
-        if (result.isPresent() || value.isNull()) return result;
-        return predicate.apply(value.toJsArray());
+        return result.isPresent() || value.isNull() ?
+               result :
+               predicate.apply(value.toJsArray());
     }
 }

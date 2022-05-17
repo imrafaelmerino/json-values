@@ -17,13 +17,11 @@ class JsArrayOfBoolSuchThatSpec extends AbstractPredicateSpec implements JsValue
     JsArrayOfBoolSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                               final boolean nullable
     ) {
-        super(nullable
-        );
+        super(nullable);
         this.isArrayOfBool = new JsArrayOfBoolSpec(nullable
         );
         this.predicate = predicate;
     }
-
 
 
     @Override
@@ -44,8 +42,9 @@ class JsArrayOfBoolSuchThatSpec extends AbstractPredicateSpec implements JsValue
     @Override
     public Optional<JsError> test(final JsValue value) {
         final Optional<JsError> result = isArrayOfBool.test(value);
-        if (result.isPresent() || value.isNull()) return result;
-        return predicate.apply(value.toJsArray());
+        return result.isPresent() || value.isNull() ?
+               result :
+               predicate.apply(value.toJsArray());
 
     }
 }

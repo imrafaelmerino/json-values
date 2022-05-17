@@ -2,13 +2,11 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import io.vavr.collection.Vector;
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
@@ -21,17 +19,17 @@ public final class JsTupleSpec implements JsArraySpec {
 
     private final boolean required;
     private final boolean nullable;
-    private final Vector<JsSpec> specs;
+    private final List<JsSpec> specs;
     private final boolean strict = true;
 
-    private JsTupleSpec(final Vector<JsSpec> specs) {
+    private JsTupleSpec(final List<JsSpec> specs) {
         this(specs,
              true,
              false
         );
     }
 
-    private JsTupleSpec(final Vector<JsSpec> specs,
+    private JsTupleSpec(final List<JsSpec> specs,
                         boolean required,
                         boolean nullable
     ) {
@@ -43,9 +41,10 @@ public final class JsTupleSpec implements JsArraySpec {
     static JsTupleSpec of(JsSpec spec,
                           JsSpec... others
     ) {
-        Vector<JsSpec> specs = Vector.empty();
-        specs = specs.append(spec);
-        for (JsSpec s : others) specs = specs.append(s);
+        List<JsSpec> specs = new ArrayList<>();
+        specs.add(spec);
+        Collections.addAll(specs,
+                           others);
         return new JsTupleSpec(specs);
     }
 
@@ -61,9 +60,9 @@ public final class JsTupleSpec implements JsArraySpec {
     @Override
     public JsSpecParser parser() {
 
-        Vector<JsSpecParser> parsers = Vector.empty();
+        List<JsSpecParser> parsers = new ArrayList<>();
         for (final JsSpec spec : specs) {
-            parsers = parsers.append(spec.parser());
+            parsers.add(spec.parser());
         }
         return JsSpecParsers.INSTANCE.ofArraySpec(parsers,
                                                   nullable

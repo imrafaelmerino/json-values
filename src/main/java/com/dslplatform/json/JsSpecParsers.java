@@ -1,13 +1,14 @@
 package com.dslplatform.json;
 
-import io.vavr.collection.Map;
-import io.vavr.collection.Vector;
+
 import jsonvalues.*;
 import jsonvalues.spec.JsError;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.*;
 
@@ -60,7 +61,7 @@ public class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfObjSpec(Vector<String> required,
+    public JsSpecParser ofArrayOfObjSpec(List<String> required,
                                          Map<String, JsSpecParser> keyDeserializers,
                                          boolean nullable,
                                          boolean strict
@@ -151,7 +152,7 @@ public class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofArraySpec(Vector<JsSpecParser> keyDeserializers,
+    public JsSpecParser ofArraySpec(List<JsSpecParser> keyDeserializers,
                                     boolean nullable
     ) {
         if (nullable)
@@ -160,7 +161,7 @@ public class JsSpecParsers {
             return reader -> new JsArraySpecParser(keyDeserializers).array(reader);
     }
 
-    public JsSpecParser ofObjSpec(Vector<String> required,
+    public JsSpecParser ofObjSpec(List<String> required,
                                   Map<String, JsSpecParser> keyDeserializers,
                                   boolean nullable,
                                   boolean strict

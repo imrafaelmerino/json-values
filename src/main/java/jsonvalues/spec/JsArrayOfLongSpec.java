@@ -9,23 +9,15 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 class JsArrayOfLongSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfLongSpec(
-                      final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsArrayOfLongSpec(final boolean nullable) {
+        super(nullable);
     }
-
 
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfLongSpec(
-                                     true
-        );
+        return new JsArrayOfLongSpec(true);
     }
-
 
 
     @Override
@@ -35,11 +27,10 @@ class JsArrayOfLongSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        return Functions.testArrayOfTestedValue(v -> {
-                                                    if (v.isInt() || v.isLong()) return Optional.empty();
-                                                    else return Optional.of(new JsError(v,
-                                                                                        LONG_EXPECTED));
-                                                },
+        return Functions.testArrayOfTestedValue(v -> v.isInt() || v.isLong() ?
+                                                     Optional.empty() :
+                                                     Optional.of(new JsError(v,
+                                                                             LONG_EXPECTED)),
                                                 nullable
                         )
                         .apply(value);

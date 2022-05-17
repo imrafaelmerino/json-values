@@ -10,10 +10,10 @@ import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
     JsArrayOfIntegralSpec(
-                          final boolean nullable
+            final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
     }
 
@@ -21,7 +21,7 @@ class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePred
     @Override
     public JsSpec nullable() {
         return new JsArrayOfIntegralSpec(
-                                         true
+                true
         );
     }
 
@@ -34,12 +34,11 @@ class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePred
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isIntegral()) return Optional.empty();
-                                                    else return Optional.of(new JsError(v,
-                                                                                        INTEGRAL_EXPECTED
-                                                    ));
-                                                },
+                                                        v.isIntegral() ?
+                                                        Optional.empty() :
+                                                        Optional.of(new JsError(v,
+                                                                                INTEGRAL_EXPECTED
+                                                        )),
                                                 nullable
                         )
                         .apply(value);

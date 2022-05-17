@@ -13,11 +13,11 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
     final IntFunction<Optional<JsError>> predicate;
 
     JsIntSuchThatSpec(
-                      final boolean nullable,
-                      final IntFunction<Optional<JsError>> predicate
+            final boolean nullable,
+            final IntFunction<Optional<JsError>> predicate
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -26,8 +26,8 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
     @Override
     public JsSpec nullable() {
         return new JsIntSuchThatSpec(
-                                     true,
-                                     predicate
+                true,
+                predicate
         );
     }
 
@@ -46,7 +46,8 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
                                                   )
                                                                  .apply(value);
 
-        if (error.isPresent() || value.isNull()) return error;
-        return predicate.apply(value.toJsInt().value);
+        return error.isPresent() || value.isNull() ?
+               error :
+               predicate.apply(value.toJsInt().value);
     }
 }

@@ -13,9 +13,7 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
     JsArrayOfTestedValueSpec(final Function<JsValue, Optional<JsError>> predicate,
                              final boolean nullable
     ) {
-        super(
-              nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 
@@ -38,8 +36,7 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(predicate,
-                                                nullable
-                        )
+                                                nullable)
                         .apply(value);
     }
 }

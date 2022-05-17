@@ -9,20 +9,14 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 class JsArrayOfStrSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfStrSpec(
-                     final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsArrayOfStrSpec(final boolean nullable) {
+        super(nullable);
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfStrSpec(
-                                    true
-        );
+        return new JsArrayOfStrSpec(true);
     }
 
     @Override
@@ -32,11 +26,10 @@ class JsArrayOfStrSpec extends AbstractPredicateSpec implements JsValuePredicate
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        return Functions.testArrayOfTestedValue(v -> {
-                                                    if (v.isStr()) return Optional.empty();
-                                                    else return Optional.of(new JsError(v,
-                                                                                        STRING_EXPECTED));
-                                                },
+        return Functions.testArrayOfTestedValue(v -> v.isStr() ?
+                                                     Optional.empty() :
+                                                     Optional.of(new JsError(v,
+                                                                             STRING_EXPECTED)),
                                                 nullable
                         )
                         .apply(value);

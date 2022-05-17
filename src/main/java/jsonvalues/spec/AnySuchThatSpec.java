@@ -31,10 +31,10 @@ class AnySuchThatSpec implements JsValuePredicate {
     @Override
     public Optional<JsError> test(final JsValue value) {
 
-        if (value.isNothing())
-            return Optional.of(new JsError(value,
-                                           ERROR_CODE.REQUIRED));
-        return predicate.apply(value);
+        return value.isNothing() ?
+               Optional.of(new JsError(value,
+                                       ERROR_CODE.REQUIRED)) :
+               predicate.apply(value);
 
     }
 }

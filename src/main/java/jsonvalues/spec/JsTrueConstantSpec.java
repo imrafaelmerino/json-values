@@ -10,21 +10,14 @@ import static jsonvalues.spec.ERROR_CODE.TRUE_EXPECTED;
 
 class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    JsTrueConstantSpec(
-                       final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsTrueConstantSpec(final boolean nullable) {
+        super(nullable);
     }
-
 
 
     @Override
     public JsSpec nullable() {
-        return new JsTrueConstantSpec(
-                                      true
-        );
+        return new JsTrueConstantSpec(true);
     }
 
     @Override

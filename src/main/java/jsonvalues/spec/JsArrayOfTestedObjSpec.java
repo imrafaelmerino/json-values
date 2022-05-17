@@ -17,7 +17,7 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
                            final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -28,6 +28,7 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
                                           true
         );
     }
+
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfObjEachSuchThat(predicate,
@@ -38,13 +39,12 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isObj()) return predicate.apply(v.toJsObj());
-                                                    else return Optional.of(new JsError(v,
-                                                                                        OBJ_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isObj() ?
+                                                        predicate.apply(v.toJsObj()) :
+                                                        Optional.of(new JsError(v,
+                                                                                OBJ_EXPECTED
+                                                                    )
+                                                        ),
                                                 nullable
                         )
                         .apply(value);

@@ -3,19 +3,11 @@ package jsonvalues.spec;
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
 import io.vavr.Tuple2;
-import io.vavr.collection.HashMap;
-import io.vavr.collection.LinkedHashMap;
-import io.vavr.collection.Map;
-import io.vavr.collection.Vector;
-import io.vavr.collection.*;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -29,8 +21,8 @@ public final class JsObjSpec implements JsSpec {
 
     final boolean strict;
     private final boolean nullable;
-    Map<String, JsSpec> bindings = LinkedHashMap.empty();
     private final List<String> optionalFields = new ArrayList<>();
+    Map<String, JsSpec> bindings = new LinkedHashMap<>();
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
                       boolean nullable,
@@ -106,8 +98,8 @@ public final class JsObjSpec implements JsSpec {
                 spec14,
                 strict
         );
-        bindings = bindings.put(key15,
-                                spec15
+        bindings.put(key15,
+                     spec15
         );
     }
 
@@ -180,8 +172,8 @@ public final class JsObjSpec implements JsSpec {
                 spec15,
                 strict
         );
-        bindings = bindings.put(key16,
-                                spec16
+        bindings.put(key16,
+                     spec16
         );
     }
 
@@ -259,8 +251,8 @@ public final class JsObjSpec implements JsSpec {
                 spec16,
                 strict
         );
-        bindings = bindings.put(key17,
-                                spec17
+        bindings.put(key17,
+                     spec17
         );
     }
 
@@ -341,8 +333,8 @@ public final class JsObjSpec implements JsSpec {
                 spec17,
                 strict
         );
-        bindings = bindings.put(key18,
-                                spec18
+        bindings.put(key18,
+                     spec18
         );
     }
 
@@ -427,8 +419,8 @@ public final class JsObjSpec implements JsSpec {
                 spec18,
                 strict
         );
-        bindings = bindings.put(key19,
-                                spec19
+        bindings.put(key19,
+                     spec19
         );
     }
 
@@ -517,8 +509,8 @@ public final class JsObjSpec implements JsSpec {
                 spec19,
                 strict
         );
-        bindings = bindings.put(key20,
-                                spec20
+        bindings.put(key20,
+                     spec20
         );
     }
 
@@ -583,8 +575,8 @@ public final class JsObjSpec implements JsSpec {
                 spec13,
                 strict
         );
-        bindings = bindings.put(key14,
-                                spec14
+        bindings.put(key14,
+                     spec14
         );
     }
 
@@ -645,8 +637,8 @@ public final class JsObjSpec implements JsSpec {
                 spec12,
                 strict
         );
-        bindings = bindings.put(key13,
-                                spec13
+        bindings.put(key13,
+                     spec13
         );
     }
 
@@ -703,8 +695,8 @@ public final class JsObjSpec implements JsSpec {
                 spec11,
                 strict
         );
-        bindings = bindings.put(key12,
-                                spec12
+        bindings.put(key12,
+                     spec12
         );
     }
 
@@ -755,8 +747,8 @@ public final class JsObjSpec implements JsSpec {
              spec9,
              strict
         );
-        bindings = bindings.put(key10,
-                                spec10
+        bindings.put(key10,
+                     spec10
         );
     }
 
@@ -804,8 +796,8 @@ public final class JsObjSpec implements JsSpec {
              spec8,
              strict
         );
-        bindings = bindings.put(key9,
-                                spec9
+        bindings.put(key9,
+                     spec9
         );
 
     }
@@ -849,8 +841,8 @@ public final class JsObjSpec implements JsSpec {
              spec7,
              strict
         );
-        bindings = bindings.put(key8,
-                                spec8
+        bindings.put(key8,
+                     spec8
         );
     }
 
@@ -889,8 +881,8 @@ public final class JsObjSpec implements JsSpec {
              spec6,
              strict
         );
-        bindings = bindings.put(key7,
-                                spec7
+        bindings.put(key7,
+                     spec7
         );
     }
 
@@ -925,8 +917,8 @@ public final class JsObjSpec implements JsSpec {
              spec5,
              strict
         );
-        bindings = bindings.put(key6,
-                                spec6
+        bindings.put(key6,
+                     spec6
         );
     }
 
@@ -957,8 +949,8 @@ public final class JsObjSpec implements JsSpec {
              spec4,
              strict
         );
-        bindings = bindings.put(key5,
-                                spec5
+        bindings.put(key5,
+                     spec5
         );
     }
 
@@ -985,8 +977,8 @@ public final class JsObjSpec implements JsSpec {
              spec3,
              strict
         );
-        bindings = bindings.put(key4,
-                                spec4
+        bindings.put(key4,
+                     spec4
         );
     }
 
@@ -1009,8 +1001,8 @@ public final class JsObjSpec implements JsSpec {
              spec2,
              strict
         );
-        bindings = bindings.put(key3,
-                                spec3
+        bindings.put(key3,
+                     spec3
         );
     }
 
@@ -1031,8 +1023,8 @@ public final class JsObjSpec implements JsSpec {
                 spec1,
                 strict
         );
-        bindings = bindings.put(key2,
-                                spec2
+        bindings.put(key2,
+                     spec2
         );
     }
 
@@ -1047,8 +1039,8 @@ public final class JsObjSpec implements JsSpec {
              strict,
              false
         );
-        bindings = bindings.put(key1,
-                                spec1
+        bindings.put(key1,
+                     spec1
         );
     }
 
@@ -1057,8 +1049,8 @@ public final class JsObjSpec implements JsSpec {
                       final boolean strict,
                       final boolean nullable
     ) {
-        bindings = bindings.put(key,
-                                spec
+        bindings.put(key,
+                     spec
         );
         this.strict = strict;
         this.nullable = nullable;
@@ -4131,15 +4123,14 @@ public final class JsObjSpec implements JsSpec {
 
     @Override
     public JsSpecParser parser() {
-        Map<String, JsSpecParser> parsers = HashMap.empty();
-        Vector<String> requiredKeys = Vector.empty();
+        Map<String, JsSpecParser> parsers = new LinkedHashMap<>();
+        List<String> requiredKeys = new ArrayList<>();
         for (String key : bindings.keySet()) {
 
-            JsSpec spec = bindings.get(key)
-                                  .get();
-            if (!optionalFields.contains(key)) requiredKeys = requiredKeys.append(key);
-            parsers = parsers.put(key,
-                                  spec.parser()
+            JsSpec spec = bindings.get(key);
+            if (!optionalFields.contains(key)) requiredKeys.add(key);
+            parsers.put(key,
+                        spec.parser()
             );
         }
 
@@ -4189,9 +4180,7 @@ public final class JsObjSpec implements JsSpec {
             final JsValue value = next._2;
             final JsPath keyPath = JsPath.fromKey(key);
             final JsPath currentPath = parent.append(keyPath);
-            final JsSpec spec = parentObjSpec.bindings.getOrElse(key,
-                                                                 null
-            );
+            final JsSpec spec = parentObjSpec.bindings.get(key);
             if (spec == null) {
                 if (parentObjSpec.strict) {
                     errors.add(JsErrorPair.of(currentPath,
@@ -4201,15 +4190,14 @@ public final class JsObjSpec implements JsSpec {
                     ));
                 }
             } else errors.addAll(spec.test(currentPath,
-                                           value
-            ));
+                                           value));
 
         }
-        final Seq<String> requiredFields =
+        final List<String> requiredFields =
                 parentObjSpec
                         .bindings
-                        .filter((key, spec) -> !optionalFields.contains(key))
-                        .map(p -> p._1);
+                        .keySet().stream().filter(key -> !optionalFields.contains(key))
+                        .collect(Collectors.toList());
         for (final String requiredField : requiredFields) {
             if (!json.containsKey(requiredField))
                 errors.add(JsErrorPair.of(parent.key(requiredField),
@@ -4233,9 +4221,11 @@ public final class JsObjSpec implements JsSpec {
      */
     public JsObjSpec set(final String key,
                          final JsSpec spec) {
-        return new JsObjSpec(bindings.put(requireNonNull(key),
-                                          requireNonNull(spec)
-        ),
+        LinkedHashMap<String, JsSpec> newBindings = new LinkedHashMap<>(bindings);
+        newBindings.put(requireNonNull(key),
+                        requireNonNull(spec)
+        );
+        return new JsObjSpec(newBindings,
                              this.nullable,
                              this.strict
         );

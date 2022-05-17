@@ -9,23 +9,15 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsIntSpec(
-              final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsIntSpec(final boolean nullable) {
+        super(nullable);
     }
-
 
 
     @Override
     public JsSpec nullable() {
-        return new JsIntSpec(
-                             true
-        );
+        return new JsIntSpec(true);
     }
-
 
 
     @Override

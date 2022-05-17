@@ -1,9 +1,9 @@
 package com.dslplatform.json;
 
-import io.vavr.collection.Map;
 import jsonvalues.JsObj;
 
 import java.io.IOException;
+import java.util.Map;
 
 class JsObjSpecParser extends AbstractJsObjParser {
     private static final JsValueParser valueParser = JsParsers.PARSERS.valueParser;
@@ -26,11 +26,11 @@ class JsObjSpecParser extends AbstractJsObjParser {
             throwErrorIfStrictAndKeyMissing(reader,
                                             key
             );
+            JsSpecParser parser = parsers.getOrDefault(key,
+                                                       defaultParser);
             JsObj obj = EMPTY_OBJ.set(key,
-                                      parsers.getOrElse(key,
-                                                        defaultParser
-                                             )
-                                             .parse(reader)
+                                      parser
+                                              .parse(reader)
             );
             byte nextToken;
             while ((nextToken = reader.getNextToken()) == ',') {
@@ -39,11 +39,10 @@ class JsObjSpecParser extends AbstractJsObjParser {
                 throwErrorIfStrictAndKeyMissing(reader,
                                                 key
                 );
+                JsSpecParser keyparser = parsers.getOrDefault(key,
+                                                           defaultParser);
                 obj = obj.set(key,
-                              parsers.getOrElse(key,
-                                                defaultParser
-                                     )
-                                     .parse(reader)
+                              keyparser.parse(reader)
                 );
 
             }

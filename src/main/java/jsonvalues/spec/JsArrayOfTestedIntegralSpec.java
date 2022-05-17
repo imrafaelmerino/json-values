@@ -17,7 +17,7 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
                                 final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -39,13 +39,12 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isIntegral()) return predicate.apply(v.toJsBigInt().value);
-                                                    else return Optional.of(new JsError(v,
-                                                                                        INTEGRAL_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isIntegral() ?
+                                                        predicate.apply(v.toJsBigInt().value) :
+                                                        Optional.of(new JsError(v,
+                                                                                INTEGRAL_EXPECTED
+                                                                    )
+                                                        ),
                                                 nullable
                         )
                         .apply(value);

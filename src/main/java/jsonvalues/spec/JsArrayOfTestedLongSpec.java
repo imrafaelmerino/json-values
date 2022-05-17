@@ -16,7 +16,7 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
                             final boolean nullable
     ) {
         super(
-              nullable
+                nullable
         );
         this.predicate = predicate;
     }
@@ -38,14 +38,12 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     @Override
     public Optional<JsError> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
-                                                {
-                                                    if (v.isLong() || v.isInt())
-                                                        return predicate.apply(v.toJsLong().value);
-                                                    else return Optional.of(new JsError(v,
-                                                                                        LONG_EXPECTED
-                                                                            )
-                                                    );
-                                                },
+                                                        v.isLong() || v.isInt() ?
+                                                        predicate.apply(v.toJsLong().value) :
+                                                        Optional.of(new JsError(v,
+                                                                                LONG_EXPECTED
+                                                                    )
+                                                        ),
                                                 nullable
                         )
                         .apply(value);
