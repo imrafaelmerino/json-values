@@ -7,12 +7,13 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
+import static jsonvalues.spec.ERROR_CODE.REQUIRED;
+
 class AnySuchThatSpec implements JsValuePredicate {
 
     private final Function<JsValue, Optional<JsError>> predicate;
 
-    AnySuchThatSpec(final Function<JsValue, Optional<JsError>> predicate
-    ) {
+    AnySuchThatSpec(final Function<JsValue, Optional<JsError>> predicate) {
         this.predicate = predicate;
     }
 
@@ -30,10 +31,9 @@ class AnySuchThatSpec implements JsValuePredicate {
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-
         return value.isNothing() ?
                Optional.of(new JsError(value,
-                                       ERROR_CODE.REQUIRED)) :
+                                       REQUIRED)) :
                predicate.apply(value);
 
     }

@@ -14,14 +14,10 @@ class JsNumberSpec extends AbstractPredicateSpec implements JsValuePredicate {
     }
 
 
-
     @Override
     public JsSpec nullable() {
-        return new JsNumberSpec(
-                                true
-        );
+        return new JsNumberSpec(true);
     }
-
 
 
     @Override

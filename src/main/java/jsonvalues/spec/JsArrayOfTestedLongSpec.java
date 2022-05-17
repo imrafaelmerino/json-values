@@ -15,9 +15,7 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     JsArrayOfTestedLongSpec(final LongFunction<Optional<JsError>> predicate,
                             final boolean nullable
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 

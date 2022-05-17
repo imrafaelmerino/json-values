@@ -16,9 +16,7 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
                                final boolean nullable
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 

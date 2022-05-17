@@ -23,9 +23,8 @@ class JsStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
 
     @Override
     public JsSpec nullable() {
-        return new JsStrSuchThatSpec(
-                true,
-                predicate
+        return new JsStrSuchThatSpec(true,
+                                     predicate
         );
     }
 

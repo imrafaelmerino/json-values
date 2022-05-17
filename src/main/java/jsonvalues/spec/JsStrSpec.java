@@ -9,20 +9,14 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 class JsStrSpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsStrSpec(final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsStrSpec(final boolean nullable) {
+        super(nullable);
     }
-
 
 
     @Override
     public JsSpec nullable() {
-        return new JsStrSpec(
-                             true
-        );
+        return new JsStrSpec(true);
     }
 
 

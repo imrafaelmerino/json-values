@@ -24,15 +24,13 @@ class JsArrayOfIntegralSuchThatSpec extends AbstractPredicateSpec implements JsV
     @Override
     public JsSpec nullable() {
         return new JsArrayOfIntegralSuchThatSpec(predicate,
-                                                 true
-        );
+                                                 true);
     }
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfIntegralSuchThat(predicate,
-                                                                nullable
-        );
+                                                                nullable);
     }
 
     @Override

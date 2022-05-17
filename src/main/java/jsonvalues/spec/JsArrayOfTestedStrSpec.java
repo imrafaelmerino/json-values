@@ -15,9 +15,7 @@ class JsArrayOfTestedStrSpec extends AbstractPredicateSpec implements JsValuePre
     JsArrayOfTestedStrSpec(final Function<String, Optional<JsError>> predicate,
                            final boolean nullable
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 

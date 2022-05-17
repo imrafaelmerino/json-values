@@ -9,8 +9,7 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
 class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
-    JsBinarySpec(final boolean nullable
-    ) {
+    JsBinarySpec(final boolean nullable) {
         super(nullable);
     }
 

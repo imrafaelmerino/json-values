@@ -14,13 +14,10 @@ class JsIntegralSuchThatSpec extends AbstractPredicateSpec implements JsValuePre
 
     final Function<BigInteger, Optional<JsError>> predicate;
 
-    JsIntegralSuchThatSpec(
-            final boolean nullable,
-            final Function<BigInteger, Optional<JsError>> predicate
+    JsIntegralSuchThatSpec(final boolean nullable,
+                           final Function<BigInteger, Optional<JsError>> predicate
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 

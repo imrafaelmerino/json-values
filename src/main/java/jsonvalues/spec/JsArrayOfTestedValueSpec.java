@@ -29,8 +29,7 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfValueEachSuchThat(predicate,
-                                                                 nullable
-        );
+                                                                 nullable);
     }
 
     @Override

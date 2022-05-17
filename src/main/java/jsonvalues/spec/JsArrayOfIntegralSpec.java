@@ -9,20 +9,14 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfIntegralSpec(
-            final boolean nullable
-    ) {
-        super(
-                nullable
-        );
+    JsArrayOfIntegralSpec(final boolean nullable) {
+        super(nullable);
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntegralSpec(
-                true
-        );
+        return new JsArrayOfIntegralSpec(true);
     }
 
 

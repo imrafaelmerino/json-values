@@ -24,16 +24,14 @@ class JsArrayOfObjSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     @Override
     public JsSpec nullable() {
         return new JsArrayOfObjSuchThatSpec(predicate,
-                                            true
-        );
+                                            true);
     }
 
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfObjSuchThat(predicate,
-                                                           nullable
-        );
+                                                           nullable);
     }
 
     @Override

@@ -16,17 +16,14 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<JsError>> predicate,
                                 final boolean nullable
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedIntegralSpec(predicate,
-                                               true
-        );
+                                               true);
     }
 
     @Override

@@ -33,8 +33,7 @@ class JsArrayOfNumberSuchThatSpec extends AbstractPredicateSpec implements JsVal
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfNumberSuchThat(predicate,
-                                                              nullable
-        );
+                                                              nullable);
     }
 
     @Override

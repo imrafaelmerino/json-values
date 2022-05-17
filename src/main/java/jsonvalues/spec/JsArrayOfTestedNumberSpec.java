@@ -2,14 +2,12 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import jsonvalues.JsBigDec;
 import jsonvalues.JsNumber;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.Function;
 
-import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
 class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
@@ -18,9 +16,7 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     JsArrayOfTestedNumberSpec(final Function<JsNumber, Optional<JsError>> predicate,
                               final boolean nullable
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 

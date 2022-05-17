@@ -10,23 +10,15 @@ import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsIntegralSpec extends AbstractPredicateSpec implements JsValuePredicate {
 
-    JsIntegralSpec(
-                   final boolean nullable
-    ) {
-        super(
-              nullable
-        );
+    JsIntegralSpec(final boolean nullable) {
+        super(nullable);
     }
-
 
 
     @Override
     public JsSpec nullable() {
-        return new JsIntegralSpec(
-                                  true
-        );
+        return new JsIntegralSpec(true);
     }
-
 
 
     @Override

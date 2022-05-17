@@ -25,15 +25,13 @@ class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsVa
     @Override
     public JsSpec nullable() {
         return new JsArrayOfDecimalSuchThatSpec(predicate,
-                                                true
-        );
+                                                true);
     }
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfDecimalSuchThat(predicate,
-                                                               nullable
-        );
+                                                               nullable);
     }
 
     @Override

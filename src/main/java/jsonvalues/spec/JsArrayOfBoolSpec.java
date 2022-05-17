@@ -9,10 +9,8 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
 class JsArrayOfBoolSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfBoolSpec(final boolean nullable
-    ) {
-        super(nullable
-        );
+    JsArrayOfBoolSpec(final boolean nullable) {
+        super(nullable);
     }
 
     @Override

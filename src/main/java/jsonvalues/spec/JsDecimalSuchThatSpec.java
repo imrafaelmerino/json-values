@@ -13,22 +13,18 @@ import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
-    JsDecimalSuchThatSpec(
-            final boolean nullable,
-            final Function<BigDecimal, Optional<JsError>> predicate
+    JsDecimalSuchThatSpec(final boolean nullable,
+                          final Function<BigDecimal, Optional<JsError>> predicate
     ) {
-        super(
-                nullable
-        );
+        super(nullable);
         this.predicate = predicate;
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsDecimalSuchThatSpec(
-                true,
-                predicate
+        return new JsDecimalSuchThatSpec(true,
+                                         predicate
         );
     }
 
@@ -42,11 +38,11 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isDecimal,
-                                                                           DECIMAL_EXPECTED,
-                                                                           nullable
-                                                  )
-                                                                 .apply(value);
+        final Optional<JsError> error = Functions.testElem(JsValue::isDecimal,
+                                                           DECIMAL_EXPECTED,
+                                                           nullable
+                                                 )
+                                                 .apply(value);
 
         return error.isPresent() || value.isNull() ?
                error :

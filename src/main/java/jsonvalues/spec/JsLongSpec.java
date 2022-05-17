@@ -13,8 +13,6 @@ class JsLongSpec extends AbstractPredicateSpec implements JsValuePredicate {
         super(nullable);
     }
 
-
-
     @Override
     public JsSpec nullable() {
         return new JsLongSpec(true);

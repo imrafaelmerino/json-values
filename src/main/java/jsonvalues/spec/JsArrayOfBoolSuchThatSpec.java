@@ -18,8 +18,7 @@ class JsArrayOfBoolSuchThatSpec extends AbstractPredicateSpec implements JsValue
                               final boolean nullable
     ) {
         super(nullable);
-        this.isArrayOfBool = new JsArrayOfBoolSpec(nullable
-        );
+        this.isArrayOfBool = new JsArrayOfBoolSpec(nullable);
         this.predicate = predicate;
     }
 
@@ -27,16 +26,14 @@ class JsArrayOfBoolSuchThatSpec extends AbstractPredicateSpec implements JsValue
     @Override
     public JsSpec nullable() {
         return new JsArrayOfBoolSuchThatSpec(predicate,
-                                             true
-        );
+                                             true);
     }
 
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfBoolSuchThat(predicate,
-                                                            nullable
-        );
+                                                            nullable);
     }
 
     @Override
