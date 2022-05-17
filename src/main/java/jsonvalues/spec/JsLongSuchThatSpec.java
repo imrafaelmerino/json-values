@@ -22,10 +22,7 @@ class JsLongSuchThatSpec extends AbstractPredicateSpec implements JsValuePredica
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -35,13 +32,7 @@ class JsLongSuchThatSpec extends AbstractPredicateSpec implements JsValuePredica
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsLongSuchThatSpec(false,
-                                      nullable,
-                                      predicate
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {

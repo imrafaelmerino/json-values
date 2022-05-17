@@ -23,23 +23,11 @@ class JsBinarySuchThatSpec extends AbstractPredicateSpec implements JsValuePredi
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsBinarySuchThatSpec(required,
                                         true,
-                                        predicate
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsBinarySuchThatSpec(false,
-                                        nullable,
                                         predicate
         );
     }

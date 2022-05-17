@@ -17,22 +17,11 @@ class JsBinarySpec extends AbstractPredicateSpec implements JsValuePredicate {
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsBinarySpec(required,
                                 true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsBinarySpec(false,
-                                nullable
         );
     }
 

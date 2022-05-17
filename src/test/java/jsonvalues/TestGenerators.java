@@ -4,7 +4,6 @@ package jsonvalues;
 import fun.gen.*;
 import fun.tuple.Pair;
 import jsonvalues.gen.*;
-import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
@@ -14,7 +13,6 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import static jsonvalues.spec.JsSpecs.*;
@@ -37,12 +35,13 @@ public class TestGenerators {
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfStrSuchThat(a -> a.size() <= 10).optional()
-                                                                                 .nullable(),
+                                          arrayOfStrSuchThat(a -> a.size() <= 10)
+                                                  .nullable(),
                                           "b",
                                           arrayOfIntSuchThat(a -> a.size() <= 10).nullable()
-                                                                                 .optional()
-        );
+
+        ).setOptionals("a",
+                       "b");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())
@@ -140,12 +139,12 @@ public class TestGenerators {
                                           "d",
                                           bool,
                                           "e",
-                                          str.optional(),
+                                          str,
                                           "f",
                                           any(v -> v.isStr() || v.isIntegral()),
                                           "g",
                                           str(b -> b.equals("a"))
-        );
+        ).setOptionals("e");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())
@@ -219,7 +218,7 @@ public class TestGenerators {
                                              "o");
 
         JsObjSpec spec = JsObjSpec.lenient("a",
-                                           str.optional().nullable(),
+                                           str.nullable(),
                                            "b",
                                            integer,
                                            "c",
@@ -231,7 +230,7 @@ public class TestGenerators {
                                            "f",
                                            integral,
                                            "g",
-                                           decimal.optional().nullable(),
+                                           decimal.nullable(),
                                            "h",
                                            bool,
                                            "i",
@@ -247,10 +246,13 @@ public class TestGenerators {
                                            "n",
                                            str(s -> s.length() == 1),
                                            "o",
-                                           JsSpecs.binary.optional(),
+                                           JsSpecs.binary,
                                            "p",
-                                           JsSpecs.instant.optional()
-        );
+                                           JsSpecs.instant
+        ).setOptionals("a",
+                       "g",
+                       "o",
+                       "p");
 
         Assertions.assertTrue(
                 gen.sample(1000)
@@ -274,9 +276,9 @@ public class TestGenerators {
         JsObjSpec spec = JsObjSpec.strict("a",
                                           str,
                                           "b",
-                                          integer.optional()
-                                                 .nullable()
-        );
+                                          integer
+                                                  .nullable()
+        ).setOptionals("b");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())

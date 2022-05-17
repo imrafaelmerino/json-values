@@ -26,10 +26,7 @@ class JsArrayOfIntSuchThatSpec extends AbstractPredicateSpec implements JsValueP
 
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -39,14 +36,6 @@ class JsArrayOfIntSuchThatSpec extends AbstractPredicateSpec implements JsValueP
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfIntSuchThatSpec(predicate,
-                                            false,
-                                            nullable
-        );
-
-    }
 
     @Override
     public JsSpecParser parser() {

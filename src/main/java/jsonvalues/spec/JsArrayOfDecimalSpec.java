@@ -18,10 +18,7 @@ class JsArrayOfDecimalSpec extends AbstractPredicateSpec implements JsValuePredi
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -30,12 +27,7 @@ class JsArrayOfDecimalSpec extends AbstractPredicateSpec implements JsValuePredi
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfDecimalSpec(false,
-                                        nullable
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {

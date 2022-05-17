@@ -18,23 +18,13 @@ class JsArrayOfBoolSpec extends AbstractPredicateSpec implements JsValuePredicat
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfBoolSpec(required,
                                      true
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfBoolSpec(false,
-                                     nullable
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {

@@ -26,23 +26,10 @@ class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValueP
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfStrSuchThatSpec(predicate,
                                             required,
                                             true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfStrSuchThatSpec(predicate,
-                                            false,
-                                            nullable
         );
     }
 

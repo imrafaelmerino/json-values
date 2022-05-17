@@ -24,26 +24,12 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedObjSpec(predicate,
                                           required,
                                           true
         );
     }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedObjSpec(predicate,
-                                          false,
-                                          nullable
-        );
-    }
-
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfObjEachSuchThat(predicate,

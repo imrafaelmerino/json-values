@@ -18,22 +18,12 @@ class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredica
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
         return new JsTrueConstantSpec(required,
                                       true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsTrueConstantSpec(false,
-                                      nullable
         );
     }
 

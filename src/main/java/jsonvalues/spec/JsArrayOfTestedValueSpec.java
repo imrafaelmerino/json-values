@@ -20,10 +20,6 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
@@ -33,13 +29,6 @@ class JsArrayOfTestedValueSpec extends AbstractPredicateSpec implements JsValueP
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedValueSpec(predicate,
-                                            false,
-                                            nullable
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

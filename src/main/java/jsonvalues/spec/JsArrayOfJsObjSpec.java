@@ -15,45 +15,32 @@ import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 public class JsArrayOfJsObjSpec implements JsSpec, JsArraySpec {
 
     private final boolean nullable;
-    private final boolean required;
     private final JsObjSpec spec;
 
 
     JsArrayOfJsObjSpec(final boolean nullable,
-                       final boolean required,
                        final JsObjSpec jsObjSpec
     ) {
         this.nullable = nullable;
-        this.required = required;
         this.spec = jsObjSpec;
 
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
         return new JsArrayOfJsObjSpec(true,
-                                      required,
                                       spec
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfJsObjSpec(nullable,
-                                      false,
-                                      spec
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {
 
-        return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(spec.bindings.filter((k, s) -> s.isRequired())
+        return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(spec.bindings.filter((k, s) -> !spec.getOptionalFields().contains(k))
                                                                     .map(it -> it._1)
                                                                     .toVector(),
                                                        spec.bindings.map((k, s) -> new Tuple2<>(k,

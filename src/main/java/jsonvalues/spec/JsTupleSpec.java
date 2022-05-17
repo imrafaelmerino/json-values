@@ -49,24 +49,12 @@ public final class JsTupleSpec implements JsArraySpec {
         return new JsTupleSpec(specs);
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsTupleSpec nullable() {
         return new JsTupleSpec(specs,
                                required,
                                true
-        );
-    }
-
-    @Override
-    public JsTupleSpec optional() {
-        return new JsTupleSpec(specs,
-                               false,
-                               nullable
         );
     }
 

@@ -33,15 +33,13 @@ public class TestJsArraySpec {
     }
 
     @Test
-    public void test_any_spec_array_of_one_or_two_elements() {
+    public void test_any_spec_array() {
 
 
         JsTupleSpec spec = JsSpecs.tuple(any,
-                                         any.optional()
-        );
+                                         any);
 
-        Assertions.assertTrue(spec.test(JsArray.of(JsNull.NULL))
-                                  .isEmpty());
+
         Assertions.assertTrue(spec.test(JsArray.of(JsNull.NULL,
                                                    JsBool.TRUE
                                   ))
@@ -288,8 +286,7 @@ public class TestJsArraySpec {
                                              arrayOfObjSpec(spec).nullable(),
                                              "b",
                                              arrayOfObjSpec(spec).nullable()
-                                                                 .optional()
-        );
+        ).setOptionals("b");
 
 
         Assertions.assertTrue(objSpec.test(JsObj.of("a",

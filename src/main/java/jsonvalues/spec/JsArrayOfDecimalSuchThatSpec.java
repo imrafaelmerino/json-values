@@ -26,10 +26,6 @@ class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsVa
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
@@ -37,15 +33,6 @@ class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsVa
                                                 required,
                                                 true
         );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfDecimalSuchThatSpec(predicate,
-                                                false,
-                                                nullable
-        );
-
     }
 
     @Override

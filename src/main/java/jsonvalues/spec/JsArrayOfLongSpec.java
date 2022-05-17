@@ -17,10 +17,7 @@ class JsArrayOfLongSpec extends AbstractPredicateSpec implements JsValuePredicat
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -29,12 +26,7 @@ class JsArrayOfLongSpec extends AbstractPredicateSpec implements JsValuePredicat
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfLongSpec(false,
-                                     nullable
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {

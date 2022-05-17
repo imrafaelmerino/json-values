@@ -19,22 +19,12 @@ class AnySuchThatSpec implements JsValuePredicate {
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return this;
     }
 
-    @Override
-    public JsSpec optional() {
-        return new AnySuchThatSpec(false,
-                                   predicate
-        );
-    }
 
     @Override
     public JsSpecParser parser() {
@@ -44,8 +34,9 @@ class AnySuchThatSpec implements JsValuePredicate {
     @Override
     public Optional<JsError> test(final JsValue value) {
 
-        if (value.isNothing() && required) return Optional.of(new JsError(value,
-                                                                          ERROR_CODE.REQUIRED));
+        if (value.isNothing() && required)
+            return Optional.of(new JsError(value,
+                                           ERROR_CODE.REQUIRED));
         return predicate.apply(value);
 
     }

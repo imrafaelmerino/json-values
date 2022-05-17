@@ -17,22 +17,11 @@ class JsArrayOfStrSpec extends AbstractPredicateSpec implements JsValuePredicate
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsArrayOfStrSpec(required,
                                     true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfStrSpec(false,
-                                    nullable
         );
     }
 

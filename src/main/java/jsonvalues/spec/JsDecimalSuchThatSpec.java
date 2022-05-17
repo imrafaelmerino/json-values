@@ -23,10 +23,6 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
@@ -36,13 +32,6 @@ class JsDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsDecimalSuchThatSpec(false,
-                                         nullable,
-                                         predicate
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

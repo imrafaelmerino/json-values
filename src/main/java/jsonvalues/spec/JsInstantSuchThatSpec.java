@@ -24,10 +24,6 @@ class JsInstantSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
@@ -37,13 +33,6 @@ class JsInstantSuchThatSpec extends AbstractPredicateSpec implements JsValuePred
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsInstantSuchThatSpec(false,
-                                         nullable,
-                                         predicate
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

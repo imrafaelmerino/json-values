@@ -8,26 +8,15 @@ import java.util.Optional;
 
 class AnySpec implements JsValuePredicate {
 
-    final boolean required;
 
-    AnySpec(final boolean required) {
-        this.required = required;
-    }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return this;
     }
 
-    @Override
-    public JsSpec optional() {
-        return new AnySpec(false);
-    }
+
 
     @Override
     public JsSpecParser parser() {
@@ -37,7 +26,7 @@ class AnySpec implements JsValuePredicate {
     @Override
     public Optional<JsError> test(final JsValue value) {
 
-        if (value.isNothing() && required)
+        if (value.isNothing())
             return Optional.of(new JsError(value,
                                            ERROR_CODE.REQUIRED));
         return Optional.empty();

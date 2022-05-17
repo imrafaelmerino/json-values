@@ -23,11 +23,11 @@ public class TestExample {
         JsObjSpec spec = JsObjSpec.strict("name",
                                           JsSpecs.str,
                                           "surname",
-                                          JsSpecs.str.optional(),
+                                          JsSpecs.str,
                                           "languages",
                                           JsSpecs.arrayOfStr,
                                           "age",
-                                          JsSpecs.integer.optional(),
+                                          JsSpecs.integer,
                                           "address",
                                           JsObjSpec.strict("street",
                                                            JsSpecs.str,
@@ -40,7 +40,7 @@ public class TestExample {
                                                                          JsSpecs.decimal
                                                            )
                                           )
-        );
+        ).setOptionals("surname","age");
 
         JsObj person = JsObj.of("name",
                                 JsStr.of("Rafael"),

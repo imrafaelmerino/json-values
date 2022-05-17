@@ -17,10 +17,7 @@ class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredic
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -29,12 +26,6 @@ class JsArrayOfNumberSpec extends AbstractPredicateSpec implements JsValuePredic
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfNumberSpec(false,
-                                       nullable
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

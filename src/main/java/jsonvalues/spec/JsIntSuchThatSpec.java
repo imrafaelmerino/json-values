@@ -22,23 +22,11 @@ class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicat
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsIntSuchThatSpec(required,
                                      true,
-                                     predicate
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsIntSuchThatSpec(false,
-                                     nullable,
                                      predicate
         );
     }

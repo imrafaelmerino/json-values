@@ -23,23 +23,10 @@ class JsArrayOfTestedLongSpec extends AbstractPredicateSpec implements JsValuePr
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedLongSpec(predicate,
                                            required,
                                            true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedLongSpec(predicate,
-                                           false,
-                                           nullable
         );
     }
 

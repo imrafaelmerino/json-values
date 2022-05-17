@@ -17,10 +17,7 @@ class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -29,12 +26,7 @@ class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsIntSpec(false,
-                             nullable
-        );
-    }
+
 
     @Override
     public JsSpecParser parser() {

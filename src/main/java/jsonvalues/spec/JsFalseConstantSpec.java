@@ -17,22 +17,11 @@ class JsFalseConstantSpec extends AbstractPredicateSpec implements JsValuePredic
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsFalseConstantSpec(required,
                                        false
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsFalseConstantSpec(false,
-                                       nullable
         );
     }
 

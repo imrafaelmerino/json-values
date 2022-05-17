@@ -24,23 +24,10 @@ class JsArrayOfTestedNumberSpec extends AbstractPredicateSpec implements JsValue
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedNumberSpec(predicate,
                                              required,
                                              true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedNumberSpec(predicate,
-                                             false,
-                                             nullable
         );
     }
 

@@ -19,7 +19,7 @@ public final class JsSpecs {
     /**
      * spec that is conformed by any value
      */
-    public static final JsSpec any = new AnySpec(true);
+    public static final JsSpec any = new AnySpec();
     /**
      * non-nullable string
      */
@@ -157,7 +157,6 @@ public final class JsSpecs {
      */
     public static JsArraySpec arrayOfObjSpec(final JsObjSpec spec) {
         return new JsArrayOfJsObjSpec(false,
-                                      true,
                                       requireNonNull(spec)
         );
     }

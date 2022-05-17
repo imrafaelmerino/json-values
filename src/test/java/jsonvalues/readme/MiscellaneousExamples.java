@@ -22,12 +22,12 @@ public class MiscellaneousExamples {
     @Test
     public void basic() {
         JsObjSpec spec = JsObjSpec.strict("firstName",
-                                          str.optional(),
+                                          str,
                                           "lastName",
-                                          str.optional(),
+                                          str,
                                           "age",
-                                          integer(i -> i >= 0).optional()
-        );
+                                          integer(i -> i >= 0)
+        ).setOptionals("firstName","lastName","age");
 
         Gen<JsObj> gen =
                 JsObjGen.of("firstName",

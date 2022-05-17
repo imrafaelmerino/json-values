@@ -27,24 +27,12 @@ class JsArraySuchThatSpec extends AbstractPredicateSpec implements JsValuePredic
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
 
     @Override
     public JsSpec nullable() {
         return new JsArraySuchThatSpec(predicate,
                                        required,
                                        true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArraySuchThatSpec(predicate,
-                                       false,
-                                       nullable
         );
     }
 

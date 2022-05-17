@@ -24,23 +24,10 @@ class JsArrayOfTestedIntegralSpec extends AbstractPredicateSpec implements JsVal
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedIntegralSpec(predicate,
                                                required,
                                                true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedIntegralSpec(predicate,
-                                               false,
-                                               nullable
         );
     }
 

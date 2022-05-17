@@ -3,6 +3,10 @@ package jsonvalues.spec;
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
 import io.vavr.Tuple2;
+import io.vavr.collection.HashMap;
+import io.vavr.collection.LinkedHashMap;
+import io.vavr.collection.Map;
+import io.vavr.collection.Vector;
 import io.vavr.collection.*;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
@@ -10,7 +14,10 @@ import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -21,26 +28,18 @@ import static jsonvalues.spec.ERROR_CODE.*;
 public final class JsObjSpec implements JsSpec {
 
     final boolean strict;
-    /**
-     * When this spec is associated to a key in another JsObjSpec, the required flag indicates whether or
-     * not the key is optional. If this JsObjSpec is the root of the spec, the flag doesn't have
-     * any meaning
-     */
-    private final boolean required;
     private final boolean nullable;
     Map<String, JsSpec> bindings = LinkedHashMap.empty();
+    private List<String> optionalFields = new ArrayList<>();
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
-                      boolean required,
                       boolean nullable,
                       boolean strict
     ) {
         this.bindings = bindings;
-        this.required = required;
         this.nullable = nullable;
         this.strict = strict;
     }
-
 
     @SuppressWarnings("squid:S00107")
     private JsObjSpec(
@@ -185,6 +184,7 @@ public final class JsObjSpec implements JsSpec {
                                 spec16
         );
     }
+
 
     @SuppressWarnings("squid:S00107")
     private JsObjSpec(
@@ -650,7 +650,6 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-
     @SuppressWarnings("squid:S00107")
     private JsObjSpec(
             final String key1,
@@ -760,6 +759,7 @@ public final class JsObjSpec implements JsSpec {
                                 spec10
         );
     }
+
 
     @SuppressWarnings("squid:S00107")
     private JsObjSpec(String key,
@@ -1045,7 +1045,6 @@ public final class JsObjSpec implements JsSpec {
         this(key,
              spec,
              strict,
-             true,
              false
         );
         bindings = bindings.put(key1,
@@ -1056,14 +1055,12 @@ public final class JsObjSpec implements JsSpec {
     private JsObjSpec(final String key,
                       final JsSpec spec,
                       final boolean strict,
-                      final boolean required,
                       final boolean nullable
     ) {
         bindings = bindings.put(key,
                                 spec
         );
         this.strict = strict;
-        this.required = required;
         this.nullable = nullable;
     }
 
@@ -1080,7 +1077,6 @@ public final class JsObjSpec implements JsSpec {
     ) {
         return new JsObjSpec(key,
                              spec,
-                             true,
                              true,
                              false
         );
@@ -1100,7 +1096,6 @@ public final class JsObjSpec implements JsSpec {
         return new JsObjSpec(key,
                              spec,
                              false,
-                             true,
                              false
         );
     }
@@ -3019,7 +3014,6 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-
     /**
      * static factory method to create a strict JsObjSpec of seventeen mappings. Strict means that different
      * keys than the defined are not allowed
@@ -4112,28 +4106,28 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
+    List<String> getOptionalFields() {
+        return optionalFields;
+    }
+
+    public JsObjSpec setOptionals(String field,
+                                  String... fields) {
+        JsObjSpec spec = new JsObjSpec(bindings,
+                                       nullable,
+                                       strict);
+        spec.optionalFields.add(field);
+        spec.optionalFields.addAll(Arrays.stream(fields).collect(Collectors.toList()));
+        return spec;
     }
 
     @Override
     public JsObjSpec nullable() {
         return new JsObjSpec(bindings,
-                             required,
                              true,
                              strict
         );
     }
 
-    @Override
-    public JsObjSpec optional() {
-        return new JsObjSpec(bindings,
-                             false,
-                             nullable,
-                             strict
-        );
-    }
 
     @Override
     public JsSpecParser parser() {
@@ -4143,7 +4137,7 @@ public final class JsObjSpec implements JsSpec {
 
             JsSpec spec = bindings.get(key)
                                   .get();
-            if (spec.isRequired()) requiredKeys = requiredKeys.append(key);
+            if (!optionalFields.contains(key)) requiredKeys = requiredKeys.append(key);
             parsers = parsers.put(key,
                                   spec.parser()
             );
@@ -4214,7 +4208,7 @@ public final class JsObjSpec implements JsSpec {
         final Seq<String> requiredFields =
                 parentObjSpec
                         .bindings
-                        .filter((key, spec) -> spec.isRequired())
+                        .filter((key, spec) -> !optionalFields.contains(key))
                         .map(p -> p._1);
         for (final String requiredField : requiredFields) {
             if (!json.containsKey(requiredField))
@@ -4242,7 +4236,6 @@ public final class JsObjSpec implements JsSpec {
         return new JsObjSpec(bindings.put(requireNonNull(key),
                                           requireNonNull(spec)
         ),
-                             this.required,
                              this.nullable,
                              this.strict
         );

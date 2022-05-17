@@ -24,23 +24,10 @@ class JsArrayOfTestedDecimalSpec extends AbstractPredicateSpec implements JsValu
     }
 
     @Override
-    public boolean isRequired() {
-        return required;
-    }
-
-    @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedDecimalSpec(predicate,
                                               required,
                                               true
-        );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfTestedDecimalSpec(predicate,
-                                              false,
-                                              nullable
         );
     }
 

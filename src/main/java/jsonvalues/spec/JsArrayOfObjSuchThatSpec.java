@@ -25,10 +25,7 @@ class JsArrayOfObjSuchThatSpec extends AbstractPredicateSpec implements JsValueP
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -38,13 +35,6 @@ class JsArrayOfObjSuchThatSpec extends AbstractPredicateSpec implements JsValueP
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfObjSuchThatSpec(predicate,
-                                            false,
-                                            nullable
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

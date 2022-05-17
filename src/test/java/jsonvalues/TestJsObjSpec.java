@@ -2,7 +2,6 @@ package jsonvalues;
 
 
 import com.dslplatform.json.JsParserException;
-import jsonvalues.spec.JsError;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -576,13 +575,11 @@ public class TestJsObjSpec {
     public void testIsArrayOfTestedPrimitivesSpecs() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                arrayOfInt(i -> i > 0).optional()
-                                                                      .nullable(),
+                                                arrayOfInt(i -> i > 0).nullable(),
                                                 "b",
                                                 arrayOfStr(s -> s.startsWith("a")),
                                                 "c",
-                                                arrayOfLong(i -> i < 0).optional()
-                                                                       .nullable(),
+                                                arrayOfLong(i -> i < 0).nullable(),
                                                 "c1",
                                                 arrayOfLong(i -> i < 0).nullable(),
                                                 "c2",
@@ -595,8 +592,7 @@ public class TestJsObjSpec {
                                                 JsObjSpec.strict("a",
                                                                  arrayOfNumber(JsValue::isInt),
                                                                  "b",
-                                                                 arrayOfObj(JsObj::isEmpty).optional()
-                                                                                           .nullable(),
+                                                                 arrayOfObj(JsObj::isEmpty).nullable(),
                                                                  "c",
                                                                  JsSpecs.tuple(arrayOfStrSuchThat(a -> a.size() > 2),
                                                                                arrayOfIntSuchThat(a -> a.size() > 1),
@@ -609,8 +605,9 @@ public class TestJsObjSpec {
                                                                  number(JsValue::isDouble),
                                                                  "f",
                                                                  obj(JsObj::isEmpty)
-                                                )
-        );
+                                                ).setOptionals("b")
+        ).setOptionals("c",
+                       "c");
 
 
         final Set<JsErrorPair> error = spec.test(JsObj.of("a",
@@ -704,10 +701,11 @@ public class TestJsObjSpec {
         JsObjSpec spec = JsObjSpec.strict("a",
                                           any,
                                           "b",
-                                          any.optional(),
+                                          any,
                                           "d",
-                                          any(JsValue::isStr).optional()
-        );
+                                          any(JsValue::isStr)
+        ).setOptionals("b",
+                       "d");
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsNull.NULL
@@ -731,10 +729,10 @@ public class TestJsObjSpec {
                                           JsObjSpec.strict("a",
                                                            any,
                                                            "b",
-                                                           any.optional(),
+                                                           any,
                                                            "d",
                                                            any(JsValue::isStr)
-                                          )
+                                          ).setOptionals("b")
         );
 
 
@@ -794,8 +792,7 @@ public class TestJsObjSpec {
                                           "g",
                                           arrayOfIntegral,
                                           "h",
-                                          arrayOfNumber.optional()
-                                                       .nullable(),
+                                          arrayOfNumber.nullable(),
                                           "i",
                                           arrayOfObj,
                                           "j",
@@ -819,9 +816,9 @@ public class TestJsObjSpec {
                                                                            decimal,
                                                                            "i",
                                                                            number
-                                                  )
+                                                         )
                                           )
-        );
+        ).setOptionals("h");
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsArray.of(1,
@@ -929,7 +926,7 @@ public class TestJsObjSpec {
                                                                            decimal.nullable(),
                                                                            "i",
                                                                            number.nullable()
-                                                  )
+                                                         )
                                           ).nullable()
         );
 
@@ -967,63 +964,52 @@ public class TestJsObjSpec {
 
         JsObjSpec spec = JsObjSpec.lenient("a",
                                            array.nullable()
-                                                .optional(),
+                                                ,
                                            "c",
                                            arrayOfBool.nullable()
-                                                      .optional(),
+                                                      ,
                                            "d",
                                            arrayOfDec.nullable()
-                                                     .optional(),
+                                                     ,
                                            "e",
                                            arrayOfInt.nullable()
-                                                     .optional(),
+                                                     ,
                                            "f",
                                            arrayOfLong.nullable()
-                                                      .optional(),
+                                                      ,
                                            "g",
                                            arrayOfIntegral.nullable()
-                                                          .optional(),
+                                                          ,
                                            "h",
                                            arrayOfNumber.nullable()
-                                                        .optional(),
+                                                        ,
                                            "i",
                                            arrayOfObj.nullable()
-                                                     .optional(),
+                                                     ,
                                            "j",
-                                           arrayOfStr.nullable()
-                                                     .optional(),
+                                           arrayOfStr.nullable(),
                                            "k",
                                            arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                                            bool.nullable()
-                                                                         .optional(),
+                                                                            bool.nullable(),
                                                                             "b",
-                                                                            str.optional()
-                                                                        .nullable(),
+                                                                            str.nullable(),
                                                                             "c",
-                                                                            integer.nullable()
-                                                                            .optional(),
+                                                                            integer.nullable(),
                                                                             "d",
-                                                                            longInteger.nullable()
-                                                                                .optional(),
+                                                                            longInteger.nullable(),
                                                                             "e",
-                                                                            obj.nullable()
-                                                                        .optional(),
+                                                                            obj.nullable(),
                                                                             "f",
-                                                                            array.nullable()
-                                                                          .optional(),
+                                                                            array.nullable(),
                                                                             "g",
-                                                                            integral.nullable()
-                                                                             .optional(),
+                                                                            integral.nullable(),
                                                                             "h",
-                                                                            decimal.nullable()
-                                                                            .optional(),
+                                                                            decimal.nullable(),
                                                                             "i",
                                                                             number.nullable()
-                                                                           .optional()
-                                                   )
+                                                          ).setOptionals("a","b","c","d","e","f","g","h","i")
                                            ).nullable()
-                                            .optional()
-        );
+        ).setOptionals("a","c","d","e","f","g","h","i","j","k");
 
         final Set<JsErrorPair> result = spec.test(JsObj.of("a",
                                                            JsNull.NULL,
@@ -1108,45 +1094,45 @@ public class TestJsObjSpec {
     public void testOptionalJsSpec() {
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          array.optional(),
+                                          array,
                                           "c",
-                                          arrayOfBool.optional(),
+                                          arrayOfBool,
                                           "d",
-                                          arrayOfDec.optional(),
+                                          arrayOfDec,
                                           "e",
-                                          arrayOfInt.optional(),
+                                          arrayOfInt,
                                           "f",
-                                          arrayOfLong.optional(),
+                                          arrayOfLong,
                                           "g",
-                                          arrayOfIntegral.optional(),
+                                          arrayOfIntegral,
                                           "h",
-                                          arrayOfNumber.optional(),
+                                          arrayOfNumber,
                                           "i",
-                                          arrayOfObj.optional(),
+                                          arrayOfObj,
                                           "j",
-                                          arrayOfStr.optional(),
+                                          arrayOfStr,
                                           "k",
                                           arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                                           bool.optional(),
+                                                                           bool,
                                                                            "b",
-                                                                           str.optional(),
+                                                                           str,
                                                                            "c",
-                                                                           integer.optional(),
+                                                                           integer,
                                                                            "d",
-                                                                           longInteger.optional(),
+                                                                           longInteger,
                                                                            "e",
-                                                                           obj.optional(),
+                                                                           obj,
                                                                            "f",
-                                                                           array.optional(),
+                                                                           array,
                                                                            "g",
-                                                                           integral.optional(),
+                                                                           integral,
                                                                            "h",
-                                                                           decimal.optional(),
+                                                                           decimal,
                                                                            "i",
-                                                                           number.optional()
-                                                  )
-                                          ).optional()
-        );
+                                                                           number
+                                                         ).setOptionals("a","b","c","d","e","f","g","h","i")
+                                          )
+        ).setOptionals("a","c","d","e","f","g","h","i","j","k");
 
 
         Assertions.assertTrue(spec.test(JsObj.empty())
@@ -1167,14 +1153,14 @@ public class TestJsObjSpec {
         JsObjSpec spec = JsObjSpec.strict("a",
                                           objSpec,
                                           "b",
-                                          objSpec.optional()
+                                          objSpec
                                                  .nullable(),
                                           "c",
-                                          objSpec.optional(),
+                                          objSpec,
                                           "d",
-                                          objSpec.optional()
+                                          objSpec
                                                  .nullable()
-        );
+        ).setOptionals("b","c","d");
 
         final Set<JsErrorPair> set = spec.test(JsObj.of("a",
                                                         JsObj.of("a",
@@ -1202,10 +1188,10 @@ public class TestJsObjSpec {
         final JsSpec c = arrayOfObjSpec(JsObjSpec.lenient("a",
                                                           integral
         )).nullable()
-          .optional();
+          ;
         final JsSpec d = arrayOfObjSpec(JsObjSpec.lenient("a",
                                                           integral
-        )).optional();
+        ));
 
         final JsObjSpec objspec = JsObjSpec.strict("a",
                                                    a,
@@ -1215,7 +1201,7 @@ public class TestJsObjSpec {
                                                    c,
                                                    "d",
                                                    d
-        );
+        ).setOptionals("c","d");
 
         final Set<JsErrorPair> errors = objspec.test(JsObj.of("a",
                                                               JsArray.of(JsObj.of("a",
@@ -1250,11 +1236,11 @@ public class TestJsObjSpec {
                                        "b",
                                        arrayOfObjSpec(spec).nullable(),
                                        "c",
-                                       arrayOfObjSpec(spec).optional(),
+                                       arrayOfObjSpec(spec),
                                        "d",
                                        arrayOfObjSpec(spec).nullable()
-                                                           .optional()
-        );
+
+        ).setOptionals("c","d");
 
         Assertions.assertTrue(b.test(JsObj.of("a",
                                               JsArray.of(JsObj.of("a",
@@ -1277,12 +1263,12 @@ public class TestJsObjSpec {
     @Test
     public void test_required_fields() {
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                str.optional(),
+                                                str,
                                                 "b",
                                                 JsObjSpec.strict("c",
                                                                  integral
                                                 )
-        );
+        ).setOptionals("a");
 
         final Set<JsErrorPair> errors = spec.test(JsObj.of("b",
                                                            JsObj.empty()
@@ -1310,7 +1296,7 @@ public class TestJsObjSpec {
                                                 "c",
                                                 arrayOfObjSpec(JsObjSpec.lenient("a",
                                                                                  str
-                                                        )
+                                                               )
                                                 )
         );
 
@@ -1414,8 +1400,8 @@ public class TestJsObjSpec {
 
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          cons(JsInt.of(2)).optional()
-        );
+                                          cons(JsInt.of(2))
+        ).setOptionals("a");
 
         Assertions.assertTrue(spec.test(JsObj.empty())
                                   .isEmpty());

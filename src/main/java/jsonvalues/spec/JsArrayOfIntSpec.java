@@ -19,10 +19,7 @@ class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate
         );
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -31,12 +28,6 @@ class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate
         );
     }
 
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfIntSpec(false,
-                                    nullable
-        );
-    }
 
     @Override
     public JsSpecParser parser() {

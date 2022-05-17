@@ -25,10 +25,7 @@ class JsArrayOfIntegralSuchThatSpec extends AbstractPredicateSpec implements JsV
         this.predicate = predicate;
     }
 
-    @Override
-    public boolean isRequired() {
-        return required;
-    }
+
 
     @Override
     public JsSpec nullable() {
@@ -36,15 +33,6 @@ class JsArrayOfIntegralSuchThatSpec extends AbstractPredicateSpec implements JsV
                                                  required,
                                                  true
         );
-    }
-
-    @Override
-    public JsSpec optional() {
-        return new JsArrayOfIntegralSuchThatSpec(predicate,
-                                                 false,
-                                                 nullable
-        );
-
     }
 
     @Override
