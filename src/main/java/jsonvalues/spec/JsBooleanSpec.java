@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-class JsBooleanSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsBooleanSpec extends AbstractNullableSpec implements JsValuePredicate {
     JsBooleanSpec(final boolean nullable) {
         super(nullable);
     }

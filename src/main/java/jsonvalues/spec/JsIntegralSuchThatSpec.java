@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsIntegralSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
     final Function<BigInteger, Optional<JsError>> predicate;
 

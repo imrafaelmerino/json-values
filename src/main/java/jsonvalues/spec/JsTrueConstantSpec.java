@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.TRUE_EXPECTED;
 
-class JsTrueConstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsTrueConstantSpec extends AbstractNullableSpec implements JsValuePredicate {
 
     JsTrueConstantSpec(final boolean nullable) {
         super(nullable);

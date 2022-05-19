@@ -103,31 +103,45 @@ public class TestJsObjSpec {
     public void testIsIntPredicateSpec() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                integer(n -> n % 2 == 0)
+                                                integer(n -> n % 2 == 0),
+                                                "b",
+                                                instant(i -> i.isAfter(Instant.MAX))
         );
 
 
-        final Set<JsErrorPair> error = spec.test(JsObj.of("a",
-                                                          JsInt.of(5)
+        final Set<JsErrorPair> errors = spec.test(JsObj.of("a",
+                                                           JsInt.of(5),
+                                                           "b",
+                                                           JsInstant.of(Instant.now())
         ));
 
-        Assertions.assertFalse(error.isEmpty());
+        Assertions.assertTrue(errors.size() == 2);
 
-        final JsErrorPair pair = error.stream()
-                                      .findFirst()
-                                      .get();
+        final JsErrorPair intError = errors.stream()
+                                           .filter(it -> it.error.value.equals(JsInt.of(5)))
+                                           .findFirst().
+                                           get();
 
-        Assertions.assertEquals(pair.error.code,
-                                INT_CONDITION
-        );
+        Assertions.assertEquals(intError.error.code,
+                                INT_CONDITION);
 
-        Assertions.assertEquals(pair.error.value,
-                                JsInt.of(5)
-        );
+        Assertions.assertEquals(intError.error.value,
+                                JsInt.of(5));
 
-        Assertions.assertEquals(pair.path,
-                                JsPath.fromKey("a")
-        );
+        Assertions.assertEquals(intError.path,
+                                JsPath.fromKey("a"));
+
+        final JsErrorPair instantError = errors.stream()
+                                               .filter(it -> it.path.last().isKey(a -> a.equals("b")))
+                                               .findFirst().
+                                               get();
+
+        Assertions.assertEquals(instantError.error.code,
+                                INSTANT_CONDITION);
+
+
+        Assertions.assertEquals(instantError.path,
+                                JsPath.fromKey("b"));
 
 
     }
@@ -964,28 +978,28 @@ public class TestJsObjSpec {
 
         JsObjSpec spec = JsObjSpec.lenient("a",
                                            array.nullable()
-                                                ,
+                ,
                                            "c",
                                            arrayOfBool.nullable()
-                                                      ,
+                ,
                                            "d",
                                            arrayOfDec.nullable()
-                                                     ,
+                ,
                                            "e",
                                            arrayOfInt.nullable()
-                                                     ,
+                ,
                                            "f",
                                            arrayOfLong.nullable()
-                                                      ,
+                ,
                                            "g",
                                            arrayOfIntegral.nullable()
-                                                          ,
+                ,
                                            "h",
                                            arrayOfNumber.nullable()
-                                                        ,
+                ,
                                            "i",
                                            arrayOfObj.nullable()
-                                                     ,
+                ,
                                            "j",
                                            arrayOfStr.nullable(),
                                            "k",
@@ -1007,9 +1021,26 @@ public class TestJsObjSpec {
                                                                             decimal.nullable(),
                                                                             "i",
                                                                             number.nullable()
-                                                          ).setOptionals("a","b","c","d","e","f","g","h","i")
+                                                          ).setOptionals("a",
+                                                                         "b",
+                                                                         "c",
+                                                                         "d",
+                                                                         "e",
+                                                                         "f",
+                                                                         "g",
+                                                                         "h",
+                                                                         "i")
                                            ).nullable()
-        ).setOptionals("a","c","d","e","f","g","h","i","j","k");
+        ).setOptionals("a",
+                       "c",
+                       "d",
+                       "e",
+                       "f",
+                       "g",
+                       "h",
+                       "i",
+                       "j",
+                       "k");
 
         final Set<JsErrorPair> result = spec.test(JsObj.of("a",
                                                            JsNull.NULL,
@@ -1130,9 +1161,26 @@ public class TestJsObjSpec {
                                                                            decimal,
                                                                            "i",
                                                                            number
-                                                         ).setOptionals("a","b","c","d","e","f","g","h","i")
+                                                         ).setOptionals("a",
+                                                                        "b",
+                                                                        "c",
+                                                                        "d",
+                                                                        "e",
+                                                                        "f",
+                                                                        "g",
+                                                                        "h",
+                                                                        "i")
                                           )
-        ).setOptionals("a","c","d","e","f","g","h","i","j","k");
+        ).setOptionals("a",
+                       "c",
+                       "d",
+                       "e",
+                       "f",
+                       "g",
+                       "h",
+                       "i",
+                       "j",
+                       "k");
 
 
         Assertions.assertTrue(spec.test(JsObj.empty())
@@ -1154,13 +1202,15 @@ public class TestJsObjSpec {
                                           objSpec,
                                           "b",
                                           objSpec
-                                                 .nullable(),
+                                                  .nullable(),
                                           "c",
                                           objSpec,
                                           "d",
                                           objSpec
-                                                 .nullable()
-        ).setOptionals("b","c","d");
+                                                  .nullable()
+        ).setOptionals("b",
+                       "c",
+                       "d");
 
         final Set<JsErrorPair> set = spec.test(JsObj.of("a",
                                                         JsObj.of("a",
@@ -1187,8 +1237,7 @@ public class TestJsObjSpec {
         )).nullable();
         final JsSpec c = arrayOfObjSpec(JsObjSpec.lenient("a",
                                                           integral
-        )).nullable()
-          ;
+        )).nullable();
         final JsSpec d = arrayOfObjSpec(JsObjSpec.lenient("a",
                                                           integral
         ));
@@ -1201,7 +1250,8 @@ public class TestJsObjSpec {
                                                    c,
                                                    "d",
                                                    d
-        ).setOptionals("c","d");
+        ).setOptionals("c",
+                       "d");
 
         final Set<JsErrorPair> errors = objspec.test(JsObj.of("a",
                                                               JsArray.of(JsObj.of("a",
@@ -1240,7 +1290,8 @@ public class TestJsObjSpec {
                                        "d",
                                        arrayOfObjSpec(spec).nullable()
 
-        ).setOptionals("c","d");
+        ).setOptionals("c",
+                       "d");
 
         Assertions.assertTrue(b.test(JsObj.of("a",
                                               JsArray.of(JsObj.of("a",
@@ -1423,7 +1474,6 @@ public class TestJsObjSpec {
                                                      JsStr.of("234")
         ));
 
-        System.out.println(errors);
         Assertions.assertEquals(2,
                                 errors.size());
 

@@ -11,8 +11,8 @@ final class JsBoolParser extends AbstractParser {
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
             if (reader.wasFalse()) return JsBool.FALSE;
-            throw reader.newParseErrorAt("Found invalid boolean value",
-                                         0
+            throw reader.newParseErrorAt(ParserConf.BOOL_EXPECTED,
+                                         reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());
@@ -34,8 +34,8 @@ final class JsBoolParser extends AbstractParser {
     JsBool True(final JsonReader<?> reader) {
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
-            throw reader.newParseErrorAt("Found invalid boolean value. True was expected.",
-                                         0
+            throw reader.newParseErrorAt(ParserConf.TRUE_EXPECTED,
+                                         reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());
@@ -57,8 +57,8 @@ final class JsBoolParser extends AbstractParser {
     public JsBool False(final JsonReader<?> reader) {
         try {
             if (reader.wasFalse()) return JsBool.FALSE;
-            throw reader.newParseErrorAt("Found invalid boolean value. False was expected.",
-                                         0
+            throw reader.newParseErrorAt(ParserConf.FALSE_EXPECTED,
+                                         reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());

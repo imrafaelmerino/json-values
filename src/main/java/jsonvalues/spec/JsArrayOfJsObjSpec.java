@@ -6,48 +6,55 @@ import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashSet;
+import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-public class JsArrayOfJsObjSpec implements JsSpec, JsArraySpec {
+public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec, JsArraySpec {
 
-    private final boolean nullable;
     private final JsObjSpec spec;
 
 
     JsArrayOfJsObjSpec(final boolean nullable,
-                       final JsObjSpec jsObjSpec
+                       final JsObjSpec spec
     ) {
-        this.nullable = nullable;
-        this.spec = jsObjSpec;
+        this(nullable,
+             spec,
+             0,
+             Integer.MAX_VALUE);
+    }
+
+    JsArrayOfJsObjSpec(final boolean nullable,
+                       final JsObjSpec spec,
+                       int min,
+                       int max
+    ) {
+        super(nullable,
+              min,
+              max);
+        this.spec = spec;
     }
 
 
     @Override
     public JsSpec nullable() {
         return new JsArrayOfJsObjSpec(true,
-                                      spec
+                                      spec,
+                                      min,
+                                      max
         );
     }
 
 
     @Override
     public JsSpecParser parser() {
-
-        List<String> requiredFields = spec.bindings.keySet().
-                                                   stream().filter(k -> !spec.getOptionalFields().contains(k))
-                                                   .collect(Collectors.toList());
-        Map<String, JsSpecParser> map = spec.bindings.entrySet().stream()
-                                                     .map(e -> new AbstractMap.SimpleEntry<>(e.getKey(),
-                                                                                             e.getValue().parser()))
-                                                     .collect(Collectors.toMap(AbstractMap.SimpleEntry::getKey,
-                                                                               AbstractMap.SimpleEntry::getValue));
-        return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(requiredFields,
-                                                       map,
+        return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(spec.getRequiredFields(),
+                                                       spec.parsers,
                                                        nullable,
-                                                       spec.strict
+                                                       spec.strict,
+                                                       min,
+                                                       max
         );
 
     }
@@ -74,12 +81,18 @@ public class JsArrayOfJsObjSpec implements JsSpec, JsArraySpec {
                                    final JsArray array
     ) {
         Set<JsErrorPair> result = new HashSet<>();
-        if (array.isEmpty()) return result;
-        final JsPath currentPath = path.inc();
         for (JsValue value : array) {
-            result.addAll(spec.test(currentPath,
+            result.addAll(spec.test(path.inc(),
                                     value));
         }
+        if (array.size() < min)
+            result.add(JsErrorPair.of(path,
+                                      new JsError(array,
+                                                  ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN)));
+        if (array.size() > max)
+            result.add(JsErrorPair.of(path,
+                                      new JsError(array,
+                                                  ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX)));
         return result;
     }
 

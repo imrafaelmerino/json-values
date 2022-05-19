@@ -61,9 +61,9 @@ public final class JsTupleSpec implements JsArraySpec {
     public JsSpecParser parser() {
 
         List<JsSpecParser> parsers = new ArrayList<>();
-        for (final JsSpec spec : specs) {
+        for (JsSpec spec : specs)
             parsers.add(spec.parser());
-        }
+
         return JsSpecParsers.INSTANCE.ofArraySpec(parsers,
                                                   nullable
         );
@@ -116,7 +116,7 @@ public final class JsTupleSpec implements JsArraySpec {
 
         for (int i = 0; i < specsSize; i++) {
             currentPath = currentPath.inc();
-            final JsSpec spec = tupleSpec.specs.get(i);
+            JsSpec spec = tupleSpec.specs.get(i);
             errors.addAll(spec.test(currentPath,
                                     array.get(i)));
         }

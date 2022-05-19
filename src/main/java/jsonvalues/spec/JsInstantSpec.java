@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
-class JsInstantSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsInstantSpec extends AbstractNullableSpec implements JsValuePredicate {
     JsInstantSpec(final boolean nullable) {
         super(nullable);
     }

@@ -15,39 +15,47 @@ class Functions {
     private Functions() {
     }
 
-    static Function<JsValue, Optional<JsError>> testElem(final Predicate<JsValue> elemCondition,
-                                                         final ERROR_CODE errorCode,
-                                                         final boolean nullable) {
+    static Function<JsValue, Optional<JsError>> testElem(Predicate<JsValue> predicate,
+                                                         ERROR_CODE errorCode,
+                                                         boolean nullable) {
 
         return value -> {
-            final Optional<JsError> error = testFlags(nullable).apply(value);
+            Optional<JsError> error = testNullable(nullable).apply(value);
             if (error.isPresent() || value.isNull()) return error;
-            return elemCondition.test(value) ?
+            return predicate.test(value) ?
                    Optional.empty() :
                    Optional.of(new JsError(value,
                                            errorCode));
         };
     }
 
-    private static Function<JsValue, Optional<JsError>> testFlags(boolean nullable) {
+    private static Function<JsValue, Optional<JsError>> testNullable(boolean nullable) {
         return value -> value.isNull() && !nullable ?
                         Optional.of(new JsError(value,
                                                 NULL)) :
                         Optional.empty();
     }
 
-    static Function<JsValue, Optional<JsError>> testArrayOfTestedValue(Function<JsValue, Optional<JsError>> elemCondition,
-                                                                       boolean nullable) {
-
+    static Function<JsValue, Optional<JsError>> testArrayOfTestedValue(Function<JsValue, Optional<JsError>> predicate,
+                                                                       boolean nullable,
+                                                                       int min,
+                                                                       int max) {
         return testArrayPredicate(nullable,
                                   array -> {
-                                      for (final JsValue next : array) {
-                                          final Optional<JsError> result = elemCondition.apply(next);
+                                      if (array.size() < min)
+                                          return Optional.of(new JsError(array,
+                                                                         ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN));
+                                      if (array.size() > max)
+                                          return Optional.of(new JsError(array,
+                                                                         ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX));
+                                      for (JsValue next : array) {
+                                          Optional<JsError> result = predicate.apply(next);
                                           if (result.isPresent()) return result;
                                       }
                                       return Optional.empty();
                                   });
     }
+
 
     private static Function<JsValue, Optional<JsError>> testArrayPredicate(boolean nullable,
                                                                            Function<JsArray, Optional<JsError>> validation) {
@@ -61,12 +69,37 @@ class Functions {
 
     static Function<JsValue, Optional<JsError>> testArray(boolean nullable) {
         return value -> {
-            Optional<JsError> error = testFlags(nullable).apply(value);
+            Optional<JsError> error = testNullable(nullable).apply(value);
             if (error.isPresent()) return error;
             return value.isNull() || value.isArray() ?
                    Optional.empty() :
                    Optional.of(new JsError(value,
                                            ARRAY_EXPECTED));
+        };
+
+    }
+
+    static Function<JsValue, Optional<JsError>> testArray(boolean nullable,
+                                                          int min,
+                                                          int max) {
+        return value -> {
+            Optional<JsError> error = testNullable(nullable).apply(value);
+            if (error.isPresent()) return error;
+            if (value.isArray()) {
+                JsArray array = value.toJsArray();
+                if (array.size() < min)
+                    return Optional.of(new JsError(array,
+                                                   ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN));
+                if (array.size() > max)
+                    return Optional.of(new JsError(array,
+                                                   ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX));
+                return Optional.empty();
+
+            } else
+                return value.isNull() ?
+                       Optional.empty() :
+                       Optional.of(new JsError(value,
+                                               ARRAY_EXPECTED));
         };
 
     }

@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
-class JsNumberSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsNumberSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final Function<JsNumber, Optional<JsError>> predicate;
 
     JsNumberSuchThatSpec(final boolean nullable,

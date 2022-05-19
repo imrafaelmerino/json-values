@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-class JsDecimalSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsDecimalSpec extends AbstractNullableSpec implements JsValuePredicate {
 
     JsDecimalSpec(final boolean nullable) {
         super(nullable);

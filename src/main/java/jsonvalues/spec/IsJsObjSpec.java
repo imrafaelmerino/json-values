@@ -8,11 +8,10 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-class IsJsObjSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class IsJsObjSpec extends AbstractNullableSpec implements JsValuePredicate {
     IsJsObjSpec(final boolean nullable) {
         super(nullable);
     }
-
 
     @Override
     public JsSpec nullable() {

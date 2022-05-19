@@ -9,7 +9,7 @@ import java.util.function.IntFunction;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-class JsIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final IntFunction<Optional<JsError>> predicate;
 
     JsIntSuchThatSpec(final boolean nullable,

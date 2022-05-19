@@ -27,7 +27,8 @@ final class JsDecimalParser extends AbstractParser {
             final BigDecimal value = MyNumberConverter.deserializeDecimal(reader);
             final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsBigDec.of(value);
-            throw reader.newParseError(result.toString());
+            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

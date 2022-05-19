@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-class JsIntSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsIntSpec extends AbstractNullableSpec implements JsValuePredicate {
     JsIntSpec(final boolean nullable) {
         super(nullable);
     }

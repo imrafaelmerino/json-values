@@ -40,13 +40,15 @@ class JsObjSpecParser extends AbstractJsObjParser {
                                                 key
                 );
                 JsSpecParser keyparser = parsers.getOrDefault(key,
-                                                           defaultParser);
+                                                              defaultParser);
                 obj = obj.set(key,
                               keyparser.parse(reader)
                 );
 
             }
-            if (nextToken != '}') throw reader.newParseError("Expecting '}' for map end");
+            if (nextToken != '}')
+                throw reader.newParseError(ParserConf.EXPECTING_FOR_MAP_END,
+                                           reader.getCurrentIndex());
             return obj;
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
@@ -54,10 +56,10 @@ class JsObjSpecParser extends AbstractJsObjParser {
     }
 
     private void throwErrorIfStrictAndKeyMissing(final JsonReader<?> reader,
-                                                 final String key
-    ) throws com.dslplatform.json.ParsingException {
+                                                 final String key) throws ParsingException {
         if (strict && !parsers.containsKey(key)) {
-            throw reader.newParseError("There is no spec defined for the key " + key);
+            throw reader.newParseError(ParserConf.SPEC_NOT_FOUND.apply(key),
+                                       reader.getCurrentIndex());
         }
     }
 

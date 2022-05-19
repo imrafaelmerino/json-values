@@ -8,21 +8,33 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfIntegralSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
     JsArrayOfIntegralSpec(final boolean nullable) {
         super(nullable);
     }
 
+    JsArrayOfIntegralSpec(final boolean nullable,
+                          int min,
+                          int max) {
+        super(nullable,
+              min,
+              max);
+    }
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntegralSpec(true);
+        return new JsArrayOfIntegralSpec(true,
+                                         min,
+                                         max);
     }
 
 
     @Override
     public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfIntegral(nullable);
+        return JsSpecParsers.INSTANCE
+                .ofArrayOfIntegral(nullable,
+                                   min,
+                                   max);
     }
 
     @Override
@@ -33,7 +45,9 @@ class JsArrayOfIntegralSpec extends AbstractPredicateSpec implements JsValuePred
                                                         Optional.of(new JsError(v,
                                                                                 INTEGRAL_EXPECTED
                                                         )),
-                                                nullable
+                                                nullable,
+                                                min,
+                                                max
                         )
                         .apply(value);
     }

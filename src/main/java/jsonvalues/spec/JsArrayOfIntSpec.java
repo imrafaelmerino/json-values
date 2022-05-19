@@ -8,23 +8,34 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfIntSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
 
 
     JsArrayOfIntSpec(final boolean nullable) {
         super(nullable);
     }
 
+    JsArrayOfIntSpec(final boolean nullable,
+                     int min,
+                     int max) {
+        super(nullable,
+              min,
+              max);
+    }
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntSpec(true);
+        return new JsArrayOfIntSpec(true,
+                                    min,
+                                    max);
     }
 
 
     @Override
     public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfInt(nullable);
+        return JsSpecParsers.INSTANCE.ofArrayOfInt(nullable,
+                                                   min,
+                                                   max);
     }
 
     @Override
@@ -33,7 +44,9 @@ class JsArrayOfIntSpec extends AbstractPredicateSpec implements JsValuePredicate
                                                      Optional.empty() :
                                                      Optional.of(new JsError(v,
                                                                              INT_EXPECTED)),
-                                                nullable
+                                                nullable,
+                                                min,
+                                                max
                         )
                         .apply(value);
 

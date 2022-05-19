@@ -22,7 +22,8 @@ final class JsObjParser extends AbstractJsObjParser {
             final JsObj value = value(reader);
             final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return value;
-            throw reader.newParseError(result.toString());
+            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex());
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());
 
@@ -44,10 +45,11 @@ final class JsObjParser extends AbstractJsObjParser {
                 reader.getNextToken();
                 key = reader.readKey();
                 map = map.set(key,
-                              valueDeserializer.value(reader)
-                );
+                              valueDeserializer.value(reader));
             }
-            if (nextToken != '}') throw reader.newParseError("Expecting '}' for map end");
+            if (nextToken != '}')
+                throw reader.newParseError(ParserConf.EXPECTING_FOR_MAP_END,
+                                           reader.getCurrentIndex());
             return map;
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());

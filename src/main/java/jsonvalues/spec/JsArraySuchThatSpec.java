@@ -9,7 +9,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-class JsArraySuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArraySuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
 
     final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfValueSpec isArray;

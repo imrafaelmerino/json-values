@@ -12,8 +12,7 @@ interface JsValuePredicate extends JsSpec {
 
     @Override
     default Set<JsErrorPair> test(final JsPath parentPath,
-                                  final JsValue value
-    ) {
+                                  final JsValue value) {
         Set<JsErrorPair> errors = new HashSet<>();
         test(value).ifPresent(e -> errors.add(JsErrorPair.of(parentPath,
                                                              e

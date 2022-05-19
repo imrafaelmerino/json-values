@@ -22,10 +22,11 @@ final class JsLongParser extends AbstractParser {
                          final LongFunction<Optional<JsError>> fn
     ) {
         try {
-            final long value = MyNumberConverter.deserializeLong(reader);
-            final Optional<JsError> result = fn.apply(value);
+            long value = MyNumberConverter.deserializeLong(reader);
+            Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsLong.of(value);
-            throw reader.newParseError(result.toString());
+            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

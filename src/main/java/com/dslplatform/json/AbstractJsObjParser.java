@@ -6,9 +6,10 @@ abstract class AbstractJsObjParser extends AbstractParser {
 
     protected boolean isEmptyObj(final JsonReader<?> reader) {
         try {
-            if (reader.last() != '{') throw reader.newParseError("Expecting '{' for map start");
-            byte nextToken = reader.getNextToken();
-            return nextToken == '}';
+            if (reader.last() != '{')
+                throw reader.newParseError(ParserConf.EXPECTING_FOR_MAP_START,
+                                           reader.getCurrentIndex());
+            return reader.getNextToken() == '}';
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
         }

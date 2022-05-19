@@ -13,6 +13,7 @@ import java.nio.charset.StandardCharsets;
 import static java.util.Objects.requireNonNull;
 
 public final class MyDslJson<A> extends DslJson<A> {
+
     public static final MyDslJson<java.lang.Object> INSTANCE = new MyDslJson<>();
 
     static {
@@ -31,12 +32,14 @@ public final class MyDslJson<A> extends DslJson<A> {
     }
 
     private MyDslJson() {
+        super((new Settings<A>().errorInfo(JsonReader.ErrorInfo.MINIMAL)));
     }
 
     public JsObj parseToJsObj(final byte[] bytes,
                               final JsSpecParser parser
     ) {
         JsonReader<?> reader = getReader(bytes);
+
         try {
             reader.getNextToken();
             return parser.parse(reader)

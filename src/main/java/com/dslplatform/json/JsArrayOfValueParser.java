@@ -19,14 +19,17 @@ final class JsArrayOfValueParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final Function<JsValue, Optional<JsError>> fn
+                                    final Function<JsValue, Optional<JsError>> fn,
+                                    final int min,
+                                    final int max
     ) {
         try {
             return reader.wasNull() ?
                    JsNull.NULL :
                    arrayEachSuchThat(reader,
-                                     fn
-                   );
+                                     fn,
+                                     min,
+                                     max);
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());
 
@@ -35,10 +38,16 @@ final class JsArrayOfValueParser extends JsArrayParser {
 
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final Function<JsValue, Optional<JsError>> fn
+                              final Function<JsValue, Optional<JsError>> fn,
+                              final int min,
+                              final int max
     ) {
         try {
-            if (ifIsEmptyArray(reader)) return EMPTY;
+            if (ifIsEmptyArray(reader)) {
+                if (min > 0) throw reader.newParseError(ParserConf.A.apply(min),
+                                                        reader.getCurrentIndex());
+                return EMPTY;
+            }
             JsArray buffer = EMPTY.append(parser.valueSuchThat(reader,
                                                                fn
             ));
@@ -47,7 +56,14 @@ final class JsArrayOfValueParser extends JsArrayParser {
                 buffer = buffer.append(parser.valueSuchThat(reader,
                                                             fn
                 ));
+                if (buffer.size() > max)
+                    throw reader.newParseError(ParserConf.B.apply(min),
+                                               reader.getCurrentIndex()
+                    );
             }
+            if (buffer.size() < min)
+                throw reader.newParseError(ParserConf.C.apply(min),
+                                           reader.getCurrentIndex());
             reader.checkArrayEnd();
             return buffer;
         } catch (IOException e) {

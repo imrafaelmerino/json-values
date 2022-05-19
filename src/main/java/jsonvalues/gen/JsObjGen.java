@@ -987,7 +987,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -999,7 +999,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen1
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1015,7 +1015,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen2
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1035,7 +1035,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen3
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1059,7 +1059,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen4
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1087,7 +1087,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen5
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1119,7 +1119,7 @@ public final class JsObjGen implements Gen<JsObj> {
                             gen6
         );
     }
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen,
                               final String key1,
@@ -1222,7 +1222,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen10 the mapping associated to the eleventh key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1294,7 +1294,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen11 the mapping associated to the eleventh key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1372,7 +1372,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen12 the mapping associated to the twelfth key,
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1456,7 +1456,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen13 the mapping associated to the thirteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1546,7 +1546,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen14 the mapping associated to the fourteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1642,7 +1642,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen15 the mapping associated to the fifteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1744,7 +1744,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen16 the mapping associated to the sixteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1852,7 +1852,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen17 the mapping associated to the seventeenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -1966,7 +1966,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen18 the mapping associated to the eighteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -2086,7 +2086,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen19 the mapping associated to the nineteenth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,
@@ -2212,7 +2212,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param gen20 the mapping associated to the twentieth key
      * @return a JsObjGen
      */
-
+    @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
                               final String key2,

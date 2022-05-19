@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-class JsBinarySuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsBinarySuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
     final Function<byte[], Optional<JsError>> predicate;
 

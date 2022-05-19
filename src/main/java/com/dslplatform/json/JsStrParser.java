@@ -23,10 +23,11 @@ final class JsStrParser extends AbstractParser {
                         final Function<String, Optional<JsError>> fn
     ) {
         try {
-            final String value = StringConverter.deserialize(reader);
-            final Optional<JsError> result = fn.apply(value);
+            String value = StringConverter.deserialize(reader);
+            Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsStr.of(value);
-            throw reader.newParseError(result.toString());
+            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

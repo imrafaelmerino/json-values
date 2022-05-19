@@ -10,7 +10,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfTestedObjSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
     final Function<JsObj, Optional<JsError>> predicate;
 
     JsArrayOfTestedObjSpec(final Function<JsObj, Optional<JsError>> predicate,
@@ -20,17 +20,32 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
         this.predicate = predicate;
     }
 
+    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<JsError>> predicate,
+                           final boolean nullable,
+                           int min,
+                           int max
+    ) {
+        super(nullable,
+              min,
+              max);
+        this.predicate = predicate;
+    }
+
     @Override
     public JsSpec nullable() {
         return new JsArrayOfTestedObjSpec(predicate,
-                                          true
+                                          true,
+                                          min,
+                                          max
         );
     }
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfObjEachSuchThat(predicate,
-                                                               nullable
+                                                               nullable,
+                                                               min,
+                                                               max
         );
     }
 
@@ -43,7 +58,9 @@ class JsArrayOfTestedObjSpec extends AbstractPredicateSpec implements JsValuePre
                                                                                 OBJ_EXPECTED
                                                                     )
                                                         ),
-                                                nullable
+                                                nullable,
+                                                min,
+                                                max
                         )
                         .apply(value);
     }

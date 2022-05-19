@@ -8,22 +8,33 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-class JsArrayOfDecimalSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfDecimalSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
 
     JsArrayOfDecimalSpec(final boolean nullable) {
         super(nullable);
     }
 
+    JsArrayOfDecimalSpec(final boolean nullable,
+                         int min,
+                         int max) {
+        super(nullable,
+              min,
+              max);
+    }
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfDecimalSpec(true);
+        return new JsArrayOfDecimalSpec(true,
+                                        min,
+                                        max);
     }
 
 
     @Override
     public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDecimal(nullable);
+        return JsSpecParsers.INSTANCE.ofArrayOfDecimal(nullable,
+                                                       min,
+                                                       max);
     }
 
     @Override
@@ -32,7 +43,9 @@ class JsArrayOfDecimalSpec extends AbstractPredicateSpec implements JsValuePredi
                                                      Optional.empty() :
                                                      Optional.of(new JsError(v,
                                                                              DECIMAL_EXPECTED)),
-                                                nullable
+                                                nullable,
+                                                min,
+                                                max
                         )
                         .apply(value);
     }

@@ -57,20 +57,20 @@ abstract class MyNumberConverter {
                                 String message) throws ParsingException {
         final int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith("Too many digits detected in number",
+            throw reader.newParseErrorWith(ParserConf.TOO_MANY_DIGITS,
                                            len,
                                            "",
-                                           "Too many digits detected in number",
+                                           ParserConf.TOO_MANY_DIGITS,
                                            end,
                                            ""
             );
         }
-        throw reader.newParseErrorWith("Error parsing number",
+        throw reader.newParseErrorWith(ParserConf.ERROR_PARSING_NUMBER,
                                        len,
                                        "",
                                        message,
                                        null,
-                                       ". Error parsing number"
+                                       ""
         );
     }
 
@@ -81,20 +81,20 @@ abstract class MyNumberConverter {
                                 Object messageArgument) throws ParsingException {
         final int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith("Too many digits detected in number",
+            throw reader.newParseErrorWith(ParserConf.TOO_MANY_DIGITS,
                                            len,
                                            "",
-                                           "Too many digits detected in number",
+                                           ParserConf.TOO_MANY_DIGITS,
                                            end,
                                            ""
             );
         }
-        throw reader.newParseErrorWith("Error parsing number",
+        throw reader.newParseErrorWith(ParserConf.ERROR_PARSING_NUMBER,
                                        len,
                                        "",
                                        message,
                                        messageArgument,
-                                       ". Error parsing number"
+                                       ""
         );
     }
 
@@ -107,10 +107,10 @@ abstract class MyNumberConverter {
             end--;
         }
         if (end > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith("Too many digits detected in number",
+            throw reader.newParseErrorWith(ParserConf.TOO_MANY_DIGITS,
                                            len,
                                            "",
-                                           "Too many digits detected in number",
+                                           ParserConf.TOO_MANY_DIGITS,
                                            end,
                                            ""
             );
@@ -119,7 +119,7 @@ abstract class MyNumberConverter {
                            1 :
                            0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
-            throw reader.newParseErrorAt("Leading zero is not allowed. Error parsing number",
+            throw reader.newParseErrorAt(ParserConf.LEADING_ZERO,
                                          len + (withQuotes ?
                                                 2 :
                                                 0)
@@ -131,7 +131,7 @@ abstract class MyNumberConverter {
                                   end
             );
         } catch (NumberFormatException nfe) {
-            throw reader.newParseErrorAt("Error parsing number",
+            throw reader.newParseErrorAt(ParserConf.ERROR_PARSING_NUMBER,
                                          len + (withQuotes ?
                                                 2 :
                                                 0),
@@ -153,7 +153,7 @@ abstract class MyNumberConverter {
             int oldLen = len;
             len += end;
             if (len > reader.maxNumberDigits) {
-                throw reader.newParseErrorFormat("Too many digits detected in number",
+                throw reader.newParseErrorFormat(ParserConf.TOO_MANY_DIGITS,
                                                  len,
                                                  "Number of digits larger than %d. Unable to read number",
                                                  reader.maxNumberDigits
@@ -239,7 +239,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (i > start + offset && reader.allWhitespace(i,
@@ -248,7 +248,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Unknown digit",
+                                ParserConf.UNKNOWN_DIGIT,
                                 (char) ch
                 );
             }
@@ -257,20 +257,21 @@ abstract class MyNumberConverter {
         if (i == start + offset) numberException(reader,
                                                  start,
                                                  end,
-                                                 "Digit not found"
+                                                 ParserConf.DIGIT_NOT_FOUND
         );
-        else if (leadingZero && ch != '.' && i > start + offset + 1) numberException(reader,
-                                                                                     start,
-                                                                                     end,
-                                                                                     "Leading zero is not allowed"
-        );
+        else if (leadingZero && ch != '.' && i > start + offset + 1)
+            numberException(reader,
+                            start,
+                            end,
+                            ParserConf.LEADING_ZERO
+            );
         else if (i == end) return value;
         else if (ch == '.') {
             i++;
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Number ends with a dot"
+                                          ParserConf.NUMBER_ENDS_DOT
             );
             final int maxLen;
             final double preciseDividor;
@@ -324,7 +325,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Unknown digit",
+                                    ParserConf.UNKNOWN_DIGIT,
                                     (char) buf[i]
                     );
                 }
@@ -373,7 +374,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Unknown digit",
+                                    ParserConf.UNKNOWN_DIGIT,
                                     (char) buf[i]
                     );
                 }
@@ -513,10 +514,10 @@ abstract class MyNumberConverter {
             end--;
         }
         if (end > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith("Too many digits detected in number",
+            throw reader.newParseErrorWith(ParserConf.TOO_MANY_DIGITS,
                                            len,
                                            "",
-                                           "Too many digits detected in number",
+                                           ParserConf.TOO_MANY_DIGITS,
                                            end,
                                            ""
             );
@@ -525,7 +526,7 @@ abstract class MyNumberConverter {
                            1 :
                            0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
-            throw reader.newParseErrorAt("Leading zero is not allowed. Error parsing number",
+            throw reader.newParseErrorAt(ParserConf.LEADING_ZERO,
                                          len + (withQuotes ?
                                                 2 :
                                                 0)
@@ -537,7 +538,7 @@ abstract class MyNumberConverter {
                                                  end
             ));
         } catch (NumberFormatException nfe) {
-            throw reader.newParseErrorAt("Error parsing number",
+            throw reader.newParseErrorAt(ParserConf.ERROR_PARSING_NUMBER,
                                          len + (withQuotes ?
                                                 2 :
                                                 0),
@@ -635,7 +636,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Leading zero is not allowed"
+                                ParserConf.LEADING_ZERO
                 );
             }
             return parseNegativeInt(buf,
@@ -648,7 +649,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Leading zero is not allowed"
+                                ParserConf.LEADING_ZERO
                 );
             }
             return parsePositiveInt(buf,
@@ -670,7 +671,7 @@ abstract class MyNumberConverter {
         if (i == end) numberException(reader,
                                       start,
                                       end,
-                                      "Digit not found"
+                                      ParserConf.DIGIT_NOT_FOUND
         );
         for (; i < end; i++) {
             final int ind = buf[i] - 48;
@@ -681,7 +682,7 @@ abstract class MyNumberConverter {
                 else if (i == end - 1 && buf[i] == '.') numberException(reader,
                                                                         start,
                                                                         end,
-                                                                        "Number ends with a dot"
+                                                                        ParserConf.NUMBER_ENDS_DOT
                 );
                 final BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
                                                                              end - start
@@ -693,7 +694,7 @@ abstract class MyNumberConverter {
                 if (v.scale() > 0) numberException(reader,
                                                    start,
                                                    end,
-                                                   "Expecting int but found decimal value",
+                                                   ParserConf.EXPECTING_INT_DECIMAL_FOUND,
                                                    v
                 );
                 return v.intValue();
@@ -704,7 +705,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Integer overflow detected"
+                                ParserConf.INTEGER_OVERFLOW
                 );
             }
         }
@@ -720,7 +721,7 @@ abstract class MyNumberConverter {
         if (i == end) numberException(reader,
                                       start,
                                       end,
-                                      "Digit not found"
+                                      ParserConf.DIGIT_NOT_FOUND
         );
         for (; i < end; i++) {
             final int ind = buf[i] - 48;
@@ -731,7 +732,7 @@ abstract class MyNumberConverter {
                 else if (i == end - 1 && buf[i] == '.') numberException(reader,
                                                                         start,
                                                                         end,
-                                                                        "Number ends with a dot"
+                                                                        ParserConf.NUMBER_ENDS_DOT
                 );
                 final BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
                                                                              end - start
@@ -743,7 +744,7 @@ abstract class MyNumberConverter {
                 if (v.scale() > 0) numberException(reader,
                                                    start,
                                                    end,
-                                                   "Expecting int but found decimal value",
+                                                   ParserConf.EXPECTING_INT_DECIMAL_FOUND,
                                                    v
                 );
                 return v.intValue();
@@ -753,7 +754,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Integer overflow detected"
+                                ParserConf.INTEGER_OVERFLOW
                 );
             }
         }
@@ -963,7 +964,7 @@ abstract class MyNumberConverter {
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Digit not found"
+                                          ParserConf.DIGIT_NOT_FOUND
             );
             final boolean leadingZero = buf[i] == 48;
             for (; i < end; i++) {
@@ -973,7 +974,7 @@ abstract class MyNumberConverter {
                         numberException(reader,
                                         start,
                                         end,
-                                        "Leading zero is not allowed"
+                                        ParserConf.LEADING_ZERO
                         );
                     }
                     if (i > start + 1 && reader.allWhitespace(i,
@@ -989,7 +990,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Long overflow detected"
+                                    ParserConf.LONG_OVERFLOW
                     );
                 }
             }
@@ -997,7 +998,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Leading zero is not allowed"
+                                ParserConf.LEADING_ZERO
                 );
             }
             return value;
@@ -1005,7 +1006,7 @@ abstract class MyNumberConverter {
         if (i == end) numberException(reader,
                                       start,
                                       end,
-                                      "Digit not found"
+                                      ParserConf.DIGIT_NOT_FOUND
         );
         final boolean leadingZero = buf[i] == 48;
         for (; i < end; i++) {
@@ -1015,7 +1016,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (ch == '+' && i > start + 1 && reader.allWhitespace(i,
@@ -1034,7 +1035,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Long overflow detected"
+                                ParserConf.LONG_OVERFLOW
                 );
             }
         }
@@ -1042,7 +1043,7 @@ abstract class MyNumberConverter {
             numberException(reader,
                             start,
                             end,
-                            "Leading zero is not allowed"
+                            ParserConf.LEADING_ZERO
             );
         }
         return value;
@@ -1058,7 +1059,7 @@ abstract class MyNumberConverter {
         if (len > 0 && buf[len - 1] == '.') numberException(reader,
                                                             start,
                                                             end,
-                                                            "Number ends with a dot"
+                                                            ParserConf.NUMBER_ENDS_DOT
         );
         final BigDecimal v = parseNumberGeneric(buf,
                                                 len,
@@ -1068,7 +1069,7 @@ abstract class MyNumberConverter {
         if (v.scale() > 0) numberException(reader,
                                            start,
                                            end,
-                                           "Expecting long, but found decimal value ",
+                                           ParserConf.EXPECTING_LONG_INSTEAD_OF_DECIMAL,
                                            v
         );
         return v.longValue();
@@ -1135,7 +1136,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (i > start && reader.allWhitespace(i,
@@ -1144,7 +1145,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Unknown digit",
+                                ParserConf.UNKNOWN_DIGIT,
                                 (char) ch
                 );
             }
@@ -1153,12 +1154,12 @@ abstract class MyNumberConverter {
         if (i == start) numberException(reader,
                                         start,
                                         end,
-                                        "Digit not found"
+                                        ParserConf.DIGIT_NOT_FOUND
         );
         else if (leadingZero && ch != '.' && i > start + 1) numberException(reader,
                                                                             start,
                                                                             end,
-                                                                            "Leading zero is not allowed"
+                                                                            ParserConf.LEADING_ZERO
         );
         else if (i == end) return BigDecimal.valueOf(value);
         else if (ch == '.') {
@@ -1166,7 +1167,7 @@ abstract class MyNumberConverter {
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Number ends with a dot"
+                                          ParserConf.NUMBER_ENDS_DOT
             );
             int dp = i;
             for (; i < end; i++) {
@@ -1182,7 +1183,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Unknown digit",
+                                    ParserConf.UNKNOWN_DIGIT,
                                     (char) ch
                     );
                 }
@@ -1273,7 +1274,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (i > start + 1 && reader.allWhitespace(i,
@@ -1282,7 +1283,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                "Unknown digit",
+                                ParserConf.UNKNOWN_DIGIT,
                                 (char) ch
                 );
             }
@@ -1291,12 +1292,12 @@ abstract class MyNumberConverter {
         if (i == start + 1) numberException(reader,
                                             start,
                                             end,
-                                            "Digit not found"
+                                            ParserConf.DIGIT_NOT_FOUND
         );
         else if (leadingZero && ch != '.' && i > start + 2) numberException(reader,
                                                                             start,
                                                                             end,
-                                                                            "Leading zero is not allowed"
+                                                                            ParserConf.LEADING_ZERO
         );
         else if (i == end) return BigDecimal.valueOf(value);
         else if (ch == '.') {
@@ -1304,7 +1305,7 @@ abstract class MyNumberConverter {
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Number ends with a dot"
+                                          ParserConf.NUMBER_ENDS_DOT
             );
             int dp = i;
             for (; i < end; i++) {
@@ -1320,7 +1321,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Unknown digit",
+                                    ParserConf.UNKNOWN_DIGIT,
                                     (char) ch
                     );
                 }
@@ -1481,7 +1482,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (i > start && reader.allWhitespace(i,
@@ -1499,12 +1500,12 @@ abstract class MyNumberConverter {
         if (i == start) numberException(reader,
                                         start,
                                         end,
-                                        "Digit not found"
+                                        ParserConf.DIGIT_NOT_FOUND
         );
         else if (leadingZero && ch != '.' && i > start + 1) numberException(reader,
                                                                             start,
                                                                             end,
-                                                                            "Leading zero is not allowed"
+                                                                            ParserConf.LEADING_ZERO
         );
         else if (i == end) return value;
         else if (ch == '.') {
@@ -1512,7 +1513,7 @@ abstract class MyNumberConverter {
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Number ends with a dot"
+                                          ParserConf.NUMBER_ENDS_DOT
             );
             int dp = i;
             for (; i < end; i++) {
@@ -1627,7 +1628,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    "Leading zero is not allowed"
+                                    ParserConf.LEADING_ZERO
                     );
                 }
                 if (i > start + 1 && reader.allWhitespace(i,
@@ -1645,12 +1646,12 @@ abstract class MyNumberConverter {
         if (i == start + 1) numberException(reader,
                                             start,
                                             end,
-                                            "Digit not found"
+                                            ParserConf.DIGIT_NOT_FOUND
         );
         else if (leadingZero && ch != '.' && i > start + 2) numberException(reader,
                                                                             start,
                                                                             end,
-                                                                            "Leading zero is not allowed"
+                                                                            ParserConf.LEADING_ZERO
         );
         else if (i == end) return value;
         else if (ch == '.') {
@@ -1658,7 +1659,7 @@ abstract class MyNumberConverter {
             if (i == end) numberException(reader,
                                           start,
                                           end,
-                                          "Number ends with a dot"
+                                          ParserConf.NUMBER_ENDS_DOT
             );
             int dp = i;
             for (; i < end; i++) {

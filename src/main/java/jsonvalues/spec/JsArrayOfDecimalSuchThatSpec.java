@@ -8,7 +8,7 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-class JsArrayOfDecimalSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfDecimalSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
 
     private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfDecimalSpec isArrayOfDecimal;

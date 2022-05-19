@@ -32,6 +32,11 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
                                                max));
     }
 
+    public static Gen<JsBigDec> biased(final long min,
+                                       final long max) {
+        return biased(BigDecimal.valueOf(min),BigDecimal.valueOf(max));
+    }
+
     public static Gen<JsBigDec> of(final Gen<BigDecimal> gen) {
         return new JsBigDecGen(requireNonNull(gen));
     }

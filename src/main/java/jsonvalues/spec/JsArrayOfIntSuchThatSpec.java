@@ -8,7 +8,7 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-class JsArrayOfIntSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
     private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfIntSpec isArrayOfInt;
 

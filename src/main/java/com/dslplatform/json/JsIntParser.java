@@ -21,10 +21,11 @@ final class JsIntParser extends AbstractParser {
                         final IntFunction<Optional<JsError>> fn
     ) {
         try {
-            final int value = MyNumberConverter.deserializeInt(reader);
-            final Optional<JsError> result = fn.apply(value);
+            int value = MyNumberConverter.deserializeInt(reader);
+            Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsInt.of(value);
-            throw reader.newParseError(result.toString());
+            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());
 

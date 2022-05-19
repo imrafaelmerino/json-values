@@ -27,7 +27,8 @@ public final class JsArraySpecParser {
 
     public JsArray array(final JsonReader<?> reader) {
         try {
-            if (reader.last() != '[') throw reader.newParseError("Expecting '[' for list start");
+            if (reader.last() != '[') throw reader.newParseError(ParserConf.EXPECTING_FOR_LIST_START,
+                                                                 reader.getCurrentIndex());
             reader.getNextToken();
             if (reader.last() == ']') return JsArray.empty();
             JsArray buffer = JsArray.empty();

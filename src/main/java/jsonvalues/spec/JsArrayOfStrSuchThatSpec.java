@@ -8,7 +8,7 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfStrSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
     private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfStrSpec isArrayOfString;
 
@@ -19,6 +19,7 @@ class JsArrayOfStrSuchThatSpec extends AbstractPredicateSpec implements JsValueP
         this.isArrayOfString = new JsArrayOfStrSpec(nullable);
         this.predicate = predicate;
     }
+
 
     @Override
     public JsSpec nullable() {

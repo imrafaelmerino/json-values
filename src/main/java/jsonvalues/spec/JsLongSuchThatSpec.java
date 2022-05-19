@@ -9,7 +9,7 @@ import java.util.function.LongFunction;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-class JsLongSuchThatSpec extends AbstractPredicateSpec implements JsValuePredicate {
+class JsLongSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final LongFunction<Optional<JsError>> predicate;
 
     JsLongSuchThatSpec(final boolean nullable,

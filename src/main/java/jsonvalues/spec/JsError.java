@@ -15,13 +15,15 @@ public final class JsError {
     }
 
 
+
     @Override
     public String toString() {
         return "(" +
                 "code=" + code +
-                ", value=" + value +
+                ",value=" + value +
                 ')';
     }
+
 
     @Override
     public boolean equals(final Object o) {
