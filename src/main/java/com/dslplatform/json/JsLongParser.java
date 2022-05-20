@@ -25,7 +25,7 @@ final class JsLongParser extends AbstractParser {
             long value = MyNumberConverter.deserializeLong(reader);
             Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsLong.of(value);
-            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());

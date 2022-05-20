@@ -16,38 +16,7 @@ import static jsonvalues.spec.ERROR_CODE.*;
 
 public final class JsSpecs {
 
-    /**
-     * spec that is conformed by any value
-     */
-    public static final JsSpec any = new AnySpec();
-    /**
-     * non-nullable string
-     */
-    public static final JsSpec str = new JsStrSpec(false);
-    /**
-     * non-nullable number
-     */
-    public static final JsSpec number = new JsNumberSpec(false);
-    /**
-     * non-nullable boolean
-     */
-    public static final JsSpec bool = new JsBooleanSpec(false);
-    /**
-     * non-nullable decimal number
-     */
-    public static final JsSpec decimal = new JsDecimalSpec(false);
-    /**
-     * non-nullable integral number
-     */
-    public static final JsSpec integral = new JsIntegralSpec(false);
-    /**
-     * non-nullable long number
-     */
-    public static final JsSpec longInteger = new JsLongSpec(false);
-    /**
-     * non-nullable integer number
-     */
-    public static final JsSpec integer = new JsIntSpec(false);
+
     /**
      * true constant spec
      */
@@ -56,56 +25,171 @@ public final class JsSpecs {
      * false constant spec
      */
     public static final JsSpec FALSE = new JsFalseConstantSpec(false);
-    /**
-     * non-nullable json object spec
-     */
-    public static final JsSpec obj = new IsJsObjSpec(false);
-    /**
-     * non-nullable array spec
-     */
-    public static final JsArraySpec array = new JsArrayOfValueSpec(false);
-    /**
-     * non-nullable array spec
-     */
-    public static final JsSpec binary = new JsBinarySpec(false);
-    /**
-     * non-nullable array spec
-     */
-    public static final JsSpec instant = new JsInstantSpec(false);
-    /**
-     * non-nullable array of long numbers spec
-     */
-    public static final JsArraySpec arrayOfLong = new JsArrayOfLongSpec(false);
-    /**
-     * non-nullable array of integer numbers spec
-     */
-    public static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(false);
-    /**
-     * non-nullable array of strings spec
-     */
-    public static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(false);
-    /**
-     * non-nullable array of booleans spec
-     */
-    public static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(false);
-    /**
-     * non-nullable array of decimal numbers spec
-     */
-    public static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(false);
+
+    private static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(false);
+    private static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(false);
+    private static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(false);
+    private static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(false);
+    private static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(false);
+    private static final JsSpec instant = new JsInstantSpec(false);
+    private static final JsArraySpec arrayOfLong = new JsArrayOfLongSpec(false);
+    private static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(false);
+    private static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(false);
+    private static final JsSpec binary = new JsBinarySpec(false);
+    private static final JsSpec integral = new JsIntegralSpec(false);
+    private static final JsSpec longInteger = new JsLongSpec(false);
+    private static final JsSpec bool = new JsBooleanSpec(false);
+    private static final JsSpec decimal = new JsDecimalSpec(false);
+    private static final JsSpec integer = new JsIntSpec(false);
+    private static final JsSpec obj = new IsJsObjSpec(false);
+    private static final JsSpec any = new AnySpec();
+    private static final JsSpec number = new JsNumberSpec(false);
+    private static final JsSpec str = new JsStrSpec(false);
+    private static final JsArraySpec array = new JsArrayOfValueSpec(false);
+
+    private JsSpecs() {
+    }
+
     /**
      * non-nullable array of numbers spec
      */
-    public static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(false);
+    public static JsArraySpec arrayOfNumber() {
+        return arrayOfNumber;
+    }
+
+    /**
+     * non-nullable array of decimal numbers spec
+     */
+    public static JsArraySpec arrayOfDec() {
+        return arrayOfDec;
+    }
+
     /**
      * non-nullable array of integral numbers spec
      */
-    public static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(false);
+    public static JsArraySpec arrayOfIntegral() {
+        return arrayOfIntegral;
+    }
+
+
     /**
      * non-nullable array of objects spec
      */
-    public static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(false);
+    public static JsArraySpec arrayOfObj() {
+        return arrayOfObj;
+    }
 
-    private JsSpecs() {
+    /**
+     * non-nullable array of booleans spec
+     */
+    public static JsArraySpec arrayOfBool() {
+        return arrayOfBool;
+    }
+
+    /**
+     * non-nullable array spec
+     */
+    public static JsSpec instant() {
+        return instant;
+    }
+
+    /**
+     * non-nullable array of long numbers spec
+     */
+    public static JsArraySpec arrayOfLong() {
+        return arrayOfLong;
+    }
+
+    /**
+     * non-nullable array of integer numbers spec
+     */
+    public static JsArraySpec arrayOfInt() {
+        return arrayOfInt;
+    }
+
+    /**
+     * non-nullable array of strings spec
+     */
+    public static JsArraySpec arrayOfStr() {
+        return arrayOfStr;
+    }
+
+    /**
+     * non-nullable array spec
+     */
+    public static JsSpec binary() {
+        return binary;
+    }
+
+    /**
+     * non-nullable integral number
+     */
+    public static JsSpec integral() {
+        return integral;
+    }
+
+
+    /**
+     * non-nullable long number
+     */
+    public static JsSpec longInteger() {
+        return longInteger;
+    }
+
+    /**
+     * non-nullable boolean
+     */
+    public static JsSpec bool() {
+        return bool;
+    }
+
+    /**
+     * non-nullable decimal number
+     */
+    public static JsSpec decimal() {
+        return decimal;
+    }
+
+    /**
+     * non-nullable integer number
+     */
+    public static JsSpec integer() {
+        return integer;
+    }
+
+    /**
+     * non-nullable json object spec
+     */
+    public static JsSpec obj() {
+        return obj;
+    }
+
+    /**
+     * non-nullable array spec
+     */
+    public static JsArraySpec array() {
+        return array;
+    }
+
+    /**
+     * spec that is conformed by any value
+     */
+    public static JsSpec any() {
+        return any;
+    }
+
+    /**
+     * non-nullable string
+     */
+    public static JsSpec str() {
+        return str;
+    }
+
+    /**
+     * non-nullable number
+     */
+    public static JsSpec number() {
+        return number;
     }
 
     /**
@@ -268,14 +352,13 @@ public final class JsSpecs {
      * @return a JsSpec
      */
     public static JsSpec str(final Predicate<String> predicate) {
-        return new JsStrSuchThatSpec(
-                false,
-                s ->
-                        requireNonNull(predicate).test(s) ?
-                        Optional.empty() :
-                        Optional.of(new JsError(JsStr.of(s),
-                                                STRING_CONDITION
-                        ))
+        return new JsStrSuchThatSpec(s ->
+                                             requireNonNull(predicate).test(s) ?
+                                             Optional.empty() :
+                                             Optional.of(new JsError(JsStr.of(s),
+                                                                     STRING_CONDITION
+                                             )),
+                                     false
 
         );
     }
@@ -287,14 +370,13 @@ public final class JsSpecs {
      * @return a JsSpec
      */
     public static JsSpec number(final Predicate<JsNumber> predicate) {
-        return new JsNumberSuchThatSpec(
-                false,
-                s ->
-                        requireNonNull(predicate).test(s) ?
-                        Optional.empty() :
-                        Optional.of(new JsError(s,
-                                                ERROR_CODE.NUMBER_CONDITION
-                        ))
+        return new JsNumberSuchThatSpec(s ->
+                                                requireNonNull(predicate).test(s) ?
+                                                Optional.empty() :
+                                                Optional.of(new JsError(s,
+                                                                        ERROR_CODE.NUMBER_CONDITION
+                                                )),
+                                        false
         );
     }
 
@@ -575,14 +657,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec integer(final IntPredicate predicate) {
-        return new JsIntSuchThatSpec(false,
-                                     s ->
+        return new JsIntSuchThatSpec(s ->
                                              requireNonNull(predicate).test(s) ?
                                              Optional.empty() :
                                              Optional.of(new JsError(JsInt.of(s),
                                                                      INT_CONDITION
                                                          )
-                                             )
+                                             ),
+                                     false
         );
     }
 
@@ -689,14 +771,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec longInteger(final LongPredicate predicate) {
-        return new JsLongSuchThatSpec(false,
-                                      s ->
+        return new JsLongSuchThatSpec(s ->
                                               requireNonNull(predicate).test(s) ?
                                               Optional.empty() :
                                               Optional.of(new JsError(JsLong.of(s),
                                                                       LONG_CONDITION
                                                           )
-                                              )
+                                              ),
+                                      false
         );
     }
 
@@ -707,15 +789,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec decimal(final Predicate<BigDecimal> predicate) {
-        return new JsDecimalSuchThatSpec(
-                false,
-                s ->
-                        requireNonNull(predicate).test(s) ?
-                        Optional.empty() :
-                        Optional.of(new JsError(JsBigDec.of(s),
-                                                DECIMAL_CONDITION
-                                    )
-                        )
+        return new JsDecimalSuchThatSpec(s ->
+                                                 requireNonNull(predicate).test(s) ?
+                                                 Optional.empty() :
+                                                 Optional.of(new JsError(JsBigDec.of(s),
+                                                                         DECIMAL_CONDITION
+                                                             )
+                                                 ),
+                                         false
         );
     }
 
@@ -726,14 +807,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec integral(final Predicate<BigInteger> predicate) {
-        return new JsIntegralSuchThatSpec(false,
-                                          s ->
+        return new JsIntegralSuchThatSpec(s ->
                                                   requireNonNull(predicate).test(s) ?
                                                   Optional.empty() :
                                                   Optional.of(new JsError(JsBigInt.of(s),
                                                                           INTEGRAL_CONDITION
                                                               )
-                                                  )
+                                                  ),
+                                          false
         );
     }
 
@@ -807,14 +888,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec binary(final Predicate<byte[]> predicate) {
-        return new JsBinarySuchThatSpec(false,
-                                        s ->
+        return new JsBinarySuchThatSpec(s ->
                                                 requireNonNull(predicate).test(s) ?
                                                 Optional.empty() :
                                                 Optional.of(new JsError(JsBinary.of(s),
                                                                         BINARY_CONDITION
                                                             )
-                                                )
+                                                ),
+                                        false
         );
     }
 
@@ -825,14 +906,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec instant(final Predicate<Instant> predicate) {
-        return new JsInstantSuchThatSpec(false,
-                                         s ->
+        return new JsInstantSuchThatSpec(s ->
                                                  requireNonNull(predicate).test(s) ?
                                                  Optional.empty() :
                                                  Optional.of(new JsError(JsInstant.of(s),
                                                                          INSTANT_CONDITION
                                                              )
-                                                 )
+                                                 ),
+                                         false
         );
     }
 
@@ -843,14 +924,14 @@ public final class JsSpecs {
      * @return a spec
      */
     public static JsSpec obj(final Predicate<JsObj> predicate) {
-        return new JsObjSuchThatSpec(false,
-                                     s ->
+        return new JsObjSuchThatSpec(s ->
                                              requireNonNull(predicate).test(s) ?
                                              Optional.empty() :
                                              Optional.of(new JsError(s,
                                                                      OBJ_CONDITION
                                                          )
-                                             )
+                                             ),
+                                     false
         );
     }
 

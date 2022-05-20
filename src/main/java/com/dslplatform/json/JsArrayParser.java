@@ -47,7 +47,7 @@ abstract class JsArrayParser {
                          int max) {
         try {
             if (ifIsEmptyArray(reader)) {
-                if (min > 0) throw reader.newParseError(ParserConf.A.apply(min),
+                if (min > 0) throw reader.newParseError(ParserErrors.A.apply(min),
                                                         reader.getCurrentIndex());
                 return EMPTY;
             }
@@ -56,12 +56,12 @@ abstract class JsArrayParser {
                 reader.getNextToken();
                 buffer = buffer.append(parser.value(reader));
                 if (buffer.size() > max)
-                    throw reader.newParseError(ParserConf.B.apply(min),
+                    throw reader.newParseError(ParserErrors.B.apply(min),
                                                reader.getCurrentIndex()
                                                );
             }
             if (buffer.size() < min)
-                throw reader.newParseError(ParserConf.C.apply(min),
+                throw reader.newParseError(ParserErrors.C.apply(min),
                                            reader.getCurrentIndex());
 
             reader.checkArrayEnd();
@@ -89,7 +89,7 @@ abstract class JsArrayParser {
     boolean ifIsEmptyArray(final JsonReader<?> reader) {
         try {
             if (reader.last() != '[')
-                throw reader.newParseError(ParserConf.EXPECTING_FOR_LIST_START,
+                throw reader.newParseError(ParserErrors.EXPECTING_FOR_LIST_START,
                                            reader.getCurrentIndex());
             reader.getNextToken();
             return reader.last() == ']';
@@ -120,7 +120,7 @@ abstract class JsArrayParser {
             final JsArray array = array(reader);
             final Optional<JsError> result = fn.apply(array);
             if (!result.isPresent()) return array;
-            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());

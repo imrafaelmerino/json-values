@@ -47,7 +47,7 @@ final class JsArrayOfObjParser extends JsArrayParser {
     ) {
         try {
             if (ifIsEmptyArray(reader)) {
-                if (min > 0) throw reader.newParseError(ParserConf.A.apply(min),
+                if (min > 0) throw reader.newParseError(ParserErrors.A.apply(min),
                                                         reader.getCurrentIndex());
                 return EMPTY;
             }
@@ -60,12 +60,12 @@ final class JsArrayOfObjParser extends JsArrayParser {
                 buffer = buffer.append(parser.valueSuchThat(reader,
                                                             fn));
                 if (buffer.size() > max)
-                    throw reader.newParseError(ParserConf.B.apply(min),
+                    throw reader.newParseError(ParserErrors.B.apply(min),
                                                reader.getCurrentIndex()
                     );
             }
             if (buffer.size() < min)
-                throw reader.newParseError(ParserConf.C.apply(min),
+                throw reader.newParseError(ParserErrors.C.apply(min),
                                            reader.getCurrentIndex());
             reader.checkArrayEnd();
             return buffer;

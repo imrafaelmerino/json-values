@@ -4,9 +4,7 @@ package jsonvalues;
 import fun.gen.*;
 import fun.tuple.Pair;
 import jsonvalues.gen.*;
-import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -14,7 +12,6 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Random;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import static jsonvalues.spec.JsSpecs.*;
@@ -73,17 +70,17 @@ public class TestGenerators {
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          integer,
+                                          integer(),
                                           "b",
                                           str(s -> s.length() <= 10),
                                           "c",
                                           str(s -> s.length() <= 10),
                                           "d",
-                                          tuple(integer,
+                                          tuple(integer(),
                                                 str(s -> s.length() <= 10)
                                           ),
                                           "e",
-                                          integral
+                                          integral()
         );
 
         Assertions.assertTrue(
@@ -128,20 +125,20 @@ public class TestGenerators {
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfStr,
+                                          arrayOfStr(),
                                           "b",
-                                          tuple(str,
-                                                bool,
-                                                integer
+                                          tuple(str(),
+                                                bool(),
+                                                integer()
                                           ),
                                           "c",
                                           JsObjSpec.strict("a",
                                                            any(v -> v.isStr() || v.isBool())
                                           ),
                                           "d",
-                                          bool,
+                                          bool(),
                                           "e",
-                                          str,
+                                          str(),
                                           "f",
                                           any(v -> v.isStr() || v.isIntegral()),
                                           "g",
@@ -220,21 +217,21 @@ public class TestGenerators {
                                              "o");
 
         JsObjSpec spec = JsObjSpec.lenient("a",
-                                           str.nullable(),
+                                           str().nullable(),
                                            "b",
-                                           integer,
+                                           integer(),
                                            "c",
-                                           bool,
+                                           bool(),
                                            "d",
-                                           str,
+                                           str(),
                                            "e",
-                                           str,
+                                           str(),
                                            "f",
-                                           integral,
+                                           integral(),
                                            "g",
-                                           decimal.nullable(),
+                                           decimal().nullable(),
                                            "h",
-                                           bool,
+                                           bool(),
                                            "i",
                                            any(v -> v.isStr() || v.isDecimal()),
                                            "j",
@@ -244,13 +241,13 @@ public class TestGenerators {
                                            "l",
                                            arraySuchThat(a -> a.size() == 5),
                                            "m",
-                                           str,
+                                           str(),
                                            "n",
                                            str(s -> s.length() == 1),
                                            "o",
-                                           JsSpecs.binary,
+                                           binary(),
                                            "p",
-                                           JsSpecs.instant
+                                           instant()
         ).setOptionals("a",
                        "g",
                        "o",
@@ -276,9 +273,9 @@ public class TestGenerators {
                                .setNullables("b");
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          str,
+                                          str(),
                                           "b",
-                                          integer
+                                          integer()
                                                   .nullable()
         ).setOptionals("b");
 
@@ -327,7 +324,7 @@ public class TestGenerators {
 
 
         Assertions.assertTrue(
-                gen.sample(1000).allMatch(it -> JsSpecs.arrayOfStr(s -> s.length() == 1).test(it).isEmpty())
+                gen.sample(1000).allMatch(it -> arrayOfStr(s -> s.length() == 1).test(it).isEmpty())
         );
 
 

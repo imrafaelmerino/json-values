@@ -17,7 +17,7 @@ final class JsIntegralParser extends AbstractParser {
                                                 .toBigIntegerExact());
 
         } catch (ArithmeticException | IOException e) {
-            throw new JsParserException(reader.newParseError(ParserConf.INTEGRAL_NUMBER_EXPECTED,
+            throw new JsParserException(reader.newParseError(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
                                                              reader.getCurrentIndex()));
         }
     }
@@ -30,7 +30,7 @@ final class JsIntegralParser extends AbstractParser {
                                                       .toBigIntegerExact();
             final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return JsBigInt.of(value);
-            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e.getMessage());

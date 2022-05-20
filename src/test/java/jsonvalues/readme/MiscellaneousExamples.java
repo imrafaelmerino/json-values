@@ -22,9 +22,9 @@ public class MiscellaneousExamples {
     @Test
     public void basic() {
         JsObjSpec spec = JsObjSpec.strict("firstName",
-                                          str,
+                                          str(),
                                           "lastName",
-                                          str,
+                                          str(),
                                           "age",
                                           integer(i -> i >= 0)
         ).setOptionals("firstName","lastName","age");
@@ -141,13 +141,13 @@ public class MiscellaneousExamples {
     public void testArrayOfThings() {
         JsObjSpec veggieSpec =
                 JsObjSpec.strict("veggieName",
-                                 str,
+                                 str(),
                                  "veggieLike",
-                                 bool);
+                                 bool());
 
         JsObjSpec spec =
                 JsObjSpec.strict("fruits",
-                                 arrayOfStr,
+                                 arrayOfStr(),
                                  "vegetables",
                                  arrayOfObjSpec(veggieSpec));
 

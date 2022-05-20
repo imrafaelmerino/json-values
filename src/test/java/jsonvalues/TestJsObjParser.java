@@ -3,7 +3,6 @@ package jsonvalues;
 import com.dslplatform.json.JsParserException;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -132,8 +131,7 @@ public class TestJsObjParser {
     @Test
     public void test_parse_decimal_error() {
         JsObjSpec spec = JsObjSpec.lenient("a",
-                                           decimal(i -> i.divide(BigDecimal.TEN).compareTo(new BigDecimal(1))
-                                                   == 0)
+                                           decimal(i -> i.divide(BigDecimal.TEN).compareTo(new BigDecimal(1)) == 0)
         );
 
         JsObjParser parser = new JsObjParser(spec);
@@ -152,28 +150,28 @@ public class TestJsObjParser {
     public void test_parse_obj_all_primitive_types() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                JsSpecs.integer,
+                                                integer(),
                                                 "b",
-                                                JsSpecs.str,
+                                                str(),
                                                 "c",
-                                                longInteger,
+                                                longInteger(),
                                                 "d",
-                                                bool,
+                                                bool(),
                                                 "e",
                                                 TRUE,
                                                 "f",
                                                 FALSE.nullable(),
                                                 "g",
-                                                decimal,
+                                                decimal(),
                                                 "h",
-                                                integral,
+                                                integral(),
                                                 "i",
                                                 JsObjSpec.strict("a",
-                                                                 number,
+                                                                 number(),
                                                                  "b",
-                                                                 array,
+                                                                 array(),
                                                                  "c",
-                                                                 obj,
+                                                                 obj(),
                                                                  "d",
                                                                  integer(i -> i % 2 == 0),
                                                                  "e",
@@ -188,8 +186,8 @@ public class TestJsObjParser {
                                                                  arraySuchThat(a -> a.head()
                                                                                      .equals(JsStr.of("first"))).nullable(),
                                                                  "j",
-                                                                 JsSpecs.tuple(number(JsValue::isDecimal),
-                                                                               any
+                                                                 tuple(number(JsValue::isDecimal),
+                                                                       any()
                                                                  )
                                                 )
         ).setOptionals("f",
@@ -243,8 +241,7 @@ public class TestJsObjParser {
         );
 
         Assertions.assertEquals(obj,
-                                new JsObjParser(spec).parse(obj
-                                                                    .toPrettyString())
+                                new JsObjParser(spec).parse(obj.toPrettyString())
         );
 
     }
@@ -254,19 +251,19 @@ public class TestJsObjParser {
     public void test_parse_obj_all_array_of_primitive_types() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                arrayOfInt,
+                                                arrayOfInt(),
                                                 "b",
-                                                arrayOfStr,
+                                                arrayOfStr(),
                                                 "c",
-                                                arrayOfBool,
+                                                arrayOfBool(),
                                                 "d",
-                                                arrayOfDec,
+                                                arrayOfDec(),
                                                 "e",
-                                                arrayOfNumber,
+                                                arrayOfNumber(),
                                                 "f",
-                                                arrayOfIntegral,
+                                                arrayOfIntegral(),
                                                 "g",
-                                                arrayOfLong,
+                                                arrayOfLong(),
                                                 "h",
                                                 JsObjSpec.strict("a",
                                                                  arrayOfInt(v -> v > 5),
@@ -366,7 +363,7 @@ public class TestJsObjParser {
                                                 "c",
                                                 longInteger(c -> c > 0),
                                                 "d",
-                                                bool,
+                                                bool(),
                                                 "e",
                                                 TRUE.nullable(),
                                                 "f",
@@ -377,9 +374,9 @@ public class TestJsObjParser {
                                                 integral(i -> i.longValueExact() % 2 == 0),
                                                 "i",
                                                 JsObjSpec.strict("a",
-                                                                 number,
+                                                                 number(),
                                                                  "b",
-                                                                 array,
+                                                                 array(),
                                                                  "c",
                                                                  obj(JsObj::isEmpty),
                                                                  "d",
@@ -396,8 +393,8 @@ public class TestJsObjParser {
                                                                  arraySuchThat(a -> a.head()
                                                                                      .equals(JsStr.of("first"))),
                                                                  "j",
-                                                                 JsSpecs.tuple(number(JsValue::isDecimal),
-                                                                               any
+                                                                 tuple(number(JsValue::isDecimal),
+                                                                       any()
                                                                  )
                                                 )
         ).setOptionals("e");
@@ -450,8 +447,7 @@ public class TestJsObjParser {
         );
 
         Assertions.assertEquals(obj,
-                                new JsObjParser(spec).parse(obj
-                                                                    .toPrettyString())
+                                new JsObjParser(spec).parse(obj.toPrettyString())
         );
 
     }
@@ -460,34 +456,30 @@ public class TestJsObjParser {
     @Test
     public void test_required_fields() {
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                integer
-                                                        .nullable(),
+                                                integer().nullable(),
                                                 "b",
-                                                JsSpecs.str
-                                                        .nullable(),
+                                                str().nullable(),
                                                 "c",
-                                                longInteger
-                                                        .nullable(),
+                                                longInteger().nullable(),
                                                 "d",
-                                                obj.nullable(),
+                                                obj().nullable(),
                                                 "e",
-                                                array.nullable(),
+                                                array().nullable(),
                                                 "f",
-                                                bool.nullable(),
+                                                bool().nullable(),
                                                 "g",
-                                                decimal.nullable(),
+                                                decimal().nullable(),
                                                 "h",
-                                                integral
+                                                integral()
                                                         .nullable(),
                                                 "i",
-                                                JsSpecs.tuple(arrayOfInt
-                                                                      .nullable(),
-                                                              arrayOfLong.nullable()
+                                                tuple(arrayOfInt().nullable(),
+                                                      arrayOfLong().nullable()
 
                                                 )
                 ,
                                                 "j",
-                                                obj
+                                                obj()
                                                         .nullable(),
                                                 "k",
                                                 obj(a -> a.keySet()
@@ -558,7 +550,7 @@ public class TestJsObjParser {
     @Test
     public void test_strict_mode() {
         final JsObjSpec spec = JsObjSpec.lenient("a",
-                                                 JsSpecs.str
+                                                 str()
                                                          .nullable()
         ).setOptionals("a");
 
@@ -807,7 +799,7 @@ public class TestJsObjParser {
                                            "f",
                                            number(JsValue::isIntegral).nullable(),
                                            "g",
-                                           array.nullable()
+                                           array().nullable()
         ).setOptionals("b",
                        "e");
 
@@ -904,10 +896,10 @@ public class TestJsObjParser {
     @Test
     public void testArrayOfObjSpec() {
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          JsSpecs.tuple(JsSpecs.str,
-                                                        bool
-                                                 )
-                                                 .nullable()
+                                          tuple(str(),
+                                                bool()
+                                          )
+                                                  .nullable()
         );
 
         JsObjParser parser = new JsObjParser(spec);
@@ -980,7 +972,8 @@ public class TestJsObjParser {
                                           arrayOfNumber(JsValue::isIntegral),
                                           "e",
                                           arrayOfNumber(JsValue::isDecimal)
-        ).setOptionals("c","e");
+        ).setOptionals("c",
+                       "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1011,7 +1004,8 @@ public class TestJsObjParser {
                                           arrayOfIntegral(a -> a.longValueExact() % 2 == 0),
                                           "e",
                                           arrayOfIntegral(a -> a.longValueExact() % 3 == 0)
-        ).setOptionals("c","e");
+        ).setOptionals("c",
+                       "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1042,7 +1036,8 @@ public class TestJsObjParser {
                                           arrayOfDec(a -> a.longValueExact() % 2 == 0),
                                           "e",
                                           arrayOfDec(a -> a.longValueExact() % 3 == 0).nullable()
-        ).setOptionals("c","e");
+        ).setOptionals("c",
+                       "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1065,7 +1060,7 @@ public class TestJsObjParser {
     @Test
     public void test_number_error() {
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          JsSpecs.number(JsValue::isDouble)
+                                          number(JsValue::isDouble)
         );
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1085,7 +1080,7 @@ public class TestJsObjParser {
 //        final JsObjSpec objSpec = JsObjSpec.lenient("a",
 //                                                    JsSpecs.str.optional(),
 //                                                    "b",
-//                                                    integer,
+//                                                    integer(),
 //                                                    "c",
 //                                                    decimal
 //                                                   );
@@ -1094,7 +1089,7 @@ public class TestJsObjParser {
 //        JsObjGen objGen = JsObjGen.of("a",
 //                                      JsGens.str.optional(),
 //                                      "b",
-//                                      JsGens.integer,
+//                                      JsGens.integer(),
 //                                      "c",
 //                                      JsGens.decimal
 //                                     );
@@ -1165,21 +1160,21 @@ public class TestJsObjParser {
                 "}";
 
         final JsObj parsed = new JsObjParser(JsObjSpec.strict("a",
-                                                              decimal,
+                                                              decimal(),
                                                               "b",
-                                                              decimal,
+                                                              decimal(),
                                                               "c",
-                                                              decimal,
+                                                              decimal(),
                                                               "d",
-                                                              decimal,
+                                                              decimal(),
                                                               "e",
-                                                              decimal,
+                                                              decimal(),
                                                               "f",
-                                                              decimal,
+                                                              decimal(),
                                                               "g",
-                                                              decimal,
+                                                              decimal(),
                                                               "i",
-                                                              decimal
+                                                              decimal()
         )).parse(obj);
 
         Assertions.assertEquals(JsObj.parse(obj),

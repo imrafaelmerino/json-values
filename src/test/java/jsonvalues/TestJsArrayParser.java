@@ -14,14 +14,14 @@ public class TestJsArrayParser {
     @Test
     public void test_array_of_different_elements() {
 
-        final JsTupleSpec spec = JsSpecs.tuple(str,
-                                               integer,
-                                               longInteger,
-                                               decimal,
-                                               bool,
-                                               integral,
-                                               obj,
-                                               array,
+        final JsTupleSpec spec = JsSpecs.tuple(str(),
+                                               integer(),
+                                               longInteger(),
+                                               decimal(),
+                                               bool(),
+                                               integral(),
+                                               obj(),
+                                               array(),
                                                integer(i -> i > 0),
                                                any(v -> v.isStr() || v.isInt()),
                                                str(s -> s.startsWith("1")),
@@ -30,8 +30,8 @@ public class TestJsArrayParser {
                                                number(JsValue::isDecimal),
                                                arrayOfIntegral(a -> a.longValueExact() > 0),
                                                arrayOfIntegral(a -> a.longValueExact() > 0).nullable(),
-                                               arrayOfObj,
-                                               arrayOfObj.nullable()
+                                               arrayOfObj(),
+                                               arrayOfObj().nullable()
         );
 
 
@@ -69,7 +69,7 @@ public class TestJsArrayParser {
     @Test
     public void testNullable() {
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfStr.nullable()
+                                          arrayOfStr().nullable()
         );
 
         JsObjParser parser = new JsObjParser(spec);
@@ -114,9 +114,9 @@ public class TestJsArrayParser {
     public void testArrayOfObject() {
         JsObjSpec spec = JsObjSpec.strict("a",
                                           JsSpecs.arrayOfObjSpec(JsObjSpec.strict("a",
-                                                                                  str,
+                                                                                  str(),
                                                                                   "b",
-                                                                                  integer
+                                                                                  integer()
                                           ))
         );
 
@@ -135,9 +135,9 @@ public class TestJsArrayParser {
 
         JsObjSpec specNullable = JsObjSpec.strict("a",
                                                   JsSpecs.arrayOfObjSpec(JsObjSpec.strict("a",
-                                                                                          str,
+                                                                                          str(),
                                                                                           "b",
-                                                                                          integer
+                                                                                          integer()
                                                          ))
                                                          .nullable()
         );
@@ -260,11 +260,11 @@ public class TestJsArrayParser {
     public void testArrayOfValue() {
 
         JsObjSpec spec = JsObjSpec.lenient("a",
-                                           array,
+                                           array(),
                                            "b",
-                                           array.nullable(),
+                                           array().nullable(),
                                            "c",
-                                           array
+                                           array()
                                                 .nullable(),
                                            "d",
                                            array(v -> v.isIntegral() || v.isStr())

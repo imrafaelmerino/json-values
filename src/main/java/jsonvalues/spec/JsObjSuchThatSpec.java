@@ -14,8 +14,8 @@ class JsObjSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
 
     final Function<JsObj, Optional<JsError>> predicate;
 
-    JsObjSuchThatSpec(final boolean nullable,
-                      final Function<JsObj, Optional<JsError>> predicate
+    JsObjSuchThatSpec(final Function<JsObj, Optional<JsError>> predicate,
+                      final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -24,8 +24,8 @@ class JsObjSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
 
     @Override
     public JsSpec nullable() {
-        return new JsObjSuchThatSpec(true,
-                                     predicate
+        return new JsObjSuchThatSpec(predicate,
+                                     true
         );
     }
 

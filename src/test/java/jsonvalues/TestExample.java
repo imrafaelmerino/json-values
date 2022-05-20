@@ -21,23 +21,23 @@ public class TestExample {
     public void test() {
 
         JsObjSpec spec = JsObjSpec.strict("name",
-                                          JsSpecs.str,
+                                          JsSpecs.str(),
                                           "surname",
-                                          JsSpecs.str,
+                                          JsSpecs.str(),
                                           "languages",
-                                          JsSpecs.arrayOfStr,
+                                          JsSpecs.arrayOfStr(),
                                           "age",
-                                          JsSpecs.integer,
+                                          JsSpecs.integer(),
                                           "address",
                                           JsObjSpec.strict("street",
-                                                           JsSpecs.str,
+                                                           JsSpecs.str(),
                                                            "number",
                                                            JsSpecs.any(it -> it.isInt() || it.isStr()),
                                                            "city",
-                                                           JsSpecs.str.nullable(),
+                                                           JsSpecs.str().nullable(),
                                                            "coordinates",
-                                                           JsSpecs.tuple(JsSpecs.decimal,
-                                                                         JsSpecs.decimal
+                                                           JsSpecs.tuple(JsSpecs.decimal(),
+                                                                         JsSpecs.decimal()
                                                            )
                                           )
         ).setOptionals("surname","age");

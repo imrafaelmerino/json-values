@@ -25,7 +25,7 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
             final JsObj obj = super.value(reader);
             for (String key : required) {
                 if (!obj.containsKey(key))
-                    throw reader.newParseError(ParserConf.REQUIRED_KEY_NOT_FOUND.apply(key),
+                    throw reader.newParseError(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
                                                reader.getCurrentIndex());
             }
             return obj;

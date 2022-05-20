@@ -12,8 +12,8 @@ import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 class JsIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final IntFunction<Optional<JsError>> predicate;
 
-    JsIntSuchThatSpec(final boolean nullable,
-                      final IntFunction<Optional<JsError>> predicate
+    JsIntSuchThatSpec(final IntFunction<Optional<JsError>> predicate,
+                      final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -22,8 +22,8 @@ class JsIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
 
     @Override
     public JsSpec nullable() {
-        return new JsIntSuchThatSpec(true,
-                                     predicate
+        return new JsIntSuchThatSpec(predicate,
+                                     true
         );
     }
 

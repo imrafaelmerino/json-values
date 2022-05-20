@@ -17,7 +17,7 @@ final class JsNumberParser extends AbstractParser {
             final JsNumber value = value(reader);
             final Optional<JsError> result = fn.apply(value);
             if (!result.isPresent()) return value;
-            throw reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(result.get()),
+            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage());

@@ -14,8 +14,8 @@ class JsIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePred
 
     final Function<BigInteger, Optional<JsError>> predicate;
 
-    JsIntegralSuchThatSpec(final boolean nullable,
-                           final Function<BigInteger, Optional<JsError>> predicate
+    JsIntegralSuchThatSpec(final Function<BigInteger, Optional<JsError>> predicate,
+                           final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -25,8 +25,8 @@ class JsIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePred
     @Override
     public JsSpec nullable() {
         return new JsIntegralSuchThatSpec(
-                true,
-                predicate
+                predicate,
+                true
         );
     }
 

@@ -14,8 +14,8 @@ class JsInstantSuchThatSpec extends AbstractNullableSpec implements JsValuePredi
 
     final Function<Instant, Optional<JsError>> predicate;
 
-    JsInstantSuchThatSpec(final boolean nullable,
-                          final Function<Instant, Optional<JsError>> predicate
+    JsInstantSuchThatSpec(final Function<Instant, Optional<JsError>> predicate,
+                          final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -24,8 +24,8 @@ class JsInstantSuchThatSpec extends AbstractNullableSpec implements JsValuePredi
 
     @Override
     public JsSpec nullable() {
-        return new JsInstantSuchThatSpec(true,
-                                         predicate
+        return new JsInstantSuchThatSpec(predicate,
+                                         true
         );
     }
 

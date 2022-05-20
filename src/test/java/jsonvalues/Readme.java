@@ -43,23 +43,23 @@ public class Readme {
         );
 
         JsObjSpec.strict("name",
-                         JsSpecs.str,
+                         JsSpecs.str(),
                          "surname",
-                         JsSpecs.str,
+                         JsSpecs.str(),
                          "phoneNumber",
-                         JsSpecs.str,
+                         JsSpecs.str(),
                          "registrationDate",
-                         JsSpecs.instant,
+                         JsSpecs.instant(),
                          "addresses",
                          JsSpecs.arrayOfObjSpec(JsObjSpec.strict("coordinates",
-                                                                 JsSpecs.tuple(JsSpecs.decimal,
-                                                                               JsSpecs.decimal),
+                                                                 JsSpecs.tuple(JsSpecs.decimal(),
+                                                                               JsSpecs.decimal()),
                                                                  "city",
-                                                                 JsSpecs.str,
+                                                                 JsSpecs.str(),
                                                                  "tags",
-                                                                 JsSpecs.arrayOfStr,
+                                                                 JsSpecs.arrayOfStr(),
                                                                  "zipCode",
-                                                                 JsSpecs.str
+                                                                 JsSpecs.str()
                                                 )
                          )
         );

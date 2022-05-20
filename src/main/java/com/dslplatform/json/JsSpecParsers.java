@@ -22,7 +22,7 @@ public class JsSpecParsers {
 
     private JsSpecParsers() {
         newParseException = (reader, error) ->
-                new JsParserException(reader.newParseError(ParserConf.JS_ERROR_2_STR.apply(error),
+                new JsParserException(reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(error),
                                                            reader.getCurrentIndex()));
     }
 

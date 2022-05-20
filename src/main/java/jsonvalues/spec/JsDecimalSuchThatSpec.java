@@ -13,8 +13,8 @@ import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 class JsDecimalSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
-    JsDecimalSuchThatSpec(final boolean nullable,
-                          final Function<BigDecimal, Optional<JsError>> predicate
+    JsDecimalSuchThatSpec(final Function<BigDecimal, Optional<JsError>> predicate,
+                          final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -23,8 +23,8 @@ class JsDecimalSuchThatSpec extends AbstractNullableSpec implements JsValuePredi
 
     @Override
     public JsSpec nullable() {
-        return new JsDecimalSuchThatSpec(true,
-                                         predicate
+        return new JsDecimalSuchThatSpec(predicate,
+                                         true
         );
     }
 

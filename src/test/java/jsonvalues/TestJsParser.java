@@ -43,28 +43,28 @@ public class TestJsParser {
                                    ))
     );
     JsObjSpec objSpec = JsObjSpec.strict("a",
-                                         str,
+                                         str(),
                                          "b",
-                                         integer,
+                                         integer(),
                                          "c",
-                                         bool,
+                                         bool(),
                                          "d",
-                                         longInteger,
+                                         longInteger(),
                                          "e",
-                                         decimal,
+                                         decimal(),
                                          "f",
-                                         tuple(decimal,
-                                               decimal
+                                         tuple(decimal(),
+                                               decimal()
                                          ),
                                          "g",
-                                         integral,
+                                         integral(),
                                          "h",
-                                         obj,
+                                         obj(),
                                          "i",
-                                         array,
+                                         array(),
                                          "j",
                                          arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                                          str
+                                                                          str()
                                          ))
     );
 
@@ -131,7 +131,7 @@ public class TestJsParser {
 
         JsObjParser parser =
                 new JsObjParser(JsObjSpec.strict("a",
-                                                 instant,
+                                                 instant(),
                                                  "b",
                                                  instant(i -> i.isAfter(Instant.now()
                                                                                .minus(Duration.ofDays(1))
@@ -166,7 +166,7 @@ public class TestJsParser {
 
         JsObjParser parser =
                 new JsObjParser(JsObjSpec.strict("a",
-                                                 binary,
+                                                 binary(),
                                                  "b",
                                                  binary(i -> i.length <= 1024)
                 )

@@ -12,8 +12,8 @@ import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 class JsLongSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
     final LongFunction<Optional<JsError>> predicate;
 
-    JsLongSuchThatSpec(final boolean nullable,
-                       final LongFunction<Optional<JsError>> predicate
+    JsLongSuchThatSpec(final LongFunction<Optional<JsError>> predicate,
+                       final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
@@ -23,8 +23,8 @@ class JsLongSuchThatSpec extends AbstractNullableSpec implements JsValuePredicat
     @Override
     public JsSpec nullable() {
         return new JsLongSuchThatSpec(
-                true,
-                predicate
+                predicate,
+                true
         );
     }
 

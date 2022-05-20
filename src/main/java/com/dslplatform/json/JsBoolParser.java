@@ -11,7 +11,7 @@ final class JsBoolParser extends AbstractParser {
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
             if (reader.wasFalse()) return JsBool.FALSE;
-            throw reader.newParseErrorAt(ParserConf.BOOL_EXPECTED,
+            throw reader.newParseErrorAt(ParserErrors.BOOL_EXPECTED,
                                          reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
@@ -34,7 +34,7 @@ final class JsBoolParser extends AbstractParser {
     JsBool True(final JsonReader<?> reader) {
         try {
             if (reader.wasTrue()) return JsBool.TRUE;
-            throw reader.newParseErrorAt(ParserConf.TRUE_EXPECTED,
+            throw reader.newParseErrorAt(ParserErrors.TRUE_EXPECTED,
                                          reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
@@ -57,7 +57,7 @@ final class JsBoolParser extends AbstractParser {
     public JsBool False(final JsonReader<?> reader) {
         try {
             if (reader.wasFalse()) return JsBool.FALSE;
-            throw reader.newParseErrorAt(ParserConf.FALSE_EXPECTED,
+            throw reader.newParseErrorAt(ParserErrors.FALSE_EXPECTED,
                                          reader.getCurrentIndex()
             );
         } catch (ParsingException e) {
