@@ -17,3 +17,5 @@ docs/javadoc
 docs/coverage-report
 settings.xml
 deploy.sh
+codecov
+upload_codecov.sh

@@ -10,11 +10,11 @@ class ParserErrors {
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end";
 
-    static final IntFunction<String> A = min -> "empty array. Min size: " + min;
+    static final IntFunction<String> EMPTY_ARRAY = min -> "empty array. Min size: " + min;
 
-    static final IntFunction<String> B = max -> "too long array. Max size: " + max;
+    static final IntFunction<String> TOO_LONG_ARRAY = max -> "too long array. Max size: " + max;
 
-    static final IntFunction<String> C = min -> "too short array. Min size: " + min;
+    static final IntFunction<String> TOO_SHORT_ARRAY = min -> "too short array. Min size: " + min;
 
     static final String INTEGRAL_NUMBER_EXPECTED = "Integral number expected.";
 

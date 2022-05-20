@@ -20,4 +20,5 @@ abstract class AbstractParser {
     abstract JsValue value(final JsonReader<?> reader);
 
 
+
 }
