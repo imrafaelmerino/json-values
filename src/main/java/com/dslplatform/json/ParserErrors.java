@@ -4,9 +4,12 @@ import jsonvalues.spec.JsError;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
+import java.util.function.UnaryOperator;
 
 class ParserErrors {
 
+
+    private ParserErrors(){}
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end";
 
@@ -24,9 +27,9 @@ class ParserErrors {
     static final String TRUE_EXPECTED = "True expected";
     static final String FALSE_EXPECTED = "False expected";
 
-    static final Function<String, String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated.";
+    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated.";
 
-    static final Function<String, String> REQUIRED_KEY_NOT_FOUND = key -> "The key " + key + " doesn't exist.";
+    static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The key " + key + " doesn't exist.";
 
     static final Function<JsError, String> JS_ERROR_2_STR = e -> e.code.name();
 

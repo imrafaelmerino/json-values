@@ -1,12 +1,9 @@
 package com.dslplatform.json;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 import jsonvalues.spec.JsError;
-
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;

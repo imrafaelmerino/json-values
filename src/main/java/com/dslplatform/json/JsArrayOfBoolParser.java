@@ -1,6 +1,5 @@
 package com.dslplatform.json;
 
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 

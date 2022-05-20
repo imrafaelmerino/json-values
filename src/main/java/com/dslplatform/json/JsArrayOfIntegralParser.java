@@ -1,7 +1,6 @@
 package com.dslplatform.json;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 import jsonvalues.spec.JsError;
 
