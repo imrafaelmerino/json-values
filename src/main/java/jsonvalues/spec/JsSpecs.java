@@ -1039,7 +1039,7 @@ public final class JsSpecs {
      */
 
     public static <O extends JsValue> JsSpec oneOf(final List<O> cons) {
-        return any(requireNonNull(cons)::contains);
+        return any(o -> requireNonNull(cons).contains(o));
     }
 
 

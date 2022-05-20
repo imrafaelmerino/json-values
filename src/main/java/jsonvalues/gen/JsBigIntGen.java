@@ -10,30 +10,40 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 public final class JsBigIntGen implements Gen<JsBigInt> {
     private final Gen<BigInteger> gen;
 
-    private JsBigIntGen(Gen<BigInteger> gen) {
-        this.gen = gen;
+    public JsBigIntGen(Gen<BigInteger> gen) {
+        this.gen = requireNonNull(gen);
     }
 
     public static Gen<JsBigInt> arbitrary(int min,
                                           int max) {
-        return JsBigIntGen.of(BigIntGen.arbitrary(min,
-                                                  max));
+        return new JsBigIntGen(BigIntGen.arbitrary(min,
+                                                   max));
     }
 
+    /**
+     *
+     * @param maxBits
+     * @return
+     */
     public static Gen<JsBigInt> biased(int maxBits) {
-        return JsBigIntGen.of(BigIntGen.biased(maxBits));
+        return new JsBigIntGen(BigIntGen.biased(maxBits));
     }
 
-    public static Gen<JsBigInt> of(final Gen<BigInteger> gen) {
-        return new JsBigIntGen(requireNonNull(gen));
-    }
-
+    /**
+     *
+     * @param seed the function argument
+     * @return
+     */
     @Override
     public Supplier<JsBigInt> apply(Random seed) {
-        return gen.map(JsBigInt::of).apply(seed);
+        return gen.map(JsBigInt::of)
+                  .apply(seed);
     }
 
 }

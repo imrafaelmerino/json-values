@@ -9,31 +9,67 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 public final class JsLongGen implements Gen<JsLong> {
-    public static final Gen<JsLong> biased = JsLongGen.of(LongGen.biased);
-    public static final Gen<JsLong> arbitrary = JsLongGen.of(LongGen.arbitrary);
+    private static final Gen<JsLong> biased = new JsLongGen(LongGen.biased);
+    private static final Gen<JsLong> arbitrary = new JsLongGen(LongGen.arbitrary);
     private final Gen<Long> gen;
 
-    private JsLongGen(Gen<Long> gen) {
-        this.gen = gen;
+    /**
+     *
+     * @param gen
+     */
+    public JsLongGen(Gen<Long> gen) {
+        this.gen = requireNonNull(gen);
     }
 
+    /**
+     *
+     * @return
+     */
+    public static Gen<JsLong> biased() {
+        return biased;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static Gen<JsLong> arbitrary() {
+        return arbitrary;
+    }
+
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Gen<JsLong> arbitrary(long min,
                                         long max) {
-        return JsLongGen.of(LongGen.arbitrary(min,
-                                              max));
+        return new JsLongGen(LongGen.arbitrary(min,
+                                               max));
     }
 
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Gen<JsLong> biased(long min,
                                      long max) {
-        return JsLongGen.of(LongGen.biased(min,
-                                           max));
+        return new JsLongGen(LongGen.biased(min,
+                                            max));
     }
 
-    public static Gen<JsLong> of(final Gen<Long> gen) {
-        return new JsLongGen(requireNonNull(gen));
-    }
-
+    /**
+     *
+     * @param seed the function argument
+     * @return
+     */
     @Override
     public Supplier<JsLong> apply(Random seed) {
         return gen.map(JsLong::of).apply(seed);

@@ -1,9 +1,14 @@
-package jsonvalues;
+package jsonvalues.gen;
 
 
-import fun.gen.*;
+import fun.gen.Combinators;
+import fun.gen.Gen;
+import fun.gen.IntGen;
+import fun.gen.SetGen;
 import fun.tuple.Pair;
+import jsonvalues.*;
 import jsonvalues.gen.*;
+import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -12,6 +17,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
 import java.util.Random;
+import java.util.Set;
 import java.util.function.Supplier;
 
 import static jsonvalues.spec.JsSpecs.*;
@@ -29,7 +35,7 @@ public class TestGenerators {
                                            "b",
                                            IntGen.arbitrary(0,
                                                             10
-                                           ).then(n -> JsArrayGen.arbitrary(n).apply(JsIntGen.arbitrary)
+                                           ).then(n -> JsArrayGen.arbitrary(n).apply(JsIntGen.arbitrary())
                                            )
         );
 
@@ -52,7 +58,7 @@ public class TestGenerators {
     public void test_js_obj() {
 
         final JsObjGen gen = JsObjGen.of("a",
-                                         JsIntGen.arbitrary,
+                                         JsIntGen.arbitrary(),
                                          "b",
                                          JsStrGen.arbitrary(0,
                                                             10),
@@ -60,13 +66,13 @@ public class TestGenerators {
                                          JsStrGen.alphanumeric(0,
                                                                10),
                                          "d",
-                                         JsTupleGen.of(JsIntGen.arbitrary,
+                                         JsTupleGen.of(JsIntGen.arbitrary(),
                                                        JsStrGen.alphanumeric(0,
                                                                              10)
                                          ),
                                          "e",
-                                         JsBigIntGen.of(BigIntGen.arbitrary(1,
-                                                                            2))
+                                         JsBigIntGen.arbitrary(1,
+                                                               2)
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",
@@ -101,8 +107,8 @@ public class TestGenerators {
                                    "b",
                                    JsTupleGen.of(JsStrGen.biased(0,
                                                                  10),
-                                                 JsBoolGen.arbitrary,
-                                                 JsIntGen.arbitrary),
+                                                 JsBoolGen.arbitrary(),
+                                                 JsIntGen.arbitrary()),
                                    "c",
                                    JsObjGen.of("a",
                                                Combinators.oneOf(JsStr.of("a"),
@@ -110,7 +116,7 @@ public class TestGenerators {
                                                )
                                    ),
                                    "d",
-                                   JsBoolGen.arbitrary,
+                                   JsBoolGen.arbitrary(),
                                    "e",
                                    Combinators.oneOf(JsStr.of("hi"),
                                                      JsNothing.NOTHING
@@ -118,7 +124,7 @@ public class TestGenerators {
                                    "f",
                                    Combinators.oneOf(JsStrGen.digits(0,
                                                                      10),
-                                                     JsIntGen.arbitrary
+                                                     JsIntGen.arbitrary()
                                    ),
                                    "g",
                                    JsConsGen.cons(JsStr.of("a"))
@@ -162,7 +168,7 @@ public class TestGenerators {
                                    JsStrGen.letters(0,
                                                     10),
                                    "b",
-                                   JsIntGen.arbitrary,
+                                   JsIntGen.arbitrary(),
                                    "c",
                                    boolGen,
                                    "d",
@@ -172,15 +178,15 @@ public class TestGenerators {
                                    JsStrGen.alphabetic(0,
                                                        10),
                                    "f",
-                                   JsLongGen.arbitrary,
+                                   JsLongGen.arbitrary(),
                                    "g",
-                                   JsBigDecGen.arbitrary,
+                                   JsBigDecGen.arbitrary(),
                                    "h",
                                    JsConsGen.cons(JsBool.TRUE),
                                    "i",
                                    Combinators.oneOf(JsStrGen.arbitrary(0,
                                                                         100),
-                                                     JsBigDecGen.arbitrary
+                                                     JsBigDecGen.arbitrary()
                                    ),
                                    "j",
                                    Combinators.oneOf(JsStr.of("a"),
@@ -191,16 +197,16 @@ public class TestGenerators {
                                                                JsStrGen.alphabetic(0,
                                                                                    10)),
                                                     new Pair<>(1,
-                                                               JsLongGen.arbitrary)
+                                                               JsLongGen.arbitrary())
                                    ),
                                    "l",
-                                   new SetGen<>(JsIntGen.arbitrary,
+                                   new SetGen<>(JsIntGen.arbitrary(),
                                                 5).map(JsArray::ofIterable),
                                    "m",
                                    JsStrGen.alphanumeric(0,
                                                          10),
                                    "n",
-                                   JsStrGen.letter,
+                                   JsStrGen.letter(),
                                    "o",
                                    JsBinaryGen.arbitrary(0,
                                                          10),
@@ -255,8 +261,11 @@ public class TestGenerators {
 
         Assertions.assertTrue(
                 gen.sample(1000)
-                   .allMatch(it -> spec.test(it)
-                                       .isEmpty())
+                   .allMatch(it -> {
+                       Set<JsErrorPair> errors = spec.test(it);
+                       return errors
+                                           .isEmpty();
+                   })
         );
 
     }
@@ -265,9 +274,9 @@ public class TestGenerators {
     public void testSamples() {
 
         JsObjGen gen = JsObjGen.of("a",
-                                   JsStrGen.digit,
+                                   JsStrGen.digit(),
                                    "b",
-                                   JsIntGen.arbitrary
+                                   JsIntGen.arbitrary()
                                )
                                .setOptionals("b")
                                .setNullables("b");
@@ -286,11 +295,11 @@ public class TestGenerators {
 
     @Test
     public void testMapNumbers() {
-        final Gen<JsInt> posInteger = JsIntGen.arbitrary.map(i -> i.map(v ->
-                                                                        {
-                                                                            if (v >= 0) return v;
-                                                                            else return -v;
-                                                                        })
+        final Gen<JsInt> posInteger = JsIntGen.arbitrary().map(i -> i.map(v ->
+                                                                          {
+                                                                              if (v >= 0) return v;
+                                                                              else return -v;
+                                                                          })
         );
 
         final Supplier<JsInt> supplier = posInteger.sample(new Random());
@@ -302,7 +311,7 @@ public class TestGenerators {
 
     @Test
     public void testSuchThat() {
-        final Gen<JsInt> negative = JsIntGen.of(IntGen.arbitrary.suchThat(i -> i < 0));
+        final Gen<JsInt> negative = new JsIntGen(IntGen.arbitrary.suchThat(i -> i < 0));
 
         final Supplier<JsInt> supplier = negative.sample(new Random());
 
@@ -316,7 +325,7 @@ public class TestGenerators {
     @Test
     public void testDigits() {
 
-        final Gen<JsArray> gen = JsArrayGen.arbitrary(10).apply(JsStrGen.digit);
+        final Gen<JsArray> gen = JsArrayGen.arbitrary(10).apply(JsStrGen.digit());
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> it.size() == 10)

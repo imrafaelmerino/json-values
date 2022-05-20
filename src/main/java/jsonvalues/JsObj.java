@@ -1005,6 +1005,620 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     /**
+     * Returns a six-element immutable object.
+     *
+     * @param key1  name of a key
+     * @param el1   JsValue to be associated to the key1
+     * @param key2  name of a key
+     * @param el2   JsValue to be associated to the key2
+     * @param key3  name of a key
+     * @param el3   JsValue to be associated to the key3
+     * @param key4  name of a key
+     * @param el4   JsValue to be associated to the key4
+     * @param key5  name of a key
+     * @param el5   JsValue to be associated to the key5
+     * @param key6  name of a key
+     * @param el6   JsValue to be associated to the key6
+     * @param key7  name of a key
+     * @param el7   JsValue to be associated to the key7
+     * @param key8  name of a key
+     * @param el8   JsValue to be associated to the key8
+     * @param key9  name of a key
+     * @param el9   JsValue to be associated to the key9
+     * @param key10 name of a key
+     * @param el10  JsValue to be associated to the key10
+     * @param key11 name of a key
+     * @param el11  JsValue to be associated to the key11
+     * @param key12 name of a key
+     * @param el12  JsValue to be associated to the key12
+     * @param key13 name of a key
+     * @param el13  JsValue to be associated to the key13
+     * @param key14 name of a key
+     * @param el14  JsValue to be associated to the key14
+     * @param key15 name of a key
+     * @param el15  JsValue to be associated to the key16
+     * @param key16 name of a key
+     * @param el16  JsValue to be associated to the key16
+     * @return an immutable twelve-element JsObj
+     * @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16
+    ) {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5,
+                  key6,
+                  el6,
+                  key7,
+                  el7,
+                  key8,
+                  el8,
+                  key9,
+                  el9,
+                  key10,
+                  el10,
+                  key11,
+                  el11,
+                  key12,
+                  el12,
+                  key13,
+                  el13,
+                  key14,
+                  el14,
+                  key15,
+                  el15
+        ).set(JsPath.empty()
+                    .key(requireNonNull(key16)),
+              el16
+        );
+    }
+
+
+    /**
+     * Returns a six-element immutable object.
+     *
+     * @param key1  name of a key
+     * @param el1   JsValue to be associated to the key1
+     * @param key2  name of a key
+     * @param el2   JsValue to be associated to the key2
+     * @param key3  name of a key
+     * @param el3   JsValue to be associated to the key3
+     * @param key4  name of a key
+     * @param el4   JsValue to be associated to the key4
+     * @param key5  name of a key
+     * @param el5   JsValue to be associated to the key5
+     * @param key6  name of a key
+     * @param el6   JsValue to be associated to the key6
+     * @param key7  name of a key
+     * @param el7   JsValue to be associated to the key7
+     * @param key8  name of a key
+     * @param el8   JsValue to be associated to the key8
+     * @param key9  name of a key
+     * @param el9   JsValue to be associated to the key9
+     * @param key10 name of a key
+     * @param el10  JsValue to be associated to the key10
+     * @param key11 name of a key
+     * @param el11  JsValue to be associated to the key11
+     * @param key12 name of a key
+     * @param el12  JsValue to be associated to the key12
+     * @param key13 name of a key
+     * @param el13  JsValue to be associated to the key13
+     * @param key14 name of a key
+     * @param el14  JsValue to be associated to the key14
+     * @param key15 name of a key
+     * @param el15  JsValue to be associated to the key15
+     * @param key16 name of a key
+     * @param el16  JsValue to be associated to the key16
+     * @param key17 name of a key
+     * @param el17  JsValue to be associated to the key17
+     * @return an immutable twelve-element JsObj
+     * @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17
+    ) {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5,
+                  key6,
+                  el6,
+                  key7,
+                  el7,
+                  key8,
+                  el8,
+                  key9,
+                  el9,
+                  key10,
+                  el10,
+                  key11,
+                  el11,
+                  key12,
+                  el12,
+                  key13,
+                  el13,
+                  key14,
+                  el14,
+                  key15,
+                  el15,
+                  key16,
+                  el16
+        ).set(JsPath.empty()
+                    .key(requireNonNull(key17)),
+              el17
+        );
+    }
+
+
+    /**
+     * Returns a six-element immutable object.
+     *
+     * @param key1  name of a key
+     * @param el1   JsValue to be associated to the key1
+     * @param key2  name of a key
+     * @param el2   JsValue to be associated to the key2
+     * @param key3  name of a key
+     * @param el3   JsValue to be associated to the key3
+     * @param key4  name of a key
+     * @param el4   JsValue to be associated to the key4
+     * @param key5  name of a key
+     * @param el5   JsValue to be associated to the key5
+     * @param key6  name of a key
+     * @param el6   JsValue to be associated to the key6
+     * @param key7  name of a key
+     * @param el7   JsValue to be associated to the key7
+     * @param key8  name of a key
+     * @param el8   JsValue to be associated to the key8
+     * @param key9  name of a key
+     * @param el9   JsValue to be associated to the key9
+     * @param key10 name of a key
+     * @param el10  JsValue to be associated to the key10
+     * @param key11 name of a key
+     * @param el11  JsValue to be associated to the key11
+     * @param key12 name of a key
+     * @param el12  JsValue to be associated to the key12
+     * @param key13 name of a key
+     * @param el13  JsValue to be associated to the key13
+     * @param key14 name of a key
+     * @param el14  JsValue to be associated to the key14
+     * @param key15 name of a key
+     * @param el15  JsValue to be associated to the key15
+     * @param key16 name of a key
+     * @param el16  JsValue to be associated to the key16
+     * @param key17 name of a key
+     * @param el17  JsValue to be associated to the key17
+     * @param key18 name of a key
+     * @param el18  JsValue to be associated to the key18
+     * @return an immutable twelve-element JsObj
+     * @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18
+    ) {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5,
+                  key6,
+                  el6,
+                  key7,
+                  el7,
+                  key8,
+                  el8,
+                  key9,
+                  el9,
+                  key10,
+                  el10,
+                  key11,
+                  el11,
+                  key12,
+                  el12,
+                  key13,
+                  el13,
+                  key14,
+                  el14,
+                  key15,
+                  el15,
+                  key16,
+                  el16,
+                  key17,
+                  el17
+        ).set(JsPath.empty()
+                    .key(requireNonNull(key18)),
+              el18
+        );
+    }
+
+
+    /**
+     * Returns a six-element immutable object.
+     *
+     * @param key1  name of a key
+     * @param el1   JsValue to be associated to the key1
+     * @param key2  name of a key
+     * @param el2   JsValue to be associated to the key2
+     * @param key3  name of a key
+     * @param el3   JsValue to be associated to the key3
+     * @param key4  name of a key
+     * @param el4   JsValue to be associated to the key4
+     * @param key5  name of a key
+     * @param el5   JsValue to be associated to the key5
+     * @param key6  name of a key
+     * @param el6   JsValue to be associated to the key6
+     * @param key7  name of a key
+     * @param el7   JsValue to be associated to the key7
+     * @param key8  name of a key
+     * @param el8   JsValue to be associated to the key8
+     * @param key9  name of a key
+     * @param el9   JsValue to be associated to the key9
+     * @param key10 name of a key
+     * @param el10  JsValue to be associated to the key10
+     * @param key11 name of a key
+     * @param el11  JsValue to be associated to the key11
+     * @param key12 name of a key
+     * @param el12  JsValue to be associated to the key12
+     * @param key13 name of a key
+     * @param el13  JsValue to be associated to the key13
+     * @param key14 name of a key
+     * @param el14  JsValue to be associated to the key14
+     * @param key15 name of a key
+     * @param el15  JsValue to be associated to the key15
+     * @param key16 name of a key
+     * @param el16  JsValue to be associated to the key16
+     * @param key17 name of a key
+     * @param el17  JsValue to be associated to the key17
+     * @param key18 name of a key
+     * @param el18  JsValue to be associated to the key18
+     * @param key19 name of a key
+     * @param el19  JsValue to be associated to the key18
+     * @return an immutable twelve-element JsObj
+     * @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19
+    ) {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5,
+                  key6,
+                  el6,
+                  key7,
+                  el7,
+                  key8,
+                  el8,
+                  key9,
+                  el9,
+                  key10,
+                  el10,
+                  key11,
+                  el11,
+                  key12,
+                  el12,
+                  key13,
+                  el13,
+                  key14,
+                  el14,
+                  key15,
+                  el15,
+                  key16,
+                  el16,
+                  key17,
+                  el17,
+                  key18,
+                  el18
+        ).set(JsPath.empty()
+                    .key(requireNonNull(key19)),
+              el19
+        );
+    }
+
+    /**
+     * Returns a six-element immutable object.
+     *
+     * @param key1  name of a key
+     * @param el1   JsValue to be associated to the key1
+     * @param key2  name of a key
+     * @param el2   JsValue to be associated to the key2
+     * @param key3  name of a key
+     * @param el3   JsValue to be associated to the key3
+     * @param key4  name of a key
+     * @param el4   JsValue to be associated to the key4
+     * @param key5  name of a key
+     * @param el5   JsValue to be associated to the key5
+     * @param key6  name of a key
+     * @param el6   JsValue to be associated to the key6
+     * @param key7  name of a key
+     * @param el7   JsValue to be associated to the key7
+     * @param key8  name of a key
+     * @param el8   JsValue to be associated to the key8
+     * @param key9  name of a key
+     * @param el9   JsValue to be associated to the key9
+     * @param key10 name of a key
+     * @param el10  JsValue to be associated to the key10
+     * @param key11 name of a key
+     * @param el11  JsValue to be associated to the key11
+     * @param key12 name of a key
+     * @param el12  JsValue to be associated to the key12
+     * @param key13 name of a key
+     * @param el13  JsValue to be associated to the key13
+     * @param key14 name of a key
+     * @param el14  JsValue to be associated to the key14
+     * @param key15 name of a key
+     * @param el15  JsValue to be associated to the key15
+     * @param key16 name of a key
+     * @param el16  JsValue to be associated to the key16
+     * @param key17 name of a key
+     * @param el17  JsValue to be associated to the key17
+     * @param key18 name of a key
+     * @param el18  JsValue to be associated to the key18
+     * @param key19 name of a key
+     * @param el19  JsValue to be associated to the key19
+     * @param key20 name of a key
+     * @param el20  JsValue to be associated to the key20
+
+     * @return an immutable twelve-element JsObj
+     * @throws UserError if an elem is a mutable Json
+     */
+    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20
+    ) {
+
+        return of(key1,
+                  el1,
+                  key2,
+                  el2,
+                  key3,
+                  el3,
+                  key4,
+                  el4,
+                  key5,
+                  el5,
+                  key6,
+                  el6,
+                  key7,
+                  el7,
+                  key8,
+                  el8,
+                  key9,
+                  el9,
+                  key10,
+                  el10,
+                  key11,
+                  el11,
+                  key12,
+                  el12,
+                  key13,
+                  el13,
+                  key14,
+                  el14,
+                  key15,
+                  el15,
+                  key16,
+                  el16,
+                  key17,
+                  el17,
+                  key18,
+                  el18,
+                  key19,
+                  el19
+        ).set(JsPath.empty()
+                    .key(requireNonNull(key20)),
+              el20
+        );
+    }
+
+    /**
      * Returns an immutable object from one or more pairs.
      *
      * @param pair   a pair

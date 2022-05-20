@@ -156,7 +156,7 @@ public class MiscellaneousExamples {
                             JsStrGen.biased(0,
                                             50),
                             "veggieLike",
-                            JsBoolGen.arbitrary);
+                            JsBoolGen.arbitrary());
         JsObjGen gen =
                 JsObjGen.of("fruits",
                             JsArrayGen.biased(0,10)

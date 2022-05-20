@@ -18,7 +18,7 @@ public final class JsArrayParser {
      */
     public JsArrayParser(final JsArraySpec spec) {
 
-        parser = spec.parser();
+        parser = requireNonNull(spec).parser();
 
     }
 
@@ -49,9 +49,10 @@ public final class JsArrayParser {
      * @return a try computation with the result
      */
     public JsArray parse(String str) {
-        return MyDslJson.INSTANCE.deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
-                                                       this.parser
-        );
+        return MyDslJson.INSTANCE
+                .deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
+                                      this.parser
+                );
     }
 
     /**

@@ -23,23 +23,36 @@ public final class JsArrayGen implements Gen<JsArray> {
     private final int size;
     private final Gen<? extends JsValue> gen;
 
-    private JsArrayGen(final int size,
-                       final Gen<? extends JsValue> gen
+    /**
+     *
+     * @param size
+     * @param gen
+     */
+    public JsArrayGen(final int size,
+                      final Gen<? extends JsValue> gen
     ) {
+        if(size < 0) throw new IllegalArgumentException("size < 0");
         this.size = size;
         this.gen = gen;
     }
 
-    public static Gen<JsArray> of(final Gen<Iterable<? extends JsValue>> gen) {
-        return gen.map(JsArray::ofIterable);
-    }
-
+    /**
+     *
+     * @param size
+     * @return
+     */
 
     public static Function<Gen<? extends JsValue>, Gen<JsArray>> arbitrary(final int size) {
         return gen -> new JsArrayGen(size,
                                      gen);
     }
 
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Function<Gen<? extends JsValue>, Gen<JsArray>> arbitrary(final int min,
                                                                            final int max) {
         if (min < 0) throw new IllegalArgumentException("min < 0");
@@ -60,7 +73,12 @@ public final class JsArrayGen implements Gen<JsArray> {
         };
     }
 
-
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Function<Gen<? extends JsValue>, Gen<JsArray>> biased(final int min,
                                                                         final int max) {
         if (min < 0) throw new IllegalArgumentException("min < 0");
@@ -94,7 +112,12 @@ public final class JsArrayGen implements Gen<JsArray> {
 
     }
 
-
+    /**
+     *
+     * @param elemSupplier
+     * @param sizeSupplier
+     * @return
+     */
     private static Supplier<JsArray> arraySupplier(Supplier<? extends JsValue> elemSupplier,
                                                    Supplier<Integer> sizeSupplier) {
         return () ->
@@ -105,6 +128,11 @@ public final class JsArrayGen implements Gen<JsArray> {
         };
     }
 
+    /**
+     *
+     * @param random the function argument
+     * @return
+     */
     @Override
     public Supplier<JsArray> apply(final Random random) {
         Objects.requireNonNull(random);

@@ -4,36 +4,71 @@ import fun.gen.Gen;
 import fun.gen.IntGen;
 import jsonvalues.JsInt;
 
+import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
+/**
+ *
+ */
 public final class JsIntGen implements Gen<JsInt> {
-    public static final Gen<JsInt> biased = JsIntGen.of(IntGen.biased);
-    public static final Gen<JsInt> arbitrary = JsIntGen.of(IntGen.arbitrary);
+    private static final Gen<JsInt> biased = new JsIntGen(IntGen.biased);
+    private static final Gen<JsInt> arbitrary = new JsIntGen(IntGen.arbitrary);
     private final Gen<Integer> gen;
 
-    private JsIntGen(Gen<Integer> gen) {
-        this.gen = gen;
+    /**
+     *
+     * @param gen
+     */
+    public JsIntGen(Gen<Integer> gen) {
+        this.gen = Objects.requireNonNull(gen);
     }
 
+    /**
+     *
+     * @return
+     */
+    public static Gen<JsInt> biased() {
+        return biased;
+    }
+
+    /**
+     *
+     * @return
+     */
+    public static Gen<JsInt> arbitrary() {
+        return arbitrary;
+    }
+
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Gen<JsInt> arbitrary(int min,
                                        int max) {
-        return JsIntGen.of(IntGen.arbitrary(min,
-                                            max));
+        return new JsIntGen(IntGen.arbitrary(min,
+                                             max));
     }
 
+    /**
+     *
+     * @param min
+     * @param max
+     * @return
+     */
     public static Gen<JsInt> biased(int min,
                                     int max) {
-        return JsIntGen.of(IntGen.biased(min,
-                                         max));
+        return new JsIntGen(IntGen.biased(min,
+                                          max));
     }
 
-    public static Gen<JsInt> of(final Gen<Integer> gen) {
-        return new JsIntGen(requireNonNull(gen));
-    }
-
+    /**
+     *
+     * @param seed the function argument
+     * @return
+     */
     @Override
     public Supplier<JsInt> apply(Random seed) {
         return gen.map(JsInt::of).apply(seed);

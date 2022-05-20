@@ -15,9 +15,11 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 public final class JsTupleGen implements Gen<JsArray> {
     private final List<Gen<? extends JsValue>> gens = new ArrayList<>();
-
 
     @SafeVarargs
     @SuppressWarnings("varargs")
@@ -28,6 +30,13 @@ public final class JsTupleGen implements Gen<JsArray> {
         gens.addAll(Arrays.asList(requireNonNull(others)));
     }
 
+    /**
+     *
+     * @param gen
+     * @param others
+     * @return
+     */
+
     @SafeVarargs
     public static Gen<JsArray> of(final Gen<? extends JsValue> gen,
                                   final Gen<? extends JsValue>... others
@@ -36,6 +45,11 @@ public final class JsTupleGen implements Gen<JsArray> {
                               others);
     }
 
+    /**
+     *
+     * @param random the function argument
+     * @return
+     */
     @Override
     public Supplier<JsArray> apply(final Random random) {
         requireNonNull(random);

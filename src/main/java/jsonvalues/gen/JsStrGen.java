@@ -9,32 +9,47 @@ import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ *
+ */
 public final class JsStrGen implements Gen<JsStr> {
-
-    /**
-     * Generator tha produces a digit from 0 to 9
-     */
-    public static final Gen<JsStr> digit = JsStrGen.of(StrGen.digit);
-    /**
-     * Generator tha produces a letter from a to z
-     */
-    public static final Gen<JsStr> letter = JsStrGen.of(StrGen.letter);
-
-    /**
-     * Generator tha produces an alphabetic character
-     */
-    public static final Gen<JsStr> alphabetic = JsStrGen.of(StrGen.alphabetic);
 
     /**
      * Generator tha produces an alphanumeric character
      */
-    public static final Gen<JsStr> alphanumeric = JsStrGen.of(StrGen.alphanumeric);
-
-
+    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric);
+    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digit);
+    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letter);
+    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic);
     private final Gen<String> gen;
 
-    private JsStrGen(Gen<String> gen) {
-        this.gen = gen;
+    /**
+     *
+     * @param gen
+     */
+    public JsStrGen(Gen<String> gen) {
+        this.gen = requireNonNull(gen);
+    }
+
+    /**
+     * Generator tha produces a digit from 0 to 9
+     */
+    public static Gen<JsStr> digit() {
+        return digit;
+    }
+
+    /**
+     * Generator tha produces a letter from a to z
+     */
+    public static Gen<JsStr> letter() {
+        return letter;
+    }
+
+    /**
+     * Generator tha produces an alphabetic character
+     */
+    public static Gen<JsStr> alphabetic() {
+        return alphabetic;
     }
 
     /**
@@ -46,8 +61,8 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> digits(final int minLength,
                                     final int maxLength) {
-        return JsStrGen.of(StrGen.digits(minLength,
-                                         maxLength));
+        return new JsStrGen(StrGen.digits(minLength,
+                                          maxLength));
     }
 
     /**
@@ -59,8 +74,8 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> letters(final int minLength,
                                      final int maxLength) {
-        return JsStrGen.of(StrGen.letters(minLength,
-                                          maxLength));
+        return new JsStrGen(StrGen.letters(minLength,
+                                           maxLength));
     }
 
     /**
@@ -72,8 +87,8 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> alphabetic(final int minLength,
                                         final int maxLength) {
-        return JsStrGen.of(StrGen.alphabetic(minLength,
-                                             maxLength));
+        return new JsStrGen(StrGen.alphabetic(minLength,
+                                              maxLength));
     }
 
     /**
@@ -85,8 +100,8 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> alphanumeric(final int minLength,
                                           final int maxLength) {
-        return JsStrGen.of(StrGen.alphanumeric(minLength,
-                                               maxLength));
+        return new JsStrGen(StrGen.alphanumeric(minLength,
+                                                maxLength));
     }
 
     /**
@@ -98,8 +113,8 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> arbitrary(final int minLength,
                                        final int maxLength) {
-        return JsStrGen.of(StrGen.arbitrary(minLength,
-                                            maxLength));
+        return new JsStrGen(StrGen.arbitrary(minLength,
+                                             maxLength));
     }
 
     /**
@@ -109,14 +124,15 @@ public final class JsStrGen implements Gen<JsStr> {
      */
     public static Gen<JsStr> biased(final int minLength,
                                     final int maxLength) {
-        return JsStrGen.of(StrGen.biased(minLength,
-                                         maxLength));
+        return new JsStrGen(StrGen.biased(minLength,
+                                          maxLength));
     }
 
-    public static Gen<JsStr> of(final Gen<String> gen) {
-        return new JsStrGen(requireNonNull(gen));
-    }
-
+    /**
+     *
+     * @param seed the function argument
+     * @return
+     */
     @Override
     public Supplier<JsStr> apply(Random seed) {
         return gen.map(JsStr::of)
