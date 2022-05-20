@@ -57,13 +57,10 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key1,
                               final Gen<? extends JsValue> gen1
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
+        return JsObjGen.of(key,
+                           gen).set(key1,
+                                    gen1);
 
-        return new JsObjGen(map);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -74,15 +71,11 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key2,
                               final Gen<? extends JsValue> gen2
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1).set(key2,
+                                     gen2);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -95,16 +88,13 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key3,
                               final Gen<? extends JsValue> gen3
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2).set(key3,
+                                     gen3);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -119,19 +109,15 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key4,
                               final Gen<? extends JsValue> gen4
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3).set(key4,
+                                     gen4);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -148,21 +134,17 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key5,
                               final Gen<? extends JsValue> gen5
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4).set(key5,
+                                     gen5);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -181,23 +163,19 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key6,
                               final Gen<? extends JsValue> gen6
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5).set(key6,
+                                     gen6);
     }
 
     @SuppressWarnings("squid:S00107")
@@ -218,26 +196,21 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key7,
                               final Gen<? extends JsValue> gen7
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-
-        return new JsObjGen(map);
-
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6).set(key7,
+                                     gen7);
     }
 
     public static JsObjGen of(final String key,
@@ -259,27 +232,23 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key8,
                               final Gen<? extends JsValue> gen8
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key),
-                requireNonNull(gen));
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key,
+                           gen,
+                           key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7).set(key8,
+                                     gen8);
     }
 
     /**
@@ -329,29 +298,25 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key10,
                               final Gen<? extends JsValue> gen10
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9).set(key10,
+                                     gen10);
     }
 
     /**
@@ -405,31 +370,27 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key11,
                               final Gen<? extends JsValue> gen11
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10).set(key11,
+                                      gen11);
     }
 
     /**
@@ -487,33 +448,29 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key12,
                               final Gen<? extends JsValue> gen12
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11).set(key12,
+                                      gen12);
     }
 
     /**
@@ -575,35 +532,31 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key13,
                               final Gen<? extends JsValue> gen13
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12).set(key13,
+                                      gen13);
     }
 
     /**
@@ -669,37 +622,33 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key14,
                               final Gen<? extends JsValue> gen14
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13).set(key14,
+                                      gen14);
     }
 
     /**
@@ -769,38 +718,35 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key15,
                               final Gen<? extends JsValue> gen15
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14).set(key15,
+                                      gen15);
     }
 
     /**
@@ -874,41 +820,37 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key16,
                               final Gen<? extends JsValue> gen16
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        map.put(requireNonNull(key16),
-                requireNonNull(gen16));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14,
+                           key15,
+                           gen15).set(key16,
+                                      gen16);
     }
 
     /**
@@ -986,43 +928,39 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key17,
                               final Gen<? extends JsValue> gen17
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        map.put(requireNonNull(key16),
-                requireNonNull(gen16));
-        map.put(requireNonNull(key17),
-                requireNonNull(gen17));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14,
+                           key15,
+                           gen15,
+                           key16,
+                           gen16).set(key17,
+                                      gen17);
     }
 
     /**
@@ -1104,45 +1042,41 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key18,
                               final Gen<? extends JsValue> gen18
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        map.put(requireNonNull(key16),
-                requireNonNull(gen16));
-        map.put(requireNonNull(key17),
-                requireNonNull(gen17));
-        map.put(requireNonNull(key18),
-                requireNonNull(gen18));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14,
+                           key15,
+                           gen15,
+                           key16,
+                           gen16,
+                           key17,
+                           gen17).set(key18,
+                                      gen18);
     }
 
     /**
@@ -1228,47 +1162,43 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key19,
                               final Gen<? extends JsValue> gen19
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        map.put(requireNonNull(key16),
-                requireNonNull(gen16));
-        map.put(requireNonNull(key17),
-                requireNonNull(gen17));
-        map.put(requireNonNull(key18),
-                requireNonNull(gen18));
-        map.put(requireNonNull(key19),
-                requireNonNull(gen19));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14,
+                           key15,
+                           gen15,
+                           key16,
+                           gen16,
+                           key17,
+                           gen17,
+                           key18,
+                           gen18).set(key19,
+                                      gen19);
     }
 
     /**
@@ -1358,56 +1288,52 @@ public final class JsObjGen implements Gen<JsObj> {
                               final String key20,
                               final Gen<? extends JsValue> gen20
     ) {
-        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        map.put(requireNonNull(key1),
-                requireNonNull(gen1));
-        map.put(requireNonNull(key2),
-                requireNonNull(gen2));
-        map.put(requireNonNull(key3),
-                requireNonNull(gen3));
-        map.put(requireNonNull(key4),
-                requireNonNull(gen4));
-        map.put(requireNonNull(key5),
-                requireNonNull(gen5));
-        map.put(requireNonNull(key6),
-                requireNonNull(gen6));
-        map.put(requireNonNull(key7),
-                requireNonNull(gen7));
-        map.put(requireNonNull(key8),
-                requireNonNull(gen8));
-        map.put(requireNonNull(key9),
-                requireNonNull(gen9));
-        map.put(requireNonNull(key10),
-                requireNonNull(gen10));
-        map.put(requireNonNull(key11),
-                requireNonNull(gen11));
-        map.put(requireNonNull(key12),
-                requireNonNull(gen12));
-        map.put(requireNonNull(key13),
-                requireNonNull(gen13));
-        map.put(requireNonNull(key14),
-                requireNonNull(gen14));
-        map.put(requireNonNull(key15),
-                requireNonNull(gen15));
-        map.put(requireNonNull(key16),
-                requireNonNull(gen16));
-        map.put(requireNonNull(key17),
-                requireNonNull(gen17));
-        map.put(requireNonNull(key18),
-                requireNonNull(gen18));
-        map.put(requireNonNull(key19),
-                requireNonNull(gen19));
-        map.put(requireNonNull(key20),
-                requireNonNull(gen20));
-
-        return new JsObjGen(map);
+        return JsObjGen.of(key1,
+                           gen1,
+                           key2,
+                           gen2,
+                           key3,
+                           gen3,
+                           key4,
+                           gen4,
+                           key5,
+                           gen5,
+                           key6,
+                           gen6,
+                           key7,
+                           gen7,
+                           key8,
+                           gen8,
+                           key9,
+                           gen9,
+                           key10,
+                           gen10,
+                           key11,
+                           gen11,
+                           key12,
+                           gen12,
+                           key13,
+                           gen13,
+                           key14,
+                           gen14,
+                           key15,
+                           gen15,
+                           key16,
+                           gen16,
+                           key17,
+                           gen17,
+                           key18,
+                           gen18,
+                           key19,
+                           gen19).set(key20,
+                                      gen20);
     }
 
     public JsObjGen setNullables(final List<String> nullables) {
         return new JsObjGen(bindings,
                             optionals,
                             requireNonNull(nullables)
-                            );
+        );
     }
 
     public JsObjGen setNullables(final String... nullables) {
@@ -1443,8 +1369,11 @@ public final class JsObjGen implements Gen<JsObj> {
                         final Gen<? extends JsValue> gen
     ) {
         LinkedHashMap<String, Gen<? extends JsValue>> map = new LinkedHashMap<>(bindings);
-        map.put(requireNonNull(key),requireNonNull(gen));
-        return new JsObjGen(map,optionals,nullables);
+        map.put(requireNonNull(key),
+                requireNonNull(gen));
+        return new JsObjGen(map,
+                            optionals,
+                            nullables);
 
     }
 
