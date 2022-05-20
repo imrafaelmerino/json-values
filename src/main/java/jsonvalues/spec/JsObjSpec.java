@@ -20,11 +20,10 @@ import static jsonvalues.spec.ERROR_CODE.*;
 public final class JsObjSpec implements JsSpec {
 
     final boolean strict;
+    final Map<String, JsSpecParser> parsers;
     private final boolean nullable;
     Map<String, JsSpec> bindings;
     private List<String> requiredFields;
-
-    final Map<String, JsSpecParser> parsers;
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
                       boolean nullable,
@@ -36,7 +35,8 @@ public final class JsObjSpec implements JsSpec {
         this.requiredFields = new ArrayList<>(bindings.keySet());
         this.parsers = new LinkedHashMap<>();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet())
-            parsers.put(entry.getKey(), entry.getValue().parser());
+            parsers.put(entry.getKey(),
+                        entry.getValue().parser());
     }
 
 
@@ -71,6 +71,7 @@ public final class JsObjSpec implements JsSpec {
     public static JsObjSpec lenient(final String key,
                                     final JsSpec spec
     ) {
+
         Map<String, JsSpec> bindings = new LinkedHashMap<>();
         bindings.put(requireNonNull(key),
                      requireNonNull(spec));
@@ -95,15 +96,11 @@ public final class JsObjSpec implements JsSpec {
                                    final String key2,
                                    final JsSpec spec2
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+
+        return strict(key1,
+                      spec1).set(requireNonNull(key2),
+                                 requireNonNull(spec2));
+
     }
 
     /**
@@ -121,15 +118,10 @@ public final class JsObjSpec implements JsSpec {
                                     final String key2,
                                     final JsSpec spec2
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1).set(requireNonNull(key2),
+                                  requireNonNull(spec2));
+
     }
 
     /**
@@ -152,17 +144,12 @@ public final class JsObjSpec implements JsSpec {
                                    final String key3,
                                    final JsSpec spec3
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2).set(requireNonNull(key3),
+                                 requireNonNull(spec3));
+
     }
 
     /**
@@ -186,17 +173,11 @@ public final class JsObjSpec implements JsSpec {
             final String key3,
             final JsSpec spec3
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2).set(requireNonNull(key3),
+                                  requireNonNull(spec3));
     }
 
     /**
@@ -224,19 +205,13 @@ public final class JsObjSpec implements JsSpec {
             final String key4,
             final JsSpec spec4
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3).set(requireNonNull(key4),
+                                 requireNonNull(spec4));
     }
 
     /**
@@ -264,19 +239,13 @@ public final class JsObjSpec implements JsSpec {
             final String key4,
             final JsSpec spec4
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3).set(requireNonNull(key4),
+                                  requireNonNull(spec4));
     }
 
     /**
@@ -308,21 +277,15 @@ public final class JsObjSpec implements JsSpec {
             final String key5,
             final JsSpec spec5
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4).set(requireNonNull(key5),
+                                 requireNonNull(spec5));
     }
 
     /**
@@ -354,21 +317,15 @@ public final class JsObjSpec implements JsSpec {
             String key5,
             JsSpec spec5
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4).set(requireNonNull(key5),
+                                  requireNonNull(spec5));
     }
 
     /**
@@ -404,23 +361,18 @@ public final class JsObjSpec implements JsSpec {
             String key6,
             JsSpec spec6
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5).set(requireNonNull(key6),
+                                 requireNonNull(spec6));
+
     }
 
     /**
@@ -456,23 +408,17 @@ public final class JsObjSpec implements JsSpec {
             String key6,
             JsSpec spec6
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5).set(requireNonNull(key6),
+                                  requireNonNull(spec6));
     }
 
     /**
@@ -512,25 +458,19 @@ public final class JsObjSpec implements JsSpec {
             String key7,
             JsSpec spec7
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6).set(requireNonNull(key7),
+                                 requireNonNull(spec7));
     }
 
     /**
@@ -570,25 +510,19 @@ public final class JsObjSpec implements JsSpec {
             String key7,
             JsSpec spec7
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6).set(requireNonNull(key7),
+                                  requireNonNull(spec7));
     }
 
     /**
@@ -632,27 +566,22 @@ public final class JsObjSpec implements JsSpec {
             String key8,
             JsSpec spec8
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7).set(requireNonNull(key8),
+                                 requireNonNull(spec8));
+
     }
 
     /**
@@ -696,27 +625,21 @@ public final class JsObjSpec implements JsSpec {
             String key8,
             JsSpec spec8
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7).set(requireNonNull(key8),
+                                  requireNonNull(spec8));
     }
 
     /**
@@ -764,29 +687,23 @@ public final class JsObjSpec implements JsSpec {
             String key9,
             JsSpec spec9
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8).set(requireNonNull(key9),
+                                 requireNonNull(spec9));
     }
 
     /**
@@ -834,29 +751,23 @@ public final class JsObjSpec implements JsSpec {
             String key9,
             JsSpec spec9
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8).set(requireNonNull(key9),
+                                  requireNonNull(spec9));
     }
 
     @SuppressWarnings("squid:S00107")
@@ -882,31 +793,25 @@ public final class JsObjSpec implements JsSpec {
             String key10,
             JsSpec spec10
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9).set(requireNonNull(key10),
+                                 requireNonNull(spec10));
     }
 
     /**
@@ -958,31 +863,25 @@ public final class JsObjSpec implements JsSpec {
             String key10,
             JsSpec spec10
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9).set(requireNonNull(key10),
+                                  requireNonNull(spec10));
     }
 
     /**
@@ -1038,33 +937,27 @@ public final class JsObjSpec implements JsSpec {
             String key11,
             JsSpec spec11
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10).set(requireNonNull(key11),
+                                  requireNonNull(spec11));
     }
 
     /**
@@ -1120,33 +1013,27 @@ public final class JsObjSpec implements JsSpec {
             String key11,
             JsSpec spec11
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10).set(requireNonNull(key11),
+                                   requireNonNull(spec11));
     }
 
     /**
@@ -1206,35 +1093,29 @@ public final class JsObjSpec implements JsSpec {
             final String key12,
             final JsSpec spec12
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11).set(requireNonNull(key12),
+                                  requireNonNull(spec12));
     }
 
     /**
@@ -1294,35 +1175,29 @@ public final class JsObjSpec implements JsSpec {
             final String key12,
             final JsSpec spec12
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11).set(requireNonNull(key12),
+                                   requireNonNull(spec12));
     }
 
     /**
@@ -1386,37 +1261,31 @@ public final class JsObjSpec implements JsSpec {
             final String key13,
             final JsSpec spec13
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12).set(requireNonNull(key13),
+                                   requireNonNull(spec13));
     }
 
     /**
@@ -1484,39 +1353,33 @@ public final class JsObjSpec implements JsSpec {
             final String key14,
             final JsSpec spec14
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13).set(requireNonNull(key14),
+                                   requireNonNull(spec14));
     }
 
     /**
@@ -1584,39 +1447,33 @@ public final class JsObjSpec implements JsSpec {
             final String key14,
             final JsSpec spec14
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13).set(requireNonNull(key14),
+                                  requireNonNull(spec14));
     }
 
     /**
@@ -1688,41 +1545,35 @@ public final class JsObjSpec implements JsSpec {
             final String key15,
             final JsSpec spec15
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14).set(requireNonNull(key15),
+                                   requireNonNull(spec15));
     }
 
     /**
@@ -1794,41 +1645,35 @@ public final class JsObjSpec implements JsSpec {
             final String key15,
             final JsSpec spec15
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14).set(requireNonNull(key15),
+                                  requireNonNull(spec15));
     }
 
     /**
@@ -1904,43 +1749,37 @@ public final class JsObjSpec implements JsSpec {
             final String key16,
             final JsSpec spec16
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14,
+                      key15,
+                      spec15).set(requireNonNull(key16),
+                                  requireNonNull(spec16));
     }
 
     /**
@@ -2016,43 +1855,37 @@ public final class JsObjSpec implements JsSpec {
             final String key16,
             final JsSpec spec16
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14,
+                       key15,
+                       spec15).set(requireNonNull(key16),
+                                   requireNonNull(spec16));
     }
 
     /**
@@ -2132,45 +1965,40 @@ public final class JsObjSpec implements JsSpec {
             final String key17,
             final JsSpec spec17
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14,
+                      key15,
+                      spec15,
+                      key16,
+                      spec16
+        ).set(requireNonNull(key17),
+              requireNonNull(spec17));
     }
 
     /**
@@ -2250,45 +2078,40 @@ public final class JsObjSpec implements JsSpec {
             final String key17,
             final JsSpec spec17
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14,
+                       key15,
+                       spec15,
+                       key16,
+                       spec16
+        ).set(requireNonNull(key17),
+              requireNonNull(spec17));
     }
 
     /**
@@ -2372,47 +2195,42 @@ public final class JsObjSpec implements JsSpec {
             final String key18,
             final JsSpec spec18
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14,
+                      key15,
+                      spec15,
+                      key16,
+                      spec16,
+                      key17,
+                      spec17
+        ).set(requireNonNull(key18),
+              requireNonNull(spec18));
     }
 
     /**
@@ -2496,47 +2314,43 @@ public final class JsObjSpec implements JsSpec {
             final String key18,
             final JsSpec spec18
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14,
+                       key15,
+                       spec15,
+                       key16,
+                       spec16,
+                       key17,
+                       spec17
+        ).set(requireNonNull(key18),
+              requireNonNull(spec18));
+
     }
 
     /**
@@ -2624,49 +2438,46 @@ public final class JsObjSpec implements JsSpec {
             final String key19,
             final JsSpec spec19
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        bindings.put(requireNonNull(key19),
-                     requireNonNull(spec19));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14,
+                      key15,
+                      spec15,
+                      key16,
+                      spec16,
+                      key17,
+                      spec17,
+                      key18,
+                      spec18
+        ).set(requireNonNull(key19),
+              requireNonNull(spec19));
+
+
     }
 
     /**
@@ -2754,49 +2565,44 @@ public final class JsObjSpec implements JsSpec {
             final String key19,
             final JsSpec spec19
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        bindings.put(requireNonNull(key19),
-                     requireNonNull(spec19));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14,
+                       key15,
+                       spec15,
+                       key16,
+                       spec16,
+                       key17,
+                       spec17,
+                       key18,
+                       spec18
+        ).set(requireNonNull(key19),
+              requireNonNull(spec19));
     }
 
     /**
@@ -2888,51 +2694,46 @@ public final class JsObjSpec implements JsSpec {
             final String key20,
             final JsSpec spec20
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        bindings.put(requireNonNull(key19),
-                     requireNonNull(spec19));
-        bindings.put(requireNonNull(key20),
-                     requireNonNull(spec20));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12,
+                      key13,
+                      spec13,
+                      key14,
+                      spec14,
+                      key15,
+                      spec15,
+                      key16,
+                      spec16,
+                      key17,
+                      spec17,
+                      key18,
+                      spec18,
+                      key19,
+                      spec19
+        ).set(requireNonNull(key20),
+              requireNonNull(spec20));
     }
 
     /**
@@ -3024,51 +2825,46 @@ public final class JsObjSpec implements JsSpec {
             final String key20,
             final JsSpec spec20
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        bindings.put(requireNonNull(key14),
-                     requireNonNull(spec14));
-        bindings.put(requireNonNull(key15),
-                     requireNonNull(spec15));
-        bindings.put(requireNonNull(key16),
-                     requireNonNull(spec16));
-        bindings.put(requireNonNull(key17),
-                     requireNonNull(spec17));
-        bindings.put(requireNonNull(key18),
-                     requireNonNull(spec18));
-        bindings.put(requireNonNull(key19),
-                     requireNonNull(spec19));
-        bindings.put(requireNonNull(key20),
-                     requireNonNull(spec20));
-        return new JsObjSpec(bindings,
-                             false,
-                             false
-        );
+        return lenient(key1,
+                       spec1,
+                       key2,
+                       spec2,
+                       key3,
+                       spec3,
+                       key4,
+                       spec4,
+                       key5,
+                       spec5,
+                       key6,
+                       spec6,
+                       key7,
+                       spec7,
+                       key8,
+                       spec8,
+                       key9,
+                       spec9,
+                       key10,
+                       spec10,
+                       key11,
+                       spec11,
+                       key12,
+                       spec12,
+                       key13,
+                       spec13,
+                       key14,
+                       spec14,
+                       key15,
+                       spec15,
+                       key16,
+                       spec16,
+                       key17,
+                       spec17,
+                       key18,
+                       spec18,
+                       key19,
+                       spec19
+        ).set(requireNonNull(key20),
+              requireNonNull(spec20));
     }
 
     /**
@@ -3132,37 +2928,32 @@ public final class JsObjSpec implements JsSpec {
             final String key13,
             final JsSpec spec13
     ) {
-        Map<String, JsSpec> bindings = new LinkedHashMap<>();
-        bindings.put(requireNonNull(key1),
-                     requireNonNull(spec1));
-        bindings.put(requireNonNull(key2),
-                     requireNonNull(spec2));
-        bindings.put(requireNonNull(key3),
-                     requireNonNull(spec3));
-        bindings.put(requireNonNull(key4),
-                     requireNonNull(spec4));
-        bindings.put(requireNonNull(key5),
-                     requireNonNull(spec5));
-        bindings.put(requireNonNull(key6),
-                     requireNonNull(spec6));
-        bindings.put(requireNonNull(key7),
-                     requireNonNull(spec7));
-        bindings.put(requireNonNull(key8),
-                     requireNonNull(spec8));
-        bindings.put(requireNonNull(key9),
-                     requireNonNull(spec9));
-        bindings.put(requireNonNull(key10),
-                     requireNonNull(spec10));
-        bindings.put(requireNonNull(key11),
-                     requireNonNull(spec11));
-        bindings.put(requireNonNull(key12),
-                     requireNonNull(spec12));
-        bindings.put(requireNonNull(key13),
-                     requireNonNull(spec13));
-        return new JsObjSpec(bindings,
-                             false,
-                             true
-        );
+        return strict(key1,
+                      spec1,
+                      key2,
+                      spec2,
+                      key3,
+                      spec3,
+                      key4,
+                      spec4,
+                      key5,
+                      spec5,
+                      key6,
+                      spec6,
+                      key7,
+                      spec7,
+                      key8,
+                      spec8,
+                      key9,
+                      spec9,
+                      key10,
+                      spec10,
+                      key11,
+                      spec11,
+                      key12,
+                      spec12
+        ).set(requireNonNull(key13),
+              requireNonNull(spec13));
     }
 
     public List<String> getRequiredFields() {
