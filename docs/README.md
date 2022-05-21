@@ -22,22 +22,30 @@ Edsger Wybe Dijkstra
 
 ## <a name="introduction"><a/> Introduction
 
-Welcome to **json-values**, the first-ever Json library in _Java_ implemented with persistent data structures.
+Welcome to **json-values**, the first-ever Json library in _Java_ implemented with 
+persistent data structures.
 
-One of the most essential aspects of functional programming is immutable data structures, better known as values.
-Updating these structures using the copy-on-write approach is inefficient, and this is why persistent
-data structures were created. 
+One of the most essential aspects of functional programming is immutable data structures, 
+better known in FP jargon as values.
+It's a fact that, when possible, working with values leads to code with fewer bugs, is more 
+readable, and is easier to maintain. Item 17 of Effective Java states that we must minimize 
+mutability. Still, sometimes it's at the cost of losing performance because the copy-on-write 
+approach is very inefficient for significant data structures. Here is where persistent data 
+structures come into play.
 
-There are many libraries out there to work with JSON in the JVM ecosystem; however, none of them use persistent data
-structures. In most cases, those libraries parse a string or array of bytes into an object. The thing is, why do that?
-JSON is a magnificent structure. It's simple, easy to aggregate, ease to create, easy to reason about, so why create
-yet another abstraction over JSON? Moreover, many architectures work with JSON end-to-end. Going from JSON to objects
-or strings back and forth is not efficient, especially when copy-on-write is the only option to avoid mutation.
+Most functional languages, like Haskell, Clojure, and Scala, implement persistent data 
+structures natively. Java doesn't. The best alternative I've found in the JVM ecosystem 
+is the persistent collections provided by the library vavr. It provides a well-designed 
+API and has a good performance.
+
+The standard Java programmer finds it strange to work without objects and all the machinery 
+of frameworks and annotations. FP is all about functions and values; that's it. I will try 
+to cast some light on how we can manipulate JSON with json-values following a purely 
+functional approach. First things first, let's create a JSON object:
 
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 
-* You need to deal with Jsons, and you want to program following a functional style, **using just functions and values**
-  ,
+* You need to deal with Jsons, and you want to program following a functional style, **using just functions and values**,
   but you can't benefit from all the advantage that immutability brings to your code because **Java doesn't provide
   Persistent Data Structures**.
   The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, and streams, but without
@@ -83,63 +91,60 @@ and coding it using the factory methods provided by json-values
 ```java      
 import jsonvalues.*;  
 
-JsObj.of("name", JsStr.of("Rafael"),
-         "surname", JsStr.of("Merino"),
-         "phoneNumber", JsStr.of("6666666"),
-         "registrationDate", JsInstant.of(Instant.parse("2019-01-21T05:47:26.853Z")),
-         "addresses", JsArray.of(JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
-                                          "city", JsStr.of("Toledo"),
-                                          "zipCode", JsString.of("45920"),
-                                          "tags", JsArray.of("workAddress")
-                                         ),
-                                 JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
-                                          "city", JsStr.of("Madrid"),
-                                          "zipCode", JsString.of("28029"),
-                                          "tags", JsArray.of("homeAddress", "amazon")
-                                         )
-                                )
-         );
+JsObj person = 
+    JsObj.of("name", JsStr.of("Rafael"),
+             "surname", JsStr.of("Merino"),
+             "phoneNumber", JsStr.of("6666666"),
+             "registrationDate", JsInstant.of(Instant.parse("2019-01-21T05:47:26.853Z")),
+             "addresses", JsArray.of(JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
+                                              "city", JsStr.of("Toledo"),
+                                              "zipCode", JsString.of("45920"),
+                                              "tags", JsArray.of("workAddress")
+                                             ),
+                                     JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
+                                              "city", JsStr.of("Madrid"),
+                                              "zipCode", JsString.of("28029"),
+                                              "tags", JsArray.of("homeAddress", "amazon")
+                                             )
+                                    )
+            );
 
 ```
 
-As you can see, the final structure is very similar to the original Json, what makes
-really easy to write out any imaginable Json just putting its keys and its
-associated values. You can create up to 20-field Json objects using this approach. 
-For bigger Jsons you can use the *set* method
+As you can see, its definition is like raw JSON. It’s a recursive data structure. 
+You can nest as many JSON objects as you want. Think of any imaginable JSON, and 
+you can write it in no time.
 
-```java  
+But what about validating JSON? We can define the JSON schema following precisely 
+the same approach:
 
-JsObj.empty()
-     .set("name", JsStr.of("Rafael"));
-
-```
-
-It's dime a dozen to have to validate Json. Why don't use
-a similar approach? I mean, after all, a Json spec looks like a
-Json, a set of keys and their specifications... Let's do it!
 
 ```java   
 import jsonvalues.spec.JsObjSpec;
 import static jsonvalues.spec.JsSpecs.*;
 
-JsObjSpec.strict("name", str(),
-                 "surname", str(),
-                 "phoneNumber", str(),
-                 "registrationDate", instant(),
-                 "addresses", arrayOfObjSpec(JsObjSpec.strict("coordinates", tuple(decimal(),
-                                                                                   decimal()
-                                                                                  ),
-                                                              "city", str(),
-                                                              "tags", arrayOfStr(),
-                                                              "zipCode", str()
-                                                              )
-                                            )
-                );
+JsObjSpec personSpec =
+    JsObjSpec.strict("name", str(),
+                     "surname", str(),
+                     "phoneNumber", str(),
+                     "registrationDate", instant(),
+                     "addresses", arrayOfObjSpec(JsObjSpec.strict("coordinates", 
+                                                                  tuple(decimal(),
+                                                                        decimal()
+                                                                        ),
+                                                                  "city", str(),
+                                                                  "tags", arrayOfStr(),
+                                                                  "zipCode", str()
+                                                                  )
+                                                )
+                    );
 
 ```
 
-And we can pass in predicates to be more specific about the
-possible values any field can have
+I’d argue that it is very expressive, concise, and straightforward. I call it json-spec. 
+I named it after a Clojure library named spec. Writing specs feels like writing JSON. 
+Strict specs don't allow keys that are not specified, whereas lenient ones do. The real 
+power is that you can create specs from predicates and compose them:
 
 ```java    
 
@@ -189,50 +194,68 @@ Predicate<String> zipCodeSpec = lengthBetween.apply(0, MAX_ZIPCODE_LENGTH);
 ```
 
 ```java    
-
-JsObjSpec.strict("name", str(nameSpec),
-                 "surname", str(surnameSpec),
-                 "phoneNumber", str(phoneSpec),
-                 "registrationDate", instant(registrationDateSpec),
-                 "addresses", arrayOfObjSpec(JsObjSpec.strict("coordinates",
-                                                               tuple(decimal(latitudeSpec),
-                                                                     decimal(longitudeSpec)
-                                                                     ),
-                                                               "city", str(citySpec),
-                                                               "tags", arrayOfStr(tagSpec),
-                                                               "zipCode", str(zipCodeSpec)
-                                                              )
-                                             )
-                );
+JsObjSpec personSpec =
+    JsObjSpec.strict("name", str(nameSpec),
+                     "surname", str(surnameSpec),
+                     "phoneNumber", str(phoneSpec).nullable(),
+                     "registrationDate", instant(registrationDateSpec),
+                     "addresses", arrayOfObjSpec(JsObjSpec.lenient("coordinates",
+                                                                   tuple(decimal(latitudeSpec),
+                                                                         decimal(longitudeSpec)
+                                                                         ),
+                                                                   "city", str(citySpec),
+                                                                   "tags", arrayOfStr(tagSpec),
+                                                                   "zipCode", str(zipCodeSpec)
+                                                                  )
+                                                           .setOptionals("tags", "zipCode", "city")      
+                                                 )
+                    )
+             .setOptionals("surname", "phoneNumber", "addresses");      
 
 ```
 
-And what about generating a Json? You are right! We can use the
-same approach! The same data structure made up of keys and their
-associated generators. I hope you weren't considering piling up
-annotations. Rumor has it that some guy got a StackOverflowException!
+As you can see, the spec's structure remains the same, and it’s child’s play to define 
+optional and nullable fields.
 
+Another exciting thing we can do with specs is parsing strings or bytes. Instead of parsing 
+the whole JSON and then validating it, we can verify the JSON schema while parsing it and 
+stop the process as soon as an error happens. After all, failing fast is important as well!
+
+```java      
+JsObjParser personParser = new JsObjParser(spec);
+
+String string = ...
+
+JsObj person = personParser.parse(string);
+
+```
+
+Another critical aspect of software development is data generation. It’s an essential aspect 
+of property-based testing, a technique for the random testing of program properties very well 
+known in FP. Computers are way better than humans at generating random data. You'll catch more
+bugs testing your code against a lot of inputs instead of just one. Writing generators, like
+specs, is as simple as writing JSON:
 
 ```java      
 
-
-JsObjGen.of("name", JsStrGen.biased(0, MAX_NAME_LENGTH + 1),
-            "surname", JsStrGen.biased(0, MAX_NAME_SURNAME + 1),
-            "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH + 1),
-            "registrationDate", JsInstantGen.biased(0, Instant.MAX.getEpochSecond()),
-            "addresses", JsArrayGen.biased(0,1)
-                                   .apply(JsObjGen.of("coordinates", JsTupleGen.of(JsBigDecGen.biased(-90,90),
-                                                                                   JsBigDecGen.biased(-180,180)
-                                                                                  ),
-                                                      "city", JsStrGen.biased(0,100),
-                                                      "tags", JsArrayGen.biased(0,100)
-                                                                        .apply(JsStrGen.biased(0,20)),
-                                                      "zipCode", JsStrGen.biased(0,10)
-                                                      )
-                                                   .setOptionals("tags","zipCode","city")
-                                          )
-            )
-        .setOptionals("surname","phoneNumber","addresses");
+JsObjGen personGen =
+    JsObjGen.of("name", JsStrGen.biased(0, MAX_NAME_LENGTH + 1),
+                "surname", JsStrGen.biased(0, MAX_NAME_SURNAME + 1),
+                "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH + 1),
+                "registrationDate", JsInstantGen.biased(0, Instant.MAX.getEpochSecond()),
+                "addresses", JsArrayGen.biased(0,1)
+                                       .apply(JsObjGen.of("coordinates", JsTupleGen.of(JsBigDecGen.biased(-90,90),
+                                                                                       JsBigDecGen.biased(-180,180)
+                                                                                      ),
+                                                          "city", JsStrGen.biased(0,100),
+                                                          "tags", JsArrayGen.biased(0,100)
+                                                                            .apply(JsStrGen.biased(0,20)),
+                                                          "zipCode", JsStrGen.biased(0,10)
+                                                          )
+                                                       .setOptionals("tags","zipCode","city")
+                                              )
+                )
+            .setOptionals("surname", "phoneNumber", "addresses");
 
 ```
 
