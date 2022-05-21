@@ -98,12 +98,12 @@ JsObj person =
              "registrationDate", JsInstant.of(Instant.parse("2019-01-21T05:47:26.853Z")),
              "addresses", JsArray.of(JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
                                               "city", JsStr.of("Toledo"),
-                                              "zipCode", JsString.of("45920"),
+                                              "zipCode", JsStr.of("45920"),
                                               "tags", JsArray.of("workAddress")
                                              ),
                                      JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
                                               "city", JsStr.of("Madrid"),
-                                              "zipCode", JsString.of("28029"),
+                                              "zipCode", JsStr.of("28029"),
                                               "tags", JsArray.of("homeAddress", "amazon")
                                              )
                                     )
@@ -171,6 +171,13 @@ int MAX_PHONE_LENGTH = 10;
 int MAX_CITY_LENGTH = 20;
 int MAX_TAG_LENGTH = 20;
 int MAX_ZIPCODE_LENGTH = 30;
+int LAT_MIN = -90;
+int LAT_MAX = 90;
+int LON_MIN = -180;
+int LON_MAX = 180;
+int MIN_ADDRESSES_SIZE = 1;
+int MAX_ADDRESSES_SIZE = 100;
+
         
 Predicate<String> nameSpec = lengthBetween.apply(0, MAX_NAME_LENGTH);
        
@@ -180,9 +187,9 @@ Predicate<String> phoneSpec = lengthBetween.apply(0, MAX_PHONE_LENGTH);
         
 Predicate<Instant> registrationDateSpec = instantBetween.apply(Instant.EPOCH, Instant.MAX);
 
-Predicate<BigDecimal> latitudeSpec = decBetween.apply(-90L, 90L);
+Predicate<BigDecimal> latitudeSpec = decBetween.apply(LAT_MIN, LAT_MAX);
 
-Predicate<BigDecimal> longitudeSpec = decBetween.apply(-180L, 180L);
+Predicate<BigDecimal> longitudeSpec = decBetween.apply(LON_MIN, LON_MAX);
 
 Predicate<String> citySpec = lengthBetween.apply(0, MAX_CITY_LENGTH);
         
@@ -207,7 +214,9 @@ JsObjSpec personSpec =
                                                                    "tags", arrayOfStr(tagSpec),
                                                                    "zipCode", str(zipCodeSpec)
                                                                   )
-                                                           .setOptionals("tags", "zipCode", "city")      
+                                                          .setOptionals("tags", "zipCode", "city"),
+                                                 MIN_ADDRESSES_SIZE,
+                                                 MAX_ADDRESSES_SIZE                
                                                  )
                     )
              .setOptionals("surname", "phoneNumber", "addresses");      
@@ -222,9 +231,9 @@ the whole JSON and then validating it, we can verify the JSON schema while parsi
 stop the process as soon as an error happens. After all, failing fast is important as well!
 
 ```java      
-JsObjParser personParser = new JsObjParser(spec);
+JsObjParser personParser = new JsObjParser(personSpec);
 
-String string = ...
+String string = "...";
 
 JsObj person = personParser.parse(string);
 
@@ -239,25 +248,40 @@ specs, is as simple as writing JSON:
 ```java      
 
 JsObjGen personGen =
-    JsObjGen.of("name", JsStrGen.biased(0, MAX_NAME_LENGTH + 1),
-                "surname", JsStrGen.biased(0, MAX_NAME_SURNAME + 1),
-                "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH + 1),
+    JsObjGen.of("name", JsStrGen.biased(0, MAX_NAME_LENGTH),
+                "surname", JsStrGen.biased(0, MAX_NAME_LENGTH),
+                "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH),
                 "registrationDate", JsInstantGen.biased(0, Instant.MAX.getEpochSecond()),
                 "addresses", JsArrayGen.biased(0,1)
-                                       .apply(JsObjGen.of("coordinates", JsTupleGen.of(JsBigDecGen.biased(-90,90),
-                                                                                       JsBigDecGen.biased(-180,180)
+                                       .apply(JsObjGen.of("coordinates", JsTupleGen.of(JsBigDecGen.biased(LAT_MIN, LAT_MAX),
+                                                                                       JsBigDecGen.biased(LON_MIN, LON_MAX)
                                                                                       ),
-                                                          "city", JsStrGen.biased(0,100),
-                                                          "tags", JsArrayGen.biased(0,100)
-                                                                            .apply(JsStrGen.biased(0,20)),
-                                                          "zipCode", JsStrGen.biased(0,10)
+                                                          "city", JsStrGen.biased(0, MAX_CITY_LENGTH),
+                                                          "tags", JsArrayGen.biased(0,MAX_ADDRESSES_SIZE)
+                                                                            .apply(JsStrGen.biased(0, MAX_TAG_LENGTH)),
+                                                          "zipCode", JsStrGen.biased(0, MAX_ZIPCODE_LENGTH)
                                                           )
-                                                       .setOptionals("tags","zipCode","city")
+                                                       .setOptionals("tags", "zipCode", "city"),
+                                              MIN_ADDRESSES_SIZE                       
+                                              MAX_ADDRESSES_SIZE         
                                               )
                 )
             .setOptionals("surname", "phoneNumber", "addresses");
 
 ```
+
+Most generators have two static factory methods: _biased_ and _arbitrary_. The former returns
+a uniform distribution, whereas the latest generates with a high probability potential 
+problematic values that tend to cause bugs in our code. Find below some distributions:
+
+```java    
+
+
+
+
+``` 
+
+
 
 ```java 
 //FILTERING
