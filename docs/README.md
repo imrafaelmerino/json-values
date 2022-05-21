@@ -91,6 +91,7 @@ and coding it using the factory methods provided by json-values
 ```java      
 import jsonvalues.*;  
 
+
 JsObj person = 
     JsObj.of("name", JsStr.of("Rafael"),
              "surname", JsStr.of("Merino"),
@@ -201,6 +202,7 @@ Predicate<String> zipCodeSpec = lengthBetween.apply(0, MAX_ZIPCODE_LENGTH);
 ```
 
 ```java    
+
 JsObjSpec personSpec =
     JsObjSpec.strict("name", str(nameSpec),
                      "surname", str(surnameSpec),
@@ -234,6 +236,7 @@ stop the process as soon as an error happens. After all, failing fast is importa
 JsObjParser personParser = new JsObjParser(personSpec);
 
 String string = "...";
+
 
 JsObj person = personParser.parse(string);
 
