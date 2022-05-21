@@ -1,6 +1,5 @@
 package jsonvalues.gen;
 
-import fun.gen.DoubleGen;
 import fun.gen.LongGen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,7 +17,8 @@ public class TestLongGen {
                                   max).then(n ->
                                                     JsLongGen.arbitrary(min,
                                                                         n))
-                       .sample(100000).allMatch(it -> it.isLong(d -> d >= min && d <= max))
+                       .sample(100000)
+                       .allMatch(it -> it.isLong(d -> d >= min && d <= max))
         );
 
 
@@ -26,7 +26,7 @@ public class TestLongGen {
                 LongGen.arbitrary(min,
                                   max).then(n ->
                                                     JsLongGen.biased(min,
-                                                                        n))
+                                                                     n))
                        .sample(100000).allMatch(it -> it.isLong(d -> d >= min && d <= max))
         );
     }

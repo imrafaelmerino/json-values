@@ -1,6 +1,8 @@
-package jsonvalues;
+package jsonvalues.specs;
 
 
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 

@@ -1,5 +1,6 @@
-package jsonvalues;
+package jsonvalues.specs;
 
+import jsonvalues.*;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
@@ -11,9 +12,9 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Set;
 
-import static jsonvalues.Fun.assertErrorIs;
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
 import static jsonvalues.spec.JsSpecs.*;
+import static jsonvalues.specs.Fun.assertErrorIs;
 
 public class TestJsArraySpec {
 

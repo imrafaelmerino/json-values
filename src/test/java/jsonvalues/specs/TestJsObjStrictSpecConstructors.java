@@ -1,5 +1,7 @@
-package jsonvalues;
+package jsonvalues.specs;
 
+import jsonvalues.JsInt;
+import jsonvalues.JsObj;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpec;

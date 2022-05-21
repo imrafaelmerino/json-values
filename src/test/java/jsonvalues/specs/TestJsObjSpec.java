@@ -1,7 +1,8 @@
-package jsonvalues;
+package jsonvalues.specs;
 
 
 import com.dslplatform.json.JsParserException;
+import jsonvalues.*;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,10 +16,10 @@ import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Set;
 
-import static jsonvalues.Fun.assertErrorIs;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
 import static jsonvalues.spec.JsSpecs.*;
+import static jsonvalues.specs.Fun.assertErrorIs;
 
 public class TestJsObjSpec {
 

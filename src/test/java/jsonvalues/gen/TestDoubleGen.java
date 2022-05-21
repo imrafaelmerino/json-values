@@ -17,7 +17,8 @@ public class TestDoubleGen {
                                     max).then(n ->
                                                       JsDoubleGen.arbitrary(min,
                                                                             n))
-                         .sample(100000).allMatch(it -> it.isDouble(d -> d >= min && d <= max))
+                         .sample(100000)
+                         .allMatch(it -> it.isDouble(d -> d >= min && d <= max))
         );
 
 
@@ -26,7 +27,8 @@ public class TestDoubleGen {
                                     max).then(n ->
                                                       JsDoubleGen.biased(0.0,
                                                                          n))
-                         .sample(100000).allMatch(it -> it.isDouble(d -> d >= min && d <= max))
+                         .sample(100000)
+                         .allMatch(it -> it.isDouble(d -> d >= min && d <= max))
         );
     }
 }

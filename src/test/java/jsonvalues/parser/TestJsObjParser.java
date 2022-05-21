@@ -1,6 +1,7 @@
-package jsonvalues;
+package jsonvalues.parser;
 
 import com.dslplatform.json.JsParserException;
+import jsonvalues.*;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
 import org.junit.jupiter.api.Assertions;

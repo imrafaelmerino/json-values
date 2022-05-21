@@ -7,7 +7,6 @@ import fun.gen.IntGen;
 import fun.gen.SetGen;
 import fun.tuple.Pair;
 import jsonvalues.*;
-import jsonvalues.gen.*;
 import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjSpec;
 import org.junit.jupiter.api.Assertions;
@@ -30,12 +29,14 @@ public class TestGenerators {
         final Gen<JsObj> gen = JsObjGen.of("a",
                                            IntGen.arbitrary(0,
                                                             10)
-                                                 .then(n -> JsArrayGen.arbitrary(n).apply(JsStrGen.alphanumeric(0,
-                                                                                                                10))),
+                                                 .then(n -> JsArrayGen.arbitrary(n)
+                                                                      .apply(JsStrGen.alphanumeric(0,
+                                                                                                   10))),
                                            "b",
                                            IntGen.arbitrary(0,
                                                             10
-                                           ).then(n -> JsArrayGen.arbitrary(n).apply(JsIntGen.arbitrary())
+                                           ).then(n -> JsArrayGen.arbitrary(n)
+                                                                 .apply(JsIntGen.arbitrary())
                                            )
         );
 
@@ -264,7 +265,7 @@ public class TestGenerators {
                    .allMatch(it -> {
                        Set<JsErrorPair> errors = spec.test(it);
                        return errors
-                                           .isEmpty();
+                               .isEmpty();
                    })
         );
 
@@ -311,7 +312,7 @@ public class TestGenerators {
 
     @Test
     public void testSuchThat() {
-        final Gen<JsInt> negative = new JsIntGen(IntGen.arbitrary.suchThat(i -> i < 0));
+        final Gen<JsInt> negative = new JsIntGen(IntGen.arbitrary().suchThat(i -> i < 0));
 
         final Supplier<JsInt> supplier = negative.sample(new Random());
 

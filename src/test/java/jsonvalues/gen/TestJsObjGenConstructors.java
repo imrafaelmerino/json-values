@@ -1,6 +1,7 @@
-package jsonvalues;
+package jsonvalues.gen;
 
 import fun.gen.Gen;
+import jsonvalues.JsInt;
 import jsonvalues.gen.JsIntGen;
 import jsonvalues.gen.JsObjGen;
 import org.junit.jupiter.api.Assertions;

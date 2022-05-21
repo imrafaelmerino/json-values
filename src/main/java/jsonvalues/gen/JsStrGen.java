@@ -17,10 +17,10 @@ public final class JsStrGen implements Gen<JsStr> {
     /**
      * Generator tha produces an alphanumeric character
      */
-    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric);
-    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digit);
-    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letter);
-    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic);
+    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric());
+    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digit());
+    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letter());
+    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic());
     private final Gen<String> gen;
 
     /**

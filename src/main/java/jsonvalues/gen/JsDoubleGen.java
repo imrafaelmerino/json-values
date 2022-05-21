@@ -14,8 +14,8 @@ import static java.util.Objects.requireNonNull;
  *
  */
 public final class JsDoubleGen implements Gen<JsDouble> {
-    private static final Gen<JsDouble> biased = new JsDoubleGen(DoubleGen.biased);
-    private static final Gen<JsDouble> arbitrary = new JsDoubleGen(DoubleGen.arbitrary);
+    private static final Gen<JsDouble> biased = new JsDoubleGen(DoubleGen.biased());
+    private static final Gen<JsDouble> arbitrary = new JsDoubleGen(DoubleGen.arbitrary());
     private final Gen<Double> gen;
 
     /**

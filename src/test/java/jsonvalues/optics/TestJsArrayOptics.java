@@ -1,8 +1,9 @@
-package jsonvalues;
+package jsonvalues.optics;
 
 
 import fun.optic.Lens;
 import fun.tuple.Pair;
+import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -27,16 +27,16 @@ public final class JsBigIntGen implements Gen<JsBigInt> {
     }
 
     /**
-     *
      * @param maxBits
      * @return
      */
-    public static Gen<JsBigInt> biased(int maxBits) {
-        return new JsBigIntGen(BigIntGen.biased(maxBits));
+    public static Gen<JsBigInt> biased(int minBits,
+                                       int maxBits) {
+        return new JsBigIntGen(BigIntGen.biased(minBits,
+                                                maxBits));
     }
 
     /**
-     *
      * @param seed the function argument
      * @return
      */

@@ -1,6 +1,8 @@
-package jsonvalues;
+package jsonvalues.optics;
 
 import fun.optic.Option;
+import jsonvalues.JsObj;
+import jsonvalues.JsStr;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

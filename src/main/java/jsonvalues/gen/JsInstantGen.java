@@ -7,15 +7,14 @@ import jsonvalues.JsInstant;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
 public final class JsInstantGen implements Gen<JsInstant> {
-    private static final Gen<JsInstant> biased = new JsInstantGen(InstantGen.biased);
-    private static final Gen<JsInstant> arbitrary = new JsInstantGen(InstantGen.arbitrary);
+    private static final Gen<JsInstant> biased = new JsInstantGen(InstantGen.biased());
+    private static final Gen<JsInstant> arbitrary = new JsInstantGen(InstantGen.arbitrary());
     private final Gen<Instant> gen;
 
     public JsInstantGen(Gen<Instant> gen) {

@@ -1,5 +1,6 @@
-package jsonvalues;
+package jsonvalues.parser;
 
+import jsonvalues.*;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

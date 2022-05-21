@@ -12,8 +12,8 @@ import java.util.function.Supplier;
  *
  */
 public final class JsIntGen implements Gen<JsInt> {
-    private static final Gen<JsInt> biased = new JsIntGen(IntGen.biased);
-    private static final Gen<JsInt> arbitrary = new JsIntGen(IntGen.arbitrary);
+    private static final Gen<JsInt> biased = new JsIntGen(IntGen.biased());
+    private static final Gen<JsInt> arbitrary = new JsIntGen(IntGen.arbitrary());
     private final Gen<Integer> gen;
 
     /**

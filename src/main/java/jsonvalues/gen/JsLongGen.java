@@ -13,8 +13,8 @@ import static java.util.Objects.requireNonNull;
  *
  */
 public final class JsLongGen implements Gen<JsLong> {
-    private static final Gen<JsLong> biased = new JsLongGen(LongGen.biased);
-    private static final Gen<JsLong> arbitrary = new JsLongGen(LongGen.arbitrary);
+    private static final Gen<JsLong> biased = new JsLongGen(LongGen.biased());
+    private static final Gen<JsLong> arbitrary = new JsLongGen(LongGen.arbitrary());
     private final Gen<Long> gen;
 
     /**

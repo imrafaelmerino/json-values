@@ -15,8 +15,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsBigDecGen implements Gen<JsBigDec> {
 
-    private static final Gen<JsBigDec> biased = new JsBigDecGen(BigDecGen.biased);
-    private static final Gen<JsBigDec> arbitrary = new JsBigDecGen(BigDecGen.arbitrary);
+    private static final Gen<JsBigDec> biased = new JsBigDecGen(BigDecGen.biased());
+    private static final Gen<JsBigDec> arbitrary = new JsBigDecGen(BigDecGen.arbitrary());
     private final Gen<BigDecimal> gen;
 
     /**

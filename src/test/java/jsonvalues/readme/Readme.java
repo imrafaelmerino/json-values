@@ -144,7 +144,7 @@ public class Readme {
 
         String string = "...";
 
-        JsObj personObj = personParser.parse(string);
+        //JsObj personObj = personParser.parse(string);
 
 
         JsObjGen personGen =
