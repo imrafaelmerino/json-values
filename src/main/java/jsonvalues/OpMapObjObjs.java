@@ -26,7 +26,7 @@ final class OpMapObjObjs {
     }
 
     static JsObj mapAll(JsObj json,
-                        final BiFunction<? super JsPath, ? super JsObj, JsValue> fn,
+                        final BiFunction<? super JsPath, ? super JsObj,? extends JsValue> fn,
                         final JsPath startingPath
     ) {
         for (final Tuple2<String, JsValue> next : json) {
@@ -75,7 +75,7 @@ final class OpMapObjObjs {
     }
 
     static JsObj mapAll(JsObj json,
-                        final Function<? super JsObj, JsValue> fn) {
+                        final Function<? super JsObj, ? extends JsValue> fn) {
         for (final Tuple2<String, JsValue> next : json) {
 
             if (next._2.isObj()) {

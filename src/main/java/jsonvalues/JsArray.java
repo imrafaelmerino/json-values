@@ -1167,7 +1167,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
+    public JsArray mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn) {
         return OpMapArrObjs.mapAll(this,
                                    requireNonNull(fn),
                                    JsPath.empty()
@@ -1176,7 +1176,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public JsArray mapAllObjs(final Function<? super JsObj, JsValue> fn) {
+    public JsArray mapAllObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapArrObjs.mapAll(this,
                                    requireNonNull(fn)
         );

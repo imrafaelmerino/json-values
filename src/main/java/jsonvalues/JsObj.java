@@ -1953,7 +1953,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
-    public JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn) {
+    public JsObj mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn) {
         return OpMapObjObjs.mapAll(this,
                                    requireNonNull(fn),
                                    JsPath.empty()
@@ -1961,7 +1961,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
-    public JsObj mapAllObjs(final Function<? super JsObj, JsValue> fn) {
+    public JsObj mapAllObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapObjObjs.mapAll(this,
                                    requireNonNull(fn)
         );

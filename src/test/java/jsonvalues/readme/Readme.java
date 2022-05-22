@@ -102,42 +102,63 @@ public class Readme {
         int MAX_TAG_LENGTH = 20;
         int MAX_ZIPCODE_LENGTH = 30;
 
-        Predicate<String> nameSpec = lengthBetween.apply(0, MAX_NAME_LENGTH);
+        Predicate<String> nameSpec = lengthBetween.apply(0,
+                                                         MAX_NAME_LENGTH);
 
-        Predicate<String> surnameSpec = lengthBetween.apply(0, MAX_SURNAME_LENGTH);
+        Predicate<String> surnameSpec = lengthBetween.apply(0,
+                                                            MAX_SURNAME_LENGTH);
 
-        Predicate<String> phoneSpec = lengthBetween.apply(0, MAX_PHONE_LENGTH);
+        Predicate<String> phoneSpec = lengthBetween.apply(0,
+                                                          MAX_PHONE_LENGTH);
 
-        Predicate<Instant> registrationDateSpec = instantBetween.apply(Instant.EPOCH, Instant.MAX);
+        Predicate<Instant> registrationDateSpec = instantBetween.apply(Instant.EPOCH,
+                                                                       Instant.MAX);
 
-        Predicate<BigDecimal> latitudeSpec = decBetween.apply(-90L, 90L);
+        Predicate<BigDecimal> latitudeSpec = decBetween.apply(-90L,
+                                                              90L);
 
-        Predicate<BigDecimal> longitudeSpec = decBetween.apply(-180L, 180L);
+        Predicate<BigDecimal> longitudeSpec = decBetween.apply(-180L,
+                                                               180L);
 
-        Predicate<String> citySpec = lengthBetween.apply(0, MAX_CITY_LENGTH);
+        Predicate<String> citySpec = lengthBetween.apply(0,
+                                                         MAX_CITY_LENGTH);
 
-        Predicate<String> tagSpec = lengthBetween.apply(0, MAX_TAG_LENGTH);
+        Predicate<String> tagSpec = lengthBetween.apply(0,
+                                                        MAX_TAG_LENGTH);
 
-        Predicate<String> zipCodeSpec = lengthBetween.apply(0, MAX_ZIPCODE_LENGTH);
+        Predicate<String> zipCodeSpec = lengthBetween.apply(0,
+                                                            MAX_ZIPCODE_LENGTH);
 
 
         JsObjSpec personSpec1 =
-                JsObjSpec.strict("name", str(nameSpec),
-                                 "surname", str(surnameSpec),
-                                 "phoneNumber", str(phoneSpec).nullable(),
-                                 "registrationDate", instant(registrationDateSpec),
-                                 "addresses", arrayOfObjSpec(JsObjSpec.lenient("coordinates",
-                                                                               tuple(decimal(latitudeSpec),
-                                                                                     decimal(longitudeSpec)
-                                                                               ),
-                                                                               "city", str(citySpec),
-                                                                               "tags", arrayOfStr(tagSpec),
-                                                                               "zipCode", str(zipCodeSpec)
-                                                                      )
-                                                                      .setOptionals("tags", "zipCode", "city")
+                JsObjSpec.strict("name",
+                                 str(nameSpec),
+                                 "surname",
+                                 str(surnameSpec),
+                                 "phoneNumber",
+                                 str(phoneSpec).nullable(),
+                                 "registrationDate",
+                                 instant(registrationDateSpec),
+                                 "addresses",
+                                 arrayOfObjSpec(JsObjSpec.lenient("coordinates",
+                                                                  tuple(decimal(latitudeSpec),
+                                                                        decimal(longitudeSpec)
+                                                                  ),
+                                                                  "city",
+                                                                  str(citySpec),
+                                                                  "tags",
+                                                                  arrayOfStr(tagSpec),
+                                                                  "zipCode",
+                                                                  str(zipCodeSpec)
+                                                         )
+                                                         .setOptionals("tags",
+                                                                       "zipCode",
+                                                                       "city")
                                  )
                          )
-                         .setOptionals("surname", "phoneNumber", "addresses");
+                         .setOptionals("surname",
+                                       "phoneNumber",
+                                       "addresses");
 
 
         JsObjParser personParser = new JsObjParser(personSpec);
@@ -148,23 +169,46 @@ public class Readme {
 
 
         JsObjGen personGen =
-                JsObjGen.of("name", JsStrGen.biased(0, MAX_NAME_LENGTH + 1),
-                            "surname", JsStrGen.biased(0, MAX_NAME_LENGTH+ 1),
-                            "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH + 1),
-                            "registrationDate", JsInstantGen.biased(0, Instant.MAX.getEpochSecond()),
-                            "addresses", JsArrayGen.biased(0, 1)
-                                                   .apply(JsObjGen.of("coordinates", JsTupleGen.of(JsBigDecGen.biased(-90, 90),
-                                                                                                   JsBigDecGen.biased(-180,180)
-                                                                      ),
-                                                                      "city", JsStrGen.biased(0,100),
-                                                                      "tags", JsArrayGen.biased(0,100)
-                                                                                        .apply(JsStrGen.biased(0,20)),
-                                                                      "zipCode", JsStrGen.biased(0,10)
-                                                                  )
-                                                                  .setOptionals("tags","zipCode","city")
-                                                   )
+                JsObjGen.of("name",
+                            JsStrGen.biased(0,
+                                            MAX_NAME_LENGTH + 1),
+                            "surname",
+                            JsStrGen.biased(0,
+                                            MAX_NAME_LENGTH + 1),
+                            "phoneNumber",
+                            JsStrGen.biased(0,
+                                            MAX_PHONE_LENGTH + 1),
+                            "registrationDate",
+                            JsInstantGen.biased(0,
+                                                Instant.MAX.getEpochSecond()),
+                            "addresses",
+                            JsArrayGen.biased(JsObjGen.of("coordinates",
+                                                          JsTupleGen.of(JsBigDecGen.biased(-90,
+                                                                                           90),
+                                                                        JsBigDecGen.biased(-180,
+                                                                                           180)
+                                                          ),
+                                                          "city",
+                                                          JsStrGen.biased(0,
+                                                                          100),
+                                                          "tags",
+                                                          JsArrayGen.biased(JsStrGen.biased(0,
+                                                                                            20),
+                                                                            0,
+                                                                            100),
+                                                          "zipCode",
+                                                          JsStrGen.biased(0,
+                                                                          10)
+                                                      )
+                                                      .setOptionals("tags",
+                                                                    "zipCode",
+                                                                    "city"),
+                                              0,
+                                              1)
                         )
-                        .setOptionals("surname", "phoneNumber", "addresses");
+                        .setOptionals("surname",
+                                      "phoneNumber",
+                                      "addresses");
 
     }
 

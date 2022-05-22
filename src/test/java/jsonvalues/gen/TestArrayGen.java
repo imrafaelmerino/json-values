@@ -13,9 +13,9 @@ public class TestArrayGen {
     @Test
     public void arbitrary() {
 
-        Gen<JsArray> gen = JsArrayGen.arbitrary(0,
-                                                3)
-                                     .apply(JsStrGen.letter());
+        Gen<JsArray> gen = JsArrayGen.arbitrary(JsStrGen.letter(),
+                                                0,
+                                                3);
 
         Assertions.assertTrue(gen.sample(10000)
                                  .allMatch(it -> it.size() < 4));
@@ -35,10 +35,10 @@ public class TestArrayGen {
     @Test
     public void biased() {
 
-        Gen<JsArray> gen = JsArrayGen.biased(0,
-                                             3)
-                                     .apply(JsStrGen.letters(0,
-                                                             10));
+        Gen<JsArray> gen = JsArrayGen.biased(JsStrGen.letters(0,
+                                                              10),
+                                             0,
+                                             3);
 
         int TIMES = 1000000;
         Assertions.assertTrue(gen.sample(TIMES)
@@ -53,7 +53,6 @@ public class TestArrayGen {
                                                  0.1).test(count.get(3)));
         Assertions.assertTrue(TestFun.isInMargin(count.get(1),
                                                  0.1).test(count.get(2)));
-
 
 
     }

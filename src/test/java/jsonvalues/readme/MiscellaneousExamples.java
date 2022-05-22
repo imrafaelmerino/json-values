@@ -27,7 +27,9 @@ public class MiscellaneousExamples {
                                           str(),
                                           "age",
                                           integer(i -> i >= 0)
-        ).setOptionals("firstName","lastName","age");
+        ).setOptionals("firstName",
+                       "lastName",
+                       "age");
 
         Gen<JsObj> gen =
                 JsObjGen.of("firstName",
@@ -159,11 +161,15 @@ public class MiscellaneousExamples {
                             JsBoolGen.arbitrary());
         JsObjGen gen =
                 JsObjGen.of("fruits",
-                            JsArrayGen.biased(0,10)
-                                      .apply(JsStrGen.biased(0,20)),
+                            JsArrayGen.biased(JsStrGen.biased(0,
+                                                              20),
+                                              0,
+                                              10),
                             "vegetables",
-                            JsArrayGen.biased(0,10).apply(veggieGen)
-                            );
+                            JsArrayGen.biased(veggieGen,
+                                              0,
+                                              10)
+                );
 
         JsObjParser parser = new JsObjParser(spec);
 

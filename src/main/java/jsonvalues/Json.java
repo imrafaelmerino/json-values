@@ -607,7 +607,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @param fn the mapping function
      * @return a new mapped json of the same type T
      */
-    T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, JsValue> fn);
+    T mapAllObjs(final BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn);
 
     /**
      * Maps all the jsons of this json.
@@ -615,7 +615,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @param fn the mapping function
      * @return a new mapped json of the same type T
      */
-    T mapAllObjs(final Function<? super JsObj, JsValue> fn);
+    T mapAllObjs(final Function<? super JsObj, ? extends JsValue> fn);
 
     /**
      * Inserts the element at the path in this json, replacing any existing element and filling with padElement

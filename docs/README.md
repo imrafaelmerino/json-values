@@ -36,14 +36,18 @@ approach is very inefficient for significant data structures. Here is where pers
 structures come into play.
 
 Most functional languages, like Haskell, Clojure, and Scala, implement persistent data
-structures natively. Java doesn't. The best alternative I've found in the JVM ecosystem
-is the persistent collections provided by the library [vavr](https://www.vavr.io). It provides a well-designed
-API and has a good performance.
+structures natively. Java doesn't. 
 
 The standard Java programmer finds it strange to work without objects and all the machinery
 of frameworks and annotations. FP is all about functions and values; that's it. I will try
 to cast some light on how we can manipulate JSON with json-values following a purely
 functional approach.
+
+json-values supports the standard Json types: string, number, null, object, array; There 
+are five number specializations: int, long, double, decimal and biginteger. json-values 
+adds support for instants and binary data. Instants are serialized into its string 
+representation according to ISO-8601; and the binary type is serialized into a string 
+encoded in base 64.
 
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 
@@ -98,7 +102,7 @@ JsObj person =
     JsObj.of("name", JsStr.of("Rafael"),
              "surname", JsStr.of("Merino"),
              "phoneNumber", JsStr.of("6666666"),
-             "registrationDate", JsInstant.of(Instant.parse("2019-01-21T05:47:26.853Z")),
+             "registrationDate", JsInstant.of("2019-01-21T05:47:26.853Z"),
              "addresses", JsArray.of(JsObj.of("coordinates", JsArray.of(39.8581, -4.02263),
                                               "city", JsStr.of("Toledo"),
                                               "zipCode", JsStr.of("45920"),
@@ -288,40 +292,45 @@ TODO
 
 ``` 
 
+Let's take a look at some very common transformations using the _map_ functions.
+The map function doesn't change the structure of the Json. This is a pattern
+known in FP as a functor. Consider the following signatures:
+
+```java   
+
+JsObj mapAllValues( Function<JsPrimitive, JsValue> map) 
+JsObj mapAllKeys( Function<String, String> map) 
+JsObj mapAllObjs( Function<? super JsObj, JsValue> map)
+
+```
+
+All of them traverse recursively the whole Json. 
+
+The mapAllKeys function transform all the keys of Json objects. The typical example
+is when you want to pass from camel case format to snake case. 
+
+The _mapAllValues_ function operates on primitive types (not object or arrays) 
+and transform them into any possible value. 
 
 
-```java 
+You can access the full path of every mapped value using the following overloaded 
+methods:
 
 
 
-JsObj json = JsObj.parse(string)
+```java  
 
+JsObj mapAllKeys( BiFunction<JsPath, JsValue, String> map) 
+JsObj mapAllValues( BiFunction<JsPath, JsPrimitive, JsValue> map)
+JsObj mapAllObjs( BiFunction<JsPath, JsObj, JsValue> map)
 
-json.mapAllKeys(toSneakeCase)
-
-json.mapAllValues(trim, ifStr)
-
-json.filterAllKeys(key.startsWith("_field"))
-
-json.filterAllValues(isNotNull)
-
-json.reduceAll(plus, ifInt)
-
-//RFC 6901
-json.set(path("/a/b"), value)
-
-a.union(b, JsArray.TYPE.SET)
-a.union(b, JsArray.TYPE.LIST)
-a.union(b, JsArray.TYPE.MULTISET)
-
-a.intersection(b)
 ```
 
 
-It supports the standard Json types: string, number, null, object, array; There are five number specializations:
-int, long, double, decimal and biginteger. json-values adds support for instants and binary data. Instants
-are serialized into its string representation according to ISO-8601; and the binary type is serialized into a
-string encoded in base 64.
+
+TODO
+
+
 
 ## <a name="notwhatfor"><a/> When not to use it
 

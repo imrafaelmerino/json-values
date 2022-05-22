@@ -28,9 +28,7 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
     public static final Prism<JsValue, Instant> prism =
             new Prism<>(s -> {
                 if (s.isInstant()) return Optional.of(s.toJsInstant().value);
-                if (s.isStr()) {
-                    return JsStr.instantPrism.getOptional.apply(s.toJsStr().value);
-                }
+                if (s.isStr()) return JsStr.instantPrism.getOptional.apply(s.toJsStr().value);
                 return Optional.empty();
             },
                         JsInstant::of
@@ -42,11 +40,15 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
     }
 
     public static JsInstant of(final Instant instant) {
-        return new JsInstant(Objects.requireNonNull(instant));
+        return new JsInstant(requireNonNull(instant));
+    }
+
+    public static JsInstant of(final String instant) {
+        return JsInstant.of(Instant.parse(requireNonNull(instant)));
     }
 
     public JsInstant map(Function<Instant, Instant> fn) {
-        return JsInstant.of(Objects.requireNonNull(fn).apply(value));
+        return JsInstant.of(requireNonNull(fn).apply(value));
     }
 
     @Override
@@ -73,12 +75,12 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
     public boolean equals(final Object o) {
         if (this == o) return true;
         if (o == null) return false;
-        if (o instanceof JsValue) {
-            return JsInstant.prism.getOptional.apply(((JsValue) o))
-                                              .map(instant -> instant.equals(value))
-                                              .orElse(false);
-        }
-        return false;
+        return o instanceof JsValue ?
+               JsInstant.prism.getOptional.apply(((JsValue) o))
+                                          .map(instant -> instant.equals(value))
+                                          .orElse(false) :
+               Boolean.valueOf(false);
+
     }
 
     @Override
