@@ -276,8 +276,8 @@ JsObjGen personGen =
 ```
 
 
-Most generators have two static factory methods: _biased_ and _arbitrary_. The former returns
-a uniform distribution, whereas the latest generates with a high probability potential
+Most generators have two static factory methods: _biased_ and _arbitrary_. The latter returns
+a uniform distribution, whereas the former generates with a high probability potential
 problematic values that tend to cause bugs in our code. Find below some distributions:
 
 ```java    
@@ -291,16 +291,12 @@ TODO
 
 
 ```java 
-//FILTERING
-todo
+
 
 
 JsObj json = JsObj.parse(string)
 
-// first level         
-json.mapKeys(toSneakeCase)
 
-// traverses first level and  nested json       
 json.mapAllKeys(toSneakeCase)
 
 json.mapAllValues(trim, ifStr)
