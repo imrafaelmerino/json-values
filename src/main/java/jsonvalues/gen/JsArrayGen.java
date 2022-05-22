@@ -10,7 +10,6 @@ import jsonvalues.JsValue;
 
 import java.util.Objects;
 import java.util.Random;
-import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -26,15 +25,15 @@ public final class JsArrayGen implements Gen<JsArray> {
     private final Gen<? extends JsValue> gen;
 
     /**
-     * @param size
      * @param gen
+     * @param size
      */
-    public JsArrayGen(final int size,
-                      final Gen<? extends JsValue> gen
+    public JsArrayGen(final Gen<? extends JsValue> gen,
+                      final int size
     ) {
         if (size < 0) throw new IllegalArgumentException("size < 0");
         this.size = size;
-        this.gen = gen;
+        this.gen = requireNonNull(gen);
     }
 
     /**
@@ -42,9 +41,35 @@ public final class JsArrayGen implements Gen<JsArray> {
      * @return
      */
 
-    public static Function<Gen<? extends JsValue>, Gen<JsArray>> arbitrary(final int size) {
-        return gen -> new JsArrayGen(size,
-                                     gen);
+    public static Gen<JsArray> arbitrary(final Gen<? extends JsValue> gen,
+                                         final int size) {
+        return new JsArrayGen(gen,
+                              size
+        );
+    }
+
+    /**
+     * @param minLength
+     * @param maxLength
+     * @return
+     */
+    public static Gen<JsArray> arbitrary(final Gen<? extends JsValue> gen,
+                                         final int minLength,
+                                         final int maxLength) {
+        if (minLength < 0) throw new IllegalArgumentException("min < 0");
+        if (maxLength < minLength) throw new IllegalArgumentException("max < min");
+        requireNonNull(gen);
+        return seed -> {
+            Supplier<Integer> sizeSupplier =
+                    IntGen.arbitrary(minLength,
+                                     maxLength)
+                          .apply(SplitGen.DEFAULT.apply(seed));
+
+            Supplier<? extends JsValue> elemSupplier = gen.apply(SplitGen.DEFAULT.apply(seed));
+            return arraySupplier(elemSupplier,
+                                 sizeSupplier);
+        };
+
     }
 
     /**
@@ -52,49 +77,25 @@ public final class JsArrayGen implements Gen<JsArray> {
      * @param max
      * @return
      */
-    public static Function<Gen<? extends JsValue>, Gen<JsArray>> arbitrary(final int min,
-                                                                           final int max) {
+    public static Gen<JsArray> biased(final Gen<? extends JsValue> gen,
+                                      final int min,
+                                      final int max) {
         if (min < 0) throw new IllegalArgumentException("min < 0");
         if (max < min) throw new IllegalArgumentException("max < min");
-        return gen -> {
-            requireNonNull(gen);
-            return seed -> {
-                Supplier<Integer> sizeSupplier =
-                        IntGen.arbitrary(min,
-                                         max)
-                              .apply(SplitGen.DEFAULT.apply(seed));
+        requireNonNull(gen);
+        return Combinators.freq(new Pair<>(1,
+                                           new JsArrayGen(gen,
+                                                          min
+                                           )),
+                                new Pair<>(1,
+                                           new JsArrayGen(gen,
+                                                          max
+                                           )),
+                                new Pair<>(2,
+                                           JsArrayGen.arbitrary(gen,
+                                                                min,
+                                                                max)));
 
-                Supplier<? extends JsValue> elemSupplier = gen.apply(SplitGen.DEFAULT.apply(seed));
-                return arraySupplier(elemSupplier,
-                                     sizeSupplier);
-            };
-        };
-    }
-
-    /**
-     * @param min
-     * @param max
-     * @return
-     */
-    public static Function<Gen<? extends JsValue>, Gen<JsArray>> biased(final int min,
-                                                                        final int max) {
-        if (min < 0) throw new IllegalArgumentException("min < 0");
-        if (max < min) throw new IllegalArgumentException("max < min");
-        return gen -> {
-            requireNonNull(gen);
-
-            return Combinators.freq(new Pair<>(1,
-                                               new JsArrayGen(min,
-                                                              gen)),
-                                    new Pair<>(1,
-                                               new JsArrayGen(max,
-                                                              gen)),
-                                    new Pair<>(2,
-                                               JsArrayGen.arbitrary(min,
-                                                                    max)
-                                                         .apply(gen)));
-
-        };
 
     }
 

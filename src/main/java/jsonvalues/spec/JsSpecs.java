@@ -333,7 +333,7 @@ public final class JsSpecs {
      * @param value the constant
      * @return a spec
      */
-    public static JsSpec cons(JsValue value) {
+    public static JsSpec cons(final JsValue value) {
         return new AnySuchThatSpec(v -> requireNonNull(value).equals(v) ?
                                         Optional.empty() :
                                         Optional.of(new JsError(v,

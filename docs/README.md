@@ -12,6 +12,7 @@ Edsger Wybe Dijkstra
 
 - [Introduction](#introduction)
 - [What to use _json-values_ for and when to use it](#whatfor)
+- [Examples](#examples)
 - [When not to use it](#notwhatfor)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -29,13 +30,14 @@ One of the most essential aspects of functional programming is immutable data st
 better known in FP jargon as values.
 It's a fact that, when possible, working with values leads to code with fewer bugs, is more
 readable, and is easier to maintain. Item 17 of Effective Java states that we must minimize
-mutability. Still, sometimes it's at the cost of losing performance because the copy-on-write
+mutability. Still, sometimes it's at the cost of losing performance because the 
+[copy-on-write](https://en.wikipedia.org/wiki/Copy-on-write)
 approach is very inefficient for significant data structures. Here is where persistent data
 structures come into play.
 
 Most functional languages, like Haskell, Clojure, and Scala, implement persistent data
 structures natively. Java doesn't. The best alternative I've found in the JVM ecosystem
-is the persistent collections provided by the library vavr. It provides a well-designed
+is the persistent collections provided by the library [vavr](https://www.vavr.io). It provides a well-designed
 API and has a good performance.
 
 The standard Java programmer finds it strange to work without objects and all the machinery
@@ -47,18 +49,19 @@ functional approach.
 
 * You need to deal with Jsons, and you want to program following a functional style, **using just functions and values**,
   but you can't benefit from all the advantage that immutability brings to your code because **Java doesn't provide
-  Persistent Data Structures**.
+  [Persistent Data Structures](https://en.wikipedia.org/wiki/Persistent_data_structure)**.
   The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, and streams, but without
-  immutability,
-  something is still missing, and as _**Pat Helland**_
+  immutability, something is still missing, and as _**Pat Helland**_
   said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
-* You manipulate Jsons all the time, and you'd like to do it with less ceremony. **json-values** is declarative and
+* You manipulate Json all the time, and you'd like to do it with less ceremony. **json-values** is declarative and
   takes advantage of a lot of concepts from functional programming to define a powerful API.
 * Generating Json to do Property-Based-Testing is child's play with json-values.
-* Generation specifications to validate Json and parse strings or bytes is a piece of cake.
+* Generating specifications to validate Json and parse strings or bytes very efficiently is a piece of cake.
 * Simplicity matters, and I'd argue that **json-values** is simple.
-* As a developer, I'm convinced that code should win arguments, so let me enumerate some examples.
 
+## <a name="examples"><a/> Examples
+
+As a developer, I'm convinced that code should win arguments, so let's get down to business.
 First things first. Let's define a Json
 
 ```json
@@ -85,10 +88,11 @@ First things first. Let's define a Json
 
 ```
 
-and coding it using the factory methods provided by json-values
+and create it using the factory methods provided by json-values
 
 ```java      
-import jsonvalues.*;  
+import jsonvalues.*;
+import java.time.Instant;
 
 JsObj person = 
     JsObj.of("name", JsStr.of("Rafael"),
@@ -108,7 +112,6 @@ JsObj person =
                                     )
             );
 ```
-
 
 As you can see, its definition is like raw JSON. It’s a recursive data structure.
 You can nest as many JSON objects as you want. Think of any imaginable JSON, and
@@ -141,11 +144,16 @@ JsObjSpec personSpec =
 ```
 
 I’d argue that it is very expressive, concise, and straightforward. I call it json-spec.
-I named it after a Clojure library named spec. Writing specs feels like writing JSON.
+I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing specs feels like writing JSON.
 Strict specs don't allow keys that are not specified, whereas lenient ones do. The real
 power is that you can create specs from predicates and compose them:
 
 ```java    
+import jsonvalues.spec.JsObjSpec;
+import static jsonvalues.spec.JsSpecs.*;
+import java.math.BigDecimal;
+import java.time.Instant;
+import java.util.function.*;
 
 BiFunction<Integer, Integer, Predicate<String>> lengthBetween =
        (min, max) -> string -> string.length() <= max && 
@@ -159,25 +167,21 @@ BiFunction<Long, Long, Predicate<BigDecimal>> decBetween =
       (min, max) -> n -> BigDecimal.valueOf(min).compareTo(n) < 0 && 
                          BigDecimal.valueOf(max).compareTo(n) > 0;
   
-```
-
-```java    
-
 int MAX_NAME_LENGTH = 10;
 int MAX_SURNAME_LENGTH = 10;
 int MAX_PHONE_LENGTH = 10;
 int MAX_CITY_LENGTH = 20;
 int MAX_TAG_LENGTH = 20;
 int MAX_ZIPCODE_LENGTH = 30;
-int LAT_MIN = -90;
-int LAT_MAX = 90;
-int LON_MIN = -180;
-int LON_MAX = 180;
+long LAT_MIN = -90;
+long LAT_MAX = 90;
+long LON_MIN = -180;
+long LON_MAX = 180;
 int MIN_ADDRESSES_SIZE = 1;
 int MAX_ADDRESSES_SIZE = 100;
 int MAX_TAGS_SIZE = 10;
 
-        
+       
 Predicate<String> nameSpec = lengthBetween.apply(0, MAX_NAME_LENGTH);
        
 Predicate<String> surnameSpec = lengthBetween.apply(0, MAX_SURNAME_LENGTH);
@@ -197,10 +201,6 @@ Predicate<String> tagSpec = lengthBetween.apply(0, MAX_TAG_LENGTH);
 Predicate<String> zipCodeSpec = lengthBetween.apply(0, MAX_ZIPCODE_LENGTH);
         
 
-```
-
-```java    
-
 JsObjSpec personSpec =
     JsObjSpec.strict("name", str(nameSpec),
                      "surname", str(surnameSpec),
@@ -211,7 +211,10 @@ JsObjSpec personSpec =
                                                                          decimal(longitudeSpec)
                                                                          ),
                                                                    "city", str(citySpec),
-                                                                   "tags", arrayOfStr(tagSpec),
+                                                                   "tags", arrayOfStr(tagSpec,0,MAX_TAG_LENGTH,
+                                                                                      0,
+                                                                                      MAX_TAGS_SIZE
+                                                                                      ),
                                                                    "zipCode", str(zipCodeSpec)
                                                                   )
                                                           .setOptionals("tags", "zipCode", "city"),
@@ -252,17 +255,20 @@ JsObjGen personGen =
               "surname", JsStrGen.biased(0, MAX_NAME_LENGTH),
               "phoneNumber", JsStrGen.biased(0,MAX_PHONE_LENGTH),
               "registrationDate", JsInstantGen.biased(0, Instant.MAX.getEpochSecond()),
-              "addresses", JsArrayGen.biased(MIN_ADDRESSES_SIZE, MAX_ADDRESSES_SIZE)
-                                     .apply(JsObjGen.of("coordinates", 
-                                                        JsTupleGen.of(JsBigDecGen.biased(LAT_MIN, LAT_MAX),
-                                                                      JsBigDecGen.biased(LON_MIN, LON_MAX)
-                                                                     ),
+              "addresses", JsArrayGen.biased(JsObjGen.of("coordinates", 
+                                                         JsTupleGen.of(JsBigDecGen.biased(LAT_MIN, LAT_MAX),
+                                                                       JsBigDecGen.biased(LON_MIN, LON_MAX)
+                                                                      ),
                                                         "city", JsStrGen.biased(0, MAX_CITY_LENGTH),
-                                                        "tags", JsArrayGen.biased(0,MAX_ADDRESSES_SIZE)
-                                                                          .apply(JsStrGen.biased(0, MAX_TAGS_SIZE)),
+                                                        "tags", JsArrayGen.biased(JsStrGen.biased(0, MAX_TAG_LENGTH),
+                                                                                  0,
+                                                                                  MAX_TAGS_SIZE
+                                                                                  ),
                                                         "zipCode", JsStrGen.biased(0, MAX_ZIPCODE_LENGTH)
                                                         )
-                                                     .setOptionals("tags", "zipCode", "city")
+                                                     .setOptionals("tags", "zipCode", "city"),
+                                             MIN_ADDRESSES_SIZE, 
+                                             MAX_ADDRESSES_SIZE        
                                             )
               )
            .setOptionals("surname", "phoneNumber", "addresses");
