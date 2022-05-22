@@ -599,7 +599,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @param fn the  mapping function
      * @return a new mapped json of the same type T
      */
-    T mapObjs(final Function<? super JsObj, JsValue> fn);
+    T mapObjs(final Function<? super JsObj, ? extends JsValue> fn);
 
     /**
      * Maps all the jsons of this json.

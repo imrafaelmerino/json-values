@@ -129,13 +129,13 @@ public final class JsStrGen implements Gen<JsStr> {
     }
 
     /**
-     *
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsStr each time it's called
+     * @param seed the generator seed
+     * @return a JsStr supplier
      */
     @Override
     public Supplier<JsStr> apply(Random seed) {
         return gen.map(JsStr::of)
-                  .apply(seed);
+                  .apply(requireNonNull(seed));
     }
 }

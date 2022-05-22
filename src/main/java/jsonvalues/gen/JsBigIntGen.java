@@ -11,19 +11,20 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Represents a JsBigInt generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from a big integer generator using the constructor.
  */
 public final class JsBigIntGen implements Gen<JsBigInt> {
     private final Gen<BigInteger> gen;
 
-    public JsBigIntGen(Gen<BigInteger> gen) {
+    public JsBigIntGen(final Gen<BigInteger> gen) {
         this.gen = requireNonNull(gen);
     }
 
-    public static Gen<JsBigInt> arbitrary(int min,
-                                          int max) {
-        return new JsBigIntGen(BigIntGen.arbitrary(min,
-                                                   max));
+    public static Gen<JsBigInt> arbitrary(int minBits,
+                                          int maxBits) {
+        return new JsBigIntGen(BigIntGen.arbitrary(minBits,
+                                                   maxBits));
     }
 
     /**
@@ -37,13 +38,14 @@ public final class JsBigIntGen implements Gen<JsBigInt> {
     }
 
     /**
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsBigInt each time it's called
+     * @param seed the generator seed
+     * @return a JsBigInt supplier
      */
     @Override
-    public Supplier<JsBigInt> apply(Random seed) {
+    public Supplier<JsBigInt> apply(final Random seed) {
         return gen.map(JsBigInt::of)
-                  .apply(seed);
+                  .apply(requireNonNull(seed));
     }
 
 }

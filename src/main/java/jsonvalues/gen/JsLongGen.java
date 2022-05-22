@@ -10,7 +10,8 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Represents a JsLong generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from a long integer generator using the constructor.
  */
 public final class JsLongGen implements Gen<JsLong> {
     private static final Gen<JsLong> biased = new JsLongGen(LongGen.biased());
@@ -66,12 +67,12 @@ public final class JsLongGen implements Gen<JsLong> {
     }
 
     /**
-     *
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsLong each time it's called
+     * @param seed the generator seed
+     * @return a JsLong supplier
      */
     @Override
     public Supplier<JsLong> apply(Random seed) {
-        return gen.map(JsLong::of).apply(seed);
+        return gen.map(JsLong::of).apply(requireNonNull(seed));
     }
 }

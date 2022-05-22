@@ -1946,7 +1946,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
-    public JsObj mapObjs(final Function<? super JsObj, JsValue> fn) {
+    public JsObj mapObjs(final Function<? super JsObj,? extends JsValue> fn) {
         return OpMapObjObjs.map(this,
                                 requireNonNull(fn)
         );

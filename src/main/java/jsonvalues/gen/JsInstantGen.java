@@ -11,13 +11,16 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
-
+/**
+ * Represents a JsInstant generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from an isntant generator using the constructor.
+ */
 public final class JsInstantGen implements Gen<JsInstant> {
     private static final Gen<JsInstant> biased = new JsInstantGen(InstantGen.biased());
     private static final Gen<JsInstant> arbitrary = new JsInstantGen(InstantGen.arbitrary());
     private final Gen<Instant> gen;
 
-    public JsInstantGen(Gen<Instant> gen) {
+    public JsInstantGen(final Gen<Instant> gen) {
         this.gen = requireNonNull(gen);
     }
 
@@ -47,10 +50,14 @@ public final class JsInstantGen implements Gen<JsInstant> {
                                                   max));
     }
 
-
+    /**
+     * Returns a supplier from the specified seed that generates a new JsInstant each time it's called
+     * @param seed the generator seed
+     * @return a JsInstant supplier
+     */
     @Override
-    public Supplier<JsInstant> apply(Random seed) {
+    public Supplier<JsInstant> apply(final Random seed) {
         return gen.map(JsInstant::of)
-                  .apply(seed);
+                  .apply(requireNonNull(seed));
     }
 }

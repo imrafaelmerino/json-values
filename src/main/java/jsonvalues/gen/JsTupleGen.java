@@ -46,16 +46,17 @@ public final class JsTupleGen implements Gen<JsArray> {
     }
 
     /**
-     *
-     * @param random the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new tuple (modeled with a JsArray)
+     * each time it's called
+     * @param seed the generator seed
+     * @return a tuple supplier
      */
     @Override
-    public Supplier<JsArray> apply(final Random random) {
-        requireNonNull(random);
+    public Supplier<JsArray> apply(final Random seed) {
+        requireNonNull(seed);
         List<Supplier<? extends JsValue>> suppliers =
                 gens.stream()
-                    .map(it -> it.apply(SplitGen.DEFAULT.apply(random)))
+                    .map(it -> it.apply(SplitGen.DEFAULT.apply(seed)))
                     .collect(Collectors.toList());
         return () ->
         {

@@ -11,7 +11,8 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Represents a JsBigDec generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from a decimal generator using the constructor.
  */
 public final class JsBigDecGen implements Gen<JsBigDec> {
 
@@ -20,10 +21,10 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     private final Gen<BigDecimal> gen;
 
     /**
-     *
-     * @param gen
+     * Returns a JsBigDec generator from a decimal generator
+     * @param gen the decimal generator
      */
-    public JsBigDecGen(Gen<BigDecimal> gen) {
+    public JsBigDecGen(final Gen<BigDecimal> gen) {
         this.gen = requireNonNull(gen);
     }
 
@@ -80,13 +81,13 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     }
 
     /**
-     *
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsBigDec each time it's called
+     * @param seed the generator seed
+     * @return a JsBigDec supplier
      */
     @Override
-    public Supplier<JsBigDec> apply(Random seed) {
-        return gen.map(JsBigDec::of).apply(seed);
+    public Supplier<JsBigDec> apply(final Random seed) {
+        return gen.map(JsBigDec::of).apply(requireNonNull(seed));
     }
 
 }

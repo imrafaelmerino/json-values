@@ -8,8 +8,11 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- *
+ * Represents a JsInt generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from an integer generator using the constructor.
  */
 public final class JsIntGen implements Gen<JsInt> {
     private static final Gen<JsInt> biased = new JsIntGen(IntGen.biased());
@@ -65,12 +68,13 @@ public final class JsIntGen implements Gen<JsInt> {
     }
 
     /**
-     *
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsInt each time it's called
+     * @param seed the generator seed
+     * @return a JsInt supplier
      */
     @Override
-    public Supplier<JsInt> apply(Random seed) {
-        return gen.map(JsInt::of).apply(seed);
+    public Supplier<JsInt> apply(final Random seed) {
+        return gen.map(JsInt::of)
+                  .apply(requireNonNull(seed));
     }
 }

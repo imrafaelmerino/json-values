@@ -1376,31 +1376,36 @@ public final class JsObjGen implements Gen<JsObj> {
                             nullables);
 
     }
-
+    /**
+     * Returns a supplier from the specified seed that generates a new JsObj each time it's called
+     * @param seed the generator seed
+     * @return a JsObj supplier
+     */
     @Override
-    public Supplier<JsObj> apply(final Random gen) {
+    public Supplier<JsObj> apply(final Random seed) {
+        requireNonNull(seed);
         Supplier<List<String>> optionalCombinations =
                 Combinators.permutations(optionals)
-                           .apply(SplitGen.DEFAULT.apply(gen));
+                           .apply(SplitGen.DEFAULT.apply(seed));
 
         Supplier<Boolean> isRemoveOptionals =
                 optionals.isEmpty() ?
                 () -> false :
-                BoolGen.arbitrary.apply(SplitGen.DEFAULT.apply(gen));
+                BoolGen.arbitrary.apply(SplitGen.DEFAULT.apply(seed));
 
         Supplier<List<String>> nullableCombinations =
                 Combinators.permutations(nullables)
-                           .apply(SplitGen.DEFAULT.apply(gen));
+                           .apply(SplitGen.DEFAULT.apply(seed));
 
         Supplier<Boolean> isRemoveNullables =
                 nullables.isEmpty() ?
                 () -> false :
-                BoolGen.arbitrary.apply(SplitGen.DEFAULT.apply(gen));
+                BoolGen.arbitrary.apply(SplitGen.DEFAULT.apply(seed));
         return () ->
         {
             JsObj obj = JsObj.empty();
             for (Map.Entry<String, Gen<? extends JsValue>> pair : bindings.entrySet()) {
-                final JsValue value = pair.getValue().apply(gen)
+                final JsValue value = pair.getValue().apply(seed)
                                           .get();
                 obj = obj.set(pair.getKey(),
                               value

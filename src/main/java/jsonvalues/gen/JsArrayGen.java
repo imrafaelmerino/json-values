@@ -17,18 +17,16 @@ import java.util.stream.IntStream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represent a generator of Json arrays.
+ * represent a JsArray generator. It can be created from the static factory methods biased and
+ * arbitrary, specifying a JsValue generator and the size of the array (either an interval or
+ * a fixed size).
  */
 public final class JsArrayGen implements Gen<JsArray> {
 
     private final int size;
     private final Gen<? extends JsValue> gen;
 
-    /**
-     * @param gen
-     * @param size
-     */
-    public JsArrayGen(final Gen<? extends JsValue> gen,
+    private JsArrayGen(final Gen<? extends JsValue> gen,
                       final int size
     ) {
         if (size < 0) throw new IllegalArgumentException("size < 0");
@@ -37,8 +35,9 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param size
-     * @return
+     * @param gen the element generator
+     * @param size the size of the generated array
+     * @return a JsArray generator
      */
 
     public static Gen<JsArray> arbitrary(final Gen<? extends JsValue> gen,
@@ -49,20 +48,21 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param minLength
-     * @param maxLength
-     * @return
+     * @param gen the element generator
+     * @param minSize the minimum size of the arrays
+     * @param maxSize the maximum size of the arrays
+     * @return a JsArray generator
      */
     public static Gen<JsArray> arbitrary(final Gen<? extends JsValue> gen,
-                                         final int minLength,
-                                         final int maxLength) {
-        if (minLength < 0) throw new IllegalArgumentException("min < 0");
-        if (maxLength < minLength) throw new IllegalArgumentException("max < min");
+                                         final int minSize,
+                                         final int maxSize) {
+        if (minSize < 0) throw new IllegalArgumentException("minSize < 0");
+        if (maxSize < minSize) throw new IllegalArgumentException("maxSize < minSize");
         requireNonNull(gen);
         return seed -> {
             Supplier<Integer> sizeSupplier =
-                    IntGen.arbitrary(minLength,
-                                     maxLength)
+                    IntGen.arbitrary(minSize,
+                                     maxSize)
                           .apply(SplitGen.DEFAULT.apply(seed));
 
             Supplier<? extends JsValue> elemSupplier = gen.apply(SplitGen.DEFAULT.apply(seed));
@@ -73,37 +73,35 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param min
-     * @param max
-     * @return
+     *
+     * @param gen the element generator
+     * @param minSize the minimum size of the arrays
+     * @param maxSize the maximum size of the arrays
+     * @return a JsArray generator
      */
     public static Gen<JsArray> biased(final Gen<? extends JsValue> gen,
-                                      final int min,
-                                      final int max) {
-        if (min < 0) throw new IllegalArgumentException("min < 0");
-        if (max < min) throw new IllegalArgumentException("max < min");
+                                      final int minSize,
+                                      final int maxSize) {
+        if (minSize < 0) throw new IllegalArgumentException("minSize < 0");
+        if (maxSize < minSize) throw new IllegalArgumentException("maxSize < minSize");
         requireNonNull(gen);
         return Combinators.freq(new Pair<>(1,
                                            new JsArrayGen(gen,
-                                                          min
+                                                          minSize
                                            )),
                                 new Pair<>(1,
                                            new JsArrayGen(gen,
-                                                          max
+                                                          maxSize
                                            )),
                                 new Pair<>(2,
                                            JsArrayGen.arbitrary(gen,
-                                                                min,
-                                                                max)));
+                                                                minSize,
+                                                                maxSize)));
 
 
     }
 
-    /**
-     * @param elemSupplier
-     * @param sizeSupplier
-     * @return
-     */
+
     private static Supplier<JsArray> arraySupplier(Supplier<? extends JsValue> elemSupplier,
                                                    Supplier<Integer> sizeSupplier) {
 
@@ -115,13 +113,13 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param random the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsArray each time it's called
+     * @param seed the generator seed
+     * @return a JsArray supplier
      */
     @Override
-    public Supplier<JsArray> apply(final Random random) {
-        Objects.requireNonNull(random);
-        return arraySupplier(gen.apply(requireNonNull(random)),
+    public Supplier<JsArray> apply(final Random seed) {
+        return arraySupplier(gen.apply(requireNonNull(seed)),
                              () -> size);
     }
 

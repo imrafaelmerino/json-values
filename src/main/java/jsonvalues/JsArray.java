@@ -1159,7 +1159,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public JsArray mapObjs(final Function<? super JsObj, JsValue> fn) {
+    public JsArray mapObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapArrObjs.map(this,
                                 requireNonNull(fn)
 

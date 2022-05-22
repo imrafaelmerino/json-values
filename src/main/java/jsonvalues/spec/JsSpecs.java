@@ -53,6 +53,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of numbers spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfNumber() {
         return arrayOfNumber;
@@ -60,6 +61,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of decimal numbers spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfDec() {
         return arrayOfDec;
@@ -67,6 +69,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of integral numbers spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfIntegral() {
         return arrayOfIntegral;
@@ -75,6 +78,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of objects spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfObj() {
         return arrayOfObj;
@@ -82,6 +86,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of booleans spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfBool() {
         return arrayOfBool;
@@ -89,6 +94,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array spec
+     * @return a spec
      */
     public static JsSpec instant() {
         return instant;
@@ -96,6 +102,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of long numbers spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfLong() {
         return arrayOfLong;
@@ -103,6 +110,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of integer numbers spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfInt() {
         return arrayOfInt;
@@ -110,6 +118,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array of strings spec
+     * @return a spec
      */
     public static JsArraySpec arrayOfStr() {
         return arrayOfStr;
@@ -117,6 +126,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array spec
+     * @return a spec
      */
     public static JsSpec binary() {
         return binary;
@@ -124,6 +134,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable integral number
+     * @return a spec
      */
     public static JsSpec integral() {
         return integral;
@@ -132,6 +143,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable long number
+     * @return a spec
      */
     public static JsSpec longInteger() {
         return longInteger;
@@ -139,6 +151,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable boolean
+     * @return a spec
      */
     public static JsSpec bool() {
         return bool;
@@ -146,6 +159,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable decimal number
+     * @return a spec
      */
     public static JsSpec decimal() {
         return decimal;
@@ -153,6 +167,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable integer number
+     * @return a spec
      */
     public static JsSpec integer() {
         return integer;
@@ -160,6 +175,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable json object spec
+     * @return a spec
      */
     public static JsSpec obj() {
         return obj;
@@ -167,6 +183,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable array spec
+     * @return a spec
      */
     public static JsArraySpec array() {
         return array;
@@ -174,6 +191,7 @@ public final class JsSpecs {
 
     /**
      * spec that is conformed by any value
+     * @return a spec
      */
     public static JsSpec any() {
         return any;
@@ -181,6 +199,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable string
+     * @return a spec
      */
     public static JsSpec str() {
         return str;
@@ -188,6 +207,7 @@ public final class JsSpecs {
 
     /**
      * non-nullable number
+     * @return a spec
      */
     public static JsSpec number() {
         return number;

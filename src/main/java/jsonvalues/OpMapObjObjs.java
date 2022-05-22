@@ -60,7 +60,7 @@ final class OpMapObjObjs {
     }
 
     static JsObj map(JsObj json,
-                     final Function<? super JsObj, JsValue> fn) {
+                     Function<? super JsObj, ? extends JsValue> fn) {
         for (final Tuple2<String, JsValue> next : json) {
             if (next._2.isObj()) {
 

@@ -11,7 +11,8 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Represents a JsDouble generator. It can be created using the static factory methods
+ * biased  and arbitrary  or from a double generator using the constructor.
  */
 public final class JsDoubleGen implements Gen<JsDouble> {
     private static final Gen<JsDouble> biased = new JsDoubleGen(DoubleGen.biased());
@@ -19,7 +20,8 @@ public final class JsDoubleGen implements Gen<JsDouble> {
     private final Gen<Double> gen;
 
     /**
-     * @param gen
+     * Returns a JsDouble generator from a double generator
+     * @param gen the double generator
      */
     public JsDoubleGen(Gen<Double> gen) {
         this.gen = requireNonNull(gen);
@@ -63,12 +65,14 @@ public final class JsDoubleGen implements Gen<JsDouble> {
     }
 
     /**
-     * @param seed the function argument
-     * @return
+     * Returns a supplier from the specified seed that generates a new JsDouble each time it's called
+     * @param seed the generator seed
+     * @return a JsDouble supplier
      */
     @Override
-    public Supplier<JsDouble> apply(Random seed) {
-        return gen.map(JsDouble::of).apply(seed);
+    public Supplier<JsDouble> apply(final Random seed) {
+        return gen.map(JsDouble::of)
+                  .apply(requireNonNull(seed));
     }
 
 }
