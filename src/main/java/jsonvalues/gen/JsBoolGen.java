@@ -11,8 +11,9 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a JsBoolGen generator. It can be created using the static factory method
- * arbitrary or from a boolean generator using the constructor.
+ *
+ * Represents a JsBool generator
+ *
  */
 public final class JsBoolGen implements Gen<JsBool> {
 
@@ -20,6 +21,7 @@ public final class JsBoolGen implements Gen<JsBool> {
     private final Gen<Boolean> gen;
 
     /**
+     * Returns a JsBool generator from a boolean generator
      * @param gen the boolean generator
      */
     public JsBoolGen(final Gen<Boolean> gen) {
@@ -27,7 +29,8 @@ public final class JsBoolGen implements Gen<JsBool> {
     }
 
     /**
-     * @return
+     * Returns a generator produces uniformed distributions of JsBool
+     * @return a JsBool generator
      */
     public static Gen<JsBool> arbitrary() {
         return arbitrary;

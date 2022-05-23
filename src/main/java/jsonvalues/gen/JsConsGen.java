@@ -11,21 +11,21 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
- * @param <O>
+ * Represents a generator that produces always the same value independently of the seed
+ * @param <O> the type of the values produced by the generator
  */
 public final class JsConsGen<O extends JsValue> implements Gen<O> {
 
     /**
-     *Constant generator that generates always {@link JsNull#NULL}
+     *Constant generator that produces always {@link JsNull#NULL}
      */
     public static final Gen<JsValue> NULL = new JsConsGen<>(JsNull.NULL);
     /**
-     *Constant generator that generates always {@link JsBool#TRUE}
+     *Constant generator that produces always {@link JsBool#TRUE}
      */
     public static final Gen<JsBool> TRUE = new JsConsGen<>(JsBool.TRUE);
     /**
-     *Constant generator that generates always {@link JsBool#FALSE}
+     *Constant generator that produces always {@link JsBool#FALSE}
      */
     public static final Gen<JsBool> FALSE = new JsConsGen<>(JsBool.FALSE);
 
@@ -36,7 +36,7 @@ public final class JsConsGen<O extends JsValue> implements Gen<O> {
     }
 
     /**
-     * returns a constant generator that generates always the specified value
+     * returns a constant generator that produces always the specified value
      * @param value the value returned by the generator
      * @return a constant generator
      * @param <O> the type of the returned value, that is a subtype of {@link JsValue}

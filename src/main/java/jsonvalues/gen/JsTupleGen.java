@@ -46,7 +46,7 @@ public final class JsTupleGen implements Gen<JsArray> {
     }
 
     /**
-     * Returns a supplier from the specified seed that generates a new tuple (modeled with a JsArray)
+     * Returns a supplier from the specified seed that generates a new tuple, modeled with a JsArray,
      * each time it's called
      * @param seed the generator seed
      * @return a tuple supplier

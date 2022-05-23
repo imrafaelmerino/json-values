@@ -1,6 +1,5 @@
 package jsonvalues.gen;
 
-import fun.gen.CharGen;
 import jsonvalues.JsStr;
 import org.junit.jupiter.api.Test;
 
@@ -21,6 +20,7 @@ public class TestCharGen {
         Map<JsStr, Long> countAlpha = TestFun.generate(1000000,
                                                        JsStrGen.alphabetic());
 
+
         TestFun.assertGeneratedValuesHaveSameProbability(countsLetters,
                                                          countsLetters.keySet(),
                                                          0.1);
@@ -33,4 +33,6 @@ public class TestCharGen {
                                                          0.1);
 
     }
+
+
 }

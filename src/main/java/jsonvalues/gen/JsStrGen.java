@@ -53,6 +53,13 @@ public final class JsStrGen implements Gen<JsStr> {
     }
 
     /**
+     * Generator tha produces an alphanumeric character
+     */
+    public static Gen<JsStr> alphanumeric() {
+        return alphanumeric;
+    }
+
+    /**
      * Generates a seq of digits
      *
      * @param minLength minimum length of the string

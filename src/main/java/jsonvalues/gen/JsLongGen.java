@@ -10,8 +10,13 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
+ *
  * Represents a JsLong generator. It can be created using the static factory methods
- * biased  and arbitrary  or from a long integer generator using the constructor.
+ * <code>biased</code> and <code>arbitrary</code> or passing a long integer {@link LongGen generator}
+ * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * Biased generators produces, with higher probability, potential problematic values that
+ * usually cause more bugs.
+ *
  */
 public final class JsLongGen implements Gen<JsLong> {
     private static final Gen<JsLong> biased = new JsLongGen(LongGen.biased());
@@ -22,7 +27,7 @@ public final class JsLongGen implements Gen<JsLong> {
      *
      * @param gen
      */
-    public JsLongGen(Gen<Long> gen) {
+    public JsLongGen(final Gen<Long> gen) {
         this.gen = requireNonNull(gen);
     }
 
@@ -35,18 +40,20 @@ public final class JsLongGen implements Gen<JsLong> {
     }
 
     /**
-     *
-     * @return
+     * Returns a generator that produces values uniformly distributed
+     * @return a JsLong generator
      */
     public static Gen<JsLong> arbitrary() {
         return arbitrary;
     }
 
     /**
+     * Returns a generator that produces values uniformly distributed over a specified interval
      *
-     * @param min
-     * @param max
-     * @return
+     * @param min lower bound of the interval (inclusive)
+     * @param max upper bound of the interval (inclusive)
+     *
+     * @return a biased JsLong generator
      */
     public static Gen<JsLong> arbitrary(long min,
                                         long max) {
@@ -55,13 +62,36 @@ public final class JsLongGen implements Gen<JsLong> {
     }
 
     /**
+     * returns a biased generators that produces, with higher probability, potential problematic values
+     * that usually cause more bugs. These values are:
      *
-     * @param min
-     * @param max
-     * @return
+     * <pre>
+     * - the lower bound of the interval
+     * - the upper bound of the interval
+     * </pre>
+     *
+     * and the following numbers provided that they are between the specified interval:
+     *
+     * <pre>
+     * - {@link Long#MIN_VALUE}
+     * - {@link Integer#MIN_VALUE}
+     * - {@link Short#MIN_VALUE}
+     * - {@link Byte#MIN_VALUE}
+     * - 0
+     * - {@link Integer#MAX_VALUE}
+     * - {@link Short#MAX_VALUE}
+     * - {@link Byte#MAX_VALUE}
+     * - {@link Long#MAX_VALUE}
+     * </pre>
+     *
+     * @param min lower bound of the interval (inclusive)
+     * @param max upper bound of the interval (inclusive)
+     *
+     *
+     * @return a biased JsLong generator
      */
-    public static Gen<JsLong> biased(long min,
-                                     long max) {
+    public static Gen<JsLong> biased(final long min,
+                                     final long max) {
         return new JsLongGen(LongGen.biased(min,
                                             max));
     }

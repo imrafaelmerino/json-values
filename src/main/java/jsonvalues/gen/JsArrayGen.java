@@ -8,7 +8,6 @@ import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
-import java.util.Objects;
 import java.util.Random;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -18,8 +17,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * represent a JsArray generator. It can be created from the static factory methods biased and
- * arbitrary, specifying a JsValue generator and the size of the array (either an interval or
- * a fixed size).
+ * arbitrary, specifying an element generator that produces JsValue and the size of the array
+ * (either a bound interval or a fixed size).
  */
 public final class JsArrayGen implements Gen<JsArray> {
 

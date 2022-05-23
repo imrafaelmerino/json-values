@@ -1,6 +1,7 @@
 package jsonvalues.gen;
 
 
+import fun.gen.BigIntGen;
 import fun.gen.BytesGen;
 import fun.gen.Gen;
 import jsonvalues.JsBinary;
@@ -12,8 +13,13 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
+ *
  * Represents a JsBinary generator. It can be created using the static factory methods
- * biased  and arbitrary  or from an array of bytes generator using the constructor.
+ * <code>biased</code> and <code>arbitrary</code> or passing an array of bytes {@link JsBinary generator}
+ * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * Biased generators produces, with higher probability, potential problematic values that
+ * usually cause more bugs.
+ *
  */
 public final class JsBinaryGen implements Gen<JsBinary> {
     private final Gen<byte[]> gen;
@@ -28,6 +34,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
     }
 
     /**
+     *
      * @param minLength minimum number of bytes (inclusive)
      * @param maxLength maximum number of bytes (inclusive)
      * @return an arbitrary Json bytes generator

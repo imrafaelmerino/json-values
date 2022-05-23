@@ -1,9 +1,6 @@
 package jsonvalues.gen;
 
-import fun.gen.BoolGen;
-import fun.gen.Combinators;
-import fun.gen.Gen;
-import fun.gen.SplitGen;
+import fun.gen.*;
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
@@ -16,7 +13,33 @@ import static java.util.Objects.requireNonNull;
 
 
 /**
- * represent a generator of Json objects.
+ *
+ * Represents a JsObj generator. It can be created using the static factory methods
+ * <code>of</code> or inserting to an existing generator new key-value pairs with the method
+ * {@link JsObjGen#set(String, Gen)}. Each element of the Json is generated with a new
+ * seed that is calculated passing the original seed to the {@link SplitGen#DEFAULT default split generator }
+ *
+ * There are factory methods to create up to 20-key generators. For bigger Json you
+ * can use the {@link JsObjGen#set(String, Gen) set} method.
+ *
+ * Optional and nullable keys are specified with the
+ * methods <code>setOptionals</code> and <code>setNullable</code>.
+ *
+ * Given the following optional fields a,b and c, all the possible permutations
+ * (2^n = 8) are generated with the same probability:
+ * <pre>
+ *  - a, b and c missing
+ *  - a and b missing
+ *  - a and c missing
+ *  - b and c missing
+ *  - a missing
+ *  - b missing
+ *  - c missing
+ *  - none of the missing
+ * </pre>
+ *
+ * The same applies for nullable fields.
+ *
  */
 public final class JsObjGen implements Gen<JsObj> {
 
@@ -38,7 +61,10 @@ public final class JsObjGen implements Gen<JsObj> {
         this.nullables = new ArrayList<>();
         this.bindings = bindings;
     }
-
+    public static JsObjGen of(){
+        Map<String, Gen<? extends JsValue>> map = new HashMap<>();
+        return  new JsObjGen(map);
+    }
 
     public static JsObjGen of(final String key,
                               final Gen<? extends JsValue> gen
@@ -254,26 +280,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of ten mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -322,28 +328,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of eleven mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -396,30 +380,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of twelve mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -476,32 +436,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of thirteen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -562,34 +496,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of fourteen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -654,36 +560,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of fifteen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -752,38 +628,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of sixteen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
-     * @param key16 the sixteenth key
-     * @param gen16 the mapping associated to the sixteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -856,40 +700,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of seventeen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
-     * @param key16 the sixteenth key
-     * @param gen16 the mapping associated to the sixteenth key
-     * @param key17 the seventeenth key
-     * @param gen17 the mapping associated to the seventeenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -966,42 +776,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of eighteen mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
-     * @param key16 the sixteenth key
-     * @param gen16 the mapping associated to the sixteenth key
-     * @param key17 the seventeenth key
-     * @param gen17 the mapping associated to the seventeenth key
-     * @param key18 the eighteenth key
-     * @param gen18 the mapping associated to the eighteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -1081,45 +855,6 @@ public final class JsObjGen implements Gen<JsObj> {
 
     /**
      * static factory method to create a JsObGen of nineteen mappings
-     *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
-     * @param key16 the sixteenth key
-     * @param gen16 the mapping associated to the sixteenth key
-     * @param key17 the seventeenth key
-     * @param gen17 the mapping associated to the seventeenth key
-     * @param key18 the eighteenth key
-     * @param gen18 the mapping associated to the eighteenth key
-     * @param key19 the nineteenth key
-     * @param gen19 the mapping associated to the nineteenth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")
@@ -1204,46 +939,6 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * static factory method to create a JsObGen of twenty mappings
      *
-     * @param key1  the first key
-     * @param gen1  the mapping associated to the first key
-     * @param key2  the second key
-     * @param gen2  the mapping associated to the second key
-     * @param key3  the third key
-     * @param gen3  the mapping associated to the third key
-     * @param key4  the fourth key
-     * @param gen4  the mapping associated to the fourth key
-     * @param key5  the fifth key
-     * @param gen5  the mapping associated to the fifth key
-     * @param key6  the sixth key
-     * @param gen6  the mapping associated to the sixth key
-     * @param key7  the seventh key
-     * @param gen7  the mapping associated to the seventh key
-     * @param key8  the eighth key
-     * @param gen8  the mapping associated to the eighth key
-     * @param key9  the ninth key
-     * @param gen9  the mapping associated to the ninth key
-     * @param key10 the tenth key
-     * @param gen10 the mapping associated to the eleventh key
-     * @param key11 the eleventh key
-     * @param gen11 the mapping associated to the eleventh key
-     * @param key12 the twelfth key
-     * @param gen12 the mapping associated to the twelfth key,
-     * @param key13 the thirteenth key
-     * @param gen13 the mapping associated to the thirteenth key
-     * @param key14 the fourteenth key
-     * @param gen14 the mapping associated to the fourteenth key
-     * @param key15 the fifteenth key
-     * @param gen15 the mapping associated to the fifteenth key
-     * @param key16 the sixteenth key
-     * @param gen16 the mapping associated to the sixteenth key
-     * @param key17 the seventeenth key
-     * @param gen17 the mapping associated to the seventeenth key
-     * @param key18 the eighteenth key
-     * @param gen18 the mapping associated to the eighteenth key
-     * @param key19 the nineteenth key
-     * @param gen19 the mapping associated to the nineteenth key
-     * @param key20 the twentieth key
-     * @param gen20 the mapping associated to the twentieth key
      * @return a JsObjGen
      */
     @SuppressWarnings("squid:S00107")

@@ -1,6 +1,7 @@
 package jsonvalues.gen;
 
 
+import fun.gen.BigIntGen;
 import fun.gen.DoubleGen;
 import fun.gen.Gen;
 import jsonvalues.JsDouble;
@@ -12,7 +13,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a JsDouble generator. It can be created using the static factory methods
- * biased  and arbitrary  or from a double generator using the constructor.
+ * <code>biased</code> and <code>arbitrary</code> or passing a double {@link DoubleGen generator}
+ * to the constructor. Arbitrary generators generate uniformed distributions of values.
+ * Biased generators produces, with higher probability, potential problematic values that
+ * usually cause more bugs.
+ *
+ * </pre>
+ *
  */
 public final class JsDoubleGen implements Gen<JsDouble> {
     private static final Gen<JsDouble> biased = new JsDoubleGen(DoubleGen.biased());
