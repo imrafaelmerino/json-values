@@ -13,8 +13,10 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  * Represents a JsBigDec generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or passing a decimal {@link BigDecGen generator}
- * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * needs, passing a decimal {@link BigDecGen generator} to the constructor.
+ *
+ * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
  *
@@ -26,7 +28,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     private final Gen<BigDecimal> gen;
 
     /**
-     * Returns a JsBigDec generator from a decimal generator
+     * Creates a JsBigDec generator from a specified decimal generator
      *
      * @param gen the decimal generator
      */

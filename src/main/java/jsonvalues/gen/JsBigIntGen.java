@@ -1,6 +1,5 @@
 package jsonvalues.gen;
 
-import fun.gen.BigDecGen;
 import fun.gen.BigIntGen;
 import fun.gen.Gen;
 import jsonvalues.JsBigInt;
@@ -14,8 +13,10 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  * Represents a JsBigInt generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or passing a big integer {@link BigIntGen generator}
- * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * needs, passing a big integer {@link BigIntGen generator} to the constructor.
+ *
+ * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
  *
@@ -23,6 +24,11 @@ import static java.util.Objects.requireNonNull;
 public final class JsBigIntGen implements Gen<JsBigInt> {
     private final Gen<BigInteger> gen;
 
+    /**
+     * Creates a JsBigInt generator from a specified big integer generator
+     *
+     * @param gen the big integer generator
+     */
     public JsBigIntGen(final Gen<BigInteger> gen) {
         this.gen = requireNonNull(gen);
     }

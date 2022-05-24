@@ -15,7 +15,7 @@ public final class JsObjParser {
     /**
      * @param spec the Json spec what defines the schema the json has to conform
      */
-    public JsObjParser(final JsObjSpec spec) {
+    public JsObjParser(final JsSpec spec) {
         parser = requireNonNull(spec).parser();
     }
 

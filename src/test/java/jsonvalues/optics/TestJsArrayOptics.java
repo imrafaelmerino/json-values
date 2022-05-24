@@ -165,6 +165,33 @@ public class TestJsArrayOptics {
     }
 
     @Test
+    public void testBooleanLenses() {
+
+        JsPath path = JsPath.path("/0/b/c");
+        JsArray a = JsArray.of(new Pair<>(path,
+                                          JsBool.TRUE
+                               )
+        );
+
+        Lens<JsArray, Boolean> lens = JsArray.lens.bool(path);
+
+        Assertions.assertTrue(lens.get.apply(a));
+
+
+        JsArray b = lens.set.apply(false)
+                            .apply(a);
+
+        Assertions.assertFalse(lens.get.apply(b));
+
+        JsArray c = lens.modify.apply(i -> !i)
+                               .apply(b);
+
+        Assertions.assertTrue(lens.get.apply(c));
+
+
+    }
+
+    @Test
     public void testDecimalLenses() {
 
         JsPath path = JsPath.path("/0/b/c");

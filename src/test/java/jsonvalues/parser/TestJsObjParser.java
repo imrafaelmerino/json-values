@@ -1,14 +1,19 @@
 package jsonvalues.parser;
 
 import com.dslplatform.json.JsParserException;
+import fun.gen.BytesGen;
 import jsonvalues.*;
+import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.Base64;
 
 import static jsonvalues.spec.JsSpecs.*;
 
@@ -1075,75 +1080,76 @@ public class TestJsObjParser {
     }
 
 
-//    @Test
-//    public void test_bytes_parser() {
+    @Test
+    public void test_bytes_parser() {
+
+        final JsObjSpec objSpec = JsObjSpec.lenient("a",
+                                                    JsSpecs.str(s -> s.length() <= 10),
+                                                    "b",
+                                                    integer(),
+                                                    "c",
+                                                    JsSpecs.decimal(),
+                                                    "d",
+                                                    JsSpecs.binary().nullable(),
+                                                    "e",
+                                                    JsSpecs.binary(it->it.length<=100).nullable()
+                                           )
+                                           .setOptionals("a");
+        JsObjParser objParser = new JsObjParser(objSpec);
+
+        JsObjGen objGen = JsObjGen.of("a",
+                                      JsStrGen.biased(0,
+                                                      10),
+                                      "b",
+                                      JsIntGen.biased(),
+                                      "c",
+                                      JsBigDecGen.biased(),
+                                      "d",
+                                      new JsStrGen(BytesGen.biased(0,
+                                                                   10).map(it -> Base64.getEncoder().encodeToString(it))),
+                                      "e",
+                                      new JsStrGen(BytesGen.biased(0,
+                                                                   100).map(it -> Base64.getEncoder().encodeToString(it)))
+                                  )
+                                  .setOptionals("a")
+                                  .setNullables("d","e");
+
+        Assertions.assertTrue(objGen.sample(10000).allMatch(v -> objParser.parse(v.toString()
+                                                                                  .getBytes())
+                                                                          .equals(v)));
+
+        Assertions.assertTrue(objGen.sample(10000).allMatch(v -> objParser.parse(new ByteArrayInputStream(v.toString()
+                                                                                                           .getBytes()))
+                                                                          .equals(v)));
+
+
 //
-//        final JsObjSpec objSpec = JsObjSpec.lenient("a",
-//                                                    JsSpecs.str.optional(),
-//                                                    "b",
-//                                                    integer(),
-//                                                    "c",
-//                                                    decimal
-//                                                   );
-//        JsObjParser objParser = new JsObjParser(objSpec);
+//        JsGen<JsArray> arrayGen = JsGens.array(objGen,
+//                                               10
+//        );
 //
-//        JsObjGen objGen = JsObjGen.of("a",
-//                                      JsGens.str.optional(),
-//                                      "b",
-//                                      JsGens.integer(),
-//                                      "c",
-//                                      JsGens.decimal
-//                                     );
+//        JsArrayParser arrayParser = new JsArrayParser(JsSpecs.arrayOf(objSpec));
 //
-//
-//        TestProperty.test(objGen,
-//                            v -> objParser.parse(v.toString()
+//        TestProperty.test(arrayGen,
+//                          v -> arrayParser.parse(v.toString()
 //                                                  .getBytes())
-//                                          .equals(v)
-//                ,
+//                                          .equals(v),
 //                          v -> {
 //                              System.out.println(v);
 //                              Assertions.fail("Equals after parsing serialized");
 //                          }
-//
-//                         );
-//        TestProperty.test(objGen,
-//                            v -> objParser.parse(new ByteArrayInputStream(v.toString()
+//        );
+//        TestProperty.test(arrayGen,
+//                          v -> arrayParser.parse(new ByteArrayInputStream(v.toString()
 //                                                                           .getBytes()))
 //                                          .equals(v),
 //                          v -> {
 //                              System.out.println(v);
 //                              Assertions.fail("Equals after parsing serialized");
 //                          }
-//                           );
-//
-//
-//        JsGen<JsArray> arrayGen = JsGens.array(objGen,
-//                                               10
-//                                              );
-//
-//        JsArrayParser arrayParser = new JsArrayParser(JsSpecs.arrayOf(objSpec));
-//
-//        TestProperty.test(arrayGen,
-//                            v -> arrayParser.parse(v.toString()
-//                                                    .getBytes())
-//                                            .equals(v),
-//                          v -> {
-//                              System.out.println(v);
-//                              Assertions.fail("Equals after parsing serialized");
-//                          }
-//                           );
-//        TestProperty.test(arrayGen,
-//                            v -> arrayParser.parse(new ByteArrayInputStream(v.toString()
-//                                                                             .getBytes()))
-//                                            .equals(v),
-//                          v -> {
-//                              System.out.println(v);
-//                              Assertions.fail("Equals after parsing serialized");
-//                          }
-//                           );
-//
-//    }
+//        );
+
+    }
 
     @Test
     public void test_numbers() {

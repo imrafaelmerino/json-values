@@ -40,14 +40,7 @@ public final class JsObjSpec implements JsSpec {
     }
 
 
-    /**
-     * static factory method to create a strict JsObjSpec of one mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @param key  the  key
-     * @param spec the mapping associated to the  key
-     * @return a JsObjSpec
-     */
+
     public static JsObjSpec strict(final String key,
                                    final JsSpec spec
     ) {
@@ -60,14 +53,7 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of one mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @param key  the key
-     * @param spec the mapping associated to the key
-     * @return a JsObjSpec
-     */
+
     public static JsObjSpec lenient(final String key,
                                     final JsSpec spec
     ) {
@@ -81,12 +67,7 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of two mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     public static JsObjSpec strict(final String key1,
                                    final JsSpec spec1,
                                    final String key2,
@@ -99,12 +80,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of two mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     public static JsObjSpec lenient(final String key1,
                                     final JsSpec spec1,
                                     final String key2,
@@ -116,12 +92,6 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of three mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(final String key1,
                                    final JsSpec spec1,
@@ -138,12 +108,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of three mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -160,13 +125,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec3));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of four mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @param spec4 the mapping associated to the fourth key
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -187,12 +146,7 @@ public final class JsObjSpec implements JsSpec {
                                  requireNonNull(spec4));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of four mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -213,12 +167,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec4));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of five mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -243,12 +192,7 @@ public final class JsObjSpec implements JsSpec {
                                  requireNonNull(spec5));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of five mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -273,12 +217,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec5));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of six mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
@@ -308,12 +247,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of six  mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -342,12 +276,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec6));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of seven mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
@@ -380,12 +309,7 @@ public final class JsObjSpec implements JsSpec {
                                  requireNonNull(spec7));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of seven  mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -418,12 +342,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec7));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of eight mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
@@ -461,12 +380,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of eight  mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -503,12 +417,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec8));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of nine mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
@@ -549,11 +458,7 @@ public final class JsObjSpec implements JsSpec {
                                  requireNonNull(spec9));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of nine  mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -638,12 +543,7 @@ public final class JsObjSpec implements JsSpec {
                                  requireNonNull(spec10));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of ten mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -688,12 +588,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec10));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of eleven mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             String key1,
@@ -742,12 +637,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec11));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of eleven mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             String key1,
@@ -796,12 +686,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec11));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of twelve mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -854,12 +739,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec12));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of twelve mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -912,12 +792,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec12));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of thirteen mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -974,12 +849,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec13));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of fourteen mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1040,12 +910,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec14));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of fourteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1106,12 +971,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec14));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of fifteen mappings. Lenient means that different
-     * keys than the defined are allowed, being valid any value associated to them
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1176,12 +1036,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec15));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of fifteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1246,12 +1101,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec15));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of sixteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1320,12 +1170,7 @@ public final class JsObjSpec implements JsSpec {
                                   requireNonNull(spec16));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of sixteen mappings. Strict means that different
-     * keys than the defined are allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1394,11 +1239,7 @@ public final class JsObjSpec implements JsSpec {
                                    requireNonNull(spec16));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of seventeen mappings. Strict means that different
-     * keys than the defined are not allowed
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1472,12 +1313,6 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec17));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of seventeen mappings. Lenient means that different
-     * keys than the defined are allowed
-     *
-     * @return a JsObjSpec
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1551,12 +1386,7 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec17));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of eighteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1634,12 +1464,7 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec18));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of eighteen mappings. Lenient means that different
-     * keys than the defined are allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1718,12 +1543,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of nineteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1807,12 +1627,7 @@ public final class JsObjSpec implements JsSpec {
 
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of nineteen mappings. Lenient means that different
-     * keys than the defined are allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -1894,12 +1709,7 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec19));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of twenty mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,
@@ -1985,12 +1795,7 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec20));
     }
 
-    /**
-     * static factory method to create a lenient JsObjSpec of twenty mappings. Lenient means that different
-     * keys than the defined are allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec lenient(
             final String key1,
@@ -2076,12 +1881,7 @@ public final class JsObjSpec implements JsSpec {
               requireNonNull(spec20));
     }
 
-    /**
-     * static factory method to create a strict JsObjSpec of thirteen mappings. Strict means that different
-     * keys than the defined are not allowed
-     *
-     * @return a JsObjSpec
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjSpec strict(
             final String key1,

@@ -31,10 +31,11 @@ public final class JsTupleGen implements Gen<JsArray> {
     }
 
     /**
-     *
-     * @param gen
-     * @param others
-     * @return
+     * Returns a tuple generator. The tuple is modeled with a JsArray. Each element generator
+     * is independent of each other, being created from a different seed
+     * @param gen the head element generator
+     * @param others the rest of generators
+     * @return a JsArray generator
      */
 
     @SafeVarargs

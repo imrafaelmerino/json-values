@@ -478,7 +478,9 @@ public class TestJsObjSpec {
                                                 "g",
                                                 JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
                                                                             JsStr.of("B")
-                                                ))
+                                                )),
+                                                "h",
+                                                JsSpecs.binary(it->it.length<=100).nullable()
         );
 
 
@@ -507,7 +509,9 @@ public class TestJsObjSpec {
                                                                    )
                                                           ),
                                                           "g",
-                                                          JsStr.of("A")
+                                                          JsStr.of("A"),
+                                                          "h",
+                                                          JsBinary.of("ssddssdfsd".getBytes(StandardCharsets.UTF_8))
                                                  )
         );
 

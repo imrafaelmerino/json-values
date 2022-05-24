@@ -399,8 +399,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
-    static Vector<JsValue> parse(final JsonParser parser
-    ) throws IOException {
+    static Vector<JsValue> parse(final JsonParser parser) throws IOException {
         Vector<JsValue> root = Vector.empty();
         while (true) {
             JsonToken token = parser.nextToken();
@@ -443,8 +442,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     static Stream<Pair<JsPath, JsValue>> streamOfArr(final JsArray array,
-                                                     final JsPath path
-    ) {
+                                                     final JsPath path) {
 
 
         requireNonNull(path);

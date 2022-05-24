@@ -14,8 +14,10 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  * Represents a JsInstant generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or passing an instant {@link InstantGen generator}
- * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * needs,  passing an instant {@link InstantGen generator} to the constructor.
+ *
+ * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
  *
@@ -25,6 +27,11 @@ public final class JsInstantGen implements Gen<JsInstant> {
     private static final Gen<JsInstant> arbitrary = new JsInstantGen(InstantGen.arbitrary());
     private final Gen<Instant> gen;
 
+    /**
+     * Creates a JsInstant generator from a specified instant generator
+     *
+     * @param gen the instant generator
+     */
     public JsInstantGen(final Gen<Instant> gen) {
         this.gen = requireNonNull(gen);
     }

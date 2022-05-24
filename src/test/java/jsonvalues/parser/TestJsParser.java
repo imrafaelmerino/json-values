@@ -1,6 +1,7 @@
 package jsonvalues.parser;
 
 import jsonvalues.*;
+import jsonvalues.gen.*;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -231,6 +232,44 @@ public class TestJsParser {
                                 parser.parse(a.toString()));
         Assertions.assertEquals(b,
                                 parser.parse(b.toString()));
+
+
+    }
+
+    @Test
+    public void test_parsing_nullable_arrays() {
+
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.arrayOfDec(0,
+                                                             1).nullable(),
+                                          "b",
+                                          JsSpecs.arrayOfInt(0,
+                                                             1).nullable(),
+                                          "c",
+                                          JsSpecs.array().nullable()
+        );
+
+
+        JsObjParser parser = new JsObjParser(spec);
+
+
+        JsObjGen gen = JsObjGen.of("a",
+                                   JsArrayGen.arbitrary(JsBigDecGen.arbitrary(),
+                                                        0,
+                                                        1),
+                                   "b",
+                                   JsArrayGen.arbitrary(JsIntGen.arbitrary(),
+                                                        0,
+                                                        1),
+                                   "c",
+                                   JsArrayGen.arbitrary(JsLongGen.arbitrary(),
+                                                        0,
+                                                        1)
+        ).setNullables("a", "b", "c");
+
+
+        Assertions.assertTrue(gen.sample(10000)
+                                 .allMatch(obj -> parser.parse(obj.toString()).equals(obj) ));
 
 
     }

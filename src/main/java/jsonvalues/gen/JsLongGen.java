@@ -12,8 +12,10 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  * Represents a JsLong generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or passing a long integer {@link LongGen generator}
- * to the constructor. Arbitrary generators produces uniformed distributions of values.
+ * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * needs,  passing a long integer {@link LongGen generator} to the constructor.
+ *
+ * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
  *
@@ -24,16 +26,32 @@ public final class JsLongGen implements Gen<JsLong> {
     private final Gen<Long> gen;
 
     /**
+     * Creates a JsLong generator from a specified long generator
      *
-     * @param gen
+     * @param gen the long generator
      */
     public JsLongGen(final Gen<Long> gen) {
         this.gen = requireNonNull(gen);
     }
 
     /**
+     * returns a biased generator that produces, with higher probability, potential problematic values
+     * that usually cause more bugs. These values are:
      *
-     * @return
+     * <pre>
+     * - {@link Long#MIN_VALUE}
+     * - {@link Integer#MIN_VALUE}
+     * - {@link Short#MIN_VALUE}
+     * - {@link Byte#MIN_VALUE}
+     * - 0
+     * - {@link Long#MAX_VALUE}
+     * - {@link Integer#MAX_VALUE}
+     * - {@link Short#MAX_VALUE}
+     * - {@link Byte#MAX_VALUE}
+     * </pre>
+     *
+     *
+     * @return a biased JsBigDec generator
      */
     public static Gen<JsLong> biased() {
         return biased;

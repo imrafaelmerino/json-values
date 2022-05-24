@@ -5,7 +5,9 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Arrays;
 
 public class TestJson {
 
@@ -151,6 +153,11 @@ public class TestJson {
                                 a.getBigDec(JsPath.path("/g"))
         );
 
+
+        Assertions.assertTrue(Arrays.equals("hi".getBytes(StandardCharsets.UTF_8),
+                                            a.getBinary(JsPath.path("/dfdfdsfddf"),
+                                                        () -> "hi".getBytes(StandardCharsets.UTF_8))));
+
         Assertions.assertEquals(BigDecimal.ONE,
                                 a.getBigDec(JsPath.path("/bye"),
                                             () -> BigDecimal.ONE)
@@ -198,6 +205,63 @@ public class TestJson {
 
     }
 
+    @Test
+    public void tests_json() {
+        Json a = JsObj.empty();
+
+        Json b = JsArray.empty();
+
+        Json c = a.set(JsPath.path("/a/b/3"),
+                       JsStr.of("hi"),
+                       JsStr.of(""));
+
+
+        Instant now = Instant.now();
+        Json d = b.set(JsPath.path("/0/a/b"),
+                       JsInstant.of(now));
+
+        Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/3")));
+        Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/0")));
+        Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/1")));
+        Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/2")));
+
+        Assertions.assertEquals(c,
+                                JsObj.parse(c.toPrettyString()));
+
+        Assertions.assertEquals(c,
+                                JsObj.parse(c.toPrettyString(10)));
+
+        Assertions.assertEquals(d,
+                                JsArray.parse(d.toPrettyString()));
+
+        Assertions.assertEquals(d,
+                                JsArray.parse(d.toPrettyString(10)));
+
+        Assertions.assertEquals(now,
+                                d.getInstant(JsPath.path("/0/a/b")));
+        Assertions.assertEquals(now,
+                                d.getInstant(JsPath.path("/10/a/b"),
+                                             () -> now));
+
+        Assertions.assertEquals(0,
+                                a.streamValues().count());
+
+        Assertions.assertEquals(1,
+                                c.streamValues().count());
+
+        Assertions.assertEquals(4,
+                                c.streamAll().count());
+
+        Assertions.assertEquals(0,
+                                b.streamValues().count());
+
+        Assertions.assertEquals(1,
+                                d.streamValues().count());
+
+        Assertions.assertEquals(1,
+                                d.streamAll().count());
+
+    }
 
     @Test
     public void test_times() {

@@ -26,7 +26,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     private final Gen<? extends JsValue> gen;
 
     private JsArrayGen(final Gen<? extends JsValue> gen,
-                      final int size
+                       final int size
     ) {
         if (size < 0) throw new IllegalArgumentException("size < 0");
         this.size = size;
@@ -34,7 +34,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param gen the element generator
+     * @param gen  the element generator
      * @param size the size of the generated array
      * @return a JsArray generator
      */
@@ -47,7 +47,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     * @param gen the element generator
+     * @param gen     the element generator
      * @param minSize the minimum size of the arrays
      * @param maxSize the maximum size of the arrays
      * @return a JsArray generator
@@ -72,8 +72,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
-     *
-     * @param gen the element generator
+     * @param gen     the element generator
      * @param minSize the minimum size of the arrays
      * @param maxSize the maximum size of the arrays
      * @return a JsArray generator
@@ -113,6 +112,7 @@ public final class JsArrayGen implements Gen<JsArray> {
 
     /**
      * Returns a supplier from the specified seed that generates a new JsArray each time it's called
+     *
      * @param seed the generator seed
      * @return a JsArray supplier
      */

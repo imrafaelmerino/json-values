@@ -996,34 +996,6 @@ public class TestJsObj {
 
     }
 
-    @Test
-    public void testJsObjFromIterable() {
-
-        Map<String, JsValue> map = new HashMap<>();
-
-        JsObj a = JsObj.ofIterable(map.entrySet());
-
-        Assertions.assertEquals(JsObj.empty(),
-                                a
-        );
-
-        map.put("a",
-                JsInt.of(1)
-        );
-        map.put("b",
-                JsStr.of("hi")
-        );
-
-        Assertions.assertEquals(
-                JsObj.ofIterable(map.entrySet()),
-                JsObj.of("a",
-                         JsInt.of(1),
-                         "b",
-                         JsStr.of("hi")
-                )
-        );
-
-    }
 
     @Test
     public void testJsObj() {
@@ -1113,11 +1085,14 @@ public class TestJsObj {
         Assertions.assertArrayEquals(o.getBinary("f"),
                                      "hola".getBytes(StandardCharsets.UTF_8));
 
+        Assertions.assertArrayEquals(o.getBinary("fa",
+                                                 () -> "hola".getBytes(StandardCharsets.UTF_8)),
+                                     "hola".getBytes(StandardCharsets.UTF_8));
+
         JsObj parsed = JsObj.parse(o.toString());
 
         Assertions.assertEquals(parsed,
-                                o
-        );
+                                o);
 
         Assertions.assertEquals(parsed.getStr("f"),
                                 Base64.getEncoder()

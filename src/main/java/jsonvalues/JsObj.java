@@ -79,14 +79,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return EMPTY;
     }
 
-    /**
-     * Returns a one-element immutable object.
-     *
-     * @param key name of a key
-     * @param el  JsValue to be associated to the key
-     * @return an immutable one-element JsObj
-     *
-     */
     public static JsObj of(final String key,
                            final JsValue el
     ) {
@@ -97,12 +89,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a two-element immutable object.
-     *
-     * @return an immutable two-element JsObj
-     *
-     */
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -117,13 +104,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a three-element immutable object.
-     *
-     * @return an immutable three-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -142,13 +122,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a four-element immutable object.
-     *
-     * @return an immutable four-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -172,12 +145,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a five-element immutable object.
-     * @return an immutable five-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -205,13 +172,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable six-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -243,13 +203,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable seven-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -285,13 +238,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable eight-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -331,13 +277,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable nine-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -381,13 +320,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable ten-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -435,13 +368,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable eleven-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -493,13 +420,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -555,13 +475,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -621,13 +535,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
+
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -691,13 +599,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -765,13 +666,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -844,13 +738,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -927,13 +814,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1014,13 +894,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1104,13 +977,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
-    /**
-     * Returns a six-element immutable object.
-     *
-     * @return an immutable twelve-element JsObj
-     *
-     */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1225,23 +1091,13 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
-    public static JsObj ofIterable(final Iterable<java.util.Map.Entry<String, JsValue>> xs) {
-        JsObj acc = JsObj.EMPTY;
-        for (java.util.Map.Entry<String, JsValue> x : requireNonNull(xs)) {
-
-            acc = acc.set(x.getKey(),
-                          x.getValue()
-            );
-        }
-        return acc;
-    }
 
     /**
      * Tries to parse the string into an immutable object.
      *
      * @param str the string to be parsed
      * @return a JsOb object
-     * @throws MalformedJson if the string doesnt represent a json object
+     * @throws MalformedJson if the string doesn't represent a json object
      */
     public static JsObj parse(final String str) {
 
@@ -1259,7 +1115,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      *
      * @param str the YAML to be parsed
      * @return a JsOb object
-     * @throws MalformedJson if the string doesnt represent a json object
+     * @throws MalformedJson if the string doesn't represent a json object
      */
     public static JsObj parseYaml(final String str) {
 
@@ -1337,8 +1193,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                                                              a -> streamOfArr(a,
                                                                                                               pair.first()
                                                                                              ),
-                                                                                             e -> Stream.of(pair)
-                                                                                 )
+                                                                                             e -> Stream.of(pair))
                                                                                  .apply(pair.second()))
         );
 
@@ -1367,11 +1222,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         requireNonNull(key);
         return ifNothingElse(() -> this.delete(key),
                              elem -> new JsObj(map.put(key,
-                                                       elem
-                             )
-                             )
-        )
-                .apply(requireNonNull(value));
+                                                       elem))).apply(requireNonNull(value));
     }
 
     public JsObj delete(final String key) {
@@ -1381,7 +1232,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     @Override
     public boolean containsValue(final JsValue el) {
-        return stream().anyMatch(p -> p.second().equals(requireNonNull(el)));
+        return map.values().contains(el);
     }
 
     /**
@@ -1526,7 +1377,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
-    public JsObj mapObjs(final Function<? super JsObj,? extends JsValue> fn) {
+    public JsObj mapObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapObjObjs.map(this,
                                 requireNonNull(fn)
         );
@@ -2176,28 +2027,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     @Override
     public boolean isObj() {
         return true;
-    }
-
-    /**
-     * Returns a pair with an arbitrary key of this object and its associated element. When using head
-     * and tail to process a JsObj, the key of the pair returned must be passed in to get the tail using
-     * the method {@link #tail()}.
-     *
-     * @return an arbitrary {@code Map.Entry<String,JsValue>} of this JsObj
-     * @throws UserError if this json object is empty
-     */
-    public Tuple2<String, JsValue> head() {
-        return map.head();
-    }
-
-    /**
-     * Returns a new object with all the entries of this json object except the one with the given key.
-     *
-     * @return a new JsObj
-     * @throws UserError if this json object is empty
-     */
-    public JsObj tail() {
-        return new JsObj(map.tail());
     }
 
     /**

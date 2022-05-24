@@ -15,12 +15,12 @@ import static java.util.Objects.requireNonNull;
 /**
  *
  * Represents a JsObj generator. It can be created using the static factory methods
- * <code>of</code> or inserting to an existing generator new key-value pairs with the method
- * {@link JsObjGen#set(String, Gen)}. Each element of the Json is generated with a new
- * seed that is calculated passing the original seed to the {@link SplitGen#DEFAULT default split generator }
+ * <code>of</code> or inserting new key-generator pairs to an existing JsObj generator
+ * with the method {@link JsObjGen#set(String, Gen)}. Each element of the Json is
+ * generated with a new seed that is calculated passing the original seed to the
+ * {@link SplitGen#DEFAULT split generator }
  *
- * There are factory methods to create up to 20-key generators. For bigger Json you
- * can use the {@link JsObjGen#set(String, Gen) set} method.
+ * There are factory methods to create generators of up to 20-key Json objects.
  *
  * Optional and nullable keys are specified with the
  * methods <code>setOptionals</code> and <code>setNullable</code>.
@@ -277,11 +277,7 @@ public final class JsObjGen implements Gen<JsObj> {
                                      gen8);
     }
 
-    /**
-     * static factory method to create a JsObGen of ten mappings
-     *
-     * @return a JsObjGen
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -325,11 +321,7 @@ public final class JsObjGen implements Gen<JsObj> {
                                      gen10);
     }
 
-    /**
-     * static factory method to create a JsObGen of eleven mappings
-     *
-     * @return a JsObjGen
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -377,11 +369,7 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen11);
     }
 
-    /**
-     * static factory method to create a JsObGen of twelve mappings
-     *
-     * @return a JsObjGen
-     */
+
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -433,11 +421,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen12);
     }
 
-    /**
-     * static factory method to create a JsObGen of thirteen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -493,11 +476,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen13);
     }
 
-    /**
-     * static factory method to create a JsObGen of fourteen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -557,11 +535,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen14);
     }
 
-    /**
-     * static factory method to create a JsObGen of fifteen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -625,11 +598,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen15);
     }
 
-    /**
-     * static factory method to create a JsObGen of sixteen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -697,11 +665,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen16);
     }
 
-    /**
-     * static factory method to create a JsObGen of seventeen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -773,11 +736,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen17);
     }
 
-    /**
-     * static factory method to create a JsObGen of eighteen mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -853,10 +811,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen18);
     }
 
-    /**
-     * static factory method to create a JsObGen of nineteen mappings
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -936,11 +890,6 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen19);
     }
 
-    /**
-     * static factory method to create a JsObGen of twenty mappings
-     *
-     * @return a JsObjGen
-     */
     @SuppressWarnings("squid:S00107")
     public static JsObjGen of(final String key1,
                               final Gen<? extends JsValue> gen1,
@@ -1024,6 +973,13 @@ public final class JsObjGen implements Gen<JsObj> {
                                       gen20);
     }
 
+    /**
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * the specified nullable keys. The value associated to a nullable key may or not be null
+     *
+     * @param nullables the optional keys
+     * @return a brand new JsObj generator
+     */
     public JsObjGen setNullables(final List<String> nullables) {
         return new JsObjGen(bindings,
                             optionals,
@@ -1031,14 +987,24 @@ public final class JsObjGen implements Gen<JsObj> {
         );
     }
 
+    /**
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * the specified nullable keys. The value associated to a nullable key may or not be null
+     *
+     * @param nullables the optional keys
+     * @return a brand new JsObj generator
+     */
     public JsObjGen setNullables(final String... nullables) {
         return setNullables(Arrays.stream(requireNonNull(nullables))
                                   .collect(Collectors.toList()));
     }
 
     /**
-     * @param optionals
-     * @return
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * the specified optional keys. An optional key may or not appear in the Json objects generated
+     *
+     * @param optionals the optional keys
+     * @return a brand new JsObj generator
      */
     public JsObjGen setOptionals(final List<String> optionals) {
         return new JsObjGen(bindings,
@@ -1047,8 +1013,11 @@ public final class JsObjGen implements Gen<JsObj> {
     }
 
     /**
-     * @param optional
-     * @return
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * the specified optional keys. An optional key may or not appear in the Json objects generated
+     *
+     * @param optional the optional keys
+     * @return a brand new JsObj generator
      */
     public JsObjGen setOptionals(final String... optional) {
         return setOptionals(Arrays.stream(requireNonNull(optional))
@@ -1056,9 +1025,11 @@ public final class JsObjGen implements Gen<JsObj> {
     }
 
     /**
-     * @param key
-     * @param gen
-     * @return
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance
+     * plus the specified by the params key and gen
+     * @param key the new key
+     * @param gen the generator associated to the new key
+     * @return a brand new JsObj generator
      */
     public JsObjGen set(final String key,
                         final Gen<? extends JsValue> gen

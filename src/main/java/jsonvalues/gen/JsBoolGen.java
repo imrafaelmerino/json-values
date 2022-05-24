@@ -21,7 +21,7 @@ public final class JsBoolGen implements Gen<JsBool> {
     private final Gen<Boolean> gen;
 
     /**
-     * Returns a JsBool generator from a boolean generator
+     * Creates a JsBool generator from a specified boolean generator
      * @param gen the boolean generator
      */
     public JsBoolGen(final Gen<Boolean> gen) {
