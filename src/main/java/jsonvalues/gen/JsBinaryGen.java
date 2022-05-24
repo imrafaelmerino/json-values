@@ -30,7 +30,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
      *
      * @param gen the array of bytes generator
      */
-    public JsBinaryGen(final Gen<byte[]> gen) {
+    private JsBinaryGen(final Gen<byte[]> gen) {
         this.gen = Objects.requireNonNull(gen);
     }
 

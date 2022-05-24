@@ -3,7 +3,10 @@ package jsonvalues.parser;
 import com.dslplatform.json.JsParserException;
 import fun.gen.BytesGen;
 import jsonvalues.*;
-import jsonvalues.gen.*;
+import jsonvalues.gen.JsBigDecGen;
+import jsonvalues.gen.JsIntGen;
+import jsonvalues.gen.JsObjGen;
+import jsonvalues.gen.JsStrGen;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
@@ -1092,7 +1095,7 @@ public class TestJsObjParser {
                                                     "d",
                                                     JsSpecs.binary().nullable(),
                                                     "e",
-                                                    JsSpecs.binary(it->it.length<=100).nullable()
+                                                    JsSpecs.binary(it -> it.length <= 100).nullable()
                                            )
                                            .setOptionals("a");
         JsObjParser objParser = new JsObjParser(objSpec);
@@ -1105,14 +1108,16 @@ public class TestJsObjParser {
                                       "c",
                                       JsBigDecGen.biased(),
                                       "d",
-                                      new JsStrGen(BytesGen.biased(0,
-                                                                   10).map(it -> Base64.getEncoder().encodeToString(it))),
+                                      BytesGen.biased(0,
+                                                      10)
+                                              .map(it -> JsStr.of(Base64.getEncoder().encodeToString(it))),
                                       "e",
-                                      new JsStrGen(BytesGen.biased(0,
-                                                                   100).map(it -> Base64.getEncoder().encodeToString(it)))
+                                      BytesGen.biased(0,
+                                                      100).map(it -> JsStr.of(Base64.getEncoder().encodeToString(it)))
                                   )
                                   .setOptionals("a")
-                                  .setNullables("d","e");
+                                  .setNullables("d",
+                                                "e");
 
         Assertions.assertTrue(objGen.sample(10000).allMatch(v -> objParser.parse(v.toString()
                                                                                   .getBytes())

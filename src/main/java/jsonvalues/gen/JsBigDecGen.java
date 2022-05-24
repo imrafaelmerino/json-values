@@ -32,7 +32,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      *
      * @param gen the decimal generator
      */
-    public JsBigDecGen(final Gen<BigDecimal> gen) {
+    private JsBigDecGen(final Gen<BigDecimal> gen) {
         this.gen = requireNonNull(gen);
     }
 

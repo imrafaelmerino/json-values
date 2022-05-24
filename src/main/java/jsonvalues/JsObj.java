@@ -2153,8 +2153,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         if (b.isEmpty()) return b;
 
         JsObj result = JsObj.empty();
-        for (final Tuple2<String, JsValue> head : a) {
-            final JsValue bElem = b.get(head._1);
+        for (Tuple2<String, JsValue> head : a) {
+            JsValue bElem = b.get(head._1);
             if ((bElem.isJson() && bElem.toJson()
                                         .equals(head._2,
                                                 ARRAY_AS
@@ -2174,10 +2174,10 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
         JsObj result = JsObj.empty();
-        for (final Tuple2<String, JsValue> aVal : a) {
+        for (Tuple2<String, JsValue> aVal : a) {
 
             if (b.containsKey(aVal._1)) {
-                final JsValue bVal = b.get(aVal._1);
+                JsValue bVal = b.get(aVal._1);
 
                 if (bVal.equals(aVal._2)) result = result.set(aVal._1,
                                                               aVal._2);
@@ -2202,7 +2202,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     ) {
         if (b.isEmpty()) return a;
         JsObj result = a;
-        for (final Tuple2<String, JsValue> head : b) {
+        for (Tuple2<String, JsValue> head : b) {
             if (!a.containsKey(head._1)) result = result.set(head._1,
                                                              head._2
             );
@@ -2220,7 +2220,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
         if (b.isEmpty()) return a;
         JsObj result = a;
-        for (final Tuple2<String, JsValue> bVal : b) {
+        for (Tuple2<String, JsValue> bVal : b) {
             if (!a.containsKey(bVal._1))
                 result = result.set(bVal._1,
                                     bVal._2

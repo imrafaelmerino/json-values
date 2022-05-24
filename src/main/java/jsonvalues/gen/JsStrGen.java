@@ -35,7 +35,7 @@ public final class JsStrGen implements Gen<JsStr> {
      *
      * @param gen the string generator
      */
-    public JsStrGen(Gen<String> gen) {
+    private JsStrGen(Gen<String> gen) {
         this.gen = requireNonNull(gen);
     }
 

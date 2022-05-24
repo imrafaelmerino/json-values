@@ -24,7 +24,7 @@ public final class JsBoolGen implements Gen<JsBool> {
      * Creates a JsBool generator from a specified boolean generator
      * @param gen the boolean generator
      */
-    public JsBoolGen(final Gen<Boolean> gen) {
+    private JsBoolGen(final Gen<Boolean> gen) {
         this.gen = requireNonNull(gen);
     }
 

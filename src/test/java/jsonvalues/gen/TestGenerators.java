@@ -128,7 +128,7 @@ public class TestGenerators {
                                                      JsIntGen.arbitrary()
                                    ),
                                    "g",
-                                   JsConsGen.cons(JsStr.of("a"))
+                                   Gen.cons(JsStr.of("a"))
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",
@@ -183,7 +183,7 @@ public class TestGenerators {
                                    "g",
                                    JsBigDecGen.arbitrary(),
                                    "h",
-                                   JsConsGen.cons(JsBool.TRUE),
+                                   Gen.cons(JsBool.TRUE),
                                    "i",
                                    Combinators.oneOf(JsStrGen.arbitrary(0,
                                                                         100),

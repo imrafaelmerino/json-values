@@ -9,7 +9,7 @@ final class OpFilterArrElems {
     }
 
     static JsArray filter(JsArray json,
-                          final BiPredicate<? super Integer, ? super JsPrimitive> predicate
+                          BiPredicate<? super Integer, ? super JsPrimitive> predicate
     ) {
 
         for (int i = json.size() - 1; i >= 0; i--) {
@@ -27,7 +27,7 @@ final class OpFilterArrElems {
 
 
     static JsArray filterAll(JsArray json,
-                             final Predicate<? super JsPrimitive> predicate) {
+                             Predicate<? super JsPrimitive> predicate) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
             JsValue value = json.get(i);

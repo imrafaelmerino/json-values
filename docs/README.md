@@ -92,7 +92,7 @@ First things first. Let's define a Json
 
 ```
 
-and create it using the factory methods provided by json-values
+and create it using the static factory methods provided by json-values
 
 ```java      
 import jsonvalues.*;
@@ -148,9 +148,9 @@ JsObjSpec personSpec =
 ```
 
 I’d argue that it is very expressive, concise, and straightforward. I call it json-spec.
-I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing specs feels like writing JSON.
-Strict specs don't allow keys that are not specified, whereas lenient ones do. The real
-power is that you can create specs from predicates and compose them:
+I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing 
+specs feels like writing JSON. Strict specs don't allow keys that are not specified, whereas 
+lenient ones do. The real power is that you can create specs from predicates and compose them:
 
 ```java    
 import jsonvalues.spec.JsObjSpec;
@@ -234,7 +234,7 @@ As you can see, the spec's structure remains the same, and it’s child’s play
 optional and nullable fields.
 
 Another exciting thing we can do with specs is parsing strings or bytes. Instead of parsing
-the whole JSON and then validating it, we can verify the JSON schema while parsing it and
+the whole Json and then validating it, we can verify the schema while parsing it and
 stop the process as soon as an error happens. After all, failing fast is important as well!
 
 ```java      
@@ -250,7 +250,7 @@ Another critical aspect of software development is data generation. It’s an es
 of property-based testing, a technique for the random testing of program properties very well
 known in FP. Computers are way better than humans at generating random data. You'll catch more
 bugs testing your code against a lot of inputs instead of just one. Writing generators, like
-specs, is as simple as writing JSON:
+specs, is as simple as writing Json:
 
 ```java      
 
@@ -281,16 +281,83 @@ JsObjGen personGen =
 
 
 Most generators have two static factory methods: _biased_ and _arbitrary_. The latter returns
-a uniform distribution, whereas the former generates with a high probability potential
-problematic values that tend to cause bugs in our code. Find below some distributions:
+a uniform distribution of values, whereas the former generates, with a higher probability, 
+potential problematic values that tend to cause bugs in our code. For example:
+
+* Integer generator
 
 ```java    
-
-
-TODO
-
-
+JsIntGen.biased()
 ``` 
+It produces with higher probability the values Integer.MAX_VALUE, Integer.MIN_VALUE, 
+Short.MAX_VALUE, Short.MIN_VALUE, Byte.MAX_VALUE, Byte.MIN_VALUE and zero
+
+
+```java    
+JsIntGen.biased(min,max)
+``` 
+
+It produces with higher probability the bounds of the interval min and max, and all the 
+above values that are between the specified interval.
+
+* Long generator
+
+```java    
+JsLongGen.biased()
+JsLongGen.biased(min, max)
+``` 
+
+Same values as the integer generator plus Long.MAX_VALUE and Long.MIN_VALUE
+
+* String generator
+
+```java    
+JsStrGen.biased(min, max)
+``` 
+produces with higher probability the blank string of length min and max
+
+If the predefined static factory methods doesn't suit your needs, you
+can always create a new generator using the primitive type constructors 
+and  the function map or using some combinator:
+
+```java  
+import fun.gen.Gen;
+import fun.gen.Combinators;
+import jsonvalues.gen.JsCons;
+
+
+Gen<String> mygenetaror = seed -> () -> seed.nextInt() % 2 == 0 ? "even" : "odd";
+
+Gen<JsStr> parity = mygenetaror.map(JsStr::of);
+
+//using the oneOf combinator
+
+Gen<JsStr> parity = Combinators.oneOf("even",
+                                      "odd"
+                                     )
+                               .map(JsStr::of);
+                                                          
+```
+
+You can combine two generator and specify the odd weight assigned to each one
+
+```java 
+// 20% alphaumeric strings and 80% digits
+Gen<JsStr> gen = Combinators.freq(new Pair<>(2, JsStrGen.alphanumeric(0, 10)),
+                                  new Pair<>(8, JsStrGen.digits(0,10)));
+                                 
+// 30% long  and 70% integers                                  
+Gen<JsValue> gen = Combinators.freq(new Pair<>(3, JsLongGen.biased()),
+                                    new Pair<>(7, JsIntGen.biased()));                                
+
+```
+
+
+Go to the javadoc to get more details about every generator. json-values
+generators are built on top of the generators of java-fun.
+
+
+
 
 Let's take a look at some very common transformations using the _map_ functions.
 The map function doesn't change the structure of the Json. This is a pattern

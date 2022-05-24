@@ -30,7 +30,7 @@ public final class JsLongGen implements Gen<JsLong> {
      *
      * @param gen the long generator
      */
-    public JsLongGen(final Gen<Long> gen) {
+    private JsLongGen(final Gen<Long> gen) {
         this.gen = requireNonNull(gen);
     }
 

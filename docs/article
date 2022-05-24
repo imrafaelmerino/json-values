@@ -1,0 +1,618 @@
+It’s ubiquitous to have to navigate through recursive data structures like Json objects and arrays to find, insert, and modify data. It’s a cumbersome and error-prone task (a NullPointerException is always lurking around) that requires a defensive style of programming with much boilerplate code. The more nested the structure is, the worse. FP uses optics to cope with these limitations.
+
+I'm going to follow a top-down approach and show an example of a function crafted with optics.
+
+ Function<JsObj, JsObj> modifyPerson =
+      modifyAge.apply(n -> n + 1)
+               .andThen(modifyName.apply(String::trim))
+               .andThen(setCity.apply("Paris"))
+               .andThen(modifyLatitude.apply(lat -> -lat))
+               .andThen(addLanguage.apply("Lisp"));
+
+No if-else conditions, no null checks, and I'd say it's pretty expressive and concise. You'll end up with such simple, readable, and maintainable code working with optics.
+Before getting into more details about optics and their implementation in json-values, I'm going to explain ADTs.
+
+A type is nothing else than a name for a set of values. Not like objects, they don't have any behavior. We can operate with types. Given the types A and B and their domains:
+
+ A = { "a", "b" }
+ B = { 1, 2, 3 }
+
+It's possible to create new types out of them. We can pair A and B and get a tuple of two elements:
+
+T = ( A, B )
+T = [ ("a", 1), ("a", 2), ("a", 3), ("b", 1), ("b", 2), ("b", 3) ]
+
+The order matter; (B, A) would be a different type. Tuples are product-types ( 2 x 3 possible values).
+
+We can group A and B in fields and get a record:
+
+R = { f: A,  f1: B }
+R = [
+     { f:"a", f1:1}, { f:"a", f1:2}, { f:"a", f1:3}, { f:"b", f1:1},
+     { f:"b", f1:2}, { f:"b", f1:3}
+    ]
+
+The order of the fields doesn't matter. Records are other class of product-types (2 x 3 possible values). Java added records in release 14. Thank god!
+
+We can sum A and B and get a sum-type:
+
+S = A | B
+S= [ "a", "b", 1, 2, 3 ]
+
+It has  2 + 3 possible values. A sum-type is a type that can be one of the multiple possible options. In other words, S is either A or B.
+
+We can consider a JsObject a record and a JsArray a tuple. It's possible to generalize and model both of them as records of paths and their associated values:
+
+Json = { path: JsValue, path1: JsValue, path2: JsValue, ... }
+
+Paths represent the full location of an element in a Json. They have the type JsPath. On the other hand, JsValue is a sum-type that represents any json element:
+
+JsValue = JsNumber | JsStr | JsBool | JsObj | JsArray | JsNull | JsNothing
+ JsNumber = JsInt | JsLong | JsBigInt | JsDouble | JsDec
+
+
+Considering the following Json:
+
+{
+ "name": "Rafael",
+ "age": 37,
+ "languages": ["Java", "Scala"],
+ "address":{
+            "street": "Elm street",
+            "coordinates": [12.3, 34.5]
+           }
+}
+
+It can be modeled as the following record:
+
+ {
+  "name": "Rafael",
+  "age": 37,
+  "languages/0": "Java",
+  "languages/1": "Scala",
+  "address/street": "Elm street",
+  "address/coordinates/0": 12.3,
+  "address/coordinates/1": 34.5,
+  *: JsNothing
+ }
+
+As you may notice, *  represents all the paths not defined for that Json, and JsNothing is their associated value. This model is convenient for setting two of the most critical methods of the Json class:
+
+public JsValue get(JsPath path);
+
+public Json set(JsPath path, JsValue value);
+
+The get method always returns a JsValue, no matter what path is passed in. It's a total function. Functional programmers strive for total functions. Their signature still reflects reality. No exceptions and no surprises. Following the same philosophy, if you set a value at a specific path, it will always be created. The next line of code after setting that value, you can count on it will be at the specified path. The following property always holds:
+
+json.set(path,value).get(path) == value
+
+What do you think setting JsNothing at a path does? Well, it has to remove the value, so that get returns JsNothing:
+
+jsObj.set(path, JsNothing).get(path) == JsNothing
+
+As was pointed out in the first post of this series, FP has to do with honesty. Establishing laws makes it easier to reason about the code we write. By the way, the set method always returns a brand-new json. If you remember well, Jsons are immutable and implemented with persistent data structures in json-values.
+
+JsObj.empty().set(path("/a/b"), JsStr.of("foo"));
+// { a: { b: "foo"} }
+
+JsObj.empty().set(path("/a/b/2"), JsInt.of(1));
+// { a: b: [null, null, 1] }
+
+// we can pad arrays with an arbitrary value
+JsArray.empty().set(path("/a/b/2"), JsInt.of(1), JsInt.of(0));
+// { a: b: [0, 0, 1] }
+
+JsObj.empty().get("a") == JsNothing.NOTHING
+
+JsArray.empty().get(3) == JsNothing.NOTHING
+
+Summing up:
+Product types and sum-types are two essential classes of ADT.
+JsValue is a sum-type.
+JsPath represents the location of an element in a Json.
+A Json can be seen as a record of paths and their bindings.
+JsNothing is a special JsValue that makes the function get total.
+
+In FP, optics are used to work with ADTs. There are different kinds of optics. Lenses and Optionals work great with product-types. Prisms help us work with sum-types. Optics allow us to separate concerns.
+It's important to distinguish the following concepts:
+The action. An action is a function that executes some operation over the focus of a path.
+The most important actions are get, set and, modify.
+
+The path. The path indicates which data to focus on and where to find it within the structure. In our case, a JsPath.
+
+The structure. The structure is the hunk of data that we want to work with. The path selects data from within the structure,
+and that data will be passed to the action. In our case, the structure could be any Json, either a JsObj or a JsArray.
+
+The focus. The smaller piece of the structure indicated by the path. The focus will be passed to the action. In our case, the focus is the sum-type JsValue.
+We'll see that we can work with primitive types as well.
+
+A Lens zooms in a piece of data within a larger structure. A Lens must never fail to get or modify its focus. Find below an example creating some lenses with json-values:
+
+Lens<JsObj,JsValue> nameLens = JsObj.lens.value("name");
+
+Lens<JsObj,JsValue> latitudeLens =
+          JsObj.lens.value(path("/address/coordinates/0"));
+
+Lens<JsObj,JsValue> longitudeLens =
+          JsObj.lens.value(path("/address/coordinates/1"));
+
+To create a Lens, we just need the location of the focus we want to work with. A Lens type takes two parameters S, the whole structure, and F, the focus:
+
+lens :: Lens<S, F>
+S = JsObj | JsArray
+F = JsValue | primitive types
+
+Later on, we'll see under what conditions we can work with lenses where the focus is a primitive type like a string or an integer instead of a JsValue.
+
+Let's discuss the type of the most important actions of a lens:
+
+get :: Function<JsObj,JsValue>
+set :: Function<JsValue,Function<JsObj, JsObj>>
+modify ::  Function<Function<JsValue,JsValue>, Function<JsObj, JsObj>>
+
+Imagine the focus is the name of a person. The get action is a function that takes a person and returns their name. The set action is a function that takes a new name and returns a function that, given a person, it produces a new one with the new name.
+The modify action is like set, but instead of a name, it takes a function to produce a new name from the old one.
+Let's check out a practical example.
+
+Lens<JsObj, JsValue> nameLens = JsObj.lens.value("name");
+
+JsStr name = JsStr.of("Rafael");
+
+JsObj person = nameLens.set.apply(name)
+                           .apply(JsObj.empty());
+assert nameLens.get.apply(person)
+                   .equals(name);
+
+Function<JsValue, JsValue> toUpper = value ->
+    value.isStr() ? value.toJsStr().map(String::toUpperCase) :  value;
+JsObj newPerson = nameLens.modify.apply(toUpper)
+                                 .apply(person);
+
+assert nameLens.get.apply(newPerson)
+                   .equals(JsStr.of("RAFAEL"));
+
+
+I’ve implemented the toUpper function in a very imperative fashion. We’ll see in just a moment how to do the same thing with a Prism.
+
+Do notice that it’s at the very end when we passed in the person Json into the functions. In OOP, it would be just the opposite, the starting point would be a person object, and then we would get or set a value with a getter or setter. In FP, we describe actions; then, we may compose them, and it’s at the last moment when we specify the inputs and execute them.
+
+A Lens must respect the getSet law, which states that if you get a value and set it back in, the result is a value identical to the original one. A side effect of this law is that set must only update the value it points to, nothing else. On the other hand, the setGet law states that if you set a value, you always get the same value. This law guarantees that set is updating a value inside of the container. Laws are relevant in FP. They help us reason about our code more clearly.
+
+// setGet law
+assert set.apply(value).andThen(get).equals(value);
+
+//getSet law
+assert set.apply(get.apply(obj)).equals(get.apply(obj));
+
+Let's change gears and talk about Prisms. If you think of a Prism does to light, it happens the same with the sum-type JsValue. We have several subtypes to consider, and we want to focus on a specific one. Every type in json-value has a Prism. Find below some of them:
+
+JsStr.prism   :: Prism<JsValue,String>
+JsInt.prism   :: Prism<JsValue,Integer>
+JsLong.prism  :: Prism<JsValue,Long>
+JsBool.prism  :: Prism<JsValue,Boolean>
+JsObj.prism   :: Prism<JsValue,JsObj>
+JsArray.prism :: Prism<JsValue,JsArray>
+
+Considering the Prism defined for the JsStr  type, let's take a look at the most important actions and their signatures:
+
+getOptional    :: Function<JsValue, Optional<String>>
+
+modify         :: Function<Function<String, String>,
+                           Function<JsValue, JsValue>>
+
+modifyOptional :: Function<Function<String, String>,
+                           Function<JsValue, Optional<JsValue>>>
+
+The getOptional function takes a JsValue, and if it's not a JsStr, it returns an Optional.empy. If it's a JsStr, it returns its value wrapped in an Optional. Nothing exceptional, isn't it?
+The modify function  is handy. I use it all the time. It takes a function to map strings and returns a function from JsValue to JsValue. If the input value is a JsStr, it applies the map function on it and returns it. If it is not a JsStr, we can not use the map function, and the input is returned as it was. Do notice that we don't care about the success of the operation. If we do, we can use the modifyOptional action.  It's the same, but when de map function can not be applied, an empty Optional is returned.
+Let's put some examples:
+
+assert JsStr.prism.getOptional.apply(JsStr.of("hi!"))
+                              .equals(Optional.of("hi!"));
+
+// 1 is not a string, empty is returned
+assert JsStr.prism.getOptional.apply(JsInt.of(1))
+                              .equals(Optional.empty());
+
+assert JsStr.prism.modify.apply(String::toUpperCase)
+                         .apply(JsStr.of("hi!"))
+                         .equals(JsStr.of("HI!"));
+
+ // 1 is not a string, the same value is returned
+ assert JsStr.prism.modify.apply(String::toUpperCase)
+                          .apply(JsInt.of(1))
+                          .equals(JsInt.of(1));
+
+assert JsInt.prism.getOptional.apply(JsInt.of(2))
+                              .equals(Optional.of(2));
+
+assert JsInt.prism.getOptional.apply(JsStr.of("hi!"))
+                              .equals(Optional.empty());
+
+assert JsInt.prism.modify.apply(n -> n  + 1)
+                  .apply(JsInt.of(1))
+                  .equals(JsInt.of(2));
+
+assert JsInt.prism.modify.apply(n -> n  + 1)
+                  .apply(JsNull.NULL)
+                  .equals(JsNull.NULL);
+
+assert JsInt.prism.modifyOptional.apply(n -> n  + 1)
+                  .apply(JsNull.NULL)
+                  .equals(Optional.empty());
+
+And finally, let's go back to the modifyPerson we defined previously and implement it step by step using lenses and prisms.
+
+Lens<JsObj, JsValue> nameLens = JsObj.lens.value("name");
+
+Lens<JsObj, JsValue> ageOpt = JsObj.lens.value("age");
+
+Lens<JsObj, JsValue> cityLens = JsObj.lens.value(path("/address/city"));
+
+Lens<JsObj, JsValue> lanLens = JsObj.lens.value("languages");
+
+JsPath latPath = JsPath.path("/address/coordinates/0");
+Lens<JsObj, JsValue> latLens = JsObj.lens.value(latPath);
+
+Function<IntFunction<Integer>,Function<JsObj, JsObj>> modifyAge =
+      fn -> ageOpt.modify.apply(JsInt.prism.modify.apply(fn::apply));
+
+Function<Function<String,String>,Function<JsObj, JsObj>> modifyName =
+      fn -> nameLens.modify.apply(JsStr.prism.modify.apply(fn::apply));
+
+Function<String, Function<JsObj, JsObj>> addLanguage =
+ language -> {
+  Function<JsArray,JsArray> addLanToArr = a->a.append(JsStr.of(language));
+  return lanLens.modify.apply(JsArray.prism.modify.apply(addLanToArr));
+ };
+
+Function<String, Function<JsObj, JsObj>> setCity =
+      city -> cityLens.set.apply(JsStr.of(city));
+
+Function<Function<Double, Double>, Function<JsObj,JsObj>> modifyLatitude =
+      fn -> latLens.modify.apply(JsDouble.prism.modify.apply(fn));
+
+And finally:
+
+ Function<JsObj, JsObj> modifyPerson =
+      modifyAge.apply(n -> n + 1)
+               .andThen(modifyName.apply(String::trim))
+               .andThen(setCity.apply("Paris"))
+               .andThen(modifyLatitude.apply(lat -> -lat))
+               .andThen(addLanguage.apply("Lisp"));
+
+The take away is how concise, declarative, and expressive the function modifyPerson is in the above example.
+ Besides, it's utterly safe without writing any null check.
+
+In the previous example, we worked with the sum-type JsValue all the time; that's why we had to use Prisms. It's possible and convenient to work with more specific types like primitives, json objects, and arrays, instead of JsValue. If you remember well, a lens can not fail, so the focus must exist and has the expected type. And what happens if the focus doesn't exist? We can then use an Optional, another kind of optic (don't confuse with java.util.Optional). Summing up:
+Defining a Lens<JsObj, String> is valid if the focus exists and it's a string
+Defining an Option<JsObj, Integer> is valid if the focus is a string (it's ok if it doesn't exist). It's called Option and not Optional to not mix it up with java.util.Optional
+Defining a Lens<JsObj, JsValue> is valid always. It requires Prisms to manipulate the focus.
+Let's rewrite the modifyPerson defining lenses with more specific types instead of JsValue. We validate the person Json with a spec before applying the function, which makes the operation safe.
+
+JsObjSpec addressSpec =
+           JsObjSpec.lenient("street",str,
+                             "coordinates", tuple(decimal,
+                                                  decimal
+                                                 )
+                            );
+
+JsObjSpec personSpec =
+           JsObjSpec.strict("name", str,
+                            "languages", arrayOfStr,
+                            "age", integer,
+                            "address", addressSpec.optional()
+                           );
+
+Lens<JsObj, String> nameLens = JsObj.lens.str("name");
+
+Lens<JsObj, Integer> ageLens = JsObj.lens.intNum("age");
+
+Lens<JsObj, JsArray> lanLens = JsObj.lens.array("languages");
+
+Option<JsObj, String> cityOpt = JsObj.optional.str(path("/address/city"));
+
+JsPath addressPath = JsPath.path("/address/coordinates/0");
+Option<JsObj,Double> latLens = JsObj.optional.doubleNum(addressPath);
+
+Function<JsObj, JsObj> modifyPerson =
+      ageLens.modify.apply(n -> n + 1)
+             .andThen(nameLens.modify.apply(String::trim))
+             .andThen(cityOpt.set.apply("Paris"))
+             .andThen(latLens.modify.apply(lat -> -lat))
+             .andThen(lanLens.modify.apply(a -> a.append(JsStr.of("Lisp"))));
+
+Set<JsErrorPair> errors = personSpec.test(person);
+if(errors.isEmpty()) {
+    JsObj newPerson = modifyPerson.apply(person);
+    ....
+}
+
+Another property that makes optics very attractive is that we can compose them to traverse the whole structure.
+For example, we can compose lenses:
+
+Lens<JsObj,JsObj> address = JsObj.lens.obj("address");;
+
+Lens<JsObj,JsArray> coordinates = JsObj.lens.array("coordinates");
+
+Lens<JsArray,Double> latitude = JsArray.lens.doubleNum(0);
+
+Lens<JsObj, Double> personLatitude = address.compose(coordinates)
+                                            .compose(latitude)
+
+In the case of json-values, it is usually more convenient to use a JsPath pointing to the latitude to
+get the same result, as we did in the above examples:
+
+Lens<JsObj,Double> personLatitude =
+         JsObj.lens.doubleNum(path("/address/coordinates/0"));
+
+Using a path instead of composing lenses is a less modular approach, though.
+We can compose Optionals as well:
+
+Option<JsObj,JsObj> address = JsObj.optional.obj("address");;
+
+Option<JsObj,JsArray> coordinates = JsObj.optional.array("coordinates");
+
+Option<JsArray,Double> latitude = JsArray.optional.doubleNum(0);
+
+Option<JsObj, Double> personLatitude = address.compose(coordinates)
+                                              .compose(latitude);
+
+As with lenses, we can use a JsPath instead of composing Optionals, with the same considerations.
+
+Option<JsObj,Double> personLatitude =
+         JsObj.optional.doubleNum(path("/address/coordinates/0"));
+
+Lenses, Optionals, and Prisms are related. Composing a lens and a prims returns and Optional:
+
+lens :: Lens<JsObj, JsValue>
+
+Option<JsObj, String> optional = lens.compose(JsStr.prims)
+
+Option<JsObj, Integer> optional = lens.compose(JsInt.prims)
+
+Option<JsObj, Long> optional = lens.compose(JsLong.prims)
+
+Option<JsObj, Boolean> optional = lens.compose(JsBool.prims)
+
+Optics, like many other concepts in FP, can be very well explained using Category Theory. I strongly recommend watching the talk "Beyond Scala Lenses." See the references for further details.
+
+json-values is simple! Open a JShell and start interacting with the library right away!
+
+I want to wrap up with a final reflection. Declarative code and FP are not the same things. FP is declarative by nature but not the other way around. FP is a philosophy that has to do with honesty. Pure functions don't lie. Adopting a new paradigm has to hurt; it's a long process that takes time, practice, and study. Java idioms like Optional, pattern-matching, and streams, to name just a few, makes your code more declarative, which is excellent, but not necessarily more functional.
+
+REFERENCES
+Optics by example. Functional lenses in Haskell - By Chris Penner
+Beyond Scala Lenses - Julien Truffaut
+Monocle - Scala library by Julien Truffaut
+json-values - Java library by Rafael Merino
+json-scala-values - Scala version of json-values by Rafael Merino
+
+
+
+
+////////////////////////////////
+
+
+
+
+https://matthewjamestaylor.com/create-fractals-with-recursive-drawing
+
+This is the first post in the series, "The value of json values". This first article introduces some impressive recursive data structures to model some essential concepts in software development like data validation and generation,  parsers, futures, suppliers, and interactive programs. json-values is a new functional java library to work with jsons. This series shows some crucial concepts in Functional Programming (hereafter referred to as FP), and how to apply them in Java.
+
+The first and most important virtue of json-values is that Jsons are immutable objects implemented with persistent data structures, better known in FP jargon as values. As Pat Hellan said, immutability changes everything. A must-see and compelling talk that elaborates on the advantages of avoiding mutation and working with immutable data structures is the value of values from Rich Hickey.
+
+It's a fact that working with values leads to code with fewer bugs, more readable, and easier to maintain. Item 17 of Effective Java states that we must minimize mutability. Still, sometimes it's at the cost of losing performance because of copy-on-write approach is very inefficient for significant data structures. Here is when persistent data structures come into play.
+
+The standard Java programmer finds it strange to work without objects and all its machinery of frameworks and annotations. FP is all about functions and values, that's all. I'm going to try to cast some light on how we can deal and manipulate Jsons with json-values following a purely functional approach. First things first, let's create a Json object:
+
+JsObj.of("name", JsStr.of("Rafael"),
+         "surname", JsStr.of("Merino García"),
+         "languages", JsArray.of("Java", "Clojure", "Scala"),
+         "age", JsInt.of(37),
+         "address", JsObj.of("street", JsStr.of("Elm Street"),
+                             "number", JsInt.of(12),
+                             "city", JsStr.of("Madrid"),
+                             "coordinates", JsArray.of(45.9, 18.6)
+                            )
+        );
+
+As you can see, its definition is like raw Json. It’s a recursive data structure. You can nest as many Json as you want to. Think of any imaginable Json, and you can write it in no time.
+
+But what about validating a Json. We can define the schema of a Json following precisely the same approach:
+
+JsObjSpec.strict("name",str,
+                 "surname",str,
+                 "languages", arrayOfStr,
+                 "age",integer,
+                 "address",JsObjSpec.lenient("street",str,
+                                             "number",any,
+                                             "city",str,
+                                             "coordinates",tuple(decimal,
+                                                                 decimal
+                                                                )
+                                            )
+                );
+
+I’d argue that it is very expressive, concise, and straightforward. I call it json-spec. I named it after a Clojure library named spec. Writing specs feels like writing Jsons. Strict specs don't allow keys that are not specified, whereas lenient ones do. The real power is that you can create specs from predicates and compose them.
+
+BiFunction<Double,Double, Predicate<BigDecimal>> range =
+ (min,max) -> dec -> dec.doubleValue() <= max && dec.doubleValue() >= min;
+
+Predicate<BigDecimal> latitudeRange = range.apply(-180.0,180.0);
+
+Predicate<BigDecimal> longitudeRange = range.apply(-90.0,90.0);
+
+JsObjSpec addressSpec =
+        JsObjSpec.lenient("street", str.nullable(),
+                          "number", any(v -> v.isStr() || v.isInt()),
+                          "city",str.optional(),
+                          "coordinates",tuple(decimal(latitudeRange),
+                                              decimal(longitudeRange)
+                                             )
+                         );
+
+JsObjSpec personSpec =
+        JsObjSpec.strict("name", str(s -> s.length() < 255),
+                         "surname", str(s -> s.length() < 255),
+                         "languages", arrayOfStr(s -> s.length() < 128),
+                         "age", integer(n-> n >= 16),
+                         "address",addressSpec
+                        );
+
+As you can see, the structure of the spec remains the same, and it’s child’s play to define optional and nullable fields.
+
+Another exciting thing we can do with specs is parsing strings or bytes. Instead of parsing the whole Json and then validating it,  we can verify the Json while parsing it and stop the process as soon as an error happens. After all, failing fast is important as well!
+
+// spec :: JsObjSpec
+// json :: String or byte[]
+
+JsObjParser parser = new JsObjParser(spec);
+
+JsObj obj = parser.parse(json);
+
+Another critical aspect of software development is data generation. It’s an essential aspect of Property-Based testing, which is a technique for random testing of program properties very well known in FP. Computers are way better than humans at generating random data. You'll catch more bugs testing your code against a lot of inputs instead of just one. Writing generators, like specs, is as simple as writing Jsons:
+
+ JsObjGen.of("name",alphabetic,
+             "surname",alphabetic,
+             "age", choose(16, 100),
+             "address",JsObjGen.of("street",alphabetic.nullable(),
+                                   "number", oneOf(choose(0,1000),
+                                                   alphanumeric
+                                                  ),
+                                   "city",alphabetic.optional(),
+                                   "coordinates",tuple(decimal,
+                                                       decimal
+                                                      )
+                                  )
+            );
+
+Consider the following method testProp. It shows the essence of Property-Based testing, even if it's far from being a real implementation like Quickcheck or ScalaCheck. You pass in a generator and a predicate representing a property that your code has to satisfy. Then it is tested against randomized input data produced by the generator. You have to indicate the number of iterations; otherwise, it never ends!
+
+ /**
+   @param gen       generator to produce randomized input data
+   @param prop the  property to be tested
+   @param times     number of iterations
+   */
+  public void testProp(JsGen<JsObj> gen,
+                       Predicate<JsObj> prop,
+                       int times
+                      )
+  {
+    Supplier<JsObj> supplier = gen.sample();
+    Stream<JsObj> stream = Stream.generate(supplier);
+    Assertions.assertTrue(stream.limit(times)
+                                .allMatch(prop)
+                         );
+  }
+
+Data generation and validation are critical in software. To be able to generate and validate your data with such concise and readable data structures has a significant impact on productivity and maintainability.
+
+So far, we’ve modeled Jsons, Json generators, and Json specs with the same recursive data structure. But what about futures? Why not use the same philosophy to implement a Json future?
+
+CompletableFuture<JsValue> name, surname, age, street, city ...
+
+var future =
+       JsObjFuture.of("name",name,
+                      "surname",surname,
+                      "age",age,
+                      "address",JsObjFuture.of(
+                                           "street",street,
+                                           "number",number,
+                                           "city",city,
+                                           "coordinates",tuple(latitude,
+                                                               longitude
+                                                              )
+                                              )
+
+                     );
+
+CompletableFuture<JsObj> compFuture = future.get();
+
+JsObj obj = compFuture.get();
+
+It’s worth highlighting that JsObjFuture and JsArrayFuture are just data structures that describe side effects, in this case, a bunch of blocking operations modeled with futures. Nothing is running behind the scenes until we execute the program with the get method. It’s called in FP jargon functional effects. We separate the description of an application with side effects from its interpretation and execution.
+
+Will project Loom kill CompletableFuture? It’s is an interesting question. If we don’t have to worry about blocking OS threads because fibers take over that responsibility, why don’t we just use suppliers instead of futures?
+
+Supplier<JsValue> name, surname, age, street, city ...
+
+var supplier =
+  JsObjSupplier.of("name", name,
+                   "surname", surname,
+                   "age", age,
+                   "address", JsObjSupplier.of(
+                                             "street", street,
+                                             "number", number,
+                                             "city", city,
+                                             "coordinates",tuple(latitude,
+                                                                 longitude
+                                                                )
+                                              )
+                  );
+
+JsObj person = supplier.get();
+
+As with objects, specs, generators, and futures, writing suppliers is trivial.
+
+Another functional effect developed in json-values is JsObjConsole and JsArrayConsole. They describe interactive programs on the console. When the method exec is invoked, the program prints out each key or index of the Json, one by one. It waits for the user to type in its value and press enter. When the user has finished, the program composes the Json and returns it:
+
+var program =
+     JsObjConsole.of("name",read(str),
+                     "surname", read(str),
+                     "age", read(integer),
+                     "languages", read(arrayOfStr),
+                     "address",JsObjConsole.of(
+                                        "street",read(str),
+                                        "number",read(str),
+                                        "coordinates",tuple(read(decimal),
+                                                            read(decimal)
+                                                           )
+                                              )
+                    );
+
+JsObj person = program.exec();
+
+System.out.println(person.toString());
+
+Do notice that the read method takes in a spec as a parameter. The value introduced by the user has to conform to that spec; otherwise, an error message is printed, asking the user for a valid value. After three failing attempts, the process skips the current path and asks for the next one. If the user presses the enter key without typing in anything, the process moves on to the following value. Find below a snapshot during the execution of the program:
+
+/name -> 10
+Uppsss: Expecting '"' for string start. Found 1 at position: 1
+/name -> "Rafael"
+/surname ->
+/languages ->
+
+The name spec is a string, but the user introduced an integer, so the program printed out an error on the console and asked again for the name. When the user typed in a valid name, the program moved on to the next field, the surname. The user skipped the surname pressing the enter key and then appeared the following key, which is languages.
+Find below the complete execution of the program:
+
+/name -> 10
+Uppsss: Expecting '"' for string start. Found 1 at position: 1
+/name -> "Rafael"
+/surname ->
+/age -> "37"
+Uppsss: Error parsing number at position: 0, before: `"37"`
+/age -> 37
+/address ->
+  /address/street ->
+  /address/number ->
+  /address/coordinates ->
+      /address/coordinates/0 -> 40.412345
+      /address/coordinates/1 -> -3.456765
+{"name":"Rafael","address":{"coordinates":[40.412345,-3.456765]},"age":37}
+
+So far, we've seen different recursive data structures to model json objects, specs, generators, futures, suppliers, and interactive programs on the console. You can open a JShell and start writing and testing them right away.  It should be easy to interact with the code we develop. A unit test is not a proper way of interacting with the software you write. You and your code will end up growing apart.
+
+In the next posts, I'll talk about optics, functors, and performance. Stay tuned!
+
+REFERENCES
+
+The value of values - by Rich Hickie
+spec - Clojure library
+Agile $ Robustness: Clojure spec - by Stuart Halloway
+ScalaCheck - Scala library for Property-Based testing
+QuickCheck - Haskell library for Property-Based testing
+Effective Java - by Joshua Bloch
+CompletableFuture: The promises of Java - by Venkat Subramaniam
+Asynchronous programming in Java 8: how to use CompletableFuture - by José Paumard
+

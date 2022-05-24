@@ -16,7 +16,7 @@ public class TestCombinators {
     public void freqCombinator() {
 
         Gen<JsInt> gen = Combinators.freq(new Pair<>(1,
-                                                     JsConsGen.cons(JsInt.of(1))),
+                                                     Gen.cons(JsInt.of(1))),
                                           new Pair<>(1,
                                                      Gen.cons(JsInt.of(2))),
                                           new Pair<>(1,

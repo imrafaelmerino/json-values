@@ -81,16 +81,16 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
      */
     @Override
     public int hashCode() {
-        final JsBigDec bigDecimal = JsBigDec.of(BigDecimal.valueOf(this.value));
+        JsBigDec bigDecimal = JsBigDec.of(BigDecimal.valueOf(this.value));
 
-        final OptionalInt optInt = bigDecimal.intValueExact();
+        OptionalInt optInt = bigDecimal.intValueExact();
         if (optInt.isPresent()) return optInt.getAsInt();
 
-        final OptionalLong optLong = bigDecimal.longValueExact();
+        OptionalLong optLong = bigDecimal.longValueExact();
         if (optLong.isPresent()) return JsLong.of(optLong.getAsLong())
                                               .hashCode();
 
-        final Optional<BigInteger> optBigInt = bigDecimal.bigIntegerExact();
+        Optional<BigInteger> optBigInt = bigDecimal.bigIntegerExact();
         return optBigInt.map(BigInteger::hashCode)
                         .orElseGet(bigDecimal::hashCode);
     }
@@ -106,7 +106,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (!(that instanceof JsNumber)) return false;
-        final JsNumber number = (JsNumber) that;
+        JsNumber number = (JsNumber) that;
         if (number.isDouble()) return value == number.toJsDouble().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isInt()) return intEquals(number.toJsInt());
@@ -152,7 +152,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
      */
     boolean bigIntEquals(JsBigInt jsBigInt) {
 
-        final Optional<BigInteger> y = bigIntegerExact();
+        Optional<BigInteger> y = bigIntegerExact();
         return y.isPresent() && y.get()
                                  .equals(requireNonNull(jsBigInt).value);
     }

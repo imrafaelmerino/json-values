@@ -93,7 +93,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (!(that instanceof JsNumber)) return false;
-        final JsNumber number = (JsNumber) that;
+        JsNumber number = (JsNumber) that;
         if (number.isInt()) return value == number.toJsInt().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());

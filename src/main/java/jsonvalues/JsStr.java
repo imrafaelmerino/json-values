@@ -126,7 +126,7 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
         if (this == that) return true;
         if (that == null) return false;
         if (that instanceof JsStr) {
-            final JsStr thatStr = (JsStr) that;
+            JsStr thatStr = (JsStr) that;
             return Objects.equals(value,
                                   thatStr.value
             );

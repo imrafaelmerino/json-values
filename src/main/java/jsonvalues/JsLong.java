@@ -79,7 +79,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
      */
     @Override
     public int hashCode() {
-        final Optional<Integer> intExact = intValueExact();
+        Optional<Integer> intExact = intValueExact();
         return intExact.orElseGet(() -> (int) (value ^ (value >>> 32)));
     }
 
@@ -95,7 +95,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
         if (this == that) return true;
         if (that == null) return false;
         if (!(that instanceof JsNumber)) return false;
-        final JsNumber number = (JsNumber) that;
+        JsNumber number = (JsNumber) that;
 
         if (number.isLong()) return value == number.toJsLong().value;
         if (number.isInt()) return intEquals(number.toJsInt());

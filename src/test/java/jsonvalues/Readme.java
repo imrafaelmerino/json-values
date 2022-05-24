@@ -1,5 +1,8 @@
 package jsonvalues;
 
+import fun.gen.Combinators;
+import fun.gen.Gen;
+import fun.tuple.Pair;
 import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
@@ -172,6 +175,23 @@ public class Readme {
                 .setOptionals("surname",
                               "phoneNumber",
                               "addresses");
+
+
+        Gen<String> my_generator = seed -> () -> (seed.nextInt() % 2 == 0) ?
+                                                 "even" :
+                                                 "odd";
+
+        Gen<JsStr> parity = Combinators.oneOf("even",
+                                              "odd"
+                                             )
+                                       .map(JsStr::of);
+
+
+        Gen<JsStr> gen = Combinators.freq(new Pair<>(2, JsStrGen.alphanumeric(0, 10)),
+                                          new Pair<>(8, JsStrGen.digits(0,10)));
+
+        Gen<JsValue> gen = Combinators.freq(new Pair<>(2, JsLongGen.biased()),
+                                            new Pair<>(8, JsIntGen.biased()));
 
 
     }

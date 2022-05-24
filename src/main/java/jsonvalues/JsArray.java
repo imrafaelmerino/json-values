@@ -1227,7 +1227,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                    .match(head -> this,
                           index ->
                           {
-                              final JsPath tail = path.tail();
+                              JsPath tail = path.tail();
 
                               return tail.isEmpty() ?
                                      ifNothingElse(() -> this.delete(index),
@@ -1333,9 +1333,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                    .match(head -> this,
                           index ->
                           {
-                              final int maxIndex = seq.size() - 1;
+                              int maxIndex = seq.size() - 1;
                               if (index < 0 || index > maxIndex) return this;
-                              final JsPath tail = path.tail();
+                              JsPath tail = path.tail();
                               return tail.isEmpty() ?
                                      new JsArray(seq.removeAt(index)) :
                                      ifJsonElse(json -> new JsArray(seq.update(index,
@@ -1370,7 +1370,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                         )
                         .mapToObj(i ->
                                   {
-                                      final JsPath path = JsPath.fromIndex(i);
+                                      JsPath path = JsPath.fromIndex(i);
                                       return new Pair<>(path,
                                                         get(path)
                                       );
@@ -1430,9 +1430,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public boolean equals(final Object that) {
         if (!(that instanceof JsArray)) return false;
         if (this == that) return true;
-        final Vector<JsValue> thatSeq = ((JsArray) that).seq;
-        final boolean thatEmpty = thatSeq.isEmpty();
-        final boolean thisEmpty = isEmpty();
+        Vector<JsValue> thatSeq = ((JsArray) that).seq;
+        boolean thatEmpty = thatSeq.isEmpty();
+        boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
         if (this.size() != thatSeq.size()) return false;
         return yContainsX(seq,
@@ -1560,7 +1560,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     ) {
         Vector<JsValue> acc = seq;
         for (int i = 0, othersLength = requireNonNull(others).length; i < othersLength; i++) {
-            final JsValue other = others[othersLength - 1 - i];
+            JsValue other = others[othersLength - 1 - i];
             acc = acc.prepend(requireNonNull(other));
         }
         return new JsArray(acc.prepend(requireNonNull(e)));
@@ -1599,7 +1599,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     public JsArray delete(final int index) {
         if (index < -0) throw new IllegalArgumentException("index must be >= 0");
-        final int maxIndex = seq.size() - 1;
+        int maxIndex = seq.size() - 1;
         if (index > maxIndex) return this;
         return new JsArray(seq.removeAt(index));
     }
@@ -1652,11 +1652,11 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         JsArray result = JsArray.empty();
 
         for (int i = 0; i < a.size(); i++) {
-            final JsValue head = a.get(i);
-            final JsValue otherHead = b.get(i);
+            JsValue head = a.get(i);
+            JsValue otherHead = b.get(i);
             if (head.isJson() && head.isSameType(otherHead)) {
-                final Json<?> obj = head.toJson();
-                final Json<?> obj1 = otherHead.toJson();
+                Json<?> obj = head.toJson();
+                Json<?> obj1 = otherHead.toJson();
                 result = result.set(i,
                                     OpIntersectionJsons.intersectionAll(obj,
                                                                         obj1,
@@ -1725,11 +1725,11 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         if (a.isEmpty()) return b;
         JsArray result = a;
         for (int i = 0; i < b.size(); i++) {
-            final JsValue head = a.get(i);
-            final JsValue otherHead = b.get(i);
+            JsValue head = a.get(i);
+            JsValue otherHead = b.get(i);
             if (head.isJson() && head.isSameType(otherHead)) {
-                final Json<?> obj = head.toJson();
-                final Json<?> obj1 = otherHead.toJson();
+                Json<?> obj = head.toJson();
+                Json<?> obj1 = otherHead.toJson();
                 result = result.set(i,
                                     OpUnionJsons.unionAll(obj,
                                                           obj1,

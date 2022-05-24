@@ -74,10 +74,10 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
      */
     @Override
     public int hashCode() {
-        final Optional<Integer> optInt = intValueExact();
+        Optional<Integer> optInt = intValueExact();
         if (optInt.isPresent()) return optInt.get();
 
-        final Optional<Long> optLong = longValueExact();
+        Optional<Long> optLong = longValueExact();
         return optLong.map(aLong -> JsLong.of(aLong)
                                           .hashCode()).orElseGet(value::hashCode);
 
@@ -94,7 +94,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     public boolean equals(Object that) {
         if (this == that) return true;
         if (!(that instanceof JsNumber)) return false;
-        final JsNumber number = (JsNumber) that;
+        JsNumber number = (JsNumber) that;
         if (number.isBigInt()) return value.equals(number.toJsBigInt().value);
         if (number.isInt()) return intEquals(number.toJsInt());
         if (number.isLong()) return longEquals(number.toJsLong());
@@ -119,7 +119,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
      * @return true if both JsValue are the same value
      */
     boolean intEquals(JsInt jsInt) {
-        final Optional<Integer> optional = intValueExact();
+        Optional<Integer> optional = intValueExact();
         return optional.isPresent() && optional.get() == requireNonNull(jsInt).value;
     }
 

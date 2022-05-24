@@ -378,11 +378,11 @@ public final class JsPath implements Comparable<JsPath> {
     public JsPath mapKeys(final UnaryOperator<String> map) {
         requireNonNull(map);
         if (this.isEmpty()) return EMPTY;
-        final Position head = this.head();
-        final JsPath tail = this.tail();
+        Position head = this.head();
+        JsPath tail = this.tail();
 
-        final JsPath headPath = new JsPath(mapKeyFn.apply(map,
-                                                          head
+        JsPath headPath = new JsPath(mapKeyFn.apply(map,
+                                                    head
         ));
         if (tail.isEmpty()) return headPath;
 
@@ -462,7 +462,7 @@ public final class JsPath implements Comparable<JsPath> {
     public boolean equals(final Object that) {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;
-        final JsPath thatObj = (JsPath) that;
+        JsPath thatObj = (JsPath) that;
         if (isEmpty() && thatObj.isEmpty()) return true;
         if (isEmpty()) return false;
         if (thatObj.isEmpty()) return false;

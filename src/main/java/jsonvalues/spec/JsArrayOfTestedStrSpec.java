@@ -13,8 +13,7 @@ class JsArrayOfTestedStrSpec extends AbstractSizableArrSpec implements JsValuePr
     final Function<String, Optional<JsError>> predicate;
 
     JsArrayOfTestedStrSpec(final Function<String, Optional<JsError>> predicate,
-                           final boolean nullable
-    ) {
+                           final boolean nullable) {
         super(nullable);
         this.predicate = predicate;
     }

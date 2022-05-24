@@ -31,7 +31,7 @@ public final class JsDoubleGen implements Gen<JsDouble> {
      *
      * @param gen the double generator
      */
-    public JsDoubleGen(Gen<Double> gen) {
+    private JsDoubleGen(Gen<Double> gen) {
         this.gen = requireNonNull(gen);
     }
 

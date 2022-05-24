@@ -31,7 +31,7 @@ public final class JsIntGen implements Gen<JsInt> {
      *
      * @param gen the integer generator
      */
-    public JsIntGen(Gen<Integer> gen) {
+    private JsIntGen(Gen<Integer> gen) {
         this.gen = Objects.requireNonNull(gen);
     }
 

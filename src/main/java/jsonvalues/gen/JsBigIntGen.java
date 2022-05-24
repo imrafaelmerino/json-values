@@ -29,7 +29,7 @@ public final class JsBigIntGen implements Gen<JsBigInt> {
      *
      * @param gen the big integer generator
      */
-    public JsBigIntGen(final Gen<BigInteger> gen) {
+    private JsBigIntGen(final Gen<BigInteger> gen) {
         this.gen = requireNonNull(gen);
     }
 

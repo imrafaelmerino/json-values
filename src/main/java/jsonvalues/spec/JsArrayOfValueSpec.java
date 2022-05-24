@@ -38,7 +38,9 @@ class JsArrayOfValueSpec extends AbstractSizableArrSpec implements JsValuePredic
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        return Functions.testArray(nullable,min,max)
+        return Functions.testArray(nullable,
+                                   min,
+                                   max)
                         .apply(value);
     }
 

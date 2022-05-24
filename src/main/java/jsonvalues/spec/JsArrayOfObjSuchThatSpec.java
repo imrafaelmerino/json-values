@@ -36,7 +36,7 @@ class JsArrayOfObjSuchThatSpec extends AbstractNullableSpec implements JsValuePr
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> result = isArrayOfObj.test(value);
+        Optional<JsError> result = isArrayOfObj.test(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

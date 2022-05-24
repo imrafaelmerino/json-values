@@ -32,7 +32,7 @@ public final class JsInstantGen implements Gen<JsInstant> {
      *
      * @param gen the instant generator
      */
-    public JsInstantGen(final Gen<Instant> gen) {
+    private JsInstantGen(final Gen<Instant> gen) {
         this.gen = requireNonNull(gen);
     }
 

@@ -38,7 +38,7 @@ class JsArrayOfNumberSuchThatSpec extends AbstractNullableSpec implements JsValu
 
     @Override
     public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> result = isArrayOfNumber.test(value);
+        Optional<JsError> result = isArrayOfNumber.test(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

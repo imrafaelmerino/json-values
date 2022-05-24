@@ -106,7 +106,7 @@ public final class Key implements Position {
     public boolean equals(final Object that) {
         if (that == null || getClass() != that.getClass()) return false;
         if (this == that) return true;
-        final Key thatObj = (Key) that;
+        Key thatObj = (Key) that;
         return name.equals(thatObj.name);
     }
 

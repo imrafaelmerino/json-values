@@ -16,19 +16,8 @@ import java.nio.charset.StandardCharsets;
 abstract class MyNumberConverter {
 
     private final static int[] DIGITS = new int[1000];
-    private final static int[] DIFF = {111, 222, 444, 888, 1776};
-    private final static int[] ERROR = {50, 100, 200, 400, 800};
-    private final static int[] SCALE_10 = {10000, 1000, 100, 10, 1};
     @SuppressWarnings("FloatingPointLiteralPrecision")
-    private final static double[] POW_10 = {
-            1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9,
-            1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
-            1e20, 1e21, 1e22, 1e23, 1e24, 1e25, 1e26, 1e27, 1e28, 1e29,
-            1e30, 1e31, 1e32, 1e33, 1e34, 1e35, 1e36, 1e37, 1e38, 1e39,
-            1e40, 1e41, 1e42, 1e43, 1e44, 1e45, 1e46, 1e47, 1e48, 1e49,
-            1e50, 1e51, 1e52, 1e53, 1e54, 1e55, 1e56, 1e57, 1e58, 1e59,
-            1e60, 1e61, 1e62, 1e63, 1e64, 1e65
-    };
+
     private static final byte MINUS = '-';
     private static final byte[] MIN_INT = "-2147483648".getBytes(StandardCharsets.UTF_8);
     private static final byte[] MIN_LONG = "-9223372036854775808".getBytes(StandardCharsets.UTF_8);
@@ -181,371 +170,6 @@ abstract class MyNumberConverter {
         );
     }
 
-    public static double deserializeDouble(final JsonReader reader) throws IOException {
-        final int start = reader.scanNumber();
-        final int end = reader.getCurrentIndex();
-        final byte[] buf = reader.buffer;
-        final byte ch = buf[start];
-        if (ch == '-') {
-            return -parseDouble(buf,
-                                reader,
-                                start,
-                                end,
-                                1
-            );
-        }
-        return parseDouble(buf,
-                           reader,
-                           start,
-                           end,
-                           0
-        );
-    }
-
-    private static double parseDouble(final byte[] buf,
-                                      final JsonReader reader,
-                                      final int start,
-                                      final int end,
-                                      final int offset) throws IOException {
-        if (end - start - offset > reader.doubleLengthLimit) {
-            if (end == reader.length()) {
-                final MyNumberConverter.NumberInfo tmp = readLongNumber(reader,
-                                                                        start + offset
-                );
-                return parseDoubleGeneric(tmp.buffer,
-                                          tmp.length,
-                                          reader,
-                                          false
-                );
-            }
-            return parseDoubleGeneric(reader.prepareBuffer(start + offset,
-                                                           end - start - offset
-                                      ),
-                                      end - start - offset,
-                                      reader,
-                                      false
-            );
-        }
-        long value = 0;
-        byte ch = ' ';
-        int i = start + offset;
-        final boolean leadingZero = buf[start + offset] == 48;
-        for (; i < end; i++) {
-            ch = buf[i];
-            if (ch == '.' || ch == 'e' || ch == 'E') break;
-            final int ind = buf[i] - 48;
-            if (ind < 0 || ind > 9) {
-                if (leadingZero && i > start + offset + 1) {
-                    numberException(reader,
-                                    start,
-                                    end,
-                                    ParserErrors.LEADING_ZERO
-                    );
-                }
-                if (i > start + offset && reader.allWhitespace(i,
-                                                               end
-                )) return value;
-                numberException(reader,
-                                start,
-                                end,
-                                ParserErrors.UNKNOWN_DIGIT,
-                                (char) ch
-                );
-            }
-            value = (value << 3) + (value << 1) + ind;
-        }
-        if (i == start + offset) numberException(reader,
-                                                 start,
-                                                 end,
-                                                 ParserErrors.DIGIT_NOT_FOUND
-        );
-        else if (leadingZero && ch != '.' && i > start + offset + 1)
-            numberException(reader,
-                            start,
-                            end,
-                            ParserErrors.LEADING_ZERO
-            );
-        else if (i == end) return value;
-        else if (ch == '.') {
-            i++;
-            if (i == end) numberException(reader,
-                                          start,
-                                          end,
-                                          ParserErrors.NUMBER_ENDS_DOT
-            );
-            final int maxLen;
-            final double preciseDividor;
-            final int expDiff;
-            final int decPos = i;
-            final int decOffset;
-            if (value == 0) {
-                maxLen = i + 15;
-                ch = buf[i];
-                if (ch == '0' && end > maxLen) {
-                    return parseDoubleGeneric(reader.prepareBuffer(start + offset,
-                                                                   end - start - offset
-                                              ),
-                                              end - start - offset,
-                                              reader,
-                                              false
-                    );
-                } else if (ch < '8') {
-                    preciseDividor = 1e14;
-                    expDiff = -1;
-                    decOffset = 1;
-                } else {
-                    preciseDividor = 1e15;
-                    expDiff = 0;
-                    decOffset = 0;
-                }
-            } else {
-                maxLen = start + offset + 16;
-                if (buf[start + offset] < '8') {
-                    preciseDividor = 1e14;
-                    expDiff = i - maxLen + 14;
-                    decOffset = 1;
-                } else {
-                    preciseDividor = 1e15;
-                    expDiff = i - maxLen + 15;
-                    decOffset = 0;
-                }
-            }
-            final int numLimit = maxLen < end ?
-                                 maxLen :
-                                 end;
-            //TODO zeros
-            for (; i < numLimit; i++) {
-                ch = buf[i];
-                if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
-                if (ind < 0 || ind > 9) {
-                    if (reader.allWhitespace(i,
-                                             end
-                    )) return value / POW_10[i - decPos - 1];
-                    numberException(reader,
-                                    start,
-                                    end,
-                                    ParserErrors.UNKNOWN_DIGIT,
-                                    (char) buf[i]
-                    );
-                }
-                value = (value << 3) + (value << 1) + ind;
-            }
-            if (i == end) return value / POW_10[i - decPos - 1];
-            else if (ch == 'e' || ch == 'E') {
-                return doubleExponent(reader,
-                                      value,
-                                      i - decPos,
-                                      0,
-                                      buf,
-                                      start,
-                                      end,
-                                      offset,
-                                      i
-                );
-            }
-            if (reader.doublePrecision == JsonReader.DoublePrecision.HIGH) {
-                return parseDoubleGeneric(reader.prepareBuffer(start + offset,
-                                                               end - start - offset
-                                          ),
-                                          end - start - offset,
-                                          reader,
-                                          false
-                );
-            }
-            int decimals = 0;
-            final int decLimit = start + offset + 18 < end ?
-                                 start + offset + 18 :
-                                 end;
-            final int remPos = i;
-            for (; i < decLimit; i++) {
-                ch = buf[i];
-                if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
-                if (ind < 0 || ind > 9) {
-                    if (reader.allWhitespace(i,
-                                             end
-                    )) {
-                        return approximateDouble(decimals,
-                                                 value / preciseDividor,
-                                                 i - remPos - decOffset
-                        );
-                    }
-                    numberException(reader,
-                                    start,
-                                    end,
-                                    ParserErrors.UNKNOWN_DIGIT,
-                                    (char) buf[i]
-                    );
-                }
-                decimals = (decimals << 3) + (decimals << 1) + ind;
-            }
-            final double number = approximateDouble(decimals,
-                                                    value / preciseDividor,
-                                                    i - remPos - decOffset
-            );
-            while (i < end && ch >= '0' && ch <= '9') {
-                ch = buf[i++];
-            }
-            if (ch == 'e' || ch == 'E') {
-                return doubleExponent(reader,
-                                      0,
-                                      expDiff,
-                                      number,
-                                      buf,
-                                      start,
-                                      end,
-                                      offset,
-                                      i
-                );
-            } else if (expDiff > 0) {
-                return number * POW_10[expDiff - 1];
-            } else if (expDiff < 0) {
-                return number / POW_10[-expDiff - 1];
-            } else {
-                return number;
-            }
-        } else if (ch == 'e' || ch == 'E') {
-            return doubleExponent(reader,
-                                  value,
-                                  0,
-                                  0,
-                                  buf,
-                                  start,
-                                  end,
-                                  offset,
-                                  i
-            );
-        }
-        return value;
-    }
-
-    private static double approximateDouble(final int decimals,
-                                            final double precise,
-                                            final int digits) {
-        final long bits = Double.doubleToRawLongBits(precise);
-        final int exp = (int) (bits >> 52) - 1022;
-        final int missing = (decimals * SCALE_10[digits + 1] + ERROR[exp]) / DIFF[exp];
-        return Double.longBitsToDouble(bits + missing);
-    }
-
-    private static double doubleExponent(JsonReader reader,
-                                         final long whole,
-                                         final int decimals,
-                                         double fraction,
-                                         byte[] buf,
-                                         int start,
-                                         int end,
-                                         int offset,
-                                         int i) throws IOException {
-        if (reader.doublePrecision == JsonReader.DoublePrecision.EXACT) {
-            return parseDoubleGeneric(reader.prepareBuffer(start + offset,
-                                                           end - start - offset
-                                      ),
-                                      end - start - offset,
-                                      reader,
-                                      false
-            );
-        }
-        byte ch;
-        ch = buf[++i];
-        final int exp;
-        if (ch == '-') {
-            exp = parseNegativeInt(buf,
-                                   reader,
-                                   i,
-                                   end
-            ) - decimals;
-        } else if (ch == '+') {
-            exp = parsePositiveInt(buf,
-                                   reader,
-                                   i,
-                                   end,
-                                   1
-            ) - decimals;
-        } else {
-            exp = parsePositiveInt(buf,
-                                   reader,
-                                   i,
-                                   end,
-                                   0
-            ) - decimals;
-        }
-        if (fraction == 0) {
-            if (exp == 0 || whole == 0) return whole;
-            else if (exp > 0 && exp < POW_10.length) return whole * POW_10[exp - 1];
-            else if (exp < 0 && -exp < POW_10.length) return whole / POW_10[-exp - 1];
-            else if (reader.doublePrecision != JsonReader.DoublePrecision.HIGH) {
-                if (exp > 0 && exp < 300) return whole * Math.pow(10,
-                                                                  exp
-                );
-                else if (exp > -300 && exp < 0) return whole / Math.pow(10,
-                                                                        exp
-                );
-            }
-        } else {
-            if (exp == 0) return whole + fraction;
-            else if (exp > 0 && exp < POW_10.length) return fraction * POW_10[exp - 1] + whole * POW_10[exp - 1];
-            else if (exp < 0 && -exp < POW_10.length) return fraction / POW_10[-exp - 1] + whole / POW_10[-exp - 1];
-            else if (reader.doublePrecision != JsonReader.DoublePrecision.HIGH) {
-                if (exp > 0 && exp < 300) return whole * Math.pow(10,
-                                                                  exp
-                );
-                else if (exp > -300 && exp < 0) return whole / Math.pow(10,
-                                                                        exp
-                );
-            }
-        }
-        return parseDoubleGeneric(reader.prepareBuffer(start + offset,
-                                                       end - start - offset
-                                  ),
-                                  end - start - offset,
-                                  reader,
-                                  false
-        );
-    }
-
-    private static double parseDoubleGeneric(final char[] buf,
-                                             final int len,
-                                             final JsonReader reader,
-                                             final boolean withQuotes) throws IOException {
-        int end = len;
-        while (end > 0 && Character.isWhitespace(buf[end - 1])) {
-            end--;
-        }
-        if (end > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith(ParserErrors.TOO_MANY_DIGITS,
-                                           len,
-                                           "",
-                                           ParserErrors.TOO_MANY_DIGITS,
-                                           end,
-                                           ""
-            );
-        }
-        final int offset = buf[0] == '-' ?
-                           1 :
-                           0;
-        if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
-            throw reader.newParseErrorAt(ParserErrors.LEADING_ZERO,
-                                         len + (withQuotes ?
-                                                2 :
-                                                0)
-            );
-        }
-        try {
-            return Double.parseDouble(new String(buf,
-                                                 0,
-                                                 end
-            ));
-        } catch (NumberFormatException nfe) {
-            throw reader.newParseErrorAt(ParserErrors.ERROR_PARSING_NUMBER,
-                                         len + (withQuotes ?
-                                                2 :
-                                                0),
-                                         nfe
-            );
-        }
-    }
 
     public static void serialize(final int value,
                                  final JsonWriter sw) {
@@ -1395,14 +1019,6 @@ abstract class MyNumberConverter {
         return BigDecimal.valueOf(value);
     }
 
-    private static Number bigDecimalOrDouble(BigDecimal num,
-                                             JsonReader.UnknownNumberParsing unknownNumbers) {
-        return unknownNumbers == JsonReader.UnknownNumberParsing.LONG_AND_BIGDECIMAL
-               ?
-               num
-               :
-               num.doubleValue();
-    }
 
     private static Number tryLongFromBigDecimal(final char[] buf,
                                                 final int len,
@@ -1421,14 +1037,10 @@ abstract class MyNumberConverter {
                 return num.longValue();
             }
         }
-        return bigDecimalOrDouble(num,
-                                  reader.unknownNumbers
-        );
+        return num;
     }
 
     public static Number deserializeNumber(final JsonReader reader) throws IOException {
-        if (reader.unknownNumbers == JsonReader.UnknownNumberParsing.BIGDECIMAL) return deserializeDecimal(reader);
-        else if (reader.unknownNumbers == JsonReader.UnknownNumberParsing.DOUBLE) return deserializeDouble(reader);
         final int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
@@ -1535,11 +1147,9 @@ abstract class MyNumberConverter {
                 }
                 value = (value << 3) + (value << 1) + ind;
             }
-            if (i == end) return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                                       end - dp
-                                                    ),
-                                                    reader.unknownNumbers
-            );
+            if (i == end)
+                return BigDecimal.valueOf(value,
+                                          end - dp);
             else if (ch == 'e' || ch == 'E') {
                 final int ep = i;
                 i++;
@@ -1566,11 +1176,8 @@ abstract class MyNumberConverter {
                                            0
                     );
                 }
-                return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                             ep - dp - exp
-                                          ),
-                                          reader.unknownNumbers
-                );
+                return BigDecimal.valueOf(value,
+                                          ep - dp - exp);
             }
             return BigDecimal.valueOf(value,
                                       end - dp
@@ -1600,15 +1207,11 @@ abstract class MyNumberConverter {
                                        0
                 );
             }
-            return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                         -exp
-                                      ),
-                                      reader.unknownNumbers
+            return BigDecimal.valueOf(value,
+                                      -exp
             );
         }
-        return bigDecimalOrDouble(BigDecimal.valueOf(value),
-                                  reader.unknownNumbers
-        );
+        return BigDecimal.valueOf(value);
     }
 
     private static Number parseNegativeNumber(final byte[] buf,
@@ -1681,10 +1284,8 @@ abstract class MyNumberConverter {
                 }
                 value = (value << 3) + (value << 1) - ind;
             }
-            if (i == end) return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                                       end - dp
-                                                    ),
-                                                    reader.unknownNumbers
+            if (i == end) return BigDecimal.valueOf(value,
+                                                    end - dp
             );
             else if (ch == 'e' || ch == 'E') {
                 final int ep = i;
@@ -1712,16 +1313,12 @@ abstract class MyNumberConverter {
                                            0
                     );
                 }
-                return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                             ep - dp - exp
-                                          ),
-                                          reader.unknownNumbers
+                return BigDecimal.valueOf(value,
+                                          ep - dp - exp
                 );
             }
-            return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                         end - dp
-                                      ),
-                                      reader.unknownNumbers
+            return BigDecimal.valueOf(value,
+                                      end - dp
             );
         } else if (ch == 'e' || ch == 'E') {
             i++;
@@ -1748,15 +1345,11 @@ abstract class MyNumberConverter {
                                        0
                 );
             }
-            return bigDecimalOrDouble(BigDecimal.valueOf(value,
-                                                         -exp
-                                      ),
-                                      reader.unknownNumbers
+            return BigDecimal.valueOf(value,
+                                      -exp
             );
         }
-        return bigDecimalOrDouble(BigDecimal.valueOf(value),
-                                  reader.unknownNumbers
-        );
+        return BigDecimal.valueOf(value);
     }
 
     private static class NumberInfo {

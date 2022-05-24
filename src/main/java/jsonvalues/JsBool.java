@@ -96,7 +96,7 @@ public final class JsBool extends JsPrimitive {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null || getClass() != that.getClass()) return false;
-        final JsBool thatBool = (JsBool) that;
+        JsBool thatBool = (JsBool) that;
         return value == thatBool.value;
     }
 
