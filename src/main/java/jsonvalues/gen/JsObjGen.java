@@ -16,8 +16,8 @@ import static java.util.Objects.requireNonNull;
  *
  * Represents a JsObj generator. It can be created using the static factory methods
  * <code>of</code> or inserting new key-generator pairs to an existing JsObj generator
- * with the method {@link JsObjGen#set(String, Gen)}. Each element of the Json is
- * generated with a new seed that is calculated passing the original seed to the
+ * with the method {@link JsObjGen#set(String, Gen)}. Each generator of the Json is
+ * created from a new seed that is calculated passing the original one to the
  * {@link SplitGen#DEFAULT split generator }
  *
  * There are factory methods to create generators of up to 20-key Json objects.

@@ -12,10 +12,19 @@ import static java.util.Objects.requireNonNull;
 
 /**
  *
- * Represents a JsInt generator. It can be created using the static factory methods
+ * Represents a JsInstant generator. It can be created using the static factory methods
  * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
- * needs,  passing an integer {@link IntGen generator} to the constructor.
+ * needs, from an integer generator and the function map:
  *
+ * <pre>{@code
+ *      import fun.gen.Gen;
+ *      import jsonvalues.JsInt;
+ *
+ *      Gen<Integer> intGen = seed -> () -> {...};
+ *      Gen<JsInteger> jsIntGen = gen.map(JsInt::of)
+ *      }
+ *  </pre>
+ *  <p>
  * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.

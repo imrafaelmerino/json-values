@@ -11,15 +11,26 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Represents a JsStr generator. There are different static factory methods to create all kind of generators:
- * - One character predefined generators like <code>alphanumeric</code>, <code>digit</code>, <code>letter</code> and <code>alphabetic</code>.
- * - String predefined generators like <code>digits</code>, <code>letters</code>, <code>alphanumeric</code>, <code>alphabetic</code>, <code>arbitrary</code> and <code>biased</code>.
+ * - One character generators like <code>alphanumeric</code>, <code>digit</code>, <code>letter</code> and <code>alphabetic</code>.
+ * - String generators like <code>digits</code>, <code>letters</code>, <code>alphanumeric</code>, <code>alphabetic</code>, <code>arbitrary</code> and <code>biased</code>.
+ * <p>
  * The length of the generated strings is distributed uniformly over a specified interval.
- * <p>
+ *
  * The biased generator produces, with higher probability, potential problematic values that usually cause more
- * bugs (empty and blank strings).
+ * bugs (empty and blank strings for example).
  * <p>
- * If none of the predefined generators suit your needs, it's still possible to create new JsString generators
- * passing a string generator to the constructor.
+ * If none of the previous factory methods suit your needs, you can still create a JsStr generator
+ * from a string generator and the function map:
+ *
+ * <pre>{@code
+ *      import fun.gen.Gen;
+ *      import jsonvalues.JsStr;
+ *
+ *      Gen<String> strGen = seed -> () -> {...};
+ *      Gen<JsStr> jsStrGen = gen.map(JsStr::of)
+ *      }
+ *  </pre>
+ *  <p>
  */
 public final class JsStrGen implements Gen<JsStr> {
 

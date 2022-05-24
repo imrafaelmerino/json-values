@@ -16,7 +16,9 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
+ * Represents a tuple generator that is modeled with a JsArray generator.
+ * Each generator of the tuple is created from a new seed that is calculated
+ * passing the original one to the {@link SplitGen#DEFAULT split generator }.
  */
 public final class JsTupleGen implements Gen<JsArray> {
     private final List<Gen<? extends JsValue>> gens = new ArrayList<>();

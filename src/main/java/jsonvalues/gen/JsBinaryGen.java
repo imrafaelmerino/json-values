@@ -15,8 +15,17 @@ import static java.util.Objects.requireNonNull;
  *
  * Represents a JsBinary generator. It can be created using the static factory methods
  * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
- * needs,  passing an array of bytes {@link JsBinary generator} to the constructor.
+ * needs, from a bytes generator and the function map:
  *
+ * <pre>{@code
+ *      import fun.gen.Gen;
+ *      import jsonvalues.JsBinary;
+ *
+ *      Gen<byte[]> byteGen = seed -> () -> {...};
+ *      Gen<JsBinary> jsByteGen = gen.map(JsBinary::of)
+ *      }
+ *  </pre>
+ *  <p>
  * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.

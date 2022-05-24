@@ -11,15 +11,22 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
  * Represents a JsBigDec generator. It can be created using the static factory methods
  * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
- * needs, passing a decimal {@link BigDecGen generator} to the constructor.
+ * needs, from a decimal generator and the function map:
  *
+ * <pre>{@code
+ *     import fun.gen.Gen;
+ *     import jsonvalues.JsBigDec;
+ *
+ *     Gen<BigDecimal> decGen = seed -> () -> {...};
+ *     Gen<JsBigDec> jsDecGen = gen.map(JsBigDec::of)
+ *     }
+ * </pre>
+ * <p>
  * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
- *
  */
 public final class JsBigDecGen implements Gen<JsBigDec> {
 
@@ -52,7 +59,6 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - {@link Byte#MAX_VALUE}
      * </pre>
      *
-     *
      * @return a biased JsBigDec generator
      */
     public static Gen<JsBigDec> biased() {
@@ -62,6 +68,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
 
     /**
      * Returns a generator that produces values uniformly distributed
+     *
      * @return a JsBigDec generator
      */
     public static Gen<JsBigDec> arbitrary() {
@@ -73,7 +80,6 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      *
      * @param min lower bound of the interval (inclusive)
      * @param max upper bound of the interval (inclusive)
-     *
      * @return a biased JsBigDec generator
      */
     public static Gen<JsBigDec> arbitrary(final BigDecimal min,
@@ -90,7 +96,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - the lower bound of the interval
      * - the upper bound of the interval
      * </pre>
-     *
+     * <p>
      * and the following numbers provided that they are between the specified interval:
      *
      * <pre>
@@ -107,7 +113,6 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      *
      * @param min lower bound of the interval (inclusive)
      * @param max upper bound of the interval (inclusive)
-     *
      * @return a biased JsBigDec generator
      */
     public static Gen<JsBigDec> biased(final BigDecimal min,
@@ -124,7 +129,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - the lower bound of the interval
      * - the upper bound of the interval
      * </pre>
-     *
+     * <p>
      * and the following numbers provided that they are between the specified interval:
      *
      * <pre>
@@ -141,7 +146,6 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      *
      * @param min lower bound of the interval (inclusive)
      * @param max upper bound of the interval (inclusive)
-     *
      * @return a biased JsBigDec generator
      */
     public static Gen<JsBigDec> biased(final long min,

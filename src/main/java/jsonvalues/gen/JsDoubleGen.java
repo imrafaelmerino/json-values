@@ -12,13 +12,23 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
+ *
  * Represents a JsDouble generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or passing a double {@link DoubleGen generator}
- * to the constructor. Arbitrary generators generate uniformed distributions of values.
+ * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * needs, from a double generator and the function map:
+ *
+ * <pre>{@code
+ *      import fun.gen.Gen;
+ *      import jsonvalues.JsDouble;
+ *
+ *      Gen<Double> doubleGen = seed -> () -> {...};
+ *      Gen<JsDouble> jsDoubleGen = gen.map(JsDouble::of)
+ *      }
+ *  </pre>
+ *  <p>
+ * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
- *
- *
  *
  */
 public final class JsDoubleGen implements Gen<JsDouble> {
