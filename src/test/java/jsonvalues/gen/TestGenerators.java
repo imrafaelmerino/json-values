@@ -312,7 +312,7 @@ public class TestGenerators {
 
     @Test
     public void testSuchThat() {
-        final Gen<JsInt> negative = new JsIntGen(IntGen.arbitrary().suchThat(i -> i < 0));
+        final Gen<JsInt> negative = IntGen.arbitrary().suchThat(i -> i < 0).map(JsInt::of);
 
         final Supplier<JsInt> supplier = negative.sample(new Random());
 
