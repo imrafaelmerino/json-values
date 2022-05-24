@@ -177,21 +177,6 @@ public class Readme {
                               "addresses");
 
 
-        Gen<String> my_generator = seed -> () -> (seed.nextInt() % 2 == 0) ?
-                                                 "even" :
-                                                 "odd";
-
-        Gen<JsStr> parity = Combinators.oneOf("even",
-                                              "odd"
-                                             )
-                                       .map(JsStr::of);
-
-
-        Gen<JsStr> gen = Combinators.freq(new Pair<>(2, JsStrGen.alphanumeric(0, 10)),
-                                          new Pair<>(8, JsStrGen.digits(0,10)));
-
-        Gen<JsValue> gen = Combinators.freq(new Pair<>(2, JsLongGen.biased()),
-                                            new Pair<>(8, JsIntGen.biased()));
 
 
     }
