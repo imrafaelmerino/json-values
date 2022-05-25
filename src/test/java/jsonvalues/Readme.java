@@ -6,44 +6,132 @@ import fun.tuple.Pair;
 import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
+import org.junit.jupiter.api.Assertions;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
+
+import static jsonvalues.JsPath.path;
 
 public class Readme {
 
 
     public static void main(String[] args) {
 
-        JsObj.of("name",
-                 JsStr.of("Rafael"),
-                 "surname",
-                 JsStr.of("Merino"),
-                 "phoneNumber",
-                 JsStr.of("6666666"),
-                 "registrationDate",
-                 JsInstant.of(Instant.parse("2019-01-21T05:47:26.853Z")),
-                 "addresses",
-                 JsArray.of(JsObj.of("coordinates",
-                                     JsArray.of(39.8581,
-                                                -4.02263),
-                                     "city",
-                                     JsStr.of("Toledo"),
-                                     "tags",
-                                     JsArray.of("workAddress")
-                            ),
-                            JsObj.of("coordinates",
-                                     JsArray.of(39.8581,
-                                                -4.02263),
-                                     "city",
-                                     JsStr.of("Madrid"),
-                                     "tags",
-                                     JsArray.of("homeAddress")
-                            )
-                 )
+        JsPath path =  path("/a/b/0");
+
+        Position head = path.head();
+
+        Assertions.assertEquals(head,
+                                Key.of("a")
         );
+
+        JsPath tail = path.tail();
+        Assertions.assertEquals(tail.head(),
+                                Key.of("b")
+        );
+
+        Assertions.assertEquals(tail.last(),
+                                Index.of(0)
+        );
+
+
+        JsObj a1 = JsObj.of("name",
+                            JsStr.of("Rafael"),
+                            "surname",
+                            JsStr.of("Merino"),
+                            "phoneNumber",
+                            JsStr.of("6666666"),
+                            "registrationDate",
+                            JsInstant.of("2019-01-21T05:47:26.853Z"),
+                            "addresses",
+                            JsArray.of(JsObj.of("coordinates",
+                                                JsArray.of(39.8581,
+                                                           -4.02263),
+                                                "city",
+                                                JsStr.of("Toledo"),
+                                                "tags",
+                                                JsArray.of("workAddress")
+                                       ),
+                                       JsObj.of("coordinates",
+                                                JsArray.of(40.4168,
+                                                           3.7038),
+                                                "city",
+                                                JsStr.of("Madrid"),
+                                                "tags",
+                                                JsArray.of("homeAddress")
+                                       )
+                            )
+        );
+
+        JsObj a2 = JsObj.of(path("/name"),
+                            JsStr.of("Rafael"),
+                            path("/surname"),
+                            JsStr.of("Merino"),
+                            path("/phoneNumber"),
+                            JsStr.of("6666666"),
+                            path("/registrationDate"),
+                            JsInstant.of("2019-01-21T05:47:26.853Z"),
+                            path("/addresses/0/coordinates/0"),
+                            JsDouble.of(39.8581),
+                            path("/addresses/0/coordinates/1"),
+                            JsDouble.of(-4.02263),
+                            path("/addresses/0/city"),
+                            JsStr.of("Toledo"),
+                            path("/addresses/0/tags"),
+                            JsArray.of("workAddress"),
+                            path("/addresses/1/coordinates/0"),
+                            JsDouble.of(40.4168),
+                            path("/addresses/1/coordinates/1"),
+                            JsDouble.of(3.7038),
+                            path("/addresses/1/city"),
+                            JsStr.of("Madrid"),
+                            path("/addresses/1/tags"),
+                            JsArray.of("homeAddress")
+        );
+
+        Assertions.assertEquals(a1,a2);
+
+
+                JsObj.empty().set(path("/name"), JsStr.of("Rafael"))
+                             .set(path("/surname"), JsStr.of("Merino"))
+                             .set(path("/phoneNumber"), JsStr.of("6666666"));
+
+
+
+
+        JsArray a12 = JsArray.of("apple", "orange", "pear");
+
+        JsArray b1 = JsArray.of(1, 2, 3, 4);
+
+        JsArray c = JsArray.of(JsStr.of("hi"), JsInt.of(1), JsBool.TRUE, JsNull.NULL);
+
+        List<JsValue> list = new ArrayList();
+        Set<JsValue> set = new HashSet();
+
+        JsArray.ofIterable(list);
+        JsArray.ofIterable(set);
+
+
+
+        JsArray f = JsArray.empty().append(JsInt.of(1))
+                                   .prepend(JsInt.of(0));
+
+        JsArray g = JsArray.empty().append(JsInt.of(3))
+                           .prepend(JsInt.of(2));
+
+        System.out.println(f.appendAll(g));
+
+
+
+
+
 
         JsObjSpec.strict("name",
                          JsSpecs.str(),

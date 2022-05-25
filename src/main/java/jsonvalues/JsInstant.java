@@ -85,7 +85,7 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
 
     @Override
     public int hashCode() {
-        return Objects.hash(value);
+        return Objects.hashCode(value.toString());
     }
 
     @Override

@@ -4,6 +4,7 @@ import fun.optic.Prism;
 
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
@@ -96,6 +97,6 @@ public final class JsBinary extends JsPrimitive {
 
     @Override
     public int hashCode() {
-        return Arrays.hashCode(value);
+        return Objects.hashCode(Base64.getEncoder().encodeToString(value));
     }
 }

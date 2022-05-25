@@ -17,7 +17,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.*;
@@ -89,6 +88,14 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         );
     }
 
+    public static JsObj of(final JsPath path,
+                           final JsValue el
+    ) {
+
+        return JsObj.EMPTY.set(requireNonNull(path),
+                               requireNonNull(el));
+    }
+
 
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -102,6 +109,18 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                     .key(requireNonNull(key2)),
               el2
         );
+    }
+
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2
+    ) {
+
+        return of(path1,
+                  el1)
+                .set(requireNonNull(path2),
+                     requireNonNull(el2));
     }
 
     @SuppressWarnings("squid:S00107")
@@ -119,6 +138,22 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key3)),
               el3
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2
+        ).set(requireNonNull(path3),
+              requireNonNull(el3)
         );
     }
 
@@ -142,6 +177,26 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key4)),
               el4
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3
+        ).set(requireNonNull(path4),
+              requireNonNull(el4)
         );
     }
 
@@ -169,6 +224,30 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key5)),
               el5
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4
+        ).set(requireNonNull(path5),
+              requireNonNull(el5)
         );
     }
 
@@ -200,6 +279,34 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key6)),
               el6
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5
+        ).set(requireNonNull(path6),
+              requireNonNull(el6)
         );
     }
 
@@ -235,6 +342,38 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key7)),
               el7
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6
+        ).set(requireNonNull(path7),
+              requireNonNull(el7)
         );
     }
 
@@ -274,6 +413,42 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key8)),
               el8
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7
+        ).set(requireNonNull(path8),
+              requireNonNull(el8)
         );
     }
 
@@ -317,6 +492,46 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key9)),
               el9
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8
+        ).set(requireNonNull(path9),
+              requireNonNull(el9)
         );
     }
 
@@ -365,6 +580,50 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key10)),
               el10
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9
+        ).set(requireNonNull(path10),
+              requireNonNull(el10)
         );
     }
 
@@ -417,6 +676,54 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key11)),
               el11
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10
+        ).set(requireNonNull(path11),
+              requireNonNull(el11)
         );
     }
 
@@ -472,6 +779,58 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key12)),
               el12
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11
+        ).set(requireNonNull(path12),
+              requireNonNull(el12)
         );
     }
 
@@ -532,6 +891,62 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key13)),
               el13
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12
+        ).set(requireNonNull(path13),
+              requireNonNull(el13)
         );
     }
 
@@ -596,6 +1011,66 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key14)),
               el14
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13
+        ).set(requireNonNull(path14),
+              requireNonNull(el14)
         );
     }
 
@@ -665,6 +1140,71 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
               el15
         );
     }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14
+        ).set(requireNonNull(path15),
+              requireNonNull(el15)
+        );
+    }
+
 
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
@@ -734,6 +1274,75 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key16)),
               el16
+        );
+    }
+
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15,
+                           final JsPath path16,
+                           final JsValue el16
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14,
+                  path15,
+                  el15
+        ).set(requireNonNull(path16),
+              requireNonNull(el16)
         );
     }
 
@@ -810,6 +1419,78 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key17)),
               el17
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15,
+                           final JsPath path16,
+                           final JsValue el16,
+                           final JsPath path17,
+                           final JsValue el17
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14,
+                  path15,
+                  el15,
+                  path16,
+                  el16
+        ).set(requireNonNull(path17),
+              requireNonNull(el17)
         );
     }
 
@@ -892,6 +1573,83 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
               el18
         );
     }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15,
+                           final JsPath path16,
+                           final JsValue el16,
+                           final JsPath path17,
+                           final JsValue el17,
+                           final JsPath path18,
+                           final JsValue el18
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14,
+                  path15,
+                  el15,
+                  path16,
+                  el16,
+                  path17,
+                  el17
+        ).set(requireNonNull(path18),
+              requireNonNull(el18)
+        );
+    }
+
 
 
     @SuppressWarnings("squid:S00107")
@@ -974,6 +1732,86 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         ).set(JsPath.empty()
                     .key(requireNonNull(key19)),
               el19
+        );
+    }
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15,
+                           final JsPath path16,
+                           final JsValue el16,
+                           final JsPath path17,
+                           final JsValue el17,
+                           final JsPath path18,
+                           final JsValue el18,
+                           final JsPath path19,
+                           final JsValue el19
+    ) {
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14,
+                  path15,
+                  el15,
+                  path16,
+                  el16,
+                  path17,
+                  el17,
+                  path18,
+                  el18
+        ).set(requireNonNull(path19),
+              requireNonNull(el19)
         );
     }
 
@@ -1063,32 +1901,89 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
               el20
         );
     }
-
-    /**
-     * Returns an immutable object from one or more pairs.
-     *
-     * @param pair   a pair
-     * @param others more optional pairs
-     * @return an immutable JsObject
-     * @throws UserError if an elem of a pair is mutable
-     */
-    @SafeVarargs
-    public static JsObj of(final Pair<JsPath, JsValue> pair,
-                           final Pair<JsPath, JsValue>... others
+    @SuppressWarnings("squid:S00107")
+    public static JsObj of(final JsPath path1,
+                           final JsValue el1,
+                           final JsPath path2,
+                           final JsValue el2,
+                           final JsPath path3,
+                           final JsValue el3,
+                           final JsPath path4,
+                           final JsValue el4,
+                           final JsPath path5,
+                           final JsValue el5,
+                           final JsPath path6,
+                           final JsValue el6,
+                           final JsPath path7,
+                           final JsValue el7,
+                           final JsPath path8,
+                           final JsValue el8,
+                           final JsPath path9,
+                           final JsValue el9,
+                           final JsPath path10,
+                           final JsValue el10,
+                           final JsPath path11,
+                           final JsValue el11,
+                           final JsPath path12,
+                           final JsValue el12,
+                           final JsPath path13,
+                           final JsValue el13,
+                           final JsPath path14,
+                           final JsValue el14,
+                           final JsPath path15,
+                           final JsValue el15,
+                           final JsPath path16,
+                           final JsValue el16,
+                           final JsPath path17,
+                           final JsValue el17,
+                           final JsPath path18,
+                           final JsValue el18,
+                           final JsPath path19,
+                           final JsValue el19,
+                           final JsPath path20,
+                           final JsValue el20
     ) {
-        Objects.requireNonNull(pair);
-        Objects.requireNonNull(others);
-        JsObj obj = JsObj.EMPTY.set(pair.first(),
-                                    pair.second()
+        return of(path1,
+                  el1,
+                  path2,
+                  el2,
+                  path3,
+                  el3,
+                  path4,
+                  el4,
+                  path5,
+                  el5,
+                  path6,
+                  el6,
+                  path7,
+                  el7,
+                  path8,
+                  el8,
+                  path9,
+                  el9,
+                  path10,
+                  el10,
+                  path11,
+                  el11,
+                  path12,
+                  el12,
+                  path13,
+                  el13,
+                  path14,
+                  el14,
+                  path15,
+                  el15,
+                  path16,
+                  el16,
+                  path17,
+                  el17,
+                  path18,
+                  el18,
+                  path19,
+                  el19
+        ).set(requireNonNull(path20),
+              requireNonNull(el20)
         );
-        for (Pair<JsPath, JsValue> p : others) {
-
-            obj = obj.set(p.first(),
-                          p.second()
-            );
-        }
-        return obj;
-
     }
 
 

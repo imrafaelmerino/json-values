@@ -112,7 +112,7 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
      */
     @Override
     public int hashCode() {
-        return value.hashCode();
+        return Objects.hashCode(value.hashCode());
     }
 
     /**

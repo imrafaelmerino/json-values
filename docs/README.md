@@ -12,7 +12,21 @@ Edsger Wybe Dijkstra
 
 - [Introduction](#introduction)
 - [What to use _json-values_ for and when to use it](#whatfor)
-- [Examples](#examples)
+- [How-To](#how-to)
+    - [JsPath](#jspath)
+    - [JsValue](#jsvalue)
+    - [Creating Jsons](#creatingjson)
+      - [Creating JsObj](#creatingjsonobj)
+      - [Creating JsArray](#creatingjsonarray)
+    - [Putting data in and getting data out](#inout)
+    - [Filter, map and reduce](#filtermapreduce)  
+    - [Putting data in and getting data out](#inout)
+    - [Specs](#specs)
+    - [Generators](#gen)
+    - [Optics](#optics)
+      - [Lenses](#lenses)
+      - [Prism](#prism)
+      - [Optionals](#opt)
 - [When not to use it](#notwhatfor)
 - [Requirements](#requirements)
 - [Installation](#installation)
@@ -23,7 +37,7 @@ Edsger Wybe Dijkstra
 
 ## <a name="introduction"><a/> Introduction
 
-Welcome to **json-values**, the first-ever Json library in _Java_ implemented with
+Welcome to **json-values**, the first-ever JSON library in _Java_ implemented with
 persistent data structures.
 
 One of the most essential aspects of functional programming is immutable data structures,
@@ -43,30 +57,117 @@ of frameworks and annotations. FP is all about functions and values; that's it. 
 to cast some light on how we can manipulate JSON with json-values following a purely
 functional approach.
 
-json-values supports the standard Json types: string, number, null, object, array; There 
-are five number specializations: int, long, double, decimal and biginteger. json-values 
-adds support for instants and binary data. Instants are serialized into its string 
-representation according to ISO-8601; and the binary type is serialized into a string 
-encoded in base 64.
 
 ## <a name="whatfor"><a/> What to use json-values for and when to use it
 
 * You need to deal with Jsons, and you want to program following a functional style, **using just functions and values**,
   but you can't benefit from all the advantage that immutability brings to your code because **Java doesn't provide
   [Persistent Data Structures](https://en.wikipedia.org/wiki/Persistent_data_structure)**.
-  The thing is that Java 8 brought functions, lambdas, lazy evaluation to some extent, and streams, but without
-  immutability, something is still missing, and as _**Pat Helland**_
-  said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
-* You manipulate Json all the time, and you'd like to do it with less ceremony. **json-values** is declarative and
+* For those architectures that work with JSON end-to-end, it's extremely safe and efficient to have a persistent Json. 
+* Think of actors sending JSON messages one to each other for example.
+* You manipulate JSON all the time, and you'd like to do it with less ceremony. **json-values** is declarative and
   takes advantage of a lot of concepts from functional programming to define a powerful API.
-* Generating Json to do Property-Based-Testing is child's play with json-values.
-* Generating specifications to validate Json and parse strings or bytes very efficiently is a piece of cake.
+* Generating JSON to do Property-Based-Testing is child's play with json-values.
+* Generating specifications to validate JSON and parse strings or bytes very efficiently is a piece of cake.
 * Simplicity matters, and I'd argue that **json-values** is simple.
+* As _**Pat Helland**_ said, [Immutability Changes Everything!](http://cidrdb.org/cidr2015/Papers/CIDR15_Paper16.pdf)
 
-## <a name="examples"><a/> Examples
+## <a name="how-to"><a/> How-To
+As a developer, I'm convinced that code should win arguments, so let's get down to business and
+do some coding. 
 
-As a developer, I'm convinced that code should win arguments, so let's get down to business.
-First things first. Let's create the following JSON
+#### <a name="jspath"><a/>JsPath
+
+A _JsPath_ represents a location of a specific value within a JSON. It's a sequence of _Position_, being a position
+either a _Key_ or an _Index_.
+
+```java   
+
+//RFC 6901
+
+JsPath path =  JsPath.path("/a/b/0");
+
+Position head = path.head();
+
+Assertions.assertEquals(head,
+                        Key.of("a")
+                        );
+
+JsPath tail = path.tail();
+
+Assertions.assertEquals(tail.head(),
+                        Key.of("b")
+                       );
+
+Assertions.assertEquals(tail.last(),
+                        Index.of(0)
+                       );
+                       
+//alternative to RFC 6901 to create JsPath
+
+JsPath path =  JsPath.fromKey("a").key("b").index(0);
+
+                      
+```
+
+
+#### <a name="jsvalue"><a/>JsValue
+
+Every element in a Json is a _JsValue_. There is a specific type for each value described
+in [json.org](https://www.json.org): string, number, null, object and array.
+There are five number specializations: int, long, double, decimal and biginteger. 
+
+json-values adds support for instants and binary data. Instants are serialized into its 
+string representation according to ISO-8601; and the binary type is serialized into a 
+string encoded in base 64.
+
+When it comes to the _equals_ method, json-values is data oriented, I mean, two JSON
+are equals if they represent the same piece of information. Let's put some example:
+
+```java  
+JsObj json = JsObj.of("a", JsInt.of(1000),
+                      "b", JsBigDec.of(BigDecimal.valueOf(100_000_000_000_000L)),
+                      "c", JsInstant.of("2022-05-25T14:27:37.353Z"),
+                      "d", JsStr.of("aGkh")
+                     );
+
+JsObj json1 = JsObj.of("b", JsBigInt.of(BigInteger.valueOf(100_000_000_000_000L)),
+                       "a", JsLong.of(1000L),
+                       "c", JsStr.of("2022-05-25T14:27:37.353Z"),
+                       "d", JsBinary.of("hi!".getBytes(StandardCharsets.UTF_8))
+                      );  
+
+Assertions.assertEquals(json, json1);    
+Assertions.assertEquals(json.hashcode(), json1.hashcode());                        
+                    
+```
+
+Since both JSON represents the same information:
+
+```json   
+
+{
+  "a": 1000,
+  "b": 100000000000000,
+  "c": "2022-05-25T14:27:37.353Z",
+  "d": "aGkh"
+}
+
+
+```
+
+it makes sense that both of them are equals, and therefore they have the same hashcode.
+
+#### <a name="creatingjson"><a/>Creating JSON
+
+There are several ways of creating JSON:
+* Using the static factory methods _of_.
+* Parsing an array of bytes, a string or an input stream. When possible, it's always better to work on byte level. If the schema of the Json is known, the fastest way is defining a parser from a spec.
+* Creating an empty object and then using the API to insert values.
+
+##### <a name="creatingjsonobj"><a/>Creating JsObj
+
+Let's create the following JSON
 
 ```json
 {
@@ -92,7 +193,7 @@ First things first. Let's create the following JSON
 
 ```
 
-using the static factory methods provided by json-values
+**Using the static factory methods provided by json-values:**
 
 ```java      
 import jsonvalues.*;
@@ -121,8 +222,162 @@ As you can see, its definition is like raw JSON. It’s a recursive data structu
 You can nest as many JSON objects as you want. Think of any imaginable JSON, and
 you can write it in no time.
 
+You can use paths instead of keys and a nested structure, which turns out to be
+really convenient as well:
+
+```java   
+import static jsonvalues.JsPath.path;
+     
+JsObj person = 
+        JsObj.of(path("/name"), JsStr.of("Rafael"),
+                 path("/surname"), JsStr.of("Merino"),
+                 path("/phoneNumber"), JsStr.of("6666666"),
+                 path("/registrationDate"), JsInstant.of("2019-01-21T05:47:26.853Z"),
+                 path("/addresses/0/coordinates/0"), JsDouble.of(39.8581),
+                 path("/addresses/0/coordinates/1"), JsDouble.of(-4.02263),
+                 path("/addresses/0/city"), JsStr.of("Toledo"),
+                 path("/addresses/0/tags"), JsArray.of("workAddress"),
+                 path("/addresses/1/coordinates/0"),  JsDouble.of(40.4168),
+                 path("/addresses/1/coordinates/1"), JsDouble.of(3.7038),
+                 path("/addresses/1/city"), JsStr.of("Madrid"),
+                 path("/addresses/1/tags"), JsArray.of("homeAddress")
+                );     
+```
+
+
+**Parsing a string and the schema of the Json is unknown:**
+
+```java   
+
+JsObj a = JsObj.parse("{...}");
+
+JsObj b = JsObj.parseYaml("{....}");
+
+```
+
+**Parsing a string and the schema of the object is known:**
+
+In this case the best and fastest option is to use a spec to do the parsing. 
+We'll talk about this option later.
+
+**With the set method:**
+
+Remember that a JSON is immutable, so the set method returns a brand new JSON.
+
+```java   
+
+JsObj person = 
+        JsObj.empty().set(path("/name"), JsStr.of("Rafael"))
+                     .set(path("/surname"), JsStr.of("Merino"))
+                     .set(path("/phoneNumber"), JsStr.of("6666666"));
+
+```
+
+
+##### <a name="creatingjsonarray"><a/>Creating JsArray
+
+**From primitives using the static factory method _of_ and varargs:**
+
+```java   
+
+JsArray a = JsArray.of("apple", "orange", "pear");
+
+JsArray b = JsArray.of(1, 2, 3, 4);
+
+```
+
+**From JsValue using the static factory method _of_ and varargs:**
+
+```java   
+
+JsArray a = JsArray.of(JsStr.of("hi"), JsInt.of(1), JsBool.TRUE, JsNull.NULL);
+
+```
+
+**From an iterable of JsValue:**
+
+```java    
+
+List<JsValue> list = new ArrayList();
+Set<JsValue> set = new HashSet();
+
+JsArray.ofIterable(list);
+JsArray.ofIterable(set);
+
+  
+```
+
+**Parsing a string or array of bytes, and the schema of the Json is unknown:**
+
+```java   
+
+JsArray a = JsArray.parse("[...]");
+
+JsArray b = JsArray.parseYaml("[....]");
+
+```
+
+**Parsing a string and the schema of the array is known:**
+
+In this case, like parsing objects with a schema, the best and fastest option 
+is to use a spec to do the parsing. We'll also talk about this option later.
+
+**With the methods _append_ and _prepend_:**
+
+```java   
+
+JsArray a = JsArray.empty().append(JsInt.of(1))
+                                   .prepend(JsInt.of(0));
+
+JsArray b = JsArray.empty().append(JsInt.of(3))
+                           .prepend(JsInt.of(2));
+
+Assertions.equals(JsArray.of(0,1,2,3), a.appendAll(b));
+Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
+
+```
+
+#### <a name="inout"><a/>Putting data in and getting data out
+
+
+
+Let's take a look at some very common transformations using the _map_ functions.
+The map function doesn't change the structure of the JSON. This is a pattern
+known in FP as a functor. Consider the following signatures:
+
+```java   
+
+JsObj mapAllValues( Function<JsPrimitive, JsValue> map) 
+JsObj mapAllKeys( Function<String, String> map) 
+JsObj mapAllObjs( Function<? super JsObj, JsValue> map)
+
+```
+
+All of them traverse recursively the whole JSON.
+
+The mapAllKeys function transform all the keys of JSON objects. The typical example
+is when you want to pass from camel case format to snake case.
+
+The _mapAllValues_ function operates on primitive types (not object or arrays)
+and transform them into any possible value.
+
+
+You can access the full path of every mapped value using the following overloaded
+methods:
+
+```java  
+
+JsObj mapAllKeys( BiFunction<JsPath, JsValue, String> map) 
+JsObj mapAllValues( BiFunction<JsPath, JsPrimitive, JsValue> map)
+JsObj mapAllObjs( BiFunction<JsPath, JsObj, JsValue> map)
+
+```
+
+
+#### <a name="specs"><a/>Specs
+
 But what about validating JSON? We can define the JSON schema following precisely
-the same approach:
+the same approach as defining JSON:
 
 ```java   
 import static jsonvalues.spec.JsSpecs.*;
@@ -156,8 +411,8 @@ errors.forEach(pair -> System.out.println(toStr.apply(pair)));
 ```
 
 I’d argue that it is very expressive, concise, and straightforward. I call it json-spec.
-I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing 
-specs feels like writing JSON. Strict specs don't allow keys that are not specified, whereas 
+I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing
+specs feels like writing JSON. Strict specs don't allow keys that are not specified, whereas
 lenient ones do. The real power is that you can create specs from predicates and compose them:
 
 ```java   
@@ -243,7 +498,7 @@ As you can see, the spec's structure remains the same, and it’s child’s play
 optional and nullable fields.
 
 Another exciting thing we can do with specs is parsing strings or bytes. Instead of parsing
-the whole Json and then validating it, we can verify the schema while parsing it and
+the whole JSON and then validating it, we can verify the schema while parsing it and
 stop the process as soon as an error happens. After all, failing fast is important as well!
 
 ```java      
@@ -267,11 +522,13 @@ catch(JsParserException e){
 
 ```
 
+#### <a name="gen"><a/>Generators
+
 Another critical aspect of software development is data generation. It’s an essential aspect
 of property-based testing, a technique for the random testing of program properties very well
 known in FP. Computers are way better than humans at generating random data. You'll catch more
 bugs testing your code against a lot of inputs instead of just one. Writing generators, like
-specs, is as simple as writing Json:
+specs, is as simple as writing JSON:
 
 ```java      
 
@@ -305,7 +562,7 @@ JsObjGen personGen =
 
 
 Most generators have two static factory methods: _biased_ and _arbitrary_. The latter returns
-a uniform distribution of values, whereas the former generates, with a higher probability, 
+a uniform distribution of values, whereas the former generates, with a higher probability,
 potential problematic values that tend to cause bugs in our code. For example:
 
 * Integer generator
@@ -318,24 +575,24 @@ Gen<JsStr> gen = JsIntGen.biased();
 
 ``` 
 It produces with higher probability the values:
-    
+
 -  Integer.MAX_VALUE
 -  Integer.MIN_VALUE
 -  Short.MAX_VALUE
--  Short.MIN_VALUE 
--  Byte.MAX_VALUE 
--  Byte.MIN_VALUE 
+-  Short.MIN_VALUE
+-  Byte.MAX_VALUE
+-  Byte.MIN_VALUE
 -  0
 
 We can specify a bounded interval:
-    
+
 ```java    
 
 Gen<JsStr> gen = JsIntGen.biased(min, max)
 
 ``` 
 
-that produces with higher probability the bounds of the interval *min* and *max*, and all the 
+that produces with higher probability the bounds of the interval *min* and *max*, and all the
 previoues values from the unbounded generator that fall between the interval.
 
 * Long generator
@@ -383,7 +640,7 @@ Gen<JsStr> parity = Combinators.oneOf("even",
 ```
 
 You can combine any number of generators and set the probability of selecting each of them
-for the next value generation:    
+for the next value generation:
 
 ```java 
 // 20% alphaumeric strings and 80% digits
@@ -400,44 +657,12 @@ Gen<JsValue> gen = Combinators.freq(new Pair<>(3, JsLongGen.biased()),
 Go to the javadoc to get more details about every generator. json-values
 generators are built on top of the generators of java-fun.
 
+#### <a name="optics"><a/>Optics
+##### <a name="lenses"><a/>Lenses
+##### <a name="prism"><a/>Prism
+##### <a name="opt"><a/>Optionals
 
 
-
-Let's take a look at some very common transformations using the _map_ functions.
-The map function doesn't change the structure of the Json. This is a pattern
-known in FP as a functor. Consider the following signatures:
-
-```java   
-
-JsObj mapAllValues( Function<JsPrimitive, JsValue> map) 
-JsObj mapAllKeys( Function<String, String> map) 
-JsObj mapAllObjs( Function<? super JsObj, JsValue> map)
-
-```
-
-All of them traverse recursively the whole Json. 
-
-The mapAllKeys function transform all the keys of Json objects. The typical example
-is when you want to pass from camel case format to snake case. 
-
-The _mapAllValues_ function operates on primitive types (not object or arrays) 
-and transform them into any possible value. 
-
-
-You can access the full path of every mapped value using the following overloaded 
-methods:
-
-```java  
-
-JsObj mapAllKeys( BiFunction<JsPath, JsValue, String> map) 
-JsObj mapAllValues( BiFunction<JsPath, JsPrimitive, JsValue> map)
-JsObj mapAllObjs( BiFunction<JsPath, JsObj, JsValue> map)
-
-```
-
-
-
-TODO
 
 
 

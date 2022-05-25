@@ -80,32 +80,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return EMPTY;
     }
 
-    /**
-     * Returns an immutable array from one or more pairs.
-     *
-     * @param pair   a pair
-     * @param others more optional pairs
-     * @return an immutable JsArray
-     * @throws UserError if an elem of a pair is mutable
-     */
-    @SafeVarargs
-    public static JsArray of(final Pair<JsPath, JsValue> pair,
-                             final Pair<JsPath, JsValue>... others
-    ) {
-        Objects.requireNonNull(pair);
-        Objects.requireNonNull(others);
-
-        JsArray arr = JsArray.EMPTY.set(pair.first(),
-                                        pair.second());
-        for (Pair<JsPath, JsValue> p : others) {
-
-            arr = arr.set(p.first(),
-                          p.second()
-            );
-        }
-        return arr;
-
-    }
 
     /**
      * Returns an immutable array.
@@ -347,7 +321,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param iterable the iterable of json elements
      * @return an immutable json array
      */
-    public static JsArray ofIterable(Iterable<? extends JsValue> iterable) {
+    public static JsArray ofIterable(final Iterable<? extends JsValue> iterable) {
         Vector<JsValue> vector = Vector.empty();
         for (JsValue e : requireNonNull(iterable)) {
             vector = vector.append(e);

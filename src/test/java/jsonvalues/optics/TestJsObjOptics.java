@@ -3,7 +3,6 @@ package jsonvalues.optics;
 
 import fun.optic.Lens;
 import fun.optic.Option;
-import fun.tuple.Pair;
 import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -18,9 +17,9 @@ public class TestJsObjOptics {
     public void testBigDecLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsBigInt.of(BigInteger.TEN)
-                           )
+        JsObj a = JsObj.of(path,
+                           JsBigInt.of(BigInteger.TEN)
+
         );
 
         Lens<JsObj, JsValue> valueLens = JsObj.lens.value(path);
@@ -72,9 +71,9 @@ public class TestJsObjOptics {
     public void testStrLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsStr.of("abc")
-                           )
+        JsObj a = JsObj.of(path,
+                           JsStr.of("abc")
+
         );
 
         Lens<JsObj, String> lens = JsObj.lens.str(path);
@@ -103,9 +102,9 @@ public class TestJsObjOptics {
     public void testDoubleLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsDouble.of(1.5)
-                           )
+        JsObj a = JsObj.of(path,
+                           JsDouble.of(1.5)
+
         );
 
         Lens<JsObj, Double> lens = JsObj.lens.doubleNum(path);
@@ -133,9 +132,9 @@ public class TestJsObjOptics {
     public void testLongLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsLong.of(Long.MAX_VALUE)
-                           )
+        JsObj a = JsObj.of(path,
+                           JsLong.of(Long.MAX_VALUE)
+
         );
 
         Lens<JsObj, Long> lens = JsObj.lens.longNum(path);
@@ -163,9 +162,9 @@ public class TestJsObjOptics {
     public void testIntegerLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsInt.of(Integer.MAX_VALUE)
-                           )
+        JsObj a = JsObj.of(path,
+                           JsInt.of(Integer.MAX_VALUE)
+
         );
 
         Lens<JsObj, Integer> lens = JsObj.lens.intNum(path);
@@ -193,9 +192,9 @@ public class TestJsObjOptics {
     public void testDecimalLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsBigDec.of(new BigDecimal("1.11"))
-                           )
+        JsObj a = JsObj.of(path,
+                           JsBigDec.of(new BigDecimal("1.11"))
+
         );
 
         Lens<JsObj, BigDecimal> lens = JsObj.lens.decimalNum(path);
@@ -225,9 +224,9 @@ public class TestJsObjOptics {
     public void testBoolLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsBool.TRUE
-                           )
+        JsObj a = JsObj.of(path,
+                           JsBool.TRUE
+
         );
 
         Lens<JsObj, Boolean> lens = JsObj.lens.bool(path);
@@ -256,9 +255,9 @@ public class TestJsObjOptics {
     public void testObjLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsObj.empty()
-                           )
+        JsObj a = JsObj.of(path,
+                           JsObj.empty()
+
         );
 
         Lens<JsObj, JsObj> lens = JsObj.lens.obj(path);
@@ -297,9 +296,9 @@ public class TestJsObjOptics {
     public void testArrayLenses() {
 
         JsPath path = JsPath.path("/a/b/c");
-        JsObj a = JsObj.of(new Pair<>(path,
-                                      JsArray.empty()
-                           )
+        JsObj a = JsObj.of(path,
+                           JsArray.empty()
+
         );
 
         Lens<JsObj, JsArray> lens = JsObj.lens.array(path);

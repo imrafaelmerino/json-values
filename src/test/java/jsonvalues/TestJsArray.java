@@ -1,7 +1,6 @@
 package jsonvalues;
 
 
-import fun.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -117,37 +116,6 @@ public class TestJsArray {
 
     }
 
-    @Test
-    public void test_create_json_array_from_one_or_more_pairs() {
-
-        final JsArray arr = JsArray.of(new Pair<>(JsPath.fromIndex(0),
-                                                  JsInt.of(1)
-                                       ),
-                                       new Pair<>(JsPath.fromIndex(2),
-                                                  JsInt.of(3)
-                                       )
-        );
-        Assertions.assertEquals(JsArray.of(JsInt.of(1),
-                                           NULL,
-                                           JsInt.of(3)
-                                ),
-                                arr
-        );
-
-        final JsArray arr1 = JsArray.of(new Pair<>(path("/0/a"),
-                                                   JsInt.of(1)
-                                        ),
-                                        new Pair<>(path("/2/b"),
-                                                   JsInt.of(3)
-                                        )
-        );
-
-        Assertions.assertEquals(JsArray.parse("[{\"a\": 1},null,{\"b\": 3}]"),
-                                arr1
-        );
-
-
-    }
 
     @Test
     public void test_create_one_element_json_array() {
@@ -762,9 +730,9 @@ public class TestJsArray {
     @Test
     public void test_operations() {
 
-        JsArray array = JsArray.of(new Pair<>(path("/0/b/0"),
-                                              JsInt.of(1)
-                                   )
+        JsArray array = JsArray.empty().set(path("/0/b/0"),
+                                            JsInt.of(1)
+
         );
 
         Assertions.assertEquals(array,

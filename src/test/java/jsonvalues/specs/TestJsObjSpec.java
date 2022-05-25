@@ -31,12 +31,14 @@ public class TestJsObjSpec {
                                                 str());
 
 
-        final Set<JsErrorPair> error = spec.test(JsObj.of("a",
+        final Set<JsErrorPair> errors = spec.test(JsObj.of("a",
                                                           JsInt.of(1)));
 
-        Assertions.assertFalse(error.isEmpty());
+        errors.forEach(pair -> System.out.println(pair.error.value +" @ "+pair.path+" doesn't not conform spec: "+pair.error.code));
 
-        final JsErrorPair pair = error.stream()
+        Assertions.assertFalse(errors.isEmpty());
+
+        final JsErrorPair pair = errors.stream()
                                       .findFirst()
                                       .get();
 

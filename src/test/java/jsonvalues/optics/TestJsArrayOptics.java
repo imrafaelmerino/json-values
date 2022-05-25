@@ -2,7 +2,6 @@ package jsonvalues.optics;
 
 
 import fun.optic.Lens;
-import fun.tuple.Pair;
 import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -16,9 +15,8 @@ public class TestJsArrayOptics {
     public void testBigDecLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsBigInt.of(BigInteger.TEN)
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsBigInt.of(BigInteger.TEN)
         );
 
         Lens<JsArray, BigInteger> lens = JsArray.lens.integralNum(path);
@@ -47,9 +45,8 @@ public class TestJsArrayOptics {
     public void testStrLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsStr.of("abc")
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsStr.of("abc")
         );
 
         Lens<JsArray, String> lens = JsArray.lens.str(path);
@@ -78,9 +75,8 @@ public class TestJsArrayOptics {
     public void testDoubleLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsDouble.of(1.5)
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsDouble.of(1.5)
         );
 
         Lens<JsArray, Double> lens = JsArray.lens.doubleNum(path);
@@ -108,9 +104,8 @@ public class TestJsArrayOptics {
     public void testLongLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsLong.of(Long.MAX_VALUE)
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsLong.of(Long.MAX_VALUE)
         );
 
         Lens<JsArray, Long> lens = JsArray.lens.longNum(path);
@@ -138,9 +133,8 @@ public class TestJsArrayOptics {
     public void testIntegerLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsInt.of(Integer.MAX_VALUE)
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsInt.of(Integer.MAX_VALUE)
         );
 
         Lens<JsArray, Integer> lens = JsArray.lens.intNum(path);
@@ -168,9 +162,8 @@ public class TestJsArrayOptics {
     public void testBooleanLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsBool.TRUE
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsBool.TRUE
         );
 
         Lens<JsArray, Boolean> lens = JsArray.lens.bool(path);
@@ -195,9 +188,8 @@ public class TestJsArrayOptics {
     public void testDecimalLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsBigDec.of(new BigDecimal("1.11"))
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsBigDec.of(new BigDecimal("1.11"))
         );
 
         Lens<JsArray, BigDecimal> lens = JsArray.lens.decimalNum(path);
@@ -226,9 +218,8 @@ public class TestJsArrayOptics {
     public void testBoolLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsBool.TRUE
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsBool.TRUE
         );
 
         Lens<JsArray, Boolean> lens = JsArray.lens.bool(path);
@@ -291,9 +282,8 @@ public class TestJsArrayOptics {
     public void testObjLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsObj.empty()
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsObj.empty()
         );
 
         Lens<JsArray, JsObj> lens = JsArray.lens.obj(path);
@@ -326,9 +316,8 @@ public class TestJsArrayOptics {
     public void testArrayLenses() {
 
         JsPath path = JsPath.path("/0/b/c");
-        JsArray a = JsArray.of(new Pair<>(path,
-                                          JsArray.empty()
-                               )
+        JsArray a = JsArray.empty().set(path,
+                                        JsArray.empty()
         );
 
         Lens<JsArray, JsArray> lens = JsArray.lens.array(path);

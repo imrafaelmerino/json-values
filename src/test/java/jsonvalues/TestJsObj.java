@@ -1,7 +1,6 @@
 package jsonvalues;
 
 import fun.optic.Option;
-import fun.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -124,21 +123,16 @@ public class TestJsObj {
     @Test
     public void test_creates_object_from_pairs() {
 
-        JsObj obj = JsObj.of(new Pair<>(fromKey("a"),
-                                        JsInt.of(1)
-                             ),
-                             new Pair<>(fromKey("b"),
-                                        JsInt.of(2)
-                             ),
-                             new Pair<>(fromKey("c"),
-                                        JsInt.of(3)
-                             ),
-                             new Pair<>(path("/d/0/0"),
-                                        JsInt.of(5)
-                             ),
-                             new Pair<>(path("/d/0/1"),
-                                        JsInt.of(6)
-                             )
+        JsObj obj = JsObj.of(fromKey("a"),
+                             JsInt.of(1),
+                             fromKey("b"),
+                             JsInt.of(2),
+                             fromKey("c"),
+                             JsInt.of(3),
+                             path("/d/0/0"),
+                             JsInt.of(5),
+                             path("/d/0/1"),
+                             JsInt.of(6)
         );
 
         Assertions.assertEquals(5,
@@ -923,24 +917,18 @@ public class TestJsObj {
 
     @Test
     public void test_parse_into_immutable() {
-        JsObj obj = JsObj.of(new Pair<>(path("/a/b/0"),
-                                        NULL
-                             ),
-                             new Pair<>(path("/a/b/1"),
-                                        TRUE
-                             ),
-                             new Pair<>(path("/a/b/c"),
-                                        FALSE
-                             ),
-                             new Pair<>(path("/a/b/c/d"),
-                                        JsInt.of(1)
-                             ),
-                             new Pair<>(path("/a/a/a/"),
-                                        JsStr.of("a")
-                             ),
-                             new Pair<>(path("/a/b/0"),
-                                        JsBigDec.of(BigDecimal.ONE)
-                             )
+        JsObj obj = JsObj.of(path("/a/b/0"),
+                             NULL,
+                             path("/a/b/1"),
+                             TRUE,
+                             path("/a/b/c"),
+                             FALSE,
+                             path("/a/b/c/d"),
+                             JsInt.of(1),
+                             path("/a/a/a/"),
+                             JsStr.of("a"),
+                             path("/a/b/0"),
+                             JsBigDec.of(BigDecimal.ONE)
         );
 
         Assertions.assertEquals(obj,

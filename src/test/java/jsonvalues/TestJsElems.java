@@ -1,11 +1,14 @@
 package jsonvalues;
 
+import fun.tuple.Pair;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.Base64;
 
 public class TestJsElems {
 
@@ -201,6 +204,42 @@ public class TestJsElems {
                                 JsDouble.of(0.1d)
                                         .map(i -> i * 5)
         );
+
+
+    }
+
+    @Test
+    public void test_json_obj() {
+
+        byte[] hi = "hi!".getBytes(StandardCharsets.UTF_8);
+
+        JsObj json = JsObj.of("a",
+                              JsInt.of(1000),
+                              "b",
+                              JsBigDec.of(BigDecimal.valueOf(100_000_000_000_000L)),
+                              "c",
+                              JsInstant.of("2022-05-25T14:27:37.353Z"),
+                              "d",
+                              JsStr.of(Base64.getEncoder().encodeToString(hi))
+        );
+
+        JsObj json1 = JsObj.of("b",
+                               JsBigInt.of(BigInteger.valueOf(100_000_000_000_000L)),
+                               "a",
+                               JsLong.of(1000L),
+                               "c",
+                               JsStr.of("2022-05-25T14:27:37.353Z"),
+                               "d",
+                               JsBinary.of(hi)
+        );
+
+        System.out.println(json.toPrettyString());
+
+
+        Assertions.assertEquals(json,
+                                json1);
+        Assertions.assertEquals(json.hashCode(),
+                                json1.hashCode());
 
 
     }
