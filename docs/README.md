@@ -70,7 +70,7 @@ functional approach.
 As a developer, I'm convinced that code should win arguments, so let's get down to business and
 do some coding. 
 
-#### <a name="jspath"><a/>JsPath
+### <a name="jspath"><a/>JsPath
 
 A _JsPath_ represents a location of a specific value within a JSON. It's a sequence of _Position_, being a position
 either a _Key_ or an _Index_.
@@ -78,6 +78,7 @@ either a _Key_ or an _Index_.
 ```java   
 import jsonvalues.JsPath;
 import jsonvalues.Key;
+import jsonvalues.Index;
 import jsonvalues.Position;
 
 //RFC 6901
@@ -101,7 +102,7 @@ Assertions.assertEquals(tail.last(),
                        );
                        
 //alternative to RFC 6901 to create a JsPath, 
-//using the API instead of from a string
+//using the API instead of parsing a string
 
 JsPath path =  JsPath.fromKey("a").key("b").index(0);
 
@@ -109,7 +110,7 @@ JsPath path =  JsPath.fromKey("a").key("b").index(0);
 ```
 
 
-#### <a name="jsvalue"><a/>JsValue
+### <a name="jsvalue"><a/>JsValue
 
 Every element in a Json is a _JsValue_. There is a specific type for each value described
 in [json.org](https://www.json.org): string, number, null, object and array.
@@ -155,14 +156,14 @@ Since both JSON represents the same piece of information:
 
 it makes sense that both of them are equals, and therefore they have the same hashcode.
 
-#### <a name="creatingjson"><a/>Creating JSON
+### <a name="creatingjson"><a/>Creating JSON
 
 There are several ways of creating JSON:
 * Using the static factory methods _of_.
-* Parsing an array of bytes, a string or an input stream. When possible, it's always better to work on byte level. If the schema of the Json is known, the fastest way is defining a parser from a spec.
+* Parsing an array of bytes or a string. If the schema of the Json is known, the fastest way is defining a parser from a spec.
 * Creating an empty object and then using the API to insert values.
 
-##### <a name="creatingjsonobj"><a/>Creating JsObj
+### <a name="creatingjsonobj"><a/>Creating JsObj
 
 Let's create the following JSON
 
@@ -213,6 +214,7 @@ JsObj person =
                                              )
                                     )
             );
+            
 ```
 
 As you can see, its definition is like raw JSON. It’s a recursive data structure.
@@ -223,6 +225,7 @@ Instead of keys and a nested structure, it's possible to create a JSON object
 from their paths, which turns out to be really convenient as well:
 
 ```java   
+
 import static jsonvalues.JsPath.path;
      
 JsObj person = 
@@ -239,10 +242,11 @@ JsObj person =
                  path("/addresses/1/city"), JsStr.of("Madrid"),
                  path("/addresses/1/tags"), JsArray.of("homeAddress")
                 );     
+                
 ```
 
 
-**Parsing a string and the schema of the Json is unknown:**
+**Parsing a string and the schema of the JSON object is unknown:**
 
 ```java   
 
@@ -252,7 +256,7 @@ JsObj b = JsObj.parseYaml("{....}");
 
 ```
 
-**Parsing a string and the schema of the object is known:**
+**Parsing a string and the schema of the JSON object is known:**
 
 In this case the best and fastest option is to use a spec to do the parsing. 
 We'll talk about this option later, when I introduce json-spec.
@@ -271,7 +275,7 @@ JsObj person =
 Remember that a JSON is immutable, so the set method returns a brand-new value.
 
 
-##### <a name="creatingjsonarray"><a/>Creating JsArray
+### <a name="creatingjsonarray"><a/>Creating JsArray
 
 **From primitive types using the static factory method _of_ and _varargs_:**
 
@@ -303,7 +307,7 @@ JsArray.ofIterable(set);
 
 ```
 
-**Parsing a string or array of bytes, and the schema of the Json is unknown:**
+**Parsing a string and the schema of the JSON array is unknown:**
 
 ```java   
 
@@ -313,13 +317,13 @@ JsArray b = JsArray.parseYaml("[....]");
 
 ```
 
-**Parsing a string and the schema of the array is known:**
+**Parsing a string and the schema of the JSON array is known:**
 
 In this case, like parsing objects with a schema, the best and fastest option 
 is to use a spec to do the parsing. We'll also talk about this option later when
 I introduce json-spec.
 
-**Creating and empty array and adding new elements with the methods _append_ and _prepend_:**
+**Creating and empty array and adding new values with the methods _append_ and _prepend_:**
 
 ```java   
 
@@ -334,7 +338,8 @@ Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
 
 ```
 
-#### <a name="inout"><a/>Putting data in and getting data out
+
+### <a name="inout"><a/>Putting data in and getting data out
 
 public JsValue get(JsPath path);
 
@@ -479,7 +484,7 @@ array.getStr(0)
 
 
 
-#### <a name="filtermapreduce"><a/>Filter, map and reduce
+### <a name="filtermapreduce"><a/>Filter, map and reduce
 
 Let's take a look at some very common transformations using the _map_ functions.
 The map function doesn't change the structure of the JSON. This is a pattern
@@ -528,7 +533,7 @@ filter and reduce: TODO
 
 
 
-#### <a name="specs"><a/>Specs
+### <a name="specs"><a/>Specs
 
 But what about validating JSON? We can define the JSON schema following precisely
 the same approach as defining JSON:
@@ -676,7 +681,7 @@ catch(JsParserException e){
 
 ```
 
-#### <a name="gen"><a/>Generators
+### <a name="gen"><a/>Generators
 
 Another critical aspect of software development is data generation. It’s an essential aspect
 of property-based testing, a technique for the random testing of program properties very well
@@ -812,7 +817,7 @@ Gen<JsValue> gen = Combinators.freq(new Pair<>(3, JsLongGen.biased()),
 Go to the javadoc to get more details about every generator. json-values
 generators are built on top of the generators of java-fun.
 
-#### <a name="optics"><a/>Optics
+### <a name="optics"><a/>Optics
 
 It’s ubiquitous to have to navigate through recursive data structures like Json objects 
 and arrays to find, insert, and modify data. It’s a cumbersome and error-prone task 
@@ -900,7 +905,7 @@ On the other hand, JsValue is a sum-type that represents any json element:
 
 ```code
 
-JsValue = JsNumber | JsStr | JsBool | JsObj | JsArray | JsNull | JsNothing
+JsValue = JsNumber | JsStr | JsBool | JsObj | JsArray | JsNull | | JsInstant | JsBinary | JsNothing
 JsNumber = JsInt | JsLong | JsBigInt | JsDouble | JsDec
 
 ```
