@@ -284,7 +284,7 @@ JsArray b = JsArray.of(1, 2, 3, 4);
 
 ```
 
-**From JsValue using the static factory method _of_ and varargs:**
+**From JSON values using the static factory method _of_ and varargs:**
 
 ```java   
 
@@ -320,12 +320,12 @@ JsArray b = JsArray.parseYaml("[....]");
 In this case, like parsing objects with a schema, the best and fastest option 
 is to use a spec to do the parsing. We'll also talk about this option later.
 
-**With the methods _append_ and _prepend_:**
+**Creating and empty arran and adding new elements eith the methods _append_ and _prepend_:**
 
 ```java   
 
 JsArray a = JsArray.empty().append(JsInt.of(1))
-                                   .prepend(JsInt.of(0));
+                           .prepend(JsInt.of(0));
 
 JsArray b = JsArray.empty().append(JsInt.of(3))
                            .prepend(JsInt.of(2));
