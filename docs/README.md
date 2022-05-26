@@ -6,7 +6,7 @@
 [![codecov](https://codecov.io/gh/imrafaelmerino/json-values/branch/master/graph/badge.svg)](https://codecov.io/gh/imrafaelmerino/json-values)
 
 
-“_Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it.
+“_Simplicity is a great virtue, but it requires hard work to achieve it and education to appreciate it.
 And to make matters worse: complexity sells better._”
 **Edsger Wybe Dijkstra**
 
@@ -124,6 +124,7 @@ When it comes to the _equals_ method, json-values is data oriented, I mean, two 
 are equals if they represent the same piece of information. Let's put an example:
 
 ```java  
+
 JsObj json = JsObj.of("a", JsInt.of(1000),
                       "b", JsBigDec.of(BigDecimal.valueOf(100_000_000_000_000L)),
                       "c", JsInstant.of("2022-05-25T14:27:37.353Z"),
@@ -168,6 +169,7 @@ There are several ways of creating JSON:
 Let's create the following JSON
 
 ```json
+
 {
     "name": "Rafael",
     "surname": "Merino",
@@ -193,7 +195,8 @@ Let's create the following JSON
 
 **Using the static factory methods provided by json-values:**
 
-```java      
+```java     
+ 
 import jsonvalues.*;
 import java.time.Instant;
 
@@ -259,9 +262,9 @@ JsObj b = JsObj.parseYaml("{....}");
 **Parsing a string and the schema of the JSON object is known:**
 
 In this case the best and fastest option is to use a spec to do the parsing. 
-We'll talk about this option later, when I introduce json-spec.
+We'll talk about this option later on, when I introduce json-spec.
 
-**From an empty JSON and the set method:**
+**Creating an empty object and adding new values with the method _set_:**
 
 ```java   
 
@@ -320,10 +323,10 @@ JsArray b = JsArray.parseYaml("[....]");
 **Parsing a string and the schema of the JSON array is known:**
 
 In this case, like parsing objects with a schema, the best and fastest option 
-is to use a spec to do the parsing. We'll also talk about this option later when
+is to use a spec to do the parsing. We'll also talk about this option later on when
 I introduce json-spec.
 
-**Creating and empty array and adding new values with the methods _append_ and _prepend_:**
+**Creating an empty array and adding new values with the methods _append_ and _prepend_:**
 
 ```java   
 
@@ -414,7 +417,6 @@ JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"), JsStr.of("")
   }
 }
 
-
 ```
 
 To get data out of a Json there are several options. The most generic is to use the method _get_ that returns
@@ -479,7 +481,6 @@ obj.getStr("a")
 
 array.getStr(0)
 
-
 ```
 
 
@@ -504,6 +505,7 @@ JsArray mapAllValues( Function<JsPrimitive, JsValue> map);
 JsArray mapAllKeys( Function<String, String> map);
 
 JsArray mapAllObjs( Function<JsObj, JsValue> map);
+
 ```
 
 All of them traverse recursively the whole JSON.
@@ -539,6 +541,7 @@ But what about validating JSON? We can define the JSON schema following precisel
 the same approach as defining JSON:
 
 ```java   
+
 import static jsonvalues.spec.JsSpecs.*;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsErrorPair;
@@ -566,7 +569,6 @@ Function<JsErrorPair, String> toStr =
 
 errors.forEach(pair -> System.out.println(toStr.apply(pair)));
     
-    
 ```
 
 I’d argue that it is very expressive, concise, and straightforward. I call it json-spec.
@@ -575,6 +577,7 @@ specs feels like writing JSON. Strict specs don't allow keys that are not specif
 lenient ones do. The real power is that you can create specs from predicates and compose them:
 
 ```java   
+
 import static jsonvalues.spec.JsSpecs.*;    
 import jsonvalues.spec.JsObjSpec;
 import java.math.BigDecimal;
@@ -660,7 +663,8 @@ Another exciting thing we can do with specs is parsing strings or bytes. Instead
 the whole JSON and then validating it, we can verify the schema while parsing it and
 stop the process as soon as an error happens. **After all, failing fast is important as well!**
 
-```java      
+```java     
+ 
 import com.dslplatform.json.JsParserException;
 import jsonvalues.spec.JsObjParser;    
 
@@ -780,6 +784,7 @@ can always create a new generator from the more general primitive types generato
 and the function map or just using some combinator:
 
 ```java  
+
 import fun.gen.Gen;
 import fun.gen.Combinators;
 import jsonvalues.gen.JsCons;
@@ -836,7 +841,6 @@ Function<JsObj, JsObj> modifyPerson =
              .andThen(modifyLatitude.apply(lat -> -lat))
              .andThen(addLanguage.apply("Lisp"));
              
-
 ```
 No if-else conditions, no null checks, and I'd say it's pretty expressive and concise. 
 You'll end up with such simple, readable, and maintainable code working with json-values 
@@ -905,7 +909,9 @@ On the other hand, JsValue is a sum-type that represents any json element:
 
 ```code
 
-JsValue = JsNumber | JsStr | JsBool | JsObj | JsArray | JsNull | | JsInstant | JsBinary | JsNothing
+JsValue = JsNumber | JsStr | JsBool | JsObj | JsArray | JsNull |
+          JsInstant | JsBinary | JsNothing
+
 JsNumber = JsInt | JsLong | JsBigInt | JsDouble | JsDec
 
 ```
@@ -927,7 +933,7 @@ Considering the following Json:
 
 It can be modeled as the following record:
 
-```json 
+```code 
 
 {
 "name": "Rafael",
@@ -970,6 +976,7 @@ A Lens zooms in a piece of data within a larger structure. A Lens must never fai
 Find below an example creating some lenses with json-values:
 
 ```java   
+
 import fun.optic.Lens;
 
 Lens<JsObj,JsValue> nameLens = JsObj.lens.value("name");
@@ -1014,6 +1021,7 @@ produce a new name from the old one.
 Let's check out a practical example.
 
 ```java   
+
 import fun.optic.Lens;
 
 Lens<JsObj, JsValue> nameLens = JsObj.lens.value("name");
@@ -1096,6 +1104,7 @@ function can not be applied, an empty Optional is returned.
 Let's put some examples:
 
 ```java 
+
 Assertions.assertEquals(Optional.of("hi!"),
                         JsStr.prism.getOptional.apply(JsStr.of("hi!")));
 
@@ -1128,7 +1137,7 @@ Assertions.assertEquals(JsNull.NULL,
 
 Assertions.assertEquals(Optional.empty(),
                         JsInt.prism.modifyOpt.apply(n -> n  + 1)
-                                                  .apply(JsNull.NULL));
+                                             .apply(JsNull.NULL));
 
 ``` 
 
@@ -1176,10 +1185,10 @@ Function<Function<Double, Double>, Function<JsObj,JsObj>> modifyLatitude =
 
 Function<JsObj, JsObj> modifyPerson =
     modifyAge.apply(n -> n + 1)
-    .andThen(modifyName.apply(String::trim))
-    .andThen(setCity.apply("Paris"))
-    .andThen(modifyLatitude.apply(lat -> -lat))
-    .andThen(addLanguage.apply("Lisp"));
+             .andThen(modifyName.apply(String::trim))
+             .andThen(setCity.apply("Paris"))
+             .andThen(modifyLatitude.apply(lat -> -lat))
+             .andThen(addLanguage.apply("Lisp"));
     
 ```    
 
@@ -1200,6 +1209,7 @@ It's called Option and not Optional to not mix it up with java.util.Optional
 Let's rewrite the modifyPerson defining lenses with more specific types instead of JsValue. We validate the person Json with a spec before applying the function, which makes the operation safe.
 
 ```java   
+
 import fun.optic.Option;
 import fun.optic.Lens;
 import jsonvalues.spec.JsObjSpec;
@@ -1234,10 +1244,10 @@ Option<JsObj,Double> latLens =
 
 Function<JsObj, JsObj> modifyPerson =
     ageLens.modify.apply(n -> n + 1)
-    .andThen(nameLens.modify.apply(String::trim))
-    .andThen(cityOpt.set.apply("Paris"))
-    .andThen(latLens.modify.apply(lat -> -lat))
-    .andThen(lanLens.modify.apply(a -> a.append(JsStr.of("Lisp"))));
+           .andThen(nameLens.modify.apply(String::trim))
+           .andThen(cityOpt.set.apply("Paris"))
+           .andThen(latLens.modify.apply(lat -> -lat))
+           .andThen(lanLens.modify.apply(a -> a.append(JsStr.of("Lisp"))));
 
 Set<JsErrorPair> errors = personSpec.test(person);
 if(errors.isEmpty()) {
@@ -1245,6 +1255,7 @@ if(errors.isEmpty()) {
     JsObj newPerson = modifyPerson.apply(person);
     ....
 }
+
 ```
 
 Another property that makes optics very attractive is that we can compose them to 
