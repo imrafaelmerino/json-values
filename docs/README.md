@@ -344,39 +344,41 @@ Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
 
 ### <a name="inout"><a/>Putting data in and getting data out
 
+```code   
+
 public JsValue get(JsPath path);
 
-public Json set(JsPath path, JsValue value);
-
-The get method always returns a JsValue, no matter what path is passed in. It's a total function.
-Functional programmers strive for total functions. Their signature still reflects reality.
-No exceptions and no surprises. Following the same philosophy, if you set a value at a specific path,
-it will always be created. The next line of code after setting that value, you can count on it will be at the specified path. The following property always holds:
-
-json.set(path,value).get(path) == value
-
-What do you think setting JsNothing at a path does? Well, it has to remove the value, so that get returns JsNothing:
-
-jsObj.set(path, JsNothing).get(path) == JsNothing
-
-As was pointed out in the first post of this series, FP has to do with honesty.
-Establishing laws makes it easier to reason about the code we write. By the way,
-the set method always returns a brand-new json. If you remember well,
-Jsons are immutable and implemented with persistent data structures in json-values.
-There are one method to put data in a JSON specifying a path and a value:
-
-```java   
-
-JsObj set(JsPath path, JsValue value, JsValue padWith);
-JsObj set(JsPath path, JsValue value);
-
-JsArray set(JsPath path, JsValue value, JsValue padWith);
-JsArray set(JsPath path, JsValue value);
+Json:: Json set(JsPath path, JsValue value, JsValue padWith);
+Json:: Json set(JsPath path, JsValue value);
 
 ```
 
-**The _set_ function always inserts the value at the specified path, creating
-any needed container and padding arrays when necessary.** Let's put some examples:
+The get method always returns a JsValue, no matter what path is passed in. If there is no value
+at the specified path, it returns the special value JsNothing.NOTHING.
+It's a total function. Functional programmers strive for total functions. Their signature still reflects reality.
+No exceptions and no surprises.
+
+Following the same philosophy, if you set a value at a specific path,
+it will always be created, creating any needed container and padding arrays when necessary. 
+The next line of code after setting that value, you can count on it will be at the specified 
+path. The following property always holds:
+
+```code   
+
+jsObj.set(path, value).get(path) == value
+
+```
+
+
+What do you think setting JsNothing at a path does? 
+Well, it has to remove the value, so that get returns JsNothing:
+
+```code   
+
+jsObj.set(path, JsNothing).get(path) == JsNothing
+
+```
+
 
 ```java   
 
@@ -416,17 +418,6 @@ JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"), JsStr.of("")
     ]
   }
 }
-
-```
-
-To get data out of a Json there are several options. The most generic is to use the method _get_ that returns
-a _JsValue_. It never returns null. If there is no element at the specified path, the special value _JsNothing.NOTHING_
-is returned. 
-
-
-```java          
-
-JsValue get(JsPath path);
 
 ```
 
