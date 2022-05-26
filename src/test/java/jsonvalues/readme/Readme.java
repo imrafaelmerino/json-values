@@ -1,9 +1,6 @@
 package jsonvalues.readme;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsInstant;
-import jsonvalues.JsObj;
-import jsonvalues.JsStr;
+import jsonvalues.*;
 import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
@@ -210,7 +207,13 @@ public class Readme {
                                       "phoneNumber",
                                       "addresses");
 
+
+        System.out.println(JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"),JsStr.of("")).toPrettyString());
+
+
     }
+
+
 
 
 }

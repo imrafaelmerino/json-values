@@ -22,7 +22,6 @@ And to make matters worse: complexity sells better._”
       - [Creating JsArray](#creatingjsonarray)
     - [Putting data in and getting data out](#inout)
     - [Filter, map and reduce](#filtermapreduce)  
-    - [Putting data in and getting data out](#inout)
     - [Specs](#specs)
     - [Generators](#gen)
     - [Optics](#optics)
@@ -80,6 +79,9 @@ A _JsPath_ represents a location of a specific value within a JSON. It's a seque
 either a _Key_ or an _Index_.
 
 ```java   
+import jsonvalues.JsPath;
+import jsonvalues.Key;
+import jsonvalues.Position;
 
 //RFC 6901
 
@@ -101,11 +103,12 @@ Assertions.assertEquals(tail.last(),
                         Index.of(0)
                        );
                        
-//alternative to RFC 6901 to create JsPath
+//alternative to RFC 6901 to create a JsPath, 
+//using the API instead of from a string
 
 JsPath path =  JsPath.fromKey("a").key("b").index(0);
 
-                      
+
 ```
 
 
@@ -120,7 +123,7 @@ string representation according to ISO-8601; and the binary type is serialized i
 string encoded in base 64.
 
 When it comes to the _equals_ method, json-values is data oriented, I mean, two JSON
-are equals if they represent the same piece of information. Let's put some example:
+are equals if they represent the same piece of information. Let's put an example:
 
 ```java  
 JsObj json = JsObj.of("a", JsInt.of(1000),
@@ -140,7 +143,7 @@ Assertions.assertEquals(json.hashcode(), json1.hashcode());
                     
 ```
 
-Since both JSON represents the same information:
+Since both JSON represents the same piece of information:
 
 ```json   
 
@@ -150,7 +153,6 @@ Since both JSON represents the same information:
   "c": "2022-05-25T14:27:37.353Z",
   "d": "aGkh"
 }
-
 
 ```
 
@@ -220,8 +222,8 @@ As you can see, its definition is like raw JSON. It’s a recursive data structu
 You can nest as many JSON objects as you want. Think of any imaginable JSON, and
 you can write it in no time.
 
-You can use paths instead of keys and a nested structure, which turns out to be
-really convenient as well:
+Instead of keys and a nested structure, it's possible to create a JSON object
+from their paths, which turns out to be really convenient as well:
 
 ```java   
 import static jsonvalues.JsPath.path;
@@ -256,11 +258,9 @@ JsObj b = JsObj.parseYaml("{....}");
 **Parsing a string and the schema of the object is known:**
 
 In this case the best and fastest option is to use a spec to do the parsing. 
-We'll talk about this option later.
+We'll talk about this option later, when I introduce json-spec.
 
-**With the set method:**
-
-Remember that a JSON is immutable, so the set method returns a brand new JSON.
+**From an empty JSON and the set method:**
 
 ```java   
 
@@ -271,10 +271,12 @@ JsObj person =
 
 ```
 
+Remember that a JSON is immutable, so the set method returns a brand-new value.
+
 
 ##### <a name="creatingjsonarray"><a/>Creating JsArray
 
-**From primitives using the static factory method _of_ and varargs:**
+**From primitive types using the static factory method _of_ and _varargs_:**
 
 ```java   
 
@@ -284,7 +286,7 @@ JsArray b = JsArray.of(1, 2, 3, 4);
 
 ```
 
-**From JSON values using the static factory method _of_ and varargs:**
+**From JSON values using the static factory method _of_ and _varargs_:**
 
 ```java   
 
@@ -292,17 +294,16 @@ JsArray a = JsArray.of(JsStr.of("hi"), JsInt.of(1), JsBool.TRUE, JsNull.NULL);
 
 ```
 
-**From an iterable of JsValue:**
+**From an iterable of JSON values:**
 
 ```java    
 
-List<JsValue> list = new ArrayList();
-Set<JsValue> set = new HashSet();
+List<JsValue> list = new ArrayList<>();
+Set<JsValue> set = new HashSet<>();
 
 JsArray.ofIterable(list);
 JsArray.ofIterable(set);
 
-  
 ```
 
 **Parsing a string or array of bytes, and the schema of the Json is unknown:**
@@ -318,9 +319,10 @@ JsArray b = JsArray.parseYaml("[....]");
 **Parsing a string and the schema of the array is known:**
 
 In this case, like parsing objects with a schema, the best and fastest option 
-is to use a spec to do the parsing. We'll also talk about this option later.
+is to use a spec to do the parsing. We'll also talk about this option later when
+I introduce json-spec.
 
-**Creating and empty arran and adding new elements eith the methods _append_ and _prepend_:**
+**Creating and empty array and adding new elements with the methods _append_ and _prepend_:**
 
 ```java   
 
@@ -336,19 +338,128 @@ Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
 ```
 
 #### <a name="inout"><a/>Putting data in and getting data out
-There are one function to put data in a JSON specifying a path and a value:
+There are one method to put data in a JSON specifying a path and a value:
 
 ```java   
 
 JsObj set(JsPath path, JsValue value, JsValue padWith);
 JsObj set(JsPath path, JsValue value);
 
+JsArray set(JsPath path, JsValue value, JsValue padWith);
+JsArray set(JsPath path, JsValue value);
+
 ```
 
 **The _set_ function always inserts the value at the specified path, creating
-any needed container and padding arrays when necessary.**
+any needed container and padding arrays when necessary.** Let's put some examples:
 
-TODO
+```java   
+
+JsObj.empty().set(JsPath.path("/food/fruits/0"), JsStr.of("apple"));
+
+{
+  "food": {
+    "fruits": [
+      "apple"
+    ]
+  }
+}
+
+
+// pads with null by default
+JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"))
+
+{
+  "food": {
+    "fruits": [
+      null,
+      null,
+      "apple"
+    ]
+  }
+}
+
+// padding with empty string
+JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"), JsStr.of(""))
+
+{
+  "food": {
+    "fruits": [
+      "",
+      "",
+      "apple"
+    ]
+  }
+}
+
+
+```
+
+To get data out of a Json there are several options. The most generic is to use the method _get_ that returns
+a _JsValue_. It never returns null. If there is no element at the specified path, the special value _JsNothing.NOTHING_
+is returned. 
+
+
+```java          
+
+JsValue get(JsPath path);
+
+```
+
+You may want to get the Java primitive types directly. In this case, if there is no element at 
+the specified path, the methods returns null, unless you specify a supplier to produce a default
+value:
+
+```java          
+
+JsArray getArray(JsPath path);
+JsArray getArray(JsPath path, Supplier<JsArray> orElse);
+
+BigDecimal getBigDec(JsPath path);
+BigDecimal getBigDec(JsPath path, Supplier<BigDecimal> orElse);
+
+BigInteger getBigInt(JsPath path);
+BigInteger getBigInt(JsPath path, Supplier<BigInteger> orElse);
+
+byte[] getBinary(JsPath path);
+byte[] getBinary(JsPath path, Supplier<byte[]> orElse);
+
+Boolean getBool(JsPath path);
+Boolean getBool(JsPath path, Supplier<Boolean> orElse);
+
+Double getDouble(JsPath path);
+Double getDouble(JsPath path, Supplier<Double> orElse);
+
+Instant getInstant(JsPath path);
+Instant getInstant(JsPath path, Supplier<Instant> orElse);
+
+Integer getInt(JsPath path);
+Instant getInt(JsPath path, Supplier<Instant> orElse);
+
+Long getLong(JsPath path);
+Long getLong(JsPath path, Supplier<Long> orElse);
+
+JsObj getObj(JsPath path);
+JsObj getObj(JsPath path, Supplier<JsObj> orElse);
+
+String getStr(JsPath path);
+String getStr(JsPath path, Supplier<String> orElse);
+
+
+```
+
+To get data from the first level of a JSON, there is no need to create a path.
+You can pass in the key or the index, which is less verbose:
+
+```java   
+
+obj.getStr("a")
+
+array.getStr(0)
+
+
+```
+
 
 
 #### <a name="filtermapreduce"><a/>Filter, map and reduce
