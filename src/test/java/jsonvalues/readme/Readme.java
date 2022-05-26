@@ -1,16 +1,25 @@
 package jsonvalues.readme;
 
+import fun.optic.Lens;
+import fun.optic.Option;
 import jsonvalues.*;
 import jsonvalues.gen.*;
+import jsonvalues.spec.JsErrorPair;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.time.Instant;
+import java.util.Optional;
+import java.util.Set;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.IntFunction;
 import java.util.function.Predicate;
 
+import static jsonvalues.JsPath.path;
 import static jsonvalues.spec.JsSpecs.*;
 
 public class Readme {
@@ -208,11 +217,97 @@ public class Readme {
                                       "addresses");
 
 
-        System.out.println(JsObj.empty().set(JsPath.path("/food/fruits/2"), JsStr.of("apple"),JsStr.of("")).toPrettyString());
+        System.out.println(JsObj.empty().set(path("/food/fruits/2"), JsStr.of("apple"), JsStr.of("")).toPrettyString());
 
 
     }
 
+
+    static void lenses(){
+        Lens<JsObj, JsValue> nameLens = JsObj.lens.value("name");
+
+        Lens<JsObj, JsValue> ageOpt = JsObj.lens.value("age");
+
+        Lens<JsObj, JsValue> cityLens = JsObj.lens.value(path("/address/city"));
+
+        Lens<JsObj, JsValue> lanLens = JsObj.lens.value("languages");
+
+        JsPath latPath = path("/address/coordinates/0");
+        Lens<JsObj, JsValue> latLens = JsObj.lens.value(latPath);
+
+        Function<IntFunction<Integer>, Function<JsObj, JsObj>> modifyAge =
+                fn -> ageOpt.modify.apply(JsInt.prism.modify.apply(fn::apply));
+
+        Function<Function<String,String>,Function<JsObj, JsObj>> modifyName =
+                fn -> nameLens.modify.apply(JsStr.prism.modify.apply(fn::apply));
+
+        Function<String, Function<JsObj, JsObj>> addLanguage =
+                language -> {
+                    Function<JsArray,JsArray> addLanToArr = a -> a.append(JsStr.of(language));
+                    return lanLens.modify.apply(JsArray.prism.modify.apply(addLanToArr));
+                };
+
+        Function<String, Function<JsObj, JsObj>> setCity = city -> cityLens.set.apply(JsStr.of(city));
+
+        Function<Function<Double, Double>, Function<JsObj,JsObj>> modifyLatitude =
+                fn -> latLens.modify.apply(JsDouble.prism.modify.apply(fn));
+
+//And finally:
+
+        Function<JsObj, JsObj> modifyPerson =
+                modifyAge.apply(n -> n + 1)
+                         .andThen(modifyName.apply(String::trim))
+                         .andThen(setCity.apply("Paris"))
+                         .andThen(modifyLatitude.apply(lat -> -lat))
+                         .andThen(addLanguage.apply("Lisp"));
+
+
+
+        Assertions.assertEquals(Optional.of("hi!"),
+                                 JsStr.prism.getOptional.apply(JsStr.of("hi!")));
+
+// 1 is not a string, empty is returned
+        Assertions.assertEquals(Optional.empty(),
+                                JsStr.prism.getOptional.apply(JsInt.of(1)));
+
+        Assertions.assertEquals(JsStr.of("HI!"),
+                                JsStr.prism.modify.apply(String::toUpperCase)
+                                                  .apply(JsStr.of("hi!")));
+
+// 1 is not a string, the same value is returned
+        Assertions.assertEquals(JsInt.of(1),
+                                JsStr.prism.modify.apply(String::toUpperCase)
+                                                  .apply(JsInt.of(1)));
+
+        Assertions.assertEquals(Optional.of(2),
+                                JsInt.prism.getOptional.apply(JsInt.of(2)));
+
+        Assertions.assertEquals(Optional.empty(),
+                                JsInt.prism.getOptional.apply(JsStr.of("hi!")));
+
+        Assertions.assertEquals(JsInt.of(2),
+                                JsInt.prism.modify.apply(n -> n  + 1)
+                                                  .apply(JsInt.of(1)));
+
+        Assertions.assertEquals(JsNull.NULL,
+                                JsInt.prism.modify.apply(n -> n  + 1)
+                                                  .apply(JsNull.NULL));
+
+        Assertions.assertEquals(Optional.empty(),
+                                JsInt.prism.modifyOpt.apply(n -> n  + 1)
+                                                          .apply(JsNull.NULL));
+
+    }
+
+
+
+    static void optic(){
+
+        Option<JsObj, String> nameOpt = JsObj.lens.value("name").compose(JsStr.prism);
+
+        Option<JsObj, Integer> ageOpt = JsObj.lens.value("age").compose(JsInt.prism);
+
+    }
 
 
 
