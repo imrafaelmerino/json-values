@@ -6,12 +6,15 @@
 [![codecov](https://codecov.io/gh/imrafaelmerino/json-values/branch/master/graph/badge.svg)](https://codecov.io/gh/imrafaelmerino/json-values)
 
 
-**“Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it.
-And to make matters worse: complexity sells better.”**
-Edsger Wybe Dijkstra
+
+“_Simplicity is a great virtue but it requires hard work to achieve it and education to appreciate it.
+And to make matters worse: complexity sells better._”
+**Edsger Wybe Dijkstra**
+
 
 - [Introduction](#introduction)
 - [What to use _json-values_ for and when to use it](#whatfor)
+- [When not to use it](#notwhatfor)
 - [How-To](#how-to)
     - [JsPath](#jspath)
     - [JsValue](#jsvalue)
@@ -27,12 +30,10 @@ Edsger Wybe Dijkstra
       - [Lenses](#lenses)
       - [Prism](#prism)
       - [Optionals](#opt)
-- [When not to use it](#notwhatfor)
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Related projects](#rp)
 - [Release process](#release)
-
 
 
 ## <a name="introduction"><a/> Introduction
@@ -338,8 +339,30 @@ Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
 ```
 
 #### <a name="inout"><a/>Putting data in and getting data out
+There are one function to put data in a JSON specifying a path and a value:
+
+```java
+
+JsObj set(JsPath path, JsValue value, JsValue padWith);
+JsObj set(JsPath path, JsValue value);
+
+```
+
+**The _inserted_ function always inserts the value at the specified path, creating
+any needed container and padding arrays when necessary.**
+
+```scala
+
+json.inserting(path, value)(path) == value // always true: if you insert a value, you'll get it back
+
+JsObj.empty.inserted("a", 1) == JsObj("a" -> 1)
+JsObj.empty.inserted("a" / "b", 1) == JsObj("a" -> JsObj("b" -> 1))
+JsObj.empty.inserted("a" / 2, "z", pathWith="") = JsObj("a" -> JsArray("","","z"))
+
+```
 
 
+#### <a name="filtermapreduce"><a/>Filter, map and reduce
 
 Let's take a look at some very common transformations using the _map_ functions.
 The map function doesn't change the structure of the JSON. This is a pattern
@@ -347,9 +370,9 @@ known in FP as a functor. Consider the following signatures:
 
 ```java   
 
-JsObj mapAllValues( Function<JsPrimitive, JsValue> map) 
-JsObj mapAllKeys( Function<String, String> map) 
-JsObj mapAllObjs( Function<? super JsObj, JsValue> map)
+JsObj mapAllValues( Function<JsPrimitive, JsValue> map);
+JsObj mapAllKeys( Function<String, String> map);
+JsObj mapAllObjs( Function<? super JsObj, JsValue> map);
 
 ```
 
@@ -687,7 +710,7 @@ Add the following dependency to your building tool:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>11.0.0</version>
+    <version>11.1.0</version>
 </dependency>
 ```
 
