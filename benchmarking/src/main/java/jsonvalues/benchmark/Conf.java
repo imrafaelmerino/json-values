@@ -46,14 +46,14 @@ public class Conf {
                                        "numbers",
                                        arrayOfIntSuchThat(greaterThanOne),
                                        "vegetables",
-                                       arrayOf(JsObjSpec.strict("veggieName",
+                                       arrayOfObjSpec(JsObjSpec.strict("veggieName",
                                                                 str(length(1,
                                                                            255)),
                                                                 "veggieLike",
-                                                                bool
+                                                                bool()
                                                                )
-                                              ).optional()
-                                      );
+                                              )
+                                      ).setOptionals("vegetables");
         PERSON_JSON_SCHEMA = fileContent("personSchema.json");
         PERSON_JSON = fileContent("person.json");
 
