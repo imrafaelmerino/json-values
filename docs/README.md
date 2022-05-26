@@ -33,8 +33,6 @@ And to make matters worse: complexity sells better._”
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Related projects](#rp)
-- [Release process](#release)
-
 
 ## <a name="introduction"><a/> Introduction
 
@@ -341,25 +339,17 @@ Assertions.equals(JsArray.of(2,3,0,1), a.prependAll(b));
 #### <a name="inout"><a/>Putting data in and getting data out
 There are one function to put data in a JSON specifying a path and a value:
 
-```java
+```java   
 
 JsObj set(JsPath path, JsValue value, JsValue padWith);
 JsObj set(JsPath path, JsValue value);
 
 ```
 
-**The _inserted_ function always inserts the value at the specified path, creating
+**The _set_ function always inserts the value at the specified path, creating
 any needed container and padding arrays when necessary.**
 
-```scala
-
-json.inserting(path, value)(path) == value // always true: if you insert a value, you'll get it back
-
-JsObj.empty.inserted("a", 1) == JsObj("a" -> 1)
-JsObj.empty.inserted("a" / "b", 1) == JsObj("a" -> JsObj("b" -> 1))
-JsObj.empty.inserted("a" / 2, "z", pathWith="") = JsObj("a" -> JsArray("","","z"))
-
-```
+TODO
 
 
 #### <a name="filtermapreduce"><a/>Filter, map and reduce
@@ -371,9 +361,17 @@ known in FP as a functor. Consider the following signatures:
 ```java   
 
 JsObj mapAllValues( Function<JsPrimitive, JsValue> map);
-JsObj mapAllKeys( Function<String, String> map);
-JsObj mapAllObjs( Function<? super JsObj, JsValue> map);
 
+JsObj mapAllKeys( Function<String, String> map);
+
+JsObj mapAllObjs( Function<JsObj, JsValue> map);
+
+JsArray mapAllValues( Function<JsPrimitive, JsValue> map);
+
+//an array doesnt have any key but any JSON object contained does!
+JsArray mapAllKeys( Function<String, String> map);
+
+JsArray mapAllObjs( Function<JsObj, JsValue> map);
 ```
 
 All of them traverse recursively the whole JSON.
@@ -382,19 +380,25 @@ The mapAllKeys function transform all the keys of JSON objects. The typical exam
 is when you want to pass from camel case format to snake case.
 
 The _mapAllValues_ function operates on primitive types (not object or arrays)
-and transform them into any possible value.
+and transform them into another value.
 
-
-You can access the full path of every mapped value using the following overloaded
+If the mapping depends not only on the value but also on its position in the JSON,
+you can pass the full path in the map function using the following overloaded
 methods:
 
 ```java  
 
-JsObj mapAllKeys( BiFunction<JsPath, JsValue, String> map) 
-JsObj mapAllValues( BiFunction<JsPath, JsPrimitive, JsValue> map)
+JsObj mapAllKeys( BiFunction<JsPath, JsValue, String> map); 
+
+JsObj mapAllValues( BiFunction<JsPath, JsPrimitive, JsValue> map);
+
 JsObj mapAllObjs( BiFunction<JsPath, JsObj, JsValue> map)
 
 ```
+
+
+filter and reduce: TODO
+
 
 
 #### <a name="specs"><a/>Specs
@@ -522,7 +526,7 @@ optional and nullable fields.
 
 Another exciting thing we can do with specs is parsing strings or bytes. Instead of parsing
 the whole JSON and then validating it, we can verify the schema while parsing it and
-stop the process as soon as an error happens. After all, failing fast is important as well!
+stop the process as soon as an error happens. **After all, failing fast is important as well!**
 
 ```java      
 import com.dslplatform.json.JsParserException;
@@ -681,9 +685,13 @@ Go to the javadoc to get more details about every generator. json-values
 generators are built on top of the generators of java-fun.
 
 #### <a name="optics"><a/>Optics
+TODO
 ##### <a name="lenses"><a/>Lenses
+TODO
 ##### <a name="prism"><a/>Prism
+TODO
 ##### <a name="opt"><a/>Optionals
+TODO
 
 
 
@@ -731,10 +739,3 @@ json-values uses the persistent data structures from [vavr](https://www.vavr.io/
 [Jackson](https://github.com/FasterXML/jackson) to parse a string/bytes into
 a stream of tokens and [dsl-sjon](https://github.com/ngs-doo/dsl-json) to parse a string/bytes given a spec.
 
-## <a name="release"><a/> Release process
-
-Every time a tagged commit is pushed into master, a Travis CI build will be triggered automatically and start the
-release process,
-deploying to Maven repositories and GitHub Releases. See the Travis conf file .travis.yml for
-further details. On the other hand, the master branch is read-only, and all the commits should be pushed to
-master through pull requests. 

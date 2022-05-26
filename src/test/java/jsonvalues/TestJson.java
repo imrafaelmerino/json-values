@@ -207,18 +207,18 @@ public class TestJson {
 
     @Test
     public void tests_json() {
-        Json a = JsObj.empty();
+        Json<?> a = JsObj.empty();
 
-        Json b = JsArray.empty();
+        Json<?> b = JsArray.empty();
 
-        Json c = a.set(JsPath.path("/a/b/3"),
-                       JsStr.of("hi"),
-                       JsStr.of(""));
+        Json<?> c = a.set(JsPath.path("/a/b/3"),
+                          JsStr.of("hi"),
+                          JsStr.of(""));
 
 
         Instant now = Instant.now();
-        Json d = b.set(JsPath.path("/0/a/b"),
-                       JsInstant.of(now));
+        Json<?> d = b.set(JsPath.path("/0/a/b"),
+                          JsInstant.of(now));
 
         Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/3")));
         Assertions.assertTrue(c.containsPath(JsPath.path("/a/b/0")));

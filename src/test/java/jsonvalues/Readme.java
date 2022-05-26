@@ -1,8 +1,5 @@
 package jsonvalues;
 
-import fun.gen.Combinators;
-import fun.gen.Gen;
-import fun.tuple.Pair;
 import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
@@ -112,8 +109,8 @@ public class Readme {
 
         JsArray c = JsArray.of(JsStr.of("hi"), JsInt.of(1), JsBool.TRUE, JsNull.NULL);
 
-        List<JsValue> list = new ArrayList();
-        Set<JsValue> set = new HashSet();
+        List<JsValue> list = new ArrayList<>();
+        Set<JsValue> set = new HashSet<>();
 
         JsArray.ofIterable(list);
         JsArray.ofIterable(set);
