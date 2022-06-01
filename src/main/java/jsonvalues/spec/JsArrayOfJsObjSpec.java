@@ -51,8 +51,9 @@ public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(spec.getRequiredFields(),
                                                        spec.parsers,
-                                                       nullable,
+                                                       spec.predicate,
                                                        spec.strict,
+                                                       nullable,
                                                        min,
                                                        max
         );

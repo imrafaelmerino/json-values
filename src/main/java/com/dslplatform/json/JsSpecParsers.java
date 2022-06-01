@@ -14,7 +14,11 @@ import java.util.function.*;
 
 import static com.dslplatform.json.JsParsers.PARSERS;
 
-public class JsSpecParsers {
+/**
+ * set of factory methods to create parsers from specs. Internal class that will be hidden when migrating
+ * json-values to java 9 and modules
+ */
+public final class JsSpecParsers {
 
     public static final JsSpecParsers INSTANCE = new JsSpecParsers();
     private final BiFunction<JsonReader<?>, JsError, JsParserException> newParseException;
@@ -63,18 +67,21 @@ public class JsSpecParsers {
 
     public JsSpecParser ofArrayOfObjSpec(List<String> required,
                                          Map<String, JsSpecParser> parsers,
-                                         boolean nullable,
+                                         Predicate<JsObj> predicate,
                                          boolean strict,
+                                         boolean nullable,
                                          int min,
                                          int max
     ) {
         JsObjSpecParser f = required.isEmpty() ?
                             new JsObjSpecParser(strict,
-                                                parsers
+                                                parsers,
+                                                predicate
                             ) :
                             new JsObjSpecWithRequiredKeysParser(required,
                                                                 parsers,
-                                                                strict
+                                                                strict,
+                                                                predicate
                             );
         JsArrayOfObjSpecParser parser = new JsArrayOfObjSpecParser(f);
         return nullable ?
@@ -176,6 +183,7 @@ public class JsSpecParsers {
 
     public JsSpecParser ofObjSpec(List<String> required,
                                   Map<String, JsSpecParser> keyDeserializers,
+                                  Predicate<JsObj> predicate,
                                   boolean nullable,
                                   boolean strict
     ) {
@@ -184,7 +192,8 @@ public class JsSpecParsers {
             if (required.isEmpty()) {
                 JsObjSpecParser parser =
                         new JsObjSpecParser(strict,
-                                            keyDeserializers
+                                            keyDeserializers,
+                                            predicate
                         );
                 return nullable ?
                        parser.nullOrValue(reader) :
@@ -193,7 +202,8 @@ public class JsSpecParsers {
                 JsObjSpecWithRequiredKeysParser parser =
                         new JsObjSpecWithRequiredKeysParser(required,
                                                             keyDeserializers,
-                                                            strict
+                                                            strict,
+                                                            predicate
                         );
                 return nullable ?
                        parser.nullOrValue(reader) :

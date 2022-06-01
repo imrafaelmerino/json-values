@@ -9,6 +9,8 @@ import java.util.function.UnaryOperator;
 class ParserErrors {
 
 
+    public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with spec method 'suchThat'";
+
     private ParserErrors(){}
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end";

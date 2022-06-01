@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values-benchmark</artifactId>
-    <version>9.1.0</version>
+    <version>11.1.1</version>
     <packaging>jar</packaging>
     <name>json-values-benchmark</name>
     <properties>
@@ -22,6 +22,7 @@
         <HIBERNATE-VALIDATOR.VERSION>7.0.4.Final</HIBERNATE-VALIDATOR.VERSION>
         <JAVAX.EL.VERSION>3.0.1-b11</JAVAX.EL.VERSION>
         <JAVAX.JSON.VERSION>1.1.4</JAVAX.JSON.VERSION>
+        <VERTX-JSON-SCHEMA.VERSION>4.3.1</VERTX-JSON-SCHEMA.VERSION>
     </properties>
     <dependencies>
         <dependency>
@@ -51,6 +52,11 @@
             <version>${JAVAX.EL.VERSION}</version>
         </dependency>
         <dependency>
+            <groupId>io.vertx</groupId>
+            <artifactId>vertx-json-schema</artifactId>
+            <version>${VERTX-JSON-SCHEMA.VERSION}</version>
+        </dependency>
+        <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
             <version>${JMH-VERSION}</version>
@@ -59,6 +65,18 @@
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>${JMH-VERSION}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.github.erosb</groupId>
+            <artifactId>everit-json-schema</artifactId>
+            <version>1.14.1</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.networknt</groupId>
+            <artifactId>json-schema-validator</artifactId>
+            <version>1.0.70</version>
         </dependency>
 
         <dependency>

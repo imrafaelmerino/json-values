@@ -21,7 +21,6 @@ public class Fun {
     public static final JsObjSpec PERSON_SPEC;
 
     static {
-        Predicate<JsArray> greaterThanOne = a -> a.size() > 1;
         PERSON_SPEC = JsObjSpec.strict("firstName",
                                        str(length(1,
                                                   255)),
@@ -42,9 +41,9 @@ public class Fun {
                                                        )
                                               ),
                                        "fruits",
-                                       arrayOfStrSuchThat(greaterThanOne),
+                                       arrayOfStr(1,100),
                                        "numbers",
-                                       arrayOfIntSuchThat(greaterThanOne),
+                                       arrayOfInt(1,100),
                                        "vegetables",
                                        arrayOfObjSpec(JsObjSpec.strict("veggieName",
                                                                 str(length(1,

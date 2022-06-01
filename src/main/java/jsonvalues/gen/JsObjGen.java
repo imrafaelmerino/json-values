@@ -1001,6 +1001,16 @@ public final class JsObjGen implements Gen<JsObj> {
 
     /**
      * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * all keys nullable. The value associated to a nullable key may or not be null
+     */
+    public JsObjGen setAllNullable() {
+        return new JsObjGen(bindings,
+                            optionals,
+                            new ArrayList<>(bindings.keySet()));
+    }
+
+    /**
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
      * the specified optional keys. An optional key may or not appear in the Json objects generated
      *
      * @param optionals the optional keys
@@ -1009,6 +1019,16 @@ public final class JsObjGen implements Gen<JsObj> {
     public JsObjGen setOptionals(final List<String> optionals) {
         return new JsObjGen(bindings,
                             requireNonNull(optionals),
+                            nullables);
+    }
+    /**
+     * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
+     * all keys optimal. An optional key may or not appear in the Json objects generated
+     * @return a brand new JsObj generator
+     */
+    public JsObjGen setAllOptional() {
+        return new JsObjGen(bindings,
+                            new ArrayList<>(bindings.keySet()),
                             nullables);
     }
 

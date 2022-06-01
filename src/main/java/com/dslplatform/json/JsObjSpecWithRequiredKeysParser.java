@@ -5,19 +5,24 @@ import jsonvalues.JsObj;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Predicate;
 
 final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
     private final List<String> required;
 
 
+
     JsObjSpecWithRequiredKeysParser(final List<String> required,
                                     final Map<String, JsSpecParser> parsers,
-                                    final boolean strict
+                                    final boolean strict,
+                                    Predicate<JsObj> predicate
     ) {
         super(strict,
-              parsers);
+              parsers,
+              predicate);
         this.required = required;
     }
+
 
     @Override
     JsObj value(final JsonReader<?> reader) {

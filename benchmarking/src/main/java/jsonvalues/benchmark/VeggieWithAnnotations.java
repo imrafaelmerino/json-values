@@ -10,7 +10,7 @@ public class VeggieWithAnnotations {
     @Size(min = 1, max = 255)
     private String veggieName;
     @NotNull
-    private boolean veggieLike;
+    private Boolean veggieLike;
 
     public String getVeggieName() {
         return veggieName;
@@ -20,7 +20,7 @@ public class VeggieWithAnnotations {
         this.veggieName = veggieName;
     }
 
-    public boolean isVeggieLike() {
+    public Boolean getVeggieLike() {
         return veggieLike;
     }
 

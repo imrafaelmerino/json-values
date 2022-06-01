@@ -2,6 +2,8 @@ package jsonvalues.benchmark;
 
 
 import javax.validation.constraints.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PersonWithAnnotations {
@@ -16,28 +18,27 @@ public class PersonWithAnnotations {
     @NotNull
     @Min(0)
     @Max(110)
-    private int age;
+    private Integer age;
 
     @NotNull
     @Min(-90)
     @Max(90)
-    private Double latitude;
+    private BigDecimal latitude;
 
     @NotNull
     @Min(-180)
     @Max(180)
-    private Double longitude;
+    private BigDecimal longitude;
 
     @NotNull
-    @Size(min=1)
+    @Size(min=1,max = 100)
     private List<String> fruits;
+    @NotNull
+    @Size(max = 100)
+    private List<VeggieWithAnnotations> vegetables = new ArrayList<>();
 
     @NotNull
-    @Size(min=1)
-    private List<VeggieWithAnnotations> vegetables;
-
-    @NotNull
-    @Size(min=1)
+    @Size(min=1,max = 100)
     private List<Integer> numbers;
 
     public String getFirstName() {
@@ -56,7 +57,7 @@ public class PersonWithAnnotations {
         this.lastName = lastName;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
@@ -64,19 +65,19 @@ public class PersonWithAnnotations {
         this.age = age;
     }
 
-    public Double getLatitude() {
+    public BigDecimal getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(final Double latitude) {
+    public void setLatitude(final BigDecimal latitude) {
         this.latitude = latitude;
     }
 
-    public Double getLongitude() {
+    public BigDecimal getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(final Double longitude) {
+    public void setLongitude(final BigDecimal longitude) {
         this.longitude = longitude;
     }
 

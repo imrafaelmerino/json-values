@@ -81,11 +81,10 @@ JSON manipulation with optics:
 
 ```java 
 
-//let's create a function from lens and optionals
+//let's create a function from lenses and optionals
 
 Function<JsObj,JsObj> modify = 
-    ageLens.modify
-           .apply(n -> n + 1)
+    ageLens.modify.apply(n -> n + 1)
            .andThen(nameLens.modify.apply(String::trim))
            .andThen(cityOpt.set.apply("Paris"))
            .andThen(latitudeLens.modify.apply(lat -> -lat))
@@ -109,7 +108,7 @@ json.mapAllKeys(toSneakCase)
                     
 ```
 
-Performance. Did you see that !?
+Performance. Did you see that!?
 
 I've picked some json-schema implementations from https://json-schema.org/implementations.html
 and parse and validate a random JSON from a string. Find below the results of the
@@ -120,6 +119,8 @@ benchmark using [jmh](https://openjdk.java.net/projects/code-tools/jmh/)
 You can find more details in the
 class [JsDeserializers](./../benchmarking/src/main/java/jsonvalues/benchmark/JsDeserializers.java)
 
+Disclaimer: If you know a better alternative or can improve this result, I'm more
+than glad to change it.
 
 ## <a name="introduction"><a/> Introduction
 
