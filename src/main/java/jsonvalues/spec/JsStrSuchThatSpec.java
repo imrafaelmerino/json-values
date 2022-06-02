@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -11,9 +12,9 @@ import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 class JsStrSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    final Function<String, Optional<JsError>> predicate;
+    final Function<String, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsStrSuchThatSpec(final Function<String, Optional<JsError>> predicate,
+    JsStrSuchThatSpec(final Function<String, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                       final boolean nullable
     ) {
         super(nullable);
@@ -37,12 +38,12 @@ class JsStrSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> error = Functions.testElem(JsValue::isStr,
-                                                           STRING_EXPECTED,
-                                                           nullable
-                                                 )
-                                                 .apply(value);
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+        final Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isStr,
+                                                                             STRING_EXPECTED,
+                                                                             nullable
+                                                                   )
+                                                                   .apply(value);
 
         return error.isPresent() || value.isNull() ?
                error :

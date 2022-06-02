@@ -34,8 +34,8 @@ public interface JsSpec {
      * @param value      the tested value
      * @return a set of path/error pairs
      */
-    Set<JsErrorPair> test(final JsPath parentPath,
-                          final JsValue value
+    Set<SpecError> test(final JsPath parentPath,
+                        final JsValue value
     );
 
 

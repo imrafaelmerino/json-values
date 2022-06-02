@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <S> the type of the whole part, an array or an object
  */
-public final class JsInstantLens<S extends Json<S>> extends Lens<S, Instant> {
+final class JsInstantLens<S extends Json<S>> extends Lens<S, Instant> {
     JsInstantLens(final JsPath path) {
         super(json -> requireNonNull(json).getInstant(path),
               o -> json -> requireNonNull(json).set(path,

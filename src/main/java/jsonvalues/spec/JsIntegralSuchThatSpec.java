@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.math.BigInteger;
@@ -12,9 +13,9 @@ import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    final Function<BigInteger, Optional<JsError>> predicate;
+    final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsIntegralSuchThatSpec(final Function<BigInteger, Optional<JsError>> predicate,
+    JsIntegralSuchThatSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                            final boolean nullable
     ) {
         super(nullable);
@@ -39,12 +40,12 @@ class JsIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePred
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
-        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
-                                                                           INTEGRAL_EXPECTED,
-                                                                           nullable
-                                                  )
-                                                                 .apply(value);
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+        final Optional<Pair<JsValue, ERROR_CODE>> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
+                                                                                             INTEGRAL_EXPECTED,
+                                                                                             nullable
+                                                                    )
+                                                                                   .apply(value);
 
         return error.isPresent() || value.isNull() ?
                error :

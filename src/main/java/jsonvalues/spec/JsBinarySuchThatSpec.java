@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -11,9 +12,9 @@ import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
 class JsBinarySuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    final Function<byte[], Optional<JsError>> predicate;
+    final Function<byte[], Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsBinarySuchThatSpec(final Function<byte[], Optional<JsError>> predicate,
+    JsBinarySuchThatSpec(final Function<byte[], Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                          final boolean nullable
     ) {
         super(nullable);
@@ -36,12 +37,12 @@ class JsBinarySuchThatSpec extends AbstractNullableSpec implements JsValuePredic
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
-        Optional<JsError> error = Functions.testElem(JsValue::isBinary,
-                                                     BINARY_EXPECTED,
-                                                     nullable
-                                           )
-                                           .apply(value);
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+        Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isBinary,
+                                                                       BINARY_EXPECTED,
+                                                                       nullable
+                                                             )
+                                                             .apply(value);
 
         return error.isPresent() || value.isNull() ?
                error :

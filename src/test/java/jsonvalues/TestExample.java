@@ -3,7 +3,7 @@ package jsonvalues;
 
 import fun.optic.Lens;
 import fun.optic.Option;
-import jsonvalues.spec.JsErrorPair;
+import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
@@ -69,7 +69,7 @@ public class TestExample {
 
         JsObjParser parser = new JsObjParser(spec);
 
-        Set<JsErrorPair> test = spec.test(person);
+        Set<SpecError> test = spec.test(person);
         Assertions.assertTrue(test
                                       .isEmpty());
 

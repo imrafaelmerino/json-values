@@ -687,10 +687,10 @@ JsObjSpec personSpec =
                                                 )
                     );
     
-Set<JsErrorPair> errors = personSepc.test(person);   
+Set<SpecError> errors = personSepc.test(person);   
 
-Function<JsErrorPair, String> toStr = 
-    pair -> pair.error.value + " @ "+ pair.path + " doesn't conform spec: " + pair.error.code;   
+Function<SpecError, String> toStr = 
+    error -> error.value + " @ "+ error.path + " doesn't conform spec: " + error.codeCode;   
 
 errors.forEach(pair -> System.out.println(toStr.apply(pair)));
     
@@ -920,12 +920,12 @@ for the next value generation:
 ```java 
 
 // 20% alphaumeric strings and 80% digits
-Gen<JsStr> gen = Combinators.freq(new Pair<>(2, JsStrGen.alphanumeric(0, 10)),
-                                  new Pair<>(8, JsStrGen.digits(0,10)));
+Gen<JsStr> gen = Combinators.freq(Pair.of(2, JsStrGen.alphanumeric(0, 10)),
+                                  Pair.of(8, JsStrGen.digits(0,10)));
                                  
 // 30% long  and 70% integers                                  
-Gen<JsValue> gen = Combinators.freq(new Pair<>(3, JsLongGen.biased()),
-                                    new Pair<>(7, JsIntGen.biased()));                                
+Gen<JsValue> gen = Combinators.freq(Pair.of(3, JsLongGen.biased()),
+                                    Pair.of(7, JsIntGen.biased()));                                
 
 ```
 
@@ -1373,7 +1373,7 @@ Function<JsObj, JsObj> modifyPerson =
            .andThen(latLens.modify.apply(lat -> -lat))
            .andThen(lanLens.modify.apply(a -> a.append(JsStr.of("Lisp"))));
 
-Set<JsErrorPair> errors = personSpec.test(person);
+Set<SpecError> errors = personSpec.test(person);
 if(errors.isEmpty()) {
     //we are safe!
     JsObj newPerson = modifyPerson.apply(person);

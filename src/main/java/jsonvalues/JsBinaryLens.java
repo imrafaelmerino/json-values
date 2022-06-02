@@ -10,7 +10,7 @@ import static java.util.Objects.requireNonNull;
  *
  * @param <S> the type of the whole part, an array or an object
  */
-public final class JsBinaryLens<S extends Json<S>> extends Lens<S, byte[]> {
+final class JsBinaryLens<S extends Json<S>> extends Lens<S, byte[]> {
     JsBinaryLens(final JsPath path) {
         super(json -> requireNonNull(json).getBinary(path),
               o -> json -> requireNonNull(json).set(path,

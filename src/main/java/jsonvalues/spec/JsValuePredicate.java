@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 
+import fun.tuple.Pair;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -11,17 +12,17 @@ import java.util.Set;
 interface JsValuePredicate extends JsSpec {
 
     @Override
-    default Set<JsErrorPair> test(final JsPath parentPath,
-                                  final JsValue value) {
-        Set<JsErrorPair> errors = new HashSet<>();
-        test(value).ifPresent(e -> errors.add(JsErrorPair.of(parentPath,
-                                                             e
+    default Set<SpecError> test(final JsPath parentPath,
+                                final JsValue value) {
+        Set<SpecError> errors = new HashSet<>();
+        test(value).ifPresent(e -> errors.add(SpecError.of(parentPath,
+                                                         e
                                               )
                               )
         );
         return errors;
     }
 
-    Optional<JsError> test(final JsValue value);
+    Optional<Pair<JsValue,ERROR_CODE>> test(final JsValue value);
 
 }

@@ -1,7 +1,7 @@
 package jsonvalues.specs;
 
 import jsonvalues.*;
-import jsonvalues.spec.JsErrorPair;
+import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
 import jsonvalues.spec.JsTupleSpec;
@@ -25,7 +25,7 @@ public class TestJsArraySpec {
                                          JsStr.of("a")
         );
         final JsTupleSpec spec = JsSpecs.tuple(integer());
-        final Set<JsErrorPair> error = spec.test(array);
+        final Set<SpecError> error = spec.test(array);
         assertErrorIs(error,
                       SPEC_MISSING,
                       JsStr.of("a"),

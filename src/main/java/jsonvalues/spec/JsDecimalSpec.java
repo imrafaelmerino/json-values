@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -27,7 +28,7 @@ class JsDecimalSpec extends AbstractNullableSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
         return Functions.testElem(JsValue::isDecimal,
                                   DECIMAL_EXPECTED,
                                   nullable

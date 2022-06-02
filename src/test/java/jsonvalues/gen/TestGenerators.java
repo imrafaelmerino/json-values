@@ -7,7 +7,7 @@ import fun.gen.IntGen;
 import fun.gen.SetGen;
 import fun.tuple.Pair;
 import jsonvalues.*;
-import jsonvalues.spec.JsErrorPair;
+import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjSpec;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -194,10 +194,10 @@ public class TestGenerators {
                                                      JsBool.TRUE
                                    ),
                                    "k",
-                                   Combinators.freq(new Pair<>(1,
+                                   Combinators.freq(Pair.of(1,
                                                                JsStrGen.alphabetic(0,
                                                                                    10)),
-                                                    new Pair<>(1,
+                                                    Pair.of(1,
                                                                JsLongGen.arbitrary())
                                    ),
                                    "l",
@@ -263,7 +263,7 @@ public class TestGenerators {
         Assertions.assertTrue(
                 gen.sample(1000)
                    .allMatch(it -> {
-                       Set<JsErrorPair> errors = spec.test(it);
+                       Set<SpecError> errors = spec.test(it);
                        return errors
                                .isEmpty();
                    })

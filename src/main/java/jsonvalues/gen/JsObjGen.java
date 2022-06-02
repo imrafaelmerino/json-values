@@ -1,9 +1,13 @@
 package jsonvalues.gen;
 
-import fun.gen.*;
+import fun.gen.BoolGen;
+import fun.gen.Combinators;
+import fun.gen.Gen;
+import fun.gen.SplitGen;
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
+import jsonvalues.spec.JsObjSpec;
 
 import java.util.*;
 import java.util.function.Supplier;
@@ -13,18 +17,17 @@ import static java.util.Objects.requireNonNull;
 
 
 /**
- *
  * Represents a JsObj generator. It can be created using the static factory methods
  * <code>of</code> or inserting new key-generator pairs to an existing JsObj generator
  * with the method {@link JsObjGen#set(String, Gen)}. Each generator of the Json is
  * created from a new seed that is calculated passing the original one to the
  * {@link SplitGen#DEFAULT split generator }
- *
+ * <p>
  * There are factory methods to create generators of up to 20-key Json objects.
- *
+ * <p>
  * Optional and nullable keys are specified with the
  * methods <code>setOptionals</code> and <code>setNullable</code>.
- *
+ * <p>
  * Given the following optional fields a,b and c, all the possible permutations
  * (2^n = 8) are generated with the same probability:
  * <pre>
@@ -37,9 +40,8 @@ import static java.util.Objects.requireNonNull;
  *  - c missing
  *  - none of the missing
  * </pre>
- *
+ * <p>
  * The same applies for nullable fields.
- *
  */
 public final class JsObjGen implements Gen<JsObj> {
 
@@ -61,9 +63,10 @@ public final class JsObjGen implements Gen<JsObj> {
         this.nullables = new ArrayList<>();
         this.bindings = bindings;
     }
-    public static JsObjGen of(){
+
+    public static JsObjGen of() {
         Map<String, Gen<? extends JsValue>> map = new HashMap<>();
-        return  new JsObjGen(map);
+        return new JsObjGen(map);
     }
 
     public static JsObjGen of(final String key,
@@ -1021,9 +1024,11 @@ public final class JsObjGen implements Gen<JsObj> {
                             requireNonNull(optionals),
                             nullables);
     }
+
     /**
      * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
      * all keys optimal. An optional key may or not appear in the Json objects generated
+     *
      * @return a brand new JsObj generator
      */
     public JsObjGen setAllOptional() {
@@ -1047,6 +1052,7 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * Returns a brand new JsObj generator with the same key-generators pairs that this instance
      * plus the specified by the params key and gen
+     *
      * @param key the new key
      * @param gen the generator associated to the new key
      * @return a brand new JsObj generator
@@ -1062,8 +1068,10 @@ public final class JsObjGen implements Gen<JsObj> {
                             nullables);
 
     }
+
     /**
      * Returns a supplier from the specified seed that generates a new JsObj each time it's called
+     *
      * @param seed the generator seed
      * @return a JsObj supplier
      */
@@ -1109,6 +1117,18 @@ public final class JsObjGen implements Gen<JsObj> {
             }
             return obj;
         };
+    }
+
+    public Gen<JsObj> suchThat(final JsObjSpec spec) {
+        return suchThat(obj -> requireNonNull(spec).test(obj)
+                                                   .isEmpty()
+        );
+    }
+
+    public Gen<JsObj> suchThatNo(final JsObjSpec spec) {
+        return suchThat(obj -> !requireNonNull(spec).test(obj)
+                                                    .isEmpty()
+        );
     }
 
 }

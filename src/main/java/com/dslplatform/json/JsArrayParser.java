@@ -1,9 +1,10 @@
 package com.dslplatform.json;
 
+import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
-import jsonvalues.spec.JsError;
+import jsonvalues.spec.ERROR_CODE;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -59,7 +60,7 @@ abstract class JsArrayParser {
                 if (buffer.size() > max)
                     throw reader.newParseError(ParserErrors.TOO_LONG_ARRAY.apply(min),
                                                reader.getCurrentIndex()
-                                               );
+                    );
             }
             if (buffer.size() < min)
                 throw reader.newParseError(ParserErrors.TOO_SHORT_ARRAY.apply(min),
@@ -101,7 +102,7 @@ abstract class JsArrayParser {
 
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
-                                       final Function<JsArray, Optional<JsError>> fn
+                                       final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
         try {
             return reader.wasNull() ?
@@ -115,11 +116,11 @@ abstract class JsArrayParser {
     }
 
     public JsArray arraySuchThat(final JsonReader<?> reader,
-                                 final Function<JsArray, Optional<JsError>> fn
+                                 final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
         try {
             final JsArray array = array(reader);
-            final Optional<JsError> result = fn.apply(array);
+            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
             if (!result.isPresent()) return array;
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
@@ -179,7 +180,6 @@ abstract class JsArrayParser {
 
         }
     }
-
 
 
 }

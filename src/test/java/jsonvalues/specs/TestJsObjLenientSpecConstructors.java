@@ -2,7 +2,7 @@ package jsonvalues.specs;
 
 import jsonvalues.JsInt;
 import jsonvalues.JsObj;
-import jsonvalues.spec.JsErrorPair;
+import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpec;
 import jsonvalues.spec.JsSpecs;
@@ -102,7 +102,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -196,7 +196,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -286,7 +286,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -373,7 +373,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -456,7 +456,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
@@ -534,7 +534,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -609,7 +609,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -678,7 +678,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -744,7 +744,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -806,7 +806,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -861,7 +861,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -908,7 +908,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
@@ -952,7 +952,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -992,7 +992,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1028,7 +1028,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -1060,7 +1060,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1090,7 +1090,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
 
@@ -1114,7 +1114,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1134,7 +1134,7 @@ public class TestJsObjLenientSpecConstructors {
                              ONE
         );
 
-        Set<JsErrorPair> test = spec.test(obj);
+        Set<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertTrue(spec.test(obj.set("z",ONE)).isEmpty());
 

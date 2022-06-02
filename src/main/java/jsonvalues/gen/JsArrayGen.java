@@ -83,15 +83,15 @@ public final class JsArrayGen implements Gen<JsArray> {
         if (minSize < 0) throw new IllegalArgumentException("minSize < 0");
         if (maxSize < minSize) throw new IllegalArgumentException("maxSize < minSize");
         requireNonNull(gen);
-        return Combinators.freq(new Pair<>(1,
+        return Combinators.freq(Pair.of(1,
                                            new JsArrayGen(gen,
                                                           minSize
                                            )),
-                                new Pair<>(1,
+                                Pair.of(1,
                                            new JsArrayGen(gen,
                                                           maxSize
                                            )),
-                                new Pair<>(2,
+                                Pair.of(2,
                                            JsArrayGen.arbitrary(gen,
                                                                 minSize,
                                                                 maxSize)));

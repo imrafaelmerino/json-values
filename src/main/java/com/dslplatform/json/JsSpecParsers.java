@@ -1,8 +1,9 @@
 package com.dslplatform.json;
 
 
+import fun.tuple.Pair;
 import jsonvalues.*;
-import jsonvalues.spec.JsError;
+import jsonvalues.spec.ERROR_CODE;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -21,8 +22,7 @@ import static com.dslplatform.json.JsParsers.PARSERS;
 public final class JsSpecParsers {
 
     public static final JsSpecParsers INSTANCE = new JsSpecParsers();
-    private final BiFunction<JsonReader<?>, JsError, JsParserException> newParseException;
-
+    private final BiFunction<JsonReader<?>, Pair<JsValue, ERROR_CODE>, JsParserException> newParseException;
 
     private JsSpecParsers() {
         newParseException = (reader, error) ->
@@ -30,7 +30,7 @@ public final class JsSpecParsers {
                                                            reader.getCurrentIndex()));
     }
 
-    public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                              boolean nullable
     ) {
         return getParser(PARSERS.arrayOfObjParser,
@@ -39,7 +39,7 @@ public final class JsSpecParsers {
     }
 
     private JsSpecParser getParser(JsArrayParser parser,
-                                   Function<JsArray, Optional<JsError>> p,
+                                   Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                    boolean nullable
     ) {
         return nullable ?
@@ -49,7 +49,7 @@ public final class JsSpecParsers {
                                                p));
     }
 
-    public JsSpecParser ofArrayOfObjEachSuchThat(Function<JsObj, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfObjEachSuchThat(Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -118,7 +118,7 @@ public final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofObjSuchThat(final Function<JsObj, Optional<JsError>> predicate,
+    public JsSpecParser ofObjSuchThat(final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                       final boolean nullable
     ) {
 
@@ -128,7 +128,7 @@ public final class JsSpecParsers {
                 JsValue value = PARSERS.objParser.nullOrValue(reader);
                 if (value == JsNull.NULL) return value;
                 else {
-                    Optional<JsError> opErr =
+                    Optional<Pair<JsValue, ERROR_CODE>> opErr =
                             testTypeAndSpec(JsValue::isObj,
                                             JsValue::toJsObj,
                                             predicate,
@@ -144,7 +144,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsObj value = PARSERS.objParser.value(reader);
-            Optional<JsError> result = predicate.apply(value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -161,10 +161,10 @@ public final class JsSpecParsers {
      *                          because if this happened, it would be because a development error
      * @return a function to test that a value has the expected type and conforms a given spec
      */
-    private <R> Function<JsValue, Optional<JsError>> testTypeAndSpec(Predicate<JsValue> typeCondition,
-                                                                     Function<JsValue, R> converter,
-                                                                     Function<R, Optional<JsError>> spec,
-                                                                     Supplier<RuntimeException> errorTypeSupplier
+    private <R> Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> testTypeAndSpec(Predicate<JsValue> typeCondition,
+                                                                                       Function<JsValue, R> converter,
+                                                                                       Function<R, Optional<Pair<JsValue, ERROR_CODE>>> spec,
+                                                                                       Supplier<RuntimeException> errorTypeSupplier
     ) {
         return value ->
         {
@@ -213,7 +213,7 @@ public final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofArrayOfValueSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfValueSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                boolean nullable
     ) {
         return getParser(PARSERS.arrayOfValueParser,
@@ -246,7 +246,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfValueEachSuchThat(Function<JsValue, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfValueEachSuchThat(Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                    boolean nullable,
                                                    int min,
                                                    int max
@@ -268,13 +268,13 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofValueSuchThat(Function<JsValue, Optional<JsError>> predicate) {
+    public JsSpecParser ofValueSuchThat(Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate) {
         return reader ->
         {
             JsValue value = PARSERS.valueParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> result = predicate.apply(value);
+                Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
                 if (!result.isPresent()) return value;
                 else throw newParseException.apply(reader,
                                                    result.get()
@@ -315,7 +315,7 @@ public final class JsSpecParsers {
                                                          max);
     }
 
-    public JsSpecParser ofArrayOfBoolSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfBoolSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                               boolean nullable
     ) {
         return getParser(PARSERS.arrayOfBoolParser,
@@ -325,7 +325,7 @@ public final class JsSpecParsers {
 
     }
 
-    public JsSpecParser ofArrayOfStrEachSuchThat(Function<String, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfStrEachSuchThat(Function<String, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -343,7 +343,7 @@ public final class JsSpecParsers {
                                                                   max));
     }
 
-    public JsSpecParser ofArrayOfStrSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfStrSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                              boolean nullable
     ) {
         return getParser(PARSERS.arrayOfStrParser,
@@ -369,7 +369,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofStrSuchThat(Function<String, Optional<JsError>> predicate,
+    public JsSpecParser ofStrSuchThat(Function<String, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                       boolean nullable
     ) {
 
@@ -378,7 +378,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.strParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(JsValue::isStr,
                                         v -> v.toJsStr().value,
                                         predicate,
@@ -394,7 +394,7 @@ public final class JsSpecParsers {
         {
             JsStr value = PARSERS.strParser.value(reader);
 
-            Optional<JsError> result = predicate.apply(value.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -412,7 +412,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfNumberEachSuchThat(Function<JsNumber, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfNumberEachSuchThat(Function<JsNumber, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                     boolean nullable,
                                                     int min,
                                                     int max
@@ -428,7 +428,7 @@ public final class JsSpecParsers {
                                                                         max));
     }
 
-    public JsSpecParser ofArrayOfNumberSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfNumberSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                 boolean nullable
     ) {
         return getParser(PARSERS.arrayOfNumberParser,
@@ -437,7 +437,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                   boolean nullable
     ) {
         return getParser(PARSERS.arrayOfIntegralParser,
@@ -452,7 +452,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofNumberSuchThat(Function<JsNumber, Optional<JsError>> predicate,
+    public JsSpecParser ofNumberSuchThat(Function<JsNumber, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                          boolean nullable
     ) {
 
@@ -461,7 +461,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.numberParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(JsValue::isNumber,
                                         v -> value.toJsNumber(),
                                         predicate,
@@ -476,7 +476,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsNumber value = PARSERS.numberParser.value(reader);
-            Optional<JsError> result = predicate.apply(value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -496,7 +496,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                       boolean nullable,
                                                       int min,
                                                       int max
@@ -520,7 +520,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofIntegralSuchThat(Function<BigInteger, Optional<JsError>> predicate,
+    public JsSpecParser ofIntegralSuchThat(Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                            boolean nullable
     ) {
 
@@ -529,7 +529,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.integralParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(JsValue::isBigInt,
                                         v -> v.toJsBigInt().value,
                                         predicate,
@@ -543,7 +543,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsBigInt integral = PARSERS.integralParser.value(reader);
-            Optional<JsError> result = predicate.apply(integral.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(integral.value);
             if (!result.isPresent()) return integral;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -562,7 +562,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                      boolean nullable,
                                                      int min,
                                                      int max
@@ -580,7 +580,7 @@ public final class JsSpecParsers {
                                                                       max));
     }
 
-    public JsSpecParser ofArrayOfDecimalSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfDecimalSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                  boolean nullable
     ) {
         return getParser(PARSERS.arrayOfDecimalParser,
@@ -601,7 +601,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfLongEachSuchThat(LongFunction<Optional<JsError>> p,
+    public JsSpecParser ofArrayOfLongEachSuchThat(LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                   boolean nullable,
                                                   int min,
                                                   int max
@@ -618,7 +618,7 @@ public final class JsSpecParsers {
                                                                       max));
     }
 
-    public JsSpecParser ofArrayOfLongSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfLongSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                               boolean nullable
     ) {
         return getParser(PARSERS.arrayOfLongParser,
@@ -634,7 +634,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofDecimalSuchThat(Function<BigDecimal, Optional<JsError>> predicate,
+    public JsSpecParser ofDecimalSuchThat(Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                           boolean nullable
     ) {
 
@@ -643,7 +643,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.decimalParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(JsValue::isDecimal,
                                         v -> v.toJsBigDec().value,
                                         predicate,
@@ -660,7 +660,7 @@ public final class JsSpecParsers {
             return reader ->
             {
                 JsBigDec decimal = PARSERS.decimalParser.value(reader);
-                Optional<JsError> result = predicate.apply(decimal.value);
+                Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(decimal.value);
                 if (!result.isPresent()) return decimal;
                 else throw newParseException.apply(reader,
                                                    result.get()
@@ -676,7 +676,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofLongSuchThat(LongFunction<Optional<JsError>> predicate,
+    public JsSpecParser ofLongSuchThat(LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                        boolean nullable
     ) {
 
@@ -685,7 +685,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.longParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> optErr =
+                Optional<Pair<JsValue, ERROR_CODE>> optErr =
                         testTypeAndSpec(JsValue::isLong,
                                         v -> v.toJsLong().value,
                                         predicate::apply,
@@ -701,7 +701,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsLong value = PARSERS.longParser.value(reader);
-            Optional<JsError> result = predicate.apply(value.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -722,7 +722,7 @@ public final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfIntSuchThat(Function<JsArray, Optional<JsError>> p,
+    public JsSpecParser ofArrayOfIntSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
                                              boolean nullable
     ) {
         return getParser(PARSERS.arrayOfIntParser,
@@ -731,7 +731,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofArrayOfIntEachSuchThat(IntFunction<Optional<JsError>> p,
+    public JsSpecParser ofArrayOfIntEachSuchThat(IntFunction<Optional<Pair<JsValue, ERROR_CODE>>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -754,7 +754,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofBinarySuchThat(Function<byte[], Optional<JsError>> predicate,
+    public JsSpecParser ofBinarySuchThat(Function<byte[], Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                          boolean nullable
     ) {
 
@@ -763,7 +763,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.binaryParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(v -> value.isBinary(),
                                         v -> v.toJsBinary().value,
                                         predicate,
@@ -780,7 +780,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsBinary value = PARSERS.binaryParser.value(reader);
-            Optional<JsError> result = predicate.apply(value.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -795,7 +795,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofIntSuchThat(IntFunction<Optional<JsError>> predicate,
+    public JsSpecParser ofIntSuchThat(IntFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                       boolean nullable
     ) {
 
@@ -804,7 +804,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.intParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(v -> value.isInt(),
                                         v -> v.toJsInt().value,
                                         predicate::apply,
@@ -820,7 +820,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsInt value = PARSERS.intParser.value(reader);
-            Optional<JsError> result = predicate.apply(value.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
@@ -836,7 +836,7 @@ public final class JsSpecParsers {
         );
     }
 
-    public JsSpecParser ofInstantSuchThat(Function<Instant, Optional<JsError>> predicate,
+    public JsSpecParser ofInstantSuchThat(Function<Instant, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                           boolean nullable
     ) {
 
@@ -845,7 +845,7 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.instantParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<JsError> opErr =
+                Optional<Pair<JsValue, ERROR_CODE>> opErr =
                         testTypeAndSpec(v -> value.isInstant(),
                                         v -> v.toJsInstant().value,
                                         predicate,
@@ -861,7 +861,7 @@ public final class JsSpecParsers {
         else return reader ->
         {
             JsInstant value = PARSERS.instantParser.value(reader);
-            Optional<JsError> result = predicate.apply(value.value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()

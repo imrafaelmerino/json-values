@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -39,11 +40,11 @@ class JsArrayOfIntSpec extends AbstractSizableArrSpec implements JsValuePredicat
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isInt() ?
                                                      Optional.empty() :
-                                                     Optional.of(new JsError(v,
-                                                                             INT_EXPECTED)),
+                                                     Optional.of(Pair.of(v,
+                                                                            INT_EXPECTED)),
                                                 nullable,
                                                 min,
                                                 max

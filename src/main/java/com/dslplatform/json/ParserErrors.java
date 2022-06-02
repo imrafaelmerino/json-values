@@ -1,6 +1,8 @@
 package com.dslplatform.json;
 
-import jsonvalues.spec.JsError;
+import fun.tuple.Pair;
+import jsonvalues.JsValue;
+import jsonvalues.spec.ERROR_CODE;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -33,7 +35,7 @@ class ParserErrors {
 
     static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The key " + key + " doesn't exist.";
 
-    static final Function<JsError, String> JS_ERROR_2_STR = e -> e.code.name();
+    static final Function<Pair<JsValue, ERROR_CODE>, String> JS_ERROR_2_STR = e -> e.second().name();
 
     static final String TOO_MANY_DIGITS = "Too many digits detected in number";
 

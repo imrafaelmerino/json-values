@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
@@ -11,16 +12,16 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 class JsArrayOfTestedDecimalSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    final Function<BigDecimal, Optional<JsError>> predicate;
+    final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
+    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
+    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                                final boolean nullable,
                                int min,
                                int max
@@ -50,12 +51,12 @@ class JsArrayOfTestedDecimalSpec extends AbstractSizableArrSpec implements JsVal
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isDouble() || v.isBigDec() ?
                                                         predicate.apply(v.toJsBigDec().value) :
-                                                        Optional.of(new JsError(v,
-                                                                                DECIMAL_EXPECTED
+                                                        Optional.of(Pair.of(v,
+                                                                               DECIMAL_EXPECTED
                                                                     )
                                                         ),
                                                 nullable,

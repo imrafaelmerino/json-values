@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -61,15 +62,15 @@ public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec
     }
 
     @Override
-    public Set<JsErrorPair> test(final JsPath parentPath,
-                                 final JsValue value
+    public Set<SpecError> test(final JsPath parentPath,
+                               final JsValue value
     ) {
-        Set<JsErrorPair> errors = new HashSet<>();
+        Set<SpecError> errors = new HashSet<>();
         if (value.isNull() && nullable) return errors;
         if (!value.isArray()) {
-            errors.add(JsErrorPair.of(parentPath,
-                                      new JsError(value,
-                                                  ARRAY_EXPECTED)));
+            errors.add(SpecError.of(parentPath,
+                                    Pair.of(value,
+                                               ARRAY_EXPECTED)));
             return errors;
         }
         return apply(parentPath.index(-1),
@@ -78,22 +79,22 @@ public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec
     }
 
 
-    private Set<JsErrorPair> apply(final JsPath path,
-                                   final JsArray array
+    private Set<SpecError> apply(final JsPath path,
+                                 final JsArray array
     ) {
-        Set<JsErrorPair> result = new HashSet<>();
+        Set<SpecError> result = new HashSet<>();
         for (JsValue value : array) {
             result.addAll(spec.test(path.inc(),
                                     value));
         }
         if (array.size() < min)
-            result.add(JsErrorPair.of(path,
-                                      new JsError(array,
-                                                  ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN)));
+            result.add(SpecError.of(path,
+                                    Pair.of(array,
+                                               ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN)));
         if (array.size() > max)
-            result.add(JsErrorPair.of(path,
-                                      new JsError(array,
-                                                  ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX)));
+            result.add(SpecError.of(path,
+                                    Pair.of(array,
+                                               ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX)));
         return result;
     }
 

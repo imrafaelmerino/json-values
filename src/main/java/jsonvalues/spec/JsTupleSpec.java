@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -70,8 +71,8 @@ public final class JsTupleSpec implements JsArraySpec {
     }
 
     @Override
-    public Set<JsErrorPair> test(final JsPath parentPath,
-                                 final JsValue value
+    public Set<SpecError> test(final JsPath parentPath,
+                               final JsValue value
     ) {
         return test(JsPath.empty()
                           .append(JsPath.fromIndex(-1)),
@@ -82,32 +83,32 @@ public final class JsTupleSpec implements JsArraySpec {
     }
 
     @Override
-    public Set<JsErrorPair> test(final JsArray array) {
+    public Set<SpecError> test(final JsArray array) {
         return test(JsPath.empty(),
                     array);
     }
 
-    private Set<JsErrorPair> test(final JsPath parent,
-                                  final JsTupleSpec tupleSpec,
-                                  final Set<JsErrorPair> errors,
-                                  final JsValue value
+    private Set<SpecError> test(final JsPath parent,
+                                final JsTupleSpec tupleSpec,
+                                final Set<SpecError> errors,
+                                final JsValue value
     ) {
         if (value.isNull() && nullable) return errors;
 
         if (!value.isArray()) {
-            errors.add(JsErrorPair.of(parent,
-                                      new JsError(value,
-                                                  ARRAY_EXPECTED)));
+            errors.add(SpecError.of(parent,
+                                    Pair.of(value,
+                                               ARRAY_EXPECTED)));
             return errors;
         }
         JsArray array = value.toJsArray();
         int specsSize = tupleSpec.specs.size();
         if (specsSize > 0 && array.size() > specsSize && tupleSpec.strict) {
-            errors.add(JsErrorPair.of(parent.tail()
-                                            .index(specsSize),
-                                      new JsError(array.get(specsSize),
-                                                  SPEC_MISSING
-                                      )
+            errors.add(SpecError.of(parent.tail()
+                                          .index(specsSize),
+                                    Pair.of(array.get(specsSize),
+                                               SPEC_MISSING
+                                    )
                        )
             );
             return errors;

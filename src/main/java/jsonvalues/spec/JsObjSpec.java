@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import io.vavr.Tuple2;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
@@ -23,20 +24,21 @@ public final class JsObjSpec implements JsSpec {
     final boolean strict;
     final Map<String, JsSpecParser> parsers;
     private final boolean nullable;
+    private final List<String> requiredFields;
     Map<String, JsSpec> bindings;
-    private List<String> requiredFields;
     Predicate<JsObj> predicate;
 
     private JsObjSpec(final Map<String, JsSpec> bindings,
                       boolean nullable,
                       boolean strict,
-                      Predicate<JsObj> predicate
+                      Predicate<JsObj> predicate,
+                      List<String> requiredFields
     ) {
         this.bindings = bindings;
         this.nullable = nullable;
         this.strict = strict;
         this.predicate = predicate;
-        this.requiredFields = new ArrayList<>(bindings.keySet());
+        this.requiredFields = requiredFields;
         this.parsers = new LinkedHashMap<>();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet())
             parsers.put(entry.getKey(),
@@ -52,7 +54,8 @@ public final class JsObjSpec implements JsSpec {
         return new JsObjSpec(bindings,
                              false,
                              true,
-                             null
+                             null,
+                             new ArrayList<>(bindings.keySet())
         );
     }
 
@@ -66,7 +69,8 @@ public final class JsObjSpec implements JsSpec {
         return new JsObjSpec(bindings,
                              false,
                              false,
-                             null
+                             null,
+                             new ArrayList<>(bindings.keySet())
         );
     }
 
@@ -1908,27 +1912,39 @@ public final class JsObjSpec implements JsSpec {
     }
 
     public JsObjSpec suchThat(final Predicate<JsObj> predicate) {
-        return new JsObjSpec(bindings,nullable,strict,predicate);
+        return new JsObjSpec(bindings,
+                             nullable,
+                             strict,
+                             predicate,
+                             requiredFields);
     }
 
     public List<String> getRequiredFields() {
         return requiredFields;
     }
 
+    public JsObjSpec setAllOptionals(){
+        return new JsObjSpec(bindings,
+                             nullable,
+                             strict,
+                             predicate,
+                             new ArrayList<>(bindings.keySet()));
+    }
+
     public JsObjSpec setOptionals(final String field,
                                   final String... fields) {
-        JsObjSpec spec = new JsObjSpec(bindings,
-                                       nullable,
-                                       strict,
-                                       predicate);
+
         List<String> optionalFields = new ArrayList<>();
         optionalFields.add(field);
         optionalFields
                 .addAll(Arrays.stream(requireNonNull(fields))
                               .collect(Collectors.toList()));
-        spec.requiredFields = getRequiredFields(spec.bindings.keySet(),
-                                                optionalFields);
-        return spec;
+        return new JsObjSpec(bindings,
+                             nullable,
+                             strict,
+                             predicate,
+                             getRequiredFields(bindings.keySet(),
+                                               optionalFields));
     }
 
     private List<String> getRequiredFields(Set<String> fields,
@@ -1939,13 +1955,12 @@ public final class JsObjSpec implements JsSpec {
     }
 
     public JsObjSpec setOptionals(final List<String> optionals) {
-        JsObjSpec spec = new JsObjSpec(bindings,
-                                       nullable,
-                                       strict,
-                                       predicate);
-        spec.requiredFields = getRequiredFields(spec.bindings.keySet(),
-                                                optionals);
-        return spec;
+        return new JsObjSpec(bindings,
+                             nullable,
+                             strict,
+                             predicate,
+                             getRequiredFields(bindings.keySet(),
+                                               optionals));
 
     }
 
@@ -1954,7 +1969,8 @@ public final class JsObjSpec implements JsSpec {
         return new JsObjSpec(bindings,
                              true,
                              strict,
-                             predicate
+                             predicate,
+                             requiredFields
         );
     }
 
@@ -1970,8 +1986,8 @@ public final class JsObjSpec implements JsSpec {
     }
 
     @Override
-    public Set<JsErrorPair> test(final JsPath parentPath,
-                                 final JsValue value
+    public Set<SpecError> test(final JsPath parentPath,
+                               final JsValue value
     ) {
         return test(parentPath,
                     this,
@@ -1980,24 +1996,24 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-    public Set<JsErrorPair> test(final JsObj obj) {
+    public Set<SpecError> test(final JsObj obj) {
         return test(JsPath.empty(),
                     obj
         );
     }
 
-    private Set<JsErrorPair> test(final JsPath parent,
-                                  final JsObjSpec parentObjSpec,
-                                  final Set<JsErrorPair> errors,
-                                  final JsValue parentValue
+    private Set<SpecError> test(final JsPath parent,
+                                final JsObjSpec parentObjSpec,
+                                final Set<SpecError> errors,
+                                final JsValue parentValue
     ) {
 
         if (parentValue.isNull() && nullable) return errors;
         if (!parentValue.isObj()) {
-            errors.add(JsErrorPair.of(parent,
-                                      new JsError(parentValue,
-                                                  OBJ_EXPECTED
-                                      )
+            errors.add(SpecError.of(parent,
+                                    Pair.of(parentValue,
+                                            OBJ_EXPECTED
+                                    )
             ));
             return errors;
         }
@@ -2010,10 +2026,10 @@ public final class JsObjSpec implements JsSpec {
             final JsSpec spec = parentObjSpec.bindings.get(key);
             if (spec == null) {
                 if (parentObjSpec.strict) {
-                    errors.add(JsErrorPair.of(currentPath,
-                                              new JsError(value,
-                                                          SPEC_MISSING
-                                              )
+                    errors.add(SpecError.of(currentPath,
+                                            Pair.of(value,
+                                                    SPEC_MISSING
+                                            )
                     ));
                 }
             } else errors.addAll(spec.test(currentPath,
@@ -2023,10 +2039,10 @@ public final class JsObjSpec implements JsSpec {
 
         for (final String requiredField : requiredFields) {
             if (!json.containsKey(requiredField))
-                errors.add(JsErrorPair.of(parent.key(requiredField),
-                                          new JsError(JsNothing.NOTHING,
-                                                      REQUIRED
-                                          )
+                errors.add(SpecError.of(parent.key(requiredField),
+                                        Pair.of(JsNothing.NOTHING,
+                                                REQUIRED
+                                        )
                            )
                 );
         }
@@ -2034,9 +2050,9 @@ public final class JsObjSpec implements JsSpec {
         if (predicate != null) {
 
             if (!predicate.test(json))
-                errors.add(JsErrorPair.of(JsPath.empty(),
-                                          new JsError(json,
-                                                      OBJ_CONDITION)));
+                errors.add(SpecError.of(JsPath.empty(),
+                                        Pair.of(json,
+                                                OBJ_CONDITION)));
         }
 
 
@@ -2052,14 +2068,15 @@ public final class JsObjSpec implements JsSpec {
      */
     public JsObjSpec set(final String key,
                          final JsSpec spec) {
-        LinkedHashMap<String, JsSpec> newBindings = new LinkedHashMap<>(bindings);
-        newBindings.put(requireNonNull(key),
+        LinkedHashMap<String, JsSpec> bindings = new LinkedHashMap<>(this.bindings);
+        bindings.put(requireNonNull(key),
                         requireNonNull(spec)
         );
-        return new JsObjSpec(newBindings,
+        return new JsObjSpec(bindings,
                              this.nullable,
                              this.strict,
-                             this.predicate
-        );
+                             this.predicate,
+                             new ArrayList<>(bindings.keySet()));
+
     }
 }

@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -10,16 +11,16 @@ import java.util.function.LongFunction;
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 class JsArrayOfTestedLongSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    private final LongFunction<Optional<JsError>> predicate;
+    private final LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsArrayOfTestedLongSpec(final LongFunction<Optional<JsError>> predicate,
+    JsArrayOfTestedLongSpec(final LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                             final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedLongSpec(final LongFunction<Optional<JsError>> predicate,
+    JsArrayOfTestedLongSpec(final LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
                             final boolean nullable,
                             int min,
                             int max
@@ -50,12 +51,12 @@ class JsArrayOfTestedLongSpec extends AbstractSizableArrSpec implements JsValueP
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isLong() || v.isInt() ?
                                                         predicate.apply(v.toJsLong().value) :
-                                                        Optional.of(new JsError(v,
-                                                                                LONG_EXPECTED
+                                                        Optional.of(Pair.of(v,
+                                                                               LONG_EXPECTED
                                                                     )
                                                         ),
                                                 nullable,

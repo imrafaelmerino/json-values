@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
+import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -23,7 +24,9 @@ class JsArrayOfBoolSpec extends AbstractSizableArrSpec implements JsValuePredica
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfBoolSpec(true,min,max);
+        return new JsArrayOfBoolSpec(true,
+                                     min,
+                                     max);
     }
 
 
@@ -35,11 +38,11 @@ class JsArrayOfBoolSpec extends AbstractSizableArrSpec implements JsValuePredica
     }
 
     @Override
-    public Optional<JsError> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isBool() ?
                                                      Optional.empty() :
-                                                     Optional.of(new JsError(v,
-                                                                             BOOLEAN_EXPECTED)),
+                                                     Optional.of(Pair.of(v,
+                                                                            BOOLEAN_EXPECTED)),
                                                 nullable,
                                                 min,
                                                 max)

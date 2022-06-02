@@ -14,20 +14,20 @@ class Fun {
     private Fun() {
     }
 
-    public static void assertErrorIs(final Set<JsErrorPair> error,
+    public static void assertErrorIs(final Set<SpecError> error,
                                      final ERROR_CODE code,
                                      final JsValue value,
                                      final JsPath path
     ) {
-        final JsErrorPair pair = error.stream()
-                                      .findFirst()
-                                      .get();
+        final SpecError pair = error.stream()
+                                    .findFirst()
+                                    .get();
 
-        Assertions.assertEquals(pair.error.code,
+        Assertions.assertEquals(pair.errorCode,
                                 code
         );
 
-        Assertions.assertEquals(pair.error.value,
+        Assertions.assertEquals(pair.value,
                                 value
         );
 

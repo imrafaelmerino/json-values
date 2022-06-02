@@ -1,8 +1,9 @@
 package com.dslplatform.json;
 
+import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
-import jsonvalues.spec.JsError;
+import jsonvalues.spec.ERROR_CODE;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -17,7 +18,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final LongFunction<Optional<JsError>> fn,
+                                    final LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> fn,
                                     final int min,
                                     final int max
     ) {
@@ -30,7 +31,7 @@ final class JsArrayOfLongParser extends JsArrayParser {
 
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final LongFunction<Optional<JsError>> fn,
+                              final LongFunction<Optional<Pair<JsValue,ERROR_CODE>>> fn,
                               final int min,
                               final int max
     ) {
