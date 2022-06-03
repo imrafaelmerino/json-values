@@ -1005,6 +1005,7 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
      * all keys nullable. The value associated to a nullable key may or not be null
+     * @return a new generator
      */
     public JsObjGen setAllNullable() {
         return new JsObjGen(bindings,
@@ -1178,6 +1179,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * this number of iterations, a runtime exception will be thrown.
      *
      * @param spec the spec that won't satisfy the generated values
+     * @param tries max number of tries
      * @return a new JsObj generator
      * @throws RuntimeException if a value is not generated after the specified number of tries
      */
