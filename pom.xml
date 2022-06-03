@@ -35,7 +35,6 @@
         <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
         <JACOCO-MAVEN-PLUGIN.VERSION>0.8.8</JACOCO-MAVEN-PLUGIN.VERSION>
         <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-        <sonar.projectKey>json-values</sonar.projectKey>
         <MAVEN-COMPILER-PLUGIN.VERSION>3.10.1</MAVEN-COMPILER-PLUGIN.VERSION>
         <MAVEN-COMPILER-PLUGIN.SOURCE>8</MAVEN-COMPILER-PLUGIN.SOURCE>
         <MAVEN-COMPILER-PLUGIN.TARGET>8</MAVEN-COMPILER-PLUGIN.TARGET>
@@ -47,6 +46,9 @@
         <JAVA-FUN.VERSION>0.9.1</JAVA-FUN.VERSION>
         <MAVEN-JAVADOC-PLUGIN.VERSION>3.3.2</MAVEN-JAVADOC-PLUGIN.VERSION>
         <SLF4J-API.VERSION>1.7.36</SLF4J-API.VERSION>
+        <sonar.organization>imrafaelmerino</sonar.organization>
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+
     </properties>
     <dependencies>
         <dependency>
