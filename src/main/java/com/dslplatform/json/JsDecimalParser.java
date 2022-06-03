@@ -4,8 +4,6 @@ import fun.tuple.Pair;
 import jsonvalues.JsBigDec;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
-
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;

@@ -1,7 +1,5 @@
 package com.dslplatform.json;
 
-import java.io.IOException;
-
 abstract class AbstractJsObjParser extends AbstractParser {
 
     protected boolean isEmptyObj(final JsonReader<?> reader) {

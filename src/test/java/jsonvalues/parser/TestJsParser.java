@@ -476,6 +476,48 @@ public class TestJsParser {
     }
 
     @Test
+    public void parsingBool() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          TRUE.nullable(),
+                                          "b",
+                                          FALSE.nullable(),
+                                          "c",
+                                          arrayOfBool(1,
+                                                      10).nullable(),
+                                          "d",
+                                          arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+        ).setAllOptionals();
+
+        JsObjParser parser = new JsObjParser(spec);
+
+
+        Gen<JsBool> boolGen = JsBoolGen.arbitrary();
+
+        Gen<JsArray> arrayGen = JsArrayGen.arbitrary(boolGen,
+                                                     0,
+                                                     20);
+        JsObjGen gen = JsObjGen.of("a",
+                                   boolGen,
+                                   "b",
+                                   boolGen,
+                                   "c",
+                                   arrayGen,
+                                   "d",
+                                   arrayGen
+                               )
+                               .setAllOptional()
+                               .setAllNullable();
+
+        Gen<JsObj> validGen = gen.suchThat(spec);
+
+        Assertions.assertTrue(validGen.sample(10000)
+                                      .allMatch(obj ->
+                                                        parser.parse(obj.toPrettyString()).equals(obj)
+
+                                      ));
+    }
+
+    @Test
     public void parseBoolErrors() {
 
         JsObjSpec spec = JsObjSpec.strict("a",

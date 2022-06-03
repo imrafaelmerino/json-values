@@ -5,8 +5,6 @@ import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
-
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;

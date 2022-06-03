@@ -2,7 +2,6 @@ package com.dslplatform.json;
 
 import jsonvalues.JsObj;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.function.Predicate;
 
