@@ -9,6 +9,6 @@ public final class JsParserException extends RuntimeException {
     }
 
     public JsParserException(final Throwable cause) {
-        super(cause);
+        super(cause.getMessage(),cause);
     }
 }

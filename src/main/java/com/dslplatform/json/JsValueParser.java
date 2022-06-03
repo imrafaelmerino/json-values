@@ -71,7 +71,7 @@ final class JsValueParser extends AbstractParser {
                 default:
                     return numberDeserializer.value(reader);
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }

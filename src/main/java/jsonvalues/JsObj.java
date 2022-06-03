@@ -2000,7 +2000,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
             JsonToken keyEvent = parser.nextToken();
             if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
             return new JsObj(JsObj.parse(parser));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MalformedJson(e.getMessage());
         }
     }
@@ -2018,7 +2018,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
             JsonToken keyEvent = parser.nextToken();
             if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
             return new JsObj(JsObj.parse(parser));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new MalformedJson(e.getMessage());
         }
     }

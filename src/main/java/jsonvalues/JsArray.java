@@ -345,7 +345,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
             return new JsArray(parse(parser
             ));
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             throw new MalformedJson(e.getMessage());
         }
@@ -366,7 +366,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
             return new JsArray(parse(parser
             ));
-        } catch (IOException e) {
+        } catch (Exception e) {
 
             throw new MalformedJson(e.getMessage());
         }

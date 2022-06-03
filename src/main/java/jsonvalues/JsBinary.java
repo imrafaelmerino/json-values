@@ -79,7 +79,8 @@ public final class JsBinary extends JsPrimitive {
 
     @Override
     public String toString() {
-        return Base64.getEncoder().encodeToString(value);
+        return "\"" + Base64.getEncoder()
+                            .encodeToString(value) + "\"" ;
     }
 
     @Override

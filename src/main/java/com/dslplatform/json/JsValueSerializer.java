@@ -74,7 +74,9 @@ final class JsValueSerializer {
             }
 
             case JsBinary.TYPE_ID: {
-                writer.writeBinary(value.toJsBinary().value);
+                byte[] xs = value.toJsBinary().value;
+                if(xs.length == 0) writer.writeString("");
+                else writer.writeBinary(xs);
                 break;
             }
             case JsInstant.TYPE_ID: {

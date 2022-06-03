@@ -64,7 +64,7 @@ public class Fun {
                                             .getResourceAsStream(name);
         try {
             return fromStream(stream);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
 

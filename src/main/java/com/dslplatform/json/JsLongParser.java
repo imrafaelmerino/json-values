@@ -15,7 +15,7 @@ final class JsLongParser extends AbstractParser {
     JsLong value(final JsonReader<?> reader) {
         try {
             return JsLong.of(MyNumberConverter.deserializeLong(reader));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -29,7 +29,7 @@ final class JsLongParser extends AbstractParser {
             if (!result.isPresent()) return JsLong.of(value);
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

@@ -5,7 +5,6 @@ import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -22,7 +21,7 @@ final class JsObjParser extends AbstractJsObjParser {
     ) {
         try {
             final JsObj value = value(reader);
-            final Optional<Pair<JsValue,ERROR_CODE>> result = fn.apply(value);
+            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return value;
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
@@ -53,7 +52,7 @@ final class JsObjParser extends AbstractJsObjParser {
                 throw reader.newParseError(ParserErrors.EXPECTING_FOR_MAP_END,
                                            reader.getCurrentIndex());
             return map;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

@@ -44,7 +44,7 @@ public final class JsArraySpecParser {
             }
             reader.checkArrayEnd();
             return buffer;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }

@@ -14,7 +14,7 @@ final class JsBoolParser extends AbstractParser {
             throw reader.newParseErrorAt(ParserErrors.BOOL_EXPECTED,
                                          reader.getCurrentIndex()
             );
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }
@@ -25,7 +25,7 @@ final class JsBoolParser extends AbstractParser {
             return reader.wasNull() ?
                    JsNull.NULL :
                    True(reader);
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }
@@ -37,7 +37,7 @@ final class JsBoolParser extends AbstractParser {
             throw reader.newParseErrorAt(ParserErrors.TRUE_EXPECTED,
                                          reader.getCurrentIndex()
             );
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }
@@ -48,7 +48,7 @@ final class JsBoolParser extends AbstractParser {
             return reader.wasNull() ?
                    JsNull.NULL :
                    False(reader);
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }
@@ -60,7 +60,7 @@ final class JsBoolParser extends AbstractParser {
             throw reader.newParseErrorAt(ParserErrors.FALSE_EXPECTED,
                                          reader.getCurrentIndex()
             );
-        } catch (ParsingException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

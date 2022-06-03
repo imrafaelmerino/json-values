@@ -1119,15 +1119,73 @@ public final class JsObjGen implements Gen<JsObj> {
         };
     }
 
+
+    /**
+     * Creates a generator that generates values from this gen that satisfy the specified
+     * spec. Care is needed to ensure there is a high chance that will satisfy
+     * the spec. By default, it will try 1000 times. If no value conforms the spec
+     * after this number of iterations, a runtime exception will be thrown.
+     *
+     * @param spec the spec that will satisfy the generated values
+     * @return a new JsObj generator
+     * @throws RuntimeException if a value is not generated after 1000 tries
+     */
     public Gen<JsObj> suchThat(final JsObjSpec spec) {
         return suchThat(obj -> requireNonNull(spec).test(obj)
                                                    .isEmpty()
         );
     }
 
+    /**
+     * Creates a generator that generates values from this gen that satisfy  the specified
+     * spec. Care is needed to ensure there is a high chance that will satisfy
+     * the spec. It will try the specified number of tries. If no value passes this predicate
+     * after this number of iterations, a runtime exception will be thrown.
+     *
+     * @param spec  the spec that will satisfy the generated values
+     * @param tries the max number of iterations to generate a value that satisfies the spec
+     * @return a new JsObj generator
+     * @throws RuntimeException if a value is not generated after the specified number of tries
+     */
+    public Gen<JsObj> suchThat(final JsObjSpec spec,
+                               int tries) {
+        return suchThat(obj -> requireNonNull(spec).test(obj)
+                                                   .isEmpty(),
+                        tries
+        );
+    }
+
+    /**
+     * Creates a generator that generates values from this gen that doesn't satisfy the specified
+     * spec. Care is needed to ensure there is a high chance that won't satisfy
+     * the spec. By default, it will try 1000 times. If all values conform the spec after
+     * this number of iterations, a runtime exception will be thrown.
+     *
+     * @param spec the spec that won't satisfy the generated values
+     * @return a new JsObj generator
+     * @throws RuntimeException if a value is not generated after 1000 tries
+     */
     public Gen<JsObj> suchThatNo(final JsObjSpec spec) {
         return suchThat(obj -> !requireNonNull(spec).test(obj)
                                                     .isEmpty()
+        );
+    }
+
+    /**
+     * Creates a generator that generates values from this gen that doesn't satisfy the specified
+     * spec. Care is needed to ensure there is a high chance that won't satisfy
+     * the spec. It will try the specified number of tries. If all values conform the spec after
+     * this number of iterations, a runtime exception will be thrown.
+     *
+     * @param spec the spec that won't satisfy the generated values
+     * @return a new JsObj generator
+     * @throws RuntimeException if a value is not generated after the specified number of tries
+     */
+    public Gen<JsObj> suchThatNo(final JsObjSpec spec,
+                                 final int tries) {
+        return suchThat(obj -> !requireNonNull(spec).test(obj)
+                                                    .isEmpty(),
+                        tries
         );
     }
 

@@ -6,6 +6,7 @@ import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.Function;
@@ -28,13 +29,19 @@ final class JsIntegralParser extends AbstractParser {
                            final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
         try {
-            final BigInteger value = MyNumberConverter.deserializeDecimal(reader)
-                                                      .toBigIntegerExact();
+            BigDecimal bigDecimal = MyNumberConverter.deserializeDecimal(reader);
+            final BigInteger value = bigDecimal.toBigIntegerExact();
             final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsBigInt.of(value);
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
-        } catch (IOException e) {
+        }
+
+        catch (ArithmeticException e){
+            throw new JsParserException(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART);
+        }
+
+        catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

@@ -32,7 +32,7 @@ final class JsNumberParser extends AbstractParser {
         final Number number;
         try {
             number = MyNumberConverter.deserializeNumber(reader);
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

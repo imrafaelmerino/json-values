@@ -14,7 +14,7 @@ final class JsStrParser extends AbstractParser {
     JsStr value(final JsonReader<?> reader) {
         try {
             return JsStr.of(StringConverter.deserialize(reader));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }
@@ -30,7 +30,7 @@ final class JsStrParser extends AbstractParser {
             if (!result.isPresent()) return JsStr.of(value);
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

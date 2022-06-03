@@ -378,7 +378,7 @@ public final class JsSpecs {
         return new AnySuchThatSpec(v -> requireNonNull(value).equals(v) ?
                                         Optional.empty() :
                                         Optional.of(Pair.of(v,
-                                                               CONSTANT_CONDITION)));
+                                                            CONSTANT_CONDITION)));
     }
 
     /**
@@ -391,7 +391,7 @@ public final class JsSpecs {
         return new JsStrSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                           Optional.empty() :
                                           Optional.of(Pair.of(JsStr.of(s),
-                                                                 STRING_CONDITION)),
+                                                              STRING_CONDITION)),
                                      false
 
         );
@@ -407,7 +407,7 @@ public final class JsSpecs {
         return new JsNumberSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                              Optional.empty() :
                                              Optional.of(Pair.of(s,
-                                                                    ERROR_CODE.NUMBER_CONDITION)),
+                                                                 ERROR_CODE.NUMBER_CONDITION)),
                                         false);
     }
 
@@ -421,7 +421,7 @@ public final class JsSpecs {
         return new JsArrayOfIntSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                  Optional.empty() :
                                                  Optional.of(Pair.of(s,
-                                                                        ARRAY_CONDITION)),
+                                                                     ARRAY_CONDITION)),
                                             false);
 
     }
@@ -439,7 +439,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedDecimalSpec(s -> requireNonNull(predicate).test(s) ?
                                                    Optional.empty() :
                                                    Optional.of(Pair.of(JsBigDec.of(s),
-                                                                          DECIMAL_CONDITION)),
+                                                                       DECIMAL_CONDITION)),
                                               false);
     }
 
@@ -460,7 +460,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedDecimalSpec(s -> requireNonNull(predicate).test(s) ?
                                                    Optional.empty() :
                                                    Optional.of(Pair.of(JsBigDec.of(s),
-                                                                          DECIMAL_CONDITION)),
+                                                                       DECIMAL_CONDITION)),
                                               false,
                                               minLength,
                                               maxLength);
@@ -476,7 +476,7 @@ public final class JsSpecs {
         return new JsArrayOfDecimalSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                      Optional.empty() :
                                                      Optional.of(Pair.of(s,
-                                                                            ARRAY_CONDITION)),
+                                                                         ARRAY_CONDITION)),
                                                 false);
     }
 
@@ -491,7 +491,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedIntegralSpec(s -> requireNonNull(predicate).test(s) ?
                                                     Optional.empty() :
                                                     Optional.of(Pair.of(JsBigInt.of(s),
-                                                                           INTEGRAL_CONDITION)),
+                                                                        INTEGRAL_CONDITION)),
                                                false);
     }
 
@@ -512,7 +512,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedIntegralSpec(s -> requireNonNull(predicate).test(s) ?
                                                     Optional.empty() :
                                                     Optional.of(Pair.of(JsBigInt.of(s),
-                                                                           INTEGRAL_CONDITION)),
+                                                                        INTEGRAL_CONDITION)),
                                                false,
                                                minLength,
                                                maxLength);
@@ -528,7 +528,7 @@ public final class JsSpecs {
         return new JsArrayOfIntegralSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                       Optional.empty() :
                                                       Optional.of(Pair.of(s,
-                                                                             ARRAY_CONDITION)),
+                                                                          ARRAY_CONDITION)),
                                                  false);
     }
 
@@ -543,7 +543,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedNumberSpec(s -> requireNonNull(predicate).test(s) ?
                                                   Optional.empty() :
                                                   Optional.of(Pair.of(s,
-                                                                         ERROR_CODE.NUMBER_CONDITION)),
+                                                                      ERROR_CODE.NUMBER_CONDITION)),
                                              false);
     }
 
@@ -565,7 +565,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedNumberSpec(s -> requireNonNull(predicate).test(s) ?
                                                   Optional.empty() :
                                                   Optional.of(Pair.of(s,
-                                                                         ERROR_CODE.NUMBER_CONDITION)),
+                                                                      ERROR_CODE.NUMBER_CONDITION)),
                                              false,
                                              minLength,
                                              maxLength);
@@ -581,7 +581,7 @@ public final class JsSpecs {
         return new JsArrayOfNumberSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                     Optional.empty() :
                                                     Optional.of(Pair.of(s,
-                                                                           ARRAY_CONDITION)),
+                                                                        ARRAY_CONDITION)),
                                                false);
     }
 
@@ -596,7 +596,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedObjSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(s,
-                                                                      OBJ_CONDITION)),
+                                                                   OBJ_CONDITION)),
                                           false);
 
     }
@@ -618,7 +618,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedObjSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(s,
-                                                                      OBJ_CONDITION)),
+                                                                   OBJ_CONDITION)),
                                           false,
                                           minLength,
                                           maxLength);
@@ -635,7 +635,7 @@ public final class JsSpecs {
         return new JsArrayOfObjSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                  Optional.empty() :
                                                  Optional.of(Pair.of(s,
-                                                                        ARRAY_CONDITION)),
+                                                                     ARRAY_CONDITION)),
                                             false);
 
     }
@@ -651,7 +651,7 @@ public final class JsSpecs {
         return new JsIntSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                           Optional.empty() :
                                           Optional.of(Pair.of(JsInt.of(s),
-                                                                 INT_CONDITION)),
+                                                              INT_CONDITION)),
                                      false);
     }
 
@@ -665,7 +665,7 @@ public final class JsSpecs {
         return new JsArrayOfStrSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                  Optional.empty() :
                                                  Optional.of(Pair.of(s,
-                                                                        ARRAY_CONDITION)),
+                                                                     ARRAY_CONDITION)),
                                             false);
     }
 
@@ -679,7 +679,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedValueSpec(s -> requireNonNull(predicate).test(s) ?
                                                  Optional.empty() :
                                                  Optional.of(Pair.of(s,
-                                                                        VALUE_CONDITION)),
+                                                                     VALUE_CONDITION)),
                                             false);
     }
 
@@ -694,7 +694,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedLongSpec(s -> requireNonNull(predicate).test(s) ?
                                                 Optional.empty() :
                                                 Optional.of(Pair.of(JsLong.of(s),
-                                                                       LONG_CONDITION)),
+                                                                    LONG_CONDITION)),
                                            false);
     }
 
@@ -715,7 +715,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedLongSpec(s -> requireNonNull(predicate).test(s) ?
                                                 Optional.empty() :
                                                 Optional.of(Pair.of(JsLong.of(s),
-                                                                       LONG_CONDITION)),
+                                                                    LONG_CONDITION)),
                                            false,
                                            minLength,
                                            maxLength);
@@ -731,7 +731,7 @@ public final class JsSpecs {
         return new JsArrayOfBoolSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                   Optional.empty() :
                                                   Optional.of(Pair.of(s,
-                                                                         ARRAY_CONDITION)),
+                                                                      ARRAY_CONDITION)),
                                              false);
     }
 
@@ -745,7 +745,7 @@ public final class JsSpecs {
         return new JsLongSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                            Optional.empty() :
                                            Optional.of(Pair.of(JsLong.of(s),
-                                                                  LONG_CONDITION)),
+                                                               LONG_CONDITION)),
                                       false);
     }
 
@@ -759,7 +759,7 @@ public final class JsSpecs {
         return new JsDecimalSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                               Optional.empty() :
                                               Optional.of(Pair.of(JsBigDec.of(s),
-                                                                     DECIMAL_CONDITION)),
+                                                                  DECIMAL_CONDITION)),
                                          false);
     }
 
@@ -773,7 +773,7 @@ public final class JsSpecs {
         return new JsIntegralSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsBigInt.of(s),
-                                                                      INTEGRAL_CONDITION)),
+                                                                   INTEGRAL_CONDITION)),
                                           false);
     }
 
@@ -788,7 +788,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedStrSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsStr.of(s),
-                                                                      STRING_CONDITION)),
+                                                                   STRING_CONDITION)),
                                           false);
     }
 
@@ -809,7 +809,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedStrSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsStr.of(s),
-                                                                      STRING_CONDITION)),
+                                                                   STRING_CONDITION)),
                                           false,
                                           minLength,
                                           maxLength);
@@ -827,7 +827,7 @@ public final class JsSpecs {
         return new AnySuchThatSpec(v -> requireNonNull(predicate).test(v) ?
                                         Optional.empty() :
                                         Optional.of(Pair.of(v,
-                                                               VALUE_CONDITION)));
+                                                            VALUE_CONDITION)));
     }
 
     /**
@@ -840,7 +840,7 @@ public final class JsSpecs {
         return new JsBinarySuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                              Optional.empty() :
                                              Optional.of(Pair.of(JsBinary.of(s),
-                                                                    BINARY_CONDITION)),
+                                                                 BINARY_CONDITION)),
                                         false);
     }
 
@@ -854,7 +854,7 @@ public final class JsSpecs {
         return new JsInstantSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                               Optional.empty() :
                                               Optional.of(Pair.of(JsInstant.of(s),
-                                                                     INSTANT_CONDITION)),
+                                                                  INSTANT_CONDITION)),
                                          false);
     }
 
@@ -868,7 +868,7 @@ public final class JsSpecs {
         return new JsObjSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                           Optional.empty() :
                                           Optional.of(Pair.of(s,
-                                                                 OBJ_CONDITION)),
+                                                              OBJ_CONDITION)),
                                      false);
     }
 
@@ -882,7 +882,7 @@ public final class JsSpecs {
         return new JsArrayOfLongSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                                   Optional.empty() :
                                                   Optional.of(Pair.of(s,
-                                                                         ARRAY_CONDITION)),
+                                                                      ARRAY_CONDITION)),
                                              false);
     }
 
@@ -896,7 +896,7 @@ public final class JsSpecs {
         return new JsArraySuchThatSpec(s -> requireNonNull(predicate).test(s) ?
                                             Optional.empty() :
                                             Optional.of(Pair.of(s,
-                                                                   ARRAY_CONDITION)),
+                                                                ARRAY_CONDITION)),
                                        false);
 
     }
@@ -911,7 +911,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedIntSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsInt.of(s),
-                                                                      INT_CONDITION)),
+                                                                   INT_CONDITION)),
                                           false);
 
     }
@@ -932,7 +932,7 @@ public final class JsSpecs {
         return new JsArrayOfTestedIntSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsInt.of(s),
-                                                                      INT_CONDITION)),
+                                                                   INT_CONDITION)),
                                           false,
                                           minLength,
                                           maxLength);

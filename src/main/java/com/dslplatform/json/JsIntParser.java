@@ -14,7 +14,7 @@ final class JsIntParser extends AbstractParser {
     JsInt value(final JsonReader<?> reader) {
         try {
             return JsInt.of(MyNumberConverter.deserializeInt(reader));
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -28,7 +28,7 @@ final class JsIntParser extends AbstractParser {
             if (!result.isPresent()) return JsInt.of(value);
             throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                        reader.getCurrentIndex());
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

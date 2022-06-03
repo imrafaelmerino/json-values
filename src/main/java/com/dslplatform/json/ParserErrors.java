@@ -10,18 +10,17 @@ import java.util.function.UnaryOperator;
 
 class ParserErrors {
 
-
     public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with spec method 'suchThat'";
 
     private ParserErrors(){}
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end";
 
-    static final IntFunction<String> EMPTY_ARRAY = min -> "empty array. Min size: " + min;
+    static final IntFunction<String> EMPTY_ARRAY = min -> "Empty array. Min size: " + min;
 
-    static final IntFunction<String> TOO_LONG_ARRAY = max -> "too long array. Max size: " + max;
+    static final IntFunction<String> TOO_LONG_ARRAY = max -> "Too long array. Max size: " + max;
 
-    static final IntFunction<String> TOO_SHORT_ARRAY = min -> "too short array. Min size: " + min;
+    static final IntFunction<String> TOO_SHORT_ARRAY = min -> "Too short array. Min size: " + min;
 
     static final String INTEGRAL_NUMBER_EXPECTED = "Integral number expected.";
 
@@ -30,6 +29,8 @@ class ParserErrors {
     static final String BOOL_EXPECTED = "Boolean expected";
     static final String TRUE_EXPECTED = "True expected";
     static final String FALSE_EXPECTED = "False expected";
+
+    static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "BigInteger with fractional part";
 
     static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated.";
 

@@ -68,7 +68,7 @@ abstract class JsArrayParser {
 
             reader.checkArrayEnd();
             return buffer;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -83,7 +83,7 @@ abstract class JsArrayParser {
             }
             reader.checkArrayEnd();
             return buffer;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -95,7 +95,7 @@ abstract class JsArrayParser {
                                            reader.getCurrentIndex());
             reader.getNextToken();
             return reader.last() == ']';
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
         }
     }
@@ -157,7 +157,7 @@ abstract class JsArrayParser {
                                            reader.getCurrentIndex());
             reader.checkArrayEnd();
             return buffer;
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new JsParserException(e.getMessage());
 
         }

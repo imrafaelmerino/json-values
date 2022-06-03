@@ -4,6 +4,7 @@ import fun.optic.Prism;
 
 import java.time.Instant;
 import java.time.format.DateTimeFormatter;
+import java.util.Base64;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -68,7 +69,7 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
 
     @Override
     public String toString() {
-        return DateTimeFormatter.ISO_INSTANT.format(value);
+        return "\"" + DateTimeFormatter.ISO_INSTANT.format(value) + "\"";
     }
 
     @Override
