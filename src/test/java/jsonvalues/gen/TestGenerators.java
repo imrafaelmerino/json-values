@@ -87,7 +87,7 @@ public class TestGenerators {
                                                 str(s -> s.length() <= 10)
                                           ),
                                           "e",
-                                          integral()
+                                          bigInteger()
         );
 
         Assertions.assertTrue(
@@ -234,7 +234,7 @@ public class TestGenerators {
                                            "e",
                                            str(),
                                            "f",
-                                           integral(),
+                                           bigInteger(),
                                            "g",
                                            decimal().nullable(),
                                            "h",

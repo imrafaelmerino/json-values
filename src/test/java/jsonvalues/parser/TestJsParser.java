@@ -62,7 +62,7 @@ public class TestJsParser {
                                                decimal()
                                          ),
                                          "g",
-                                         integral(),
+                                         bigInteger(),
                                          "h",
                                          obj(),
                                          "i",
@@ -746,16 +746,16 @@ public class TestJsParser {
     public void parseBigIntErrors() {
 
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          integral(s -> s.compareTo(BigInteger.TEN) < 0),
+                                          bigInteger(s -> s.compareTo(BigInteger.TEN) < 0),
                                           "b",
-                                          arrayOfIntegral(s -> s.compareTo(BigInteger.TEN) < 0,
-                                                          1,
-                                                          10),
+                                          arrayOfBigInt(s -> s.compareTo(BigInteger.TEN) < 0,
+                                                        1,
+                                                        10),
                                           "c",
-                                          arrayOfIntegral(1,
-                                                          10),
+                                          arrayOfBigInt(1,
+                                                        10),
                                           "d",
-                                          arrayOfIntegralSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                          arrayOfBigIntSuchThat(a -> a.size() < 11 && a.size() > 0)
         );
 
         JsObjParser parser = new JsObjParser(spec);

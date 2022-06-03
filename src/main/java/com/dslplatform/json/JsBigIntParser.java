@@ -11,7 +11,7 @@ import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsIntegralParser extends AbstractParser {
+final class JsBigIntParser extends AbstractParser {
     @Override
     JsBigInt value(final JsonReader<?> reader) {
         try {

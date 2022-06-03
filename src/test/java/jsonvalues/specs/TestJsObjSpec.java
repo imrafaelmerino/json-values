@@ -363,11 +363,11 @@ public class TestJsObjSpec {
     public void testIsNumberSpec() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                integral(),
+                                                bigInteger(),
                                                 "b",
-                                                integral(),
+                                                bigInteger(),
                                                 "c",
-                                                integral(),
+                                                bigInteger(),
                                                 "d",
                                                 number()
         );
@@ -393,7 +393,7 @@ public class TestJsObjSpec {
     public void testIsNumberSpecReturnError() {
 
         final JsObjSpec spec = JsObjSpec.strict("a",
-                                                integral()
+                                                bigInteger()
         );
 
 
@@ -541,7 +541,7 @@ public class TestJsObjSpec {
                                                 "d",
                                                 arrayOfDec(),
                                                 "e",
-                                                arrayOfIntegral(),
+                                                arrayOfBigInt(),
                                                 "f",
                                                 JsObjSpec.strict("a",
                                                                  arrayOfNumber(),
@@ -615,7 +615,7 @@ public class TestJsObjSpec {
                                                 "d",
                                                 arrayOfDec(b -> b.doubleValue() > 1.5),
                                                 "e",
-                                                arrayOfIntegral(i -> i.longValue() < 100),
+                                                arrayOfBigInt(i -> i.longValue() < 100),
                                                 "f",
                                                 JsObjSpec.strict("a",
                                                                  arrayOfNumber(JsValue::isInt),
@@ -628,7 +628,7 @@ public class TestJsObjSpec {
                                                                                arrayOfDecSuchThat(a -> a.size() == 1)
                                                                  ),
                                                                  "d",
-                                                                 integral(i -> i.longValue() > 10),
+                                                                 bigInteger(i -> i.longValue() > 10),
                                                                  "e",
                                                                  number(JsValue::isDouble),
                                                                  "f",
@@ -818,7 +818,7 @@ public class TestJsObjSpec {
                                           "f",
                                           arrayOfLong(),
                                           "g",
-                                          arrayOfIntegral(),
+                                          arrayOfBigInt(),
                                           "h",
                                           arrayOfNumber().nullable(),
                                           "i",
@@ -839,7 +839,7 @@ public class TestJsObjSpec {
                                                                            "f",
                                                                            array(),
                                                                            "g",
-                                                                           integral(),
+                                                                           bigInteger(),
                                                                            "h",
                                                                            decimal(),
                                                                            "i",
@@ -928,7 +928,7 @@ public class TestJsObjSpec {
                                           "f",
                                           arrayOfLong().nullable(),
                                           "g",
-                                          arrayOfIntegral().nullable(),
+                                          arrayOfBigInt().nullable(),
                                           "h",
                                           arrayOfNumber().nullable(),
                                           "i",
@@ -949,7 +949,7 @@ public class TestJsObjSpec {
                                                                            "f",
                                                                            array().nullable(),
                                                                            "g",
-                                                                           integral().nullable(),
+                                                                           bigInteger().nullable(),
                                                                            "h",
                                                                            decimal().nullable(),
                                                                            "i",
@@ -1006,7 +1006,7 @@ public class TestJsObjSpec {
                                            arrayOfLong().nullable()
                 ,
                                            "g",
-                                           arrayOfIntegral().nullable()
+                                           arrayOfBigInt().nullable()
                 ,
                                            "h",
                                            arrayOfNumber().nullable()
@@ -1030,7 +1030,7 @@ public class TestJsObjSpec {
                                                                             "f",
                                                                             array().nullable(),
                                                                             "g",
-                                                                            integral().nullable(),
+                                                                            bigInteger().nullable(),
                                                                             "h",
                                                                             decimal().nullable(),
                                                                             "i",
@@ -1149,7 +1149,7 @@ public class TestJsObjSpec {
                                           "f",
                                           arrayOfLong(),
                                           "g",
-                                          arrayOfIntegral(),
+                                          arrayOfBigInt(),
                                           "h",
                                           arrayOfNumber(),
                                           "i",
@@ -1170,7 +1170,7 @@ public class TestJsObjSpec {
                                                                            "f",
                                                                            array(),
                                                                            "g",
-                                                                           integral(),
+                                                                           bigInteger(),
                                                                            "h",
                                                                            decimal(),
                                                                            "i",
@@ -1244,16 +1244,16 @@ public class TestJsObjSpec {
     public void testArrayOfObjSpec() {
 
         final JsSpec a = arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                          integral()
+                                                          bigInteger()
         ));
         final JsSpec b = arrayOfObjSpec(JsObjSpec.lenient("a",
                                                           str()
         )).nullable();
         final JsSpec c = arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                          integral()
+                                                          bigInteger()
         )).nullable();
         final JsSpec d = arrayOfObjSpec(JsObjSpec.lenient("a",
-                                                          integral()
+                                                          bigInteger()
         ));
 
         final JsObjSpec objspec = JsObjSpec.strict("a",
@@ -1293,7 +1293,7 @@ public class TestJsObjSpec {
         JsObjSpec spec = JsObjSpec.strict("a",
                                           str(),
                                           "b",
-                                          integral()
+                                          bigInteger()
         );
         JsObjSpec b = JsObjSpec.strict("a",
                                        arrayOfObjSpec(spec),
@@ -1331,7 +1331,7 @@ public class TestJsObjSpec {
                                                 str(),
                                                 "b",
                                                 JsObjSpec.strict("c",
-                                                                 integral()
+                                                                 bigInteger()
                                                 )
         ).setOptionals("a");
 

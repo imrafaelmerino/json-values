@@ -9,23 +9,23 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-class JsArrayOfIntegralSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfBigIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
     private final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate;
-    private final JsArrayOfIntegralSpec isArrayOfIntegral;
+    private final JsArrayOfBigIntSpec isArrayOfIntegral;
 
-    JsArrayOfIntegralSuchThatSpec(final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate,
-                                  final boolean nullable
+    JsArrayOfBigIntSuchThatSpec(final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate,
+                                final boolean nullable
     ) {
         super(nullable);
-        this.isArrayOfIntegral = new JsArrayOfIntegralSpec(nullable);
+        this.isArrayOfIntegral = new JsArrayOfBigIntSpec(nullable);
         this.predicate = predicate;
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntegralSuchThatSpec(predicate,
-                                                 true);
+        return new JsArrayOfBigIntSuchThatSpec(predicate,
+                                               true);
     }
 
     @Override

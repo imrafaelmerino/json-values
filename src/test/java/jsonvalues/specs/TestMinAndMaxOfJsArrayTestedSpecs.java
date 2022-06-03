@@ -187,7 +187,7 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
     public void testArrayOfIntegral() {
 
         JsBigInt A = JsBigInt.of(new BigInteger("111111111111111111111111111111111111111111111111"));
-        JsArraySpec spec = JsSpecs.arrayOfIntegral(i -> i.compareTo(BigInteger.ZERO) > 0,
+        JsArraySpec spec = JsSpecs.arrayOfBigInt(i -> i.compareTo(BigInteger.ZERO) > 0,
                                                    1,
                                                    2);
 

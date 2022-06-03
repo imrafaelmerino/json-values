@@ -42,7 +42,7 @@ public class TestErrors {
         JsObjParser parserAsInt = new JsObjParser(JsObjSpec.strict("a",JsSpecs.integer()));
 
         JsObjParser parserAsDec = new JsObjParser(JsObjSpec.strict("a",JsSpecs.decimal()));
-        JsObjParser parserAsBigInt = new JsObjParser(JsObjSpec.strict("a",JsSpecs.integral()));
+        JsObjParser parserAsBigInt = new JsObjParser(JsObjSpec.strict("a",JsSpecs.bigInteger()));
 
         Assertions.assertThrows(JsParserException.class,()->parserAsLong.parse(json1));
         Assertions.assertThrows(JsParserException.class,()->parserAsInt.parse(json1));

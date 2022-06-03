@@ -111,7 +111,7 @@ public class TestJsArraySpec {
     @Test
     public void test_array_of_integral_spec() {
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfIntegralSuchThat(a -> a.size() == 3)
+                                          arrayOfBigIntSuchThat(a -> a.size() == 3)
         );
 
         Assertions.assertTrue(spec.test(JsObj.of("a",

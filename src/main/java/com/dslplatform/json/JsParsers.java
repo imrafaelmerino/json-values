@@ -6,7 +6,7 @@ class JsParsers {
     public final JsIntParser intParser;
     public final JsBinaryParser binaryParser;
     public final JsLongParser longParser;
-    public final JsIntegralParser integralParser;
+    public final JsBigIntParser integralParser;
     public final JsBoolParser boolParser;
     public final JsDecimalParser decimalParser;
     public final JsStrParser strParser;
@@ -17,7 +17,7 @@ class JsParsers {
     public final JsArrayOfIntParser arrayOfIntParser;
     public final JsArrayOfLongParser arrayOfLongParser;
     public final JsArrayOfDecimalParser arrayOfDecimalParser;
-    public final JsArrayOfIntegralParser arrayOfIntegralParser;
+    public final JsArrayOfBigIntParser arrayOfIntegralParser;
     public final JsArrayOfNumberParser arrayOfNumberParser;
     public final JsArrayOfObjParser arrayOfObjParser;
     public final JsArrayOfStringParser arrayOfStrParser;
@@ -28,7 +28,7 @@ class JsParsers {
         intParser = new JsIntParser();
         binaryParser = new JsBinaryParser();
         longParser = new JsLongParser();
-        integralParser = new JsIntegralParser();
+        integralParser = new JsBigIntParser();
         boolParser = new JsBoolParser();
         decimalParser = new JsDecimalParser();
         strParser = new JsStrParser();
@@ -42,7 +42,7 @@ class JsParsers {
         arrayOfIntParser = new JsArrayOfIntParser(intParser);
         arrayOfLongParser = new JsArrayOfLongParser(longParser);
         arrayOfDecimalParser = new JsArrayOfDecimalParser(decimalParser);
-        arrayOfIntegralParser = new JsArrayOfIntegralParser(integralParser);
+        arrayOfIntegralParser = new JsArrayOfBigIntParser(integralParser);
         arrayOfNumberParser = new JsArrayOfNumberParser(numberParser);
         arrayOfObjParser = new JsArrayOfObjParser(objParser);
         arrayOfStrParser = new JsArrayOfStringParser(strParser);

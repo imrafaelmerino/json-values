@@ -29,7 +29,7 @@ public final class JsSpecs {
 
     private static final JsArraySpec arrayOfNumber = new JsArrayOfNumberSpec(false);
     private static final JsArraySpec arrayOfDec = new JsArrayOfDecimalSpec(false);
-    private static final JsArraySpec arrayOfIntegral = new JsArrayOfIntegralSpec(false);
+    private static final JsArraySpec arrayOfBigInt = new JsArrayOfBigIntSpec(false);
     private static final JsArraySpec arrayOfObj = new JsArrayOfObjSpec(false);
     private static final JsArraySpec arrayOfBool = new JsArrayOfBoolSpec(false);
     private static final JsSpec instant = new JsInstantSpec(false);
@@ -37,7 +37,7 @@ public final class JsSpecs {
     private static final JsArraySpec arrayOfInt = new JsArrayOfIntSpec(false);
     private static final JsArraySpec arrayOfStr = new JsArrayOfStrSpec(false);
     private static final JsSpec binary = new JsBinarySpec(false);
-    private static final JsSpec integral = new JsIntegralSpec(false);
+    private static final JsSpec bigInteger = new JsBigIntSpec(false);
     private static final JsSpec longInteger = new JsLongSpec(false);
     private static final JsSpec bool = new JsBooleanSpec(false);
     private static final JsSpec decimal = new JsDecimalSpec(false);
@@ -75,8 +75,8 @@ public final class JsSpecs {
      *
      * @return a spec
      */
-    public static JsArraySpec arrayOfIntegral() {
-        return arrayOfIntegral;
+    public static JsArraySpec arrayOfBigInt() {
+        return arrayOfBigInt;
     }
 
 
@@ -148,8 +148,8 @@ public final class JsSpecs {
      *
      * @return a spec
      */
-    public static JsSpec integral() {
-        return integral;
+    public static JsSpec bigInteger() {
+        return bigInteger;
     }
 
 
@@ -253,12 +253,12 @@ public final class JsSpecs {
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
      */
-    public static JsArraySpec arrayOfIntegral(int minLength,
-                                              int maxLength) {
+    public static JsArraySpec arrayOfBigInt(int minLength,
+                                            int maxLength) {
         if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-        return new JsArrayOfIntegralSpec(false,
-                                         minLength,
-                                         maxLength);
+        return new JsArrayOfBigIntSpec(false,
+                                       minLength,
+                                       maxLength);
     }
 
     /**
@@ -487,12 +487,12 @@ public final class JsSpecs {
      * @param predicate the predicate each integral number of the array is tested on
      * @return an array spec
      */
-    public static JsArraySpec arrayOfIntegral(final Predicate<BigInteger> predicate) {
-        return new JsArrayOfTestedIntegralSpec(s -> requireNonNull(predicate).test(s) ?
-                                                    Optional.empty() :
-                                                    Optional.of(Pair.of(JsBigInt.of(s),
-                                                                        INTEGRAL_CONDITION)),
-                                               false);
+    public static JsArraySpec arrayOfBigInt(final Predicate<BigInteger> predicate) {
+        return new JsArrayOfTestedBigIntSpec(s -> requireNonNull(predicate).test(s) ?
+                                                  Optional.empty() :
+                                                  Optional.of(Pair.of(JsBigInt.of(s),
+                                                                      INTEGRAL_CONDITION)),
+                                             false);
     }
 
     /**
@@ -504,18 +504,18 @@ public final class JsSpecs {
      * @param maxLength the maximum size of the array (inclusive)
      * @return an array spec
      */
-    public static JsArraySpec arrayOfIntegral(final Predicate<BigInteger> predicate,
-                                              final int minLength,
-                                              final int maxLength) {
+    public static JsArraySpec arrayOfBigInt(final Predicate<BigInteger> predicate,
+                                            final int minLength,
+                                            final int maxLength) {
         if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
 
-        return new JsArrayOfTestedIntegralSpec(s -> requireNonNull(predicate).test(s) ?
-                                                    Optional.empty() :
-                                                    Optional.of(Pair.of(JsBigInt.of(s),
-                                                                        INTEGRAL_CONDITION)),
-                                               false,
-                                               minLength,
-                                               maxLength);
+        return new JsArrayOfTestedBigIntSpec(s -> requireNonNull(predicate).test(s) ?
+                                                  Optional.empty() :
+                                                  Optional.of(Pair.of(JsBigInt.of(s),
+                                                                      INTEGRAL_CONDITION)),
+                                             false,
+                                             minLength,
+                                             maxLength);
     }
 
     /**
@@ -524,12 +524,12 @@ public final class JsSpecs {
      * @param predicate the predicate the array is tested on
      * @return an array spec
      */
-    public static JsArraySpec arrayOfIntegralSuchThat(final Predicate<JsArray> predicate) {
-        return new JsArrayOfIntegralSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
-                                                      Optional.empty() :
-                                                      Optional.of(Pair.of(s,
-                                                                          ARRAY_CONDITION)),
-                                                 false);
+    public static JsArraySpec arrayOfBigIntSuchThat(final Predicate<JsArray> predicate) {
+        return new JsArrayOfBigIntSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
+                                                    Optional.empty() :
+                                                    Optional.of(Pair.of(s,
+                                                                        ARRAY_CONDITION)),
+                                               false);
     }
 
     /**
@@ -769,12 +769,12 @@ public final class JsSpecs {
      * @param predicate the predicate the integral number is tested on
      * @return a spec
      */
-    public static JsSpec integral(final Predicate<BigInteger> predicate) {
-        return new JsIntegralSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
-                                               Optional.empty() :
-                                               Optional.of(Pair.of(JsBigInt.of(s),
-                                                                   INTEGRAL_CONDITION)),
-                                          false);
+    public static JsSpec bigInteger(final Predicate<BigInteger> predicate) {
+        return new JsBigIntSuchThatSpec(s -> requireNonNull(predicate).test(s) ?
+                                             Optional.empty() :
+                                             Optional.of(Pair.of(JsBigInt.of(s),
+                                                                 INTEGRAL_CONDITION)),
+                                        false);
     }
 
     /**

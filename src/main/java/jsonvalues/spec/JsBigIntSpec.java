@@ -9,16 +9,16 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsIntegralSpec extends AbstractNullableSpec implements JsValuePredicate {
+class JsBigIntSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    JsIntegralSpec(final boolean nullable) {
+    JsBigIntSpec(final boolean nullable) {
         super(nullable);
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsIntegralSpec(true);
+        return new JsBigIntSpec(true);
     }
 
 

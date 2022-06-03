@@ -10,11 +10,11 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfIntegralParser extends JsArrayParser {
+final class JsArrayOfBigIntParser extends JsArrayParser {
 
-    private final JsIntegralParser parser;
+    private final JsBigIntParser parser;
 
-    JsArrayOfIntegralParser(final JsIntegralParser parser) {
+    JsArrayOfBigIntParser(final JsBigIntParser parser) {
         super(Objects.requireNonNull(parser));
         this.parser = parser;
     }

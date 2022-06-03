@@ -9,14 +9,14 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsArrayOfIntegralSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    JsArrayOfIntegralSpec(final boolean nullable) {
+class JsArrayOfBigIntSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
+    JsArrayOfBigIntSpec(final boolean nullable) {
         super(nullable);
     }
 
-    JsArrayOfIntegralSpec(final boolean nullable,
-                          int min,
-                          int max) {
+    JsArrayOfBigIntSpec(final boolean nullable,
+                        int min,
+                        int max) {
         super(nullable,
               min,
               max);
@@ -24,9 +24,9 @@ class JsArrayOfIntegralSpec extends AbstractSizableArrSpec implements JsValuePre
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfIntegralSpec(true,
-                                         min,
-                                         max);
+        return new JsArrayOfBigIntSpec(true,
+                                       min,
+                                       max);
     }
 
 

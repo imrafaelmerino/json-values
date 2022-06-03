@@ -11,20 +11,20 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsArrayOfTestedIntegralSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
+class JsArrayOfTestedBigIntSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
     private final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
 
-    JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
-                                final boolean nullable
+    JsArrayOfTestedBigIntSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+                              final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedIntegralSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
-                                final boolean nullable,
-                                int min,
-                                int max
+    JsArrayOfTestedBigIntSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+                              final boolean nullable,
+                              int min,
+                              int max
     ) {
         super(nullable,
               min,
@@ -34,10 +34,10 @@ class JsArrayOfTestedIntegralSpec extends AbstractSizableArrSpec implements JsVa
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfTestedIntegralSpec(predicate,
-                                               true,
-                                               min,
-                                               max);
+        return new JsArrayOfTestedBigIntSpec(predicate,
+                                             true,
+                                             min,
+                                             max);
     }
 
     @Override
