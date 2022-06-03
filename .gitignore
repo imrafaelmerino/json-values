@@ -18,4 +18,5 @@ docs/coverage-report
 settings.xml
 deploy.sh
 codecov
-upload_codecov.sh
+codecov.sh
+sonar.sh
