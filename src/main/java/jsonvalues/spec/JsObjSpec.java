@@ -2065,15 +2065,15 @@ public final class JsObjSpec implements JsSpec {
      */
     public JsObjSpec set(final String key,
                          final JsSpec spec) {
-        LinkedHashMap<String, JsSpec> bindings = new LinkedHashMap<>(this.bindings);
-        bindings.put(requireNonNull(key),
-                     requireNonNull(spec)
+        LinkedHashMap<String, JsSpec> newBindings = new LinkedHashMap<>(this.bindings);
+        newBindings.put(requireNonNull(key),
+                        requireNonNull(spec)
         );
-        return new JsObjSpec(bindings,
+        return new JsObjSpec(newBindings,
                              this.nullable,
                              this.strict,
                              this.predicate,
-                             new ArrayList<>(bindings.keySet()));
+                             new ArrayList<>(newBindings.keySet()));
 
     }
 }
