@@ -81,7 +81,8 @@ JSON manipulation with optics:
 
 ```java 
 
-//let's create a function from lenses and optionals
+
+//let's create a function using lenses and optionals
 
 Function<JsObj,JsObj> modify = 
     ageLens.modify.apply(n -> n + 1)
