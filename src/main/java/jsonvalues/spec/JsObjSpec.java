@@ -1923,7 +1923,7 @@ public final class JsObjSpec implements JsSpec {
         return requiredFields;
     }
 
-    public JsObjSpec setAllOptionals(){
+    public JsObjSpec setAllOptionals() {
         return new JsObjSpec(bindings,
                              nullable,
                              strict,
@@ -2047,13 +2047,10 @@ public final class JsObjSpec implements JsSpec {
                 );
         }
 
-        if (predicate != null) {
-
-            if (!predicate.test(json))
-                errors.add(SpecError.of(JsPath.empty(),
-                                        Pair.of(json,
-                                                OBJ_CONDITION)));
-        }
+        if (predicate != null && !predicate.test(json))
+            errors.add(SpecError.of(JsPath.empty(),
+                                    Pair.of(json,
+                                            OBJ_CONDITION)));
 
 
         return errors;
@@ -2070,7 +2067,7 @@ public final class JsObjSpec implements JsSpec {
                          final JsSpec spec) {
         LinkedHashMap<String, JsSpec> bindings = new LinkedHashMap<>(this.bindings);
         bindings.put(requireNonNull(key),
-                        requireNonNull(spec)
+                     requireNonNull(spec)
         );
         return new JsObjSpec(bindings,
                              this.nullable,

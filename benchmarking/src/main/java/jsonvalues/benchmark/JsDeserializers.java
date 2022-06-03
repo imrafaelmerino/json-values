@@ -92,24 +92,7 @@ public class JsDeserializers {
         }
     }
 
-    public static void main(String[] args) throws JsonProcessingException {
-        //EVERIT_SCHEMA.validate(new JSONObject(PERSON_JSON));
-        Set<ValidationMessage> errors = NETWORKNT_SCHEMA.validate(objectMapper.readTree(PERSON_JSON));
-        System.out.println(errors);
-        PersonWithAnnotations person =
-                objectMapper.readValue(PERSON_JSON,
-                                       PersonWithAnnotations.class
-                );
-        Set<ConstraintViolation<PersonWithAnnotations>> a = validator.validate(person);
-        System.out.println(a);
 
-        OutputUnit result = VERTX_VALIDATOR
-                .validate(new JsonObject(PERSON_JSON));
-
-        System.out.println(result);
-
-
-    }
     @Benchmark
     public void vertx_schema(Blackhole bh) {
         bh.consume(VERTX_VALIDATOR.validate(new JsonObject(PERSON_JSON)));
