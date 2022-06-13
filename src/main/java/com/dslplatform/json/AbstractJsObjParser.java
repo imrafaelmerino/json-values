@@ -1,5 +1,7 @@
 package com.dslplatform.json;
 
+import java.io.IOException;
+
 abstract class AbstractJsObjParser extends AbstractParser {
 
     protected boolean isEmptyObj(final JsonReader<?> reader) {
@@ -11,9 +13,7 @@ abstract class AbstractJsObjParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
