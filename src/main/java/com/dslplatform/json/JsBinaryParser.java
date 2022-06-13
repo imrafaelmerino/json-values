@@ -11,8 +11,16 @@ final class JsBinaryParser extends AbstractParser {
         try {
             byte[] bytes = Base64.getDecoder().decode(reader.readString());
             return JsBinary.of(bytes);
-        } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+        }
+        catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        }
+        catch (JsParserException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new JsParserException(e,reader.getCurrentIndex());
         }
     }
 

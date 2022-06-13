@@ -3,6 +3,7 @@ package com.dslplatform.json;
 import fun.tuple.Pair;
 import jsonvalues.*;
 import jsonvalues.spec.ERROR_CODE;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
@@ -14,12 +15,15 @@ final class JsNumberParser extends AbstractParser {
     ) {
         try {
             final JsNumber value = value(reader);
-            final Optional<Pair<JsValue,ERROR_CODE>> result = fn.apply(value);
+            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return value;
-            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex());
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
 
         }
 
@@ -30,8 +34,16 @@ final class JsNumberParser extends AbstractParser {
         final Number number;
         try {
             number = MyNumberConverter.deserializeNumber(reader);
+        }
+        catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        }
+        catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
 
         }
         if (number instanceof Double) return JsDouble.of(((double) number));
@@ -44,7 +56,8 @@ final class JsNumberParser extends AbstractParser {
             }
         } else if (number instanceof BigDecimal)
             return JsBigDec.of(((BigDecimal) number));
-        throw new JsParserException("internal error: not considered " + number.getClass());
+        throw new JsParserException("internal error: not considered " + number.getClass(),
+                                    reader.getCurrentIndex());
     }
 
 

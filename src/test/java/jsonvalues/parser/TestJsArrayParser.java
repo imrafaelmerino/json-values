@@ -1,6 +1,9 @@
 package jsonvalues.parser;
 
+import fun.gen.Combinators;
+import fun.gen.Gen;
 import jsonvalues.*;
+import jsonvalues.gen.*;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -11,6 +14,7 @@ import java.math.BigInteger;
 import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsArrayParser {
+
 
     @Test
     public void test_array_of_different_elements() {
@@ -147,14 +151,13 @@ public class TestJsArrayParser {
                                  JsNull.NULL
         );
         Assertions.assertEquals(b,
-                                new JsObjParser(specNullable).parse(b
-                                                                            .toString())
+                                new JsObjParser(specNullable).parse(b.toString())
         );
 
         JsObjSpec specTested = JsObjSpec.strict("a",
                                                 arrayOfObj(o -> o.containsKey("a")
                                                 )
-                                                 .nullable()
+                                                        .nullable()
         ).setOptionals("a");
 
         final JsObj c = JsObj.of("a",
@@ -167,134 +170,150 @@ public class TestJsArrayParser {
                                  )
         );
         Assertions.assertEquals(c,
-                                new JsObjParser(specTested).parse(c
-                                                                          .toString())
+                                new JsObjParser(specTested).parse(c.toString())
         );
 
         JsObjSpec specSuchThat = JsObjSpec.strict("a",
                                                   arrayOfObjSuchThat(arr -> arr.size() > 1).nullable(),
                                                   "b",
                                                   arrayOfBoolSuchThat(arr -> arr.size() > 2)
-                                                                                            .nullable(),
+                                                          .nullable(),
                                                   "c",
                                                   arrayOfNumberSuchThat(arr -> arr.head()
                                                                                   .equals(JsInt.of(1)))
-                                                                                                       .nullable(),
+                                                          .nullable(),
                                                   "d",
                                                   arrayOfDecSuchThat(arr -> arr.head()
                                                                                .equals(JsBigDec.of(BigDecimal.TEN)))
-                                                                                                                    .nullable(),
+                                                          .nullable(),
                                                   "e",
                                                   arrayOfLongSuchThat(arr -> arr.size() == 3)
-                                                                                             .nullable(),
+                                                          .nullable(),
                                                   "f",
-                                                  arrayOfIntSuchThat(arr -> arr.size() == 3),
+                                                  arrayOfIntSuchThat(arr -> arr.size() == 3).nullable(),
                                                   "g",
-                                                  arrayOfDec(i -> i.longValueExact() % 2 == 0),
-                                                  "h",
-                                                  arrayOfDec(i -> i.longValueExact() % 2 == 1).nullable(),
+                                                  arrayOfDec(i -> i.longValueExact() % 2 == 0).nullable(),
                                                   "i",
-                                                  arrayOfStr(i -> i.length() % 2 == 0).nullable()
-                                                                                      ,
+                                                  arrayOfStr(i -> i.length() > 2).nullable(),
                                                   "j",
-                                                  arrayOfStr(i -> i.length() % 2 == 0).nullable(),
-                                                  "k",
-                                                  arrayOfNumber(JsValue::isDecimal),
-                                                  "l",
                                                   arrayOfNumber(JsValue::isDecimal).nullable()
-        ).setOptionals("a","b","c","d","e","i");
 
-        final JsObj d = JsObj.of("a",
-                                 JsArray.of(JsObj.empty(),
-                                            JsObj.empty()
-                                 ),
-                                 "b",
-                                 JsArray.of(true,
-                                            true,
-                                            false
-                                 ),
-                                 "c",
-                                 JsArray.of(1,
-                                            2,
-                                            3
-                                 ),
-                                 "d",
-                                 JsArray.of(JsBigDec.of(BigDecimal.TEN)),
-                                 "e",
-                                 JsArray.of(1L,
-                                            2L,
-                                            3L
-                                 ),
-                                 "f",
-                                 JsArray.of(1,
-                                            2,
-                                            3
-                                 ),
-                                 "g",
-                                 JsArray.of(4.000,
-                                            10.000
-                                 ),
-                                 "h",
-                                 JsNull.NULL,
-                                 "i",
-                                 JsNull.NULL,
-                                 "j",
-                                 JsArray.of("abce",
-                                            "cdee"
-                                 ),
-                                 "k",
-                                 JsArray.of(1.5,
-                                            2.5
-                                 ),
-                                 "l",
-                                 JsNull.NULL
+        ).setAllOptionals();
 
-        );
-        Assertions.assertEquals(d,
-                                new JsObjParser(specSuchThat).parse(d.toString())
-        );
+
+        JsObjGen gen = JsObjGen.of("a",
+                                   JsArrayGen.arbitrary(Gen.cons(JsObj.empty()),
+                                                        2,
+                                                        10),
+                                   "b",
+                                   JsArrayGen.arbitrary(JsBoolGen.arbitrary(),
+                                                        3,
+                                                        10),
+                                   "c",
+                                   JsTupleGen.of(Gen.cons(JsInt.of(1)),
+                                                 JsDoubleGen.arbitrary()),
+                                   "d",
+                                   JsTupleGen.of(Gen.cons(JsBigDec.of(BigDecimal.TEN)),
+                                                 JsBigDecGen.arbitrary()),
+                                   "e",
+                                   JsArrayGen.arbitrary(JsLongGen.arbitrary(),
+                                                        3,
+                                                        3),
+                                   "f",
+                                   JsArrayGen.arbitrary(JsIntGen.arbitrary(),
+                                                        3),
+                                   "g",
+                                   JsArrayGen.arbitrary(seed -> () -> {
+                                                            long l = seed.nextLong();
+                                                            if (l % 2 == 0) return JsBigDec.of(BigDecimal.valueOf(l));
+                                                            return JsBigDec.of(BigDecimal.valueOf(l + 1));
+                                                        },
+                                                        1,
+                                                        10),
+                                   "i",
+                                   JsArrayGen.arbitrary(JsStrGen.arbitrary(3).peek(i -> {
+                                                            if (i.value.length() < 3)
+                                                                System.out.println(i);
+                                                        }),
+                                                        0,
+                                                        10),
+                                   "j",
+                                   JsArrayGen.arbitrary(JsBigDecGen.arbitrary(),
+                                                        0,
+                                                        10)
+
+                               )
+                               .setAllOptional()
+                               .setAllNullable();
+
+
+        Assertions.assertTrue(gen.sample(100000)
+                                 .allMatch(d -> new JsObjParser(specSuchThat).parse(d.toString()).equals(d)
+                                 ));
+
 
     }
 
-
     @Test
     public void testArrayOfValue() {
+        Gen<JsValue> valueGen = Combinators.oneOf(JsBigIntGen.biased(10),
+                                                  JsStrGen.biased(10));
+        JsObjGen gen = JsObjGen.of("a",
+                                   JsArrayGen.arbitrary(JsStrGen.arbitrary(10),
+                                                        10),
+                                   "b",
+                                   JsArrayGen.arbitrary(JsStrGen.biased(10),
+                                                        10),
+                                   "d",
+                                   JsArrayGen.biased(valueGen,
+                                                     5,
+                                                     10),
+                                   "e",
+                                   JsArrayGen.biased(valueGen,
+                                                     5,
+                                                     10),
+                                   "f",
+                                   JsArrayGen.biased(valueGen,
+                                                     5,
+                                                     10)
+                               )
+                               .setAllNullable()
+                               .setAllOptional();
 
         JsObjSpec spec = JsObjSpec.lenient("a",
                                            array(),
                                            "b",
                                            array().nullable(),
-                                           "c",
-                                           array()
-                                                .nullable(),
                                            "d",
                                            array(v -> v.isIntegral() || v.isStr())
-                                                                                  .nullable(),
+                                                   .nullable(),
                                            "e",
                                            array(v -> v.isIntegral() || v.isStr()).nullable(),
                                            "f",
                                            array(v -> v.isIntegral() || v.isStr())
-                                                                                  .nullable()
-        ).setOptionals("c","d","f");
+                                                   .nullable()
+        ).setOptionals("c",
+                       "d",
+                       "f");
 
         JsObjParser parser = new JsObjParser(spec);
 
-        JsObj a = JsObj.of("a",
-                           JsArray.of(1,
-                                      2
-                           ),
-                           "b",
-                           JsNull.NULL,
-                           "d",
-                           JsArray.of(JsInt.of(10),
-                                      JsStr.of("a")
-                           ),
-                           "e",
-                           JsNull.NULL
-        );
 
-        Assertions.assertEquals(a,
-                                parser.parse(a.toPrettyString())
-        );
+        Assertions.assertTrue(gen.suchThat(spec).sample(10000)
+                                 .allMatch(d -> parser.parse(d.toString()).equals(d)
+                                 ));
+
+        Assertions.assertTrue(gen.suchThatNo(spec).sample(10000)
+                                 .allMatch(d -> {
+                                               try {
+                                                   parser.parse(d.toString());
+                                                   return false;
+                                               } catch (Exception e) {
+                                                   System.out.println(e.getMessage());
+                                                   return true;
+                                               }
+                                           }
+                                 ));
+
     }
 }

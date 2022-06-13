@@ -11,7 +11,6 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
     private final List<String> required;
 
 
-
     JsObjSpecWithRequiredKeysParser(final List<String> required,
                                     final Map<String, JsSpecParser> parsers,
                                     final boolean strict,
@@ -30,12 +29,16 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
             final JsObj obj = super.value(reader);
             for (String key : required) {
                 if (!obj.containsKey(key))
-                    throw reader.newParseError(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
-                                               reader.getCurrentIndex());
+                    throw new JsParserException(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
+                                                reader.getCurrentIndex());
             }
             return obj;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage());
+        } catch (JsParserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
+
         }
     }
 

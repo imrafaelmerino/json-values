@@ -11,6 +11,10 @@ import java.util.function.UnaryOperator;
 class ParserErrors {
 
     public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with spec method 'suchThat'";
+    public static final String EXPECTING_TRUE = "Expecting 'true' for true constant";
+
+    public static final String EXPECTING_FALSE = "Expecting 'false' for false constant";
+
 
     private ParserErrors(){}
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
@@ -32,9 +36,10 @@ class ParserErrors {
 
     static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "BigInteger with fractional part";
 
-    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated.";
+    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated to it. Strict specs don't allow this." +
+            "Either declare de spec lenient or add a new spec for the missing key";
 
-    static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The key " + key + " doesn't exist.";
+    static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The JSON doesn't conform the spec because he key " + key + " doesn't exist and it's required";
 
     static final Function<Pair<JsValue, ERROR_CODE>, String> JS_ERROR_2_STR = e -> e.second().name();
 

@@ -51,23 +51,29 @@ class JsObjSpecParser extends AbstractJsObjParser {
 
             }
             if (nextToken != '}')
-                throw reader.newParseError(ParserErrors.EXPECTING_FOR_MAP_END,
-                                           reader.getCurrentIndex());
+                throw new JsParserException(ParserErrors.EXPECTING_FOR_MAP_END,
+                                            reader.getCurrentIndex());
 
-            if(predicate!=null && !predicate.test(obj))
-                throw reader.newParseError(ParserErrors.OBJ_CONDITION,
-                                           reader.getCurrentIndex());
+            if (predicate != null && !predicate.test(obj))
+                throw new JsParserException(ParserErrors.OBJ_CONDITION,
+                                            reader.getCurrentIndex());
             return obj;
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
     }
 
     private void throwErrorIfStrictAndKeyMissing(final JsonReader<?> reader,
-                                                 final String key) throws ParsingException {
+                                                 final String key) throws JsParserException {
         if (strict && !parsers.containsKey(key)) {
-            throw reader.newParseError(ParserErrors.SPEC_NOT_FOUND.apply(key),
-                                       reader.getCurrentIndex());
+            throw new JsParserException(ParserErrors.SPEC_NOT_FOUND.apply(key),
+                                        reader.getCurrentIndex());
         }
     }
 

@@ -72,8 +72,7 @@ public class TestGenerators {
                                                                              10)
                                          ),
                                          "e",
-                                         JsBigIntGen.arbitrary(1,
-                                                               2)
+                                         JsBigIntGen.arbitrary(2)
         );
 
         JsObjSpec spec = JsObjSpec.strict("a",

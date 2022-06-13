@@ -3,10 +3,10 @@ package jsonvalues;
 
 import fun.optic.Lens;
 import fun.optic.Option;
-import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
+import jsonvalues.spec.SpecError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -40,7 +40,8 @@ public class TestExample {
                                                                          JsSpecs.decimal()
                                                            )
                                           )
-        ).setOptionals("surname","age");
+        ).setOptionals("surname",
+                       "age");
 
         JsObj person = JsObj.of("name",
                                 JsStr.of("Rafael"),
@@ -74,8 +75,7 @@ public class TestExample {
                                       .isEmpty());
 
         Assertions.assertEquals(person,
-                                parser.parse(person.toPrettyString())
-        );
+                                parser.parse(person.toPrettyString()));
 
 
         Lens<JsObj, String> nameLens = JsObj.lens.str("name");

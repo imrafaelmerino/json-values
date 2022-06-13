@@ -761,8 +761,7 @@ public class TestJsParser {
         JsObjParser parser = new JsObjParser(spec);
 
 
-        Gen<JsBigInt> bigIntGen = JsBigIntGen.arbitrary(0,
-                                                        4);
+        Gen<JsBigInt> bigIntGen = JsBigIntGen.arbitrary(4);
         Gen<JsPrimitive> valueGen = Combinators.oneOf(bigIntGen,
                                                       Gen.cons(JsNull.NULL),
                                                       Gen.cons(JsBool.TRUE),

@@ -2,7 +2,6 @@ package com.dslplatform.json;
 
 import jsonvalues.JsInstant;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
 
@@ -13,8 +12,14 @@ final class JsInstantParser extends AbstractParser {
     JsInstant value(final JsonReader<?> reader) {
         try {
             return JsInstant.of(Instant.from(ISO_INSTANT.parse(reader.readString())));
-        } catch (IOException | DateTimeParseException e) {
-            throw new JsParserException(e.getMessage());
+        } catch (ParsingException | DateTimeParseException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
 
     }

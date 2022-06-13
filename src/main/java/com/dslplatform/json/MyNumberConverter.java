@@ -43,94 +43,45 @@ abstract class MyNumberConverter {
     static void numberException(final JsonReader reader,
                                 final int start,
                                 final int end,
-                                String message) throws ParsingException {
+                                String message) throws JsParserException {
         final int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith(ParserErrors.TOO_MANY_DIGITS,
-                                           len,
-                                           "",
-                                           ParserErrors.TOO_MANY_DIGITS,
-                                           end,
-                                           ""
-            );
+            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
         }
-        throw reader.newParseErrorWith(ParserErrors.ERROR_PARSING_NUMBER,
-                                       len,
-                                       "",
-                                       message,
-                                       null,
-                                       ""
-        );
+        throw new JsParserException(message,reader.getCurrentIndex());
+
     }
 
-    static void numberException(final JsonReader reader,
-                                final int start,
-                                final int end,
-                                String message,
-                                Object messageArgument) throws ParsingException {
-        final int len = end - start;
-        if (len > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith(ParserErrors.TOO_MANY_DIGITS,
-                                           len,
-                                           "",
-                                           ParserErrors.TOO_MANY_DIGITS,
-                                           end,
-                                           ""
-            );
-        }
-        throw reader.newParseErrorWith(ParserErrors.ERROR_PARSING_NUMBER,
-                                       len,
-                                       "",
-                                       message,
-                                       messageArgument,
-                                       ""
-        );
-    }
+
 
     private static BigDecimal parseNumberGeneric(final char[] buf,
                                                  final int len,
-                                                 final JsonReader reader,
-                                                 final boolean withQuotes) throws ParsingException {
+                                                 final JsonReader reader) throws JsParserException {
         int end = len;
         while (end > 0 && Character.isWhitespace(buf[end - 1])) {
             end--;
         }
-        if (end > reader.maxNumberDigits) {
-            throw reader.newParseErrorWith(ParserErrors.TOO_MANY_DIGITS,
-                                           len,
-                                           "",
-                                           ParserErrors.TOO_MANY_DIGITS,
-                                           end,
-                                           ""
-            );
-        }
+        if (end > reader.maxNumberDigits)
+            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
+
         final int offset = buf[0] == '-' ?
                            1 :
                            0;
-        if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
-            throw reader.newParseErrorAt(ParserErrors.LEADING_ZERO,
-                                         len + (withQuotes ?
-                                                2 :
-                                                0)
-            );
-        }
+        if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9')
+            throw new JsParserException(ParserErrors.LEADING_ZERO,reader.getCurrentIndex());
+
         try {
             return new BigDecimal(buf,
                                   0,
                                   end
             );
         } catch (NumberFormatException nfe) {
-            throw reader.newParseErrorAt(ParserErrors.ERROR_PARSING_NUMBER,
-                                         len + (withQuotes ?
-                                                2 :
-                                                0),
-                                         nfe
-            );
+            throw new JsParserException(nfe,reader.getCurrentIndex());
         }
     }
 
     private static MyNumberConverter.NumberInfo readLongNumber(final JsonReader reader,
-                                                               final int start) throws IOException {
+                                                               final int start) throws JsParserException,IOException {
         int len = reader.length() - start;
         char[] result = reader.prepareBuffer(start,
                                              len
@@ -142,11 +93,7 @@ abstract class MyNumberConverter {
             int oldLen = len;
             len += end;
             if (len > reader.maxNumberDigits) {
-                throw reader.newParseErrorFormat(ParserErrors.TOO_MANY_DIGITS,
-                                                 len,
-                                                 "Number of digits larger than %d. Unable to read number",
-                                                 reader.maxNumberDigits
-                );
+                throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
             }
             char[] tmp = result;
             result = new char[len];
@@ -250,7 +197,7 @@ abstract class MyNumberConverter {
         return pos + 6;
     }
 
-    public static int deserializeInt(final JsonReader reader) throws IOException {
+    public static int deserializeInt(final JsonReader reader) throws ParsingException {
         final int start = reader.scanNumber();
         final int end = reader.getCurrentIndex();
         final byte[] buf = reader.buffer;
@@ -289,7 +236,7 @@ abstract class MyNumberConverter {
                                         final JsonReader reader,
                                         final int start,
                                         final int end,
-                                        final int offset) throws IOException {
+                                        final int offset) throws ParsingException {
         int value = 0;
         int i = start + offset;
         if (i == end) numberException(reader,
@@ -312,14 +259,12 @@ abstract class MyNumberConverter {
                                                                              end - start
                                                         ),
                                                         end - start,
-                                                        reader,
-                                                        false
+                                                        reader
                 );
                 if (v.scale() > 0) numberException(reader,
                                                    start,
                                                    end,
-                                                   ParserErrors.EXPECTING_INT_DECIMAL_FOUND,
-                                                   v
+                                                   ParserErrors.EXPECTING_INT_DECIMAL_FOUND
                 );
                 return v.intValue();
 
@@ -339,7 +284,7 @@ abstract class MyNumberConverter {
     private static int parseNegativeInt(final byte[] buf,
                                         final JsonReader reader,
                                         final int start,
-                                        final int end) throws IOException {
+                                        final int end) throws ParsingException {
         int value = 0;
         int i = start + 1;
         if (i == end) numberException(reader,
@@ -362,14 +307,12 @@ abstract class MyNumberConverter {
                                                                              end - start
                                                         ),
                                                         end - start,
-                                                        reader,
-                                                        false
+                                                        reader
                 );
                 if (v.scale() > 0) numberException(reader,
                                                    start,
                                                    end,
-                                                   ParserErrors.EXPECTING_INT_DECIMAL_FOUND,
-                                                   v
+                                                   ParserErrors.EXPECTING_INT_DECIMAL_FOUND
                 );
                 return v.intValue();
             }
@@ -687,14 +630,12 @@ abstract class MyNumberConverter {
         );
         final BigDecimal v = parseNumberGeneric(buf,
                                                 len,
-                                                reader,
-                                                false
+                                                reader
         );
         if (v.scale() > 0) numberException(reader,
                                            start,
                                            end,
-                                           ParserErrors.EXPECTING_LONG_INSTEAD_OF_DECIMAL,
-                                           v
+                                           ParserErrors.EXPECTING_LONG_INSTEAD_OF_DECIMAL
         );
         return v.longValue();
     }
@@ -713,8 +654,7 @@ abstract class MyNumberConverter {
             );
             return parseNumberGeneric(info.buffer,
                                       info.length,
-                                      reader,
-                                      false
+                                      reader
             );
         }
         int len = end - start;
@@ -723,8 +663,7 @@ abstract class MyNumberConverter {
                                                            len
                                       ),
                                       len,
-                                      reader,
-                                      false
+                                      reader
             );
         }
         final byte[] buf = reader.buffer;
@@ -769,8 +708,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                ParserErrors.UNKNOWN_DIGIT,
-                                (char) ch
+                                ParserErrors.UNKNOWN_DIGIT
                 );
             }
             value = (value << 3) + (value << 1) + ind;
@@ -807,8 +745,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    ParserErrors.UNKNOWN_DIGIT,
-                                    (char) ch
+                                    ParserErrors.UNKNOWN_DIGIT
                     );
                 }
                 value = (value << 3) + (value << 1) + ind;
@@ -907,8 +844,7 @@ abstract class MyNumberConverter {
                 numberException(reader,
                                 start,
                                 end,
-                                ParserErrors.UNKNOWN_DIGIT,
-                                (char) ch
+                                ParserErrors.UNKNOWN_DIGIT
                 );
             }
             value = (value << 3) + (value << 1) - ind;
@@ -945,8 +881,7 @@ abstract class MyNumberConverter {
                     numberException(reader,
                                     start,
                                     end,
-                                    ParserErrors.UNKNOWN_DIGIT,
-                                    (char) ch
+                                    ParserErrors.UNKNOWN_DIGIT
                     );
                 }
                 value = (value << 3) + (value << 1) - ind;
@@ -1022,11 +957,10 @@ abstract class MyNumberConverter {
 
     private static Number tryLongFromBigDecimal(final char[] buf,
                                                 final int len,
-                                                JsonReader reader) throws IOException {
+                                                JsonReader reader) throws JsParserException {
         final BigDecimal num = parseNumberGeneric(buf,
                                                   len,
-                                                  reader,
-                                                  false
+                                                  reader
         );
         if (num.scale() == 0 && num.precision() <= 19) {
             if (num.signum() == 1) {

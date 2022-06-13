@@ -12,13 +12,18 @@ abstract class AbstractParser {
             return reader.wasNull() ?
                    JsNull.NULL :
                    value(reader);
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
     }
 
     abstract JsValue value(final JsonReader<?> reader);
-
 
 
 }

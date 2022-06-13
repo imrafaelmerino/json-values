@@ -14,9 +14,8 @@ public class TestLongGen {
         long max = Integer.MAX_VALUE;
         Assertions.assertTrue(
                 LongGen.arbitrary(min,
-                                  max).then(n ->
-                                                    JsLongGen.arbitrary(min,
-                                                                        n))
+                                  max).then(n -> JsLongGen.arbitrary(min,
+                                                                     n))
                        .sample(100000)
                        .allMatch(it -> it.isLong(d -> d >= min && d <= max))
         );

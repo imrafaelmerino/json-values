@@ -4,6 +4,7 @@ import fun.tuple.Pair;
 import jsonvalues.JsBigDec;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
+
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
@@ -15,8 +16,14 @@ final class JsDecimalParser extends AbstractParser {
     JsBigDec value(final JsonReader<?> reader) {
         try {
             return JsBigDec.of(MyNumberConverter.deserializeDecimal(reader));
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
     }
 
@@ -25,12 +32,18 @@ final class JsDecimalParser extends AbstractParser {
     ) {
         try {
             final BigDecimal value = MyNumberConverter.deserializeDecimal(reader);
-            final Optional<Pair<JsValue,ERROR_CODE>> result = fn.apply(value);
+            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsBigDec.of(value);
-            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex());
+            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                        reader.getCurrentIndex());
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
 
         }
     }

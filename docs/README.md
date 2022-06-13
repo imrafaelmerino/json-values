@@ -2,7 +2,7 @@
 
 [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=imrafaelmerino_json-values&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=imrafaelmerino_json-values)
 [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=imrafaelmerino_json-values&metric=alert_status)](https://sonarcloud.io/dashboard?id=imrafaelmerino_json-values)
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/11.2.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/11.2.0/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/11.3.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/11.3.0/jar)
 [![codecov](https://codecov.io/gh/imrafaelmerino/json-values/branch/master/graph/badge.svg)](https://codecov.io/gh/imrafaelmerino/json-values)
 
 
@@ -49,15 +49,16 @@ JSON validation
 
 ```java 
 
-JsObjSpec.strict("name", str(),
-                 "languages", arrayOfStr(),
-                 "age", integer(),
-                 "address", JsObjSpec.lenient("street",str(),
-                                              "coordinates", tuple(decimal(),
-                                                                   decimal())
-                                             )
-                 )
-          .setOptionals("address");
+JsObjSpec spec = 
+        JsObjSpec.strict("name", str(),
+                         "languages", arrayOfStr(),
+                         "age", integer(),
+                         "address", JsObjSpec.lenient("street",str(),
+                                                      "coordinates", tuple(decimal(),
+                                                                           decimal())
+                                                     )
+                         )
+                  .setOptionals("address");
     
 ```   
 
@@ -65,24 +66,33 @@ JSON generation
 
 ```java 
           
-JsObjGen.of("name", JsStrGen.biased(0,100),
-            "languages", JsArrayGen.biased(JsStrGen.digit(),0,10),
-            "age", JsIntGen.biased(0,100),
-            "address", JsObjGen.of("street", JsStrGen.alphanumeric(0,200),
-                                   "coordinates", JsTupleGen.of(JsBigDecGen.biased(),
-                                                                JsBigDecGen.biased())
-                                  )
-            )
-        .setOptionals("address");          
+Gen<JsObj> gen = 
+        JsObjGen.of("name", JsStrGen.biased(0,100),
+                    "languages", JsArrayGen.biased(JsStrGen.digit(),0,10),
+                    "age", JsIntGen.biased(0,100),
+                    "address", JsObjGen.of("street", JsStrGen.alphanumeric(0,200),
+                                           "coordinates", JsTupleGen.of(JsBigDecGen.biased(),
+                                                                        JsBigDecGen.biased())
+                                           )
+                    )
+                .setAllOptionals();
+        
+                  
+Gen<JsObj> validDataGen =  gen.suchThat(spec);
+
+Gen<JsObj> invalidDataGen = gen.suchThatNo(spec);
 
 ```
+
+The biased generators generate, with higher probability, values that are proven
+to cause more bugs in our code (zero, blank strings ...)
 
 JSON manipulation with optics:
 
 ```java 
 
 
-//let's create a function using lenses and optionals
+//let's craft a function using lenses and optionals
 
 Function<JsObj,JsObj> modify = 
     ageLens.modify.apply(n -> n + 1)
@@ -1466,7 +1476,7 @@ Add the following dependency to your building tool:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>11.2.0</version>
+    <version>11.3.0</version>
 </dependency>
 ```
 

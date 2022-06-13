@@ -1928,7 +1928,7 @@ public final class JsObjSpec implements JsSpec {
                              nullable,
                              strict,
                              predicate,
-                             new ArrayList<>(bindings.keySet()));
+                             new ArrayList<>());
     }
 
     public JsObjSpec setOptionals(final String field,

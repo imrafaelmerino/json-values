@@ -42,17 +42,13 @@ public final class JsBigIntGen implements Gen<JsBigInt> {
         this.gen = requireNonNull(gen);
     }
 
-    public static Gen<JsBigInt> arbitrary(int minBits,
-                                          int maxBits) {
-        return new JsBigIntGen(BigIntGen.arbitrary(minBits,
-                                                   maxBits));
+    public static Gen<JsBigInt> arbitrary(int bits) {
+        return new JsBigIntGen(BigIntGen.arbitrary(bits));
     }
 
 
-    public static Gen<JsBigInt> biased(int minBits,
-                                       int maxBits) {
-        return new JsBigIntGen(BigIntGen.biased(minBits,
-                                                maxBits));
+    public static Gen<JsBigInt> biased(int bits) {
+        return new JsBigIntGen(BigIntGen.biased(bits));
     }
 
     /**

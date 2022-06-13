@@ -26,8 +26,7 @@ public final class JsSpecParsers {
 
     private JsSpecParsers() {
         newParseException = (reader, error) ->
-                new JsParserException(reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(error),
-                                                           reader.getCurrentIndex()));
+                new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(error),reader.getCurrentIndex());
     }
 
     public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,

@@ -32,12 +32,16 @@ final class JsValueParser extends AbstractParser {
     ) {
         try {
             JsValue value = value(reader);
-            Optional<Pair<JsValue,ERROR_CODE>> result = fn.apply(value);
+            Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return value;
-            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex());
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
+
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
 
         }
 
@@ -49,16 +53,15 @@ final class JsValueParser extends AbstractParser {
             switch (reader.last()) {
                 case 't':
                     if (!reader.wasTrue()) {
-                        throw new JsParserException(reader.newParseErrorAt("Expecting 'true' for true constant",
-                                                                           0
-                        ));
+                        throw new JsParserException(ParserErrors.EXPECTING_TRUE,
+                                                    reader.getCurrentIndex()
+                        );
                     }
                     return JsBool.TRUE;
                 case 'f':
                     if (!reader.wasFalse()) {
-                        throw new JsParserException(reader.newParseErrorAt("Expecting 'false' for false constant",
-                                                                           0
-                        ));
+                        throw new JsParserException(ParserErrors.EXPECTING_FALSE,
+                                                    reader.getCurrentIndex());
                     }
                     return JsBool.FALSE;
                 case '"':
@@ -70,8 +73,14 @@ final class JsValueParser extends AbstractParser {
                 default:
                     return numberDeserializer.value(reader);
             }
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
     }
 

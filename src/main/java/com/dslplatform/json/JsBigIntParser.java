@@ -5,7 +5,6 @@ import jsonvalues.JsBigInt;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -19,10 +18,19 @@ final class JsBigIntParser extends AbstractParser {
             return JsBigInt.of(MyNumberConverter.deserializeDecimal(reader)
                                                 .toBigIntegerExact());
 
-        } catch (ArithmeticException | IOException e) {
-            throw new JsParserException(reader.newParseError(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
-                                                             reader.getCurrentIndex()));
+        } catch (ArithmeticException e) {
+            throw new JsParserException(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
+                                        reader.getCurrentIndex());
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
         }
+
     }
 
     JsBigInt valueSuchThat(final JsonReader<?> reader,
@@ -33,16 +41,20 @@ final class JsBigIntParser extends AbstractParser {
             final BigInteger value = bigDecimal.toBigIntegerExact();
             final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsBigInt.of(value);
-            throw reader.newParseError(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex());
-        }
 
-        catch (ArithmeticException e){
-            throw new JsParserException(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART);
-        }
-
-        catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                        reader.getCurrentIndex());
+        } catch (ArithmeticException e) {
+            throw new JsParserException(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
+                                        reader.getCurrentIndex());
+        } catch (ParsingException e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
+        } catch (JsParserException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new JsParserException(e,
+                                        reader.getCurrentIndex());
 
         }
 

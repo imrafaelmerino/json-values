@@ -43,8 +43,13 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
-        } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+        }
+        catch (JsParserException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
 
         } finally {
             reader.reset();
@@ -67,8 +72,13 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+        }
+        catch (JsParserException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
         } finally {
             reader.reset();
         }
@@ -83,8 +93,13 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
-        } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+        }
+        catch (JsParserException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
         } finally {
             reader.reset();
         }
@@ -95,7 +110,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             return localReader.get()
                               .process(is);
         } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+            throw new JsParserException(e);
 
         }
     }
@@ -108,8 +123,13 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        } catch (Exception e) {
-            throw new JsParserException(e.getMessage());
+        }
+        catch (JsParserException e){
+            throw e;
+        }
+        catch (Exception e) {
+            throw new JsParserException(e.getMessage(),
+                                        reader.getCurrentIndex());
         } finally {
             reader.reset();
         }

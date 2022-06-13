@@ -12,33 +12,11 @@ import java.util.stream.IntStream;
 
 public class TestBigIntGen {
 
-    @Test
-    public void testBigInt() {
-        int bits = 5;
-
-        Map<JsBigInt, Long> counts = TestFun.generate(100000,
-                                                      JsBigIntGen.arbitrary(bits,
-                                                                            bits + 1));
-
-        List<JsBigInt> values = IntStream.range(0,
-                                                1 << bits)
-                                         .mapToObj(BigInteger::valueOf)
-                                         .map(JsBigInt::of)
-                                         .collect(Collectors.toList());
-
-
-        TestFun.assertGeneratedValuesHaveSameProbability(counts,
-                                                         values,
-                                                         0.1);
-
-
-    }
 
     @Test
     public void arbitraryBigInt() {
         Map<JsBigInt, Long> counts = TestFun.generate(100000,
-                                                      JsBigIntGen.arbitrary(1,
-                                                                            3));
+                                                      JsBigIntGen.arbitrary(3));
 
         Assertions.assertTrue(IntStream.range(0,
                                               7)
