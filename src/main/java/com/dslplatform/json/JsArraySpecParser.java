@@ -4,6 +4,7 @@ import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 
+import java.io.IOException;
 import java.util.List;
 
 public final class JsArraySpecParser {
@@ -20,11 +21,6 @@ public final class JsArraySpecParser {
                    array(reader);
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
     }
@@ -52,9 +48,7 @@ public final class JsArraySpecParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }

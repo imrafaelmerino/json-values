@@ -25,21 +25,14 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
 
     @Override
     JsObj value(final JsonReader<?> reader) {
-        try {
-            final JsObj obj = super.value(reader);
-            for (String key : required) {
-                if (!obj.containsKey(key))
-                    throw new JsParserException(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
-                                                reader.getCurrentIndex());
-            }
-            return obj;
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
+        final JsObj obj = super.value(reader);
+        for (String key : required) {
+            if (!obj.containsKey(key))
+                throw new JsParserException(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
+                                            reader.getCurrentIndex());
         }
+        return obj;
+
     }
 
 

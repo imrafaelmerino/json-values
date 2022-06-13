@@ -2,6 +2,7 @@ package com.dslplatform.json;
 
 import jsonvalues.JsBinary;
 
+import java.io.IOException;
 import java.util.Base64;
 
 
@@ -16,10 +17,7 @@ final class JsBinaryParser extends AbstractParser {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
-        catch (JsParserException e){
-            throw e;
-        }
-        catch (Exception e) {
+        catch (IOException e) {
             throw new JsParserException(e,reader.getCurrentIndex());
         }
     }

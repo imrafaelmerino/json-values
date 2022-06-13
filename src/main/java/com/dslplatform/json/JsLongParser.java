@@ -5,6 +5,7 @@ import jsonvalues.JsLong;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.LongFunction;
 
@@ -17,9 +18,7 @@ final class JsLongParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
@@ -39,9 +38,7 @@ final class JsLongParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
 

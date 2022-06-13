@@ -2,6 +2,7 @@ package com.dslplatform.json;
 
 import jsonvalues.JsObj;
 
+import java.io.IOException;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -61,9 +62,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }

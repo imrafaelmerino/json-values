@@ -5,6 +5,7 @@ import jsonvalues.JsBigInt;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -24,9 +25,7 @@ final class JsBigIntParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
@@ -50,9 +49,7 @@ final class JsBigIntParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
 

@@ -4,6 +4,7 @@ import fun.tuple.Pair;
 import jsonvalues.*;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
@@ -13,20 +14,11 @@ final class JsNumberParser extends AbstractParser {
     JsNumber valueSuchThat(final JsonReader<?> reader,
                            final Function<JsNumber, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
-        try {
-            final JsNumber value = value(reader);
-            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
-            if (!result.isPresent()) return value;
-            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
-        }
-
+        final JsNumber value = value(reader);
+        final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
+        if (!result.isPresent()) return value;
+        throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                    reader.getCurrentIndex());
     }
 
     @Override
@@ -34,14 +26,10 @@ final class JsNumberParser extends AbstractParser {
         final Number number;
         try {
             number = MyNumberConverter.deserializeNumber(reader);
-        }
-        catch (ParsingException e) {
+        } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        }
-        catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
 

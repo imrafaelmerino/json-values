@@ -6,6 +6,7 @@ import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -19,6 +20,7 @@ abstract class JsArrayParser {
         this.parser = parser;
     }
 
+
     JsValue nullOrArray(final JsonReader<?> reader) {
         try {
             return reader.wasNull() ?
@@ -26,11 +28,6 @@ abstract class JsArrayParser {
                    array(reader);
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
     }
@@ -46,11 +43,6 @@ abstract class JsArrayParser {
                          max);
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
 
@@ -85,9 +77,7 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
@@ -106,9 +96,7 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
@@ -124,14 +112,11 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
     }
-
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
                                        final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
@@ -145,32 +130,18 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
         }
     }
 
     public JsArray arraySuchThat(final JsonReader<?> reader,
                                  final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
-        try {
-            final JsArray array = array(reader);
-            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
-            if (!result.isPresent()) return array;
-            throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                        reader.getCurrentIndex());
 
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
-        }
-
+        final JsArray array = array(reader);
+        final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
+        if (!result.isPresent()) return array;
+        throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                    reader.getCurrentIndex());
     }
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
@@ -203,9 +174,7 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
 
@@ -227,12 +196,6 @@ abstract class JsArrayParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
         }
     }
 

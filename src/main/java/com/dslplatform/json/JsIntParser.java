@@ -16,11 +16,6 @@ final class JsIntParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
         }
     }
 
@@ -36,12 +31,6 @@ final class JsIntParser extends AbstractParser {
         } catch (ParsingException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
         }
 
     }
