@@ -27,8 +27,8 @@ abstract class JsArrayParser {
                    JsNull.NULL :
                    array(reader);
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         }
     }
 
@@ -42,11 +42,17 @@ abstract class JsArrayParser {
                          min,
                          max);
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         }
 
 
+    }
+
+    private JsParserException dslExc2MyExp(String message,
+                                           int index) {
+        return new JsParserException(message,
+                                     index);
     }
 
     public JsArray array(final JsonReader<?> reader,
@@ -55,8 +61,8 @@ abstract class JsArrayParser {
         try {
             if (ifIsEmptyArray(reader)) {
                 if (min > 0)
-                    throw new JsParserException(ParserErrors.EMPTY_ARRAY.apply(min),
-                                                reader.getCurrentIndex());
+                    throw dslExc2MyExp(ParserErrors.EMPTY_ARRAY.apply(min),
+                                       reader.getCurrentIndex());
                 return EMPTY;
             }
             JsArray buffer = EMPTY.append(parser.value(reader));
@@ -64,19 +70,19 @@ abstract class JsArrayParser {
                 reader.getNextToken();
                 buffer = buffer.append(parser.value(reader));
                 if (buffer.size() > max)
-                    throw new JsParserException(ParserErrors.TOO_LONG_ARRAY.apply(max),
-                                                reader.getCurrentIndex());
+                    throw dslExc2MyExp(ParserErrors.TOO_LONG_ARRAY.apply(max),
+                                       reader.getCurrentIndex());
 
             }
             if (buffer.size() < min)
-                throw new JsParserException(ParserErrors.TOO_SHORT_ARRAY.apply(min),
-                                            reader.getCurrentIndex());
+                throw dslExc2MyExp(ParserErrors.TOO_SHORT_ARRAY.apply(min),
+                                   reader.getCurrentIndex());
 
             reader.checkArrayEnd();
             return buffer;
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
@@ -94,8 +100,8 @@ abstract class JsArrayParser {
             reader.checkArrayEnd();
             return buffer;
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
@@ -105,13 +111,13 @@ abstract class JsArrayParser {
     boolean ifIsEmptyArray(final JsonReader<?> reader) {
         try {
             if (reader.last() != '[')
-                throw new JsParserException(ParserErrors.EXPECTING_FOR_LIST_START,
-                                            reader.getCurrentIndex());
+                throw dslExc2MyExp(ParserErrors.EXPECTING_FOR_LIST_START,
+                                   reader.getCurrentIndex());
             reader.getNextToken();
             return reader.last() == ']';
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
@@ -128,8 +134,8 @@ abstract class JsArrayParser {
                                  fn
                    );
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         }
     }
 
@@ -140,8 +146,8 @@ abstract class JsArrayParser {
         final JsArray array = array(reader);
         final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
         if (!result.isPresent()) return array;
-        throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                    reader.getCurrentIndex());
+        throw dslExc2MyExp(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                           reader.getCurrentIndex());
     }
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
@@ -152,8 +158,8 @@ abstract class JsArrayParser {
         try {
             if (ifIsEmptyArray(reader)) {
                 if (min > 0)
-                    throw new JsParserException(ParserErrors.EMPTY_ARRAY.apply(min),
-                                                reader.getCurrentIndex());
+                    throw dslExc2MyExp(ParserErrors.EMPTY_ARRAY.apply(min),
+                                       reader.getCurrentIndex());
                 return EMPTY;
             }
 
@@ -162,18 +168,18 @@ abstract class JsArrayParser {
                 reader.getNextToken();
                 buffer = buffer.append(f.get());
                 if (buffer.size() > max)
-                    throw new JsParserException(ParserErrors.TOO_LONG_ARRAY.apply(max),
-                                                reader.getCurrentIndex());
+                    throw dslExc2MyExp(ParserErrors.TOO_LONG_ARRAY.apply(max),
+                                       reader.getCurrentIndex());
             }
             if (buffer.size() < min)
-                throw new JsParserException(ParserErrors.TOO_SHORT_ARRAY.apply(min),
-                                            reader.getCurrentIndex());
+                throw dslExc2MyExp(ParserErrors.TOO_SHORT_ARRAY.apply(min),
+                                   reader.getCurrentIndex());
 
             reader.checkArrayEnd();
             return buffer;
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         } catch (IOException e) {
             throw new JsParserException(e,
                                         reader.getCurrentIndex());
@@ -194,8 +200,8 @@ abstract class JsArrayParser {
                                      min,
                                      max);
         } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
+            throw dslExc2MyExp(e.getMessage(),
+                               reader.getCurrentIndex());
         }
     }
 
