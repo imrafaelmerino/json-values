@@ -3,11 +3,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values-benchmark</artifactId>
-    <version>11.3.0</version>
+    <version>11.4.0</version>
     <packaging>jar</packaging>
     <name>json-values-benchmark-${version}</name>
     <properties>
-        <JSON-VALUES.VERSION>11.3.0</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>11.4.0</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <JMH-VERSION>1.35</JMH-VERSION>
         <JAVAX-ANNOTATION-VERSION>1.3.2</JAVAX-ANNOTATION-VERSION>

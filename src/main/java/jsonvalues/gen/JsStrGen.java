@@ -34,10 +34,10 @@ import static java.util.Objects.requireNonNull;
 public final class JsStrGen implements Gen<JsStr> {
 
 
-    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric());
-    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digit());
-    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letter());
-    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic());
+    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric(1,1));
+    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digits(1,1));
+    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letters(1,1));
+    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic(1,1));
     private final Gen<String> gen;
 
     /**

@@ -47,20 +47,20 @@ public final class JsObjGen implements Gen<JsObj> {
 
     private final Map<String, Gen<? extends JsValue>> bindings;
 
-    private final List<String> optionals;
-    private final List<String> nullables;
+    private final Set<String> optionals;
+    private final Set<String> nullables;
 
     private JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
-                     List<String> optionals,
-                     List<String> nullables) {
+                     Set<String> optionals,
+                     Set<String> nullables) {
         this.optionals = optionals;
         this.nullables = nullables;
         this.bindings = bindings;
     }
 
     private JsObjGen(Map<String, Gen<? extends JsValue>> bindings) {
-        this.optionals = new ArrayList<>();
-        this.nullables = new ArrayList<>();
+        this.optionals = new HashSet<>();
+        this.nullables = new HashSet<>();
         this.bindings = bindings;
     }
 
@@ -983,10 +983,10 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param nullables the optional keys
      * @return a brand new JsObj generator
      */
-    public JsObjGen setNullables(final List<String> nullables) {
+    public JsObjGen setNullables(final Collection<String> nullables) {
         return new JsObjGen(bindings,
                             optionals,
-                            requireNonNull(nullables)
+                            new HashSet<>(requireNonNull(nullables))
         );
     }
 
@@ -999,7 +999,7 @@ public final class JsObjGen implements Gen<JsObj> {
      */
     public JsObjGen setNullables(final String... nullables) {
         return setNullables(Arrays.stream(requireNonNull(nullables))
-                                  .collect(Collectors.toList()));
+                                  .collect(Collectors.toSet()));
     }
 
     /**
@@ -1010,7 +1010,7 @@ public final class JsObjGen implements Gen<JsObj> {
     public JsObjGen setAllNullable() {
         return new JsObjGen(bindings,
                             optionals,
-                            new ArrayList<>(bindings.keySet()));
+                            bindings.keySet());
     }
 
     /**
@@ -1020,9 +1020,9 @@ public final class JsObjGen implements Gen<JsObj> {
      * @param optionals the optional keys
      * @return a brand new JsObj generator
      */
-    public JsObjGen setOptionals(final List<String> optionals) {
+    public JsObjGen setOptionals(final Collection<String> optionals) {
         return new JsObjGen(bindings,
-                            requireNonNull(optionals),
+                            new HashSet<>(requireNonNull(optionals)),
                             nullables);
     }
 
@@ -1034,7 +1034,7 @@ public final class JsObjGen implements Gen<JsObj> {
      */
     public JsObjGen setAllOptional() {
         return new JsObjGen(bindings,
-                            new ArrayList<>(bindings.keySet()),
+                            bindings.keySet(),
                             nullables);
     }
 
@@ -1079,8 +1079,8 @@ public final class JsObjGen implements Gen<JsObj> {
     @Override
     public Supplier<JsObj> apply(final Random seed) {
         requireNonNull(seed);
-        Supplier<List<String>> optionalCombinations =
-                Combinators.permutations(optionals)
+        Supplier<Set<String>> optionalCombinations =
+                Combinators.subsets(optionals)
                            .apply(SplitGen.DEFAULT.apply(seed));
 
         Supplier<Boolean> isRemoveOptionals =
@@ -1088,8 +1088,8 @@ public final class JsObjGen implements Gen<JsObj> {
                 () -> false :
                 BoolGen.arbitrary().apply(SplitGen.DEFAULT.apply(seed));
 
-        Supplier<List<String>> nullableCombinations =
-                Combinators.permutations(nullables)
+        Supplier<Set<String>> nullableCombinations =
+                Combinators.subsets(nullables)
                            .apply(SplitGen.DEFAULT.apply(seed));
 
         Supplier<Boolean> isRemoveNullables =
@@ -1107,11 +1107,11 @@ public final class JsObjGen implements Gen<JsObj> {
                 );
             }
             if (Boolean.TRUE.equals(isRemoveOptionals.get())) {
-                final List<String> r = optionalCombinations.get();
+                final Set<String> r = optionalCombinations.get();
                 for (String s : r) obj = obj.delete(s);
             }
             if (Boolean.TRUE.equals(isRemoveNullables.get())) {
-                final List<String> r = nullableCombinations.get();
+                final Set<String> r = nullableCombinations.get();
                 for (String s : r)
                     obj = obj.set(s,
                                   JsNull.NULL);

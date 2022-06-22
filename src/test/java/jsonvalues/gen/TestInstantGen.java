@@ -23,7 +23,7 @@ public class TestInstantGen {
                                            (long) Integer.MAX_VALUE,
                                            (long) Integer.MIN_VALUE,
                                            0L)
-                                       .map(epochMilli -> JsInstant.of(Instant.ofEpochMilli(epochMilli)))
+                                       .map(epochMilli -> JsInstant.of(Instant.ofEpochSecond(epochMilli)))
                                        .collect(Collectors.toList());
 
         TestFun.assertGeneratedValuesHaveSameProbability(counts,
@@ -46,7 +46,7 @@ public class TestInstantGen {
                                               (long) Integer.MAX_VALUE,
                                               (long) Integer.MIN_VALUE,
                                               0L)
-                                          .map(epochMilli -> JsInstant.of(Instant.ofEpochMilli(epochMilli)))
+                                          .map(epochMilli -> JsInstant.of(Instant.ofEpochSecond(epochMilli)))
                                           .collect(Collectors.toList());
 
         TestFun.assertGeneratedValuesHaveSameProbability(counts,

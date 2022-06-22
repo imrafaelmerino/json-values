@@ -8,7 +8,7 @@ import java.util.function.Predicate;
 
 class JsObjSpecParser extends AbstractJsObjParser {
     private static final JsValueParser valueParser = JsParsers.PARSERS.valueParser;
-    private static final JsSpecParser defaultParser = valueParser::value;
+    private static final JsSpecParser defaultParser = valueParser::nullOrValue;
     protected final boolean strict;
     private final Map<String, JsSpecParser> parsers;
 
