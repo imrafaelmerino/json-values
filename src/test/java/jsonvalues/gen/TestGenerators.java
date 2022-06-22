@@ -7,8 +7,8 @@ import fun.gen.IntGen;
 import fun.gen.SetGen;
 import fun.tuple.Pair;
 import jsonvalues.*;
-import jsonvalues.spec.SpecError;
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.SpecError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -194,14 +194,14 @@ public class TestGenerators {
                                    ),
                                    "k",
                                    Combinators.freq(Pair.of(1,
-                                                               JsStrGen.alphabetic(0,
-                                                                                   10)),
+                                                            JsStrGen.alphabetic(0,
+                                                                                10)),
                                                     Pair.of(1,
-                                                               JsLongGen.arbitrary())
+                                                            JsLongGen.arbitrary())
                                    ),
                                    "l",
-                                   new SetGen<>(JsIntGen.arbitrary(),
-                                                5).map(JsArray::ofIterable),
+                                   SetGen.of(JsIntGen.arbitrary(),
+                                             5).map(JsArray::ofIterable),
                                    "m",
                                    JsStrGen.alphanumeric(0,
                                                          10),
@@ -325,7 +325,8 @@ public class TestGenerators {
     @Test
     public void testDigits() {
 
-        final Gen<JsArray> gen = JsArrayGen.arbitrary(JsStrGen.digit(),10);
+        final Gen<JsArray> gen = JsArrayGen.arbitrary(JsStrGen.digit(),
+                                                      10);
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> it.size() == 10)
