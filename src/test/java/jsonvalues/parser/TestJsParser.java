@@ -289,7 +289,7 @@ public class TestJsParser {
                                                      10).nullable(),
                                           "d",
                                           arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptionals();
+        ).setAllOptional();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -335,7 +335,7 @@ public class TestJsParser {
                                                      10),
                                           "d",
                                           arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
-        ).setAllOptionals();
+        ).setAllOptional();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -443,7 +443,7 @@ public class TestJsParser {
                                                      10).nullable(),
                                           "d",
                                           arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptionals();
+        ).setAllOptional();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -486,7 +486,7 @@ public class TestJsParser {
                                                       10).nullable(),
                                           "d",
                                           arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptionals();
+        ).setAllOptional();
 
         JsObjParser parser = new JsObjParser(spec);
 

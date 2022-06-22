@@ -1574,7 +1574,7 @@ public class TestJsObjSpec {
         }));
 
 
-        JsObjSpec spec1 = baseSpec.setAllOptionals().suchThat(o -> dependencies(o));
+        JsObjSpec spec1 = baseSpec.setAllOptional().suchThat(o -> dependencies(o));
         Assertions.assertTrue(baseGen.setAllOptional().suchThat(spec1).sample(10000).allMatch(o -> {
             Set<SpecError> errors = spec1.test(o);
             if (!errors.isEmpty()) System.out.println(errors);

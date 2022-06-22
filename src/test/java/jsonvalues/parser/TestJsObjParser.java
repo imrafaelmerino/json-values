@@ -1082,15 +1082,7 @@ public class TestJsObjParser {
     public void test_bytes_parser() {
 
         final JsObjSpec objSpec = JsObjSpec.lenient("a",
-                                                    JsSpecs.str(s -> s.length() <= 10),
-                                                    "b",
-                                                    integer(),
-                                                    "c",
-                                                    JsSpecs.decimal(),
-                                                    "d",
-                                                    JsSpecs.binary().nullable(),
-                                                    "e",
-                                                    JsSpecs.binary(it -> it.length <= 100).nullable()
+                                                    JsSpecs.str(s -> s.length() <= 10)
                                            )
                                            .setOptionals("a");
         JsObjParser objParser = new JsObjParser(objSpec);
@@ -1114,40 +1106,16 @@ public class TestJsObjParser {
                                   .setNullables("d",
                                                 "e");
 
-        Assertions.assertTrue(objGen.sample(10000).allMatch(v -> objParser.parse(v.toString()
-                                                                                  .getBytes())
-                                                                          .equals(v)));
+        Assertions.assertTrue(objGen.sample(10000)
+                                    .allMatch(v -> objParser.parse(v.toString()
+                                                                    .getBytes())
+                                                            .equals(v)));
 
-        Assertions.assertTrue(objGen.sample(10000).allMatch(v -> objParser.parse(new ByteArrayInputStream(v.toString()
-                                                                                                           .getBytes()))
-                                                                          .equals(v)));
+        Assertions.assertTrue(objGen.sample(10000)
+                                    .allMatch(v -> objParser.parse(new ByteArrayInputStream(v.toString()
+                                                                                             .getBytes()))
+                                                            .equals(v)));
 
-
-//
-//        JsGen<JsArray> arrayGen = JsGens.array(objGen,
-//                                               10
-//        );
-//
-//        JsArrayParser arrayParser = new JsArrayParser(JsSpecs.arrayOf(objSpec));
-//
-//        TestProperty.test(arrayGen,
-//                          v -> arrayParser.parse(v.toString()
-//                                                  .getBytes())
-//                                          .equals(v),
-//                          v -> {
-//                              System.out.println(v);
-//                              Assertions.fail("Equals after parsing serialized");
-//                          }
-//        );
-//        TestProperty.test(arrayGen,
-//                          v -> arrayParser.parse(new ByteArrayInputStream(v.toString()
-//                                                                           .getBytes()))
-//                                          .equals(v),
-//                          v -> {
-//                              System.out.println(v);
-//                              Assertions.fail("Equals after parsing serialized");
-//                          }
-//        );
 
     }
 
@@ -1309,7 +1277,7 @@ public class TestJsObjParser {
                                                100).sample(10000)
                                      .allMatch(o -> spec.test(parser.parse(o.toString())).isEmpty()));
 
-        JsObjSpec spec1 = baseSpec.setAllOptionals().suchThat(o -> dependencies(o));
+        JsObjSpec spec1 = baseSpec.setAllOptional().suchThat(o -> dependencies(o));
         JsObjParser parser1 = new JsObjParser(spec1);
         Assertions.assertTrue(baseGen.setAllOptional()
                                      .suchThat(spec1).sample(10000)
@@ -1387,7 +1355,9 @@ public class TestJsObjParser {
                                                 "d",
                                                 "e");
 
-        Assertions.assertTrue(JsArrayGen.arbitrary(objGen,0,10).sample(1000).allMatch(it -> parser.parse(it.toPrettyString()).equals(it)));
+        Assertions.assertTrue(JsArrayGen.arbitrary(objGen,
+                                                   0,
+                                                   10).sample(1000).allMatch(it -> parser.parse(it.toPrettyString()).equals(it)));
     }
 
 }

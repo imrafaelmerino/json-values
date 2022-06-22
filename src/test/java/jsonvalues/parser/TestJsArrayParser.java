@@ -198,7 +198,7 @@ public class TestJsArrayParser {
                                                   "j",
                                                   arrayOfNumber(JsValue::isDecimal).nullable()
 
-        ).setAllOptionals();
+        ).setAllOptional();
 
 
         JsObjGen gen = JsObjGen.of("a",

@@ -75,7 +75,7 @@ Gen<JsObj> gen =
                                                                         JsBigDecGen.biased())
                                            )
                     )
-                .setAllOptionals();
+                .setAllOptional();
         
                   
 Gen<JsObj> validDataGen =  gen.suchThat(spec);

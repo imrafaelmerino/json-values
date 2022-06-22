@@ -1923,7 +1923,7 @@ public final class JsObjSpec implements JsSpec {
         return requiredFields;
     }
 
-    public JsObjSpec setAllOptionals() {
+    public JsObjSpec setAllOptional() {
         return new JsObjSpec(bindings,
                              nullable,
                              strict,
