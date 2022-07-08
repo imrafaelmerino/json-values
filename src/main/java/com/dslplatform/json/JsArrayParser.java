@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-abstract class JsArrayParser {
+abstract class JsArrayParser{
 
     static final JsArray EMPTY = JsArray.empty();
     private final AbstractParser parser;

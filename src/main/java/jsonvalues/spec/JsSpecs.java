@@ -47,6 +47,10 @@ public final class JsSpecs {
     private static final JsSpec number = new JsNumberSpec(false);
     private static final JsSpec str = new JsStrSpec(false);
     private static final JsArraySpec array = new JsArrayOfValueSpec(false);
+
+    private static final JsSpec mapOfLongSpec = new JsMapOfLongSpec(false);
+
+
     private static final String MAX_LOWER_THAN_MIN_ERROR = "max < min";
 
     private JsSpecs() {
@@ -964,5 +968,12 @@ public final class JsSpecs {
         return any(o -> requireNonNull(cons).contains(o));
     }
 
+    /**
+     * returns a spec that validates that the JSON is an object and the value of each key is a long number
+     * @return a spec
+     */
+    public static JsSpec mapOfLong(){
+        return mapOfLongSpec;
+    }
 
 }

@@ -11,9 +11,9 @@ import java.util.function.Function;
 
 final class JsObjParser extends AbstractJsObjParser {
 
-    private final JsValueParser valueDeserializer;
+    private final AbstractParser valueDeserializer;
 
-    JsObjParser(final JsValueParser valueDeserializer) {
+    JsObjParser(final AbstractParser valueDeserializer) {
         this.valueDeserializer = valueDeserializer;
     }
 

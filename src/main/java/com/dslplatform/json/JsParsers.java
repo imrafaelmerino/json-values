@@ -23,6 +23,28 @@ class JsParsers {
     public final JsArrayOfStringParser arrayOfStrParser;
     public final JsArrayOfBoolParser arrayOfBoolParser;
 
+    public final JsObjParser mapOfBoolParser;
+
+    public final JsObjParser mapOfIntegerParser;
+
+    public final JsObjParser mapOfBigIntegerParser;
+
+
+    public final JsObjParser mapOfDecimalParser;
+
+    public final JsObjParser mapOfStringParser;
+
+    public final JsObjParser mapOfObjParser;
+
+    //public final JsObjParser mapOfArrayParser;
+
+    public final JsObjParser mapOfInstantParser;
+
+    public final JsObjParser mapOfBinaryParser;
+
+
+    public final JsObjParser mapOfLongParser;
+
     private JsParsers() {
         instantParser = new JsInstantParser();
         intParser = new JsIntParser();
@@ -47,6 +69,19 @@ class JsParsers {
         arrayOfObjParser = new JsArrayOfObjParser(objParser);
         arrayOfStrParser = new JsArrayOfStringParser(strParser);
         arrayOfBoolParser = new JsArrayOfBoolParser(boolParser);
+        mapOfLongParser = new JsObjParser(longParser);
+        mapOfIntegerParser = new JsObjParser(intParser);
+        mapOfBoolParser = new JsObjParser(boolParser);
+        mapOfDecimalParser = new JsObjParser(decimalParser);
+        mapOfBigIntegerParser = new JsObjParser(integralParser);
+        mapOfStringParser = new JsObjParser(strParser);
+        mapOfInstantParser = new JsObjParser(instantParser);
+        mapOfObjParser = new JsObjParser(valueParser);
+        mapOfBinaryParser = new JsObjParser(binaryParser);
+        // TODO JsArrayParser debe extender AbstractParser,para ello crear JsArrayAbstractParser con
+        //los metodos value(min,max) y value y reutilizar nullorvlaue de AbstractParser
+        // mapOfArrayParser = new JsObjParser(new JsArrayOfValueParser(valueParser));
+
     }
 
 
