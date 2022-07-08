@@ -17,11 +17,8 @@ final class JsDecimalParser extends AbstractParser {
     JsBigDec value(final JsonReader<?> reader) {
         try {
             return JsBigDec.of(MyNumberConverter.deserializeDecimal(reader));
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }
@@ -35,11 +32,8 @@ final class JsDecimalParser extends AbstractParser {
             if (!result.isPresent()) return JsBigDec.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
         }

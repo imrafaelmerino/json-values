@@ -36,8 +36,8 @@ class JsArrayOfDecimalSuchThatSpec extends AbstractNullableSpec implements JsVal
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
-        final Optional<Pair<JsValue, ERROR_CODE>> result = isArrayOfDecimal.test(value);
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+        final Optional<Pair<JsValue, ERROR_CODE>> result = isArrayOfDecimal.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

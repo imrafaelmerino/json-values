@@ -984,64 +984,73 @@ public final class JsSpecs {
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is a long number
+     *
      * @return a spec
      */
-    public static JsSpec mapOfLong(){
+    public static JsSpec mapOfLong() {
         return mapOfLongSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is an integer
+     *
      * @return a spec
      */
-    public static JsSpec mapOfInteger(){
+    public static JsSpec mapOfInteger() {
         return mapOfIntSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is a big integer
+     *
      * @return a spec
      */
-    public static JsSpec mapOfBigInteger(){
+    public static JsSpec mapOfBigInteger() {
         return mapOfBigIntegerSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is a decimal number
+     *
      * @return a spec
      */
-    public static JsSpec mapOfDecimal(){
+    public static JsSpec mapOfDecimal() {
         return mapOfDecimalSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is a boolean
+     *
      * @return a spec
      */
-    public static JsSpec mapOfBool(){
+    public static JsSpec mapOfBool() {
         return mapOfBoolSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is an instant
+     *
      * @return a spec
      */
-    public static JsSpec mapOfInstant(){
+    public static JsSpec mapOfInstant() {
         return mapOfInstantSpec;
     }
 
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is an object
+     *
      * @return a spec
      */
-    public static JsSpec mapOfObj(){
+    public static JsSpec mapOfObj() {
         return mapOfObjSpec;
     }
+
     /**
      * returns a spec that validates that the JSON is an object and the value of each key is a string
+     *
      * @return a spec
      */
-    public static JsSpec mapOfStr(){
+    public static JsSpec mapOfStr() {
         return mapOfStrSpec;
     }
 

@@ -47,11 +47,8 @@ final class JsObjParser extends AbstractJsObjParser {
                 throw new JsParserException(ParserErrors.EXPECTING_FOR_MAP_END,
                                             reader.getCurrentIndex());
             return map;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
         }

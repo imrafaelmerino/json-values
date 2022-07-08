@@ -82,11 +82,6 @@ public final class JsTupleSpec implements JsArraySpec {
         );
     }
 
-    @Override
-    public Set<SpecError> test(final JsArray array) {
-        return test(JsPath.empty(),
-                    array);
-    }
 
     private Set<SpecError> test(final JsPath parent,
                                 final JsTupleSpec tupleSpec,

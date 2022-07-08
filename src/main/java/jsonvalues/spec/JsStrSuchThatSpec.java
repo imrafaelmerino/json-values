@@ -38,7 +38,7 @@ class JsStrSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         final Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isStr,
                                                                              STRING_EXPECTED,
                                                                              nullable

@@ -51,7 +51,7 @@ class JsArrayOfTestedNumberSpec extends AbstractSizableArrSpec implements JsValu
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isNumber() ?
                                                         predicate.apply(v.toJsNumber()) :

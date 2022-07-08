@@ -26,11 +26,8 @@ final class JsNumberParser extends AbstractParser {
         final Number number;
         try {
             number = MyNumberConverter.deserializeNumber(reader);
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
         }

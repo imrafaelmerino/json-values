@@ -20,7 +20,7 @@ class AnySpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return value.isNothing() ?
                Optional.of(Pair.of(value,
                                       ERROR_CODE.REQUIRED)) :

@@ -36,7 +36,7 @@ class JsParsers {
 
     public final JsObjParser mapOfObjParser;
 
-    //public final JsObjParser mapOfArrayParser;
+    public final JsObjParser mapOfArrayParser;
 
     public final JsObjParser mapOfInstantParser;
 
@@ -78,10 +78,7 @@ class JsParsers {
         mapOfInstantParser = new JsObjParser(instantParser);
         mapOfObjParser = new JsObjParser(valueParser);
         mapOfBinaryParser = new JsObjParser(binaryParser);
-        // TODO JsArrayParser debe extender AbstractParser,para ello crear JsArrayAbstractParser con
-        //los metodos value(min,max) y value y reutilizar nullorvlaue de AbstractParser
-        // mapOfArrayParser = new JsObjParser(new JsArrayOfValueParser(valueParser));
-
+        mapOfArrayParser = new JsObjParser(arrayOfValueParser);
     }
 
 

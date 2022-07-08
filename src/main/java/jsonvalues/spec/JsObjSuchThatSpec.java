@@ -39,7 +39,7 @@ class JsObjSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isObj,
                                                                        OBJ_EXPECTED,
                                                                        nullable

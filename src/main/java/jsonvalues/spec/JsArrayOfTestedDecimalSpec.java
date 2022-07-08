@@ -51,7 +51,7 @@ class JsArrayOfTestedDecimalSpec extends AbstractSizableArrSpec implements JsVal
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isDouble() || v.isBigDec() ?
                                                         predicate.apply(v.toJsBigDec().value) :

@@ -45,11 +45,8 @@ public final class JsArraySpecParser {
             }
             reader.checkArrayEnd();
             return buffer;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }

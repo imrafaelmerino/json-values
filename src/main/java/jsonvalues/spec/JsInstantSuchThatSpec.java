@@ -39,7 +39,7 @@ class JsInstantSuchThatSpec extends AbstractNullableSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         final Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isInstant,
                                                                              INSTANT_EXPECTED,
                                                                              nullable

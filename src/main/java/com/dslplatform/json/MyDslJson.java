@@ -5,6 +5,7 @@ import jsonvalues.JsObj;
 import jsonvalues.Json;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
@@ -109,7 +110,7 @@ public final class MyDslJson<A> extends DslJson<A> {
         try {
             return localReader.get()
                               .process(is);
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new JsParserException(e);
 
         }

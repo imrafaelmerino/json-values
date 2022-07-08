@@ -10,11 +10,8 @@ abstract class AbstractJsObjParser extends AbstractParser {
                 throw new JsParserException(ParserErrors.EXPECTING_FOR_MAP_START,
                                             reader.getCurrentIndex());
             return reader.getNextToken() == '}';
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }

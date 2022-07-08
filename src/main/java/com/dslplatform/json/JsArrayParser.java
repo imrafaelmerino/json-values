@@ -11,7 +11,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-abstract class JsArrayParser{
+abstract class JsArrayParser extends AbstractParser {
 
     static final JsArray EMPTY = JsArray.empty();
     private final AbstractParser parser;
@@ -19,7 +19,6 @@ abstract class JsArrayParser{
     public JsArrayParser(final AbstractParser parser) {
         this.parser = parser;
     }
-
 
     JsValue nullOrArray(final JsonReader<?> reader,
                         int min,
@@ -54,11 +53,8 @@ abstract class JsArrayParser{
 
             reader.checkArrayEnd();
             return buffer;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }
@@ -75,7 +71,8 @@ abstract class JsArrayParser{
         return false;
     }
 
-    public JsArray array(final JsonReader<?> reader) {
+    @Override
+    public JsArray value(final JsonReader<?> reader) {
         try {
             if (isEmptyArray(reader)) return EMPTY;
             JsArray buffer = EMPTY.append(parser.value(reader));
@@ -85,11 +82,8 @@ abstract class JsArrayParser{
             }
             reader.checkArrayEnd();
             return buffer;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }
@@ -101,11 +95,8 @@ abstract class JsArrayParser{
                       reader.getCurrentIndex());
             reader.getNextToken();
             return reader.last() == ']';
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }
@@ -136,7 +127,7 @@ abstract class JsArrayParser{
                                  final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) {
 
-        final JsArray array = array(reader);
+        final JsArray array = value(reader);
         final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
         if (!result.isPresent()) return array;
         throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
@@ -167,11 +158,8 @@ abstract class JsArrayParser{
 
             reader.checkArrayEnd();
             return buffer;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
         }

@@ -27,7 +27,7 @@ class JsTrueConstantSpec extends AbstractNullableSpec implements JsValuePredicat
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testElem(JsValue::isTrue,
                                   TRUE_EXPECTED,
                                   nullable

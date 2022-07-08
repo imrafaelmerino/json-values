@@ -37,7 +37,7 @@ class JsBinarySuchThatSpec extends AbstractNullableSpec implements JsValuePredic
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isBinary,
                                                                        BINARY_EXPECTED,
                                                                        nullable

@@ -37,8 +37,8 @@ class JsArrayOfStrSuchThatSpec extends AbstractNullableSpec implements JsValuePr
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
-        Optional<Pair<JsValue, ERROR_CODE>> result = isArrayOfString.test(value);
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+        Optional<Pair<JsValue, ERROR_CODE>> result = isArrayOfString.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

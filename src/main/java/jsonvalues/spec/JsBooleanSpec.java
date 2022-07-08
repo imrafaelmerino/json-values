@@ -27,7 +27,7 @@ class JsBooleanSpec extends AbstractNullableSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
 
         return Functions.testElem(JsValue::isBool,
                                   BOOLEAN_EXPECTED,

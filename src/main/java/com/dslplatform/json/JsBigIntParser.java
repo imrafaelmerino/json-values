@@ -22,11 +22,8 @@ final class JsBigIntParser extends AbstractParser {
         } catch (ArithmeticException e) {
             throw new JsParserException(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
                                         reader.getCurrentIndex());
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
 
@@ -46,11 +43,8 @@ final class JsBigIntParser extends AbstractParser {
         } catch (ArithmeticException e) {
             throw new JsParserException(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
                                         reader.getCurrentIndex());
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
         }

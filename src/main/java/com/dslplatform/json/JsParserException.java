@@ -12,7 +12,4 @@ public final class JsParserException extends RuntimeException {
         super(cause.getMessage(),cause);
     }
 
-    public JsParserException(final Throwable cause,int currentIndex) {
-        super(cause.getMessage()+" @ index="+currentIndex,cause);
-    }
 }

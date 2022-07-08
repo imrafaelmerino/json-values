@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
+import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -38,7 +39,10 @@ public interface JsSpec {
                         final JsValue value
     );
 
-    //TODO considerar si añadir metodo test sin path que llame pasando el empty path
+    default Set<SpecError> test(final JsValue value) {
+        return test(JsPath.empty(),
+                    value);
+    }
 
 
 }

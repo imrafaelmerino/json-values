@@ -39,12 +39,12 @@ class JsArrayOfBigIntSpec extends AbstractSizableArrSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isIntegral() ?
                                                         Optional.empty() :
                                                         Optional.of(Pair.of(v,
-                                                                               INTEGRAL_EXPECTED
+                                                                            INTEGRAL_EXPECTED
                                                         )),
                                                 nullable,
                                                 min,

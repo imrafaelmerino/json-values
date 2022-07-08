@@ -51,7 +51,7 @@ class JsArrayOfTestedLongSpec extends AbstractSizableArrSpec implements JsValueP
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isLong() || v.isInt() ?
                                                         predicate.apply(v.toJsLong().value) :

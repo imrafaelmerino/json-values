@@ -38,8 +38,8 @@ class JsArrayOfLongSuchThatSpec extends AbstractNullableSpec implements JsValueP
     }
 
     @Override
-    public Optional<Pair<JsValue,ERROR_CODE>> test(final JsValue value) {
-        Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfLong.test(value);
+    public Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value) {
+        Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfLong.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

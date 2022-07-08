@@ -49,7 +49,7 @@ class JsArrayOfTestedValueSpec extends AbstractSizableArrSpec implements JsValue
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(predicate,
                                                 nullable,
                                                 min,

@@ -6,6 +6,7 @@ import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -30,21 +31,11 @@ final class JsValueParser extends AbstractParser {
                           final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> fn
 
     ) {
-        try {
             JsValue value = value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return value;
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-
-        } catch (Exception e) {
-            throw new JsParserException(e,
-                                        reader.getCurrentIndex());
-
-        }
-
     }
 
     @Override
@@ -69,17 +60,12 @@ final class JsValueParser extends AbstractParser {
                 case '{':
                     return objDeserializer.value(reader);
                 case '[':
-                    return arrayDeserializer.array(reader);
+                    return arrayDeserializer.value(reader);
                 default:
                     return numberDeserializer.value(reader);
             }
-        } catch (ParsingException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
         }
     }

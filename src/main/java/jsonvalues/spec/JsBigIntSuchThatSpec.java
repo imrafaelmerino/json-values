@@ -40,7 +40,7 @@ class JsBigIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredic
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         final Optional<Pair<JsValue, ERROR_CODE>> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
                                                                                              INTEGRAL_EXPECTED,
                                                                                              nullable

@@ -59,11 +59,8 @@ class JsObjSpecParser extends AbstractJsObjParser {
                 throw new JsParserException(ParserErrors.OBJ_CONDITION,
                                             reader.getCurrentIndex());
             return obj;
-        } catch (ParsingException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
         } catch (IOException e) {
-            throw new JsParserException(e,
+            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
     }

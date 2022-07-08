@@ -15,14 +15,14 @@ interface JsValuePredicate extends JsSpec {
     default Set<SpecError> test(final JsPath parentPath,
                                 final JsValue value) {
         Set<SpecError> errors = new HashSet<>();
-        test(value).ifPresent(e -> errors.add(SpecError.of(parentPath,
-                                                         e
+        testValue(value).ifPresent(e -> errors.add(SpecError.of(parentPath,
+                                                                e
                                               )
                               )
         );
         return errors;
     }
 
-    Optional<Pair<JsValue,ERROR_CODE>> test(final JsValue value);
+    Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value);
 
 }

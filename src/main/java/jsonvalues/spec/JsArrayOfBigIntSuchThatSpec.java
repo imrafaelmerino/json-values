@@ -35,8 +35,8 @@ class JsArrayOfBigIntSuchThatSpec extends AbstractNullableSpec implements JsValu
     }
 
     @Override
-    public Optional<Pair<JsValue,ERROR_CODE>> test(final JsValue value) {
-        final Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfIntegral.test(value);
+    public Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value) {
+        final Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfIntegral.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

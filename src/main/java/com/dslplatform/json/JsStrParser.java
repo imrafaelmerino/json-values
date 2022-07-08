@@ -5,6 +5,7 @@ import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -13,13 +14,8 @@ final class JsStrParser extends AbstractParser {
     JsStr value(final JsonReader<?> reader) {
         try {
             return JsStr.of(StringConverter.deserialize(reader));
-        } catch (ParsingException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
 
         }
@@ -35,13 +31,8 @@ final class JsStrParser extends AbstractParser {
             if (!result.isPresent()) return JsStr.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (ParsingException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        } catch (JsParserException e) {
-            throw e;
-        } catch (Exception e) {
-            throw new JsParserException(e,
                                         reader.getCurrentIndex());
 
         }

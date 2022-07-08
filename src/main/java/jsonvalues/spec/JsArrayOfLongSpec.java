@@ -39,7 +39,7 @@ class JsArrayOfLongSpec extends AbstractSizableArrSpec implements JsValuePredica
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isInt() || v.isLong() ?
                                                      Optional.empty() :
                                                      Optional.of(Pair.of(v,

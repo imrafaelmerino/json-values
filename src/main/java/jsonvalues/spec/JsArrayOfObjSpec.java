@@ -38,7 +38,7 @@ class JsArrayOfObjSpec extends AbstractSizableArrSpec implements JsValuePredicat
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> test(final JsValue value) {
+    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isObj() ?
                                                      Optional.empty() :
                                                      Optional.of(Pair.of(v,

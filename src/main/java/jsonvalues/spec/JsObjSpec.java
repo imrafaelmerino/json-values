@@ -1996,11 +1996,6 @@ public final class JsObjSpec implements JsSpec {
         );
     }
 
-    public Set<SpecError> test(final JsObj obj) {
-        return test(JsPath.empty(),
-                    obj
-        );
-    }
 
     private Set<SpecError> test(final JsPath parent,
                                 final JsObjSpec parentObjSpec,
