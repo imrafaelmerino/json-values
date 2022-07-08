@@ -184,9 +184,7 @@ public class TestJson {
         Assertions.assertNull(
                 a.getInt(JsPath.path("/b"))
         );
-        Assertions.assertEquals(null,
-                                a.getLong(JsPath.path("/b"))
-        );
+        Assertions.assertNull(a.getLong(JsPath.path("/b")));
         Assertions.assertNull(
                 a.getBigDec(JsPath.path("/b"))
         );
@@ -243,50 +241,15 @@ public class TestJson {
                                 d.getInstant(JsPath.path("/10/a/b"),
                                              () -> now));
 
-        Assertions.assertEquals(0,
-                                a.streamValues().count());
 
-        Assertions.assertEquals(1,
-                                c.streamValues().count());
 
         Assertions.assertEquals(4,
-                                c.streamAll().count());
+                                c.stream().count());
 
-        Assertions.assertEquals(0,
-                                b.streamValues().count());
 
-        Assertions.assertEquals(1,
-                                d.streamValues().count());
 
         Assertions.assertEquals(1,
-                                d.streamAll().count());
-
-    }
-
-    @Test
-    public void test_times() {
-
-        final JsObj a = JsObj.of("a",
-                                 JsArray.of(JsObj.of("a",
-                                                     JsInt.of(1)
-                                            ),
-                                            JsNull.NULL,
-                                            JsInt.of(1)
-                                 ),
-                                 "b",
-                                 JsInt.of(1)
-        );
-
-        Assertions.assertEquals(1,
-                                a.times(JsInt.of(1))
-        );
-        Assertions.assertEquals(3,
-                                a.timesAll(JsInt.of(1))
-        );
-        Assertions.assertEquals(2,
-                                a.size()
-        );
-
+                                d.stream().count());
 
     }
 

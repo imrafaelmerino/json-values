@@ -8,55 +8,49 @@ final class OpFilterArrKeys {
     private OpFilterArrKeys() {
     }
 
-    static JsArray filterAll(JsArray json,
-                             final JsPath startingPath,
-                             final BiPredicate<? super JsPath, ? super JsValue> predicate
+    static JsArray filter(JsArray json,
+                          JsPath startingPath,
+                          BiPredicate<? super JsPath, ? super JsValue> predicate
     ) {
         for (int i = json.size() - 1; i >= 0; i--) {
-
             JsValue value = json.get(i);
-
+            JsPath headPath = startingPath.index(i);
             if (value.isObj()) {
-                final JsPath headPath = startingPath.index(i);
                 json = json.set(i,
-                                OpFilterObjKeys.filterAll(value.toJsObj(),
-                                                          headPath,
-                                                          predicate
+                                OpFilterObjKeys.filter(value.toJsObj(),
+                                                       headPath,
+                                                       predicate
                                 )
                 );
             } else if (value.isArray()) {
-                final JsPath headPath = startingPath.index(i);
                 json = json.set(i,
-                                filterAll(value.toJsArray(),
-                                          headPath.index(-1),
-                                          predicate
+                                filter(value.toJsArray(),
+                                       headPath,
+                                       predicate
                                 )
                 );
-
             }
-
-
         }
         return json;
 
     }
 
 
-    static JsArray filterAll(JsArray json,
-                             final Predicate<? super String> predicate) {
+    static JsArray filter(JsArray json,
+                          Predicate<? super String> predicate) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
             JsValue value = json.get(i);
 
             if (value.isObj()) {
                 json = json.set(i,
-                                OpFilterObjKeys.filterAll(value.toJsObj(),
-                                                          predicate)
+                                OpFilterObjKeys.filter(value.toJsObj(),
+                                                       predicate)
                 );
             } else if (value.isArray()) {
                 json = json.set(i,
-                                filterAll(value.toJsArray(),
-                                          predicate)
+                                filter(value.toJsArray(),
+                                       predicate)
                 );
 
             }

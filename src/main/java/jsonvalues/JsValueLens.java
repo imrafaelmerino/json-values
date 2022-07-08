@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
  */
 class JsValueLens<S extends Json<S>> extends Lens<S, JsValue> {
 
-    JsValueLens(final JsPath path) {
+    JsValueLens(JsPath path) {
         super(json -> requireNonNull(json).get(path),
               value -> json -> requireNonNull(json).set(path,
                                                         requireNonNull(value)

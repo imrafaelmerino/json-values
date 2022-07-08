@@ -12,12 +12,12 @@ public class A {
         JsObj json = JsObj.parse("...");
 
         Function<String,String> toSnakeCase = s -> "...";
-        json.mapAllKeys(toSnakeCase);
+        json.mapKeys(toSnakeCase);
 
         Function<JsPrimitive, JsValue> trim =
                 s -> s.isStr() ? s.toJsStr().map(String::trim) : s;
-        json.mapAllValues(trim);
+        json.mapValues(trim);
 
-        json.mapAllValues(JsStr.prism.modify.apply(String::trim));
+        json.mapValues(JsStr.prism.modify.apply(String::trim));
     }
 }

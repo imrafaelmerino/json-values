@@ -20,30 +20,24 @@ public class TestUnionAndIntersection {
 
         JsObj d = JsObj.parse("{\"a\": 1, \"b\": 2, \"c\": [{\"d\": 1,\"e\": 2}]}");
 
-        JsObj e = JsObj.parse("{\"a\": 1, \"b\": 2, \"c\": [{\"d\": 1}]}");
-
-
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           SET
+                                a.union(b,
+                                        SET
                                 )
         );
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           MULTISET
+                                a.union(b,
+                                        MULTISET
                                 )
         );
 
         Assertions.assertEquals(d,
-                                a.unionAll(b,
-                                           LIST
+                                a.union(b,
+                                        LIST
                                 )
         );
 
-        Assertions.assertEquals(e,
-                                a.union(b)
-        );
 
     }
 
@@ -61,26 +55,24 @@ public class TestUnionAndIntersection {
 
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           SET
+                                a.union(b,
+                                        SET
                                 )
         );
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           MULTISET
+                                a.union(b,
+                                        MULTISET
                                 )
         );
 
         Assertions.assertEquals(d,
-                                a.unionAll(b,
-                                           LIST
+                                a.union(b,
+                                        LIST
                                 )
         );
 
-        Assertions.assertEquals(a,
-                                a.union(b)
-        );
+
 
     }
 
@@ -92,37 +84,14 @@ public class TestUnionAndIntersection {
 
         JsArray b = JsArray.parse("[\"3\", [\"4\", \"5\"], \"6\"]");
 
-        JsArray c = JsArray.parse("[\"1\",\"2\",\"3\",[\"4\",\"5\"],\"6\"]");
-
         JsArray d = JsArray.parse("[\"1\",\"2\",\"6\"]");
 
-        JsArray e = JsArray.parse("[\"1\",\"2\",\"3\", [\"4\", \"5\"], \"6\"]");
-
-        JsArray f = JsArray.parse("[\"1\",\"2\",\"3\", [\"4\", \"5\"], \"6\",\"1\",\"2\",\"6\"]");
-
-
         Assertions.assertEquals(d,
-                                a.unionAll(b
+                                a.union(b
                                 )
         );
 
-        Assertions.assertEquals(d,
-                                a.union(b,
-                                        LIST
-                                )
-        );
 
-        Assertions.assertEquals(e,
-                                a.union(b,
-                                        SET
-                                )
-        );
-
-        Assertions.assertEquals(f,
-                                c.union(d,
-                                        MULTISET
-                                )
-        );
 
     }
 
@@ -138,30 +107,24 @@ public class TestUnionAndIntersection {
 
         JsObj d = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}, 7],\"b\": [1, 2]}");
 
-        JsObj e = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\": 1}}], \"b\": [1, 2]}");
-
-
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           SET
+                                a.union(b,
+                                        SET
                                 )
         );
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           MULTISET
+                                a.union(b,
+                                        MULTISET
                                 )
         );
 
         Assertions.assertEquals(d,
-                                a.unionAll(b,
-                                           LIST
+                                a.union(b,
+                                        LIST
                                 )
         );
 
-        Assertions.assertEquals(e,
-                                a.union(b)
-        );
 
     }
 
@@ -180,27 +143,22 @@ public class TestUnionAndIntersection {
 
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           SET
+                                a.union(b,
+                                        SET
                                 )
         );
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           MULTISET
+                                a.union(b,
+                                        MULTISET
                                 )
         );
 
         Assertions.assertEquals(d,
-                                a.unionAll(b,
-                                           LIST
+                                a.union(b,
+                                        LIST
                                 )
         );
-
-        Assertions.assertEquals(a,
-                                a.union(b)
-        );
-
 
     }
 
@@ -236,8 +194,8 @@ public class TestUnionAndIntersection {
 
 
         Assertions.assertEquals(c,
-                                a.intersectionAll(b,
-                                                  LIST
+                                a.intersection(b,
+                                               LIST
                                 )
         );
 
@@ -254,8 +212,8 @@ public class TestUnionAndIntersection {
                                    JsStr.of("B")
         );
 
-        final JsArray newArray = array.mapValues((i, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                                                               .apply(val)
+        JsArray newArray = array.mapValues((i, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                         .apply(val)
         );
 
         Assertions.assertNotEquals(array,
@@ -285,8 +243,8 @@ public class TestUnionAndIntersection {
                                     )
         );
 
-        final JsArray newArray1 = array1.mapAllValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                                                                    .apply(val));
+        JsArray newArray1 = array1.mapValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                           .apply(val));
         Assertions.assertEquals(JsArray.parse("[\"a\",true,\"b\",null,{\"a\":\"a\",\"b\":\"b\",\"c\":[\"a\",\"b\",null]}]\n")
                 ,
                                 newArray1
@@ -305,8 +263,8 @@ public class TestUnionAndIntersection {
                              JsStr.of("B")
         );
 
-        final JsObj newObj = obj.mapValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                                                         .apply(val));
+        JsObj newObj = obj.mapValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                   .apply(val));
 
         Assertions.assertNotEquals(obj,
                                    newObj
@@ -322,8 +280,8 @@ public class TestUnionAndIntersection {
                               )
         );
 
-        final JsObj newObj1 = obj1.mapAllValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
-                                                                              .apply(val));
+        JsObj newObj1 = obj1.mapValues((p, val) -> JsStr.prism.modify.apply(String::toLowerCase)
+                                                                     .apply(val));
 
         Assertions.assertNotEquals(obj1,
                                    newObj1
@@ -339,7 +297,7 @@ public class TestUnionAndIntersection {
                              JsStr.of("B")
         );
 
-        final JsObj newObj = obj.mapKeys((key, val) -> key.toUpperCase());
+        JsObj newObj = obj.mapKeys(key -> key.toUpperCase());
 
         Assertions.assertNotEquals(newObj,
                                    obj
@@ -364,8 +322,8 @@ public class TestUnionAndIntersection {
                               )
         );
 
-        final JsObj newObj1 = obj1.mapAllKeys((path, val) -> path.last()
-                                                                 .asKey().name.toUpperCase());
+        JsObj newObj1 = obj1.mapKeys((path, val) -> path.last()
+                                                        .asKey().name.toUpperCase());
 
         Assertions.assertNotEquals(newObj1,
                                    obj1
@@ -381,47 +339,39 @@ public class TestUnionAndIntersection {
         JsObj b = JsObj.parse("{\"b\":2, \"c\": [{ \"e\":2 }] }");
         JsObj c = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 }, { \"e\":2 }] }");
         JsObj d = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1 , \"e\":2 }] }");
-        JsObj e = JsObj.parse("{\"a\":1, \"b\":2, \"c\": [{ \"d\":1  }] }");
 
         Assertions.assertEquals(c,
-                                a.unionAll(b,
-                                           SET
+                                a.union(b,
+                                        SET
                                 )
         );
         Assertions.assertEquals(d,
-                                a.unionAll(b,
-                                           LIST
+                                a.union(b,
+                                        LIST
                                 )
-        );
-        Assertions.assertEquals(e,
-                                a.union(b)
         );
 
         JsObj f = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} } ] }");
         JsObj g = JsObj.parse("{\"a\": [3, [4,5], 6, 7], \"b\": [1, 2] }");
         JsObj h = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 3, [4,5], 6, 7], \"b\":[1,2]}");
         JsObj i = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }, 7], \"b\":[1,2]}");
-        JsObj j = JsObj.parse("{\"a\": [1, 2, {\"b\": {\"b\":1} }], \"b\":[1,2]}");
-
 
         Assertions.assertEquals(h,
-                                f.unionAll(g,
-                                           SET
+                                f.union(g,
+                                        SET
                                 )
         );
         Assertions.assertEquals(h,
-                                f.unionAll(g,
-                                           MULTISET
+                                f.union(g,
+                                        MULTISET
                                 )
         );
         Assertions.assertEquals(i,
-                                f.unionAll(g,
-                                           LIST
+                                f.union(g,
+                                        LIST
                                 )
         );
-        Assertions.assertEquals(j,
-                                f.union(g)
-        );
+
 
     }
 
@@ -432,62 +382,32 @@ public class TestUnionAndIntersection {
         JsObj b = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"a\":1, \"b\":[1]  }, {\"b\":2}] } }");
         JsObj c = JsObj.parse("{ \"b\": {\"a\":1, \"b\":2, \"c\": [{\"b\":2}] } }");
 
-        Assertions.assertEquals(JsObj.empty(),
+
+        Assertions.assertEquals(b,
                                 a.intersection(b,
                                                LIST
                                 )
         );
-        Assertions.assertEquals(b,
-                                a.intersectionAll(b,
-                                                  LIST
-                                )
-        );
-        Assertions.assertEquals(JsObj.empty(),
-                                a.intersection(b,
-                                               SET
-                                )
-        );
+
+
+
         Assertions.assertEquals(c,
-                                a.intersectionAll(b,
-                                                  SET
-                                )
-        );
-        Assertions.assertEquals(JsObj.empty(),
                                 a.intersection(b,
                                                MULTISET
-                                )
-        );
-        Assertions.assertEquals(c,
-                                a.intersectionAll(b,
-                                                  MULTISET
                                 )
         );
         JsObj d = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, true,  null, false    ] }");
 
         JsObj e = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1         }, false, true, null, 1 ] }");
-        JsObj f = JsObj.parse("{ \"a\": true }");
 
         JsObj i = JsObj.parse("{ \"a\":true, \"b\": [1, 2, {\"a\":1}] }");
 
-        Assertions.assertEquals(d,
-                                d.intersection(e,
-                                               SET
-                                )
-        );
 
-        Assertions.assertEquals(f,
-                                d.intersection(e,
-                                               MULTISET
-                                )
-        );
-        Assertions.assertEquals(f,
+
+
+        Assertions.assertEquals(i,
                                 d.intersection(e,
                                                LIST
-                                )
-        );
-        Assertions.assertEquals(i,
-                                d.intersectionAll(e,
-                                                  LIST
                                 )
         );
 

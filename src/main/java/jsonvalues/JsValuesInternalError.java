@@ -7,7 +7,7 @@ package jsonvalues;
 final class JsValuesInternalError extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
-    private JsValuesInternalError(final String message) {
+    private JsValuesInternalError( String message) {
         super(String.format("Create an issue in https://github.com/imrafaelmerino/values: %s.",
                             message
         ));
