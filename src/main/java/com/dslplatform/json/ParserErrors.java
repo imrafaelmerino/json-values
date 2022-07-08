@@ -47,7 +47,7 @@ class ParserErrors {
 
     static final String LEADING_ZERO = "Leading zero is not allowed";
 
-    static final String ERROR_PARSING_NUMBER = "Error parsing number";
+    static final String NOT_VALID_NUMBER = "Invalid representation of a number";
 
     static final String DIGIT_NOT_FOUND = "Digit not found";
 

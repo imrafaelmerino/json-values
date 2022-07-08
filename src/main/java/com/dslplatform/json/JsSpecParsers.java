@@ -26,7 +26,8 @@ public final class JsSpecParsers {
 
     private JsSpecParsers() {
         newParseException = (reader, error) ->
-                new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(error),reader.getCurrentIndex());
+                new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(error),
+                                      reader.getCurrentIndex());
     }
 
     public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> p,
@@ -670,6 +671,54 @@ public final class JsSpecParsers {
 
     public JsSpecParser ofMapOfLong(boolean nullable) {
         return getParser(PARSERS.mapOfLongParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfString(boolean nullable) {
+        return getParser(PARSERS.mapOfStringParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfBool(boolean nullable) {
+        return getParser(PARSERS.mapOfBoolParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfInt(boolean nullable) {
+        return getParser(PARSERS.mapOfIntegerParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfInstant(boolean nullable) {
+        return getParser(PARSERS.mapOfInstantParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfDecimal(boolean nullable) {
+        return getParser(PARSERS.mapOfDecimalParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfBinary(boolean nullable) {
+        return getParser(PARSERS.mapOfBinaryParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfObj(boolean nullable) {
+        return getParser(PARSERS.mapOfObjParser,
+                         nullable
+        );
+    }
+
+    public JsSpecParser ofMapOfBigInt(boolean nullable) {
+        return getParser(PARSERS.mapOfBigIntegerParser,
                          nullable
         );
     }

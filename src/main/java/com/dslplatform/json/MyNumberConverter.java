@@ -46,12 +46,13 @@ abstract class MyNumberConverter {
                                 String message) throws JsParserException {
         final int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
+            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,
+                                        reader.getCurrentIndex());
         }
-        throw new JsParserException(message,reader.getCurrentIndex());
+        throw new JsParserException(message,
+                                    reader.getCurrentIndex());
 
     }
-
 
 
     private static BigDecimal parseNumberGeneric(final char[] buf,
@@ -62,13 +63,15 @@ abstract class MyNumberConverter {
             end--;
         }
         if (end > reader.maxNumberDigits)
-            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
+            throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,
+                                        reader.getCurrentIndex());
 
         final int offset = buf[0] == '-' ?
                            1 :
                            0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9')
-            throw new JsParserException(ParserErrors.LEADING_ZERO,reader.getCurrentIndex());
+            throw new JsParserException(ParserErrors.LEADING_ZERO,
+                                        reader.getCurrentIndex());
 
         try {
             return new BigDecimal(buf,
@@ -76,12 +79,15 @@ abstract class MyNumberConverter {
                                   end
             );
         } catch (NumberFormatException nfe) {
-            throw new JsParserException(nfe,reader.getCurrentIndex());
+            throw new JsParserException(nfe.getMessage() != null ?
+                                        nfe.getMessage() :
+                                        ParserErrors.NOT_VALID_NUMBER,
+                                        reader.getCurrentIndex());
         }
     }
 
     private static MyNumberConverter.NumberInfo readLongNumber(final JsonReader reader,
-                                                               final int start) throws JsParserException,IOException {
+                                                               final int start) throws JsParserException, IOException {
         int len = reader.length() - start;
         char[] result = reader.prepareBuffer(start,
                                              len
@@ -93,7 +99,8 @@ abstract class MyNumberConverter {
             int oldLen = len;
             len += end;
             if (len > reader.maxNumberDigits) {
-                throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,reader.getCurrentIndex());
+                throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,
+                                            reader.getCurrentIndex());
             }
             char[] tmp = result;
             result = new char[len];

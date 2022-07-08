@@ -479,9 +479,9 @@ public interface JsValue {
     }
 
     /**
-     * Returns true if this element is an decimal number (JsDouble or JsBigDec)
+     * Returns true if this element is a decimal number (JsDouble or JsBigDec)
      *
-     * @return true if this element is an decimal number (JsDouble or JsBigDec)
+     * @return true if this element is a decimal number (JsDouble or JsBigDec)
      */
     default boolean isDecimal() {
         return isDouble() || isBigDec();

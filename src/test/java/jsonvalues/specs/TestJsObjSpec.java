@@ -1589,4 +1589,169 @@ public class TestJsObjSpec {
         if (o.containsKey("b") && !o.containsKey("d")) return false;
         return true;
     }
+
+    @Test
+    public void testMapOfLong() {
+
+        testOfMap(LONG_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsLong.of(1),
+                                    "2",
+                                    JsLong.of(2)
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfLong())
+        );
+    }
+
+    @Test
+    public void testMapOfDecimal() {
+
+        testOfMap(DECIMAL_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsDouble.of(1.5),
+                                    "2",
+                                    JsBigDec.of(BigDecimal.TEN)
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfDecimal())
+        );
+    }
+
+    @Test
+    public void testMapOfStr() {
+
+        testOfMap(STRING_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsStr.of("1"),
+                                    "2",
+                                    JsStr.of("2")
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfStr())
+        );
+
+    }
+
+    @Test
+    public void testMapOfBool() {
+
+        testOfMap(BOOLEAN_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    TRUE,
+                                    "2",
+                                    JsBool.FALSE
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfBool())
+        );
+
+    }
+
+    @Test
+    public void testMapOfInteger() {
+
+        testOfMap(INT_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsInt.of(1),
+                                    "2",
+                                    JsInt.of(2)
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfInteger())
+        );
+
+    }
+
+    @Test
+    public void testMapOfBigInteger() {
+
+        testOfMap(INTEGRAL_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsInt.of(1),
+                                    "2",
+                                    JsBigInt.of(BigInteger.TEN)
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfBigInteger())
+        );
+
+    }
+
+    @Test
+    public void testMapOfObj() {
+
+        testOfMap(OBJ_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsObj.empty(),
+                                    "2",
+                                    JsObj.empty()
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfObj())
+        );
+
+    }
+
+
+    @Test
+    public void testMapOfInstant() {
+
+        testOfMap(INSTANT_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsInstant.of(Instant.MIN),
+                                    "2",
+                                    JsInstant.of(Instant.MAX)
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfInstant())
+        );
+
+
+    }
+
+    private void testOfMap(ERROR_CODE expectedCode,
+                           JsObj valid,
+                           JsObjSpec spec) {
+
+        JsObj invalid = JsObj.of("a",
+                                 JsObj.of("1",
+                                          JsNull.NULL,
+                                          "2",
+                                          JsNull.NULL
+                                 )
+        );
+
+        Assertions.assertTrue(spec.test(valid).isEmpty());
+
+        Set<SpecError> errors = spec.test(invalid);
+
+        Assertions.assertFalse(errors.isEmpty());
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertEquals(valid,
+                                parser.parse(valid.toPrettyString()));
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse(invalid.toPrettyString()));
+
+        Assertions.assertTrue(errors.stream().allMatch(it -> it.errorCode == expectedCode));
+    }
 }

@@ -38,6 +38,8 @@ public interface JsSpec {
                         final JsValue value
     );
 
+    //TODO considerar si añadir metodo test sin path que llame pasando el empty path
+
 
 }
 
