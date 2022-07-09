@@ -1,6 +1,5 @@
 package com.dslplatform.json;
 
-
 public final class JsParserException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
