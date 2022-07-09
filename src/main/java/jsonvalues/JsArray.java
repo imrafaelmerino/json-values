@@ -518,7 +518,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                       if (!array.containsValue(elem))
                                           return false;
                                       if (ARRAY_AS == MULTISET)
-                                          return seq.count(it->it.equals(elem)) == array.seq.count(it->it.equals(elem));
+                                          return seq.count(it -> it.equals(elem)) == array.seq.count(it -> it.equals(elem));
                                       return true;
                                   })
                 && IntStream.range(0,
@@ -936,7 +936,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return OpMapArrElems.map(this,
                                  requireNonNull(fn),
                                  JsPath.empty()
-                                          .index(-1)
+                                       .index(-1)
         );
     }
 
@@ -953,7 +953,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return OpMapArrKeys.map(this,
                                 requireNonNull(fn),
                                 JsPath.empty()
-                                         .index(-1)
+                                      .index(-1)
         );
     }
 
@@ -1257,9 +1257,11 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @param that the other array
      * @return a JsArray of the same type as the inputs
      */
-    public JsArray intersection(final JsArray that) {
+    @Override
+    public JsArray intersection(final JsArray that,final JsArray.TYPE ARRAY_AS) {
         return intersection(this,
-                            requireNonNull(that)
+                            requireNonNull(that),
+                            ARRAY_AS
         );
     }
 
@@ -1346,7 +1348,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
 
-
     /**
      * returns {@code this} plus those elements from {@code that} which position is  {@code >= this.size()},
      * and, at the positions where a container of the same type exists in both {@code this} and {@code that},
@@ -1357,14 +1358,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a new JsArray of the same type as the inputs
      */
     @SuppressWarnings("squid:S00100")
-    public JsArray union(final JsArray that) {
+    @Override
+    public JsArray union(final JsArray that,
+                         final TYPE ARRAY_AS) {
         return union(this,
-                     requireNonNull(that)
+                     requireNonNull(that),
+                     ARRAY_AS
         );
     }
 
     private JsArray intersection(final JsArray a,
-                                 final JsArray b
+                                 final JsArray b,
+                                 final JsArray.TYPE ARRAY_AS
     ) {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
@@ -1380,7 +1385,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                 result = result.set(i,
                                     OpIntersectionJsons.intersectionAll(obj,
                                                                         obj1,
-                                                                        JsArray.TYPE.LIST
+                                                                        ARRAY_AS
                                     )
                 );
 
@@ -1419,7 +1424,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
 
     private JsArray union(final JsArray a,
-                          final JsArray b
+                          final JsArray b,
+                          final TYPE ARRAY_AS
     ) {
         if (b.isEmpty()) return a;
         if (a.isEmpty()) return b;
@@ -1433,7 +1439,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                 result = result.set(i,
                                     OpUnionJsons.unionAll(obj,
                                                           obj1,
-                                                          JsArray.TYPE.LIST
+                                                          ARRAY_AS
                                     )
                 );
 

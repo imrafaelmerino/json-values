@@ -410,13 +410,12 @@ public class TestJsArray {
         JsArray arr2 = JsArray.parse("[{\"a\": 1, \"b\": [1,2]}]");
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection(arr2)
+                                arr1.intersection(arr2,JsArray.TYPE.LIST)
         );
 
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection(arr2
-                                )
+                                arr1.intersection(arr2,JsArray.TYPE.LIST)
         );
 
 

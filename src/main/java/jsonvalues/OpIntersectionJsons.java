@@ -18,7 +18,7 @@ final class OpIntersectionJsons {
                                                           ARRAY_AS
                                             );
         if (ARRAY_AS == JsArray.TYPE.LIST) return a.toJsArray()
-                                                   .intersection(b.toJsArray());
+                                                   .intersection(b.toJsArray(),ARRAY_AS);
         return intersection(a.toJsArray(),
                             b.toJsArray(),
                             ARRAY_AS

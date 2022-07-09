@@ -2821,6 +2821,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      */
     // squid:S00117 ARRAY_AS should be a valid name
     @SuppressWarnings({"squid:S00117"})
+    @Override
     public JsObj intersection(final JsObj that,
                               final TYPE ARRAY_AS
     ) {
@@ -2872,6 +2873,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
      * @return a new JsObj of the same type as the inputs
      */
     @SuppressWarnings("squid:S3008")//ARRAY_AS should be a valid name
+    @Override
     public JsObj union(final JsObj that,
                        final TYPE ARRAY_AS
     ) {

@@ -87,7 +87,7 @@ public class TestUnionAndIntersection {
         JsArray d = JsArray.parse("[\"1\",\"2\",\"6\"]");
 
         Assertions.assertEquals(d,
-                                a.union(b
+                                a.union(b,JsArray.TYPE.LIST
                                 )
         );
 

@@ -1640,6 +1640,23 @@ public class TestJsObjSpec {
     }
 
     @Test
+    public void testMapOfArray() {
+
+        testOfMap(ARRAY_EXPECTED,
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsArray.of("1"),
+                                    "2",
+                                    JsArray.of("2")
+                           )
+                  ),
+                  JsObjSpec.strict("a",
+                                   mapOfArray())
+        );
+
+    }
+
+    @Test
     public void testMapOfBool() {
 
         testOfMap(BOOLEAN_EXPECTED,

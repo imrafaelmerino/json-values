@@ -52,6 +52,9 @@ public final class JsSpecs {
 
     private static final JsSpec mapOfStrSpec = new JsMapOfStrSpec(false);
 
+    private static final JsSpec mapOfArraySpec = new JsMapOfArraySpec(false);
+
+
     private static final JsSpec mapOfIntSpec = new JsMapOfIntSpec(false);
 
     private static final JsSpec mapOfBoolSpec = new JsMapOfBoolSpec(false);
@@ -1052,6 +1055,15 @@ public final class JsSpecs {
      */
     public static JsSpec mapOfStr() {
         return mapOfStrSpec;
+    }
+
+    /**
+     * returns a spec that validates that the JSON is an object and the value of each key is an array
+     *
+     * @return a spec
+     */
+    public static JsSpec mapOfArray() {
+        return mapOfArraySpec;
     }
 
 

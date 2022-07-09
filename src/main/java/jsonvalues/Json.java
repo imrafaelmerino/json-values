@@ -138,8 +138,6 @@ public interface Json<T extends Json<T>> extends JsValue {
     T filterValues(final Predicate<? super JsPrimitive> filter);
 
 
-
-
     /**
      * Filters all the keys of this json, removing those that don't ifPredicateElse the predicate.
      *
@@ -515,7 +513,6 @@ public interface Json<T extends Json<T>> extends JsValue {
     }
 
 
-
     /**
      * Maps all the values of this json.
      *
@@ -531,8 +528,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return a new mapped json of the same type T
      */
     T mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn);
-
-
 
 
     /**
@@ -551,7 +546,6 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return a new mapped json of the same type T
      */
     T mapKeys(final Function<? super String, String> fn);
-
 
 
     /**
@@ -604,7 +598,6 @@ public interface Json<T extends Json<T>> extends JsValue {
                    JsNull.NULL
         );
     }
-
 
 
     /**
@@ -663,7 +656,6 @@ public interface Json<T extends Json<T>> extends JsValue {
     Stream<Pair<JsPath, JsValue>> stream();
 
 
-
     /**
      * Serializes this Json into the given output stream, no returning anything
      *
@@ -684,6 +676,15 @@ public interface Json<T extends Json<T>> extends JsValue {
     default byte[] serialize() {
         return MyDslJson.INSTANCE.serialize(this);
     }
+
+
+    T union(final T that,
+            final TYPE ARRAY_AS
+    );
+
+    T intersection(final T that,
+                   final TYPE ARRAY_AS
+    );
 
 
 }

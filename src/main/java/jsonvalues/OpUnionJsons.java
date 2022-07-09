@@ -15,7 +15,7 @@ final class OpUnionJsons {
                                                    ARRAY_AS
                                             );
         if (ARRAY_AS == JsArray.TYPE.LIST) return a.toJsArray()
-                                                   .union(b.toJsArray()
+                                                   .union(b.toJsArray(),ARRAY_AS
                                                    );
         return union(a.toJsArray(),
                      b.toJsArray(),

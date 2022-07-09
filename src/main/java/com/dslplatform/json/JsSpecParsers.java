@@ -723,6 +723,12 @@ public final class JsSpecParsers {
         );
     }
 
+    public JsSpecParser ofMapOfArray(boolean nullable) {
+        return getParser(PARSERS.mapOfArrayParser,
+                         nullable
+        );
+    }
+
     public JsSpecParser ofLong(boolean nullable) {
         return getParser(PARSERS.longParser,
                          nullable
