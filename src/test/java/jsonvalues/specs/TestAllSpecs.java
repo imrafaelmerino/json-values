@@ -83,7 +83,7 @@ public class TestAllSpecs {
 
         Assertions.assertTrue(
                 gen.suchThat(spec,
-                             10000)
+                             20000)
                    .sample(100)
                    .allMatch(it ->
                                      parser.parse(it.toPrettyString()).equals(it)

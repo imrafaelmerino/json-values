@@ -138,8 +138,8 @@ abstract class JsArrayParser extends AbstractParser {
                               final Supplier<JsValue> f,
                               final int min,
                               final int max
-    ) {
-        try {
+    ) throws IOException {
+
             if (checkIfEmpty(isEmptyArray(reader),
                              min,
                              reader.getCurrentIndex())) return EMPTY;
@@ -158,11 +158,7 @@ abstract class JsArrayParser extends AbstractParser {
 
             reader.checkArrayEnd();
             return buffer;
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
 
-        }
     }
 
     private void checkSize(boolean error,
@@ -177,7 +173,7 @@ abstract class JsArrayParser extends AbstractParser {
                                     final Supplier<JsValue> fn,
                                     final int min,
                                     final int max
-    ) {
+    ) throws IOException {
 
         return isNull(reader) ?
                JsNull.NULL :

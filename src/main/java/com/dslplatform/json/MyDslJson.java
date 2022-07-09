@@ -45,10 +45,8 @@ public final class MyDslJson<A> extends DslJson<A> {
             return parser.parse(reader)
                          .toJsObj();
         }
-        catch (JsParserException e){
-            throw e;
-        }
-        catch (Exception e) {
+
+        catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
@@ -74,10 +72,8 @@ public final class MyDslJson<A> extends DslJson<A> {
             return parser.parse(reader)
                          .toJsArray();
         }
-        catch (JsParserException e){
-            throw e;
-        }
-        catch (Exception e) {
+
+        catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {
@@ -95,10 +91,8 @@ public final class MyDslJson<A> extends DslJson<A> {
             return parser.parse(reader)
                          .toJsObj();
         }
-        catch (JsParserException e){
-            throw e;
-        }
-        catch (Exception e) {
+
+        catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {
@@ -125,10 +119,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             return parser.parse(reader)
                          .toJsArray();
         }
-        catch (JsParserException e){
-            throw e;
-        }
-        catch (Exception e) {
+        catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {

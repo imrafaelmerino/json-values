@@ -5,6 +5,7 @@ import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Objects;
 import java.util.Optional;
@@ -23,7 +24,7 @@ final class JsArrayOfBigIntParser extends JsArrayParser {
                                     final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> fn,
                                     final int min,
                                     final int max
-    ) {
+    ) throws IOException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -36,7 +37,7 @@ final class JsArrayOfBigIntParser extends JsArrayParser {
                               final Function<BigInteger, Optional<Pair<JsValue,ERROR_CODE>>> fn,
                               final int min,
                               final int max
-    ) {
+    ) throws IOException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

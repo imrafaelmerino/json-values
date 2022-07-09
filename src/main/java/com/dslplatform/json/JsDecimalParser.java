@@ -14,13 +14,8 @@ import java.util.function.Function;
 final class JsDecimalParser extends AbstractParser {
 
     @Override
-    JsBigDec value(final JsonReader<?> reader) {
-        try {
+    JsBigDec value(final JsonReader<?> reader) throws IOException {
             return JsBigDec.of(MyNumberConverter.deserializeDecimal(reader));
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        }
     }
 
     JsBigDec valueSuchThat(final JsonReader<?> reader,

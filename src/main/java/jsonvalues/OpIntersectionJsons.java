@@ -17,57 +17,24 @@ final class OpIntersectionJsons {
                                             .intersection(b.toJsObj(),
                                                           ARRAY_AS
                                             );
-        if (ARRAY_AS == JsArray.TYPE.LIST) return a.toJsArray()
-                                                   .intersection(b.toJsArray(),ARRAY_AS);
-        return intersection(a.toJsArray(),
-                            b.toJsArray(),
-                            ARRAY_AS
-        );
+        if (ARRAY_AS == JsArray.TYPE.LIST)
+            return a.toJsArray()
+                    .intersection(b.toJsArray(),
+                                  JsArray.TYPE.LIST);
+
+        if (ARRAY_AS == JsArray.TYPE.SET)
+            return intersectionAsSet(a.toJsArray(),
+                                     b.toJsArray()
+            );
+
+        if (ARRAY_AS == JsArray.TYPE.MULTISET)
+            return intersectionAsMultiSet(a.toJsArray(),
+                                          b.toJsArray()
+            );
+
+        throw JsValuesInternalError.arrayOptionNotImplemented(ARRAY_AS.name());
     }
 
-
-    @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
-    private static JsArray intersection(JsArray a,
-                                        JsArray b,
-                                        JsArray.TYPE ARRAY_AS
-    ) {
-        switch (ARRAY_AS) {
-            case SET:
-                return intersectionAsSet(a,
-                                         b
-                );
-            case LIST:
-                return intersectionAsList(a,
-                                          b
-                );
-            case MULTISET:
-                return intersectionAsMultiSet(a,
-                                              b
-                );
-            default:
-                throw JsValuesInternalError.arrayOptionNotImplemented(ARRAY_AS.name());
-        }
-
-    }
-
-    private static JsArray intersectionAsList(JsArray a,
-                                              JsArray b
-    ) {
-
-        if (a.isEmpty()) return a;
-        if (b.isEmpty()) return b;
-
-        JsArray result = JsArray.empty();
-        for (int i = 0; i < a.size(); i++) {
-            JsValue aVal = a.get(i);
-            JsValue bVal = b.get(i);
-            if (aVal.isNothing() || bVal.isNothing()) return result;
-            if (aVal.equals(bVal)) result = result.append(aVal);
-        }
-
-        return result;
-
-    }
 
     private static JsArray intersectionAsMultiSet(final JsArray a,
                                                   final JsArray b
@@ -87,8 +54,8 @@ final class OpIntersectionJsons {
     private static JsArray intersectionAsSet(final JsArray a,
                                              final JsArray b
     ) {
-        if (a.isEmpty()) return a;
-        if (b.isEmpty()) return b;
+        if (a.isEmpty()) return JsArray.empty();
+        if (b.isEmpty()) return JsArray.empty();
 
         JsArray result = JsArray.empty();
         for (JsValue it : a) {

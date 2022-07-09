@@ -24,8 +24,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
     }
 
     @Override
-    JsObj value(final JsonReader<?> reader) {
-        try {
+    JsObj value(final JsonReader<?> reader) throws IOException {
             if (isEmptyObj(reader)) return EMPTY_OBJ;
             String key = reader.readKey();
             throwErrorIfStrictAndKeyMissing(reader,
@@ -59,10 +58,7 @@ class JsObjSpecParser extends AbstractJsObjParser {
                 throw new JsParserException(ParserErrors.OBJ_CONDITION,
                                             reader.getCurrentIndex());
             return obj;
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        }
+
     }
 
     private void throwErrorIfStrictAndKeyMissing(final JsonReader<?> reader,

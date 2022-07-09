@@ -12,15 +12,8 @@ import java.util.function.LongFunction;
 final class JsLongParser extends AbstractParser {
 
     @Override
-    JsLong value(final JsonReader<?> reader) {
-        try {
-            return JsLong.of(MyNumberConverter.deserializeLong(reader));
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        }
-
-
+    JsLong value(final JsonReader<?> reader) throws IOException {
+        return JsLong.of(MyNumberConverter.deserializeLong(reader));
     }
 
     JsLong valueSuchThat(final JsonReader<?> reader,

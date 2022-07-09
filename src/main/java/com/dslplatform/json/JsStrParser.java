@@ -11,14 +11,8 @@ import java.util.function.Function;
 
 final class JsStrParser extends AbstractParser {
     @Override
-    JsStr value(final JsonReader<?> reader) {
-        try {
-            return JsStr.of(StringConverter.deserialize(reader));
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
-        }
+    JsStr value(final JsonReader<?> reader) throws IOException {
+        return JsStr.of(StringConverter.deserialize(reader));
     }
 
 

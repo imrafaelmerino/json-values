@@ -11,13 +11,8 @@ import java.util.function.IntFunction;
 
 final class JsIntParser extends AbstractParser {
     @Override
-    JsInt value(final JsonReader<?> reader) {
-        try {
-            return JsInt.of(MyNumberConverter.deserializeInt(reader));
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-        }
+    JsInt value(final JsonReader<?> reader) throws ParsingException {
+        return JsInt.of(MyNumberConverter.deserializeInt(reader));
     }
 
     JsInt valueSuchThat(final JsonReader<?> reader,

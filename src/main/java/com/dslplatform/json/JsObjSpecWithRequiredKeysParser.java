@@ -3,6 +3,7 @@ package com.dslplatform.json;
 
 import jsonvalues.JsObj;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -11,9 +12,9 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
     private final List<String> required;
 
 
-    JsObjSpecWithRequiredKeysParser(final List<String> required,
-                                    final Map<String, JsSpecParser> parsers,
-                                    final boolean strict,
+    JsObjSpecWithRequiredKeysParser(List<String> required,
+                                    Map<String, JsSpecParser> parsers,
+                                    boolean strict,
                                     Predicate<JsObj> predicate
     ) {
         super(strict,
@@ -24,8 +25,8 @@ final class JsObjSpecWithRequiredKeysParser extends JsObjSpecParser {
 
 
     @Override
-    JsObj value(final JsonReader<?> reader) {
-        final JsObj obj = super.value(reader);
+    JsObj value(JsonReader<?> reader) throws IOException {
+        JsObj obj = super.value(reader);
         for (String key : required) {
             if (!obj.containsKey(key))
                 throw new JsParserException(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),

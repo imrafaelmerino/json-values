@@ -5,6 +5,7 @@ import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
 
+import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
@@ -21,7 +22,7 @@ final class JsArrayOfStringParser extends JsArrayParser {
                                     final Function<String, Optional<Pair<JsValue, ERROR_CODE>>> fn,
                                     final int min,
                                     final int max
-    ) {
+    ) throws IOException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -34,7 +35,7 @@ final class JsArrayOfStringParser extends JsArrayParser {
                               final Function<String, Optional<Pair<JsValue, ERROR_CODE>>> fn,
                               final int min,
                               final int max
-    ) {
+    ) throws IOException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

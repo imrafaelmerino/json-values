@@ -13,7 +13,7 @@ import java.util.function.Function;
 
 final class JsBigIntParser extends AbstractParser {
     @Override
-    JsBigInt value(final JsonReader<?> reader) {
+    JsBigInt value(final JsonReader<?> reader) throws IOException {
         try {
 
             return JsBigInt.of(MyNumberConverter.deserializeDecimal(reader)
@@ -21,9 +21,6 @@ final class JsBigIntParser extends AbstractParser {
 
         } catch (ArithmeticException e) {
             throw new JsParserException(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
-                                        reader.getCurrentIndex());
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         }
 
