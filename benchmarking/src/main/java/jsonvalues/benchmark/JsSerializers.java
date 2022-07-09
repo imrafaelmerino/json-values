@@ -9,6 +9,7 @@ import org.openjdk.jmh.annotations.BenchmarkMode;
 import org.openjdk.jmh.annotations.Mode;
 import org.openjdk.jmh.annotations.OutputTimeUnit;
 import org.openjdk.jmh.infra.Blackhole;
+import java.io.IOException;
 import java.util.concurrent.TimeUnit;
 
 import static jsonvalues.benchmark.Fun.PERSON_JSON;
@@ -26,8 +27,9 @@ public class JsSerializers {
         try {
             json = JsObj.parse(PERSON_JSON);
             node = objectMapper.readTree(PERSON_JSON);
-            object = objectMapper.readValue(PERSON_JSON, Person.class);
-        } catch (Exception e) {
+            object = objectMapper.readValue(PERSON_JSON,
+                                            Person.class);
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
@@ -35,20 +37,17 @@ public class JsSerializers {
 
     @Benchmark
     public void jackson_node(Blackhole bh) throws JsonProcessingException {
-        byte[] bytes = objectMapper.writeValueAsBytes(node);
-        bh.consume(bytes);
+        bh.consume(objectMapper.writeValueAsBytes(node));
     }
 
     @Benchmark
     public void jackson_pojo(Blackhole bh) throws JsonProcessingException {
-        byte[] bytes = objectMapper.writeValueAsBytes(object);
-        bh.consume(bytes);
+        bh.consume(objectMapper.writeValueAsBytes(object));
     }
 
     @Benchmark
     public void json_values(Blackhole bh) {
-        byte[] str = json.serialize();
-        bh.consume(str);
+        bh.consume(json.serialize());
     }
 
 

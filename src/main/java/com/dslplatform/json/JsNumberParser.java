@@ -13,7 +13,7 @@ final class JsNumberParser extends AbstractParser {
 
     JsNumber valueSuchThat(final JsonReader<?> reader,
                            final Function<JsNumber, Optional<Pair<JsValue, ERROR_CODE>>> fn
-    ) {
+    ) throws IOException {
         final JsNumber value = value(reader);
         final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
         if (!result.isPresent()) return value;
@@ -22,27 +22,18 @@ final class JsNumberParser extends AbstractParser {
     }
 
     @Override
-    JsNumber value(final JsonReader<?> reader) {
-        final Number number;
-        try {
-            number = MyNumberConverter.deserializeNumber(reader);
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
-        }
+    JsNumber value(final JsonReader<?> reader) throws IOException {
+        Number number = MyNumberConverter.deserializeNumber(reader);
         if (number instanceof Double) return JsDouble.of(((double) number));
-        else if (number instanceof Long) {
+        if (number instanceof Long) {
             long n = (long) number;
             try {
                 return JsInt.of(Math.toIntExact(n));
             } catch (ArithmeticException e) {
                 return JsLong.of(n);
             }
-        } else if (number instanceof BigDecimal)
-            return JsBigDec.of(((BigDecimal) number));
-        throw new JsParserException("internal error: not considered " + number.getClass(),
-                                    reader.getCurrentIndex());
+        }
+        return JsBigDec.of(((BigDecimal) number));
     }
 
 

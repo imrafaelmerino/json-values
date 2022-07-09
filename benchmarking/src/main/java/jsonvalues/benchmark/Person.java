@@ -5,19 +5,12 @@ import java.util.List;
 
 public class Person {
     private String firstName;
-
     private String lastName;
-
     private int age;
-
     private Double latitude;
-
     private Double longitude;
-
     private List<String> fruits;
-
     private List<Veggie> vegetables;
-
     private List<Integer> numbers;
 
     public String getFirstName() {

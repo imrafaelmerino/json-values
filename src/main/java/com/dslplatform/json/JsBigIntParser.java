@@ -28,7 +28,7 @@ final class JsBigIntParser extends AbstractParser {
 
     JsBigInt valueSuchThat(final JsonReader<?> reader,
                            final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> fn
-    ) {
+    ) throws IOException {
         try {
             BigDecimal bigDecimal = MyNumberConverter.deserializeDecimal(reader);
             final BigInteger value = bigDecimal.toBigIntegerExact();
@@ -40,10 +40,6 @@ final class JsBigIntParser extends AbstractParser {
         } catch (ArithmeticException e) {
             throw new JsParserException(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
                                         reader.getCurrentIndex());
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
         }
 
     }

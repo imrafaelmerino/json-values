@@ -18,19 +18,12 @@ final class JsStrParser extends AbstractParser {
 
     JsStr valueSuchThat(final JsonReader<?> reader,
                         final Function<String, Optional<Pair<JsValue, ERROR_CODE>>> fn
-    ) {
-        try {
+    ) throws IOException {
             String value = StringConverter.deserialize(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsStr.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
-        }
-
     }
 
 }

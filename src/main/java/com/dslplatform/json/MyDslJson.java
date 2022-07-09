@@ -135,7 +135,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             );
             outputStream.flush();
             return outputStream.toByteArray();
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new SerializerException(e);
         }
     }
@@ -147,7 +147,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             super.serialize(json,
                             requireNonNull(outputstream)
             );
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new SerializerException(e);
         }
 
@@ -166,7 +166,7 @@ public final class MyDslJson<A> extends DslJson<A> {
                                                           indentLength)
             );
             return baos.toString(StandardCharsets.UTF_8.name());
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new SerializerException(e);
         }
     }

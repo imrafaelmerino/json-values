@@ -26,7 +26,7 @@ public final class Index implements Position {
      */
     public static Index of(final int index) {
         if (index < -1)
-            throw new IndexOutOfBoundsException(String.format("%s is not between [0,U+221E)",
+            throw new IndexOutOfBoundsException(String.format("%s is not between [-1,U+221E)",
                                                               index));
         return new Index(index);
     }

@@ -10,18 +10,18 @@ final class JsBoolParser extends AbstractParser {
     @Override
     JsBool value(final JsonReader<?> reader) throws ParsingException {
 
-            if (reader.wasTrue()) return JsBool.TRUE;
-            if (reader.wasFalse()) return JsBool.FALSE;
-            throw new JsParserException(ParserErrors.BOOL_EXPECTED,
-                                        reader.getCurrentIndex()
-            );
+        if (reader.wasTrue()) return JsBool.TRUE;
+        if (reader.wasFalse()) return JsBool.FALSE;
+        throw new JsParserException(ParserErrors.BOOL_EXPECTED,
+                                    reader.getCurrentIndex()
+        );
 
     }
 
     JsValue nullOrTrue(final JsonReader<?> reader) throws ParsingException {
-            return reader.wasNull() ?
-                   JsNull.NULL :
-                   True(reader);
+        return reader.wasNull() ?
+               JsNull.NULL :
+               True(reader);
     }
 
     JsBool True(final JsonReader<?> reader) throws ParsingException {

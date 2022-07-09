@@ -18,20 +18,12 @@ final class JsLongParser extends AbstractParser {
 
     JsLong valueSuchThat(final JsonReader<?> reader,
                          final LongFunction<Optional<Pair<JsValue, ERROR_CODE>>> fn
-    ) {
-        try {
+    ) throws IOException {
             long value = MyNumberConverter.deserializeLong(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsLong.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
-        }
-
     }
-
 
 }

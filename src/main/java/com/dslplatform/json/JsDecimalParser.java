@@ -20,18 +20,12 @@ final class JsDecimalParser extends AbstractParser {
 
     JsBigDec valueSuchThat(final JsonReader<?> reader,
                            final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> fn
-    ) {
-        try {
+    ) throws IOException {
             final BigDecimal value = MyNumberConverter.deserializeDecimal(reader);
             final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
             if (!result.isPresent()) return JsBigDec.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
-        } catch (IOException e) {
-            throw new JsParserException(e.getMessage(),
-                                        reader.getCurrentIndex());
-
-        }
     }
 
 

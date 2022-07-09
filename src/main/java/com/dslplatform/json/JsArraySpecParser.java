@@ -24,8 +24,9 @@ final class JsArraySpecParser {
 
 
     public JsArray array(final JsonReader<?> reader) throws IOException {
-        if (reader.last() != '[') throw new JsParserException(ParserErrors.EXPECTING_FOR_LIST_START,
-                                                              reader.getCurrentIndex());
+        if (reader.last() != '[')
+            throw new JsParserException(ParserErrors.EXPECTING_FOR_LIST_START,
+                                        reader.getCurrentIndex());
         reader.getNextToken();
         if (reader.last() == ']') return JsArray.empty();
         JsArray buffer = JsArray.empty();

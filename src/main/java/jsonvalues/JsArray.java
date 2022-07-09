@@ -336,12 +336,10 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public static JsArray parseYaml(final String str) {
 
         try (JsonParser parser = JacksonFactory.YAML_FACTORY.createParser(requireNonNull(str))) {
-            final JsonToken keyEvent = parser.nextToken();
+            JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-            return new JsArray(parse(parser
-            ));
-        } catch (Exception e) {
-
+            return new JsArray(parse(parser));
+        } catch (IOException e) {
             throw new MalformedJson(e.getMessage());
         }
 
@@ -357,7 +355,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public static JsArray parse(final String str) {
 
         try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
-            final JsonToken keyEvent = parser.nextToken();
+            JsonToken keyEvent = parser.nextToken();
             if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
             return new JsArray(parse(parser
             ));
@@ -1258,7 +1256,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @return a JsArray of the same type as the inputs
      */
     @Override
-    public JsArray intersection(final JsArray that,final JsArray.TYPE ARRAY_AS) {
+    public JsArray intersection(final JsArray that,
+                                final JsArray.TYPE ARRAY_AS) {
         return intersection(this,
                             requireNonNull(that),
                             ARRAY_AS

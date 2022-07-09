@@ -8,11 +8,9 @@ import com.github.fge.jsonschema.core.load.Dereferencing;
 import com.github.fge.jsonschema.core.load.configuration.LoadingConfiguration;
 import com.github.fge.jsonschema.main.JsonSchemaFactory;
 import com.networknt.schema.SpecVersion;
-import com.networknt.schema.ValidationMessage;
 import io.vertx.core.json.JsonObject;
 import io.vertx.json.schema.Draft;
 import io.vertx.json.schema.JsonSchemaOptions;
-import io.vertx.json.schema.OutputUnit;
 import jsonvalues.JsObj;
 import jsonvalues.spec.JsObjParser;
 import org.everit.json.schema.Schema;
@@ -24,13 +22,8 @@ import org.leadpony.justify.api.JsonValidationService;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.infra.Blackhole;
 
-import javax.validation.ConstraintViolation;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.ValidatorFactory;
 import java.io.IOException;
 import java.io.StringReader;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import static jsonvalues.benchmark.Fun.*;
@@ -40,18 +33,10 @@ import static jsonvalues.benchmark.Fun.*;
 @State(Scope.Benchmark)
 public class JsDeserializers {
 
-    private static final ObjectMapper objectMapper =
-            new ObjectMapper();
-
-    // hibernate validator init
-    private static final ValidatorFactory validatorFactory =
-            Validation.buildDefaultValidatorFactory();
-    private static final Validator validator =
-            validatorFactory.getValidator();
+    private static final ObjectMapper objectMapper = new ObjectMapper();
 
     // json-values parser from spec
-    private static final JsObjParser jsonParser =
-            new JsObjParser(PERSON_SPEC);
+    private static final JsObjParser jsonParser = new JsObjParser(PERSON_SPEC);
 
     private static final com.networknt.schema.JsonSchemaFactory NETWORKNT_FACTORY =
             com.networknt.schema.JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);
@@ -67,10 +52,11 @@ public class JsDeserializers {
     private static final Schema EVERIT_SCHEMA =
             SchemaLoader.load(new JSONObject(new JSONTokener(PERSON_JSON_SCHEMA)));
 
-    private static final io.vertx.json.schema.Validator VERTX_VALIDATOR = io.vertx.json.schema.Validator.create(
-            io.vertx.json.schema.JsonSchema.of(new JsonObject(PERSON_JSON_SCHEMA)),
-            new JsonSchemaOptions().setDraft(Draft.DRAFT7)
-                                   .setBaseUri("https://vertx.io"));
+    private static final io.vertx.json.schema.Validator VERTX_VALIDATOR =
+            io.vertx.json.schema.Validator.create(
+                    io.vertx.json.schema.JsonSchema.of(new JsonObject(PERSON_JSON_SCHEMA)),
+                    new JsonSchemaOptions().setDraft(Draft.DRAFT7)
+                                           .setBaseUri("https://vertx.io"));
 
 
     // json schema validator init
@@ -87,7 +73,7 @@ public class JsDeserializers {
     static {
         try {
             schema = jsonSchemaFactory.getJsonSchema(JsonLoader.fromString(PERSON_JSON_SCHEMA));
-        } catch (Exception e) {
+        } catch (IOException | ProcessingException e) {
             throw new RuntimeException(e);
         }
     }
@@ -113,30 +99,6 @@ public class JsDeserializers {
         jakarta.json.JsonObject obj = reader.readObject();
         reader.close();
         bh.consume(obj);
-    }
-
-    //@Benchmark
-    public void jackson_node(Blackhole bh) throws IOException {
-        bh.consume(objectMapper.readTree(PERSON_JSON));
-    }
-
-    //@Benchmark
-    public void jackson_pojo(Blackhole bh) throws JsonProcessingException {
-        bh.consume(objectMapper.readValue(PERSON_JSON,
-                                          Person.class
-        ));
-    }
-
-   // @Benchmark
-    public void jackson_pojo_bean_validation(Blackhole bh) throws JsonProcessingException {
-        bh.consume(validator.validate(objectMapper.readValue(PERSON_JSON,
-                                                             PersonWithAnnotations.class
-        )));
-    }
-
-    //@Benchmark
-    public void json_values(Blackhole bh) {
-        bh.consume(JsObj.parse(PERSON_JSON));
     }
 
     @Benchmark
