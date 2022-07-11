@@ -1,9 +1,11 @@
 package jsonvalues.optics;
 
+import fun.gen.BigIntGen;
 import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -138,4 +140,12 @@ public class TestPrims {
         Assertions.assertTrue(JsInstant.prism.getOptional.apply(JsStr.of(Instant.now().toString())).isPresent());
         Assertions.assertFalse(JsInstant.prism.getOptional.apply(JsStr.of(LocalDateTime.now(ZoneId.systemDefault()).toString())).isPresent());
     }
+
+    @Test
+    public void test_big_int_prism(){
+
+        Assertions.assertEquals(Optional.of(BigInteger.valueOf(Long.MAX_VALUE)),
+                                JsBigInt.prism.getOptional.apply(JsLong.of(Long.MAX_VALUE)));
+    }
+
 }

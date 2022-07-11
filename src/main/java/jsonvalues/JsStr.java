@@ -130,11 +130,11 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
             return Objects.equals(value,
                                   thatStr.value
             );
-        } else if (that instanceof JsInstant) {
-            return JsStr.instantPrism.reverseGet.apply(((JsInstant) that).value).equals(value);
-        } else if (that instanceof JsBinary) {
-            return JsStr.base64Prism.reverseGet.apply(((JsBinary) that).value).equals(value);
         }
+        if (that instanceof JsInstant)
+            return JsStr.instantPrism.reverseGet.apply(((JsInstant) that).value).equals(value);
+        if (that instanceof JsBinary)
+            return JsStr.base64Prism.reverseGet.apply(((JsBinary) that).value).equals(value);
         return false;
     }
 
@@ -145,7 +145,7 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
      */
     @Override
     public String toString() {
-        return "\"" + value + "\"";
+        return value;
     }
 
     /**

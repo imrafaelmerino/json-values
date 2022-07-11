@@ -402,7 +402,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                     elem = NULL;
                     break;
                 default:
-                    throw JsValuesInternalError.tokenNotExpected(token.name());
+                    throw new RuntimeException("token not expected durint parsing: "+token);
             }
             root = root.append(elem);
         }

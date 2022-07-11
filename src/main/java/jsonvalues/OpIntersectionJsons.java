@@ -32,7 +32,7 @@ final class OpIntersectionJsons {
                                           b.toJsArray()
             );
 
-        throw JsValuesInternalError.arrayOptionNotImplemented(ARRAY_AS.name());
+        throw new  RuntimeException("Array type not implemented yet: "+ARRAY_AS);
     }
 
 

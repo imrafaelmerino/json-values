@@ -410,12 +410,14 @@ public class TestJsArray {
         JsArray arr2 = JsArray.parse("[{\"a\": 1, \"b\": [1,2]}]");
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection(arr2,JsArray.TYPE.SET)
+                                arr1.intersection(arr2,
+                                                  JsArray.TYPE.SET)
         );
 
 
         Assertions.assertEquals(arr2,
-                                arr1.intersection(arr2,JsArray.TYPE.LIST)
+                                arr1.intersection(arr2,
+                                                  JsArray.TYPE.LIST)
         );
 
 
@@ -1150,6 +1152,148 @@ public class TestJsArray {
         Assertions.assertEquals(obj,
                                 arr.getObj(10,
                                            () -> obj));
+
+    }
+
+    @Test
+    public void testFilterValues() {
+
+        JsArray a = JsArray.of(JsInt.of(0),
+                               JsInt.of(10),
+                               JsArray.of(1,
+                                          2,
+                                          3,
+                                          4,
+                                          5,
+                                          6,
+                                          7,
+                                          8
+                                       ,
+                                          9,
+                                          10),
+                               JsInt.of(1),
+                               JsArray.of(JsObj.of("a",
+                                                   JsInt.of(10),
+                                                   "b",
+                                                   JsInt.of(1)))
+        );
+
+        JsArray b = a.filterValues(JsInt.prism.exists.apply(n -> n > 5));
+
+        System.out.println(b);
+
+        Assertions.assertEquals(JsArray.of(JsInt.of(10),
+                                           JsArray.of(6,
+                                                      7,
+                                                      8,
+                                                      9,
+                                                      10),
+                                           JsArray.of(JsObj.of("a",
+                                                               JsInt.of(10)))
+                                ),
+                                b);
+
+
+    }
+
+    @Test
+    public void testMapValues() {
+
+        JsArray a = JsArray.of(JsInt.of(0),
+                               JsInt.of(10),
+                               JsArray.of(1,
+                                          2,
+                                          3,
+                                          4,
+                                          5,
+                                          6,
+                                          7,
+                                          8
+                                       ,
+                                          9,
+                                          10),
+                               JsInt.of(1),
+                               JsArray.of(JsObj.of("a",
+                                                   JsInt.of(10),
+                                                   "b",
+                                                   JsInt.of(1)))
+        );
+
+
+        JsArray result = JsArray.of(JsInt.of(1),
+                                    JsInt.of(11),
+                                    JsArray.of(2,
+                                               3,
+                                               4,
+                                               5,
+                                               6,
+                                               7,
+                                               8,
+                                               9,
+                                               10,
+                                               11),
+                                    JsInt.of(2),
+                                    JsArray.of(JsObj.of("a",
+                                                        JsInt.of(11),
+                                                        "b",
+                                                        JsInt.of(2)))
+        );
+        Assertions.assertEquals(result,
+                                a.mapValues(JsInt.prism.modify.apply(n -> n + 1)));
+
+
+        Assertions.assertEquals(result,
+                                a.mapValues((path, value) -> {
+                                    Assertions.assertEquals(value,
+                                                            a.get(path));
+                                    return JsInt.prism.modify.apply(n -> n + 1).apply(value);
+                                }));
+    }
+
+
+    @Test
+    public void testMapObjs() {
+        JsArray a = JsArray.of(JsArray.of(JsObj.of("a",
+                                                   TRUE,
+                                                   "b",
+                                                   FALSE),
+                                          JsObj.of("c",
+                                                   FALSE)
+                               ),
+                               JsObj.of("a",
+                                        NULL),
+                               FALSE
+        );
+
+
+        JsArray result = JsArray.of(JsArray.of(JsObj.of("a",
+                                                        TRUE,
+                                                        "b",
+                                                        FALSE,
+                                                        "size",
+                                                        JsInt.of(2)),
+                                               JsObj.of("c",
+                                                        FALSE,
+                                                        "size",
+                                                        JsInt.of(1))
+                                    ),
+                                    JsObj.of("a",
+                                             NULL,
+                                             "size",
+                                             JsInt.of(1)),
+                                    FALSE
+        );
+        Assertions.assertEquals(result,
+                                a.mapObjs(it -> it.set("size",
+                                                       JsInt.of(it.size()))));
+
+        Assertions.assertEquals(result,
+                                a.mapObjs((path, value) -> {
+                                    Assertions.assertEquals(value,a.get(path));
+                                    return value.set("size",
+                                           JsInt.of(value.size()));
+                                }));
+
 
     }
 

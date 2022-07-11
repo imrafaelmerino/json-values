@@ -79,14 +79,14 @@ public final class JsBinary extends JsPrimitive {
 
     @Override
     public String toString() {
-        return "\"" + Base64.getEncoder()
-                            .encodeToString(value) + "\"" ;
+        return  Base64.getEncoder()
+                            .encodeToString(value)  ;
     }
 
     @Override
     public boolean equals(final Object o) {
         if (this == o) return true;
-        if (o == null) return false;
+        if (o == null ) return false;
         if (o instanceof JsValue) {
             return JsBinary.prism.getOptional.apply(((JsValue) o))
                                              .map(bytes -> Arrays.equals(bytes,

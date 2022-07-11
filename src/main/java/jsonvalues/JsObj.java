@@ -2043,8 +2043,8 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         String key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
             JsValue elem;
-            switch (parser.nextToken()
-                          .id()) {
+            JsonToken token = parser.nextToken();
+            switch (token.id()) {
                 case JsonTokenId.ID_STRING:
                     elem = JsStr.of(parser.getValueAsString());
                     break;
@@ -2070,8 +2070,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                     elem = new JsArray(JsArray.parse(parser));
                     break;
                 default:
-                    throw JsValuesInternalError.tokenNotExpected(parser.currentToken()
-                                                                       .name());
+                    throw new RuntimeException("Token not expected during parsing "+token);
             }
             map = map.put(key,
                           elem
