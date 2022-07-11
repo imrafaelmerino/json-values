@@ -4,7 +4,7 @@ public final class JsParserException extends RuntimeException {
     private static final long serialVersionUID = 1L;
 
     public JsParserException(final String message,int currentIndex) {
-        super(message+" @ index="+currentIndex);
+        super(message+" @ position="+currentIndex);
     }
 
     public JsParserException(final Throwable cause) {

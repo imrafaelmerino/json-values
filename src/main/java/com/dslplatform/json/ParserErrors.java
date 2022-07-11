@@ -10,7 +10,7 @@ import java.util.function.UnaryOperator;
 
 class ParserErrors {
 
-    public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with spec method 'suchThat'";
+    public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with the spec method 'suchThat'";
     public static final String EXPECTING_TRUE = "Expecting 'true' for true constant";
 
     public static final String EXPECTING_FALSE = "Expecting 'false' for false constant";

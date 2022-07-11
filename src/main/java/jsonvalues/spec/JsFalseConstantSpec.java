@@ -17,7 +17,7 @@ class JsFalseConstantSpec extends AbstractNullableSpec implements JsValuePredica
 
     @Override
     public JsSpec nullable() {
-        return new JsFalseConstantSpec(false);
+        return new JsFalseConstantSpec(true);
     }
 
     @Override

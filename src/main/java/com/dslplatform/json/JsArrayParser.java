@@ -15,7 +15,7 @@ abstract class JsArrayParser extends AbstractParser {
     static final JsArray EMPTY = JsArray.empty();
     private final AbstractParser parser;
 
-    public JsArrayParser(final AbstractParser parser) {
+    JsArrayParser(final AbstractParser parser) {
         this.parser = parser;
     }
 
@@ -30,27 +30,27 @@ abstract class JsArrayParser extends AbstractParser {
                      max);
     }
 
-    public JsArray array(final JsonReader<?> reader,
-                         int min,
-                         int max) throws IOException {
-            if (checkIfEmpty(isEmptyArray(reader),
-                             min,
-                             reader.getCurrentIndex())) return EMPTY;
-            JsArray buffer = EMPTY.append(parser.value(reader));
-            while (reader.getNextToken() == ',') {
-                reader.getNextToken();
-                buffer = buffer.append(parser.value(reader));
-                checkSize(buffer.size() > max,
-                          ParserErrors.TOO_LONG_ARRAY.apply(max),
-                          reader.getCurrentIndex());
-
-            }
-            checkSize(buffer.size() < min,
-                      ParserErrors.TOO_SHORT_ARRAY.apply(min),
+    JsArray array(final JsonReader<?> reader,
+                  int min,
+                  int max) throws IOException {
+        if (checkIfEmpty(isEmptyArray(reader),
+                         min,
+                         reader.getCurrentIndex())) return EMPTY;
+        JsArray buffer = EMPTY.append(parser.value(reader));
+        while (reader.getNextToken() == ',') {
+            reader.getNextToken();
+            buffer = buffer.append(parser.value(reader));
+            checkSize(buffer.size() > max,
+                      ParserErrors.TOO_LONG_ARRAY.apply(max),
                       reader.getCurrentIndex());
 
-            reader.checkArrayEnd();
-            return buffer;
+        }
+        checkSize(buffer.size() < min,
+                  ParserErrors.TOO_SHORT_ARRAY.apply(min),
+                  reader.getCurrentIndex());
+
+        reader.checkArrayEnd();
+        return buffer;
     }
 
     private boolean checkIfEmpty(boolean error,
@@ -66,7 +66,7 @@ abstract class JsArrayParser extends AbstractParser {
     }
 
     @Override
-    public JsArray value(final JsonReader<?> reader) throws IOException {
+    JsArray value(final JsonReader<?> reader) throws IOException {
         if (isEmptyArray(reader)) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
         while (reader.getNextToken() == ',') {
@@ -79,11 +79,11 @@ abstract class JsArrayParser extends AbstractParser {
     }
 
     private boolean isEmptyArray(final JsonReader<?> reader) throws IOException {
-            checkSize(reader.last() != '[',
-                      ParserErrors.EXPECTING_FOR_LIST_START,
-                      reader.getCurrentIndex());
-            reader.getNextToken();
-            return reader.last() == ']';
+        checkSize(reader.last() != '[',
+                  ParserErrors.EXPECTING_FOR_LIST_START,
+                  reader.getCurrentIndex());
+        reader.getNextToken();
+        return reader.last() == ']';
     }
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
@@ -99,8 +99,7 @@ abstract class JsArrayParser extends AbstractParser {
     }
 
 
-
-    public JsArray arraySuchThat(final JsonReader<?> reader,
+    JsArray arraySuchThat(final JsonReader<?> reader,
                                  final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
     ) throws IOException {
 

@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 final class JsArraySerializer implements JsonWriter.WriteObject<JsArray> {
     private final JsValueSerializer valueSerializer;
 
-    public JsArraySerializer(final JsValueSerializer valueSerializer) {
+    JsArraySerializer(final JsValueSerializer valueSerializer) {
         this.valueSerializer = valueSerializer;
     }
 

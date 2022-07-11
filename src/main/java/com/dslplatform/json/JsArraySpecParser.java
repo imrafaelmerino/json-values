@@ -10,11 +10,11 @@ import java.util.List;
 final class JsArraySpecParser {
     private final List<JsSpecParser> parsers;
 
-    public JsArraySpecParser(final List<JsSpecParser> parsers) {
+    JsArraySpecParser(final List<JsSpecParser> parsers) {
         this.parsers = parsers;
     }
 
-    public JsValue nullOrArray(final JsonReader<?> reader) throws IOException {
+    JsValue nullOrArray(final JsonReader<?> reader) throws IOException {
 
         return reader.wasNull() ?
                JsNull.NULL :
@@ -23,7 +23,7 @@ final class JsArraySpecParser {
     }
 
 
-    public JsArray array(final JsonReader<?> reader) throws IOException {
+    JsArray array(final JsonReader<?> reader) throws IOException {
         if (reader.last() != '[')
             throw new JsParserException(ParserErrors.EXPECTING_FOR_LIST_START,
                                         reader.getCurrentIndex());

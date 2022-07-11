@@ -41,9 +41,7 @@ import static java.util.Objects.requireNonNull;
  * There are one convention on method names:
  * -Methods that are suffixed with underscore traverse the whole json recursively.
  * All the methods throw a NullPointerException when any of the params passed in is null. The exception
- * <code>UserError</code> is thrown when the user calls a method inappropriately:
- * for example calling the method <code>asJsStr</code> in a <code>JsNull</code> instance or calling the
- * method head in an empty array, etc. Normally, when that happens, a previous check is missing.
+ * <code>UserError</code> is thrown when the user calls a method inappropriately.
  * </pre>
  *
  * @param <T> Type of container: either an object or an array

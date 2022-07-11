@@ -15,26 +15,28 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 
+import static jsonvalues.spec.JsSpecs.str;
+
 public class TestExample {
 
     @Test
     public void test() {
 
         JsObjSpec spec = JsObjSpec.strict("name",
-                                          JsSpecs.str(),
+                                          str(),
                                           "surname",
-                                          JsSpecs.str(),
+                                          str(),
                                           "languages",
                                           JsSpecs.arrayOfStr(),
                                           "age",
                                           JsSpecs.integer(),
                                           "address",
                                           JsObjSpec.strict("street",
-                                                           JsSpecs.str(),
+                                                           str(),
                                                            "number",
                                                            JsSpecs.any(it -> it.isInt() || it.isStr()),
                                                            "city",
-                                                           JsSpecs.str().nullable(),
+                                                           str().nullable(),
                                                            "coordinates",
                                                            JsSpecs.tuple(JsSpecs.decimal(),
                                                                          JsSpecs.decimal()
@@ -147,6 +149,8 @@ public class TestExample {
         Assertions.assertEquals(numberLens.get.apply(newPerson),
                                 JsStr.of("034CF")
         );
+
+
     }
 
 

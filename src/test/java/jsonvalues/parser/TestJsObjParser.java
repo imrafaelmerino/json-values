@@ -360,48 +360,49 @@ public class TestJsObjParser {
     @Test
     public void test_parse_obj_all_primitive_types_with_predicates() {
 
-        final JsObjSpec spec = JsObjSpec.strict("a",
-                                                integer(i -> i > 0),
-                                                "b",
-                                                str(a -> a.length() > 0),
-                                                "c",
-                                                longInteger(c -> c > 0),
-                                                "d",
-                                                bool(),
-                                                "e",
-                                                TRUE.nullable(),
-                                                "f",
-                                                FALSE,
-                                                "g",
-                                                decimal(d -> d.doubleValue() > 0.0),
-                                                "h",
-                                                bigInteger(i -> i.longValueExact() % 2 == 0),
-                                                "i",
-                                                JsObjSpec.strict("a",
-                                                                 number(),
-                                                                 "b",
-                                                                 array(),
-                                                                 "c",
-                                                                 obj(JsObj::isEmpty),
-                                                                 "d",
-                                                                 integer(i -> i % 2 == 0),
-                                                                 "e",
-                                                                 longInteger(i -> i % 2 == 1),
-                                                                 "f",
-                                                                 str(s -> s.startsWith("a")),
-                                                                 "g",
-                                                                 decimal(d -> d.doubleValue() > 1.0),
-                                                                 "h",
-                                                                 obj(o -> o.containsKey("b")),
-                                                                 "i",
-                                                                 arraySuchThat(a -> a.head()
-                                                                                     .equals(JsStr.of("first"))),
-                                                                 "j",
-                                                                 tuple(number(JsValue::isDecimal),
-                                                                       any()
-                                                                 )
-                                                )
-        ).setOptionals("e");
+        final JsObjSpec spec =
+                JsObjSpec.strict("a",
+                                 integer(i -> i > 0),
+                                 "b",
+                                 str(a -> a.length() > 0),
+                                 "c",
+                                 longInteger(c -> c > 0),
+                                 "d",
+                                 bool(),
+                                 "e",
+                                 TRUE.nullable(),
+                                 "f",
+                                 FALSE.nullable(),
+                                 "g",
+                                 decimal(d -> d.doubleValue() > 0.0),
+                                 "h",
+                                 bigInteger(i -> i.longValueExact() % 2 == 0),
+                                 "i",
+                                 JsObjSpec.strict("a",
+                                                  number(),
+                                                  "b",
+                                                  array(),
+                                                  "c",
+                                                  obj(JsObj::isEmpty),
+                                                  "d",
+                                                  integer(i -> i % 2 == 0),
+                                                  "e",
+                                                  longInteger(i -> i % 2 == 1),
+                                                  "f",
+                                                  str(s -> s.startsWith("a")),
+                                                  "g",
+                                                  decimal(d -> d.doubleValue() > 1.0),
+                                                  "h",
+                                                  obj(o -> o.containsKey("b")),
+                                                  "i",
+                                                  arraySuchThat(a -> a.head()
+                                                                      .equals(JsStr.of("first"))),
+                                                  "j",
+                                                  tuple(number(JsValue::isDecimal),
+                                                        any()
+                                                  )
+                                 )
+                ).setOptionals("e");
 
 
         final JsObj obj = JsObj.of("a",
@@ -1001,32 +1002,62 @@ public class TestJsObjParser {
     @Test
     public void array_of_number_with_predicate() {
         JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfBigInt(a -> a.longValueExact() > 0),
+                                          arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
                                           "b",
                                           arrayOfBigInt(a -> a.longValueExact() < 0).nullable(),
                                           "c",
-                                          arrayOfBigInt(a -> a.longValueExact() % 2 == 0),
+                                          arrayOfBigInt(a -> a.longValueExact() % 2 == 0).nullable(),
                                           "e",
-                                          arrayOfBigInt(a -> a.longValueExact() % 3 == 0)
+                                          arrayOfBigInt(a -> a.longValueExact() % 3 == 0).nullable()
         ).setOptionals("c",
                        "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
-        final JsObj a = JsObj.of("a",
-                                 JsArray.of(1,
-                                            2
-                                 ),
-                                 "b",
-                                 JsNull.NULL,
-                                 "c",
-                                 JsArray.of(2,
-                                            4,
-                                            6
-                                 )
+        final JsObj valid = JsObj.of("a",
+                                     JsArray.of(1,
+                                                2
+                                     ),
+                                     "b",
+                                     JsNull.NULL,
+                                     "c",
+                                     JsArray.of(2,
+                                                4,
+                                                6
+                                     )
         );
-        Assertions.assertEquals(a,
-                                parser.parse(a.toString())
+        Assertions.assertEquals(valid,
+                                parser.parse(valid.toString())
+        );
+
+
+        Assertions.assertThrows(JsParserException.class,
+                                () ->
+                                        parser.parse(JsObj.of("a",
+                                                              JsNull.NULL,
+                                                              "b",
+                                                              JsArray.of(1),
+                                                              "c",
+                                                              JsArray.of(2,
+                                                                         4,
+                                                                         6
+                                                              )).toPrettyString())
+        );
+
+
+        Assertions.assertThrows(JsParserException.class,
+                                () ->
+                                        parser.parse(JsObj.of("a",
+                                                              JsNull.NULL,
+                                                              "b",
+                                                              JsArray.of(1,
+                                                                         2
+                                                              ),
+                                                              "c",
+                                                              JsArray.of(1,
+                                                                         4,
+                                                                         6
+                                                              )).toPrettyString())
         );
     }
 
@@ -1359,5 +1390,73 @@ public class TestJsObjParser {
                                                    0,
                                                    10).sample(1000).allMatch(it -> parser.parse(it.toPrettyString()).equals(it)));
     }
+
+    @Test
+    public void test1() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.bool(),
+                                          "b",
+                                          JsSpecs.integer());
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse("{\"a\":true,\"b\":1]"));
+
+    }
+
+    @Test
+    public void test2() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.bool(),
+                                          "b",
+                                          JsSpecs.integer()).suchThat(it -> it.containsKey("hi"));
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse("{\"a\":true,\"b\":1}"));
+
+    }
+
+    @Test
+    public void test3() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.any());
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse("{\"a\":fal}"));
+
+        Assertions.assertEquals(JsObj.of("a",JsArray.empty()),
+                                parser.parse("{\"a\":[]}"));
+
+    }
+
+    @Test
+    public void test4() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.array(it->it.isInt()));
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse("{\"a\":[true]}"));
+
+    }
+
+    @Test
+    public void test5() {
+        JsObjSpec spec = JsObjSpec.strict("a",
+                                          JsSpecs.number(it->it.isInt() && it.toJsInt().value > 1).nullable());
+
+        JsObjParser parser = new JsObjParser(spec);
+
+        Assertions.assertThrows(JsParserException.class,
+                                () -> parser.parse("{\"a\":1}"));
+
+    }
+
 
 }

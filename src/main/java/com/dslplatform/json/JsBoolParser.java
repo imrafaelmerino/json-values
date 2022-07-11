@@ -39,7 +39,7 @@ final class JsBoolParser extends AbstractParser {
 
     }
 
-    public JsBool False(final JsonReader<?> reader) throws ParsingException {
+    JsBool False(final JsonReader<?> reader) throws ParsingException {
 
         if (reader.wasFalse()) return JsBool.FALSE;
         throw new JsParserException(ParserErrors.FALSE_EXPECTED,

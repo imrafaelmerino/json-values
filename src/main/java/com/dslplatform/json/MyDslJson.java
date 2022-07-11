@@ -32,21 +32,18 @@ public final class MyDslJson<A> extends DslJson<A> {
     }
 
     private MyDslJson() {
-        super((new Settings<A>().errorInfo(JsonReader.ErrorInfo.MINIMAL)));
+        super((new Settings<A>().errorInfo(JsonReader.ErrorInfo.MINIMAL)).doublePrecision(JsonReader.DoublePrecision.HIGH));
     }
 
     public JsObj parseToJsObj(final byte[] bytes,
                               final JsSpecParser parser
     ) {
         JsonReader<?> reader = getReader(bytes);
-
         try {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
 
@@ -55,8 +52,7 @@ public final class MyDslJson<A> extends DslJson<A> {
         }
     }
 
-    public JsonReader<?> getReader(final byte[] bytes
-    ) {
+    private JsonReader<?> getReader(final byte[] bytes) {
         return localReader.get()
                           .process(bytes,
                                    bytes.length
@@ -71,9 +67,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {
@@ -90,9 +84,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
-        }
-
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {
@@ -100,7 +92,7 @@ public final class MyDslJson<A> extends DslJson<A> {
         }
     }
 
-    public JsonReader<?> getReader(final InputStream is) {
+    private JsonReader<?> getReader(final InputStream is) {
         try {
             return localReader.get()
                               .process(is);
@@ -118,8 +110,7 @@ public final class MyDslJson<A> extends DslJson<A> {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             throw new JsParserException(e.getMessage(),
                                         reader.getCurrentIndex());
         } finally {
@@ -145,8 +136,7 @@ public final class MyDslJson<A> extends DslJson<A> {
     ) {
         try {
             super.serialize(json,
-                            requireNonNull(outputstream)
-            );
+                            requireNonNull(outputstream));
         } catch (IOException e) {
             throw new SerializerException(e);
         }

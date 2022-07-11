@@ -127,17 +127,10 @@ public final class JsSpecParsers {
             {
                 JsValue value = PARSERS.objParser.nullOrValue(reader);
                 if (value == JsNull.NULL) return value;
-                else {
-                    Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                            testTypeAndSpec(JsValue::isObj,
-                                            JsValue::toJsObj,
-                                            predicate,
-                                            () -> new IllegalStateException("Internal error. JsObjDeserializer.nullOrValue didn't return wither null or a JsObj as expected.")
-                            ).apply(value);
-                    if (!opErr.isPresent()) return value;
-                    else throw newParseException.apply(reader,
-                                                       opErr.get());
-                }
+                Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsObj());
+                if (!opErr.isPresent()) return value;
+                throw newParseException.apply(reader,
+                                              opErr.get());
             };
 
 
@@ -146,32 +139,12 @@ public final class JsSpecParsers {
             JsObj value = PARSERS.objParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
         };
     }
 
-    /**
-     * @param typeCondition     condition to check if the value has the expected type
-     * @param converter         function to convert the value to the expected type
-     * @param spec              the specification that the value has to conform
-     * @param errorTypeSupplier if the value doesn't have the expected type,
-     *                          the error produced by this supplier is thrown. It's considered an internal error
-     *                          because if this happened, it would be because a development error
-     * @return a function to test that a value has the expected type and conforms a given spec
-     */
-    private <R> Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> testTypeAndSpec(Predicate<JsValue> typeCondition,
-                                                                                       Function<JsValue, R> converter,
-                                                                                       Function<R, Optional<Pair<JsValue, ERROR_CODE>>> spec,
-                                                                                       Supplier<RuntimeException> errorTypeSupplier
-    ) {
-        return value ->
-        {
-            if (typeCondition.test(value)) return spec.apply(converter.apply(value));
-            else throw errorTypeSupplier.get();
-        };
-    }
 
     public JsSpecParser ofArraySpec(List<JsSpecParser> keyDeserializers,
                                     boolean nullable
@@ -198,17 +171,16 @@ public final class JsSpecParsers {
                 return nullable ?
                        parser.nullOrValue(reader) :
                        parser.value(reader);
-            } else {
-                JsObjSpecWithRequiredKeysParser parser =
-                        new JsObjSpecWithRequiredKeysParser(required,
-                                                            keyDeserializers,
-                                                            strict,
-                                                            predicate
-                        );
-                return nullable ?
-                       parser.nullOrValue(reader) :
-                       parser.value(reader);
             }
+            JsObjSpecWithRequiredKeysParser parser =
+                    new JsObjSpecWithRequiredKeysParser(required,
+                                                        keyDeserializers,
+                                                        strict,
+                                                        predicate
+                    );
+            return nullable ?
+                   parser.nullOrValue(reader) :
+                   parser.value(reader);
 
         };
     }
@@ -273,13 +245,11 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.valueParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
-                if (!result.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   result.get()
-                );
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
+            if (!result.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          result.get()
+            );
         };
     }
 
@@ -377,18 +347,10 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.strParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(JsValue::isStr,
-                                        v -> v.toJsStr().value,
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error.JsStrDeserializer.nullOrValue didn't return neither null or a JsStr as expected.")
-                        ).apply(value);
-
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsStr().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
         };
         else return reader ->
         {
@@ -460,17 +422,10 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.numberParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(JsValue::isNumber,
-                                        v -> value.toJsNumber(),
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error.JsNumberDeserializer.nullOrValue didn't return neither null or a JsNumber as expected.")
-                        ).apply(value);
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsNumber());
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
 
         };
         else return reader ->
@@ -478,8 +433,8 @@ public final class JsSpecParsers {
             JsNumber value = PARSERS.numberParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
         };
 
@@ -528,25 +483,18 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.integralParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(JsValue::isBigInt,
-                                        v -> v.toJsBigInt().value,
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error.JsIntegralDeserializer.nullOrValue didn't return neither null or a JsBigInt as expected.")
-                        ).apply(value);
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsBigInt().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
         };
         else return reader ->
         {
             JsBigInt integral = PARSERS.integralParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(integral.value);
             if (!result.isPresent()) return integral;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
 
         };
@@ -642,18 +590,11 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.decimalParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(JsValue::isDecimal,
-                                        v -> v.toJsBigDec().value,
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error.JsDecimalDeserializer.nullOrValue didn't return neither null or a JsBigDec as expected.")
-                        ).apply(value);
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsBigDec().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
 
-            }
         };
 
         else
@@ -662,8 +603,8 @@ public final class JsSpecParsers {
                 JsBigDec decimal = PARSERS.decimalParser.value(reader);
                 Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(decimal.value);
                 if (!result.isPresent()) return decimal;
-                else throw newParseException.apply(reader,
-                                                   result.get()
+                throw newParseException.apply(reader,
+                                              result.get()
                 );
 
             };
@@ -744,15 +685,10 @@ public final class JsSpecParsers {
             JsValue value = PARSERS.longParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             else {
-                Optional<Pair<JsValue, ERROR_CODE>> optErr =
-                        testTypeAndSpec(JsValue::isLong,
-                                        v -> v.toJsLong().value,
-                                        predicate::apply,
-                                        () -> new IllegalStateException("Internal error. JsLongDeserializer.nullOrValue didn't return neither null or a JsLong as expected.")
-                        ).apply(value);
+                Optional<Pair<JsValue, ERROR_CODE>> optErr = predicate.apply(value.toJsLong().value);
                 if (!optErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   optErr.get()
+                throw newParseException.apply(reader,
+                                              optErr.get()
                 );
 
             }
@@ -762,8 +698,8 @@ public final class JsSpecParsers {
             JsLong value = PARSERS.longParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
 
         };
@@ -821,19 +757,10 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.binaryParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(v -> value.isBinary(),
-                                        v -> v.toJsBinary().value,
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error. JsBinaryDeserializer.nullOrValue didn't return neither null or a byte[] as expected.")
-                        ).apply(value);
-
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsBinary().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
 
         };
         else return reader ->
@@ -841,8 +768,8 @@ public final class JsSpecParsers {
             JsBinary value = PARSERS.binaryParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
 
         };
@@ -862,18 +789,10 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.intParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(v -> value.isInt(),
-                                        v -> v.toJsInt().value,
-                                        predicate::apply,
-                                        () -> new IllegalStateException("Internal error. JsIntDeserializer.nullOrValue didn't return neither null or a Int as expected.")
-                        ).apply(value);
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsInt().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
 
         };
         else return reader ->
@@ -881,8 +800,8 @@ public final class JsSpecParsers {
             JsInt value = PARSERS.intParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
 
         };
@@ -902,18 +821,10 @@ public final class JsSpecParsers {
         {
             JsValue value = PARSERS.instantParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
-            else {
-                Optional<Pair<JsValue, ERROR_CODE>> opErr =
-                        testTypeAndSpec(v -> value.isInstant(),
-                                        v -> v.toJsInstant().value,
-                                        predicate,
-                                        () -> new IllegalStateException("Internal error. JsInstantDeserializer.nullOrValue didn't return neither null or an instant as expected.")
-                        ).apply(value);
-                if (!opErr.isPresent()) return value;
-                else throw newParseException.apply(reader,
-                                                   opErr.get());
-
-            }
+            Optional<Pair<JsValue, ERROR_CODE>> opErr = predicate.apply(value.toJsInstant().value);
+            if (!opErr.isPresent()) return value;
+            throw newParseException.apply(reader,
+                                          opErr.get());
 
         };
         else return reader ->
@@ -921,8 +832,8 @@ public final class JsSpecParsers {
             JsInstant value = PARSERS.instantParser.value(reader);
             Optional<Pair<JsValue, ERROR_CODE>> result = predicate.apply(value.value);
             if (!result.isPresent()) return value;
-            else throw newParseException.apply(reader,
-                                               result.get()
+            throw newParseException.apply(reader,
+                                          result.get()
             );
 
         };

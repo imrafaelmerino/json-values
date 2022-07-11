@@ -15,9 +15,8 @@ import java.nio.charset.StandardCharsets;
 @SuppressWarnings("rawtypes")
 abstract class MyNumberConverter {
 
-    private final static int[] DIGITS = new int[1000];
+    private static final int[] DIGITS = new int[1000];
     @SuppressWarnings("FloatingPointLiteralPrecision")
-
     private static final byte MINUS = '-';
     private static final byte[] MIN_INT = "-2147483648".getBytes(StandardCharsets.UTF_8);
     private static final byte[] MIN_LONG = "-9223372036854775808".getBytes(StandardCharsets.UTF_8);
@@ -40,11 +39,11 @@ abstract class MyNumberConverter {
     private MyNumberConverter() {
     }
 
-    static void numberException(final JsonReader reader,
-                                final int start,
-                                final int end,
+    static void numberException(JsonReader reader,
+                                int start,
+                                int end,
                                 String message) throws JsParserException {
-        final int len = end - start;
+        int len = end - start;
         if (len > reader.maxNumberDigits) {
             throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,
                                         reader.getCurrentIndex());
@@ -55,9 +54,9 @@ abstract class MyNumberConverter {
     }
 
 
-    private static BigDecimal parseNumberGeneric(final char[] buf,
-                                                 final int len,
-                                                 final JsonReader reader) throws JsParserException {
+    private static BigDecimal parseNumberGeneric(char[] buf,
+                                                 int len,
+                                                 JsonReader reader) throws JsParserException {
         int end = len;
         while (end > 0 && Character.isWhitespace(buf[end - 1])) {
             end--;
@@ -66,9 +65,9 @@ abstract class MyNumberConverter {
             throw new JsParserException(ParserErrors.TOO_MANY_DIGITS,
                                         reader.getCurrentIndex());
 
-        final int offset = buf[0] == '-' ?
-                           1 :
-                           0;
+        int offset = buf[0] == '-' ?
+                     1 :
+                     0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9')
             throw new JsParserException(ParserErrors.LEADING_ZERO,
                                         reader.getCurrentIndex());
@@ -86,12 +85,11 @@ abstract class MyNumberConverter {
         }
     }
 
-    private static MyNumberConverter.NumberInfo readLongNumber(final JsonReader reader,
-                                                               final int start) throws JsParserException, IOException {
+    private static MyNumberConverter.NumberInfo readLongNumber(JsonReader reader,
+                                                               int start) throws JsParserException, IOException {
         int len = reader.length() - start;
         char[] result = reader.prepareBuffer(start,
-                                             len
-        );
+                                             len);
         while (reader.length() == reader.getCurrentIndex()) {
             if (reader.isEndOfStream()) break;
             reader.scanNumber(); // peek, do not read
@@ -125,10 +123,10 @@ abstract class MyNumberConverter {
     }
 
 
-    public static void serialize(final int value,
-                                 final JsonWriter sw) {
-        final byte[] buf = sw.ensureCapacity(11);
-        final int position = sw.size();
+    public static void serialize(int value,
+                                 JsonWriter sw) {
+        byte[] buf = sw.ensureCapacity(11);
+        int position = sw.size();
         int current = serialize(buf,
                                 position,
                                 value
@@ -136,9 +134,9 @@ abstract class MyNumberConverter {
         sw.advance(current - position);
     }
 
-    private static int serialize(final byte[] buf,
+    private static int serialize(byte[] buf,
                                  int pos,
-                                 final int value) {
+                                 int value) {
         int i;
         if (value < 0) {
             if (value == Integer.MIN_VALUE) {
@@ -152,7 +150,7 @@ abstract class MyNumberConverter {
         } else {
             i = value;
         }
-        final int q1 = i / 1000;
+        int q1 = i / 1000;
         if (q1 == 0) {
             pos += writeFirstBuf(buf,
                                  DIGITS[i],
@@ -160,11 +158,11 @@ abstract class MyNumberConverter {
             );
             return pos;
         }
-        final int r1 = i - q1 * 1000;
-        final int q2 = q1 / 1000;
+        int r1 = i - q1 * 1000;
+        int q2 = q1 / 1000;
         if (q2 == 0) {
-            final int v1 = DIGITS[r1];
-            final int v2 = DIGITS[q1];
+            int v1 = DIGITS[r1];
+            int v2 = DIGITS[q1];
             int off = writeFirstBuf(buf,
                                     v2,
                                     pos
@@ -175,17 +173,17 @@ abstract class MyNumberConverter {
             );
             return pos + 3 + off;
         }
-        final int r2 = q1 - q2 * 1000;
-        final int q3 = q2 / 1000;
-        final int v1 = DIGITS[r1];
-        final int v2 = DIGITS[r2];
+        int r2 = q1 - q2 * 1000;
+        int q3 = q2 / 1000;
+        int v1 = DIGITS[r1];
+        int v2 = DIGITS[r2];
         if (q3 == 0) {
             pos += writeFirstBuf(buf,
                                  DIGITS[q2],
                                  pos
             );
         } else {
-            final int r3 = q2 - q3 * 1000;
+            int r3 = q2 - q3 * 1000;
             buf[pos++] = (byte) (q3 + '0');
             writeBuf(buf,
                      DIGITS[r3],
@@ -204,11 +202,11 @@ abstract class MyNumberConverter {
         return pos + 6;
     }
 
-    public static int deserializeInt(final JsonReader reader) throws ParsingException {
-        final int start = reader.scanNumber();
-        final int end = reader.getCurrentIndex();
-        final byte[] buf = reader.buffer;
-        final byte ch = buf[start];
+    public static int deserializeInt(JsonReader reader) throws ParsingException {
+        int start = reader.scanNumber();
+        int end = reader.getCurrentIndex();
+        byte[] buf = reader.buffer;
+        byte ch = buf[start];
         if (ch == '-') {
             if (end > start + 2 && buf[start + 1] == '0' && buf[start + 2] >= '0' && buf[start + 2] <= '9') {
                 numberException(reader,
@@ -239,11 +237,11 @@ abstract class MyNumberConverter {
         }
     }
 
-    private static int parsePositiveInt(final byte[] buf,
-                                        final JsonReader reader,
-                                        final int start,
-                                        final int end,
-                                        final int offset) throws ParsingException {
+    private static int parsePositiveInt(byte[] buf,
+                                        JsonReader reader,
+                                        int start,
+                                        int end,
+                                        int offset) throws ParsingException {
         int value = 0;
         int i = start + offset;
         if (i == end) numberException(reader,
@@ -252,7 +250,7 @@ abstract class MyNumberConverter {
                                       ParserErrors.DIGIT_NOT_FOUND
         );
         for (; i < end; i++) {
-            final int ind = buf[i] - 48;
+            int ind = buf[i] - 48;
             if (ind < 0 || ind > 9) {
                 if (i > start + offset && reader.allWhitespace(i,
                                                                end
@@ -262,11 +260,11 @@ abstract class MyNumberConverter {
                                                                         end,
                                                                         ParserErrors.NUMBER_ENDS_DOT
                 );
-                final BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
-                                                                             end - start
-                                                        ),
-                                                        end - start,
-                                                        reader
+                BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
+                                                                       end - start
+                                                  ),
+                                                  end - start,
+                                                  reader
                 );
                 if (v.scale() > 0) numberException(reader,
                                                    start,
@@ -288,10 +286,10 @@ abstract class MyNumberConverter {
         return value;
     }
 
-    private static int parseNegativeInt(final byte[] buf,
-                                        final JsonReader reader,
-                                        final int start,
-                                        final int end) throws ParsingException {
+    private static int parseNegativeInt(byte[] buf,
+                                        JsonReader reader,
+                                        int start,
+                                        int end) throws ParsingException {
         int value = 0;
         int i = start + 1;
         if (i == end) numberException(reader,
@@ -300,7 +298,7 @@ abstract class MyNumberConverter {
                                       ParserErrors.DIGIT_NOT_FOUND
         );
         for (; i < end; i++) {
-            final int ind = buf[i] - 48;
+            int ind = buf[i] - 48;
             if (ind < 0 || ind > 9) {
                 if (i > start + 1 && reader.allWhitespace(i,
                                                           end
@@ -310,11 +308,11 @@ abstract class MyNumberConverter {
                                                                         end,
                                                                         ParserErrors.NUMBER_ENDS_DOT
                 );
-                final BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
-                                                                             end - start
-                                                        ),
-                                                        end - start,
-                                                        reader
+                BigDecimal v = parseNumberGeneric(reader.prepareBuffer(start,
+                                                                       end - start
+                                                  ),
+                                                  end - start,
+                                                  reader
                 );
                 if (v.scale() > 0) numberException(reader,
                                                    start,
@@ -335,10 +333,10 @@ abstract class MyNumberConverter {
         return value;
     }
 
-    private static int writeFirstBuf(final byte[] buf,
-                                     final int v,
+    private static int writeFirstBuf(byte[] buf,
+                                     int v,
                                      int pos) {
-        final int start = v >> 24;
+        int start = v >> 24;
         if (start == 0) {
             buf[pos++] = (byte) (v >> 16);
             buf[pos++] = (byte) (v >> 8);
@@ -349,18 +347,18 @@ abstract class MyNumberConverter {
         return 3 - start;
     }
 
-    private static void writeBuf(final byte[] buf,
-                                 final int v,
+    private static void writeBuf(byte[] buf,
+                                 int v,
                                  int pos) {
         buf[pos] = (byte) (v >> 16);
         buf[pos + 1] = (byte) (v >> 8);
         buf[pos + 2] = (byte) v;
     }
 
-    public static void serialize(final long value,
-                                 final JsonWriter sw) {
-        final byte[] buf = sw.ensureCapacity(21);
-        final int position = sw.size();
+    public static void serialize(long value,
+                                 JsonWriter sw) {
+        byte[] buf = sw.ensureCapacity(21);
+        int position = sw.size();
         int current = serialize(buf,
                                 position,
                                 value
@@ -368,9 +366,9 @@ abstract class MyNumberConverter {
         sw.advance(current - position);
     }
 
-    private static int serialize(final byte[] buf,
+    private static int serialize(byte[] buf,
                                  int pos,
-                                 final long value) {
+                                 long value) {
         long i;
         if (value < 0) {
             if (value == Long.MIN_VALUE) {
@@ -384,7 +382,7 @@ abstract class MyNumberConverter {
         } else {
             i = value;
         }
-        final long q1 = i / 1000;
+        long q1 = i / 1000;
         if (q1 == 0) {
             pos += writeFirstBuf(buf,
                                  DIGITS[(int) i],
@@ -392,11 +390,11 @@ abstract class MyNumberConverter {
             );
             return pos;
         }
-        final int r1 = (int) (i - q1 * 1000);
-        final long q2 = q1 / 1000;
+        int r1 = (int) (i - q1 * 1000);
+        long q2 = q1 / 1000;
         if (q2 == 0) {
-            final int v1 = DIGITS[r1];
-            final int v2 = DIGITS[(int) q1];
+            int v1 = DIGITS[r1];
+            int v2 = DIGITS[(int) q1];
             int off = writeFirstBuf(buf,
                                     v2,
                                     pos
@@ -407,12 +405,12 @@ abstract class MyNumberConverter {
             );
             return pos + 3 + off;
         }
-        final int r2 = (int) (q1 - q2 * 1000);
-        final long q3 = q2 / 1000;
+        int r2 = (int) (q1 - q2 * 1000);
+        long q3 = q2 / 1000;
         if (q3 == 0) {
-            final int v1 = DIGITS[r1];
-            final int v2 = DIGITS[r2];
-            final int v3 = DIGITS[(int) q2];
+            int v1 = DIGITS[r1];
+            int v2 = DIGITS[r2];
+            int v3 = DIGITS[(int) q2];
             pos += writeFirstBuf(buf,
                                  v3,
                                  pos
@@ -427,13 +425,13 @@ abstract class MyNumberConverter {
             );
             return pos + 6;
         }
-        final int r3 = (int) (q2 - q3 * 1000);
-        final int q4 = (int) (q3 / 1000);
+        int r3 = (int) (q2 - q3 * 1000);
+        int q4 = (int) (q3 / 1000);
         if (q4 == 0) {
-            final int v1 = DIGITS[r1];
-            final int v2 = DIGITS[r2];
-            final int v3 = DIGITS[r3];
-            final int v4 = DIGITS[(int) q3];
+            int v1 = DIGITS[r1];
+            int v2 = DIGITS[r2];
+            int v3 = DIGITS[r3];
+            int v4 = DIGITS[(int) q3];
             pos += writeFirstBuf(buf,
                                  v4,
                                  pos
@@ -452,14 +450,14 @@ abstract class MyNumberConverter {
             );
             return pos + 9;
         }
-        final int r4 = (int) (q3 - q4 * 1000L);
-        final int q5 = q4 / 1000;
+        int r4 = (int) (q3 - q4 * 1000L);
+        int q5 = q4 / 1000;
         if (q5 == 0) {
-            final int v1 = DIGITS[r1];
-            final int v2 = DIGITS[r2];
-            final int v3 = DIGITS[r3];
-            final int v4 = DIGITS[r4];
-            final int v5 = DIGITS[q4];
+            int v1 = DIGITS[r1];
+            int v2 = DIGITS[r2];
+            int v3 = DIGITS[r3];
+            int v4 = DIGITS[r4];
+            int v5 = DIGITS[q4];
             pos += writeFirstBuf(buf,
                                  v5,
                                  pos
@@ -482,20 +480,20 @@ abstract class MyNumberConverter {
             );
             return pos + 12;
         }
-        final int r5 = q4 - q5 * 1000;
-        final int q6 = q5 / 1000;
-        final int v1 = DIGITS[r1];
-        final int v2 = DIGITS[r2];
-        final int v3 = DIGITS[r3];
-        final int v4 = DIGITS[r4];
-        final int v5 = DIGITS[r5];
+        int r5 = q4 - q5 * 1000;
+        int q6 = q5 / 1000;
+        int v1 = DIGITS[r1];
+        int v2 = DIGITS[r2];
+        int v3 = DIGITS[r3];
+        int v4 = DIGITS[r4];
+        int v5 = DIGITS[r5];
         if (q6 == 0) {
             pos += writeFirstBuf(buf,
                                  DIGITS[q5],
                                  pos
             );
         } else {
-            final int r6 = q5 - q6 * 1000;
+            int r6 = q5 - q6 * 1000;
             buf[pos++] = (byte) (q6 + '0');
             writeBuf(buf,
                      DIGITS[r6],
@@ -526,11 +524,11 @@ abstract class MyNumberConverter {
         return pos + 15;
     }
 
-    public static long deserializeLong(final JsonReader reader) throws IOException {
-        final int start = reader.scanNumber();
-        final int end = reader.getCurrentIndex();
-        final byte[] buf = reader.buffer;
-        final byte ch = buf[start];
+    public static long deserializeLong(JsonReader reader) throws IOException {
+        int start = reader.scanNumber();
+        int end = reader.getCurrentIndex();
+        byte[] buf = reader.buffer;
+        byte ch = buf[start];
         int i = start;
         long value = 0;
         if (ch == '-') {
@@ -540,9 +538,9 @@ abstract class MyNumberConverter {
                                           end,
                                           ParserErrors.DIGIT_NOT_FOUND
             );
-            final boolean leadingZero = buf[i] == 48;
+            boolean leadingZero = buf[i] == 48;
             for (; i < end; i++) {
-                final int ind = buf[i] - 48;
+                int ind = buf[i] - 48;
                 if (ind < 0 || ind > 9) {
                     if (leadingZero && i > start + 2) {
                         numberException(reader,
@@ -582,9 +580,9 @@ abstract class MyNumberConverter {
                                       end,
                                       ParserErrors.DIGIT_NOT_FOUND
         );
-        final boolean leadingZero = buf[i] == 48;
+        boolean leadingZero = buf[i] == 48;
         for (; i < end; i++) {
-            final int ind = buf[i] - 48;
+            int ind = buf[i] - 48;
             if (ind < 0 || ind > 9) {
                 if (leadingZero && i > start + 1) {
                     numberException(reader,
@@ -623,21 +621,21 @@ abstract class MyNumberConverter {
         return value;
     }
 
-    private static long parseLongGeneric(final JsonReader reader,
-                                         final int start,
-                                         final int end) throws IOException {
-        final int len = end - start;
-        final char[] buf = reader.prepareBuffer(start,
-                                                len
+    private static long parseLongGeneric(JsonReader reader,
+                                         int start,
+                                         int end) throws IOException {
+        int len = end - start;
+        char[] buf = reader.prepareBuffer(start,
+                                          len
         );
         if (len > 0 && buf[len - 1] == '.') numberException(reader,
                                                             start,
                                                             end,
                                                             ParserErrors.NUMBER_ENDS_DOT
         );
-        final BigDecimal v = parseNumberGeneric(buf,
-                                                len,
-                                                reader
+        BigDecimal v = parseNumberGeneric(buf,
+                                          len,
+                                          reader
         );
         if (v.scale() > 0) numberException(reader,
                                            start,
@@ -647,13 +645,13 @@ abstract class MyNumberConverter {
         return v.longValue();
     }
 
-    public static void serialize(final BigDecimal value,
-                                 final JsonWriter sw) {
+    public static void serialize(BigDecimal value,
+                                 JsonWriter sw) {
         sw.writeAscii(value.toString());
     }
 
-    public static BigDecimal deserializeDecimal(final JsonReader reader) throws IOException {
-        final int start = reader.scanNumber();
+    public static BigDecimal deserializeDecimal(JsonReader reader) throws IOException {
+        int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
             MyNumberConverter.NumberInfo info = readLongNumber(reader,
@@ -673,8 +671,8 @@ abstract class MyNumberConverter {
                                       reader
             );
         }
-        final byte[] buf = reader.buffer;
-        final byte ch = buf[start];
+        byte[] buf = reader.buffer;
+        byte ch = buf[start];
         if (ch == '-') {
             return parseNegativeDecimal(buf,
                                         reader,
@@ -689,18 +687,18 @@ abstract class MyNumberConverter {
         );
     }
 
-    private static BigDecimal parsePositiveDecimal(final byte[] buf,
-                                                   final JsonReader reader,
-                                                   final int start,
-                                                   final int end) throws IOException {
+    private static BigDecimal parsePositiveDecimal(byte[] buf,
+                                                   JsonReader reader,
+                                                   int start,
+                                                   int end) throws IOException {
         long value = 0;
         byte ch = ' ';
         int i = start;
-        final boolean leadingZero = buf[start] == 48;
+        boolean leadingZero = buf[start] == 48;
         for (; i < end; i++) {
             ch = buf[i];
             if (ch == '.' || ch == 'e' || ch == 'E') break;
-            final int ind = ch - 48;
+            int ind = ch - 48;
             if (ind < 0 || ind > 9) {
                 if (leadingZero && i > start + 1) {
                     numberException(reader,
@@ -742,7 +740,7 @@ abstract class MyNumberConverter {
             for (; i < end; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
+                int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i,
                                              end
@@ -761,10 +759,10 @@ abstract class MyNumberConverter {
                                                     end - dp
             );
             else if (ch == 'e' || ch == 'E') {
-                final int ep = i;
+                int ep = i;
                 i++;
                 ch = buf[i];
-                final int exp;
+                int exp;
                 if (ch == '-') {
                     exp = parseNegativeInt(buf,
                                            reader,
@@ -796,7 +794,7 @@ abstract class MyNumberConverter {
         } else if (ch == 'e' || ch == 'E') {
             i++;
             ch = buf[i];
-            final int exp;
+            int exp;
             if (ch == '-') {
                 exp = parseNegativeInt(buf,
                                        reader,
@@ -825,18 +823,18 @@ abstract class MyNumberConverter {
         return BigDecimal.valueOf(value);
     }
 
-    private static BigDecimal parseNegativeDecimal(final byte[] buf,
-                                                   final JsonReader reader,
-                                                   final int start,
-                                                   final int end) throws IOException {
+    private static BigDecimal parseNegativeDecimal(byte[] buf,
+                                                   JsonReader reader,
+                                                   int start,
+                                                   int end) throws IOException {
         long value = 0;
         byte ch = ' ';
         int i = start + 1;
-        final boolean leadingZero = buf[start + 1] == 48;
+        boolean leadingZero = buf[start + 1] == 48;
         for (; i < end; i++) {
             ch = buf[i];
             if (ch == '.' || ch == 'e' || ch == 'E') break;
-            final int ind = ch - 48;
+            int ind = ch - 48;
             if (ind < 0 || ind > 9) {
                 if (leadingZero && i > start + 2) {
                     numberException(reader,
@@ -878,7 +876,7 @@ abstract class MyNumberConverter {
             for (; i < end; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
+                int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i,
                                              end
@@ -897,10 +895,10 @@ abstract class MyNumberConverter {
                                                     end - dp
             );
             else if (ch == 'e' || ch == 'E') {
-                final int ep = i;
+                int ep = i;
                 i++;
                 ch = buf[i];
-                final int exp;
+                int exp;
                 if (ch == '-') {
                     exp = parseNegativeInt(buf,
                                            reader,
@@ -932,7 +930,7 @@ abstract class MyNumberConverter {
         } else if (ch == 'e' || ch == 'E') {
             i++;
             ch = buf[i];
-            final int exp;
+            int exp;
             if (ch == '-') {
                 exp = parseNegativeInt(buf,
                                        reader,
@@ -962,12 +960,12 @@ abstract class MyNumberConverter {
     }
 
 
-    private static Number tryLongFromBigDecimal(final char[] buf,
-                                                final int len,
+    private static Number tryLongFromBigDecimal(char[] buf,
+                                                int len,
                                                 JsonReader reader) throws JsParserException {
-        final BigDecimal num = parseNumberGeneric(buf,
-                                                  len,
-                                                  reader
+        BigDecimal num = parseNumberGeneric(buf,
+                                            len,
+                                            reader
         );
         if (num.scale() == 0 && num.precision() <= 19) {
             if (num.signum() == 1) {
@@ -981,8 +979,8 @@ abstract class MyNumberConverter {
         return num;
     }
 
-    public static Number deserializeNumber(final JsonReader reader) throws IOException {
-        final int start = reader.scanNumber();
+    public static Number deserializeNumber(JsonReader reader) throws IOException {
+        int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
             MyNumberConverter.NumberInfo info = readLongNumber(reader,
@@ -1002,8 +1000,8 @@ abstract class MyNumberConverter {
                                          reader
             );
         }
-        final byte[] buf = reader.buffer;
-        final byte ch = buf[start];
+        byte[] buf = reader.buffer;
+        byte ch = buf[start];
         if (ch == '-') {
             return parseNegativeNumber(buf,
                                        reader,
@@ -1018,18 +1016,18 @@ abstract class MyNumberConverter {
         );
     }
 
-    private static Number parsePositiveNumber(final byte[] buf,
-                                              final JsonReader reader,
-                                              final int start,
-                                              final int end) throws IOException {
+    private static Number parsePositiveNumber(byte[] buf,
+                                              JsonReader reader,
+                                              int start,
+                                              int end) throws IOException {
         long value = 0;
         byte ch = ' ';
         int i = start;
-        final boolean leadingZero = buf[start] == 48;
+        boolean leadingZero = buf[start] == 48;
         for (; i < end; i++) {
             ch = buf[i];
             if (ch == '.' || ch == 'e' || ch == 'E') break;
-            final int ind = ch - 48;
+            int ind = ch - 48;
             if (ind < 0 || ind > 9) {
                 if (leadingZero && i > start + 1) {
                     numberException(reader,
@@ -1072,7 +1070,7 @@ abstract class MyNumberConverter {
             for (; i < end; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
+                int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i,
                                              end
@@ -1092,10 +1090,10 @@ abstract class MyNumberConverter {
                 return BigDecimal.valueOf(value,
                                           end - dp);
             else if (ch == 'e' || ch == 'E') {
-                final int ep = i;
+                int ep = i;
                 i++;
                 ch = buf[i];
-                final int exp;
+                int exp;
                 if (ch == '-') {
                     exp = parseNegativeInt(buf,
                                            reader,
@@ -1126,7 +1124,7 @@ abstract class MyNumberConverter {
         } else if (ch == 'e' || ch == 'E') {
             i++;
             ch = buf[i];
-            final int exp;
+            int exp;
             if (ch == '-') {
                 exp = parseNegativeInt(buf,
                                        reader,
@@ -1155,18 +1153,18 @@ abstract class MyNumberConverter {
         return BigDecimal.valueOf(value);
     }
 
-    private static Number parseNegativeNumber(final byte[] buf,
-                                              final JsonReader reader,
-                                              final int start,
-                                              final int end) throws IOException {
+    private static Number parseNegativeNumber(byte[] buf,
+                                              JsonReader reader,
+                                              int start,
+                                              int end) throws IOException {
         long value = 0;
         byte ch = ' ';
         int i = start + 1;
-        final boolean leadingZero = buf[start + 1] == 48;
+        boolean leadingZero = buf[start + 1] == 48;
         for (; i < end; i++) {
             ch = buf[i];
             if (ch == '.' || ch == 'e' || ch == 'E') break;
-            final int ind = ch - 48;
+            int ind = ch - 48;
             if (ind < 0 || ind > 9) {
                 if (leadingZero && i > start + 2) {
                     numberException(reader,
@@ -1209,7 +1207,7 @@ abstract class MyNumberConverter {
             for (; i < end; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
-                final int ind = ch - 48;
+                int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i,
                                              end
@@ -1229,10 +1227,10 @@ abstract class MyNumberConverter {
                                                     end - dp
             );
             else if (ch == 'e' || ch == 'E') {
-                final int ep = i;
+                int ep = i;
                 i++;
                 ch = buf[i];
-                final int exp;
+                int exp;
                 if (ch == '-') {
                     exp = parseNegativeInt(buf,
                                            reader,
@@ -1264,7 +1262,7 @@ abstract class MyNumberConverter {
         } else if (ch == 'e' || ch == 'E') {
             i++;
             ch = buf[i];
-            final int exp;
+            int exp;
             if (ch == '-') {
                 exp = parseNegativeInt(buf,
                                        reader,
@@ -1294,11 +1292,11 @@ abstract class MyNumberConverter {
     }
 
     private static class NumberInfo {
-        final char[] buffer;
-        final int length;
+        char[] buffer;
+        int length;
 
-        NumberInfo(final char[] buffer,
-                   final int length) {
+        NumberInfo(char[] buffer,
+                   int length) {
             this.buffer = buffer;
             this.length = length;
         }
