@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-VERSION=11.6.0
+VERSION=11.7.0
 NOW=$(date +"%m-%d-%Y-%T" | tr ':' '_')
 
 java -Xms256m \
