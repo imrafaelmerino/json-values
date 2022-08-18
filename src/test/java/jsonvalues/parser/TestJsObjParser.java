@@ -20,9 +20,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_obj_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            obj(a -> a.containsKey("a"))
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -40,11 +40,11 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_int_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            integer(i -> i > 0),
                                            "b",
                                            longInteger(i -> i > 0)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -62,9 +62,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_long_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            longInteger(i -> i > 0)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -80,9 +80,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_integral_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            bigInteger(i -> i.longValueExact() > 0)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -99,9 +99,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_number_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            number(JsValue::isDecimal)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -117,9 +117,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_string_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            str(i -> i.length() == 3)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -135,9 +135,9 @@ public class TestJsObjParser {
 
     @Test
     public void test_parse_decimal_error() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            decimal(i -> i.divide(BigDecimal.TEN).compareTo(new BigDecimal(1)) == 0)
-        );
+        ).lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -154,7 +154,7 @@ public class TestJsObjParser {
     @Test
     public void test_parse_obj_all_primitive_types() {
 
-        final JsObjSpec spec = JsObjSpec.strict("a",
+        final JsObjSpec spec = JsObjSpec.of("a",
                                                 integer(),
                                                 "b",
                                                 str(),
@@ -171,7 +171,7 @@ public class TestJsObjParser {
                                                 "h",
                                                 bigInteger(),
                                                 "i",
-                                                JsObjSpec.strict("a",
+                                                JsObjSpec.of("a",
                                                                  number(),
                                                                  "b",
                                                                  array(),
@@ -255,7 +255,7 @@ public class TestJsObjParser {
     @Test
     public void test_parse_obj_all_array_of_primitive_types() {
 
-        final JsObjSpec spec = JsObjSpec.strict("a",
+        final JsObjSpec spec = JsObjSpec.of("a",
                                                 arrayOfInt(),
                                                 "b",
                                                 arrayOfStr(),
@@ -270,7 +270,7 @@ public class TestJsObjParser {
                                                 "g",
                                                 arrayOfLong(),
                                                 "h",
-                                                JsObjSpec.strict("a",
+                                                JsObjSpec.of("a",
                                                                  arrayOfInt(v -> v > 5),
                                                                  "b",
                                                                  arrayOfStr(s -> s.startsWith("a")),
@@ -361,7 +361,7 @@ public class TestJsObjParser {
     public void test_parse_obj_all_primitive_types_with_predicates() {
 
         final JsObjSpec spec =
-                JsObjSpec.strict("a",
+                JsObjSpec.of("a",
                                  integer(i -> i > 0),
                                  "b",
                                  str(a -> a.length() > 0),
@@ -378,7 +378,7 @@ public class TestJsObjParser {
                                  "h",
                                  bigInteger(i -> i.longValueExact() % 2 == 0),
                                  "i",
-                                 JsObjSpec.strict("a",
+                                 JsObjSpec.of("a",
                                                   number(),
                                                   "b",
                                                   array(),
@@ -460,7 +460,7 @@ public class TestJsObjParser {
 
     @Test
     public void test_required_fields() {
-        final JsObjSpec spec = JsObjSpec.strict("a",
+        final JsObjSpec spec = JsObjSpec.of("a",
                                                 integer().nullable(),
                                                 "b",
                                                 str().nullable(),
@@ -554,10 +554,10 @@ public class TestJsObjParser {
 
     @Test
     public void test_strict_mode() {
-        final JsObjSpec spec = JsObjSpec.lenient("a",
+        final JsObjSpec spec = JsObjSpec.of("a",
                                                  str()
                                                          .nullable()
-        ).setOptionals("a");
+        ).lenient().setOptionals("a");
 
 
         final JsObj obj = JsObj.of("b",
@@ -575,7 +575,7 @@ public class TestJsObjParser {
     @Test
     public void test_int_spec() {
 
-        JsObjSpec isint = JsObjSpec.strict("a",
+        JsObjSpec isint = JsObjSpec.of("a",
                                            integer(i -> i > 0).nullable(),
                                            "b",
                                            integer(i -> i > 0)
@@ -630,7 +630,7 @@ public class TestJsObjParser {
     @Test
     public void test_obj_spec() {
 
-        JsObjSpec isint = JsObjSpec.strict("a",
+        JsObjSpec isint = JsObjSpec.of("a",
                                            longInteger(i -> i > 0).nullable(),
                                            "b",
                                            longInteger(i -> i > 0).nullable(),
@@ -682,7 +682,7 @@ public class TestJsObjParser {
     @Test
     public void test_dec_spec() {
 
-        JsObjSpec isdec = JsObjSpec.strict("a",
+        JsObjSpec isdec = JsObjSpec.of("a",
                                            decimal(i -> i.longValueExact() > 0).nullable(),
                                            "b",
                                            decimal(i -> i.longValueExact() > 0)
@@ -739,7 +739,7 @@ public class TestJsObjParser {
     @Test
     public void test_integral_spec() {
 
-        JsObjSpec isint = JsObjSpec.strict("a",
+        JsObjSpec isint = JsObjSpec.of("a",
                                            bigInteger(i -> i.longValueExact() > 0).nullable(),
                                            "b",
                                            bigInteger(i -> i.longValueExact() > 0).nullable(),
@@ -791,7 +791,7 @@ public class TestJsObjParser {
     @Test
     public void test_number_spec() {
 
-        JsObjSpec isint = JsObjSpec.strict("a",
+        JsObjSpec isint = JsObjSpec.of("a",
                                            number(JsValue::isDecimal).nullable(),
                                            "b",
                                            number(JsValue::isIntegral).nullable(),
@@ -849,7 +849,7 @@ public class TestJsObjParser {
     @Test
     public void test_string_spec() {
 
-        JsObjSpec isint = JsObjSpec.strict("a",
+        JsObjSpec isint = JsObjSpec.of("a",
                                            str(i -> i.length() > 3).nullable(),
                                            "b",
                                            str(i -> i.length() > 3).nullable(),
@@ -900,7 +900,7 @@ public class TestJsObjParser {
 
     @Test
     public void testArrayOfObjSpec() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           tuple(str(),
                                                 bool()
                                           )
@@ -930,7 +930,7 @@ public class TestJsObjParser {
     @Test
     public void test_value_parser() {
 
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           any(JsValue::isBool)
         );
 
@@ -950,7 +950,7 @@ public class TestJsObjParser {
     @Test
     public void test_array_value_parser() {
 
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           array(a -> a.isBool() || a.isIntegral())
         );
 
@@ -969,7 +969,7 @@ public class TestJsObjParser {
 
     @Test
     public void array_of_number() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfNumber(JsValue::isDecimal),
                                           "b",
                                           arrayOfNumber(JsValue::isDecimal).nullable(),
@@ -1001,7 +1001,7 @@ public class TestJsObjParser {
 
     @Test
     public void array_of_number_with_predicate() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
                                           "b",
                                           arrayOfBigInt(a -> a.longValueExact() < 0).nullable(),
@@ -1063,7 +1063,7 @@ public class TestJsObjParser {
 
     @Test
     public void array_of_decimal_with_predicate() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfDec(a -> a.longValueExact() > 0),
                                           "b",
                                           arrayOfDec(a -> a.longValueExact() < 0).nullable(),
@@ -1094,7 +1094,7 @@ public class TestJsObjParser {
 
     @Test
     public void test_number_error() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number(JsValue::isDouble)
         );
         JsObjParser parser = new JsObjParser(spec);
@@ -1112,9 +1112,9 @@ public class TestJsObjParser {
     @Test
     public void test_bytes_parser() {
 
-        final JsObjSpec objSpec = JsObjSpec.lenient("a",
+        final JsObjSpec objSpec = JsObjSpec.of("a",
                                                     JsSpecs.str(s -> s.length() <= 10)
-                                           )
+                                           ).lenient()
                                            .setOptionals("a");
         JsObjParser objParser = new JsObjParser(objSpec);
 
@@ -1165,7 +1165,7 @@ public class TestJsObjParser {
                 +
                 "}";
 
-        final JsObj parsed = new JsObjParser(JsObjSpec.strict("a",
+        final JsObj parsed = new JsObjParser(JsObjSpec.of("a",
                                                               decimal(),
                                                               "b",
                                                               decimal(),
@@ -1260,7 +1260,7 @@ public class TestJsObjParser {
     @Test
     public void testSuchThatSpecParser() {
 
-        JsObjSpec baseSpec = JsObjSpec.strict("a",
+        JsObjSpec baseSpec = JsObjSpec.of("a",
                                               str(),
                                               "b",
                                               integer(),
@@ -1327,8 +1327,8 @@ public class TestJsObjParser {
     @Test
     public void testLenientObjectParser() {
 
-        JsObjSpec spec = JsObjSpec.lenient("a",
-                                           JsSpecs.str().nullable()).setOptionals("a");
+        JsObjSpec spec = JsObjSpec.of("a",
+                                           JsSpecs.str().nullable()).setOptionals("a").lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1358,8 +1358,8 @@ public class TestJsObjParser {
     @Test
     public void testLenientArrayParser() {
 
-        JsObjSpec spec = JsObjSpec.lenient("a",
-                                           JsSpecs.str().nullable()).setOptionals("a");
+        JsObjSpec spec = JsObjSpec.of("a",
+                                           JsSpecs.str().nullable()).setOptionals("a").lenient();
 
 
         JsArraySpec arraySpec = JsSpecs.arrayOfObjSpec(spec.nullable());
@@ -1393,7 +1393,7 @@ public class TestJsObjParser {
 
     @Test
     public void test1() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.bool(),
                                           "b",
                                           JsSpecs.integer());
@@ -1407,7 +1407,7 @@ public class TestJsObjParser {
 
     @Test
     public void test2() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.bool(),
                                           "b",
                                           JsSpecs.integer()).suchThat(it -> it.containsKey("hi"));
@@ -1421,7 +1421,7 @@ public class TestJsObjParser {
 
     @Test
     public void test3() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.any());
 
         JsObjParser parser = new JsObjParser(spec);
@@ -1436,7 +1436,7 @@ public class TestJsObjParser {
 
     @Test
     public void test4() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.array(it->it.isInt()));
 
         JsObjParser parser = new JsObjParser(spec);
@@ -1448,7 +1448,7 @@ public class TestJsObjParser {
 
     @Test
     public void test5() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.number(it->it.isInt() && it.toJsInt().value > 1).nullable());
 
         JsObjParser parser = new JsObjParser(spec);

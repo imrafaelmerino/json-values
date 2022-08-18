@@ -244,4 +244,12 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
 
     }
 
+    public static void main(String[] args) {
+        JsDouble a = JsDouble.of(-1.2843909090127789E17);
+        JsBigDec b = JsBigDec.of( new BigDecimal("-1.2843909090127789E17"));
+        System.out.println(a.equals(b));
+        System.out.println(b.equals(a));
+
+    }
+
 }

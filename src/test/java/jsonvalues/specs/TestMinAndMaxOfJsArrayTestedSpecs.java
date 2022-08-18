@@ -216,7 +216,7 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
 
         JsObj A = JsObj.of("a",
                            JsInt.of(1));
-        JsArraySpec spec = JsSpecs.arrayOfObjSpec(JsObjSpec.strict("a",
+        JsArraySpec spec = JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
                                                                    JsSpecs.integer()),
                                                   1,
                                                   2);

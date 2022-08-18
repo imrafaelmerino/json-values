@@ -21,7 +21,7 @@ public class MiscellaneousExamples {
 
     @Test
     public void basic() {
-        JsObjSpec spec = JsObjSpec.strict("firstName",
+        JsObjSpec spec = JsObjSpec.of("firstName",
                                           str(),
                                           "lastName",
                                           str(),
@@ -111,7 +111,7 @@ public class MiscellaneousExamples {
                 (min, max) -> n -> n.compareTo(max) <= 0 && n.compareTo(min) >= 0;
 
 
-        JsObjSpec spec = JsObjSpec.strict("latitude",
+        JsObjSpec spec = JsObjSpec.of("latitude",
                                           decimal(between.apply(latMin,
                                                                 latMax)),
                                           "longitude",
@@ -142,13 +142,13 @@ public class MiscellaneousExamples {
     @Test
     public void testArrayOfThings() {
         JsObjSpec veggieSpec =
-                JsObjSpec.strict("veggieName",
+                JsObjSpec.of("veggieName",
                                  str(),
                                  "veggieLike",
                                  bool());
 
         JsObjSpec spec =
-                JsObjSpec.strict("fruits",
+                JsObjSpec.of("fruits",
                                  arrayOfStr(),
                                  "vegetables",
                                  arrayOfObjSpec(veggieSpec));

@@ -53,6 +53,14 @@ public final class JsObjGen implements Gen<JsObj> {
     private JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
                      Set<String> optionals,
                      Set<String> nullables) {
+        for(String key: optionals){
+            if(!bindings.containsKey(key))
+                throw new IllegalArgumentException("optional '"+key+"' not defined in generator");
+        }
+        for(String key: nullables){
+            if(!bindings.containsKey(key))
+                throw new IllegalArgumentException("nullable '"+key+"' not defined in generator");
+        }
         this.optionals = optionals;
         this.nullables = nullables;
         this.bindings = bindings;

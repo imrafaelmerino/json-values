@@ -54,7 +54,7 @@ public class TestJsArraySpec {
 
     @Test
     public void test_array_of_boolean_such_that() {
-        final JsObjSpec spec = JsObjSpec.strict("a",
+        final JsObjSpec spec = JsObjSpec.of("a",
                                                 JsSpecs.arrayOfBoolSuchThat(a -> a.head() == JsBool.TRUE)
         );
 
@@ -110,7 +110,7 @@ public class TestJsArraySpec {
 
     @Test
     public void test_array_of_integral_spec() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfBigIntSuchThat(a -> a.size() == 3)
         );
 
@@ -137,7 +137,7 @@ public class TestJsArraySpec {
 
     @Test
     public void test_array_of_number_spec() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfNumberSuchThat(a -> a.size() == 5)
         );
 
@@ -166,7 +166,7 @@ public class TestJsArraySpec {
 
     @Test
     public void test_array_of_object_spec() {
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           arrayOfObjSuchThat(a -> a.size() == 2)
         );
 
@@ -199,7 +199,7 @@ public class TestJsArraySpec {
                 " \"veggieLike\": true }, { \"veggieName\": \"broccoli\", \"veggieLike\": false } ]} " + "\"veggieName\": \"broccoli\", \"veggieLike\": false } ]}";
 
 
-        JsObjSpec spec = JsObjSpec.strict("firstName",
+        JsObjSpec spec = JsObjSpec.of("firstName",
                                           JsSpecs.str(),
                                           "lastName",
                                           JsSpecs.str(),
@@ -214,7 +214,7 @@ public class TestJsArraySpec {
                                           "numbers",
                                           JsSpecs.arrayOfInt(),
                                           "vegetables",
-                                          arrayOfObjSpec(JsObjSpec.strict("veggieName",
+                                          arrayOfObjSpec(JsObjSpec.of("veggieName",
                                                                           str(),
                                                                           "veggieLike",
                                                                           bool()
@@ -278,12 +278,12 @@ public class TestJsArraySpec {
 
     @Test
     public void test_is_array_of_object_spec() {
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                            str(),
                                            "b",
                                            integer()
-        );
-        JsObjSpec objSpec = JsObjSpec.strict("a",
+        ).lenient();
+        JsObjSpec objSpec = JsObjSpec.of("a",
                                              arrayOfObjSpec(spec).nullable(),
                                              "b",
                                              arrayOfObjSpec(spec).nullable()

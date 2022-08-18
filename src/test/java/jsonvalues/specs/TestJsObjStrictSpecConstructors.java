@@ -17,7 +17,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -115,7 +115,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -209,7 +209,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -299,7 +299,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -386,7 +386,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -468,7 +468,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -547,7 +547,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_14_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -620,7 +620,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_13_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -690,7 +690,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_12_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -756,7 +756,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_11_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -815,7 +815,7 @@ public class TestJsObjStrictSpecConstructors {
     @Test
     public void test_10_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -870,7 +870,7 @@ public class TestJsObjStrictSpecConstructors {
     @Test
     public void test_9_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -918,7 +918,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_8_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -962,7 +962,7 @@ public class TestJsObjStrictSpecConstructors {
     @Test
     public void test_6_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1002,7 +1002,7 @@ public class TestJsObjStrictSpecConstructors {
     @Test
     public void test_5_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1038,7 +1038,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_4_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1072,7 +1072,7 @@ public class TestJsObjStrictSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1100,7 +1100,7 @@ public class TestJsObjStrictSpecConstructors {
     @Test
     public void test_2_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number
@@ -1124,7 +1124,7 @@ public class TestJsObjStrictSpecConstructors {
     public void test_1_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number
         );
 

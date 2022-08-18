@@ -17,7 +17,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -57,7 +57,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "t",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -115,7 +115,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -153,7 +153,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "s",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -209,7 +209,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -245,7 +245,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "r",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -300,7 +300,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -334,7 +334,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "q",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -387,7 +387,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -419,7 +419,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "p",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -469,7 +469,7 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -499,7 +499,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "o",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -548,7 +548,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_14_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -576,7 +576,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "n",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -621,7 +621,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_13_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -647,7 +647,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "m",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -691,7 +691,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_12_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -715,7 +715,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "l",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -757,7 +757,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_11_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -779,7 +779,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "k",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -816,7 +816,7 @@ public class TestJsObjLenientSpecConstructors {
     @Test
     public void test_10_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -836,7 +836,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "j",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -871,7 +871,7 @@ public class TestJsObjLenientSpecConstructors {
     @Test
     public void test_9_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -887,7 +887,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "h",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -919,7 +919,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_8_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -933,7 +933,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "g",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -963,7 +963,7 @@ public class TestJsObjLenientSpecConstructors {
     @Test
     public void test_6_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -975,7 +975,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "f",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -1003,7 +1003,7 @@ public class TestJsObjLenientSpecConstructors {
     @Test
     public void test_5_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1013,7 +1013,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "e",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -1039,7 +1039,7 @@ public class TestJsObjLenientSpecConstructors {
     public void test_4_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
@@ -1047,7 +1047,7 @@ public class TestJsObjLenientSpecConstructors {
                                           number,
                                           "d",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -1073,13 +1073,13 @@ public class TestJsObjLenientSpecConstructors {
 
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number,
                                           "c",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -1101,11 +1101,11 @@ public class TestJsObjLenientSpecConstructors {
     @Test
     public void test_2_args() {
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number,
                                           "b",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",
@@ -1125,9 +1125,9 @@ public class TestJsObjLenientSpecConstructors {
     public void test_1_args() {
 
         JsSpec number = JsSpecs.integer();
-        JsObjSpec spec = JsObjSpec.lenient("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           number
-        );
+        ).lenient();
 
         JsInt ONE = JsInt.of(1);
         JsObj obj = JsObj.of("a",

@@ -13,7 +13,7 @@ public class TestAllSpecs {
     @Test
     public void test() {
 
-        JsObjSpec spec = JsObjSpec.strict("a1",
+        JsObjSpec spec = JsObjSpec.of("a1",
                                           JsSpecs.str(),
                                           "a2",
                                           JsSpecs.bool(),

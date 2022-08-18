@@ -22,7 +22,7 @@ public class TestExample {
     @Test
     public void test() {
 
-        JsObjSpec spec = JsObjSpec.strict("name",
+        JsObjSpec spec = JsObjSpec.of("name",
                                           str(),
                                           "surname",
                                           str(),
@@ -31,7 +31,7 @@ public class TestExample {
                                           "age",
                                           JsSpecs.integer(),
                                           "address",
-                                          JsObjSpec.strict("street",
+                                          JsObjSpec.of("street",
                                                            str(),
                                                            "number",
                                                            JsSpecs.any(it -> it.isInt() || it.isStr()),

@@ -73,8 +73,8 @@ public class TestJsArrayParser {
 
     @Test
     public void testNullable() {
-        JsObjSpec spec = JsObjSpec.strict("a",
-                                          arrayOfStr().nullable()
+        JsObjSpec spec = JsObjSpec.of("a",
+                                      arrayOfStr().nullable()
         );
 
         JsObjParser parser = new JsObjParser(spec);
@@ -98,8 +98,8 @@ public class TestJsArrayParser {
                                 b);
 
 
-        JsObjSpec specST = JsObjSpec.strict("a",
-                                            arrayOfStrSuchThat(it -> it.size() % 2 == 0).nullable()
+        JsObjSpec specST = JsObjSpec.of("a",
+                                        arrayOfStrSuchThat(it -> it.size() % 2 == 0).nullable()
         );
         JsObjParser parserST = new JsObjParser(specST);
 
@@ -117,12 +117,12 @@ public class TestJsArrayParser {
 
     @Test
     public void testArrayOfObject() {
-        JsObjSpec spec = JsObjSpec.strict("a",
-                                          JsSpecs.arrayOfObjSpec(JsObjSpec.strict("a",
-                                                                                  str(),
-                                                                                  "b",
-                                                                                  integer()
-                                          ))
+        JsObjSpec spec = JsObjSpec.of("a",
+                                      JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
+                                                                          str(),
+                                                                          "b",
+                                                                          integer()
+                                      ))
         );
 
         final JsObj a = JsObj.of("a",
@@ -138,13 +138,13 @@ public class TestJsArrayParser {
                                 new JsObjParser(spec).parse(a.toString())
         );
 
-        JsObjSpec specNullable = JsObjSpec.strict("a",
-                                                  JsSpecs.arrayOfObjSpec(JsObjSpec.strict("a",
-                                                                                          str(),
-                                                                                          "b",
-                                                                                          integer()
-                                                         ))
-                                                         .nullable()
+        JsObjSpec specNullable = JsObjSpec.of("a",
+                                              JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
+                                                                                  str(),
+                                                                                  "b",
+                                                                                  integer()
+                                                     ))
+                                                     .nullable()
         );
 
         final JsObj b = JsObj.of("a",
@@ -154,10 +154,10 @@ public class TestJsArrayParser {
                                 new JsObjParser(specNullable).parse(b.toString())
         );
 
-        JsObjSpec specTested = JsObjSpec.strict("a",
-                                                arrayOfObj(o -> o.containsKey("a")
-                                                )
-                                                        .nullable()
+        JsObjSpec specTested = JsObjSpec.of("a",
+                                            arrayOfObj(o -> o.containsKey("a")
+                                            )
+                                                    .nullable()
         ).setOptionals("a");
 
         final JsObj c = JsObj.of("a",
@@ -173,30 +173,30 @@ public class TestJsArrayParser {
                                 new JsObjParser(specTested).parse(c.toString())
         );
 
-        JsObjSpec specSuchThat = JsObjSpec.strict("a",
-                                                  arrayOfObjSuchThat(arr -> arr.size() > 1).nullable(),
-                                                  "b",
-                                                  arrayOfBoolSuchThat(arr -> arr.size() > 2)
-                                                          .nullable(),
-                                                  "c",
-                                                  arrayOfNumberSuchThat(arr -> arr.head()
-                                                                                  .equals(JsInt.of(1)))
-                                                          .nullable(),
-                                                  "d",
-                                                  arrayOfDecSuchThat(arr -> arr.head()
-                                                                               .equals(JsBigDec.of(BigDecimal.TEN)))
-                                                          .nullable(),
-                                                  "e",
-                                                  arrayOfLongSuchThat(arr -> arr.size() == 3)
-                                                          .nullable(),
-                                                  "f",
-                                                  arrayOfIntSuchThat(arr -> arr.size() == 3).nullable(),
-                                                  "g",
-                                                  arrayOfDec(i -> i.longValueExact() % 2 == 0).nullable(),
-                                                  "i",
-                                                  arrayOfStr(i -> i.length() > 2).nullable(),
-                                                  "j",
-                                                  arrayOfNumber(JsValue::isDecimal).nullable()
+        JsObjSpec specSuchThat = JsObjSpec.of("a",
+                                              arrayOfObjSuchThat(arr -> arr.size() > 1).nullable(),
+                                              "b",
+                                              arrayOfBoolSuchThat(arr -> arr.size() > 2)
+                                                      .nullable(),
+                                              "c",
+                                              arrayOfNumberSuchThat(arr -> arr.head()
+                                                                              .equals(JsInt.of(1)))
+                                                      .nullable(),
+                                              "d",
+                                              arrayOfDecSuchThat(arr -> arr.head()
+                                                                           .equals(JsBigDec.of(BigDecimal.TEN)))
+                                                      .nullable(),
+                                              "e",
+                                              arrayOfLongSuchThat(arr -> arr.size() == 3)
+                                                      .nullable(),
+                                              "f",
+                                              arrayOfIntSuchThat(arr -> arr.size() == 3).nullable(),
+                                              "g",
+                                              arrayOfDec(i -> i.longValueExact() % 2 == 0).nullable(),
+                                              "i",
+                                              arrayOfStr(i -> i.length() > 2).nullable(),
+                                              "j",
+                                              arrayOfNumber(JsValue::isDecimal).nullable()
 
         ).setAllOptional();
 
@@ -280,21 +280,21 @@ public class TestJsArrayParser {
                                .setAllNullable()
                                .setAllOptional();
 
-        JsObjSpec spec = JsObjSpec.lenient("a",
-                                           array(),
-                                           "b",
-                                           array().nullable(),
-                                           "d",
-                                           array(v -> v.isIntegral() || v.isStr())
-                                                   .nullable(),
-                                           "e",
-                                           array(v -> v.isIntegral() || v.isStr()).nullable(),
-                                           "f",
-                                           array(v -> v.isIntegral() || v.isStr())
-                                                   .nullable()
-        ).setOptionals("c",
-                       "d",
-                       "f");
+        JsObjSpec spec = JsObjSpec.of("a",
+                                      array(),
+                                      "b",
+                                      array().nullable(),
+                                      "d",
+                                      array(v -> v.isIntegral() || v.isStr())
+                                              .nullable(),
+                                      "e",
+                                      array(v -> v.isIntegral() || v.isStr()).nullable(),
+                                      "f",
+                                      array(v -> v.isIntegral() || v.isStr())
+                                              .nullable()
+        ).lenient().setOptionals("c",
+                                 "d",
+                                 "f");
 
         JsObjParser parser = new JsObjParser(spec);
 

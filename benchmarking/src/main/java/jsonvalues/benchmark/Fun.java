@@ -20,7 +20,7 @@ public class Fun {
     public static final JsObjSpec PERSON_SPEC;
 
     static {
-        PERSON_SPEC = JsObjSpec.strict("firstName",
+        PERSON_SPEC = JsObjSpec.of("firstName",
                                        str(length(1,
                                                   255)),
                                        "lastName",
@@ -44,7 +44,7 @@ public class Fun {
                                        "numbers",
                                        arrayOfInt(1,100),
                                        "vegetables",
-                                       arrayOfObjSpec(JsObjSpec.strict("veggieName",
+                                       arrayOfObjSpec(JsObjSpec.of("veggieName",
                                                                 str(length(1,
                                                                            255)),
                                                                 "veggieLike",

@@ -15,7 +15,7 @@ public class TestErrors {
     @Test
     public void test_parsing_obj() {
 
-        JsObjSpec spec = JsObjSpec.strict("a",
+        JsObjSpec spec = JsObjSpec.of("a",
                                           JsSpecs.integer());
 
         JsObjParser parser = new JsObjParser(spec);
@@ -38,11 +38,11 @@ public class TestErrors {
                 "  \"a\": -\n" +
                 "}";
 
-        JsObjParser parserAsLong = new JsObjParser(JsObjSpec.strict("a",JsSpecs.longInteger()));
-        JsObjParser parserAsInt = new JsObjParser(JsObjSpec.strict("a",JsSpecs.integer()));
+        JsObjParser parserAsLong = new JsObjParser(JsObjSpec.of("a",JsSpecs.longInteger()));
+        JsObjParser parserAsInt = new JsObjParser(JsObjSpec.of("a",JsSpecs.integer()));
 
-        JsObjParser parserAsDec = new JsObjParser(JsObjSpec.strict("a",JsSpecs.decimal()));
-        JsObjParser parserAsBigInt = new JsObjParser(JsObjSpec.strict("a",JsSpecs.bigInteger()));
+        JsObjParser parserAsDec = new JsObjParser(JsObjSpec.of("a",JsSpecs.decimal()));
+        JsObjParser parserAsBigInt = new JsObjParser(JsObjSpec.of("a",JsSpecs.bigInteger()));
 
         Assertions.assertThrows(JsParserException.class,()->parserAsLong.parse(json1));
         Assertions.assertThrows(JsParserException.class,()->parserAsInt.parse(json1));
