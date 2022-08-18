@@ -49,15 +49,16 @@ JsObj.of("name",JsStr.of("Rafael"),
 ```java 
 
 JsObjSpec spec = 
-        JsObjSpec.strict("name", str(),
-                         "languages", arrayOfStr(),
-                         "age", integer(),
-                         "address", JsObjSpec.lenient("street",str(),
-                                                      "coordinates", tuple(decimal(),
-                                                                           decimal())
-                                                     )
-                         )
-                  .setOptionals("address");
+        JsObjSpec.of("name", str(),
+                     "languages", arrayOfStr(),
+                     "age", integer(),
+                     "address", JsObjSpec.of("street",str(),
+                                             "coordinates", tuple(decimal(),
+                                                                  decimal()
+                                                                  )
+                                             )
+                    )
+                 .setOptionals("address");
     
 ```   
 
@@ -694,20 +695,21 @@ the same approach as defining JSON:
 ```java   
 
 JsObjSpec personSpec =
-    JsObjSpec.strict("name", str(),
-                     "surname", str(),
-                     "phoneNumber", str(),
-                     "registrationDate", instant(),
-                     "addresses", arrayOfObjSpec(JsObjSpec.strict("coordinates", 
-                                                                  tuple(decimal(),
-                                                                        decimal()
-                                                                        ),
-                                                                  "city", str(),
-                                                                  "tags", arrayOfStr(),
-                                                                  "zipCode", str()
-                                                                  )
-                                                )
-                    );
+    JsObjSpec.of("name", str(),
+                 "surname", str(),
+                 "phoneNumber", str(),
+                 "registrationDate", instant(),
+                 "addresses", arrayOfObjSpec(JsObjSpec.of("coordinates", 
+                                                          tuple(decimal(),
+                                                                decimal()
+                                                               ),
+                                                          "city", str(),
+                                                          "tags", arrayOfStr(),
+                                                          "zipCode", str()
+                                                         )
+                                                      .lenient()   
+                                             )
+                 );
     
 Set<SpecError> errors = personSepc.test(person);   
 
@@ -720,8 +722,11 @@ errors.forEach(pair -> System.out.println(toStr.apply(pair)));
 
 I’d argue that it is very expressive, concise, and straightforward. I call it json-spec.
 I named it after a Clojure library named [spec](https://clojure.org/guides/spec). Writing
-specs feels like writing JSON. Strict specs don't allow keys that are not specified, whereas
-lenient ones do. The real power is that you can create specs from predicates and compose them:
+specs feels like writing JSON. Specs by default are strict, which means that they don't allow 
+keys that are not specified, whereas lenient ones do. Turning strict specs into lenient ones is as easy
+as calling the method _lenient_.
+
+The real power is that you can create specs from predicates and compose them:
 
 ```java   
 
@@ -772,27 +777,28 @@ Predicate<String> zipCodeSpec = lengthBetween.apply(0, MAX_ZIPCODE_LENGTH);
         
 
 JsObjSpec personSpec =
-    JsObjSpec.strict("name", str(nameSpec),
-                     "surname", str(surnameSpec),
-                     "phoneNumber", str(phoneSpec).nullable(),
-                     "registrationDate", instant(registrationDateSpec),
-                     "addresses", 
-                      arrayOfObjSpec(JsObjSpec.lenient("coordinates",
-                                                       tuple(decimal(latitudeSpec),
-                                                             decimal(longitudeSpec)
-                                                            ),
-                                                       "city", str(citySpec),
-                                                       "tags", arrayOfStr(tagSpec,
-                                                                          0,
-                                                                          MAX_TAGS_SIZE
-                                                                         ),
-                                                       "zipCode", str(zipCodeSpec)
-                                                       )
-                                              .setOptionals("tags", "zipCode", "city"),
-                                     MIN_ADDRESSES_SIZE,
-                                     MAX_ADDRESSES_SIZE                
-                                    )
-                     )
+    JsObjSpec.of("name", str(nameSpec),
+                 "surname", str(surnameSpec),
+                 "phoneNumber", str(phoneSpec).nullable(),
+                 "registrationDate", instant(registrationDateSpec),
+                 "addresses", 
+                 arrayOfObjSpec(JsObjSpec.of("coordinates",
+                                             tuple(decimal(latitudeSpec),
+                                                   decimal(longitudeSpec)
+                                                  ),
+                                             "city", str(citySpec),
+                                             "tags", arrayOfStr(tagSpec,
+                                                                0,
+                                                                MAX_TAGS_SIZE
+                                                                ),
+                                             "zipCode", str(zipCodeSpec)
+                                            )
+                                         .lenient()         
+                                         .setOptionals("tags", "zipCode", "city"),
+                                MIN_ADDRESSES_SIZE,
+                                MAX_ADDRESSES_SIZE                
+                                )
+                 )
              .setOptionals("surname", "phoneNumber", "addresses");   
     
 ```
@@ -806,9 +812,9 @@ numbers or booleans etc.
 
 ``` java
 
-JsObjSpec a = JsObjSpec.strict("name", str(),
-                               "grades", mapOfInteger()
-                              );
+JsObjSpec a = JsObjSpec.of("name", str(),
+                           "grades", mapOfInteger()
+                          );
 
 Set<SpecError> errors = 
         spec.test(JsObj.of("name", JsStr.of("Rafael"),
@@ -836,9 +842,9 @@ If you don’t have their credit card number, a billing address would not be req
     };
 
  JsObjSpec customerSpec =
-                JsObjSpec.strict("credit_card", str(),
-                                 "billing_address", str()
-                                )
+                JsObjSpec.of("credit_card", str(),
+                             "billing_address", str()
+                            )
                          .setOptionals("credit_card",
                                        "billing_address")
                          .suchThat(existsBillingIfCard);
@@ -1156,17 +1162,17 @@ We validate the person Json with a spec before applying the function, which make
 ```java   
 
 JsObjSpec addressSpec = 
-    JsObjSpec.lenient("street",str(),
-                      "coordinates", tuple(decimal(),
-                                           decimal())
-                     );
+    JsObjSpec.of("street",str(),
+                 "coordinates", tuple(decimal(),
+                                      decimal())
+                );
 
 JsObjSpec personSpec =
-    JsObjSpec.strict("name", str(),
-                     "languages", arrayOfStr(),
-                     "age", integer(),
-                     "address", addressSpec()
-                    )
+    JsObjSpec.of("name", str(),
+                 "languages", arrayOfStr(),
+                 "age", integer(),
+                 "address", addressSpec().lenient()
+                )
              .setOptionals("address");
 
 //since we know the schema of the json we'll work with lenses and primitive types instead of JsValue
