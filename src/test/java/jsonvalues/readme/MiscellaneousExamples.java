@@ -27,7 +27,7 @@ public class MiscellaneousExamples {
                                           str(),
                                           "age",
                                           integer(i -> i >= 0)
-        ).setOptionals("firstName",
+        ).withOptKeys("firstName",
                        "lastName",
                        "age");
 
@@ -41,7 +41,7 @@ public class MiscellaneousExamples {
                             "age",
                             JsIntGen.biased(0,
                                             200))
-                        .setOptionals("firstName",
+                        .withOptKeys("firstName",
                                       "lastName",
                                       "age");
 

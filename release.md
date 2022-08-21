@@ -4,10 +4,24 @@ VERSION 11.7.0
 
 JsObjSpec.strict  -> JsObjSpec.of
 
+JsObjSpec.setOptionals  -> JsObjSpec.withOptKeys
+
+JsObjSpec.setAllOptional  -> JsObjSpec.withAllOptKeys
+
+JsObjGen.setOptionals -> JsObjGen.withOptKeys
+
+JsObjGen.setAllOptional -> JsObjGen.withAllOptKeys
+
+JsObjGen.setNullables -> JsObjGen.withNullValues 
+
+JsObjGen.setAllNullable -> JsObjGen.withAllNullValues
+
+
 **CHANGES**
 
-JsObjSpec.lenient factory methods have been deleted. To create strict ones with the 
-static factory method of and then call the lenient method:
+JsObjSpec.lenient factory methods have been deleted. To create lenient spec,
+create first strict ones ones with the static factory method of and then call 
+the lenient method:
 
 ```code  
 

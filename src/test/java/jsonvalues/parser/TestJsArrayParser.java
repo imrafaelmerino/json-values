@@ -158,7 +158,7 @@ public class TestJsArrayParser {
                                             arrayOfObj(o -> o.containsKey("a")
                                             )
                                                     .nullable()
-        ).setOptionals("a");
+        ).withOptKeys("a");
 
         final JsObj c = JsObj.of("a",
                                  JsArray.of(JsObj.of("a",
@@ -198,7 +198,7 @@ public class TestJsArrayParser {
                                               "j",
                                               arrayOfNumber(JsValue::isDecimal).nullable()
 
-        ).setAllOptional();
+        ).withAllOptKeys();
 
 
         JsObjGen gen = JsObjGen.of("a",
@@ -243,8 +243,8 @@ public class TestJsArrayParser {
                                                         10)
 
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
 
         Assertions.assertTrue(gen.sample(100000)
@@ -277,8 +277,8 @@ public class TestJsArrayParser {
                                                      5,
                                                      10)
                                )
-                               .setAllNullable()
-                               .setAllOptional();
+                               .withAllNullValues()
+                               .withAllOptKeys();
 
         JsObjSpec spec = JsObjSpec.of("a",
                                       array(),
@@ -292,9 +292,9 @@ public class TestJsArrayParser {
                                       "f",
                                       array(v -> v.isIntegral() || v.isStr())
                                               .nullable()
-        ).lenient().setOptionals("c",
-                                 "d",
-                                 "f");
+        ).lenient().withOptKeys("c",
+                                "d",
+                                "f");
 
         JsObjParser parser = new JsObjParser(spec);
 

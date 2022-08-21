@@ -265,9 +265,9 @@ public class TestJsParser {
                                    JsArrayGen.arbitrary(JsLongGen.arbitrary(),
                                                         0,
                                                         1)
-        ).setNullables("a",
-                       "b",
-                       "c");
+        ).withNullValues("a",
+                         "b",
+                         "c");
 
 
         Assertions.assertTrue(gen.sample(10000)
@@ -289,7 +289,7 @@ public class TestJsParser {
                                                      10).nullable(),
                                           "d",
                                           arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptional();
+        ).withAllOptKeys();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -309,8 +309,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> validGen = gen.suchThat(spec);
 
@@ -335,7 +335,7 @@ public class TestJsParser {
                                                      10),
                                           "d",
                                           arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
-        ).setAllOptional();
+        ).withAllOptKeys();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -358,8 +358,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec);
 
@@ -414,8 +414,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec);
 
@@ -443,7 +443,7 @@ public class TestJsParser {
                                                      10).nullable(),
                                           "d",
                                           arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptional();
+        ).withAllOptKeys();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -463,8 +463,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> validGen = gen.suchThat(spec);
 
@@ -486,7 +486,7 @@ public class TestJsParser {
                                                       10).nullable(),
                                           "d",
                                           arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).setAllOptional();
+        ).withAllOptKeys();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -505,8 +505,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> validGen = gen.suchThat(spec);
 
@@ -557,8 +557,8 @@ public class TestJsParser {
                                    "e",
                                    JsBoolGen.arbitrary()
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec);
 
@@ -613,8 +613,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec,
                                                100);
@@ -665,8 +665,8 @@ public class TestJsParser {
                                    "d",
                                    valueGen
                                )
-                               .setAllNullable()
-                               .setAllOptional();
+                               .withAllNullValues()
+                               .withAllOptKeys();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec,
                                                1000);
@@ -724,8 +724,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec,
                                                100);
@@ -781,8 +781,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec,
                                                100);
@@ -821,7 +821,7 @@ public class TestJsParser {
                                         JsBoolGen.arbitrary(),
                                         "b",
                                         JsStrGen.alphabetic())
-                                    .setOptionals("a");
+                                    .withOptKeys("a");
         Gen<JsValue> valueGen = Combinators.oneOf(objGen,
                                                   Gen.cons(JsNull.NULL),
                                                   Gen.cons(JsBool.TRUE),
@@ -841,8 +841,8 @@ public class TestJsParser {
                                    "d",
                                    arrayGen
                                )
-                               .setAllOptional()
-                               .setAllNullable();
+                               .withAllOptKeys()
+                               .withAllNullValues();
 
         Gen<JsObj> invalidGen = gen.suchThatNo(spec,
                                                100);

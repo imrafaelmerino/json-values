@@ -51,7 +51,7 @@ public class Fun {
                                                                 bool()
                                                                )
                                               )
-                                      ).setOptionals("vegetables");
+                                      ).withOptKeys("vegetables");
         PERSON_JSON_SCHEMA = fileContent("personSchema.json");
         PERSON_JSON = fileContent("person.json");
 

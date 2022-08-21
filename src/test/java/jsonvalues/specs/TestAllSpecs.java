@@ -75,8 +75,8 @@ public class TestAllSpecs {
                                                         1,
                                                         10)
                                )
-                               .setAllNullable()
-                               .setAllOptional();
+                               .withAllNullValues()
+                               .withAllOptKeys();
 
         JsObjParser parser = new JsObjParser(spec);
 

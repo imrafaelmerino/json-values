@@ -1025,7 +1025,7 @@ public final class JsObjSpec implements JsSpec {
         return requiredFields;
     }
 
-    public JsObjSpec setAllOptional() {
+    public JsObjSpec withAllOptKeys() {
         return new JsObjSpec(bindings,
                              nullable,
                              strict,
@@ -1033,8 +1033,8 @@ public final class JsObjSpec implements JsSpec {
                              new ArrayList<>());
     }
 
-    public JsObjSpec setOptionals(final String field,
-                                  final String... fields) {
+    public JsObjSpec withOptKeys(final String field,
+                                 final String... fields) {
 
         List<String> optionalFields = new ArrayList<>();
         optionalFields.add(field);
@@ -1056,7 +1056,7 @@ public final class JsObjSpec implements JsSpec {
                      .collect(Collectors.toList());
     }
 
-    public JsObjSpec setOptionals(final List<String> optionals) {
+    public JsObjSpec withOptKeys(final List<String> optionals) {
         return new JsObjSpec(bindings,
                              nullable,
                              strict,

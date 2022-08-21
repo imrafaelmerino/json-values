@@ -633,9 +633,9 @@ public class TestJsObjSpec {
                                                                  number(JsValue::isDouble),
                                                                  "f",
                                                                  obj(JsObj::isEmpty)
-                                                ).setOptionals("b")
-        ).setOptionals("c",
-                       "c");
+                                                ).withOptKeys("b")
+        ).withOptKeys("c",
+                      "c");
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
@@ -732,8 +732,8 @@ public class TestJsObjSpec {
                                           any(),
                                           "d",
                                           any(JsValue::isStr)
-        ).setOptionals("b",
-                       "d");
+        ).withOptKeys("b",
+                      "d");
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsNull.NULL
@@ -760,7 +760,7 @@ public class TestJsObjSpec {
                                                            any(),
                                                            "d",
                                                            any(JsValue::isStr)
-                                          ).setOptionals("b")
+                                          ).withOptKeys("b")
         );
 
 
@@ -846,7 +846,7 @@ public class TestJsObjSpec {
                                                                            number()
                                                          ).lenient()
                                           )
-        ).setOptionals("h");
+        ).withOptKeys("h");
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsArray.of(1,
@@ -1035,26 +1035,26 @@ public class TestJsObjSpec {
                                                                             decimal().nullable(),
                                                                             "i",
                                                                             number().nullable()
-                                                          ).lenient().setOptionals("a",
-                                                                         "b",
-                                                                         "c",
-                                                                         "d",
-                                                                         "e",
-                                                                         "f",
-                                                                         "g",
-                                                                         "h",
-                                                                         "i")
+                                                          ).lenient().withOptKeys("a",
+                                                                                  "b",
+                                                                                  "c",
+                                                                                  "d",
+                                                                                  "e",
+                                                                                  "f",
+                                                                                  "g",
+                                                                                  "h",
+                                                                                  "i")
                                            ).nullable()
-        ).setOptionals("a",
-                       "c",
-                       "d",
-                       "e",
-                       "f",
-                       "g",
-                       "h",
-                       "i",
-                       "j",
-                       "k").lenient();
+        ).withOptKeys("a",
+                      "c",
+                      "d",
+                      "e",
+                      "f",
+                      "g",
+                      "h",
+                      "i",
+                      "j",
+                      "k").lenient();
 
         final Set<SpecError> result = spec.test(JsObj.of("a",
                                                          JsNull.NULL,
@@ -1175,26 +1175,26 @@ public class TestJsObjSpec {
                                                                            decimal(),
                                                                            "i",
                                                                            number()
-                                                         ).lenient().setOptionals("a",
-                                                                        "b",
-                                                                        "c",
-                                                                        "d",
-                                                                        "e",
-                                                                        "f",
-                                                                        "g",
-                                                                        "h",
-                                                                        "i")
+                                                         ).lenient().withOptKeys("a",
+                                                                                 "b",
+                                                                                 "c",
+                                                                                 "d",
+                                                                                 "e",
+                                                                                 "f",
+                                                                                 "g",
+                                                                                 "h",
+                                                                                 "i")
                                           )
-        ).setOptionals("a",
-                       "c",
-                       "d",
-                       "e",
-                       "f",
-                       "g",
-                       "h",
-                       "i",
-                       "j",
-                       "k");
+        ).withOptKeys("a",
+                      "c",
+                      "d",
+                      "e",
+                      "f",
+                      "g",
+                      "h",
+                      "i",
+                      "j",
+                      "k");
 
 
         Assertions.assertTrue(spec.test(JsObj.empty())
@@ -1222,9 +1222,9 @@ public class TestJsObjSpec {
                                           "d",
                                           objSpec
                                                   .nullable()
-        ).setOptionals("b",
-                       "c",
-                       "d");
+        ).withOptKeys("b",
+                      "c",
+                      "d");
 
         final Set<SpecError> set = spec.test(JsObj.of("a",
                                                       JsObj.of("a",
@@ -1264,8 +1264,8 @@ public class TestJsObjSpec {
                                                    c,
                                                    "d",
                                                    d
-        ).setOptionals("c",
-                       "d");
+        ).withOptKeys("c",
+                      "d");
 
         final Set<SpecError> errors = objspec.test(JsObj.of("a",
                                                             JsArray.of(JsObj.of("a",
@@ -1304,8 +1304,8 @@ public class TestJsObjSpec {
                                        "d",
                                        arrayOfObjSpec(spec).nullable()
 
-        ).setOptionals("c",
-                       "d");
+        ).withOptKeys("c",
+                      "d");
 
         Assertions.assertTrue(b.test(JsObj.of("a",
                                               JsArray.of(JsObj.of("a",
@@ -1333,7 +1333,7 @@ public class TestJsObjSpec {
                                                 JsObjSpec.of("c",
                                                                  bigInteger()
                                                 )
-        ).setOptionals("a");
+        ).withOptKeys("a");
 
         final Set<SpecError> errors = spec.test(JsObj.of("b",
                                                          JsObj.empty()
@@ -1467,7 +1467,7 @@ public class TestJsObjSpec {
 
         JsObjSpec spec = JsObjSpec.of("a",
                                           cons(JsInt.of(2))
-        ).setOptionals("a");
+        ).withOptKeys("a");
 
         Assertions.assertTrue(spec.test(JsObj.empty())
                                   .isEmpty());
@@ -1546,7 +1546,7 @@ public class TestJsObjSpec {
         );
         Gen<JsObj> gen =
                 baseGen
-                        .setOptionals("a",
+                        .withOptKeys("a",
                                       "b",
                                       "c",
                                       "d")
@@ -1554,10 +1554,10 @@ public class TestJsObjSpec {
 
         JsObjSpec spec =
                 baseSpec
-                        .setOptionals("a",
-                                      "b",
-                                      "c",
-                                      "d")
+                        .withOptKeys("a",
+                                     "b",
+                                     "c",
+                                     "d")
                         .suchThat(o -> dependencies(o));
 
         Assertions.assertTrue(gen.sample(10000).allMatch(o -> {
@@ -1574,8 +1574,8 @@ public class TestJsObjSpec {
         }));
 
 
-        JsObjSpec spec1 = baseSpec.setAllOptional().suchThat(o -> dependencies(o));
-        Assertions.assertTrue(baseGen.setAllOptional().suchThat(spec1).sample(10000).allMatch(o -> {
+        JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(o -> dependencies(o));
+        Assertions.assertTrue(baseGen.withAllOptKeys().suchThat(spec1).sample(10000).allMatch(o -> {
             Set<SpecError> errors = spec1.test(o);
             if (!errors.isEmpty()) System.out.println(errors);
             return errors.isEmpty();

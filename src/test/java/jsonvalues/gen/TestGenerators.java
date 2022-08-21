@@ -46,8 +46,8 @@ public class TestGenerators {
                                       "b",
                                       arrayOfIntSuchThat(a -> a.size() <= 10).nullable()
 
-        ).setOptionals("a",
-                       "b");
+        ).withOptKeys("a",
+                      "b");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())
@@ -149,7 +149,7 @@ public class TestGenerators {
                                       any(v -> v.isStr() || v.isIntegral()),
                                       "g",
                                       str(b -> b.equals("a"))
-        ).setOptionals("e");
+        ).withOptKeys("e");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())
@@ -215,9 +215,9 @@ public class TestGenerators {
                                                           1000
                                    )
                                )
-                               .setNullables("a",
-                                             "g")
-                               .setOptionals("a",
+                               .withNullValues("a",
+                                               "g")
+                               .withOptKeys("a",
                                              "g",
                                              "p",
                                              "o");
@@ -256,10 +256,10 @@ public class TestGenerators {
                                       instant()
                                   )
                                   .lenient()
-                                  .setOptionals("a",
-                                                "g",
-                                                "o",
-                                                "p");
+                                  .withOptKeys("a",
+                                               "g",
+                                               "o",
+                                               "p");
 
         Assertions.assertTrue(
                 gen.sample(1000)
@@ -280,15 +280,15 @@ public class TestGenerators {
                                    "b",
                                    JsIntGen.arbitrary()
                                )
-                               .setOptionals("b")
-                               .setNullables("b");
+                               .withOptKeys("b")
+                               .withNullValues("b");
 
         JsObjSpec spec = JsObjSpec.of("a",
                                       str(),
                                       "b",
                                       integer()
                                               .nullable()
-        ).setOptionals("b");
+        ).withOptKeys("b");
 
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(it -> spec.test(it).isEmpty())

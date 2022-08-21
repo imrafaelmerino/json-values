@@ -195,8 +195,8 @@ public class TestJsObjParser {
                                                                        any()
                                                                  )
                                                 )
-        ).setOptionals("f",
-                       "i");
+        ).withOptKeys("f",
+                      "i");
 
 
         final JsObj obj = JsObj.of("a",
@@ -284,7 +284,7 @@ public class TestJsObjParser {
                                                                  arrayOfLong(i -> i > 0).nullable(),
                                                                  "g",
                                                                  arrayOfLong(i -> i > 0).nullable()
-                                                ).setOptionals("g")
+                                                ).withOptKeys("g")
         );
 
 
@@ -402,7 +402,7 @@ public class TestJsObjParser {
                                                         any()
                                                   )
                                  )
-                ).setOptionals("e");
+                ).withOptKeys("e");
 
 
         final JsObj obj = JsObj.of("a",
@@ -493,18 +493,18 @@ public class TestJsObjParser {
                                                 "j",
                                                 arrayOfObj(a -> a.keySet()
                                                                  .size() == 2).nullable()
-        ).setOptionals("a",
-                       "b",
-                       "c",
-                       "d",
-                       "e",
-                       "f",
-                       "g",
-                       "h",
-                       "i",
-                       "j",
-                       "k",
-                       "j");
+        ).withOptKeys("a",
+                      "b",
+                      "c",
+                      "d",
+                      "e",
+                      "f",
+                      "g",
+                      "h",
+                      "i",
+                      "j",
+                      "k",
+                      "j");
 
 
         Assertions.assertEquals(JsObj.empty(),
@@ -557,7 +557,7 @@ public class TestJsObjParser {
         final JsObjSpec spec = JsObjSpec.of("a",
                                                  str()
                                                          .nullable()
-        ).lenient().setOptionals("a");
+        ).lenient().withOptKeys("a");
 
 
         final JsObj obj = JsObj.of("b",
@@ -589,8 +589,8 @@ public class TestJsObjParser {
                                                    .nullable(),
                                            "f",
                                            integer(i -> i % 2 == 0).nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -642,8 +642,8 @@ public class TestJsObjParser {
                                            longInteger(i -> i % 2 == 1).nullable(),
                                            "f",
                                            longInteger(i -> i % 2 == 0).nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -696,8 +696,8 @@ public class TestJsObjParser {
                                                    .nullable(),
                                            "f",
                                            decimal(i -> i.longValueExact() % 2 == 0).nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -751,8 +751,8 @@ public class TestJsObjParser {
                                            bigInteger(i -> i.longValueExact() % 2 == 1).nullable(),
                                            "f",
                                            bigInteger(i -> i.longValueExact() % 2 == 0).nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -805,8 +805,8 @@ public class TestJsObjParser {
                                            number(JsValue::isIntegral).nullable(),
                                            "g",
                                            array().nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -861,8 +861,8 @@ public class TestJsObjParser {
                                            str(i -> i.length() == 1).nullable(),
                                            "f",
                                            str(i -> i.length() % 2 == 0).nullable()
-        ).setOptionals("b",
-                       "e");
+        ).withOptKeys("b",
+                      "e");
 
         final JsObj a = JsObj.of("a",
                                  JsNull.NULL,
@@ -977,8 +977,8 @@ public class TestJsObjParser {
                                           arrayOfNumber(JsValue::isIntegral),
                                           "e",
                                           arrayOfNumber(JsValue::isDecimal)
-        ).setOptionals("c",
-                       "e");
+        ).withOptKeys("c",
+                      "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1009,8 +1009,8 @@ public class TestJsObjParser {
                                           arrayOfBigInt(a -> a.longValueExact() % 2 == 0).nullable(),
                                           "e",
                                           arrayOfBigInt(a -> a.longValueExact() % 3 == 0).nullable()
-        ).setOptionals("c",
-                       "e");
+        ).withOptKeys("c",
+                      "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1071,8 +1071,8 @@ public class TestJsObjParser {
                                           arrayOfDec(a -> a.longValueExact() % 2 == 0),
                                           "e",
                                           arrayOfDec(a -> a.longValueExact() % 3 == 0).nullable()
-        ).setOptionals("c",
-                       "e");
+        ).withOptKeys("c",
+                      "e");
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1115,7 +1115,7 @@ public class TestJsObjParser {
         final JsObjSpec objSpec = JsObjSpec.of("a",
                                                     JsSpecs.str(s -> s.length() <= 10)
                                            ).lenient()
-                                           .setOptionals("a");
+                                           .withOptKeys("a");
         JsObjParser objParser = new JsObjParser(objSpec);
 
         JsObjGen objGen = JsObjGen.of("a",
@@ -1133,9 +1133,9 @@ public class TestJsObjParser {
                                       BytesGen.biased(0,
                                                       100).map(it -> JsStr.of(Base64.getEncoder().encodeToString(it)))
                                   )
-                                  .setOptionals("a")
-                                  .setNullables("d",
-                                                "e");
+                                  .withOptKeys("a")
+                                  .withNullValues("d",
+                                                  "e");
 
         Assertions.assertTrue(objGen.sample(10000)
                                     .allMatch(v -> objParser.parse(v.toString()
@@ -1285,7 +1285,7 @@ public class TestJsObjParser {
         );
         Gen<JsObj> gen =
                 baseGen
-                        .setOptionals("a",
+                        .withOptKeys("a",
                                       "b",
                                       "c",
                                       "d")
@@ -1293,10 +1293,10 @@ public class TestJsObjParser {
 
         JsObjSpec spec =
                 baseSpec
-                        .setOptionals("a",
-                                      "b",
-                                      "c",
-                                      "d")
+                        .withOptKeys("a",
+                                     "b",
+                                     "c",
+                                     "d")
                         .suchThat(o -> dependencies(o));
 
         JsObjParser parser = new JsObjParser(spec);
@@ -1308,9 +1308,9 @@ public class TestJsObjParser {
                                                100).sample(10000)
                                      .allMatch(o -> spec.test(parser.parse(o.toString())).isEmpty()));
 
-        JsObjSpec spec1 = baseSpec.setAllOptional().suchThat(o -> dependencies(o));
+        JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(o -> dependencies(o));
         JsObjParser parser1 = new JsObjParser(spec1);
-        Assertions.assertTrue(baseGen.setAllOptional()
+        Assertions.assertTrue(baseGen.withAllOptKeys()
                                      .suchThat(spec1).sample(10000)
                                      .allMatch(o -> spec1.test(parser1.parse(o.toString())).isEmpty()));
 
@@ -1328,7 +1328,7 @@ public class TestJsObjParser {
     public void testLenientObjectParser() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                           JsSpecs.str().nullable()).setOptionals("a").lenient();
+                                           JsSpecs.str().nullable()).withOptKeys("a").lenient();
 
         JsObjParser parser = new JsObjParser(spec);
 
@@ -1347,10 +1347,10 @@ public class TestJsObjParser {
                                       BytesGen.biased(0,
                                                       100).map(it -> JsStr.of(Base64.getEncoder().encodeToString(it)))
                                   )
-                                  .setOptionals("a")
-                                  .setNullables("a",
-                                                "d",
-                                                "e");
+                                  .withOptKeys("a")
+                                  .withNullValues("a",
+                                                  "d",
+                                                  "e");
 
         Assertions.assertTrue(objGen.sample(1000).allMatch(it -> parser.parse(it.toPrettyString()).equals(it)));
     }
@@ -1359,7 +1359,7 @@ public class TestJsObjParser {
     public void testLenientArrayParser() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                           JsSpecs.str().nullable()).setOptionals("a").lenient();
+                                           JsSpecs.str().nullable()).withOptKeys("a").lenient();
 
 
         JsArraySpec arraySpec = JsSpecs.arrayOfObjSpec(spec.nullable());
@@ -1381,10 +1381,10 @@ public class TestJsObjParser {
                                       BytesGen.biased(0,
                                                       100).map(it -> JsStr.of(Base64.getEncoder().encodeToString(it)))
                                   )
-                                  .setOptionals("a")
-                                  .setNullables("a",
-                                                "d",
-                                                "e");
+                                  .withOptKeys("a")
+                                  .withNullValues("a",
+                                                  "d",
+                                                  "e");
 
         Assertions.assertTrue(JsArrayGen.arbitrary(objGen,
                                                    0,

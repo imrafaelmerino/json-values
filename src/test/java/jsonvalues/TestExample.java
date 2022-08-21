@@ -42,7 +42,7 @@ public class TestExample {
                                                                          JsSpecs.decimal()
                                                            )
                                           )
-        ).setOptionals("surname",
+        ).withOptKeys("surname",
                        "age");
 
         JsObj person = JsObj.of("name",

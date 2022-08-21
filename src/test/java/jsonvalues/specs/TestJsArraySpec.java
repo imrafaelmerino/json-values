@@ -287,7 +287,7 @@ public class TestJsArraySpec {
                                              arrayOfObjSpec(spec).nullable(),
                                              "b",
                                              arrayOfObjSpec(spec).nullable()
-        ).setOptionals("b");
+        ).withOptKeys("b");
 
 
         Assertions.assertTrue(objSpec.test(JsObj.of("a",
