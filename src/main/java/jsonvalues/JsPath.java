@@ -406,6 +406,21 @@ public final class JsPath implements Comparable<JsPath> {
                                                .startsWith(path.tail());
     }
 
+    public boolean startsWithKey(final String key) {
+        return startsWith(JsPath.fromKey(key));
+    }
+
+    public boolean endsWithKey(final String key) {
+        return endsWith(JsPath.fromKey(key));
+    }
+
+    public boolean containsKey(final String key){
+
+        return !positions.filter(pos->pos.isKey(it->it.equals(key)))
+                         .isEmpty();
+
+    }
+
     /**
      * returns true if this path ends with the given path. If the given path is JsPath.empty(), it
      * always returns true

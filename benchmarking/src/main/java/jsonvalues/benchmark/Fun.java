@@ -1,6 +1,11 @@
 package jsonvalues.benchmark;
 
 import jsonvalues.spec.JsObjSpec;
+import scala.Tuple2;
+import scala.collection.IterableOnce;
+import scala.collection.immutable.List;
+import scala.collection.immutable.Nil$;
+import scala.collection.immutable.Seq;
 
 import java.io.BufferedReader;
 import java.io.IOException;

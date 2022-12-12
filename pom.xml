@@ -28,7 +28,7 @@
         <url>https://github.com/imrafaelmerino/json-values.git</url>
     </scm>
     <properties>
-        <JACKSON-VERSION>2.13.3</JACKSON-VERSION>
+        <JACKSON-VERSION>2.13.4</JACKSON-VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.12</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
         <MAVEN-GPG-PLUGIN.VERSION>1.6</MAVEN-GPG-PLUGIN.VERSION>
@@ -63,7 +63,6 @@
             <version>${DSL-JSON.VERSION}</version>
         </dependency>
 
-
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -83,6 +82,7 @@
             <version>${JUNIT-JUPITER-API.VERSION}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-yaml</artifactId>
