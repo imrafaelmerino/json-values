@@ -82,27 +82,6 @@ public class DslNumberConverter {
     }
 
 
-    @Test
-    public void a() throws IOException {
 
-        DslJson<Object> dslJson = new DslJson();
-        Supplier<JsonReader> reader = () -> {
-            try {
-                JsonReader r = dslJson.newReader("2669345564994622469.0".getBytes(StandardCharsets.UTF_8));
-                r.getNextToken();
-                return r;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        };
-        double d = NumberConverter.deserializeDouble(reader.get());
-
-        Assertions.assertEquals(2669345564994622469L,
-                                ((long) d));
-
-
-
-
-    }
 
 }

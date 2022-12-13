@@ -212,4 +212,23 @@ public class TestJsPath {
                                );
     }
 
+    @Test
+    public void testContains(){
+
+        Assertions.assertTrue(JsPath.path("/a/b/c/d").contains(JsPath.fromKey("d")));
+
+        Assertions.assertTrue(JsPath.path("/a/b/c/d").contains(JsPath.path("/b/c")));
+
+        Assertions.assertTrue(JsPath.path("/a/b/c/0/d").contains(JsPath.path("/b/c/0")));
+
+        Assertions.assertFalse(JsPath.path("/a/b/c/0/d").contains(JsPath.path("/b/c/1")));
+
+        Assertions.assertFalse(JsPath.path("/a/b/c/0/d").contains(JsPath.path("/a/b/0/d")));
+
+        Assertions.assertTrue(JsPath.empty().contains(JsPath.empty()));
+
+        Assertions.assertFalse(JsPath.empty().contains(JsPath.fromKey("a")));
+
+    }
+
 }

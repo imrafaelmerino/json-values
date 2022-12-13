@@ -218,9 +218,9 @@ public class TestGenerators {
                                .withNullValues("a",
                                                "g")
                                .withOptKeys("a",
-                                             "g",
-                                             "p",
-                                             "o");
+                                            "g",
+                                            "p",
+                                            "o");
 
         JsObjSpec spec = JsObjSpec.of("a",
                                       str().nullable(),
@@ -356,6 +356,63 @@ public class TestGenerators {
         Assertions.assertTrue(
                 gen.sample(1000).allMatch(JsInstant::isInstant)
         );
+    }
+
+
+    @Test
+    public void testWithAllNull() {
+
+        JsObjGen gen =
+                JsObjGen.of(
+                                "1",
+                                JsIntGen.arbitrary(),
+                                "2",
+                                JsIntGen.arbitrary(),
+                                "3",
+                                JsIntGen.arbitrary(),
+                                "4",
+                                JsIntGen.arbitrary(),
+                                "5",
+                                JsIntGen.arbitrary(),
+                                "6",
+                                JsIntGen.arbitrary(),
+                                "7",
+                                JsIntGen.arbitrary(),
+                                "8",
+                                JsIntGen.arbitrary(),
+                                "9",
+                                JsIntGen.arbitrary(),
+                                "10",
+                                JsIntGen.arbitrary(),
+                                "11",
+                                JsIntGen.arbitrary(),
+                                "12",
+                                JsIntGen.arbitrary(),
+                                "13",
+                                JsIntGen.arbitrary(),
+                                "14",
+                                JsIntGen.arbitrary(),
+                                "15",
+                                JsIntGen.arbitrary(),
+                                "16",
+                                JsIntGen.arbitrary(),
+                                "17",
+                                JsIntGen.arbitrary(),
+                                "18",
+                                JsIntGen.arbitrary(),
+                                "19",
+                                JsIntGen.arbitrary(),
+                                "20",
+                                JsIntGen.arbitrary())
+                        .set("21",
+                             JsIntGen.arbitrary())
+                        .set("22",
+                             JsIntGen.arbitrary())
+
+                        ;
+
+
+        gen.withAllNullValues().sample(100).forEach(System.out::println);
     }
 
 

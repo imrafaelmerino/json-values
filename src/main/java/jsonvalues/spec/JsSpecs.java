@@ -7,10 +7,12 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
+import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -244,6 +246,30 @@ public final class JsSpecs {
      */
     public static JsSpec str() {
         return str;
+    }
+
+    /**
+     * non-nullable string with the specified length
+     *
+     * @return a spec
+     */
+    public static JsSpec str(int min,
+                             int max) {
+        if (min < 0) throw new IllegalArgumentException("min < 0");
+        if (max <= 0) throw new IllegalArgumentException("max <= 0");
+        if (min > max) throw new IllegalArgumentException("min > max");
+        return str(s -> s.length() >= min & s.length() <= max);
+    }
+
+
+    /**
+     * non-nullable string with the specified pattern
+     *
+     * @return a spec
+     */
+    public static JsSpec str(final Pattern pattern) {
+        Objects.requireNonNull(pattern);
+        return str(s -> pattern.matcher(s).matches());
     }
 
     /**
@@ -809,7 +835,9 @@ public final class JsSpecs {
         return new JsArrayOfTestedStrSpec(s -> requireNonNull(predicate).test(s) ?
                                                Optional.empty() :
                                                Optional.of(Pair.of(JsStr.of(s),
-                                                                   STRING_CONDITION)),
+                                                                   STRING_CONDITION
+                                                           )
+                                               ),
                                           false);
     }
 

@@ -11,8 +11,8 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
+
 /**
- *
  * Represents a JsInstant generator. It can be created using the static factory methods
  * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
  * needs, from a double generator and the function map:
@@ -25,11 +25,10 @@ import static java.util.Objects.requireNonNull;
  *      Gen<JsInstant> jsInstantGen = gen.map(JsInstant::of)
  *      }
  *  </pre>
- *  <p>
+ * <p>
  * Arbitrary generators produces uniformed distributions of values.
  * Biased generators produces, with higher probability, potential problematic values that
  * usually cause more bugs.
- *
  */
 public final class JsInstantGen implements Gen<JsInstant> {
     private static final Gen<JsInstant> biased = new JsInstantGen(InstantGen.biased());
@@ -59,8 +58,8 @@ public final class JsInstantGen implements Gen<JsInstant> {
                                                      max));
     }
 
-    public static Gen<JsInstant> arbitrary(ZonedDateTime min,
-                                           ZonedDateTime max) {
+    public static Gen<JsInstant> arbitrary(final ZonedDateTime min,
+                                           final ZonedDateTime max) {
         return new JsInstantGen(InstantGen.arbitrary(min,
                                                      max));
     }
@@ -73,6 +72,7 @@ public final class JsInstantGen implements Gen<JsInstant> {
 
     /**
      * Returns a supplier from the specified seed that generates a new JsInstant each time it's called
+     *
      * @param seed the generator seed
      * @return a JsInstant supplier
      */

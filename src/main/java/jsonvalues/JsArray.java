@@ -14,6 +14,7 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
@@ -402,7 +403,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                     elem = NULL;
                     break;
                 default:
-                    throw new RuntimeException("token not expected durint parsing: "+token);
+                    throw new RuntimeException("token not expected durint parsing: " + token);
             }
             root = root.append(elem);
         }
@@ -1471,14 +1472,107 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         MULTISET
     }
 
+    /**
+     * Returns this array as a list of string (null elements allowed)
+     *
+     * @return a list of string
+     */
+    public List<String> toListOfStr() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsStr().value)
+                  .toJavaList();
+    }
+
+    /**
+     * Returns this array as a list of integer (null elements allowed)
+     *
+     * @return a list of integers
+     */
+    public List<Integer> toListOfInt() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsInt().value
+                  )
+                  .toJavaList();
+    }
+
+    /**
+     * Returns this array as a list of long (null elements allowed)
+     *
+     * @return a list of longs
+     */
+    public List<Long> toListOfLong() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsLong().value)
+                  .toJavaList();
+    }
 
 
+    /**
+     * Returns this array as a list of json objects (null elements allowed)
+     *
+     * @return a list of json objects
+     */
+    public List<JsObj> toListOfObj() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsObj()
+                  )
+                  .toJavaList();
+    }
 
 
+    /**
+     * Returns this array as a list of booleans (null elements allowed)
+     *
+     * @return a list of booleans
+     */
+    public List<Boolean> toListOfBool() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsBool().value)
+                  .toJavaList();
+    }
 
 
+    /**
+     * Returns this array as a list of big decimals (null elements allowed)
+     *
+     * @return a list of big decimals
+     */
+    public List<BigDecimal> toListOfBigDec() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsBigDec().value)
+                  .toJavaList();
+    }
 
 
+    /**
+     * Returns this array as a list of double (null elements allowed)
+     *
+     * @return a list of double
+     */
+    public List<Double> toListOfDouble() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsDouble().value)
+                  .toJavaList();
+    }
+
+    /**
+     * Returns this array as a list of instants (null elements allowed)
+     *
+     * @return a list of instants
+     */
+    public List<Instant> toListOfInstant() {
+        return seq.map(it -> it == JsNull.NULL ?
+                             null :
+                             it.toJsInstant().value)
+                  .toJavaList();
+    }
 
 }
 

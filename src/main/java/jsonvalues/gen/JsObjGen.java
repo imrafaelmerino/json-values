@@ -45,6 +45,9 @@ import static java.util.Objects.requireNonNull;
  */
 public final class JsObjGen implements Gen<JsObj> {
 
+    private final static int MAX_NULLABLE_FIELDS = 20;
+    private final static int MAX_OPTIONAL_FIELDS = 20;
+
     private final Map<String, Gen<? extends JsValue>> bindings;
 
     private final Set<String> optionals;
@@ -53,13 +56,13 @@ public final class JsObjGen implements Gen<JsObj> {
     private JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
                      Set<String> optionals,
                      Set<String> nullables) {
-        for(String key: optionals){
-            if(!bindings.containsKey(key))
-                throw new IllegalArgumentException("optional '"+key+"' not defined in generator");
+        for (String key : optionals) {
+            if (!bindings.containsKey(key))
+                throw new IllegalArgumentException("optional '" + key + "' not defined in generator");
         }
-        for(String key: nullables){
-            if(!bindings.containsKey(key))
-                throw new IllegalArgumentException("nullable '"+key+"' not defined in generator");
+        for (String key : nullables) {
+            if (!bindings.containsKey(key))
+                throw new IllegalArgumentException("nullable '" + key + "' not defined in generator");
         }
         this.optionals = optionals;
         this.nullables = nullables;
@@ -1013,6 +1016,7 @@ public final class JsObjGen implements Gen<JsObj> {
     /**
      * Returns a brand new JsObj generator with the same key-generators pairs that this instance and
      * all keys nullable. The value associated to a nullable key may or not be null
+     *
      * @return a new generator
      */
     public JsObjGen withAllNullValues() {
@@ -1075,7 +1079,6 @@ public final class JsObjGen implements Gen<JsObj> {
         return new JsObjGen(map,
                             optionals,
                             nullables);
-
     }
 
     /**
@@ -1087,23 +1090,43 @@ public final class JsObjGen implements Gen<JsObj> {
     @Override
     public Supplier<JsObj> apply(final Random seed) {
         requireNonNull(seed);
-        Supplier<Set<String>> optionalCombinations =
-                Combinators.subsets(optionals)
+
+        Supplier<Set<String>> optionalFields =
+                optionals.size() < MAX_OPTIONAL_FIELDS ?
+                () -> this.optionals :
+                Combinators.nOf(this.optionals,
+                                MAX_OPTIONAL_FIELDS)
                            .apply(SplitGen.DEFAULT.apply(seed));
+
+        Supplier<Set<String>> nullableFields =
+                nullables.size() < MAX_NULLABLE_FIELDS ?
+                () -> this.nullables :
+                Combinators.nOf(this.nullables,
+                                MAX_NULLABLE_FIELDS)
+                           .apply(SplitGen.DEFAULT.apply(seed));
+
+        Random optionalCombinationsSeed = SplitGen.DEFAULT.apply(seed);
+        Supplier<Set<String>> optionalCombinations =
+                () -> Combinators.subsets(optionalFields.get())
+                                 .apply(optionalCombinationsSeed)
+                                 .get();
+
+        Random nullableCombinationsSeed = SplitGen.DEFAULT.apply(seed);
+        Supplier<Set<String>> nullableCombinations =
+                () -> Combinators.subsets(nullableFields.get())
+                                 .apply(nullableCombinationsSeed)
+                                 .get();
 
         Supplier<Boolean> isRemoveOptionals =
                 optionals.isEmpty() ?
                 () -> false :
                 BoolGen.arbitrary().apply(SplitGen.DEFAULT.apply(seed));
 
-        Supplier<Set<String>> nullableCombinations =
-                Combinators.subsets(nullables)
-                           .apply(SplitGen.DEFAULT.apply(seed));
-
         Supplier<Boolean> isRemoveNullables =
                 nullables.isEmpty() ?
                 () -> false :
                 BoolGen.arbitrary().apply(SplitGen.DEFAULT.apply(seed));
+
         return () ->
         {
             JsObj obj = JsObj.empty();
@@ -1186,7 +1209,7 @@ public final class JsObjGen implements Gen<JsObj> {
      * the spec. It will try the specified number of tries. If all values conform the spec after
      * this number of iterations, a runtime exception will be thrown.
      *
-     * @param spec the spec that won't satisfy the generated values
+     * @param spec  the spec that won't satisfy the generated values
      * @param tries max number of tries
      * @return a new JsObj generator
      * @throws RuntimeException if a value is not generated after the specified number of tries

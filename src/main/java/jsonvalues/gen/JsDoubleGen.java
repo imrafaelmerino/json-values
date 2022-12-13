@@ -5,7 +5,6 @@ import fun.gen.DoubleGen;
 import fun.gen.Gen;
 import jsonvalues.JsDouble;
 
-import java.math.BigDecimal;
 import java.util.Random;
 import java.util.function.Supplier;
 

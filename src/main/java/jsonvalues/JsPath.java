@@ -4,6 +4,7 @@ import io.vavr.collection.Vector;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
@@ -414,12 +415,6 @@ public final class JsPath implements Comparable<JsPath> {
         return endsWith(JsPath.fromKey(key));
     }
 
-    public boolean containsKey(final String key){
-
-        return !positions.filter(pos->pos.isKey(it->it.equals(key)))
-                         .isEmpty();
-
-    }
 
     /**
      * returns true if this path ends with the given path. If the given path is JsPath.empty(), it
@@ -497,6 +492,26 @@ public final class JsPath implements Comparable<JsPath> {
                                   "/",
                                   ""
                         );
+    }
+
+    /**
+     * returns true if this path contains the given key
+     * @param name the name of the key
+     * @return true if this path contains the key
+     */
+    public boolean containsKey(final String name) {
+        return positions.exists(pos -> pos.isKey(key -> key.equals(name)));
+    }
+
+    /**
+     * returns true if this path contains the given path
+     * @param path the path
+     * @return true if this path contains the given path
+     */
+    public boolean contains(JsPath path) {
+        if (Objects.requireNonNull(path).isEmpty()) return true;
+        if(this.isEmpty()) return false;
+        return this.toString().contains(path.toString());
     }
 
 
