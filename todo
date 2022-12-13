@@ -1,9 +1,0 @@
-completa documentacion mirando la de escala,por ejemplo
-
-There are a bunch of things we can do with a spec:
-  - validateAll
-  - validate
-  - Get a parser
-  - Filter a generator
-
-Pensar en elimnar jackson
