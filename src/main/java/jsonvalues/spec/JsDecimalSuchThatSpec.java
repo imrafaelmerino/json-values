@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
@@ -12,9 +12,9 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 class JsDecimalSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
-    final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final Function<BigDecimal, Optional<JsError>> predicate;
 
-    JsDecimalSuchThatSpec(final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsDecimalSuchThatSpec(final Function<BigDecimal, Optional<JsError>> predicate,
                           final boolean nullable
     ) {
         super(nullable);
@@ -38,8 +38,8 @@ class JsDecimalSuchThatSpec extends AbstractNullableSpec implements JsValuePredi
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
-        final Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isDecimal,
+    public Optional<JsError> testValue(final JsValue value) {
+        final Optional<JsError> error = Functions.testElem(JsValue::isDecimal,
                                                                              DECIMAL_EXPECTED,
                                                                              nullable
                                                                    )

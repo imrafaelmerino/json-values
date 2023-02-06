@@ -1,14 +1,15 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
+
 import jsonvalues.JsBool;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
-import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
+
 
 class JsValueParser extends AbstractParser {
     private JsObjParser objDeserializer;
@@ -28,21 +29,23 @@ class JsValueParser extends AbstractParser {
     }
 
     JsValue valueSuchThat(JsonReader<?> reader,
-                          Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> fn
+                          Function<JsValue, Optional<JsError>> fn
 
     ) throws IOException {
         JsValue value = value(reader);
-        Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
-        if (!result.isPresent()) return value;
+        Optional<JsError> result = fn.apply(value);
+        if (result.isEmpty()) return value;
         throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                     reader.getCurrentIndex());
     }
 
     @Override
+    @SuppressWarnings("FallThrough")
     JsValue value(JsonReader<?> reader) throws IOException {
         switch (reader.last()) {
             case 't':
                 if (reader.wasTrue()) return JsBool.TRUE;
+
             case 'f':
                 if (reader.wasFalse()) return JsBool.FALSE;
             case '"':

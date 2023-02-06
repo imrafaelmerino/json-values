@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
-import fun.tuple.Pair;
 import io.vavr.Tuple2;
 import io.vavr.collection.LinkedHashMap;
 import io.vavr.collection.Map;
@@ -33,9 +32,12 @@ import static jsonvalues.MatchExp.ifNothingElse;
 
 /**
  * Represents an immutable JSON object. A JSON object is an unordered set of name/element pairs.
- * The underlying data structure is a persistent LinkedHashMap from the library vavr:
+ * The underlying data structure is a persistent {@link LinkedHashMap} from the library vavr.
  */
-public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
+public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
+    /**
+     * the empty Json Object
+     */
     public static final JsObj EMPTY = new JsObj(LinkedHashMap.empty());
     /**
      * lenses defined for a Json object
@@ -54,15 +56,11 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                              Optional.empty(),
                         o -> o
             );
-    public static final int TYPE_ID = 3;
-    @SuppressWarnings("squid:S3008")//EMPTY_PATH should be a valid name
+    @SuppressWarnings("squid:S3008")
     private static final JsPath EMPTY_PATH = JsPath.empty();
     private final Map<String, JsValue> map;
-    private volatile int hascode;
-    //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
-    //is a recomendation from Efective Java to apply the idiom single check for lazy initialization
+    private volatile int hashcode;
     @SuppressWarnings("squid:S3077")
-
     private volatile String str;
 
     public JsObj() {
@@ -2020,58 +2018,22 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         }
     }
 
-    /**
-     * Tries to parse a YAML string into an immutable JSON object.
-     *
-     * @param str the YAML to be parsed
-     * @return a JsOb object
-     * @throws MalformedJson if the string doesn't represent a json object
-     */
-    public static JsObj parseYaml(final String str) {
-
-        try (JsonParser parser = JacksonFactory.YAML_FACTORY.createParser(requireNonNull(str))) {
-            JsonToken keyEvent = parser.nextToken();
-            if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
-            return new JsObj(JsObj.parse(parser));
-        } catch (Exception e) {
-            throw new MalformedJson(e.getMessage());
-        }
-    }
-
     static Map<String, JsValue> parse(final JsonParser parser) throws IOException {
         Map<String, JsValue> map = LinkedHashMap.empty();
         String key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
-            JsValue elem;
             JsonToken token = parser.nextToken();
-            switch (token.id()) {
-                case JsonTokenId.ID_STRING:
-                    elem = JsStr.of(parser.getValueAsString());
-                    break;
-                case JsonTokenId.ID_NUMBER_INT:
-                    elem = JsNumber.of(parser);
-                    break;
-                case JsonTokenId.ID_NUMBER_FLOAT:
-                    elem = JsBigDec.of(parser.getDecimalValue());
-                    break;
-                case JsonTokenId.ID_FALSE:
-                    elem = FALSE;
-                    break;
-                case JsonTokenId.ID_TRUE:
-                    elem = TRUE;
-                    break;
-                case JsonTokenId.ID_NULL:
-                    elem = NULL;
-                    break;
-                case JsonTokenId.ID_START_OBJECT:
-                    elem = new JsObj(parse(parser));
-                    break;
-                case JsonTokenId.ID_START_ARRAY:
-                    elem = new JsArray(JsArray.parse(parser));
-                    break;
-                default:
-                    throw new RuntimeException("Token not expected during parsing "+token);
-            }
+            JsValue elem = switch (token.id()) {
+                case JsonTokenId.ID_STRING -> JsStr.of(parser.getValueAsString());
+                case JsonTokenId.ID_NUMBER_INT -> JsNumber.of(parser);
+                case JsonTokenId.ID_NUMBER_FLOAT -> JsBigDec.of(parser.getDecimalValue());
+                case JsonTokenId.ID_FALSE -> FALSE;
+                case JsonTokenId.ID_TRUE -> TRUE;
+                case JsonTokenId.ID_NULL -> NULL;
+                case JsonTokenId.ID_START_OBJECT -> new JsObj(parse(parser));
+                case JsonTokenId.ID_START_ARRAY -> new JsArray(JsArray.parse(parser));
+                default -> throw new RuntimeException("Token not expected during parsing " + token);
+            };
             map = map.put(key,
                           elem
             );
@@ -2081,29 +2043,29 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
 
     }
 
-    static Stream<Pair<JsPath, JsValue>> streamOfObj(final JsObj obj,
+    static Stream<JsPair> streamOfObj(final JsObj obj,
                                                      final JsPath path
     ) {
 
         requireNonNull(path);
-        return requireNonNull(obj).ifEmptyElse(() -> Stream.of(Pair.of(path,
+        return requireNonNull(obj).ifEmptyElse(() -> Stream.of(new JsPair(path,
                                                                        obj
                                                )),
                                                () -> obj.keySet()
                                                         .stream()
-                                                        .map(key -> Pair.of(path.key(key),
+                                                        .map(key ->new JsPair(path.key(key),
                                                                             get(obj,
                                                                                 Key.of(key)
                                                                             )
                                                         ))
                                                         .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
-                                                                                                              pair.first()
+                                                                                                              pair.path()
                                                                                              ),
                                                                                              a -> streamOfArr(a,
-                                                                                                              pair.first()
+                                                                                                              pair.path()
                                                                                              ),
                                                                                              e -> Stream.of(pair))
-                                                                                 .apply(pair.second()))
+                                                                                 .apply(pair.value()))
         );
 
     }
@@ -2387,7 +2349,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     }
 
     @Override
-    public Stream<Pair<JsPath, JsValue>> stream() {
+    public Stream<JsPair> stream() {
         return streamOfObj(this,
                            JsPath.empty()
         );
@@ -2762,19 +2724,17 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     @Override
     @SuppressWarnings("squid:S1206")
     public int hashCode() {
-        int result = hascode;
+        int result = hashcode;
         if (result == 0)
-            hascode = result = map.hashCode();
+            hashcode = result = map.hashCode();
         return result;
     }
 
     @Override
     public boolean equals(final Object that) {
-        if (!(that instanceof JsObj)) return false;
+        if (!(that instanceof final JsObj thatMap)) return false;
         if (this == that) return true;
-        final JsObj thatMap = (JsObj) that;
         if (isEmpty()) return thatMap.isEmpty();
-
         return keySet().stream()
                        .allMatch(f -> thatMap.map.get(f)
                                                  .map(it -> it.equals(map.get(f)
@@ -2785,9 +2745,7 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
                                                                              .allMatch(map::containsKey));
     }
 
-    /**
-     * // Single-check idiom Item 83 from effective java
-     */
+
     @Override
     public String toString() {
         String result = str;
@@ -2797,10 +2755,6 @@ public class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
         return result;
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isObj() {

@@ -1,10 +1,9 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
-import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -87,7 +86,7 @@ abstract class JsArrayParser extends AbstractParser {
     }
 
     public JsValue nullOrArraySuchThat(final JsonReader<?> reader,
-                                       final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
+                                       final Function<JsArray, Optional<JsError>> fn
     ) throws IOException {
 
         return reader.wasNull() ?
@@ -100,12 +99,12 @@ abstract class JsArrayParser extends AbstractParser {
 
 
     JsArray arraySuchThat(final JsonReader<?> reader,
-                                 final Function<JsArray, Optional<Pair<JsValue, ERROR_CODE>>> fn
+                                 final Function<JsArray, Optional<JsError>> fn
     ) throws IOException {
 
         final JsArray array = value(reader);
-        final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(array);
-        if (!result.isPresent()) return array;
+        final Optional<JsError> result = fn.apply(array);
+        if (result.isEmpty()) return array;
         throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                     reader.getCurrentIndex());
     }

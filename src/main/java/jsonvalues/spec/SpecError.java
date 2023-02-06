@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import fun.tuple.Pair;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -15,15 +14,15 @@ public final class SpecError {
     public final JsValue value;
 
     private SpecError(final JsPath path,
-                      final Pair<JsValue, ERROR_CODE> pair
+                      final JsError pair
     ) {
         this.path = path;
-        this.errorCode = pair.second();
-        this.value = pair.first();
+        this.errorCode = pair.error();
+        this.value = pair.value();
     }
 
     static SpecError of(final JsPath path,
-                        final Pair<JsValue, ERROR_CODE> error) {
+                        final JsError error) {
         return new SpecError(requireNonNull(path),
                              requireNonNull(error)
         );
@@ -35,7 +34,7 @@ public final class SpecError {
                 "path=" + (path.isEmpty() ?
                            "root" :
                            path) +
-                ", errorCode=" + errorCode +
+                ", error=" + errorCode +
                 ", value=" + value +
                 '}';
     }

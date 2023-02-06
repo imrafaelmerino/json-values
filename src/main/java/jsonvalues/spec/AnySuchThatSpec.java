@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -12,9 +11,9 @@ import static jsonvalues.spec.ERROR_CODE.REQUIRED;
 
 class AnySuchThatSpec implements JsValuePredicate {
 
-    private final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    private final Function<JsValue, Optional<JsError>> predicate;
 
-    AnySuchThatSpec(final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate) {
+    AnySuchThatSpec(final Function<JsValue, Optional<JsError>> predicate) {
         this.predicate = predicate;
     }
 
@@ -31,9 +30,9 @@ class AnySuchThatSpec implements JsValuePredicate {
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return value.isNothing() ?
-               Optional.of(Pair.of(value,
+               Optional.of(new JsError(value,
                                    REQUIRED)) :
                predicate.apply(value);
 

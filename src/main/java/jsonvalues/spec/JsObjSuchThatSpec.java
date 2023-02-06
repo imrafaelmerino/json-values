@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
@@ -13,9 +13,9 @@ import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 class JsObjSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final Function<JsObj, Optional<JsError>> predicate;
 
-    JsObjSuchThatSpec(final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsObjSuchThatSpec(final Function<JsObj, Optional<JsError>> predicate,
                       final boolean nullable
     ) {
         super(nullable);
@@ -39,8 +39,8 @@ class JsObjSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
-        Optional<Pair<JsValue, ERROR_CODE>> error = Functions.testElem(JsValue::isObj,
+    public Optional<JsError> testValue(final JsValue value) {
+        Optional<JsError> error = Functions.testElem(JsValue::isObj,
                                                                        OBJ_EXPECTED,
                                                                        nullable
                                                              )

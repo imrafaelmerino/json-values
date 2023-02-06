@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
 import io.vavr.Tuple2;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
@@ -1108,7 +1107,7 @@ public final class JsObjSpec implements JsSpec {
         if (parentValue.isNull() && nullable) return errors;
         if (!parentValue.isObj()) {
             errors.add(SpecError.of(parent,
-                                    Pair.of(parentValue,
+                                    new JsError(parentValue,
                                             OBJ_EXPECTED
                                     )
             ));
@@ -1124,7 +1123,7 @@ public final class JsObjSpec implements JsSpec {
             if (spec == null) {
                 if (parentObjSpec.strict) {
                     errors.add(SpecError.of(currentPath,
-                                            Pair.of(value,
+                                            new JsError(value,
                                                     SPEC_MISSING
                                             )
                     ));
@@ -1137,7 +1136,7 @@ public final class JsObjSpec implements JsSpec {
         for (final String requiredField : requiredFields) {
             if (!json.containsKey(requiredField))
                 errors.add(SpecError.of(parent.key(requiredField),
-                                        Pair.of(JsNothing.NOTHING,
+                                        new JsError(JsNothing.NOTHING,
                                                 REQUIRED
                                         )
                            )
@@ -1146,7 +1145,7 @@ public final class JsObjSpec implements JsSpec {
 
         if (predicate != null && !predicate.test(json))
             errors.add(SpecError.of(JsPath.empty(),
-                                    Pair.of(json,
+                                    new JsError(json,
                                             OBJ_CONDITION)));
 
 

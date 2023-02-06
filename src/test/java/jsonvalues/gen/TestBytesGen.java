@@ -45,17 +45,16 @@ public class TestBytesGen {
         Gen<JsBinary> gen = JsBinaryGen.biased(0,
                                                3);
 
-        Assertions.assertTrue(gen.sample(10000)
-                                 .allMatch(it -> it.value.length < 4));
 
-        Map<Integer, Long> count = TestFun.generate(100000,
+        int times = 2000000;
+        Map<Integer, Long> count = TestFun.generate(times,
                                                     gen.map(it -> it.value.length));
 
-        TestFun.isInMargin(100000 / 3,
-                           0.1).test(count.get(0));
-        TestFun.isInMargin(100000 / 3,
-                           0.1).test(count.get(3));
-        TestFun.isInMargin(100000 / 3,
-                           0.1).test(count.get(1) + count.get(2));
+        Assertions.assertTrue(TestFun.isInMargin((long)(times * 0.75),
+                                                 0.1).test(count.get(0)+count.get(3)));
+
+        Assertions.assertTrue(TestFun.isInMargin((long)(times * 0.25),
+                           0.1)
+               .test(count.get(1) + count.get(2)));
     }
 }

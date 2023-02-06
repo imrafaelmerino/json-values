@@ -113,7 +113,7 @@ public final class JsLongGen implements Gen<JsLong> {
      *
      * @param min lower bound of the interval (inclusive)
      * @param max upper bound of the interval (inclusive)
-     *
+     * <p>
      *
      * @return a biased JsLong generator
      */

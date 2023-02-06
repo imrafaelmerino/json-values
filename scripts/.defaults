@@ -1,0 +1,8 @@
+TEXT_CREATING_VOLUME="Creating volume..."
+TEXT_VOLUME="Checking if docker volume exists..."
+PACKAGE_COMMAND="mvn clean package"
+JSHELL_COMMAND="jshell --enable-preview --module-path /tmp/jio-exp/target/classes"
+VOLUME_NAME=jio-exp-maven-repo
+DEFAULT_VERSION=latest
+VERSION_EMPTY_MESSAGE="VERSION is empty.Either specify one with the arg --version  or define the variable DEFAULT_VERSION in .defaults file"
+MVN_COMPILE_COMMAND="mvn compile"

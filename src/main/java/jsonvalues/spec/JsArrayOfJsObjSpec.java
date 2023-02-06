@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -69,7 +69,7 @@ public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec
         if (value.isNull() && nullable) return errors;
         if (!value.isArray()) {
             errors.add(SpecError.of(parentPath,
-                                    Pair.of(value,
+                                    new JsError(value,
                                                ARRAY_EXPECTED)));
             return errors;
         }
@@ -89,11 +89,11 @@ public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec
         }
         if (array.size() < min)
             result.add(SpecError.of(path,
-                                    Pair.of(array,
+                                    new JsError(array,
                                                ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN)));
         if (array.size() > max)
             result.add(SpecError.of(path,
-                                    Pair.of(array,
+                                    new JsError(array,
                                                ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX)));
         return result;
     }

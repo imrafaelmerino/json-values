@@ -1,9 +1,8 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
 import jsonvalues.JsBigDec;
-import jsonvalues.JsValue;
-import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
+
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -19,11 +18,11 @@ final class JsDecimalParser extends AbstractParser {
     }
 
     JsBigDec valueSuchThat(final JsonReader<?> reader,
-                           final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> fn
+                           final Function<BigDecimal, Optional<JsError>> fn
     ) throws IOException {
             final BigDecimal value = MyNumberConverter.deserializeDecimal(reader);
-            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
-            if (!result.isPresent()) return JsBigDec.of(value);
+            final Optional<JsError> result = fn.apply(value);
+            if (result.isEmpty()) return JsBigDec.of(value);
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());
     }

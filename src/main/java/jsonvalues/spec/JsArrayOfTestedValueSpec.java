@@ -2,23 +2,23 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.Function;
 
 class JsArrayOfTestedValueSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    private final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    private final Function<JsValue, Optional<JsError>> predicate;
 
-    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<JsError>> predicate,
                              final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedValueSpec(final Function<JsValue, Optional<JsError>> predicate,
                              final boolean nullable,
                              int min,
                              int max
@@ -49,7 +49,7 @@ class JsArrayOfTestedValueSpec extends AbstractSizableArrSpec implements JsValue
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(predicate,
                                                 nullable,
                                                 min,

@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -39,10 +39,10 @@ class JsArrayOfDecimalSpec extends AbstractSizableArrSpec implements JsValuePred
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isDecimal() ?
                                                      Optional.empty() :
-                                                     Optional.of(Pair.of(v,
+                                                     Optional.of(new JsError(v,
                                                                             DECIMAL_EXPECTED)),
                                                 nullable,
                                                 min,

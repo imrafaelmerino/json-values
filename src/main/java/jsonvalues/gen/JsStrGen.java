@@ -15,7 +15,7 @@ import static java.util.Objects.requireNonNull;
  * - String generators like <code>digits</code>, <code>letters</code>, <code>alphanumeric</code>, <code>alphabetic</code>, <code>arbitrary</code> and <code>biased</code>.
  * <p>
  * The length of the generated strings is distributed uniformly over a specified interval.
- *
+ * <p>
  * The biased generator produces, with higher probability, potential problematic values that usually cause more
  * bugs (empty and blank strings for example).
  * <p>

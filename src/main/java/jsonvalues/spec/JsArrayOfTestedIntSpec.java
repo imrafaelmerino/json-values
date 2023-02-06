@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -11,16 +11,16 @@ import java.util.function.IntFunction;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsArrayOfTestedIntSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    final IntFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final IntFunction<Optional<JsError>> predicate;
 
-    JsArrayOfTestedIntSpec(final IntFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedIntSpec(final IntFunction<Optional<JsError>> predicate,
                            final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedIntSpec(final IntFunction<Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedIntSpec(final IntFunction<Optional<JsError>> predicate,
                            final boolean nullable,
                            int min,
                            int max
@@ -52,12 +52,12 @@ class JsArrayOfTestedIntSpec extends AbstractSizableArrSpec implements JsValuePr
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
 
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isInt() ?
                                                         predicate.apply(v.toJsInt().value) :
-                                                        Optional.of(Pair.of(v,
+                                                        Optional.of(new JsError(v,
                                                                                INT_EXPECTED
                                                                     )
                                                         ),

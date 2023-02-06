@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
@@ -12,16 +12,16 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 class JsArrayOfTestedObjSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final Function<JsObj, Optional<JsError>> predicate;
 
-    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<JsError>> predicate,
                            final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedObjSpec(final Function<JsObj, Optional<JsError>> predicate,
                            final boolean nullable,
                            int min,
                            int max
@@ -51,11 +51,11 @@ class JsArrayOfTestedObjSpec extends AbstractSizableArrSpec implements JsValuePr
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isObj() ?
                                                         predicate.apply(v.toJsObj()) :
-                                                        Optional.of(Pair.of(v,
+                                                        Optional.of(new JsError(v,
                                                                                OBJ_EXPECTED
                                                                     )
                                                         ),

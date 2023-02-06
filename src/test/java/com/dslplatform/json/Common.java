@@ -9,7 +9,7 @@ import java.io.IOException;
 public abstract class Common {
     private static byte[] buffer = new byte[64];
 
-    public static <T> T deserialize(DslJson<Object> json,
+    /*public static <T> T deserialize(DslJson<Object> json,
                                     Class<T> target,
                                     byte[] bytes,
                                     int size) throws IOException {
@@ -24,5 +24,5 @@ public abstract class Common {
         Assertions.assertEquals(t1,
                                 t2);
         return t1;
-    }
+    }*/
 }

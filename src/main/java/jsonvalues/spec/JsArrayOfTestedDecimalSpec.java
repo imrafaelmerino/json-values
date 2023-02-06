@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
@@ -12,16 +12,16 @@ import java.util.function.Function;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 class JsArrayOfTestedDecimalSpec extends AbstractSizableArrSpec implements JsValuePredicate, JsArraySpec {
-    final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final Function<BigDecimal, Optional<JsError>> predicate;
 
-    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
                                final boolean nullable
     ) {
         super(nullable);
         this.predicate = predicate;
     }
 
-    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsArrayOfTestedDecimalSpec(final Function<BigDecimal, Optional<JsError>> predicate,
                                final boolean nullable,
                                int min,
                                int max
@@ -51,11 +51,11 @@ class JsArrayOfTestedDecimalSpec extends AbstractSizableArrSpec implements JsVal
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isDouble() || v.isBigDec() ?
                                                         predicate.apply(v.toJsBigDec().value) :
-                                                        Optional.of(Pair.of(v,
+                                                        Optional.of(new JsError(v,
                                                                                DECIMAL_EXPECTED
                                                                     )
                                                         ),

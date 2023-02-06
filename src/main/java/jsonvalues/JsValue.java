@@ -19,8 +19,7 @@ import static java.util.Objects.requireNonNull;
  * <li>Accessory methods to convert the JsValue to the real implementation, which starts with the prefix asJsXXX</li>
  * </ul>
  */
-public interface JsValue {
-    int id();
+public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
 
     /**
      * Returns this JsValue as a JsBool

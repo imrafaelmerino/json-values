@@ -816,9 +816,9 @@ public class TestJsArray {
         JsArray c = b.mapKeys(toUpperCase);
 
         Assertions.assertTrue(c.stream()
-                               .filter(p -> p.first().last()
+                               .filter(p -> p.path().last()
                                              .isKey())
-                               .map(it -> it.first().last()
+                               .map(it -> it.path().last()
                                             .asKey().name)
                                .allMatch(key -> key.toUpperCase()
                                                    .equals(key)));
@@ -867,12 +867,12 @@ public class TestJsArray {
 
         Assertions.assertTrue(c.stream()
                                .filter(p -> {
-                                   Assertions.assertEquals(p.second(),
-                                                           c.get(p.first()));
-                                   return p.first().last()
+                                   Assertions.assertEquals(p.value(),
+                                                           c.get(p.path()));
+                                   return p.path().last()
                                            .isKey();
                                })
-                               .map(it -> it.first().last()
+                               .map(it -> it.path().last()
                                             .asKey().name)
                                .allMatch(key -> key.toUpperCase()
                                                    .equals(key)));

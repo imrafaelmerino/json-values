@@ -1,10 +1,11 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
+
 import jsonvalues.JsArray;
 import jsonvalues.JsNumber;
 import jsonvalues.JsValue;
 import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.util.Objects;
@@ -21,7 +22,7 @@ final class JsArrayOfNumberParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final Function<JsNumber, Optional<Pair<JsValue, ERROR_CODE>>> fn,
+                                    final Function<JsNumber, Optional<JsError>> fn,
                                     final int min,
                                     final int max
     ) throws IOException {
@@ -34,7 +35,7 @@ final class JsArrayOfNumberParser extends JsArrayParser {
 
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final Function<JsNumber, Optional<Pair<JsValue,ERROR_CODE>>> fn,
+                              final Function<JsNumber, Optional<JsError>> fn,
                               final int min,
                               final int max
     ) throws IOException {

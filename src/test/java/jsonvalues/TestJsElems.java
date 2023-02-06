@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import fun.tuple.Pair;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

@@ -10,16 +10,14 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.charset.StandardCharsets;
 
-import static java.util.Objects.requireNonNull;
 
 public final class MyDslJson<A> extends DslJson<A> {
 
     public static final MyDslJson<java.lang.Object> INSTANCE = new MyDslJson<>();
-
+    public static final JsValueSerializer valueSerializer = new JsValueSerializer();
+    public static final JsObjSerializer objSerializer = new JsObjSerializer(valueSerializer);
+    public static final JsArraySerializer arraySerializer = new JsArraySerializer(valueSerializer);
     static {
-        final JsValueSerializer valueSerializer = new JsValueSerializer();
-        final JsonWriter.WriteObject<JsObj> objSerializer = new JsObjSerializer(valueSerializer);
-        final JsonWriter.WriteObject<JsArray> arraySerializer = new JsArraySerializer(valueSerializer);
         valueSerializer.setArraySerializer(arraySerializer);
         valueSerializer.setObjectSerializer(objSerializer);
         INSTANCE.registerWriter(JsObj.class,
@@ -32,7 +30,8 @@ public final class MyDslJson<A> extends DslJson<A> {
     }
 
     private MyDslJson() {
-        super((new Settings<A>().errorInfo(JsonReader.ErrorInfo.MINIMAL)).doublePrecision(JsonReader.DoublePrecision.HIGH));
+        super(new Settings<A>().errorInfo(JsonReader.ErrorInfo.MINIMAL)
+                               .doublePrecision(JsonReader.DoublePrecision.HIGH));
     }
 
     public JsObj parseToJsObj(final byte[] bytes,
@@ -132,13 +131,19 @@ public final class MyDslJson<A> extends DslJson<A> {
     }
 
     public void serialize(final Json<?> json,
-                          final OutputStream outputstream
+                          final OutputStream stream
     ) {
+        final JsonWriter jw = localWriter.get();
         try {
-            super.serialize(json,
-                            requireNonNull(outputstream));
-        } catch (IOException e) {
-            throw new SerializerException(e);
+            jw.reset(stream);
+            switch (json){
+                case JsObj obj -> objSerializer.write(jw,obj);
+                case JsArray arr -> arraySerializer.write(jw,arr);
+            }
+        }
+        finally {
+            jw.flush();
+            jw.reset(null);
         }
 
     }
@@ -147,18 +152,14 @@ public final class MyDslJson<A> extends DslJson<A> {
     public String toPrettyString(final Json<?> json,
                                  int indentLength) {
 
-        try {
-            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
-            INSTANCE.serialize(json,
-                               new MyPrettifyOutputStream(baos,
-                                                          MyPrettifyOutputStream.IndentType.SPACES,
-                                                          indentLength)
-            );
-            return baos.toString(StandardCharsets.UTF_8.name());
-        } catch (IOException e) {
-            throw new SerializerException(e);
-        }
+        INSTANCE.serialize(json,
+                           new MyPrettifyOutputStream(baos,
+                                                      MyPrettifyOutputStream.IndentType.SPACES,
+                                                      indentLength)
+        );
+        return baos.toString(StandardCharsets.UTF_8);
     }
 
 

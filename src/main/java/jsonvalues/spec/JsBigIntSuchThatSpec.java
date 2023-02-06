@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.math.BigInteger;
@@ -13,9 +13,9 @@ import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 class JsBigIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
 
-    final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate;
+    final Function<BigInteger, Optional<JsError>> predicate;
 
-    JsBigIntSuchThatSpec(final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> predicate,
+    JsBigIntSuchThatSpec(final Function<BigInteger, Optional<JsError>> predicate,
                          final boolean nullable
     ) {
         super(nullable);
@@ -40,8 +40,8 @@ class JsBigIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredic
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
-        final Optional<Pair<JsValue, ERROR_CODE>> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
+    public Optional<JsError> testValue(final JsValue value) {
+        final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
                                                                                              INTEGRAL_EXPECTED,
                                                                                              nullable
                                                                     )

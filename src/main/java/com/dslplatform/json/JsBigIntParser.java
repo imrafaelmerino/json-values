@@ -1,9 +1,7 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
 import jsonvalues.JsBigInt;
-import jsonvalues.JsValue;
-import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -27,13 +25,13 @@ final class JsBigIntParser extends AbstractParser {
     }
 
     JsBigInt valueSuchThat(final JsonReader<?> reader,
-                           final Function<BigInteger, Optional<Pair<JsValue, ERROR_CODE>>> fn
+                           final Function<BigInteger, Optional<JsError>> fn
     ) throws IOException {
         try {
             BigDecimal bigDecimal = MyNumberConverter.deserializeDecimal(reader);
             final BigInteger value = bigDecimal.toBigIntegerExact();
-            final Optional<Pair<JsValue, ERROR_CODE>> result = fn.apply(value);
-            if (!result.isPresent()) return JsBigInt.of(value);
+            final Optional<JsError> result = fn.apply(value);
+            if (result.isEmpty()) return JsBigInt.of(value);
 
             throw new JsParserException(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                         reader.getCurrentIndex());

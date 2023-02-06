@@ -10,7 +10,7 @@ import java.util.function.Predicate;
  * Represents the location of a first-level element in a json, either a Key in a JsObj or an Index in
  * a JsArray.
  */
-public interface Position extends Comparable<Position> {
+public sealed interface Position extends Comparable<Position> permits Index, Key {
     /**
      * Returns true if this position is a key and its name tested on a given predicate is true.
      *

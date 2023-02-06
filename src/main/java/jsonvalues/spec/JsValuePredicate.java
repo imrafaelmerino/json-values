@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 
-import fun.tuple.Pair;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -23,6 +22,6 @@ interface JsValuePredicate extends JsSpec {
         return errors;
     }
 
-    Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value);
+    Optional<JsError> testValue(final JsValue value);
 
 }

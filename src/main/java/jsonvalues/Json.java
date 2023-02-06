@@ -1,7 +1,6 @@
 package jsonvalues;
 
 import com.dslplatform.json.MyDslJson;
-import fun.tuple.Pair;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.OutputStream;
@@ -17,7 +16,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * <pre>
  * Represents a json of type T, where T is the type of the container, either a JsObj or a JsArray.
- * A json of any type can be modeled as a set of pairs {@link Pair}=({@link JsPath}, {@link JsValue}), where:
+ * A json of any type can be modeled as a set of pairs {@link JsPair}=({@link JsPath}, {@link JsValue}), where:
  * - a JsValue is a {@link JsBool} or {@link JsStr} or {@link JsNumber} or {@link JsNull}, or another {@link Json} like {@link JsObj} or {@link JsArray},
  * what makes the data structure recursive.
  * - a JsPath represents the location of the element in the json.
@@ -49,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * @see JsObj to work with jsons that are objects
  * @see JsArray to work with jsons that are arrays
  */
-public interface Json<T extends Json<T>> extends JsValue {
+public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray, JsObj {
 
 
     /**
@@ -651,7 +650,7 @@ public interface Json<T extends Json<T>> extends JsValue {
      * @return a {@code Stream} over all the JsPairs in this json
      */
     @SuppressWarnings("squid:S00100")
-    Stream<Pair<JsPath, JsValue>> stream();
+    Stream<JsPair> stream();
 
 
     /**

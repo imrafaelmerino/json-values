@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
@@ -12,10 +12,10 @@ import java.util.function.Function;
 
 class JsArrayOfBoolSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
 
-    private final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate;
+    private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfBoolSpec isArrayOfBool;
 
-    JsArrayOfBoolSuchThatSpec(final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate,
+    JsArrayOfBoolSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                               final boolean nullable
     ) {
         super(nullable);
@@ -38,8 +38,8 @@ class JsArrayOfBoolSuchThatSpec extends AbstractNullableSpec implements JsValueP
     }
 
     @Override
-    public Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value) {
-        final Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfBool.testValue(value);
+    public Optional<JsError> testValue(final JsValue value) {
+        final Optional<JsError> result = isArrayOfBool.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

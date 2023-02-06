@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -92,7 +91,7 @@ public final class JsTupleSpec implements JsArraySpec {
 
         if (!value.isArray()) {
             errors.add(SpecError.of(parent,
-                                    Pair.of(value,
+                                    new JsError(value,
                                                ARRAY_EXPECTED)));
             return errors;
         }
@@ -101,7 +100,7 @@ public final class JsTupleSpec implements JsArraySpec {
         if (specsSize > 0 && array.size() > specsSize && tupleSpec.strict) {
             errors.add(SpecError.of(parent.tail()
                                           .index(specsSize),
-                                    Pair.of(array.get(specsSize),
+                                    new JsError(array.get(specsSize),
                                                SPEC_MISSING
                                     )
                        )

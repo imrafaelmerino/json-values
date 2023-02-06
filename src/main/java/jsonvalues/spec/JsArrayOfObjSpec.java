@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -38,10 +38,10 @@ class JsArrayOfObjSpec extends AbstractSizableArrSpec implements JsValuePredicat
     }
 
     @Override
-    public Optional<Pair<JsValue, ERROR_CODE>> testValue(final JsValue value) {
+    public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isObj() ?
                                                      Optional.empty() :
-                                                     Optional.of(Pair.of(v,
+                                                     Optional.of(new JsError(v,
                                                                          OBJ_EXPECTED)),
                                                 nullable,
                                                 min,

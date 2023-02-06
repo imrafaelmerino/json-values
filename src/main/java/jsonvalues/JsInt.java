@@ -30,7 +30,6 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
                         },
                         JsInt::of
             );
-    public static final int TYPE_ID = 9;
     /**
      * The integer value.
      */
@@ -50,10 +49,6 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
         return new JsInt(n);
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isInt() {
@@ -92,8 +87,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isInt()) return value == number.toJsInt().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());

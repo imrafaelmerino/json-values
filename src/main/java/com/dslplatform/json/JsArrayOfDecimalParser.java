@@ -1,9 +1,8 @@
 package com.dslplatform.json;
 
-import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
-import jsonvalues.spec.ERROR_CODE;
+import jsonvalues.spec.JsError;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -21,7 +20,7 @@ final class JsArrayOfDecimalParser extends JsArrayParser {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsonReader<?> reader,
-                                    final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> fn,
+                                    final Function<BigDecimal, Optional<JsError>> fn,
                                     final int min,
                                     final int max
     ) throws IOException {
@@ -33,7 +32,7 @@ final class JsArrayOfDecimalParser extends JsArrayParser {
     }
 
     JsArray arrayEachSuchThat(final JsonReader<?> reader,
-                              final Function<BigDecimal, Optional<Pair<JsValue, ERROR_CODE>>> fn,
+                              final Function<BigDecimal, Optional<JsError>> fn,
                               final int min,
                               final int max
     ) throws IOException {

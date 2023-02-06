@@ -34,7 +34,7 @@ public class TestJsSerializer {
         final ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
         obj.serialize(outputstream);
         Assertions.assertEquals(obj,
-                                JsObj.parse(outputstream.toString()));
+                                JsObj.parse(outputstream.toString(StandardCharsets.UTF_8)));
 
     }
 }

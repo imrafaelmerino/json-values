@@ -40,8 +40,7 @@ public final class Index implements Position {
      */
     @Override
     public int compareTo(final Position o) {
-        return requireNonNull(o)
-                       .isIndex() ?
+        return requireNonNull(o).isIndex() ?
                Integer.compare(n,
                                o.asIndex().n
                ) :

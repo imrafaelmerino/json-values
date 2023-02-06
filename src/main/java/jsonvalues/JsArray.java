@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
-import fun.tuple.Pair;
 import io.vavr.collection.Vector;
 
 import java.io.IOException;
@@ -14,7 +13,6 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.*;
@@ -39,7 +37,6 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * Represents a json array, which is an ordered list of elements.
  */
 public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
-    public static final int TYPE_ID = 4;
     /**
      * lenses defined for a Json array
      */
@@ -62,10 +59,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
             );
     private final Vector<JsValue> seq;
     private volatile int hashcode;
-    //squid:S3077: doesn't make any sense, volatile is perfectly valid here an as a matter of fact
-    //is a recommendation from Effective Java to apply the idiom single check for lazy initialization
-    @SuppressWarnings("squid:S3077")
-
     private volatile String str;
 
 
@@ -328,25 +321,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Tries to parse the YAML string into an immutable json array.
-     *
-     * @param str the YAML to be parsed
-     * @return a JsArray
-     * @throws MalformedJson if the string doesnt represent a json array
-     */
-    public static JsArray parseYaml(final String str) {
-
-        try (JsonParser parser = JacksonFactory.YAML_FACTORY.createParser(requireNonNull(str))) {
-            JsonToken keyEvent = parser.nextToken();
-            if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-            return new JsArray(parse(parser));
-        } catch (IOException e) {
-            throw new MalformedJson(e.getMessage());
-        }
-
-    }
-
-    /**
      * Tries to parse the string into an immutable json array.
      *
      * @param str the string to be parsed
@@ -409,28 +383,28 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         }
     }
 
-    static Stream<Pair<JsPath, JsValue>> streamOfArr(final JsArray array,
+    static Stream<JsPair> streamOfArr(final JsArray array,
                                                      final JsPath path) {
 
 
         requireNonNull(path);
-        return requireNonNull(array).ifEmptyElse(() -> Stream.of(Pair.of(path,
+        return requireNonNull(array).ifEmptyElse(() -> Stream.of(new JsPair(path,
                                                                          array
                                                  )),
                                                  () -> range(0,
                                                              array.size()
-                                                 ).mapToObj(pair -> Pair.of(path.index(pair),
+                                                 ).mapToObj(pair -> new JsPair(path.index(pair),
                                                                             array.get(Index.of(pair))
                                                   ))
                                                   .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
-                                                                                                        pair.first()
+                                                                                                        pair.path()
                                                                                        ),
                                                                                        a -> streamOfArr(a,
-                                                                                                        pair.first()
+                                                                                                        pair.path()
                                                                                        ),
                                                                                        e -> Stream.of(pair)
                                                                            )
-                                                                           .apply(pair.second())
+                                                                           .apply(pair.value())
                                                   )
         );
 
@@ -1132,7 +1106,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public Stream<Pair<JsPath, JsValue>> stream() {
+    public Stream<JsPair> stream() {
         return streamOfArr(this,
                            JsPath.empty()
         );
@@ -1266,11 +1240,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     @Override
-    public int id() {
-        return TYPE_ID;
-    }
-
-    @Override
     public boolean isArray() {
         return true;
     }
@@ -1287,7 +1256,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * @throws UserError if this JsArray is empty
      */
     public JsValue last() {
-
         return seq.last();
     }
 
@@ -1472,107 +1440,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         MULTISET
     }
 
-    /**
-     * Returns this array as a list of string (null elements allowed)
-     *
-     * @return a list of string
-     */
-    public List<String> toListOfStr() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsStr().value)
-                  .toJavaList();
-    }
-
-    /**
-     * Returns this array as a list of integer (null elements allowed)
-     *
-     * @return a list of integers
-     */
-    public List<Integer> toListOfInt() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsInt().value
-                  )
-                  .toJavaList();
-    }
-
-    /**
-     * Returns this array as a list of long (null elements allowed)
-     *
-     * @return a list of longs
-     */
-    public List<Long> toListOfLong() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsLong().value)
-                  .toJavaList();
-    }
-
-
-    /**
-     * Returns this array as a list of json objects (null elements allowed)
-     *
-     * @return a list of json objects
-     */
-    public List<JsObj> toListOfObj() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsObj()
-                  )
-                  .toJavaList();
-    }
-
-
-    /**
-     * Returns this array as a list of booleans (null elements allowed)
-     *
-     * @return a list of booleans
-     */
-    public List<Boolean> toListOfBool() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsBool().value)
-                  .toJavaList();
-    }
-
-
-    /**
-     * Returns this array as a list of big decimals (null elements allowed)
-     *
-     * @return a list of big decimals
-     */
-    public List<BigDecimal> toListOfBigDec() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsBigDec().value)
-                  .toJavaList();
-    }
-
-
-    /**
-     * Returns this array as a list of double (null elements allowed)
-     *
-     * @return a list of double
-     */
-    public List<Double> toListOfDouble() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsDouble().value)
-                  .toJavaList();
-    }
-
-    /**
-     * Returns this array as a list of instants (null elements allowed)
-     *
-     * @return a list of instants
-     */
-    public List<Instant> toListOfInstant() {
-        return seq.map(it -> it == JsNull.NULL ?
-                             null :
-                             it.toJsInstant().value)
-                  .toJavaList();
-    }
 
 }
 

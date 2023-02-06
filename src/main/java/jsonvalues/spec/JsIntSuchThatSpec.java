@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -11,9 +11,9 @@ import java.util.function.IntFunction;
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 class JsIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate {
-    final IntFunction<Optional<Pair<JsValue,ERROR_CODE>>> predicate;
+    final IntFunction<Optional<JsError>> predicate;
 
-    JsIntSuchThatSpec(final IntFunction<Optional<Pair<JsValue,ERROR_CODE>>> predicate,
+    JsIntSuchThatSpec(final IntFunction<Optional<JsError>> predicate,
                       final boolean nullable
     ) {
         super(nullable);
@@ -36,8 +36,8 @@ class JsIntSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate
     }
 
     @Override
-    public Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value) {
-        final Optional<Pair<JsValue,ERROR_CODE>> error = Functions.testElem(JsValue::isInt,
+    public Optional<JsError> testValue(final JsValue value) {
+        final Optional<JsError> error = Functions.testElem(JsValue::isInt,
                                                                 INT_EXPECTED,
                                                                 nullable
                                                  )

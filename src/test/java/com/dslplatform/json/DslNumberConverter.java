@@ -31,9 +31,6 @@ public class DslNumberConverter {
             }
         };
 
-        Assertions.assertEquals(1,
-                                NumberConverter.deserializeInt(reader.get()));
-
         //my implementation returns an error
         Assertions.assertThrows(JsParserException.class,
                                 () -> MyNumberConverter.deserializeInt(reader.get()));

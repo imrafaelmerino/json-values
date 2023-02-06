@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 import com.dslplatform.json.JsSpecParser;
 import com.dslplatform.json.JsSpecParsers;
-import fun.tuple.Pair;
+
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
@@ -11,10 +11,10 @@ import java.util.function.Function;
 
 class JsArrayOfNumberSuchThatSpec extends AbstractNullableSpec implements JsValuePredicate, JsArraySpec {
 
-    private final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate;
+    private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfNumberSpec isArrayOfNumber;
 
-    JsArrayOfNumberSuchThatSpec(final Function<JsArray, Optional<Pair<JsValue,ERROR_CODE>>> predicate,
+    JsArrayOfNumberSuchThatSpec(final Function<JsArray, Optional<JsError>> predicate,
                                 final boolean nullable
     ) {
         super(nullable);
@@ -38,8 +38,8 @@ class JsArrayOfNumberSuchThatSpec extends AbstractNullableSpec implements JsValu
     }
 
     @Override
-    public Optional<Pair<JsValue,ERROR_CODE>> testValue(final JsValue value) {
-        Optional<Pair<JsValue,ERROR_CODE>> result = isArrayOfNumber.testValue(value);
+    public Optional<JsError> testValue(final JsValue value) {
+        Optional<JsError> result = isArrayOfNumber.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

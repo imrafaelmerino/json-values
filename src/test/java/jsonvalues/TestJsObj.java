@@ -398,7 +398,7 @@ public class TestJsObj {
         final JsObj obj1 = obj.get()
                               .filterKeys(key -> !key.startsWith("b"));
         Assertions.assertFalse(obj1.stream()
-                                   .anyMatch(p -> p.first().last()
+                                   .anyMatch(p -> p.path().last()
                                                    .isKey(name -> name.startsWith("b"))));
 
 
@@ -447,7 +447,7 @@ public class TestJsObj {
                                           }
                               );
         Assertions.assertFalse(obj1.stream()
-                                   .anyMatch(p -> p.first().last()
+                                   .anyMatch(p -> p.path().last()
                                                    .isKey(name -> name.startsWith("b"))));
 
     }
@@ -683,7 +683,7 @@ public class TestJsObj {
         return mapped.stream()
                      .map(it ->
                           {
-                              final String name = it.first().last()
+                              final String name = it.path().last()
                                                     .asKey().name;
                               return name.contains(" ") || name.chars()
                                                                .mapToObj(Character::isLowerCase)
