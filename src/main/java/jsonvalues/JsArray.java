@@ -1,11 +1,12 @@
 package jsonvalues;
 
-import com.dslplatform.json.MyDslJson;
+
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
 import io.vavr.collection.Vector;
+import jsonvalues.spec.JsonIO;
 
 import java.io.IOException;
 import java.math.BigDecimal;
@@ -1180,7 +1181,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(MyDslJson.INSTANCE.serialize(this),
+            str = result = new String(JsonIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8);
 
         return result;

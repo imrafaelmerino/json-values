@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import com.dslplatform.json.MyDslJson;
+import jsonvalues.spec.JsonIO;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.OutputStream;
@@ -59,8 +59,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return pretty print version of the string representation of this Json
      */
     default String toPrettyString(int indentLength) {
-        return MyDslJson.INSTANCE.toPrettyString(this,
-                                                 indentLength);
+        return JsonIO.INSTANCE.toPrettyString(this,
+                                              indentLength);
 
     }
 
@@ -71,8 +71,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return pretty print version of the string representation of this Json
      */
     default String toPrettyString() {
-        return MyDslJson.INSTANCE.toPrettyString(this,
-                                                 2);
+        return JsonIO.INSTANCE.toPrettyString(this,
+                                              2);
     }
 
 
@@ -659,9 +659,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @param outputstream the output stream
      */
     default void serialize(final OutputStream outputstream) {
-        MyDslJson.INSTANCE.serialize(this,
-                                     requireNonNull(outputstream)
-        );
+        JsonIO.INSTANCE.serialize(this,
+                                  requireNonNull(outputstream)
+                                 );
     }
 
     /**
@@ -671,7 +671,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return this Json serialized into an array of bytes
      */
     default byte[] serialize() {
-        return MyDslJson.INSTANCE.serialize(this);
+        return JsonIO.INSTANCE.serialize(this);
     }
 
 

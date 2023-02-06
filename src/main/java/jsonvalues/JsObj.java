@@ -1,6 +1,6 @@
 package jsonvalues;
 
-import com.dslplatform.json.MyDslJson;
+import jsonvalues.spec.JsonIO;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
@@ -2750,7 +2750,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(MyDslJson.INSTANCE.serialize(this),
+            str = result = new String(JsonIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8);
         return result;
     }

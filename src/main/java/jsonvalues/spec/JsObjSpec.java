@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.JsSpecParser;
-import com.dslplatform.json.JsSpecParsers;
 import io.vavr.Tuple2;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;

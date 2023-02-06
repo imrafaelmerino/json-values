@@ -1,0 +1,28 @@
+package jsonvalues.spec;
+
+import jsonvalues.JsStr;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.function.Function;
+
+final class JsStrReader extends AbstractReader {
+    @Override
+    JsStr value(final JsonReader reader) throws IOException {
+        return JsStr.of(reader.readString());
+    }
+
+
+    JsStr valueSuchThat(final JsonReader reader,
+                        final Function<String, Optional<JsError>> fn
+                       ) throws IOException {
+        String value = reader.readString();
+        Optional<JsError> result = fn.apply(value);
+        if (result.isEmpty()) return JsStr.of(value);
+        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                       reader.getCurrentIndex(),
+                                       false
+                                      );
+    }
+
+}

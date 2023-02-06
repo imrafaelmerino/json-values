@@ -54,7 +54,7 @@ public class MiscellaneousExamples {
         Lens<JsObj, Integer> age =
                 JsObj.lens.intNum("age");
 
-        JsObjParser parser = new JsObjParser(spec);
+        JsObjSpecParser parser = new JsObjSpecParser(spec);
 
 
         Assertions.assertTrue(gen.sample(100000)
@@ -87,7 +87,7 @@ public class MiscellaneousExamples {
                                                             longMax)
         );
 
-        JsArrayParser parser = new JsArrayParser(spec);
+        JsArraySpecParser parser = new JsArraySpecParser(spec);
 
         Lens<JsArray, BigDecimal> latitude = JsArray.lens.decimalNum(0);
 
@@ -126,7 +126,7 @@ public class MiscellaneousExamples {
                                                       longMax)
         );
 
-        JsObjParser parser = new JsObjParser(spec);
+        JsObjSpecParser parser = new JsObjSpecParser(spec);
 
         Lens<JsObj, BigDecimal> latitude = JsObj.lens.decimalNum("latitude");
 
@@ -171,7 +171,7 @@ public class MiscellaneousExamples {
                                               10)
                 );
 
-        JsObjParser parser = new JsObjParser(spec);
+        JsObjSpecParser parser = new JsObjSpecParser(spec);
 
 
         Assertions.assertTrue(gen.sample(100000)

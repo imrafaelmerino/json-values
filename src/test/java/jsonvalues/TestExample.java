@@ -3,7 +3,7 @@ package jsonvalues;
 
 import fun.optic.Lens;
 import fun.optic.Option;
-import jsonvalues.spec.JsObjParser;
+import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsSpecs;
 import jsonvalues.spec.SpecError;
@@ -72,7 +72,7 @@ public class TestExample {
                                 )
         );
 
-        JsObjParser parser = new JsObjParser(spec);
+        JsObjSpecParser parser = new JsObjSpecParser(spec);
 
         Set<SpecError> test = spec.test(person);
 

@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import com.dslplatform.json.JsSpecParser;
-import com.dslplatform.json.JsSpecParsers;
 import jsonvalues.JsArray;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -15,7 +13,7 @@ import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
  * Represents a specification of every element of a Json array. It allows to define
  * tuples and the schema of every of its elements.
  */
-public final class JsTupleSpec implements JsArraySpec {
+ final class JsTupleSpec implements JsArraySpec {
 
     private final boolean required;
     private final boolean nullable;
