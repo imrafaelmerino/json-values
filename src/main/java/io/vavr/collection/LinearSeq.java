@@ -41,9 +41,6 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> append(T element);
 
-    @Override
-    LinearSeq<T> appendAll(Iterable<? extends T> elements);
-
 
 
 
@@ -59,9 +56,6 @@ public interface LinearSeq<T> extends Seq<T> {
 
     @Override
     LinearSeq<T> insert(int index, T element);
-
-    @Override
-    LinearSeq<T> insertAll(int index, Iterable<? extends T> elements);
 
 
 

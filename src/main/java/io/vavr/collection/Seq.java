@@ -32,9 +32,7 @@ import java.util.function.*;
  *
  * <ul>
  * <li>{@link #append(Object)}</li>
- * <li>{@link #appendAll(Iterable)}</li>
  * <li>{@link #insert(int, Object)}</li>
- * <li>{@link #insertAll(int, Iterable)}</li>
  * <li>{@link #prepend(Object)}</li>
  * <li>{@link #prependAll(Iterable)}</li>
  * </ul>
@@ -59,10 +57,6 @@ import java.util.function.*;
  *
  * <ul>
  * <li>{@link #get(int)}</li>
- * <li>{@link #indexOf(Object)}</li>
- * <li>{@link #indexOf(Object, int)}</li>
- * <li>{@link #lastIndexOf(Object)}</li>
- * <li>{@link #lastIndexOf(Object, int)}</li>
  * </ul>
  *
  * Transformation:
@@ -96,14 +90,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
      */
     Seq<T> append(T element);
 
-    /**
-     * Appends all given elements to this.
-     *
-     * @param elements An Iterable of elements
-     * @return A new Seq containing the given elements appended to this elements
-     * @throws NullPointerException if {@code elements} is null
-     */
-    Seq<T> appendAll(Iterable<? extends T> elements);
+
 
     /**
      * A {@code Seq} is a partial function which returns the element at the specified index if the
@@ -137,26 +124,6 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
         return 0 <= index && index < length();
     }
 
-    /**
-     * Returns the index of the first occurrence of the given element or -1 if this does not contain the given element.
-     *
-     * @param element an element
-     * @return the index of the first occurrence of the given element
-     */
-    default int indexOf(T element) {
-        return indexOf(element, 0);
-    }
-
-
-    /**
-     * Returns the index of the first occurrence of the given element after or at some start index
-     * or -1 if this does not contain the given element.
-     *
-     * @param element an element
-     * @param from    start index
-     * @return the index of the first occurrence of the given element
-     */
-    int indexOf(T element, int from);
 
 
 
@@ -171,71 +138,9 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
      */
     Seq<T> insert(int index, T element);
 
-    /**
-     * Inserts the given elements at the specified index.
-     *
-     * @param index    an index
-     * @param elements An Iterable of elements
-     * @return a new Seq, where the given elements are inserted into this at the given index
-     * @throws IndexOutOfBoundsException if this is empty, index &lt; 0 or index &gt;= length()
-     */
-    Seq<T> insertAll(int index, Iterable<? extends T> elements);
-
-
-    /**
-     * Returns the index of the last occurrence of the given element or -1 if this does not contain the given element.
-     *
-     * @param element an element
-     * @return the index of the last occurrence of the given element
-     */
-    default int lastIndexOf(T element) {
-        return lastIndexOf(element, Integer.MAX_VALUE);
-    }
-
-    /**
-     * Returns the index of the last occurrence of the given element as an {@code Option}.
-     *
-     * @param element an element
-     * @return {@code Some(index)} or {@code None} if not found.
-     */
-    default Option<Integer> lastIndexOfOption(T element) {
-        return Collections.indexOption(lastIndexOf(element));
-    }
-
-    /**
-     * Finds index of last element satisfying some predicate.
-     *
-     * @param predicate the predicate used to test elements.
-     * @return the index of the last element of this Seq that satisfies the given {@code predicate}, or {@code -1},
-     * if none exists.
-     */
-    default int lastIndexWhere(Predicate<? super T> predicate) {
-        return lastIndexWhere(predicate, length() - 1);
-    }
 
 
 
-    /**
-     * Finds index of last element satisfying some predicate before or at given
-     * end index.
-     *
-     * @param predicate the predicate used to test elements.
-     * @param end       the maximum index of the search
-     * @return the index {@code <= end} of the last element of this Seq that
-     * satisfies the given {@code predicate}, or {@code -1}, if none exists.
-     */
-    int lastIndexWhere(Predicate<? super T> predicate, int end);
-
-    /**
-     * Finds index of last element satisfying some predicate before or at given end index as an {@code Option}.
-     *
-     * @param predicate the predicate used to test elements.
-     * @param end       the maximum index of the search
-     * @return {@code Some(index)} or {@code None} if not found.
-     */
-    default Option<Integer> lastIndexWhereOption(Predicate<? super T> predicate, int end) {
-        return Collections.indexOption(lastIndexWhere(predicate, end));
-    }
 
     /**
      * Turns this sequence into a plain function returning an Option result.
@@ -248,62 +153,6 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     default Function1<Integer, Option<T>> lift() {
         return i -> (i >= 0 && i < length()) ? Option.some(apply(i)) : Option.none();
     }
-
-    /**
-     * Returns the index of the last occurrence of the given element before or at a given end index
-     * or -1 if this does not contain the given element.
-     *
-     * @param element an element
-     * @param end     the end index
-     * @return the index of the last occurrence of the given element
-     */
-    int lastIndexOf(T element, int end);
-
-    /**
-     * Returns the index of the last occurrence of the given element before or at a given end index as an {@code Option}.
-     *
-     * @param element an element
-     * @param end     the end index
-     * @return {@code Some(index)} or {@code None} if not found.
-     */
-    default Option<Integer> lastIndexOfOption(T element, int end) {
-        return Collections.indexOption(lastIndexOf(element, end));
-    }
-
-    /**
-     * Finds last index where this sequence contains a given sequence as a slice.
-     * <p>
-     * Note: will not terminate for infinite sequences.
-     *
-     * @param that the sequence to test
-     * @return the last index such that the elements of this sequence starting a this index match the elements
-     * of sequence that, or -1 of no such slice exists.
-     * @throws NullPointerException if {@code that} is null.
-     */
-    default int lastIndexOfSlice(Iterable<? extends T> that) {
-        return lastIndexOfSlice(that, Integer.MAX_VALUE);
-    }
-
-    /**
-     * Finds last index where this sequence contains a given sequence as a slice as an {@code Option}.
-     *
-     * @param that the sequence to test
-     * @return {@code Some(index)} or {@code None} if not found.
-     */
-    default Option<Integer> lastIndexOfSliceOption(Iterable<? extends T> that) {
-        return Collections.indexOption(lastIndexOfSlice(that));
-    }
-
-    /**
-     * Finds last index before or at a given end index where this sequence contains a given sequence as a slice.
-     *
-     * @param that the sequence to test
-     * @param end  the end index
-     * @return the last index &lt;= end such that the elements of this sequence starting at this index match
-     * the elements of sequence that, or -1 of no such slice exists.
-     * @throws NullPointerException if {@code that} is null.
-     */
-    int lastIndexOfSlice(Iterable<? extends T> that, int end);
 
 
 

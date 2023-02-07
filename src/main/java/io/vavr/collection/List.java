@@ -632,12 +632,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return foldRight(of(element), (x, xs) -> xs.prepend(x));
     }
 
-    @Override
-    public final List<T> appendAll(Iterable<? extends T> elements) {
-        Objects.requireNonNull(elements, "elements is null");
-        return List.<T> ofAll(elements).prependAll(this);
-    }
-
 
 
 
@@ -681,16 +675,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return true;
     }
 
-    @Override
-    public final int indexOf(T element, int from) {
-        int index = 0;
-        for (List<T> list = this; !list.isEmpty(); list = list.tail(), index++) {
-            if (index >= from && Objects.equals(list.head(), element)) {
-                return index;
-            }
-        }
-        return -1;
-    }
 
 
     @Override
@@ -722,27 +706,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return result;
     }
 
-    @Override
-    public final List<T> insertAll(int index, Iterable<? extends T> elements) {
-        Objects.requireNonNull(elements, "elements is null");
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("insertAll(" + index + ", elements)");
-        }
-        List<T> preceding = Nil.instance();
-        List<T> tail = this;
-        for (int i = index; i > 0; i--, tail = tail.tail()) {
-            if (tail.isEmpty()) {
-                throw new IndexOutOfBoundsException("insertAll(" + index + ", elements) on List of length " + length());
-            }
-            preceding = preceding.prepend(tail.head());
-        }
-        List<T> result = tail.prependAll(elements);
-        for (T next : preceding) {
-            result = result.prepend(next);
-        }
-        return result;
-    }
-
 
 
     @Override
@@ -755,16 +718,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return Collections.last(this);
     }
 
-    @Override
-    public final int lastIndexOf(T element, int end) {
-        int result = -1, index = 0;
-        for (List<T> list = this; index <= end && !list.isEmpty(); list = list.tail(), index++) {
-            if (Objects.equals(list.head(), element)) {
-                result = index;
-            }
-        }
-        return result;
-    }
+
 
     @Override
     public final <U> List<U> map(Function<? super T, ? extends U> mapper) {
@@ -1075,15 +1029,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-        @Override
-        public int lastIndexWhere(Predicate<? super T> predicate, int end) {
-            return 0;
-        }
-
-        @Override
-        public int lastIndexOfSlice(Iterable<? extends T> that, int end) {
-            return 0;
-        }
 
         @Override
         public LinearSeq<T> remove(T element) {
@@ -1191,16 +1136,6 @@ public abstract class List<T> implements LinearSeq<T> {
         }
 
 
-
-        @Override
-        public int lastIndexWhere(Predicate<? super T> predicate, int end) {
-            return 0;
-        }
-
-        @Override
-        public int lastIndexOfSlice(Iterable<? extends T> that, int end) {
-            return 0;
-        }
 
 
         @Override
