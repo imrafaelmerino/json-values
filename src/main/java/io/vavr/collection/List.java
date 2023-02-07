@@ -124,17 +124,6 @@ public abstract class List<T> implements LinearSeq<T> {
     private List() {
     }
 
-    /**
-     * Returns a {@link Collector} which may be used in conjunction with
-     * {@link java.util.stream.Stream#collect(Collector)} to obtain a {@link List}.
-     *
-     * @param <T> Component type of the List.
-     * @return a {@code Collector} which collects all the input elements into a
-     * {@link List}, in encounter order
-     */
-    public static <T> Collector<T, ArrayList<T>, List<T>> collector() {
-        return Collections.toListAndThen(List::ofAll);
-    }
 
     /**
      * Returns the single instance of Nil.
@@ -903,22 +892,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
-    public final List<T> removeFirst(Predicate<T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        List<T> init = empty();
-        List<T> tail = this;
-        while (!tail.isEmpty() && !predicate.test(tail.head())) {
-            init = init.prepend(tail.head());
-            tail = tail.tail();
-        }
-        if (tail.isEmpty()) {
-            return this;
-        } else {
-            return init.foldLeft(tail.tail(), List::prepend);
-        }
-    }
-
 
 
 
@@ -1030,35 +1003,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-        @Override
-        public LinearSeq<T> remove(T element) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeLast(Predicate<T> predicate) {
-            return null;
-        }
-
-        @Override
-        public Seq<? extends Seq<T>> group() {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAt(int index) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAll(T element) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAll(Iterable<? extends T> elements) {
-            return null;
-        }
 
 
         @Override
@@ -1139,37 +1083,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
         @Override
-        public LinearSeq<T> remove(T element) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeLast(Predicate<T> predicate) {
-            return null;
-        }
-
-        @Override
-        public Seq<? extends Seq<T>> group() {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAt(int index) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAll(T element) {
-            return null;
-        }
-
-        @Override
-        public LinearSeq<T> removeAll(Iterable<? extends T> elements) {
-            return null;
-        }
-
-
-        @Override
         public List<T> tail() {
             return tail;
         }
@@ -1194,121 +1107,10 @@ public abstract class List<T> implements LinearSeq<T> {
             return mkString(stringPrefix() + "(", ", ", ")");
         }
 
-        /**
-         * {@code writeReplace} method for the serialization proxy pattern.
-         * <p>
-         * The presence of this method causes the serialization system to emit a SerializationProxy instance instead of
-         * an instance of the enclosing class.
-         *
-         * @return A SerializationProxy for this enclosing class.
-         */
-        private Object writeReplace() {
-            return new SerializationProxy<>(this);
-        }
 
-        /**
-         * {@code readObject} method for the serialization proxy pattern.
-         * <p>
-         * Guarantees that the serialization system will never generate a serialized instance of the enclosing class.
-         *
-         * @param stream An object serialization stream.
-         * @throws InvalidObjectException This method will throw with the message "Proxy required".
-         */
-        private void readObject(ObjectInputStream stream) throws InvalidObjectException {
-            throw new InvalidObjectException("Proxy required");
-        }
 
-        /**
-         * A serialization proxy which, in this context, is used to deserialize immutable, linked Lists with final
-         * instance fields.
-         *
-         * @param <T> The component type of the underlying list.
-         */
-        // DEV NOTE: The serialization proxy pattern is not compatible with non-final, i.e. extendable,
-        // classes. Also, it may not be compatible with circular object graphs.
-        private static final class SerializationProxy<T> implements Serializable {
-
-            private static final long serialVersionUID = 1L;
-
-            // the instance to be serialized/deserialized
-            private transient Cons<T> list;
-
-            /**
-             * Constructor for the case of serialization, called by {@link Cons#writeReplace()}.
-             * <p/>
-             * The constructor of a SerializationProxy takes an argument that concisely represents the logical state of
-             * an instance of the enclosing class.
-             *
-             * @param list a Cons
-             */
-            SerializationProxy(Cons<T> list) {
-                this.list = list;
-            }
-
-            /**
-             * Write an object to a serialization stream.
-             *
-             * @param s An object serialization stream.
-             * @throws IOException If an error occurs writing to the stream.
-             */
-            private void writeObject(ObjectOutputStream s) throws IOException {
-                s.defaultWriteObject();
-                s.writeInt(list.length());
-                for (List<T> l = list; !l.isEmpty(); l = l.tail()) {
-                    s.writeObject(l.head());
-                }
-            }
-
-            /**
-             * Read an object from a deserialization stream.
-             *
-             * @param s An object deserialization stream.
-             * @throws ClassNotFoundException If the object's class read from the stream cannot be found.
-             * @throws InvalidObjectException If the stream contains no list elements.
-             * @throws IOException            If an error occurs reading from the stream.
-             */
-            private void readObject(ObjectInputStream s) throws ClassNotFoundException, IOException {
-                s.defaultReadObject();
-                final int size = s.readInt();
-                if (size <= 0) {
-                    throw new InvalidObjectException("No elements");
-                }
-                List<T> temp = Nil.instance();
-                for (int i = 0; i < size; i++) {
-                    @SuppressWarnings("unchecked")
-                    final T element = (T) s.readObject();
-                    temp = temp.prepend(element);
-                }
-                list = (Cons<T>) temp.reverse();
-            }
-
-            /**
-             * {@code readResolve} method for the serialization proxy pattern.
-             * <p>
-             * Returns a logically equivalent instance of the enclosing class. The presence of this method causes the
-             * serialization system to translate the serialization proxy back into an instance of the enclosing class
-             * upon deserialization.
-             *
-             * @return A deserialized instance of the enclosing class.
-             */
-            private Object readResolve() {
-                return list;
-            }
-        }
     }
 
 
-    private interface SplitAt {
 
-        static <T> Tuple2<List<T>, List<T>> splitByPredicateReversed(List<T> source, Predicate<? super T> predicate) {
-            Objects.requireNonNull(predicate, "predicate is null");
-            List<T> init = Nil.instance();
-            List<T> tail = source;
-            while (!tail.isEmpty() && !predicate.test(tail.head())) {
-                init = init.prepend(tail.head());
-                tail = tail.tail();
-            }
-            return Tuple.of(init, tail);
-        }
-    }
 }

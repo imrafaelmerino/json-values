@@ -86,23 +86,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> prependAll(Iterable<? extends T> elements);
 
-    @Override
-    LinearSeq<T> remove(T element);
 
-    @Override
-    LinearSeq<T> removeFirst(Predicate<T> predicate);
-
-    @Override
-    LinearSeq<T> removeLast(Predicate<T> predicate);
-
-    @Override
-    LinearSeq<T> removeAt(int index);
-
-    @Override
-    LinearSeq<T> removeAll(T element);
-
-    @Override
-    LinearSeq<T> removeAll(Iterable<? extends T> elements);
 
     @Override
     LinearSeq<T> replace(T currentElement, T newElement);

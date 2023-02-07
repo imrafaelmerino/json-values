@@ -45,12 +45,6 @@ import java.util.function.*;
  * Filtering:
  *
  * <ul>
- * <li>{@link #remove(Object)}</li>
- * <li>{@link #removeAll(Object)}</li>
- * <li>{@link #removeAll(Iterable)}</li>
- * <li>{@link #removeAt(int)}</li>
- * <li>{@link #removeFirst(Predicate)}</li>
- * <li>{@link #removeLast(Predicate)}</li>
  * </ul>
  *
  * Selection:
@@ -173,56 +167,8 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
      */
     Seq<T> prependAll(Iterable<? extends T> elements);
 
-    /**
-     * Removes the first occurrence of the given element.
-     *
-     * @param element An element to be removed from this Seq.
-     * @return a Seq containing all elements of this without the first occurrence of the given element.
-     */
-    Seq<T> remove(T element);
 
-    /**
-     * Removes all occurrences of the given element.
-     *
-     * @param element An element to be removed from this Seq.
-     * @return a Seq containing all elements of this but not the given element.
-     */
-    Seq<T> removeAll(T element);
 
-    /**
-     * Removes all occurrences of the given elements.
-     *
-     * @param elements Elements to be removed from this Seq.
-     * @return a Seq containing all elements of this but none of the given elements.
-     * @throws NullPointerException if {@code elements} is null
-     */
-    Seq<T> removeAll(Iterable<? extends T> elements);
-
-    /**
-     * Removes the element at the specified position in this sequence. Shifts any subsequent elements to the left
-     * (subtracts one from their indices).
-     *
-     * @param index position of element to remove
-     * @return a sequence containing all elements of this without the element at the specified position.
-     * @throws IndexOutOfBoundsException if this is empty, index &lt; 0 or index &gt;= length()
-     */
-    Seq<T> removeAt(int index);
-
-    /**
-     * Removes the first occurrence that satisfy predicate
-     *
-     * @param predicate an predicate
-     * @return a new Seq
-     */
-    Seq<T> removeFirst(Predicate<T> predicate);
-
-    /**
-     * Removes the last occurrence that satisfy predicate
-     *
-     * @param predicate an predicate
-     * @return a new Seq
-     */
-    Seq<T> removeLast(Predicate<T> predicate);
 
     /**
      * Reverses the order of elements.
@@ -265,12 +211,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
         return reverse().foldLeft(zero, (xs, x) -> f.apply(x, xs));
     }
 
-    /**
-     * Groups subsequent equal elements.
-     *
-     * @return a new Seq of new instances containing the equal elements.
-     */
-    Seq<? extends Seq<T>> group();
+
 
 
     @Override
