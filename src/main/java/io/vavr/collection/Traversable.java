@@ -35,7 +35,6 @@ import java.util.stream.DoubleStream;
  * Basic operations:
  *
  * <ul>
- * <li>{@link #collect(PartialFunction)}</li>
  * <li>{@link #contains(Object)}</li>
  * <li>{@link #containsAll(Iterable)}</li>
  * <li>{@link #head()}</li>
@@ -218,30 +217,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         }
     }
 
-    /**
-     * Collects all elements that are in the domain of the given {@code partialFunction} by mapping the elements to type {@code R}.
-     * <p>
-     * More specifically, for each of this elements in iteration order first it is checked
-     *
-     * <pre>{@code
-     * partialFunction.isDefinedAt(element)
-     * }</pre>
-     *
-     * If the elements makes it through that filter, the mapped instance is added to the result collection
-     *
-     * <pre>{@code
-     * R newElement = partialFunction.apply(element)
-     * }</pre>
-     *
-     * <strong>Note:</strong>If this {@code Traversable} is ordered (i.e. extends {@link Ordered},
-     * the caller of {@code collect} has to ensure that the elements are comparable (i.e. extend {@link Comparable}).
-     *
-     * @param partialFunction A function that is not necessarily defined of all elements of this traversable.
-     * @param <R> The new element type
-     * @return A new {@code Traversable} instance containing elements of type {@code R}
-     * @throws NullPointerException if {@code partialFunction} is null
-     */
-    <R> Traversable<R> collect(PartialFunction<? super T, ? extends R> partialFunction);
 
     /**
      * Tests if this Traversable contains all given elements.
@@ -1684,35 +1659,3 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
 
 }
 
-interface TraversableModule {
-
-    /**
-     * Uses Neumaier's variant of the Kahan summation algorithm in order to sum double values.
-     * <p>
-     * See <a href="https://en.wikipedia.org/wiki/Kahan_summation_algorithm">Kahan summation algorithm</a>.
-     *
-     * @param <T> element type
-     * @param ts the elements
-     * @param toDouble function which maps elements to {@code double} values
-     * @return A pair {@code [sum, size]}, where {@code sum} is the compensated sum and {@code size} is the number of elements which were summed.
-     */
-    static <T> double[] neumaierSum(Iterable<T> ts, ToDoubleFunction<T> toDouble) {
-        double simpleSum = 0.0;
-        double sum = 0.0;
-        double compensation = 0.0;
-        int size = 0;
-        for (T t : ts) {
-            final double d = toDouble.applyAsDouble(t);
-            final double tmp = sum + d;
-            compensation += (Math.abs(sum) >= Math.abs(d)) ? (sum - tmp) + d : (d - tmp) + sum;
-            sum = tmp;
-            simpleSum += d;
-            size++;
-        }
-        sum += compensation;
-        if (size > 0 && Double.isNaN(sum) && Double.isInfinite(simpleSum)) {
-            sum = simpleSum;
-        }
-        return new double[] { sum, size };
-    }
-}

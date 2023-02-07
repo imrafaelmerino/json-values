@@ -101,7 +101,7 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
 
     @Override
     public int hashCode() {
-        return trie.hashCode();
+        return Collections.hashUnordered(this);
     }
 
     public int size() {

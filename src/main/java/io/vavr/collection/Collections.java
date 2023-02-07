@@ -24,6 +24,7 @@ import io.vavr.collection.JavaConverters.ListView;
 import io.vavr.control.Option;
 
 import java.util.*;
+import java.util.Vector;
 import java.util.function.*;
 import java.util.stream.Collector;
 
@@ -44,88 +45,9 @@ final class Collections {
         return iter1.hasNext() == iter2.hasNext();
     }
 
-    static <T, C extends Seq<T>> C asJava(C source, Consumer<? super java.util.List<T>> action, ChangePolicy changePolicy) {
-        Objects.requireNonNull(action, "action is null");
-        final ListView<T, C> view = JavaConverters.asJava(source, changePolicy);
-        action.accept(view);
-        return view.getDelegate();
+    static int hashUnordered(Iterable<?> iterable) {
+        return hash(iterable, Integer::sum);
     }
-
-    @SuppressWarnings("unchecked")
-    static <T, S extends Seq<T>> Iterator<S> crossProduct(S empty, S seq, int power) {
-        if (power < 0) {
-            return Iterator.empty();
-        } else {
-            return Iterator.range(0, power)
-                    .foldLeft(Iterator.of(empty), (product, ignored) -> product.flatMap(el -> seq.map(t -> (S) el.append(t))));
-        }
-    }
-
-
-
-
-
-    @SuppressWarnings("unchecked")
-    static <V> boolean equals(Seq<V> source, Object object) {
-        if (object == source) {
-            return true;
-        } else if (source != null && object instanceof Seq) {
-            final Seq<V> seq = (Seq<V>) object;
-            return seq.size() == source.size() && areEqual(source, seq);
-        } else {
-            return false;
-        }
-    }
-
-
-
-
-
-    static <T, R> Collector<T, ArrayList<T>, R> toListAndThen(Function<ArrayList<T>, R> finisher) {
-        final Supplier<ArrayList<T>> supplier = ArrayList::new;
-        final BiConsumer<ArrayList<T>, T> accumulator = ArrayList::add;
-        final BinaryOperator<ArrayList<T>> combiner = (left, right) -> {
-            left.addAll(right);
-            return left;
-        };
-        return Collector.of(supplier, accumulator, combiner, finisher);
-    }
-
-
-
-    static <C extends Traversable<T>, T> C fill(int n, Supplier<? extends T> s, C empty, Function<T[], C> of) {
-        Objects.requireNonNull(s, "s is null");
-        Objects.requireNonNull(empty, "empty is null");
-        Objects.requireNonNull(of, "of is null");
-        return tabulate(n, anything -> s.get(), empty, of);
-    }
-
-    static <C extends Traversable<T>, T> C fillObject(int n, T element, C empty, Function<T[], C> of) {
-        Objects.requireNonNull(empty, "empty is null");
-        Objects.requireNonNull(of, "of is null");
-        if (n <= 0) {
-            return empty;
-        } else {
-            @SuppressWarnings("unchecked")
-            final T[] elements = (T[]) new Object[n];
-            Arrays.fill(elements, element);
-            return of.apply(elements);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <C extends Traversable<T>, T> C filterNot(C source, Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        if (source.isEmpty()) {
-            return source;
-        } else {
-            return (C) source.filter(predicate.negate());
-        }
-    }
-
-
-
-
 
     // hashes the elements respecting their order
     static int hashOrdered(Iterable<?> iterable) {
@@ -161,183 +83,25 @@ final class Collections {
                 (iterable instanceof Traversable && ((Traversable<?>) iterable).isTraversableAgain());
     }
 
-    static <T> T last(Traversable<T> source){
-        if (source.isEmpty()) {
-            throw new NoSuchElementException("last of empty " + source.stringPrefix());
-        } else {
-            final Iterator<T> it = source.iterator();
-            T result = null;
-            while (it.hasNext()) {
-                result = it.next();
-            }
-            return result;
-        }
-    }
+
 
 
 
 
     static <T> Iterator<T> reverseIterator(Iterable<T> iterable) {
-        if (iterable instanceof java.util.List) {
-            return reverseListIterator((java.util.List<T>) iterable);
-        } else if (iterable instanceof Seq) {
             return ((Seq<T>) iterable).reverseIterator();
-        } else {
-            return List.<T>empty().pushAll(iterable).iterator();
-        }
-    }
-
-    private static <T> Iterator<T> reverseListIterator(java.util.List<T> list) {
-        return new Iterator<T>() {
-            private final ListIterator<T> delegate = list.listIterator(list.size());
-
-            @Override
-            public boolean hasNext() {
-                return delegate.hasPrevious();
-            }
-
-            @Override
-            public T next() {
-                return delegate.previous();
-            }
-        };
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T, C extends Seq<T>> C rotateLeft(C source, int n) {
-        if (source.isEmpty() || n == 0) {
-            return source;
-        } else if (n < 0) {
-            return rotateRight(source, -n);
-        } else {
-            int len = source.length();
-            int m = n % len;
-            if (m == 0) {
-                return source;
-            } else {
-                return (C) source.drop(m).appendAll(source.take(m));
-            }
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T, C extends Seq<T>> C rotateRight(C source, int n) {
-        if (source.isEmpty() || n == 0) {
-            return source;
-        } else if (n < 0) {
-            return rotateLeft(source, -n);
-        } else {
-            int len = source.length();
-            int m = n % len;
-            if (m == 0) {
-                return source;
-            } else {
-                return (C) source.takeRight(m).appendAll(source.dropRight(m));
-            }
-        }
-    }
-
-    static <T, U, R extends Traversable<U>> R scanLeft(Traversable<? extends T> source,
-                                                       U zero, BiFunction<? super U, ? super T, ? extends U> operation, Function<Iterator<U>, R> finisher) {
-        Objects.requireNonNull(operation, "operation is null");
-        final Iterator<U> iterator = source.iterator().scanLeft(zero, operation);
-        return finisher.apply(iterator);
-    }
-
-    static <T, U, R extends Traversable<U>> R scanRight(Traversable<? extends T> source,
-                                                        U zero, BiFunction<? super T, ? super U, ? extends U> operation, Function<Iterator<U>, R> finisher) {
-        Objects.requireNonNull(operation, "operation is null");
-        final Iterator<? extends T> reversedElements = reverseIterator(source);
-        return scanLeft(reversedElements, zero, (u, t) -> operation.apply(t, u), us -> finisher.apply(reverseIterator(us)));
-    }
-
-    static <T, U, R extends Seq<T>> R sortBy(Seq<? extends T> source, Comparator<? super U> comparator, Function<? super T, ? extends U> mapper, Collector<T, ?, R> collector) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        Objects.requireNonNull(mapper, "mapper is null");
-        return source.toJavaStream()
-                .sorted((e1, e2) -> comparator.compare(mapper.apply(e1), mapper.apply(e2)))
-                .collect(collector);
-    }
-
-    static <T, S extends Seq<T>> S shuffle(S source, Function<? super Iterable<T>, S> ofAll) {
-        if (source.length() <= 1) {
-            return source;
-        }
-
-        final java.util.List<T> list = source.toJavaList();
-        java.util.Collections.shuffle(list);
-        return ofAll.apply(list);
-    }
-
-    static <T, S extends Seq<T>> S shuffle(S source, Random random, Function<? super Iterable<T>, S> ofAll) {
-        if (source.length() <= 1) {
-            return source;
-        }
-
-        final java.util.List<T> list = source.toJavaList();
-        java.util.Collections.shuffle(list, random);
-        return ofAll.apply(list);
-    }
-
-    static void subSequenceRangeCheck(int beginIndex, int endIndex, int length) {
-        if (beginIndex < 0 || endIndex > length) {
-            throw new IndexOutOfBoundsException("subSequence(" + beginIndex + ", " + endIndex + "), length = " + length);
-        } else if (beginIndex > endIndex) {
-            throw new IllegalArgumentException("subSequence(" + beginIndex + ", " + endIndex + ")");
-        }
-    }
-
-
-    static <C extends Traversable<T>, T> C tabulate(int n, Function<? super Integer, ? extends T> f, C empty, Function<T[], C> of) {
-        Objects.requireNonNull(f, "f is null");
-        Objects.requireNonNull(empty, "empty is null");
-        Objects.requireNonNull(of, "of is null");
-        if (n <= 0) {
-            return empty;
-        } else {
-            @SuppressWarnings("unchecked")
-            final T[] elements = (T[]) new Object[n];
-            for (int i = 0; i < n; i++) {
-                elements[i] = f.apply(i);
-            }
-            return of.apply(elements);
-        }
     }
 
 
 
-    static <T, U extends Seq<T>, V extends Seq<U>> V transpose(V matrix, Function<Iterable<U>, V> rowFactory, Function<T[], U> columnFactory) {
-        Objects.requireNonNull(matrix, "matrix is null");
-        if (matrix.isEmpty() || (matrix.length() == 1 && matrix.head().length() <= 1)) {
-            return matrix;
-        } else {
-            return transposeNonEmptyMatrix(matrix, rowFactory, columnFactory);
-        }
-    }
 
-    private static <T, U extends Seq<T>, V extends Seq<U>> V transposeNonEmptyMatrix(V matrix, Function<Iterable<U>, V> rowFactory, Function<T[], U> columnFactory) {
-        final int newHeight = matrix.head().size(), newWidth = matrix.size();
-        @SuppressWarnings("unchecked") final T[][] results = (T[][]) new Object[newHeight][newWidth];
 
-        if (matrix.exists(r -> r.size() != newHeight)) {
-            throw new IllegalArgumentException("the parameter `matrix` is invalid!");
-        }
 
-        int rowIndex = 0;
-        for (U row : matrix) {
-            int columnIndex = 0;
-            for (T element : row) {
-                results[columnIndex][rowIndex] = element;
-                columnIndex++;
-            }
-            rowIndex++;
-        }
 
-        return rowFactory.apply(Iterator.of(results).map(columnFactory));
-    }
+
 
     static <T> IterableWithSize<T> withSize(Iterable<? extends T> iterable) {
-        return isTraversableAgain(iterable) ? withSizeTraversable(iterable) : withSizeTraversable(List.ofAll(iterable));
+        return isTraversableAgain(iterable) ? withSizeTraversable(iterable) : withSizeTraversable(Vector.ofAll(iterable));
     }
 
     private static <T> IterableWithSize<T> withSizeTraversable(Iterable<? extends T> iterable) {

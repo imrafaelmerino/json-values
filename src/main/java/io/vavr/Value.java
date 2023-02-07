@@ -20,7 +20,6 @@ package io.vavr;
 
 
 import io.vavr.collection.Iterator;
-import io.vavr.collection.List;
 import io.vavr.collection.*;
 import io.vavr.control.Try;
 
@@ -550,14 +549,6 @@ public interface Value<T> extends Iterable<T> {
 
 
 
-    /**
-     * Converts this to a {@link List}.
-     *
-     * @return A new {@link List}.
-     */
-    default List<T> toList() {
-        return ValueModule.toTraversable(this, List.empty(), List::of, List::ofAll);
-    }
 
 
 

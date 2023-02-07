@@ -18,10 +18,7 @@
  */
 package io.vavr.control;
 
-import io.vavr.PartialFunction;
 import io.vavr.collection.Iterator;
-import io.vavr.collection.Seq;
-import io.vavr.collection.Vector;
 
 import java.io.Serializable;
 import java.util.NoSuchElementException;
@@ -177,54 +174,9 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
         return condition ? some(value) : none();
     }
 
-    /**
-     * Wraps a Java Optional to a new Option
-     *
-     * <pre>{@code
-     * Optional<String> optional = Optional.ofNullable("value");
-     *
-     * // Make a Some("value") from an Optional
-     * Option<String> option = Option.ofOptional(optional);
-     *
-     * Optional<String> empty = Optional.empty();
-     *
-     * // Make a None from an empty Optional
-     * Option<String> none = Option.ofOptional(empty);
-     * }</pre>
-     *
-     * @param optional a given optional to wrap in {@code Option}
-     * @param <T>      type of the value
-     * @return {@code Some(optional.get())} if value is Java {@code Optional} is present, {@code None} otherwise
-     */
-    @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
-    public static <T> Option<T> ofOptional(Optional<? extends T> optional) {
-        Objects.requireNonNull(optional, "optional is null");
-        return optional.<Option<T>>map(Option::of).orElseGet(Option::none);
-    }
 
-    /**
-     * Collects value that is in the domain of the given {@code partialFunction} by mapping the value to type {@code R}.
-     *
-     * <pre>{@code
-     * partialFunction.isDefinedAt(value)
-     * }</pre>
-     *
-     * If the element makes it through that filter, the mapped instance is wrapped in {@code Option}
-     *
-     * <pre>{@code
-     * R newValue = partialFunction.apply(value)
-     * }</pre>
-     *
-     *
-     * @param partialFunction A function that is not necessarily defined on value of this option.
-     * @param <R> The new value type
-     * @return A new {@code Option} instance containing value of type {@code R}
-     * @throws NullPointerException if {@code partialFunction} is null
-     */
-    public final <R> Option<R> collect(PartialFunction<? super T, ? extends R> partialFunction) {
-        Objects.requireNonNull(partialFunction, "partialFunction is null");
-        return flatMap(partialFunction.lift());
-    }
+
+
 
     /**
      * Returns true, if this is {@code None}, otherwise false, if this is {@code Some}.

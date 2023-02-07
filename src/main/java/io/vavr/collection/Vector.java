@@ -89,7 +89,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> append(T element) {
-        return appendAll(List.of(element));
+        return appendAll(Vector.of(element));
     }
 
 
@@ -175,7 +175,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> prepend(T element) {
-        return prependAll(List.of(element));
+        return prependAll(Vector.of(element));
     }
 
 
@@ -242,7 +242,7 @@ public final class Vector<T> implements Iterable<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector<?> vector = (Vector<?>) o;
-        return Objects.equals(trie, vector.trie);
+        return Collections.areEqual(this,vector);
     }
 
     public int count(Predicate<T> o) {
