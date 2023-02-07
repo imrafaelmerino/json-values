@@ -24,7 +24,6 @@ import io.vavr.control.Option;
 import java.io.*;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collector;
 
 
 
@@ -50,7 +49,6 @@ import java.util.stream.Collector;
  * <li>{@link #pop()}</li>
  * <li>{@link #popOption()}</li>
  * <li>{@link #pop2()}</li>
- * <li>{@link #pop2Option()}</li>
  * <li>{@link #push(Object)}</li>
  * <li>{@link #push(Object[])}</li>
  * <li>{@link #pushAll(Iterable)}</li>
@@ -202,20 +200,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
     /**
-     * Returns a List containing {@code n} values supplied by a given Supplier {@code s}.
-     *
-     * @param <T> Component type of the List
-     * @param n   The number of elements in the List
-     * @param s   The Supplier computing element values
-     * @return A List of size {@code n}, where each element contains the result supplied by {@code s}.
-     * @throws NullPointerException if {@code s} is null
-     */
-    public static <T> List<T> fill(int n, Supplier<? extends T> s) {
-        Objects.requireNonNull(s, "s is null");
-        return Collections.fill(n, s, empty(), List::of);
-    }
-
-    /**
      * Returns a List containing {@code n} times the given {@code element}
      *
      * @param <T>     Component type of the List
@@ -262,7 +246,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
     public final T apply(Integer index) {
         List<T> list = this;
         for (int i = index - 1; i >= 0; i--) {
@@ -283,7 +266,6 @@ public abstract class List<T> implements LinearSeq<T> {
     public abstract int length();
 
     @Deprecated
-    @Override
     public boolean isDefinedAt(Integer index) {
         return index >= 0 && index < length();
     }
@@ -430,16 +412,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return Tuple.of(head(), tail());
     }
 
-    /**
-     * Removes the head element from this List.
-     *
-     * @return {@code None} if this List is empty, otherwise {@code Some} {@code Tuple} containing the head element and the remaining elements of this List
-     * @deprecated use list.isEmpty() ? Option.none() : Option.some(Tuple.of(list.head(), list.tail())) instead
-     */
-    @Deprecated
-    public final Option<Tuple2<T, List<T>>> pop2Option() {
-        return Option.when(nonEmpty(), this::pop2);
-    }
+
 
     @Override
     public final List<T> prepend(T element) {
@@ -628,9 +601,11 @@ public abstract class List<T> implements LinearSeq<T> {
             return true;
         }
 
+
+
         @Override
-        public boolean equals(Object o) {
-            return Collections.equals(this, o);
+        public <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> combine) {
+            return null;
         }
 
         @Override
@@ -705,9 +680,11 @@ public abstract class List<T> implements LinearSeq<T> {
             return false;
         }
 
+
+
         @Override
-        public boolean equals(Object o) {
-            return Collections.equals(this, o);
+        public <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> combine) {
+            return null;
         }
 
         @Override
@@ -723,7 +700,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
     }
-
 
 
 }

@@ -31,14 +31,12 @@ import java.util.function.*;
  *
  * @param <T> component type
  */
-public interface LinearSeq<T> extends Seq<T> {
+ interface LinearSeq<T> extends Traversable<T> {
 
-    long serialVersionUID = 1L;
 
 
     // -- Adjusted return types of Seq methods
 
-    @Override
     LinearSeq<T> append(T element);
 
 
@@ -54,7 +52,6 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
 
-    @Override
     LinearSeq<T> insert(int index, T element);
 
 
@@ -80,10 +77,8 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
 
-    @Override
     LinearSeq<T> prepend(T element);
 
-    @Override
     LinearSeq<T> prependAll(Iterable<? extends T> elements);
 
 
@@ -92,10 +87,8 @@ public interface LinearSeq<T> extends Seq<T> {
     LinearSeq<T> replace(T currentElement, T newElement);
 
 
-    @Override
     LinearSeq<T> reverse();
 
-    @Override
     default Iterator<T> reverseIterator() {
         return reverse().iterator();
     }

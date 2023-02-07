@@ -55,7 +55,6 @@ import java.util.function.*;
  * Reduction/Folding:
  *
  * <ul>
- * <li>{@link #count(Predicate)}</li>
  * <li>{@link #foldLeft(Object, BiFunction)}</li>
  * <li>{@link #foldRight(Object, BiFunction)}</li>
  * <li>{@link #mkString(CharSequence, CharSequence, CharSequence)}</li>
@@ -65,7 +64,6 @@ import java.util.function.*;
  *
  * <ul>
  * <li>{@link #filter(Predicate)}</li>
- * <li>{@link #find(Predicate)}</li>
  * </ul>
  *
  * Tests:
@@ -95,17 +93,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
 
 
 
-    /**
-     * Counts the elements which satisfy the given predicate.
-     *
-     * @param predicate A predicate
-     * @return A number {@code >= 0}
-     * @throws NullPointerException if {@code predicate} is null.
-     */
-    default int count(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return foldLeft(0, (i, t) -> predicate.test(t) ? i + 1 : i);
-    }
 
 
 
@@ -162,22 +149,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     Traversable<T> filter(Predicate<? super T> predicate);
 
 
-    /**
-     * Returns the first element of this which satisfies the given predicate.
-     *
-     * @param predicate A predicate.
-     * @return Some(element) or None, where element may be null (i.e. {@code List.of(null).find(e -> e == null)}).
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    default Option<T> find(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        for (T a : this) {
-            if (predicate.test(a)) {
-                return Option.some(a); // may be Some(null)
-            }
-        }
-        return Option.none();
-    }
+
 
 
 
@@ -474,16 +446,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return builder.append(suffix).toString();
     }
 
-    /**
-     * Checks, this {@code Traversable} is not empty.
-     * <p>
-     * The call is equivalent to {@code !isEmpty()}.
-     *
-     * @return true, if an underlying value is present, false otherwise.
-     */
-    default boolean nonEmpty() {
-        return !isEmpty();
-    }
 
     /**
      * Returns this {@code Traversable} if it is nonempty, otherwise return the alternative.

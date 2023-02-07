@@ -54,18 +54,6 @@ final class Collections {
 
 
 
-    @SuppressWarnings("unchecked")
-    static <V> boolean equals(Seq<V> source, Object object) {
-        if (object == source) {
-            return true;
-        } else if (source != null && object instanceof Seq) {
-            final Seq<V> seq = (Seq<V>) object;
-            return seq.size() == source.size() && areEqual(source, seq);
-        } else {
-            return false;
-        }
-    }
-
 
 
 
@@ -82,12 +70,7 @@ final class Collections {
 
 
 
-    static <C extends Traversable<T>, T> C fill(int n, Supplier<? extends T> s, C empty, Function<T[], C> of) {
-        Objects.requireNonNull(s, "s is null");
-        Objects.requireNonNull(empty, "empty is null");
-        Objects.requireNonNull(of, "of is null");
-        return tabulate(n, anything -> s.get(), empty, of);
-    }
+
 
     static <C extends Traversable<T>, T> C fillObject(int n, T element, C empty, Function<T[], C> of) {
         Objects.requireNonNull(empty, "empty is null");
@@ -99,16 +82,6 @@ final class Collections {
             final T[] elements = (T[]) new Object[n];
             Arrays.fill(elements, element);
             return of.apply(elements);
-        }
-    }
-
-    @SuppressWarnings("unchecked")
-    static <C extends Traversable<T>, T> C filterNot(C source, Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        if (source.isEmpty()) {
-            return source;
-        } else {
-            return (C) source.filter(predicate.negate());
         }
     }
 
@@ -167,13 +140,9 @@ final class Collections {
 
 
     static <T> Iterator<T> reverseIterator(Iterable<T> iterable) {
-        if (iterable instanceof java.util.List) {
-            return reverseListIterator((java.util.List<T>) iterable);
-        } else if (iterable instanceof Seq) {
-            return ((Seq<T>) iterable).reverseIterator();
-        } else {
-            return List.<T>empty().pushAll(iterable).iterator();
-        }
+
+            return ((LinearSeq<T>) iterable).reverseIterator();
+
     }
 
     private static <T> Iterator<T> reverseListIterator(java.util.List<T> list) {
@@ -203,90 +172,11 @@ final class Collections {
 
 
 
-    static <T, U, R extends Seq<T>> R sortBy(Seq<? extends T> source, Comparator<? super U> comparator, Function<? super T, ? extends U> mapper, Collector<T, ?, R> collector) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        Objects.requireNonNull(mapper, "mapper is null");
-        return source.toJavaStream()
-                .sorted((e1, e2) -> comparator.compare(mapper.apply(e1), mapper.apply(e2)))
-                .collect(collector);
-    }
-
-    static <T, S extends Seq<T>> S shuffle(S source, Function<? super Iterable<T>, S> ofAll) {
-        if (source.length() <= 1) {
-            return source;
-        }
-
-        final java.util.List<T> list = source.toJavaList();
-        java.util.Collections.shuffle(list);
-        return ofAll.apply(list);
-    }
-
-    static <T, S extends Seq<T>> S shuffle(S source, Random random, Function<? super Iterable<T>, S> ofAll) {
-        if (source.length() <= 1) {
-            return source;
-        }
-
-        final java.util.List<T> list = source.toJavaList();
-        java.util.Collections.shuffle(list, random);
-        return ofAll.apply(list);
-    }
-
-    static void subSequenceRangeCheck(int beginIndex, int endIndex, int length) {
-        if (beginIndex < 0 || endIndex > length) {
-            throw new IndexOutOfBoundsException("subSequence(" + beginIndex + ", " + endIndex + "), length = " + length);
-        } else if (beginIndex > endIndex) {
-            throw new IllegalArgumentException("subSequence(" + beginIndex + ", " + endIndex + ")");
-        }
-    }
-
-
-    static <C extends Traversable<T>, T> C tabulate(int n, Function<? super Integer, ? extends T> f, C empty, Function<T[], C> of) {
-        Objects.requireNonNull(f, "f is null");
-        Objects.requireNonNull(empty, "empty is null");
-        Objects.requireNonNull(of, "of is null");
-        if (n <= 0) {
-            return empty;
-        } else {
-            @SuppressWarnings("unchecked")
-            final T[] elements = (T[]) new Object[n];
-            for (int i = 0; i < n; i++) {
-                elements[i] = f.apply(i);
-            }
-            return of.apply(elements);
-        }
-    }
 
 
 
-    static <T, U extends Seq<T>, V extends Seq<U>> V transpose(V matrix, Function<Iterable<U>, V> rowFactory, Function<T[], U> columnFactory) {
-        Objects.requireNonNull(matrix, "matrix is null");
-        if (matrix.isEmpty() || (matrix.length() == 1 && matrix.head().length() <= 1)) {
-            return matrix;
-        } else {
-            return transposeNonEmptyMatrix(matrix, rowFactory, columnFactory);
-        }
-    }
 
-    private static <T, U extends Seq<T>, V extends Seq<U>> V transposeNonEmptyMatrix(V matrix, Function<Iterable<U>, V> rowFactory, Function<T[], U> columnFactory) {
-        final int newHeight = matrix.head().size(), newWidth = matrix.size();
-        @SuppressWarnings("unchecked") final T[][] results = (T[][]) new Object[newHeight][newWidth];
 
-        if (matrix.exists(r -> r.size() != newHeight)) {
-            throw new IllegalArgumentException("the parameter `matrix` is invalid!");
-        }
-
-        int rowIndex = 0;
-        for (U row : matrix) {
-            int columnIndex = 0;
-            for (T element : row) {
-                results[columnIndex][rowIndex] = element;
-                columnIndex++;
-            }
-            rowIndex++;
-        }
-
-        return rowFactory.apply(Iterator.of(results).map(columnFactory));
-    }
 
     static <T> IterableWithSize<T> withSize(Iterable<? extends T> iterable) {
         return isTraversableAgain(iterable) ? withSizeTraversable(iterable) : withSizeTraversable(List.ofAll(iterable));
