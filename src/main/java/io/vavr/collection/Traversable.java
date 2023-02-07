@@ -21,8 +21,7 @@ package io.vavr.collection;
 import io.vavr.*;
 import io.vavr.control.Option;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
+
 import java.util.*;
 import java.util.function.*;
 
@@ -51,12 +50,7 @@ import java.util.function.*;
  * <li>{@link #iterator()}</li>
  * </ul>
  *
- * Numeric operations:
- *
- * <ul>
- * <li>{@link #max()}</li>
- * <li>{@link #maxBy(Comparator)}</li>
- * </ul>
+
  *
  * Reduction/Folding:
  *
@@ -65,8 +59,6 @@ import java.util.function.*;
  * <li>{@link #foldLeft(Object, BiFunction)}</li>
  * <li>{@link #foldRight(Object, BiFunction)}</li>
  * <li>{@link #mkString(CharSequence, CharSequence, CharSequence)}</li>
- * <li>{@link #reduce(BiFunction)}</li>
- * <li>{@link #reduceLeft(BiFunction)}</li>
  * </ul>
  *
  * Selection:
@@ -513,36 +505,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     @Override
     Traversable<T> peek(Consumer<? super T> action);
 
-
-
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op}.
-     * The order of element iteration is undetermined.
-     *
-     * @param op A BiFunction of type T
-     * @return the reduced value.
-     * @throws NoSuchElementException if this is empty
-     * @throws NullPointerException   if {@code op} is null
-     */
-    default T reduce(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        return reduceLeft(op);
-    }
-
-
-
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op} from the left.
-     *
-     * @param op A BiFunction of type T
-     * @return the reduced value.
-     * @throws NoSuchElementException if this is empty
-     * @throws NullPointerException   if {@code op} is null
-     */
-    default T reduceLeft(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        return iterator().reduceLeft(op);
-    }
 
 
 
