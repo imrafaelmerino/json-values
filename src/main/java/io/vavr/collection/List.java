@@ -532,15 +532,7 @@ public abstract class List<T> implements LinearSeq<T> {
             return stringPrefix() + "()";
         }
 
-        /**
-         * Instance control for object serialization.
-         *
-         * @return The singleton instance of Nil.
-         * @see Serializable
-         */
-        private Object readResolve() {
-            return INSTANCE;
-        }
+
     }
 
     /**

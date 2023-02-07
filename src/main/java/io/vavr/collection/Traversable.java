@@ -519,10 +519,5 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Option<? extends Traversable<T>> tailOption();
 
-
-
-
-
-
 }
 

@@ -361,57 +361,9 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
         return isEmpty() ? null : get();
     }
 
-    /**
-     * Returns the value if this is a {@code Some}, otherwise {@code supplier.get()} is returned.
-     * <p>
-     * Please note, that the alternate value is lazily evaluated.
-     *
-     * <pre>{@code
-     * Supplier<Double> supplier = () -> 5.342;
-     *
-     * // = 1.2
-     * Option.of(1.2).getOrElse(supplier);
-     *
-     * // = 5.342
-     * Option.none().getOrElse(supplier);
-     * }</pre>
-     *
-     * @param supplier An alternative value supplier
-     * @return This value, if this Option is defined or the {@code other} value, if this Option is empty.
-     */
-    @Override
-    public final T getOrElse(Supplier<? extends T> supplier) {
-        Objects.requireNonNull(supplier, "supplier is null");
-        return isEmpty() ? supplier.get() : get();
-    }
 
-    /**
-     * Returns the value if this is a {@code Some}, otherwise throws an exception.
-     *
-     * <pre>{@code
-     * Supplier<RuntimeException> supplier = () -> new RuntimeException();
-     *
-     * // = 12
-     * Option.of(12).getOrElseThrow(supplier);
-     *
-     * // throws RuntimeException
-     * Option.none().getOrElseThrow(supplier);
-     * }</pre>
-     *
-     * @param exceptionSupplier An exception supplier
-     * @param <X>               A throwable
-     * @return This value, if this Option is defined, otherwise throws X
-     * @throws X a throwable
-     */
-    @Override
-    public final <X extends Throwable> T getOrElseThrow(Supplier<X> exceptionSupplier) throws X {
-        Objects.requireNonNull(exceptionSupplier, "exceptionSupplier is null");
-        if (isEmpty()) {
-            throw exceptionSupplier.get();
-        } else {
-            return get();
-        }
-    }
+
+   
 
     /**
      * Returns {@code Some(value)} if this is a {@code Some} and the value satisfies the given predicate.
@@ -510,29 +462,6 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
     public final <U> Option<U> map(Function<? super T, ? extends U> mapper) {
         Objects.requireNonNull(mapper, "mapper is null");
         return isEmpty() ? none() : some(mapper.apply(get()));
-    }
-
-    /**
-     * Folds either the {@code None} or the {@code Some} side of the Option value.
-     *
-     * <pre>{@code
-     * Supplier<Double> ifNone = () -> 3.14;
-     * Function<String, Double> mapper = s -> Double.valueOf(s) + 0.98;
-     *
-     * // = Some(4.98)
-     * Option.of("4").fold(ifNone, mapper);
-     *
-     * // = Some(3.14)
-     * Option.<String>none().fold(ifNone, mapper);
-     * }</pre>
-     *
-     * @param ifNone  maps the left value if this is a None
-     * @param f maps the value if this is a Some
-     * @param <U>         type of the folded value
-     * @return A value of type U
-     */
-    public final <U> U fold(Supplier<? extends U> ifNone, Function<? super T, ? extends U> f) {
-        return this.<U>map(f).getOrElse(ifNone);
     }
 
 

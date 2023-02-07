@@ -45,8 +45,6 @@ import java.util.stream.StreamSupport;
  * <ul>
  * <li>{@link #get()}</li>
  * <li>{@link #getOrElse(Object)}</li>
- * <li>{@link #getOrElse(Supplier)}</li>
- * <li>{@link #getOrElseThrow(Supplier)}</li>
  * <li>{@link #map(Function)}</li>
  * <li>{@link #stringPrefix()}</li>
  * </ul>
@@ -72,7 +70,6 @@ import java.util.stream.StreamSupport;
  * <ul>
  * <li>{@link #out(PrintStream)}</li>
  * <li>{@link #out(PrintWriter)}</li>
- * <li>{@link #peek(Consumer)}</li>
  * </ul>
  *
  * Tests:
@@ -272,35 +269,7 @@ public interface Value<T> extends Iterable<T> {
         return isEmpty() ? other : get();
     }
 
-    /**
-     * Returns the underlying value if present, otherwise {@code other}.
-     *
-     * @param supplier An alternative value supplier.
-     * @return A value of type {@code T}
-     * @throws NullPointerException if supplier is null
-     */
-    default T getOrElse(Supplier<? extends T> supplier) {
-        Objects.requireNonNull(supplier, "supplier is null");
-        return isEmpty() ? supplier.get() : get();
-    }
 
-    /**
-     * Returns the underlying value if present, otherwise throws {@code supplier.get()}.
-     *
-     * @param <X>      a Throwable type
-     * @param supplier An exception supplier.
-     * @return A value of type {@code T}.
-     * @throws NullPointerException if supplier is null
-     * @throws X                    if no value is present
-     */
-    default <X extends Throwable> T getOrElseThrow(Supplier<X> supplier) throws X {
-        Objects.requireNonNull(supplier, "supplier is null");
-        if (isEmpty()) {
-            throw supplier.get();
-        } else {
-            return get();
-        }
-    }
 
 
 
@@ -510,32 +479,7 @@ public interface Value<T> extends Iterable<T> {
     }
 
 
-    /**
-     * Converts this to a sequential {@link java.util.stream.Stream} by calling
-     * {@code StreamSupport.stream(this.spliterator(), false)}.
-     *
-     * <pre>{@code
-     * // empty Stream
-     * Future.of(() -> { throw new Error(); })
-     *       .toJavaStream()
-     *
-     * // Stream containing "ok"
-     * Try.of(() -> "ok")
-     *    .toJavaStream()
-     *
-     * // Stream containing 1, 2, 3
-     * List.of(1, 2, 3)
-     *     .toJavaStream()
-     * }</pre>
-     *
-     * @return A new sequential {@link java.util.stream.Stream}.
-     * @see Value#spliterator()
-     */
-    default java.util.stream.Stream<T> toJavaStream() {
-        return StreamSupport.stream(spliterator(), false);
-    }
-
-
+  
 
 
 
