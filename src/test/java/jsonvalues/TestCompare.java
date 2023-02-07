@@ -14,7 +14,7 @@ public class TestCompare {
         Assertions.assertEquals(0,Index.of(1).compareTo(Index.of(1)));
 
         Assertions.assertTrue(Index.of(1).compareTo(Key.of("a"))<0);
-        Assertions.assertTrue(Index.of(1).compareTo(Key.of("1"))==0);
+        Assertions.assertEquals(0, Index.of(1).compareTo(Key.of("1")));
         Assertions.assertTrue(Index.of(1).compareTo(Key.of("0"))>0);
 
 

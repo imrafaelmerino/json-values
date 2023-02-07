@@ -1,13 +1,12 @@
 package jsonvalues;
 
+import io.vavr.collection.HashMap;
 import jsonvalues.spec.JsonIO;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
 import io.vavr.Tuple2;
-import io.vavr.collection.LinkedHashMap;
-import io.vavr.collection.Map;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.IOException;
@@ -32,13 +31,13 @@ import static jsonvalues.MatchExp.ifNothingElse;
 
 /**
  * Represents an immutable JSON object. A JSON object is an unordered set of name/element pairs.
- * The underlying data structure is a persistent {@link LinkedHashMap} from the library vavr.
+ * The underlying data structure is a persistent {@link HashMap} from the library vavr.
  */
 public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
     /**
      * the empty Json Object
      */
-    public static final JsObj EMPTY = new JsObj(LinkedHashMap.empty());
+    public static final JsObj EMPTY = new JsObj(HashMap.empty());
     /**
      * lenses defined for a Json object
      */
@@ -58,16 +57,16 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
             );
     @SuppressWarnings("squid:S3008")
     private static final JsPath EMPTY_PATH = JsPath.empty();
-    private final Map<String, JsValue> map;
+    private final HashMap<String, JsValue> map;
     private volatile int hashcode;
     @SuppressWarnings("squid:S3077")
     private volatile String str;
 
     public JsObj() {
-        this.map = LinkedHashMap.empty();
+        this.map = HashMap.empty();
     }
 
-    JsObj(final Map<String, JsValue> myMap) {
+    JsObj(final HashMap<String, JsValue> myMap) {
         this.map = myMap;
     }
 
@@ -2018,8 +2017,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
         }
     }
 
-    static Map<String, JsValue> parse(final JsonParser parser) throws IOException {
-        Map<String, JsValue> map = LinkedHashMap.empty();
+    static HashMap<String, JsValue> parse(final JsonParser parser) throws IOException {
+        HashMap<String, JsValue> map = HashMap.empty();
         String key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
             JsonToken token = parser.nextToken();
@@ -2103,7 +2102,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
 
     @Override
     public boolean containsValue(final JsValue el) {
-        return map.values().contains(el);
+        return map.containsValue(el);
     }
 
     /**
@@ -2112,8 +2111,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
      * @return a Set containing each key of this JsObj
      */
     public Set<String> keySet() {
-        return map.keySet()
-                  .toJavaSet();
+        return map.keySet();
     }
 
     @Override
@@ -2786,9 +2784,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
     }
 
     @SuppressWarnings("squid:S1602")
-    private
-        // curly braces makes IntelliJ to format the code in a more legible way
-    BiPredicate<String, JsPath> isReplaceWithEmptyJson(final Map<String, JsValue> pmap) {
+    private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsValue> pmap) {
         return (head, tail) ->
                 (!pmap.containsKey(head) || !pmap.get(head)
                                                  .filter(JsValue::isPrimitive)

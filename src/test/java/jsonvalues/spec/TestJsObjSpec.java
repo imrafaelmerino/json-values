@@ -32,11 +32,13 @@ public class TestJsObjSpec {
     public void testIsStrSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                str());
+                                            str()
+                                           );
 
 
         final Set<SpecError> errors = spec.test(JsObj.of("a",
-                                                         JsInt.of(1)));
+                                                         JsInt.of(1)
+                                                        ));
 
         errors.forEach(pair -> System.out.println(pair.value + " @ " + pair.path + " doesn't not conform spec: " + pair.errorCode));
 
@@ -48,15 +50,15 @@ public class TestJsObjSpec {
 
         Assertions.assertEquals(pair.errorCode,
                                 STRING_EXPECTED
-        );
+                               );
 
         Assertions.assertEquals(pair.value,
                                 JsInt.of(1)
-        );
+                               );
 
         Assertions.assertEquals(pair.path,
                                 JsPath.fromKey("a")
-        );
+                               );
 
     }
 
@@ -64,13 +66,13 @@ public class TestJsObjSpec {
     public void testIsStrPredicateSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                str(s -> s.startsWith("h"))
-        );
+                                            str(s -> s.startsWith("h"))
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("bye")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -78,7 +80,7 @@ public class TestJsObjSpec {
                       STRING_CONDITION,
                       JsStr.of("bye"),
                       JsPath.fromKey("a")
-        );
+                     );
 
     }
 
@@ -87,13 +89,13 @@ public class TestJsObjSpec {
     public void testIsIntSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                integer()
-        );
+                                            integer()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -101,7 +103,7 @@ public class TestJsObjSpec {
                       INT_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -110,20 +112,21 @@ public class TestJsObjSpec {
     public void testIsIntPredicateSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                integer(n -> n % 2 == 0),
-                                                "b",
-                                                instant(i -> i.isAfter(Instant.MAX))
-        );
+                                            integer(n -> n % 2 == 0),
+                                            "b",
+                                            instant(i -> i.isAfter(Instant.MAX))
+                                           );
 
 
         final Set<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsInt.of(5),
                                                          "b",
                                                          JsInstant.of(Instant.now())
-        ));
+                                                        ));
 
         Assertions.assertEquals(2,
-                                errors.size());
+                                errors.size()
+                               );
 
         final SpecError intError = errors.stream()
                                          .filter(it -> it.value.equals(JsInt.of(5)))
@@ -131,13 +134,16 @@ public class TestJsObjSpec {
                                          get();
 
         Assertions.assertEquals(intError.errorCode,
-                                INT_CONDITION);
+                                INT_CONDITION
+                               );
 
         Assertions.assertEquals(intError.value,
-                                JsInt.of(5));
+                                JsInt.of(5)
+                               );
 
         Assertions.assertEquals(intError.path,
-                                JsPath.fromKey("a"));
+                                JsPath.fromKey("a")
+                               );
 
         final SpecError instantError = errors.stream()
                                              .filter(it -> it.path.last().isKey(a -> a.equals("b")))
@@ -145,11 +151,13 @@ public class TestJsObjSpec {
                                              get();
 
         Assertions.assertEquals(instantError.errorCode,
-                                INSTANT_CONDITION);
+                                INSTANT_CONDITION
+                               );
 
 
         Assertions.assertEquals(instantError.path,
-                                JsPath.fromKey("b"));
+                                JsPath.fromKey("b")
+                               );
 
 
     }
@@ -158,13 +166,13 @@ public class TestJsObjSpec {
     public void testIsLongSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                longInteger()
-        );
+                                            longInteger()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -172,7 +180,7 @@ public class TestJsObjSpec {
                       LONG_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -181,13 +189,13 @@ public class TestJsObjSpec {
     public void testIsLongPredicateSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                longInteger(l -> l % 2 == 1)
-        );
+                                            longInteger(l -> l % 2 == 1)
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsLong.of(4)
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -197,15 +205,15 @@ public class TestJsObjSpec {
 
         Assertions.assertEquals(pair.errorCode,
                                 LONG_CONDITION
-        );
+                               );
 
         Assertions.assertEquals(pair.value,
                                 JsLong.of(4)
-        );
+                               );
 
         Assertions.assertEquals(pair.path,
                                 JsPath.fromKey("a")
-        );
+                               );
 
 
     }
@@ -214,13 +222,13 @@ public class TestJsObjSpec {
     public void testIsDecimalSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                decimal()
-        );
+                                            decimal()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -228,7 +236,7 @@ public class TestJsObjSpec {
                       DECIMAL_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -237,14 +245,14 @@ public class TestJsObjSpec {
     public void testIsDecimalSpecPredicate() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                decimal(d -> d.longValueExact() == Long.MAX_VALUE)
-        );
+                                            decimal(d -> d.longValueExact() == Long.MAX_VALUE)
+                                           );
 
 
         final JsBigDec bd = JsBigDec.of(new BigDecimal(Long.MAX_VALUE - 1));
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         bd
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -254,15 +262,15 @@ public class TestJsObjSpec {
 
         Assertions.assertEquals(pair.errorCode,
                                 DECIMAL_CONDITION
-        );
+                               );
 
         Assertions.assertEquals(pair.value,
                                 bd
-        );
+                               );
 
         Assertions.assertEquals(pair.path,
                                 JsPath.fromKey("a")
-        );
+                               );
 
 
     }
@@ -271,14 +279,14 @@ public class TestJsObjSpec {
     public void testIsBooleanSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                bool()
-        );
+                                            bool()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-                                               )
-        );
+                                                       )
+                                              );
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -286,7 +294,7 @@ public class TestJsObjSpec {
                       BOOLEAN_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -295,13 +303,13 @@ public class TestJsObjSpec {
     public void testIsTrueSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                JsSpecs.TRUE
-        );
+                                            JsSpecs.TRUE
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsBool.FALSE
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -311,15 +319,15 @@ public class TestJsObjSpec {
 
         Assertions.assertEquals(pair.errorCode,
                                 TRUE_EXPECTED
-        );
+                               );
 
         Assertions.assertEquals(pair.value,
                                 JsBool.FALSE
-        );
+                               );
 
         Assertions.assertEquals(pair.path,
                                 JsPath.fromKey("a")
-        );
+                               );
 
 
     }
@@ -328,13 +336,13 @@ public class TestJsObjSpec {
     public void testIsFalseSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                FALSE
-        );
+                                            FALSE
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         TRUE
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -344,15 +352,15 @@ public class TestJsObjSpec {
 
         Assertions.assertEquals(pair.errorCode,
                                 FALSE_EXPECTED
-        );
+                               );
 
         Assertions.assertEquals(pair.value,
                                 TRUE
-        );
+                               );
 
         Assertions.assertEquals(pair.path,
                                 JsPath.fromKey("a")
-        );
+                               );
 
 
     }
@@ -361,14 +369,14 @@ public class TestJsObjSpec {
     public void testIsNumberSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                bigInteger(),
-                                                "b",
-                                                bigInteger(),
-                                                "c",
-                                                bigInteger(),
-                                                "d",
-                                                number()
-        );
+                                            bigInteger(),
+                                            "b",
+                                            bigInteger(),
+                                            "c",
+                                            bigInteger(),
+                                            "d",
+                                            number()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
@@ -379,8 +387,8 @@ public class TestJsObjSpec {
                                                         JsBigInt.of(new BigInteger("100")),
                                                         "d",
                                                         JsDouble.of(3.2)
-                                               )
-        );
+                                                       )
+                                              );
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -391,13 +399,13 @@ public class TestJsObjSpec {
     public void testIsNumberSpecReturnError() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                bigInteger()
-        );
+                                            bigInteger()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -405,7 +413,7 @@ public class TestJsObjSpec {
                       INTEGRAL_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -414,13 +422,13 @@ public class TestJsObjSpec {
     public void testIsObjectSpecReturnError() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                obj()
-        );
+                                            obj()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -428,7 +436,7 @@ public class TestJsObjSpec {
                       OBJ_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -437,13 +445,13 @@ public class TestJsObjSpec {
     public void testIsArraySpecReturnError() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                array()
-        );
+                                            array()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
-        ));
+                                                       ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -451,7 +459,7 @@ public class TestJsObjSpec {
                       ARRAY_EXPECTED,
                       JsStr.of("a"),
                       JsPath.fromKey("a")
-        );
+                     );
 
 
     }
@@ -460,34 +468,34 @@ public class TestJsObjSpec {
     public void testIsObjSpec() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                integer(),
-                                                "b",
-                                                str(),
-                                                "c",
-                                                longInteger(),
-                                                "d",
-                                                bool(),
-                                                "e",
-                                                JsSpecs.TRUE,
-                                                "f",
-                                                JsObjSpec.of("a",
-                                                                 str(),
-                                                                 "b",
-                                                                 integer(),
-                                                                 "c",
-                                                                 JsSpecs.tuple(str(),
-                                                                               integer()
-                                                                 ),
-                                                                 "d",
-                                                                 arraySuchThat(a -> a.head() == JsNull.NULL)
-                                                ),
-                                                "g",
-                                                JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
-                                                                            JsStr.of("B")
-                                                )),
-                                                "h",
-                                                JsSpecs.binary(it -> it.length <= 100).nullable()
-        );
+                                            integer(),
+                                            "b",
+                                            str(),
+                                            "c",
+                                            longInteger(),
+                                            "d",
+                                            bool(),
+                                            "e",
+                                            JsSpecs.TRUE,
+                                            "f",
+                                            JsObjSpec.of("a",
+                                                         str(),
+                                                         "b",
+                                                         integer(),
+                                                         "c",
+                                                         JsSpecs.tuple(str(),
+                                                                       integer()
+                                                                      ),
+                                                         "d",
+                                                         arraySuchThat(a -> a.head() == JsNull.NULL)
+                                                        ),
+                                            "g",
+                                            JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
+                                                                        JsStr.of("B")
+                                                                       )),
+                                            "h",
+                                            JsSpecs.binary(it -> it.length <= 100).nullable()
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
@@ -508,18 +516,18 @@ public class TestJsObjSpec {
                                                                  "c",
                                                                  JsArray.of(JsStr.of("a"),
                                                                             JsInt.of(1)
-                                                                 ),
+                                                                           ),
                                                                  "d",
                                                                  JsArray.of(JsNull.NULL,
                                                                             JsInt.of(1)
-                                                                 )
-                                                        ),
+                                                                           )
+                                                                ),
                                                         "g",
                                                         JsStr.of("A"),
                                                         "h",
                                                         JsBinary.of("ssddssdfsd".getBytes(StandardCharsets.UTF_8))
-                                               )
-        );
+                                                       )
+                                              );
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -531,64 +539,64 @@ public class TestJsObjSpec {
     public void testIsArrayOfPrimitivesSpecs() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                arrayOfInt(),
-                                                "b",
-                                                arrayOfStr(),
-                                                "c",
-                                                arrayOfLong(),
-                                                "d",
-                                                arrayOfDec(),
-                                                "e",
-                                                arrayOfBigInt(),
-                                                "f",
-                                                JsObjSpec.of("a",
-                                                                 arrayOfNumber(),
-                                                                 "b",
-                                                                 arrayOfObj(),
-                                                                 "c",
-                                                                 arrayOfBool()
-                                                )
-        );
+                                            arrayOfInt(),
+                                            "b",
+                                            arrayOfStr(),
+                                            "c",
+                                            arrayOfLong(),
+                                            "d",
+                                            arrayOfDec(),
+                                            "e",
+                                            arrayOfBigInt(),
+                                            "f",
+                                            JsObjSpec.of("a",
+                                                         arrayOfNumber(),
+                                                         "b",
+                                                         arrayOfObj(),
+                                                         "c",
+                                                         arrayOfBool()
+                                                        )
+                                           );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsArray.of(1,
                                                                    2,
                                                                    3
-                                                        ),
+                                                                  ),
                                                         "b",
                                                         JsArray.of("a",
                                                                    "b"
-                                                        ),
+                                                                  ),
                                                         "c",
                                                         JsArray.of(100L,
                                                                    200L
-                                                        ),
+                                                                  ),
                                                         "d",
                                                         JsArray.of(1.2,
                                                                    1.3
-                                                        ),
+                                                                  ),
                                                         "e",
                                                         JsArray.of(BigInteger.TEN,
                                                                    BigInteger.TEN
-                                                        ),
+                                                                  ),
                                                         "f",
                                                         JsObj.of("a",
                                                                  JsArray.of(JsInt.of(1),
                                                                             JsDouble.of(1.5)
-                                                                 ),
+                                                                           ),
                                                                  "b",
                                                                  JsArray.of(JsObj.empty(),
                                                                             JsObj.empty()
-                                                                 ),
+                                                                           ),
                                                                  "c",
                                                                  JsArray.of(true,
                                                                             false,
                                                                             true
-                                                                 )
-                                                        )
-                                               )
-        );
+                                                                           )
+                                                                )
+                                                       )
+                                              );
 
 
         Assertions.assertTrue(error.isEmpty());
@@ -601,97 +609,98 @@ public class TestJsObjSpec {
     public void testIsArrayOfTestedPrimitivesSpecs() {
 
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                arrayOfInt(i -> i > 0).nullable(),
-                                                "b",
-                                                arrayOfStr(s -> s.startsWith("a")),
-                                                "c",
-                                                arrayOfLong(i -> i < 0).nullable(),
-                                                "c1",
-                                                arrayOfLong(i -> i < 0).nullable(),
-                                                "c2",
-                                                arrayOfLong(i -> i < 0).nullable(),
-                                                "d",
-                                                arrayOfDec(b -> b.doubleValue() > 1.5),
-                                                "e",
-                                                arrayOfBigInt(i -> i.longValue() < 100),
-                                                "f",
-                                                JsObjSpec.of("a",
-                                                                 arrayOfNumber(JsValue::isInt),
-                                                                 "b",
-                                                                 arrayOfObj(JsObj::isEmpty).nullable(),
-                                                                 "c",
-                                                                 JsSpecs.tuple(arrayOfStrSuchThat(a -> a.size() > 2),
-                                                                               arrayOfIntSuchThat(a -> a.size() > 1),
-                                                                               arrayOfLongSuchThat(a -> a.containsValue(JsLong.of(10))),
-                                                                               arrayOfDecSuchThat(a -> a.size() == 1)
-                                                                 ),
-                                                                 "d",
-                                                                 bigInteger(i -> i.longValue() > 10),
-                                                                 "e",
-                                                                 number(JsValue::isDouble),
-                                                                 "f",
-                                                                 obj(JsObj::isEmpty)
-                                                ).withOptKeys("b")
-        ).withOptKeys("c",
-                      "c");
+                                            arrayOfInt(i -> i > 0).nullable(),
+                                            "b",
+                                            arrayOfStr(s -> s.startsWith("a")),
+                                            "c",
+                                            arrayOfLong(i -> i < 0).nullable(),
+                                            "c1",
+                                            arrayOfLong(i -> i < 0).nullable(),
+                                            "c2",
+                                            arrayOfLong(i -> i < 0).nullable(),
+                                            "d",
+                                            arrayOfDec(b -> b.doubleValue() > 1.5),
+                                            "e",
+                                            arrayOfBigInt(i -> i.longValue() < 100),
+                                            "f",
+                                            JsObjSpec.of("a",
+                                                         arrayOfNumber(JsValue::isInt),
+                                                         "b",
+                                                         arrayOfObj(JsObj::isEmpty).nullable(),
+                                                         "c",
+                                                         JsSpecs.tuple(arrayOfStrSuchThat(a -> a.size() > 2),
+                                                                       arrayOfIntSuchThat(a -> a.size() > 1),
+                                                                       arrayOfLongSuchThat(a -> a.containsValue(JsLong.of(10))),
+                                                                       arrayOfDecSuchThat(a -> a.size() == 1)
+                                                                      ),
+                                                         "d",
+                                                         bigInteger(i -> i.longValue() > 10),
+                                                         "e",
+                                                         number(JsValue::isDouble),
+                                                         "f",
+                                                         obj(JsObj::isEmpty)
+                                                        ).withOptKeys("b")
+                                           ).withOptKeys("c",
+                                                         "c"
+                                                        );
 
 
         final Set<SpecError> error = spec.test(JsObj.of("a",
                                                         JsArray.of(1,
                                                                    2,
                                                                    3
-                                                        ),
+                                                                  ),
                                                         "b",
                                                         JsArray.of("a",
                                                                    "abc"
-                                                        ),
+                                                                  ),
                                                         "c",
                                                         JsArray.of(-100L,
                                                                    -200L
-                                                        ),
+                                                                  ),
                                                         "c1",
                                                         JsNull.NULL,
                                                         "c2",
                                                         JsArray.of(-1L,
                                                                    -2L
-                                                        ),
+                                                                  ),
                                                         "d",
                                                         JsArray.of(2.0,
                                                                    3.0
-                                                        ),
+                                                                  ),
                                                         "e",
                                                         JsArray.of(BigInteger.TEN,
                                                                    BigInteger.TEN
-                                                        ),
+                                                                  ),
                                                         "f",
                                                         JsObj.of("a",
                                                                  JsArray.of(JsInt.of(1),
                                                                             JsInt.of(5)
-                                                                 ),
+                                                                           ),
                                                                  "b",
                                                                  JsArray.of(JsObj.empty(),
                                                                             JsObj.empty()
-                                                                 ),
+                                                                           ),
                                                                  "c",
                                                                  JsArray.of(JsArray.of("a",
                                                                                        "b",
                                                                                        "c"
-                                                                            ),
+                                                                                      ),
                                                                             JsArray.of(1,
                                                                                        2
-                                                                            ),
+                                                                                      ),
                                                                             JsArray.of(10L),
                                                                             JsArray.of(1.2)
-                                                                 ),
+                                                                           ),
                                                                  "d",
                                                                  JsInt.of(11),
                                                                  "e",
                                                                  JsDouble.of(2.5),
                                                                  "f",
                                                                  JsObj.empty()
-                                                        )
-                                               )
-        );
+                                                                )
+                                                       )
+                                              );
 
         Assertions.assertTrue(error.isEmpty());
 
@@ -705,17 +714,17 @@ public class TestJsObjSpec {
                                    JsInt.of(1),
                                    "b",
                                    JsStr.of("a")
-        );
+                                  );
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                integer()
-        );
+                                            integer()
+                                           );
         final Set<SpecError> error = spec.test(obj);
 
         assertErrorIs(error,
                       SPEC_MISSING,
                       JsStr.of("a"),
                       JsPath.fromKey("b")
-        );
+                     );
 
     }
 
@@ -725,17 +734,18 @@ public class TestJsObjSpec {
 
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          any(),
-                                          "b",
-                                          any(),
-                                          "d",
-                                          any(JsValue::isStr)
-        ).withOptKeys("b",
-                      "d");
+                                      any(),
+                                      "b",
+                                      any(),
+                                      "d",
+                                      any(JsValue::isStr)
+                                     ).withOptKeys("b",
+                                                   "d"
+                                                  );
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsNull.NULL
-                                  ))
+                                                ))
                                   .isEmpty());
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsNull.NULL,
@@ -743,7 +753,7 @@ public class TestJsObjSpec {
                                                  TRUE,
                                                  "d",
                                                  JsStr.of("hi")
-                                  ))
+                                                ))
                                   .isEmpty());
     }
 
@@ -752,14 +762,14 @@ public class TestJsObjSpec {
 
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          JsObjSpec.of("a",
-                                                           any(),
-                                                           "b",
-                                                           any(),
-                                                           "d",
-                                                           any(JsValue::isStr)
-                                          ).withOptKeys("b")
-        );
+                                      JsObjSpec.of("a",
+                                                   any(),
+                                                   "b",
+                                                   any(),
+                                                   "d",
+                                                   any(JsValue::isStr)
+                                                  ).withOptKeys("b")
+                                     );
 
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
@@ -769,8 +779,8 @@ public class TestJsObjSpec {
                                                           TRUE,
                                                           "d",
                                                           JsStr.of("hi")
-                                                 )
-                                  ))
+                                                         )
+                                                ))
                                   .isEmpty());
     }
 
@@ -779,26 +789,26 @@ public class TestJsObjSpec {
 
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          JsSpecs.tuple(any(),
-                                                        integer()
-                                          )
-        );
+                                      JsSpecs.tuple(any(),
+                                                    integer()
+                                                   )
+                                     );
 
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsArray.of(
                                                          JsNull.NULL,
                                                          JsInt.of(1)
-                                                 )
-                                  ))
+                                                           )
+                                                ))
                                   .isEmpty());
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsArray.of(
                                                          JsStr.of("hi"),
                                                          JsInt.of(1)
-                                                 )
-                                  ))
+                                                           )
+                                                ))
                                   .isEmpty());
     }
 
@@ -806,86 +816,86 @@ public class TestJsObjSpec {
     public void testJsSpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          array(),
-                                          "c",
-                                          arrayOfBool(),
-                                          "d",
-                                          arrayOfDec(),
-                                          "e",
-                                          arrayOfInt(),
-                                          "f",
-                                          arrayOfLong(),
-                                          "g",
-                                          arrayOfBigInt(),
-                                          "h",
-                                          arrayOfNumber().nullable(),
-                                          "i",
-                                          arrayOfObj(),
-                                          "j",
-                                          arrayOfStr(),
-                                          "k",
-                                          arrayOfObjSpec(JsObjSpec.of("a",
-                                                                           bool(),
-                                                                           "b",
-                                                                           str(),
-                                                                           "c",
-                                                                           integer(),
-                                                                           "d",
-                                                                           longInteger(),
-                                                                           "e",
-                                                                           obj(),
-                                                                           "f",
-                                                                           array(),
-                                                                           "g",
-                                                                           bigInteger(),
-                                                                           "h",
-                                                                           decimal(),
-                                                                           "i",
-                                                                           number()
-                                                         ).lenient()
-                                          )
-        ).withOptKeys("h");
+                                      array(),
+                                      "c",
+                                      arrayOfBool(),
+                                      "d",
+                                      arrayOfDec(),
+                                      "e",
+                                      arrayOfInt(),
+                                      "f",
+                                      arrayOfLong(),
+                                      "g",
+                                      arrayOfBigInt(),
+                                      "h",
+                                      arrayOfNumber().nullable(),
+                                      "i",
+                                      arrayOfObj(),
+                                      "j",
+                                      arrayOfStr(),
+                                      "k",
+                                      arrayOfObjSpec(JsObjSpec.of("a",
+                                                                  bool(),
+                                                                  "b",
+                                                                  str(),
+                                                                  "c",
+                                                                  integer(),
+                                                                  "d",
+                                                                  longInteger(),
+                                                                  "e",
+                                                                  obj(),
+                                                                  "f",
+                                                                  array(),
+                                                                  "g",
+                                                                  bigInteger(),
+                                                                  "h",
+                                                                  decimal(),
+                                                                  "i",
+                                                                  number()
+                                                                 ).lenient()
+                                                    )
+                                     ).withOptKeys("h");
 
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsArray.of(1,
                                                             2
-                                                 ),
+                                                           ),
                                                  "c",
                                                  JsArray.of(true,
                                                             false
-                                                 ),
+                                                           ),
                                                  "d",
                                                  JsArray.of(1.1,
                                                             1.2
-                                                 ),
+                                                           ),
                                                  "e",
                                                  JsArray.of(1,
                                                             2,
                                                             3
-                                                 ),
+                                                           ),
                                                  "f",
                                                  JsArray.of(1L,
                                                             2L
-                                                 ),
+                                                           ),
                                                  "g",
                                                  JsArray.of(JsInt.of(1),
                                                             JsLong.of(1L),
                                                             JsBigInt.of(BigInteger.TEN)
-                                                 ),
+                                                           ),
                                                  "h",
                                                  JsArray.of(JsInt.of(1),
                                                             JsLong.of(1L),
                                                             JsBigInt.of(BigInteger.TEN),
                                                             JsBigDec.of(BigDecimal.TEN)
-                                                 ),
+                                                           ),
                                                  "i",
                                                  JsArray.of(JsObj.empty(),
                                                             JsObj.empty()
-                                                 ),
+                                                           ),
                                                  "j",
                                                  JsArray.of("a",
                                                             "b"
-                                                 ),
+                                                           ),
                                                  "k",
                                                  JsArray.of(JsObj.of("a",
                                                                      TRUE,
@@ -905,56 +915,56 @@ public class TestJsObjSpec {
                                                                      JsBigDec.of(BigDecimal.TEN),
                                                                      "i",
                                                                      JsLong.of(1L)
-                                                            )
-                                                 )
-                                  ))
+                                                                    )
+                                                           )
+                                                ))
                                   .isEmpty()
-        );
+                             );
     }
 
     @Test
     public void testNullableJsSpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          array().nullable(),
-                                          "c",
-                                          arrayOfBool().nullable(),
-                                          "d",
-                                          arrayOfDec().nullable(),
-                                          "e",
-                                          arrayOfInt().nullable(),
-                                          "f",
-                                          arrayOfLong().nullable(),
-                                          "g",
-                                          arrayOfBigInt().nullable(),
-                                          "h",
-                                          arrayOfNumber().nullable(),
-                                          "i",
-                                          arrayOfObj().nullable(),
-                                          "j",
-                                          arrayOfStr().nullable(),
-                                          "k",
-                                          arrayOfObjSpec(JsObjSpec.of("a",
-                                                                           bool().nullable(),
-                                                                           "b",
-                                                                           str().nullable(),
-                                                                           "c",
-                                                                           integer().nullable(),
-                                                                           "d",
-                                                                           longInteger().nullable(),
-                                                                           "e",
-                                                                           obj().nullable(),
-                                                                           "f",
-                                                                           array().nullable(),
-                                                                           "g",
-                                                                           bigInteger().nullable(),
-                                                                           "h",
-                                                                           decimal().nullable(),
-                                                                           "i",
-                                                                           number().nullable()
-                                                         ).lenient()
-                                          ).nullable()
-        );
+                                      array().nullable(),
+                                      "c",
+                                      arrayOfBool().nullable(),
+                                      "d",
+                                      arrayOfDec().nullable(),
+                                      "e",
+                                      arrayOfInt().nullable(),
+                                      "f",
+                                      arrayOfLong().nullable(),
+                                      "g",
+                                      arrayOfBigInt().nullable(),
+                                      "h",
+                                      arrayOfNumber().nullable(),
+                                      "i",
+                                      arrayOfObj().nullable(),
+                                      "j",
+                                      arrayOfStr().nullable(),
+                                      "k",
+                                      arrayOfObjSpec(JsObjSpec.of("a",
+                                                                  bool().nullable(),
+                                                                  "b",
+                                                                  str().nullable(),
+                                                                  "c",
+                                                                  integer().nullable(),
+                                                                  "d",
+                                                                  longInteger().nullable(),
+                                                                  "e",
+                                                                  obj().nullable(),
+                                                                  "f",
+                                                                  array().nullable(),
+                                                                  "g",
+                                                                  bigInteger().nullable(),
+                                                                  "h",
+                                                                  decimal().nullable(),
+                                                                  "i",
+                                                                  number().nullable()
+                                                                 ).lenient()
+                                                    ).nullable()
+                                     );
 
         final Set<SpecError> result = spec.test(JsObj.of("a",
                                                          JsNull.NULL,
@@ -976,83 +986,85 @@ public class TestJsObjSpec {
                                                          JsNull.NULL,
                                                          "k",
                                                          JsNull.NULL
-                                                )
-        );
+                                                        )
+                                               );
 
 
         Assertions.assertTrue(result
                                       .isEmpty()
-        );
+                             );
     }
 
     @Test
     public void testOptionalNullableJsSpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                           array().nullable()
+                                      array().nullable()
                 ,
-                                           "c",
-                                           arrayOfBool().nullable()
+                                      "c",
+                                      arrayOfBool().nullable()
                 ,
-                                           "d",
-                                           arrayOfDec().nullable()
+                                      "d",
+                                      arrayOfDec().nullable()
                 ,
-                                           "e",
-                                           arrayOfInt().nullable()
+                                      "e",
+                                      arrayOfInt().nullable()
                 ,
-                                           "f",
-                                           arrayOfLong().nullable()
+                                      "f",
+                                      arrayOfLong().nullable()
                 ,
-                                           "g",
-                                           arrayOfBigInt().nullable()
+                                      "g",
+                                      arrayOfBigInt().nullable()
                 ,
-                                           "h",
-                                           arrayOfNumber().nullable()
+                                      "h",
+                                      arrayOfNumber().nullable()
                 ,
-                                           "i",
-                                           arrayOfObj().nullable()
+                                      "i",
+                                      arrayOfObj().nullable()
                 ,
-                                           "j",
-                                           arrayOfStr().nullable(),
-                                           "k",
-                                           arrayOfObjSpec(JsObjSpec.of("a",
-                                                                            bool().nullable(),
-                                                                            "b",
-                                                                            str().nullable(),
-                                                                            "c",
-                                                                            integer().nullable(),
-                                                                            "d",
-                                                                            longInteger().nullable(),
-                                                                            "e",
-                                                                            obj().nullable(),
-                                                                            "f",
-                                                                            array().nullable(),
-                                                                            "g",
-                                                                            bigInteger().nullable(),
-                                                                            "h",
-                                                                            decimal().nullable(),
-                                                                            "i",
-                                                                            number().nullable()
-                                                          ).lenient().withOptKeys("a",
-                                                                                  "b",
-                                                                                  "c",
-                                                                                  "d",
-                                                                                  "e",
-                                                                                  "f",
-                                                                                  "g",
-                                                                                  "h",
-                                                                                  "i")
-                                           ).nullable()
-        ).withOptKeys("a",
-                      "c",
-                      "d",
-                      "e",
-                      "f",
-                      "g",
-                      "h",
-                      "i",
-                      "j",
-                      "k").lenient();
+                                      "j",
+                                      arrayOfStr().nullable(),
+                                      "k",
+                                      arrayOfObjSpec(JsObjSpec.of("a",
+                                                                  bool().nullable(),
+                                                                  "b",
+                                                                  str().nullable(),
+                                                                  "c",
+                                                                  integer().nullable(),
+                                                                  "d",
+                                                                  longInteger().nullable(),
+                                                                  "e",
+                                                                  obj().nullable(),
+                                                                  "f",
+                                                                  array().nullable(),
+                                                                  "g",
+                                                                  bigInteger().nullable(),
+                                                                  "h",
+                                                                  decimal().nullable(),
+                                                                  "i",
+                                                                  number().nullable()
+                                                                 ).lenient().withOptKeys("a",
+                                                                                         "b",
+                                                                                         "c",
+                                                                                         "d",
+                                                                                         "e",
+                                                                                         "f",
+                                                                                         "g",
+                                                                                         "h",
+                                                                                         "i"
+                                                                                        )
+                                                    ).nullable()
+                                     ).withOptKeys("a",
+                                                   "c",
+                                                   "d",
+                                                   "e",
+                                                   "f",
+                                                   "g",
+                                                   "h",
+                                                   "i",
+                                                   "j",
+                                                   "k"
+                                                  ).lenient();
 
         final Set<SpecError> result = spec.test(JsObj.of("a",
                                                          JsNull.NULL,
@@ -1074,12 +1086,12 @@ public class TestJsObjSpec {
                                                          JsNull.NULL,
                                                          "k",
                                                          JsNull.NULL
-                                                )
-        );
+                                                        )
+                                               );
 
         Assertions.assertTrue(result
                                       .isEmpty()
-        );
+                             );
 
 
         Assertions.assertTrue(spec.test(JsObj.empty())
@@ -1125,10 +1137,10 @@ public class TestJsObjSpec {
                                                                               JsNull.NULL,
                                                                               "i",
                                                                               JsNull.NULL
-                                                                     )
-                                                          )
-                                                 )
-        );
+                                                                             )
+                                                                    )
+                                                         )
+                                                );
         Assertions.assertTrue(result1.isEmpty());
     }
 
@@ -1137,69 +1149,71 @@ public class TestJsObjSpec {
     public void testOptionalJsSpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          array(),
-                                          "c",
-                                          arrayOfBool(),
-                                          "d",
-                                          arrayOfDec(),
-                                          "e",
-                                          arrayOfInt(),
-                                          "f",
-                                          arrayOfLong(),
-                                          "g",
-                                          arrayOfBigInt(),
-                                          "h",
-                                          arrayOfNumber(),
-                                          "i",
-                                          arrayOfObj(),
-                                          "j",
-                                          arrayOfStr(),
-                                          "k",
-                                          arrayOfObjSpec(JsObjSpec.of("a",
-                                                                           bool(),
-                                                                           "b",
-                                                                           str(),
-                                                                           "c",
-                                                                           integer(),
-                                                                           "d",
-                                                                           longInteger(),
-                                                                           "e",
-                                                                           obj(),
-                                                                           "f",
-                                                                           array(),
-                                                                           "g",
-                                                                           bigInteger(),
-                                                                           "h",
-                                                                           decimal(),
-                                                                           "i",
-                                                                           number()
-                                                         ).lenient().withOptKeys("a",
-                                                                                 "b",
-                                                                                 "c",
-                                                                                 "d",
-                                                                                 "e",
-                                                                                 "f",
-                                                                                 "g",
-                                                                                 "h",
-                                                                                 "i")
-                                          )
-        ).withOptKeys("a",
-                      "c",
-                      "d",
-                      "e",
-                      "f",
-                      "g",
-                      "h",
-                      "i",
-                      "j",
-                      "k");
+                                      array(),
+                                      "c",
+                                      arrayOfBool(),
+                                      "d",
+                                      arrayOfDec(),
+                                      "e",
+                                      arrayOfInt(),
+                                      "f",
+                                      arrayOfLong(),
+                                      "g",
+                                      arrayOfBigInt(),
+                                      "h",
+                                      arrayOfNumber(),
+                                      "i",
+                                      arrayOfObj(),
+                                      "j",
+                                      arrayOfStr(),
+                                      "k",
+                                      arrayOfObjSpec(JsObjSpec.of("a",
+                                                                  bool(),
+                                                                  "b",
+                                                                  str(),
+                                                                  "c",
+                                                                  integer(),
+                                                                  "d",
+                                                                  longInteger(),
+                                                                  "e",
+                                                                  obj(),
+                                                                  "f",
+                                                                  array(),
+                                                                  "g",
+                                                                  bigInteger(),
+                                                                  "h",
+                                                                  decimal(),
+                                                                  "i",
+                                                                  number()
+                                                                 ).lenient().withOptKeys("a",
+                                                                                         "b",
+                                                                                         "c",
+                                                                                         "d",
+                                                                                         "e",
+                                                                                         "f",
+                                                                                         "g",
+                                                                                         "h",
+                                                                                         "i"
+                                                                                        )
+                                                    )
+                                     ).withOptKeys("a",
+                                                   "c",
+                                                   "d",
+                                                   "e",
+                                                   "f",
+                                                   "g",
+                                                   "h",
+                                                   "i",
+                                                   "j",
+                                                   "k"
+                                                  );
 
 
         Assertions.assertTrue(spec.test(JsObj.empty())
                                   .isEmpty());
         Assertions.assertTrue(spec.test(JsObj.of("k",
                                                  JsArray.of(JsObj.empty())
-                                  ))
+                                                ))
                                   .isEmpty());
     }
 
@@ -1208,31 +1222,32 @@ public class TestJsObjSpec {
     public void testIsNullableObjSpec() {
 
         final JsObjSpec objSpec = JsObjSpec.of("a",
-                                                    str()
-        ).lenient();
+                                               str()
+                                              ).lenient();
         JsObjSpec spec = JsObjSpec.of("a",
-                                          objSpec,
-                                          "b",
-                                          objSpec
-                                                  .nullable(),
-                                          "c",
-                                          objSpec,
-                                          "d",
-                                          objSpec
-                                                  .nullable()
-        ).withOptKeys("b",
-                      "c",
-                      "d");
+                                      objSpec,
+                                      "b",
+                                      objSpec
+                                              .nullable(),
+                                      "c",
+                                      objSpec,
+                                      "d",
+                                      objSpec
+                                              .nullable()
+                                     ).withOptKeys("b",
+                                                   "c",
+                                                   "d"
+                                                  );
 
         final Set<SpecError> set = spec.test(JsObj.of("a",
                                                       JsObj.of("a",
                                                                JsStr.of("a"),
                                                                "b",
                                                                TRUE
-                                                      ),
+                                                              ),
                                                       "b",
                                                       JsNull.NULL
-        ));
+                                                     ));
 
         Assertions.assertTrue(set.isEmpty());
 
@@ -1242,46 +1257,47 @@ public class TestJsObjSpec {
     public void testArrayOfObjSpec() {
 
         final JsSpec a = arrayOfObjSpec(JsObjSpec.of("a",
-                                                          bigInteger()
-        ).lenient());
+                                                     bigInteger()
+                                                    ).lenient());
         final JsSpec b = arrayOfObjSpec(JsObjSpec.of("a",
-                                                          str()
-        ).lenient()).nullable();
+                                                     str()
+                                                    ).lenient()).nullable();
         final JsSpec c = arrayOfObjSpec(JsObjSpec.of("a",
-                                                          bigInteger()
-        ).lenient()).nullable();
+                                                     bigInteger()
+                                                    ).lenient()).nullable();
         final JsSpec d = arrayOfObjSpec(JsObjSpec.of("a",
-                                                          bigInteger()
-        ).lenient());
+                                                     bigInteger()
+                                                    ).lenient());
 
         final JsObjSpec objspec = JsObjSpec.of("a",
-                                                   a,
-                                                   "b",
-                                                   b,
-                                                   "c",
-                                                   c,
-                                                   "d",
-                                                   d
-        ).withOptKeys("c",
-                      "d");
+                                               a,
+                                               "b",
+                                               b,
+                                               "c",
+                                               c,
+                                               "d",
+                                               d
+                                              ).withOptKeys("c",
+                                                            "d"
+                                                           );
 
         final Set<SpecError> errors = objspec.test(JsObj.of("a",
                                                             JsArray.of(JsObj.of("a",
                                                                                 JsInt.of(1)
-                                                            )),
+                                                                               )),
 
                                                             "b",
                                                             JsNull.NULL,
                                                             "d",
                                                             JsArray.of(JsObj.of("a",
                                                                                 JsInt.of(1)
-                                                            ))
-                                                   )
-        );
+                                                                               ))
+                                                           )
+                                                  );
 
         Assertions.assertTrue(errors
                                       .isEmpty()
-        );
+                             );
 
     }
 
@@ -1289,35 +1305,36 @@ public class TestJsObjSpec {
     public void test_is_array_of_obspec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          str(),
-                                          "b",
-                                          bigInteger()
-        );
+                                      str(),
+                                      "b",
+                                      bigInteger()
+                                     );
         JsObjSpec b = JsObjSpec.of("a",
-                                       arrayOfObjSpec(spec),
-                                       "b",
-                                       arrayOfObjSpec(spec).nullable(),
-                                       "c",
-                                       arrayOfObjSpec(spec),
-                                       "d",
-                                       arrayOfObjSpec(spec).nullable()
+                                   arrayOfObjSpec(spec),
+                                   "b",
+                                   arrayOfObjSpec(spec).nullable(),
+                                   "c",
+                                   arrayOfObjSpec(spec),
+                                   "d",
+                                   arrayOfObjSpec(spec).nullable()
 
-        ).withOptKeys("c",
-                      "d");
+                                  ).withOptKeys("c",
+                                                "d"
+                                               );
 
         Assertions.assertTrue(b.test(JsObj.of("a",
                                               JsArray.of(JsObj.of("a",
                                                                   JsStr.of("a"),
                                                                   "b",
                                                                   JsInt.of(1)
-                                                         )
-                                              ),
+                                                                 )
+                                                        ),
                                               "b",
                                               JsNull.NULL,
                                               "d",
                                               JsNull.NULL
-                                     )
-                               )
+                                             )
+                                    )
                                .isEmpty());
 
 
@@ -1326,42 +1343,42 @@ public class TestJsObjSpec {
     @Test
     public void test_required_fields() {
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                str(),
-                                                "b",
-                                                JsObjSpec.of("c",
-                                                                 bigInteger()
-                                                )
-        ).withOptKeys("a");
+                                            str(),
+                                            "b",
+                                            JsObjSpec.of("c",
+                                                         bigInteger()
+                                                        )
+                                           ).withOptKeys("a");
 
         final Set<SpecError> errors = spec.test(JsObj.of("b",
                                                          JsObj.empty()
-        ));
+                                                        ));
 
         Assertions.assertEquals(1,
                                 errors.size()
-        );
+                               );
         Assertions.assertEquals(JsPath.path("/b/c"),
                                 errors.stream()
                                       .findFirst()
                                       .get().path
-        );
+                               );
 
     }
 
     @Test
     public void test_errors_schemas() {
         final JsObjSpec spec = JsObjSpec.of("a",
-                                                JsObjSpec.of("A",
-                                                                 integer()
-                                                ),
-                                                "b",
-                                                JsSpecs.tuple(str()),
-                                                "c",
-                                                arrayOfObjSpec(JsObjSpec.of("a",
-                                                                                 str()
-                                                               ).lenient()
-                                                )
-        );
+                                            JsObjSpec.of("A",
+                                                         integer()
+                                                        ),
+                                            "b",
+                                            JsSpecs.tuple(str()),
+                                            "c",
+                                            arrayOfObjSpec(JsObjSpec.of("a",
+                                                                        str()
+                                                                       ).lenient()
+                                                          )
+                                           );
 
         final Set<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsStr.of("a"),
@@ -1369,7 +1386,7 @@ public class TestJsObjSpec {
                                                          JsInt.of(1),
                                                          "c",
                                                          TRUE
-        ));
+                                                        ));
 
         Assertions.assertFalse(errors.isEmpty());
 
@@ -1380,24 +1397,25 @@ public class TestJsObjSpec {
     public void testBinarySpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          binary(),
-                                          "b",
-                                          binary()
-        );
+                                      binary(),
+                                      "b",
+                                      binary()
+                                     );
         Assertions.assertTrue(spec.test(JsObj.of("a",
                                                  JsStr.of("hola"),
                                                  "b",
                                                  JsBinary.of("foo".getBytes(StandardCharsets.UTF_8))
-                                  ))
+                                                ))
                                   .isEmpty());
 
         Set<SpecError> result = spec.test(JsObj.of("a",
                                                    JsStr.of("ñññ"),
                                                    "b",
                                                    JsInt.of(1)
-        ));
+                                                  ));
         Assertions.assertEquals(2,
-                                result.size());
+                                result.size()
+                               );
 
         Assertions.assertTrue(result.stream()
                                     .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.errorCode.equals(BINARY_EXPECTED)));
@@ -1412,17 +1430,17 @@ public class TestJsObjSpec {
     public void testInstantSpec() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          instant(),
-                                          "b",
-                                          instant()
-        );
+                                      instant(),
+                                      "b",
+                                      instant()
+                                     );
 
         Set<SpecError> errorPairs = spec.test(JsObj.of("a",
                                                        JsInstant.of(Instant.now()),
                                                        "b",
                                                        JsStr.of(Instant.now()
                                                                        .toString())
-        ));
+                                                      ));
         Assertions.assertTrue(errorPairs
                                       .isEmpty());
 
@@ -1430,11 +1448,13 @@ public class TestJsObjSpec {
                                                         JsStr.of("hola"),
                                                         "b",
                                                         JsStr.of(LocalDateTime.now(ZoneId.systemDefault()).toString()
-                                                        )));
+                                                                )
+                                                       ));
 
 
         Assertions.assertEquals(2,
-                                errorPairs1.size());
+                                errorPairs1.size()
+                               );
 
 
         Assertions.assertTrue(errorPairs1.stream()
@@ -1451,21 +1471,21 @@ public class TestJsObjSpec {
 
         Set<SpecError> errorPairSet = cons(JsStr.of("hi")).test(JsPath.empty(),
                                                                 JsInt.of(1)
-        );
+                                                               );
 
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.errorCode)
-                                          .collect(Collectors.toList())
+                                          .toList()
                                           .contains(CONSTANT_CONDITION));
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.value)
-                                          .collect(Collectors.toList())
+                                          .toList()
                                           .contains(JsInt.of(1)));
 
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          cons(JsInt.of(2))
-        ).withOptKeys("a");
+                                      cons(JsInt.of(2))
+                                     ).withOptKeys("a");
 
         Assertions.assertTrue(spec.test(JsObj.empty())
                                   .isEmpty());
@@ -1476,19 +1496,20 @@ public class TestJsObjSpec {
     public void test() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          longInteger(),
-                                          "b",
-                                          integer()
-        );
+                                      longInteger(),
+                                      "b",
+                                      integer()
+                                     );
 
         Set<SpecError> errors = spec.test(JsObj.of("a",
                                                    JsStr.of("123"),
                                                    "b",
                                                    JsStr.of("234")
-        ));
+                                                  ));
 
         Assertions.assertEquals(2,
-                                errors.size());
+                                errors.size()
+                               );
 
     }
 
@@ -1496,10 +1517,10 @@ public class TestJsObjSpec {
     public void test_parse() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          longInteger(),
-                                          "b",
-                                          integer()
-        );
+                                      longInteger(),
+                                      "b",
+                                      integer()
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -1507,11 +1528,11 @@ public class TestJsObjSpec {
                                JsStr.of("123"),
                                "b",
                                JsStr.of("234")
-        );
+                              );
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(jsObj.toString())
-        );
+                               );
 
     }
 
@@ -1520,16 +1541,16 @@ public class TestJsObjSpec {
     public void testSuchThat() {
 
         JsObjSpec baseSpec = JsObjSpec.of("a",
-                                              str(),
-                                              "b",
-                                              integer(),
-                                              "c",
-                                              str(),
-                                              "d",
-                                              integer(),
-                                              "e",
-                                              longInteger()
-        );
+                                          str(),
+                                          "b",
+                                          integer(),
+                                          "c",
+                                          str(),
+                                          "d",
+                                          integer(),
+                                          "e",
+                                          longInteger()
+                                         );
 
         JsObjGen baseGen = JsObjGen.of("a",
                                        JsStrGen.alphabetic(),
@@ -1541,13 +1562,14 @@ public class TestJsObjSpec {
                                        JsIntGen.arbitrary(),
                                        "e",
                                        JsLongGen.arbitrary()
-        );
+                                      );
         Gen<JsObj> gen =
                 baseGen
                         .withOptKeys("a",
-                                      "b",
-                                      "c",
-                                      "d")
+                                     "b",
+                                     "c",
+                                     "d"
+                                    )
                         .suchThat(o -> dependencies(o));
 
         JsObjSpec spec =
@@ -1555,7 +1577,8 @@ public class TestJsObjSpec {
                         .withOptKeys("a",
                                      "b",
                                      "c",
-                                     "d")
+                                     "d"
+                                    )
                         .suchThat(o -> dependencies(o));
 
         Assertions.assertTrue(gen.sample(10000).allMatch(o -> {
@@ -1597,11 +1620,12 @@ public class TestJsObjSpec {
                                     JsLong.of(1),
                                     "2",
                                     JsLong.of(2)
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfLong())
-        );
+                               mapOfLong()
+                              )
+                 );
     }
 
     @Test
@@ -1613,11 +1637,12 @@ public class TestJsObjSpec {
                                     JsDouble.of(1.5),
                                     "2",
                                     JsBigDec.of(BigDecimal.TEN)
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfDecimal())
-        );
+                               mapOfDecimal()
+                              )
+                 );
     }
 
     @Test
@@ -1629,11 +1654,12 @@ public class TestJsObjSpec {
                                     JsStr.of("1"),
                                     "2",
                                     JsStr.of("2")
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfStr())
-        );
+                               mapOfStr()
+                              )
+                 );
 
     }
 
@@ -1646,11 +1672,12 @@ public class TestJsObjSpec {
                                     JsArray.of("1"),
                                     "2",
                                     JsArray.of("2")
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfArray())
-        );
+                               mapOfArray()
+                              )
+                 );
 
     }
 
@@ -1663,11 +1690,12 @@ public class TestJsObjSpec {
                                     TRUE,
                                     "2",
                                     JsBool.FALSE
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfBool())
-        );
+                               mapOfBool()
+                              )
+                 );
 
     }
 
@@ -1680,11 +1708,12 @@ public class TestJsObjSpec {
                                     JsInt.of(1),
                                     "2",
                                     JsInt.of(2)
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfInteger())
-        );
+                               mapOfInteger()
+                              )
+                 );
 
     }
 
@@ -1697,11 +1726,12 @@ public class TestJsObjSpec {
                                     JsInt.of(1),
                                     "2",
                                     JsBigInt.of(BigInteger.TEN)
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfBigInteger())
-        );
+                               mapOfBigInteger()
+                              )
+                 );
 
     }
 
@@ -1714,11 +1744,12 @@ public class TestJsObjSpec {
                                     JsObj.empty(),
                                     "2",
                                     JsObj.empty()
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfObj())
-        );
+                               mapOfObj()
+                              )
+                 );
 
     }
 
@@ -1732,26 +1763,28 @@ public class TestJsObjSpec {
                                     JsInstant.of(Instant.MIN),
                                     "2",
                                     JsInstant.of(Instant.MAX)
-                           )
-                  ),
+                                   )
+                          ),
                   JsObjSpec.of("a",
-                                   mapOfInstant())
-        );
+                               mapOfInstant()
+                              )
+                 );
 
 
     }
 
     private void testOfMap(ERROR_CODE expectedCode,
                            JsObj valid,
-                           JsObjSpec spec) {
+                           JsObjSpec spec
+                          ) {
 
         JsObj invalid = JsObj.of("a",
                                  JsObj.of("1",
                                           JsNull.NULL,
                                           "2",
                                           JsNull.NULL
-                                 )
-        );
+                                         )
+                                );
 
         Assertions.assertTrue(spec.test(valid).isEmpty());
 
@@ -1762,10 +1795,12 @@ public class TestJsObjSpec {
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
         Assertions.assertEquals(valid,
-                                parser.parse(valid.toPrettyString()));
+                                parser.parse(valid.toPrettyString())
+                               );
 
         Assertions.assertThrows(JsParserException.class,
-                                () -> parser.parse(invalid.toPrettyString()));
+                                () -> parser.parse(invalid.toPrettyString())
+                               );
 
         Assertions.assertTrue(errors.stream().allMatch(it -> it.errorCode == expectedCode));
     }

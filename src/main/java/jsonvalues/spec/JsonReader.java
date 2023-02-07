@@ -159,7 +159,7 @@ class JsonReader {
     void reset() {
         this.buffer = this.originalBuffer;
         this.bufferLenWithExtraSpace = this.originalBufferLenWithExtraSpace;
-        currentIndex = 0;
+        this.currentIndex = 0;
         this.length = 0;
         this.readLimit = 0;
         this.stream = null;

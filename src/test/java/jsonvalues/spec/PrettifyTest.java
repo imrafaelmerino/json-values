@@ -4,8 +4,6 @@ package jsonvalues.spec;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import jsonvalues.spec.MyPrettifyOutputStream;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

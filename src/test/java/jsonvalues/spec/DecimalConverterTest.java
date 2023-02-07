@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 
+import jsonvalues.JsBigDec;
 import jsonvalues.spec.JsonIO;
 import jsonvalues.spec.JsonReader;
 import jsonvalues.spec.JsonWriter;
@@ -205,105 +206,7 @@ public class DecimalConverterTest {
         }
     }
 
-   /* @Test
-    public void longNumber() throws IOException {
-        final BigDecimal check = new BigDecimal("0.123456789012345678901234567890123456789012345678901234567890123456789");
 
-        final String plainForm = check.toPlainString();
-        final byte[] body = plainForm.getBytes("UTF-8");
 
-        DslJson<Object> json = new DslJson<Object>();
 
-        final BigDecimal result = Common.deserialize(json,
-                                                     BigDecimal.class,
-                                                     body,
-                                                     body.length);
-        Assertions.assertEquals(check,
-                                result);
-    }*/
-
-   /* @Test
-    public void longNumberWithSpace() throws IOException {
-        final BigDecimal check = new BigDecimal("0.123456789012345678901234567890123456789012345678901234567890123456789");
-
-        final String plainForm = check.toPlainString() + " ";
-        final byte[] body = plainForm.getBytes("UTF-8");
-
-        DslJson<Object> json = new DslJson<Object>();
-
-        final BigDecimal result = Common.deserialize(json,
-                                                     BigDecimal.class,
-                                                     body,
-                                                     body.length);
-        Assertions.assertEquals(check,
-                                result);
-    }*/
-
-   /* @Test
-    public void longNumberMoreThanTwiceBuffer() throws IOException {
-        final BigDecimal check = new BigDecimal("0.123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890123456789012345678901234567890123456789123456789012345678901234567890123456789012345678901234567890123456789");
-
-        final String plainForm = check.toPlainString();
-        final byte[] body = plainForm.getBytes("UTF-8");
-
-        DslJson<Object> json = new DslJson<Object>();
-
-        final BigDecimal result = Common.deserialize(json,
-                                                     BigDecimal.class,
-                                                     body,
-                                                     body.length);
-        Assertions.assertEquals(check,
-                                result);
-    }*/
-
-    /*@Test
-    public void missingQuoteEnd() throws IOException {
-        final BigDecimal check = new BigDecimal("0.123456789012345678901234567890123456789012345678901234567890123456789");
-
-        final String plainForm = "\"" + check.toPlainString();
-        final byte[] body = plainForm.getBytes("UTF-8");
-
-        DslJson<Object> json = new DslJson<Object>();
-
-        try {
-            json.deserialize(BigDecimal.class,
-                             body,
-                             body.length);
-        } catch (IOException e) {
-            Assertions.assertTrue(e.getMessage().contains("at position: 72"));
-        }
-        try {
-            json.deserialize(BigDecimal.class,
-                             new ByteArrayInputStream(body,
-                                                      0,
-                                                      body.length),
-                             new byte[64]);
-        } catch (IOException e) {
-            Assertions.assertTrue(e.getMessage().contains("at position: 72"));
-        }
-    }*/
-
-   /* @Test
-    public void quoteOverflow() throws IOException {
-        final byte[] body = "123123123123123123123123123123".getBytes("UTF-8");
-
-        DslJson<Object> json = new DslJson<Object>();
-
-        try {
-            json.deserialize(Integer.class,
-                             body,
-                             body.length);
-        } catch (IOException e) {
-            Assertions.assertTrue(e.getMessage().contains("Integer overflow"));
-        }
-        try {
-            json.deserialize(Integer.class,
-                             new ByteArrayInputStream(body,
-                                                      0,
-                                                      body.length),
-                             new byte[64]);
-        } catch (IOException e) {
-            Assertions.assertTrue(e.getMessage().contains("Integer overflow"));
-        }
-    }*/
 }

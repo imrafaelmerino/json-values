@@ -525,7 +525,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public Integer getInt(final int index,
                           final Supplier<Integer> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsInt.prism.getOptional.apply(seq.get(index))
                                       .orElseGet(requireNonNull(orElse));
@@ -555,7 +555,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public Long getLong(final int index,
                         final Supplier<Long> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsLong.prism.getOptional.apply(seq.get(index))
                                        .orElseGet(requireNonNull(orElse));
@@ -585,7 +585,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public String getStr(final int index,
                          final Supplier<String> orElse) {
-        return (seq.isEmpty() || index < 0 || index > seq.size() - 1) ?
+        return (seq.isEmpty() || index < 0 || index > seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsStr.prism.getOptional.apply(seq.get(index))
                                       .orElseGet(requireNonNull(orElse));
@@ -616,7 +616,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public Instant getInstant(final int index,
                               final Supplier<Instant> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsInstant.prism.getOptional.apply(seq.get(index))
                                           .orElse(requireNonNull(orElse).get());
@@ -646,7 +646,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public byte[] getBinary(final int index,
                             final Supplier<byte[]> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsBinary.prism.getOptional.apply(seq.get(index))
                                          .orElseGet(requireNonNull(orElse));
@@ -674,7 +674,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public Boolean getBool(final int index,
                            final Supplier<Boolean> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsBool.prism.getOptional.apply(seq.get(index))
                                        .orElseGet(requireNonNull(orElse));
@@ -709,7 +709,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public Double getDouble(final int index,
                             final Supplier<Double> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsDouble.prism.getOptional.apply(seq.get(index))
                                          .orElseGet(requireNonNull(orElse));
@@ -738,7 +738,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public BigDecimal getBigDec(final int index,
                                 final Supplier<BigDecimal> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsBigDec.prism.getOptional.apply(seq.get(index))
                                          .orElseGet(requireNonNull(orElse));
@@ -766,7 +766,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public BigInteger getBigInt(final int index,
                                 final Supplier<BigInteger> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsBigInt.prism.getOptional.apply(seq.get(index))
                                          .orElseGet(requireNonNull(orElse));
@@ -793,7 +793,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public JsObj getObj(final int index,
                         final Supplier<JsObj> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsObj.prism.getOptional.apply(seq.get(index))
                                       .orElseGet(requireNonNull(orElse));
@@ -820,7 +820,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public JsArray getArray(final int index,
                             final Supplier<JsArray> orElse) {
-        return (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+        return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                requireNonNull(orElse).get() :
                JsArray.prism.getOptional.apply(seq.get(index))
                                         .orElseGet(requireNonNull(orElse));
@@ -829,7 +829,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     private JsValue get(final Position pos) {
         return requireNonNull(pos).match(key -> JsNothing.NOTHING,
                                          index ->
-                                                 (this.seq.isEmpty() || index < 0 || index > this.seq.size() - 1) ?
+                                                 (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
                                                  JsNothing.NOTHING :
                                                  this.seq.get(index)
         );
@@ -1083,7 +1083,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                    .match(head -> this,
                           index ->
                           {
-                              int maxIndex = seq.size() - 1;
+                              int maxIndex = seq.length() - 1;
                               if (index < 0 || index > maxIndex) return this;
                               JsPath tail = path.tail();
                               return tail.isEmpty() ?
@@ -1103,7 +1103,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     @Override
     public int size() {
-        return seq.size();
+        return seq.length();
     }
 
     @Override
@@ -1117,7 +1117,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     private boolean yContainsX(final Vector<JsValue> x,
                                final Vector<JsValue> y
     ) {
-        for (int i = 0; i < x.size(); i++) {
+        for (int i = 0; i < x.length(); i++) {
             if (!Objects.equals(x.get(i),
                                 y.get(i)
             ))
@@ -1165,7 +1165,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         boolean thatEmpty = thatSeq.isEmpty();
         boolean thisEmpty = isEmpty();
         if (thatEmpty && thisEmpty) return true;
-        if (this.size() != thatSeq.size()) return false;
+        if (this.size() != thatSeq.length()) return false;
         return yContainsX(seq,
                           thatSeq
         ) && yContainsX(thatSeq,
@@ -1295,7 +1295,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     // curly braces makes IntelliJ to format the code in a more legible way
     private BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsValue> pseq) {
         return (index, tail) ->
-                index > pseq.size() - 1 || pseq.isEmpty() || pseq.get(index)
+                index > pseq.length() - 1 || pseq.isEmpty() || pseq.get(index)
                                                                  .isPrimitive()
                         ||
                         (tail.head()
@@ -1311,7 +1311,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     public JsArray delete(final int index) {
         if (index < -0) throw new IllegalArgumentException("index must be >= 0");
-        int maxIndex = seq.size() - 1;
+        int maxIndex = seq.length() - 1;
         if (index > maxIndex) return this;
         return new JsArray(seq.removeAt(index));
     }
@@ -1377,12 +1377,12 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         assert arr != null;
         assert e != null;
 
-        if (index == arr.size()) return arr.append(e);
+        if (index == arr.length()) return arr.append(e);
 
 
-        if (index < arr.size()) return arr.update(index,
+        if (index < arr.length()) return arr.update(index,
                                                   e);
-        for (int j = arr.size(); j < index; j++) {
+        for (int j = arr.length(); j < index; j++) {
             arr = arr.append(pad);
         }
         return arr.append(e);

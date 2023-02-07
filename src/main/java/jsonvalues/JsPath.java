@@ -205,7 +205,6 @@ public final class JsPath implements Comparable<JsPath> {
      */
     @Override
     public int compareTo(final JsPath that) {
-
         if (this.isEmpty() && requireNonNull(that).isEmpty()) return 0;
         if (that.isEmpty()) return 1;
         if (this.isEmpty()) return -1;

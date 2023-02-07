@@ -1,14 +1,8 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsBigDec;
-import jsonvalues.spec.JsParserException;
-import jsonvalues.spec.JsonIO;
-import jsonvalues.spec.JsonReader;
-import jsonvalues.spec.NumberConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-
-
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
@@ -21,10 +15,9 @@ public class DslNumberConverter {
      * this is the reason I implemented MyNumberConverter . I consider this a bug from dsl-json
      * strings are not numbers
      *
-     * @throws IOException
      */
     @Test
-    public void testNumber() throws IOException {
+    public void testNumber()  {
         JsonIO dslJson = new JsonIO();
         Supplier<JsonReader> reader = () -> {
             try {
