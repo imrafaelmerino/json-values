@@ -48,38 +48,10 @@ import java.util.function.*;
     @Override
     LinearSeq<T> filter(Predicate<? super T> predicate);
 
-
-
-
-
-    LinearSeq<T> insert(int index, T element);
-
-
-
-
-
-
-
     @Override
     <U> LinearSeq<U> map(Function<? super T, ? extends U> mapper);
 
-    @Override
-    LinearSeq<T> orElse(Iterable<? extends T> other);
 
-    @Override
-    LinearSeq<T> orElse(Supplier<? extends Iterable<? extends T>> supplier);
-
-
-
-
-    @Override
-    LinearSeq<T> peek(Consumer<? super T> action);
-
-
-
-    LinearSeq<T> prepend(T element);
-
-    LinearSeq<T> prependAll(Iterable<? extends T> elements);
 
 
 
@@ -92,10 +64,6 @@ import java.util.function.*;
     default Iterator<T> reverseIterator() {
         return reverse().iterator();
     }
-
-
-
-
 
 
 

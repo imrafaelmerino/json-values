@@ -535,51 +535,7 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
         return this.<U>map(f).getOrElse(ifNone);
     }
 
-    /**
-     * Performs the given {@code noneAction} if this option is not defined.
-     * Performs the given {@code someAction} to this value, if this option is defined.
-     *
-     * @param noneAction The action that will be performed on the left element
-     * @param someAction The action that will be performed on the right element
-     * @return this instance
-     */
-    public final Option<T> peek(Runnable noneAction, Consumer<? super T> someAction) {
-        Objects.requireNonNull(noneAction, "noneAction is null");
-        Objects.requireNonNull(someAction, "someAction is null");
 
-        if (isEmpty()) {
-            noneAction.run();
-        } else {
-            someAction.accept(get());
-        }
-
-        return this;
-    }
-
-    /**
-     * Applies an action to this value, if this option is defined, otherwise does nothing.
-     *
-     * <pre>{@code
-     * Consumer<Integer> print = i -> System.out.println(i);
-     *
-     * // Prints 5 and creates Some(8)
-     * Option.of(5).peek(print).map(i -> i + 3);
-     *
-     * // Does not print anything
-     * Option.<Integer>none().peek(print);
-     * }</pre>
-     *
-     * @param action An action which can be applied to an optional value
-     * @return this {@code Option}
-     */
-    @Override
-    public final Option<T> peek(Consumer<? super T> action) {
-        Objects.requireNonNull(action, "action is null");
-        if (isDefined()) {
-            action.accept(get());
-        }
-        return this;
-    }
 
     /**
      * Transforms this {@code Option}.

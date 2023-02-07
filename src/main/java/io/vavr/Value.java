@@ -331,16 +331,6 @@ public interface Value<T> extends Iterable<T> {
     <U> Value<U> map(Function<? super T, ? extends U> mapper);
 
     /**
-     * Performs the given {@code action} on the first element if this is an <em>eager</em> implementation.
-     * Performs the given {@code action} on all elements (the first immediately, successive deferred),
-     * if this is a <em>lazy</em> implementation.
-     *
-     * @param action The action that will be performed on the element(s).
-     * @return this instance
-     */
-    Value<T> peek(Consumer<? super T> action);
-
-    /**
      * Returns the name of this Value type, which is used by toString().
      *
      * @return This type name.

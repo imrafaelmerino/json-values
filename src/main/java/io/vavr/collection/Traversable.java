@@ -447,31 +447,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     }
 
 
-    /**
-     * Returns this {@code Traversable} if it is nonempty, otherwise return the alternative.
-     *
-     * @param other An alternative {@code Traversable}
-     * @return this {@code Traversable} if it is nonempty, otherwise return the alternative.
-     */
-    Traversable<T> orElse(Iterable<? extends T> other);
-
-    /**
-     * Returns this {@code Traversable} if it is nonempty, otherwise return the result of evaluating supplier.
-     *
-     * @param supplier An alternative {@code Traversable} supplier
-     * @return this {@code Traversable} if it is nonempty, otherwise return the result of evaluating supplier.
-     */
-    Traversable<T> orElse(Supplier<? extends Iterable<? extends T>> supplier);
-
-
-    @Override
-    Traversable<T> peek(Consumer<? super T> action);
-
-
-
-
-
-
 
     /**
      * Replaces the first occurrence (if exists) of the given currentElement with newElement.

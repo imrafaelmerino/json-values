@@ -44,8 +44,6 @@ import java.util.function.*;
  * Stack API:
  *
  * <ul>
- * <li>{@link #peek()}</li>
- * <li>{@link #peekOption()}</li>
  * <li>{@link #pop()}</li>
  * <li>{@link #popOption()}</li>
  * <li>{@link #pop2()}</li>
@@ -116,7 +114,6 @@ import java.util.function.*;
  */
 public abstract class List<T> implements LinearSeq<T> {
 
-    private static final long serialVersionUID = 1L;
 
     // sealed
     private List() {
@@ -199,21 +196,9 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    /**
-     * Returns a List containing {@code n} times the given {@code element}
-     *
-     * @param <T>     Component type of the List
-     * @param n       The number of elements in the List
-     * @param element The element
-     * @return A List of size {@code n}, where each element is the given {@code element}.
-     */
-    public static <T> List<T> fill(int n, T element) {
-        return Collections.fillObject(n, element, empty(), List::of);
-    }
 
 
 
-    @Override
     public final List<T> append(T element) {
         return foldRight(of(element), (x, xs) -> xs.prepend(x));
     }
@@ -270,25 +255,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return index >= 0 && index < length();
     }
 
-    @Override
-    public final List<T> insert(int index, T element) {
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("insert(" + index + ", e)");
-        }
-        List<T> preceding = Nil.instance();
-        List<T> tail = this;
-        for (int i = index; i > 0; i--, tail = tail.tail()) {
-            if (tail.isEmpty()) {
-                throw new IndexOutOfBoundsException("insert(" + index + ", e) on List of length " + length());
-            }
-            preceding = preceding.prepend(tail.head());
-        }
-        List<T> result = tail.prepend(element);
-        for (T next : preceding) {
-            result = result.prepend(next);
-        }
-        return result;
-    }
 
 
 
@@ -314,61 +280,12 @@ public abstract class List<T> implements LinearSeq<T> {
         return list.reverse();
     }
 
-    @Override
-    public final List<T> orElse(Iterable<? extends T> other) {
-        return isEmpty() ? ofAll(other) : this;
-    }
-
-    @Override
-    public final List<T> orElse(Supplier<? extends Iterable<? extends T>> supplier) {
-        return isEmpty() ? ofAll(supplier.get()) : this;
-    }
 
 
 
 
 
 
-    /**
-     * Returns the head element without modifying the List.
-     *
-     * @return the first element
-     * @throws NoSuchElementException if this List is empty
-     * @deprecated use head() instead
-     */
-    @Deprecated
-    public final T peek() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("peek of empty list");
-        }
-        return head();
-    }
-
-    /**
-     * Returns the head element without modifying the List.
-     *
-     * @return {@code None} if this List is empty, otherwise a {@code Some} containing the head element
-     * @deprecated use headOption() instead
-     */
-    @Deprecated
-    public final Option<T> peekOption() {
-        return headOption();
-    }
-
-    /**
-     * Performs an action on the head element of this {@code List}.
-     *
-     * @param action A {@code Consumer}
-     * @return this {@code List}
-     */
-    @Override
-    public final List<T> peek(Consumer<? super T> action) {
-        Objects.requireNonNull(action, "action is null");
-        if (!isEmpty()) {
-            action.accept(head());
-        }
-        return this;
-    }
 
 
     /**
@@ -414,12 +331,10 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
     public final List<T> prepend(T element) {
         return new Cons<>(element, this);
     }
 
-    @Override
     public final List<T> prependAll(Iterable<? extends T> elements) {
         Objects.requireNonNull(elements, "elements is null");
         return isEmpty() ? ofAll(elements) : ofAll(elements).reverse().foldLeft(this, List::prepend);
@@ -503,7 +418,6 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
     public final List<T> reverse() {
         return (length() <= 1) ? this : foldLeft(empty(), List::prepend);
     }
