@@ -233,8 +233,7 @@ public final class Vector<T> implements Iterable<T> {
 
     @Override
     public int hashCode() {
-        return trie.hashCode();
-        //return Collections.hashOrdered(this);
+        return Collections.hashOrdered(this);
     }
 
 
