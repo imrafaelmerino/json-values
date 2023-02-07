@@ -256,9 +256,6 @@ public final class Vector<T> implements Iterable<T> {
     }
 
 
-    public boolean contains(T requireNonNull) {
-
-    }
 
 
      public int count(Predicate<T> o) {
@@ -269,9 +266,7 @@ public final class Vector<T> implements Iterable<T> {
         return null;
     }
 
-    public boolean exists(Predicate<T> o) {
-        return false;
-    }
+
 
     public T last() {
         if (isEmpty()) {
@@ -279,6 +274,20 @@ public final class Vector<T> implements Iterable<T> {
         } else {
             return get(length() - 1);
         }
+    }
+
+    public boolean contains(T element) {
+        return exists(e -> Objects.equals(e, element));
+    }
+
+    public boolean exists(Predicate<? super T> predicate) {
+        Objects.requireNonNull(predicate, "predicate is null");
+        for (T t : this) {
+            if (predicate.test(t)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 
