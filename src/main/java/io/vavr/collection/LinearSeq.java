@@ -174,21 +174,6 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
 
-    @Override
-    <U> LinearSeq<Tuple2<T, U>> zip(Iterable<? extends U> that);
-
-    @Override
-    <U, R> LinearSeq<R> zipWith(Iterable<? extends U> that, BiFunction<? super T, ? super U, ? extends R> mapper);
-
-    @Override
-    <U> LinearSeq<Tuple2<T, U>> zipAll(Iterable<? extends U> that, T thisElem, U thatElem);
-
-    @Override
-    LinearSeq<Tuple2<T, Integer>> zipWithIndex();
-
-    @Override
-    <U> LinearSeq<U> zipWithIndex(BiFunction<? super T, ? super Integer, ? extends U> mapper);
-
 
 }
 

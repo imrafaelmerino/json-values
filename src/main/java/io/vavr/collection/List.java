@@ -1143,30 +1143,8 @@ public abstract class List<T> implements LinearSeq<T> {
         return reverse().take(n).reverse();
     }
 
-    @Override
-    public final List<T> takeRightUntil(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return takeRightWhile(predicate.negate());
-    }
 
-    @Override
-    public final List<T> takeRightWhile(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reverse().takeWhile(predicate).reverse();
-    }
 
-    /**
-     * Transforms this {@code List}.
-     *
-     * @param f   A transformation
-     * @param <U> Type of transformation result
-     * @return An instance of type {@code U}
-     * @throws NullPointerException if {@code f} is null
-     */
-    public final <U> U transform(Function<? super List<T>, ? extends U> f) {
-        Objects.requireNonNull(f, "f is null");
-        return f.apply(this);
-    }
 
 
 

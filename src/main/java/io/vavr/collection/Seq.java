@@ -218,7 +218,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
         return lastIndexWhere(predicate, length() - 1);
     }
 
- 
+
 
     /**
      * Finds index of last element satisfying some predicate before or at given
@@ -484,53 +484,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     @Override
     Option<? extends Seq<T>> tailOption();
 
-    @Override
-    Seq<T> take(int n);
 
-    @Override
-    Seq<T> takeUntil(Predicate<? super T> predicate);
-
-    @Override
-    Seq<T> takeWhile(Predicate<? super T> predicate);
-
-    @Override
-    Seq<T> takeRight(int n);
-
-    /**
-     * Takes elements until the predicate holds for the current element, starting from the end.
-     *
-     * @param predicate A condition tested subsequently for this elements, starting from the end.
-     * @return a new instance consisting of all elements after the last one which does satisfy the given predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Seq<T> takeRightUntil(Predicate<? super T> predicate);
-
-    /**
-     * Takes elements while the predicate holds for the current element, starting from the end.
-     * <p>
-     * Note: This is essentially the same as {@code takeRightUntil(predicate.negate())}.
-     * It is intended to be used with method references, which cannot be negated directly.
-     *
-     * @param predicate A condition tested subsequently for this elements, starting from the end.
-     * @return a new instance consisting of all elements after the last one which does not satisfy the given predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Seq<T> takeRightWhile(Predicate<? super T> predicate);
-
-    @Override
-    <U> Seq<Tuple2<T, U>> zip(Iterable<? extends U> that);
-
-    @Override
-    <U, R> Seq<R> zipWith(Iterable<? extends U> that, BiFunction<? super T, ? super U, ? extends R> mapper);
-
-    @Override
-    <U> Seq<Tuple2<T, U>> zipAll(Iterable<? extends U> that, T thisElem, U thatElem);
-
-    @Override
-    Seq<Tuple2<T, Integer>> zipWithIndex();
-
-    @Override
-    <U> Seq<U> zipWithIndex(BiFunction<? super T, ? super Integer, ? extends U> mapper);
 
     @Override
     default boolean isSequential() {
