@@ -53,9 +53,6 @@ import java.util.stream.DoubleStream;
  * <ul>
  * <li>{@link #forEachWithIndex(ObjIntConsumer)}</li>
  * <li>{@link #iterator()}</li>
- * <li>{@link #slideBy(Function)}</li>
- * <li>{@link #sliding(int)}</li>
- * <li>{@link #sliding(int, int)}</li>
  * </ul>
  *
  * Numeric operations:
@@ -124,9 +121,6 @@ import java.util.stream.DoubleStream;
  * <li>{@link #map(Function)}</li>
  * <li>{@link #replace(Object, Object)}</li>
  * <li>{@link #replaceAll(Object, Object)}</li>
- * <li>{@link #scan(Object, BiFunction)}</li>
- * <li>{@link #scanLeft(Object, BiFunction)}</li>
- * <li>{@link #scanRight(Object, BiFunction)}</li>
  * <li>{@link #span(Predicate)}</li>
  * <li>{@link #unzip(Function, Function)}</li>
  * <li>{@link #unzip3(Function, Function, Function)}</li>
@@ -1131,52 +1125,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Traversable<T> retainAll(Iterable<? extends T> elements);
 
-    /**
-     * Computes a prefix scan of the elements of the collection.
-     *
-     * Note: The neutral element z may be applied more than once.
-     *
-     * @param zero      neutral element for the operator op
-     * @param operation the associative operator for the scan
-     * @return a new traversable collection containing the prefix scan of the elements in this traversable collection
-     * @throws NullPointerException if {@code operation} is null.
-     */
-    Traversable<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation);
-
-    /**
-     * Produces a collection containing cumulative results of applying the
-     * operator going left to right.
-     *
-     * Note: will not terminate for infinite-sized collections.
-     *
-     * Note: might return different results for different runs, unless the
-     * underlying collection type is ordered.
-     *
-     * @param <U>       the type of the elements in the resulting collection
-     * @param zero      the initial value
-     * @param operation the binary operator applied to the intermediate result and the element
-     * @return collection with intermediate results
-     * @throws NullPointerException if {@code operation} is null.
-     */
-    <U> Traversable<U> scanLeft(U zero, BiFunction<? super U, ? super T, ? extends U> operation);
-
-    /**
-     * Produces a collection containing cumulative results of applying the
-     * operator going right to left. The head of the collection is the last
-     * cumulative result.
-     *
-     * Note: will not terminate for infinite-sized collections.
-     *
-     * Note: might return different results for different runs, unless the
-     * underlying collection type is ordered.
-     *
-     * @param <U>       the type of the elements in the resulting collection
-     * @param zero      the initial value
-     * @param operation the binary operator applied to the intermediate result and the element
-     * @return collection with intermediate results
-     * @throws NullPointerException if {@code operation} is null.
-     */
-    <U> Traversable<U> scanRight(U zero, BiFunction<? super T, ? super U, ? extends U> operation);
 
     /**
      * Returns the single element of this Traversable or throws, if this is empty or contains more than one element.
@@ -1217,58 +1165,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return length();
     }
 
-    /**
-     * Slides a non-overlapping window of a variable size over this {@code Traversable}.
-     * <p>
-     * Each window contains elements with the same class, as determined by {@code classifier}. Two consecutive
-     * values in this {@code Traversable} will be in the same window only if {@code classifier} returns equal
-     * values for them. Otherwise, the values will constitute the last element of the previous window and the
-     * first element of the next window.
-     * <p>
-     * Examples:
-     *
-     * <pre>{@code
-     * [].slideBy(Function.identity()) = []
-     * [1,2,3,4,4,5].slideBy(Function.identity()) = [[1],[2],[3],[4,4],[5]]
-     * [1,2,3,10,12,5,7,20,29].slideBy(x -> x/10) = [[1,2,3],[10,12],[5,7],[20,29]]
-     * }</pre>
-     *
-     * @param classifier A function which classifies elements into classes
-     * @return A new Iterator of windows of the grouped elements
-     * @throws NullPointerException if {@code classifier} is null.
-     */
-    Iterator<? extends Traversable<T>> slideBy(Function<? super T, ?> classifier);
-
-    /**
-     * Slides a window of a specific {@code size} and step size 1 over this {@code Traversable} by calling
-     * {@link #sliding(int, int)}.
-     *
-     * @param size a positive window size
-     * @return a new Iterator of windows of a specific size using step size 1
-     * @throws IllegalArgumentException if {@code size} is negative or zero
-     */
-    Iterator<? extends Traversable<T>> sliding(int size);
-
-    /**
-     * Slides a window of a specific {@code size} and {@code step} size over this {@code Traversable}.
-     * <p>
-     * Examples:
-     * <pre>
-     * <code>
-     * [].sliding(1,1) = []
-     * [1,2,3,4,5].sliding(2,3) = [[1,2],[4,5]]
-     * [1,2,3,4,5].sliding(2,4) = [[1,2],[5]]
-     * [1,2,3,4,5].sliding(2,5) = [[1,2]]
-     * [1,2,3,4].sliding(5,3) = [[1,2,3,4]]
-     * </code>
-     * </pre>
-     *
-     * @param size a positive window size
-     * @param step a positive step size
-     * @return a new Iterator of windows of a specific size using a specific step size
-     * @throws IllegalArgumentException if {@code size} or {@code step} are negative or zero
-     */
-    Iterator<? extends Traversable<T>> sliding(int size, int step);
 
     /**
      * Returns a tuple where the first element is the longest prefix of elements that satisfy the given

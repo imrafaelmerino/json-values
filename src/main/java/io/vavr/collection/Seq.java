@@ -457,23 +457,8 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     @Override
     Seq<T> retainAll(Iterable<? extends T> elements);
 
-    @Override
-    Seq<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation);
 
-    @Override
-    <U> Seq<U> scanLeft(U zero, BiFunction<? super U, ? super T, ? extends U> operation);
 
-    @Override
-    <U> Seq<U> scanRight(U zero, BiFunction<? super T, ? super U, ? extends U> operation);
-
-    @Override
-    Iterator<? extends Seq<T>> slideBy(Function<? super T, ?> classifier);
-
-    @Override
-    Iterator<? extends Seq<T>> sliding(int size);
-
-    @Override
-    Iterator<? extends Seq<T>> sliding(int size, int step);
 
     @Override
     Tuple2<? extends Seq<T>, ? extends Seq<T>> span(Predicate<? super T> predicate);

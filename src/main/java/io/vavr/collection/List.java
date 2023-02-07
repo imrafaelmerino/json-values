@@ -1039,36 +1039,7 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
-    public final List<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation) {
-        return scanLeft(zero, operation);
-    }
 
-    @Override
-    public final <U> List<U> scanLeft(U zero, BiFunction<? super U, ? super T, ? extends U> operation) {
-        return null;
-    }
-
-    @Override
-    public final <U> List<U> scanRight(U zero, BiFunction<? super T, ? super U, ? extends U> operation) {
-        return null;
-    }
-
-
-    @Override
-    public final Iterator<List<T>> slideBy(Function<? super T, ?> classifier) {
-        return iterator().slideBy(classifier).map(List::ofAll);
-    }
-
-    @Override
-    public final Iterator<List<T>> sliding(int size) {
-        return sliding(size, 1);
-    }
-
-    @Override
-    public final Iterator<List<T>> sliding(int size, int step) {
-        return iterator().sliding(size, step).map(List::ofAll);
-    }
 
 
 

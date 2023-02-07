@@ -137,34 +137,11 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
 
-    @Override
-    LinearSeq<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation);
-
-    @Override
-    <U> LinearSeq<U> scanLeft(U zero, BiFunction<? super U, ? super T, ? extends U> operation);
-
-    @Override
-    <U> LinearSeq<U> scanRight(U zero, BiFunction<? super T, ? super U, ? extends U> operation);
-
-
-
-    @Override
-    Iterator<? extends LinearSeq<T>> slideBy(Function<? super T, ?> classifier);
-
-    @Override
-    Iterator<? extends LinearSeq<T>> sliding(int size);
-
-    @Override
-    Iterator<? extends LinearSeq<T>> sliding(int size, int step);
-
 
 
 
     @Override
     Tuple2<? extends LinearSeq<T>, ? extends LinearSeq<T>> span(Predicate<? super T> predicate);
-
-
-
 
     @Override
     LinearSeq<T> tail();
