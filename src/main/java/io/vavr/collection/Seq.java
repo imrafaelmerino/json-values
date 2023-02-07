@@ -69,9 +69,6 @@ import java.util.function.*;
  *
  * <ul>
  * <li>{@link #reverse()}</li>
- * <li>{@link #zip(Iterable)}</li>
- * <li>{@link #zipAll(Iterable, Object, Object)}</li>
- * <li>{@link #zipWithIndex()}</li>
  * </ul>
  *
  * Traversal:
@@ -436,8 +433,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     @Override
     Seq<T> orElse(Supplier<? extends Iterable<? extends T>> supplier);
 
-    @Override
-    Tuple2<? extends Seq<T>, ? extends Seq<T>> partition(Predicate<? super T> predicate);
+
 
     @Override
     Seq<T> peek(Consumer<? super T> action);
@@ -445,11 +441,8 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     @Override
     Seq<T> replace(T currentElement, T newElement);
 
-    @Override
-    Seq<T> replaceAll(T currentElement, T newElement);
 
-    @Override
-    Seq<T> retainAll(Iterable<? extends T> elements);
+
 
 
 

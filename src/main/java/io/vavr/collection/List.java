@@ -789,19 +789,7 @@ public abstract class List<T> implements LinearSeq<T> {
 
 
 
-    @Override
-    public final Tuple2<List<T>, List<T>> partition(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        List<T> left = empty(), right = empty();
-        for (T t : this) {
-            if (predicate.test(t)) {
-                left = left.prepend(t);
-            } else {
-                right = right.prepend(t);
-            }
-        }
-        return Tuple.of(left.reverse(), right.reverse());
-    }
+
 
     /**
      * Returns the head element without modifying the List.
@@ -999,21 +987,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return result;
     }
 
-    @Override
-    public final List<T> replaceAll(T currentElement, T newElement) {
-        List<T> result = Nil.instance();
-        boolean changed = false;
-        for (List<T> list = this; !list.isEmpty(); list = list.tail()) {
-            final T head = list.head();
-            if (Objects.equals(head, currentElement)) {
-                result = result.prepend(newElement);
-                changed = true;
-            } else {
-                result = result.prepend(head);
-            }
-        }
-        return changed ? result.reverse() : this;
-    }
+
 
 
     @Override
@@ -1055,83 +1029,11 @@ public abstract class List<T> implements LinearSeq<T> {
         return isEmpty() ? Option.none() : Option.some(tail());
     }
 
-    @Override
-    public final List<T> take(int n) {
-        if (n <= 0) {
-            return empty();
-        }
-        if (n >= length()) {
-            return this;
-        }
-        List<T> result = Nil.instance();
-        List<T> list = this;
-        for (int i = 0; i < n; i++, list = list.tail()) {
-            result = result.prepend(list.head());
-        }
-        return result.reverse();
-    }
-
-    @Override
-    public final List<T> takeUntil(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return takeWhile(predicate.negate());
-    }
-
-    @Override
-    public final List<T> takeWhile(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        List<T> result = Nil.instance();
-        for (List<T> list = this; !list.isEmpty() && predicate.test(list.head()); list = list.tail()) {
-            result = result.prepend(list.head());
-        }
-        return result.length() == length() ? this : result.reverse();
-    }
-
-    @Override
-    public final List<T> takeRight(int n) {
-        if (n <= 0) {
-            return empty();
-        }
-        if (n >= length()) {
-            return this;
-        }
-        return reverse().take(n).reverse();
-    }
 
 
 
 
 
-
-
-    @Override
-    public final <U> List<Tuple2<T, U>> zip(Iterable<? extends U> that) {
-        return zipWith(that, Tuple::of);
-    }
-
-    @Override
-    public final <U, R> List<R> zipWith(Iterable<? extends U> that, BiFunction<? super T, ? super U, ? extends R> mapper) {
-        Objects.requireNonNull(that, "that is null");
-        Objects.requireNonNull(mapper, "mapper is null");
-        return ofAll(iterator().zipWith(that, mapper));
-    }
-
-    @Override
-    public final <U> List<Tuple2<T, U>> zipAll(Iterable<? extends U> that, T thisElem, U thatElem) {
-        Objects.requireNonNull(that, "that is null");
-        return ofAll(iterator().zipAll(that, thisElem, thatElem));
-    }
-
-    @Override
-    public final List<Tuple2<T, Integer>> zipWithIndex() {
-        return zipWithIndex(Tuple::of);
-    }
-
-    @Override
-    public final <U> List<U> zipWithIndex(BiFunction<? super T, ? super Integer, ? extends U> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
-        return ofAll(iterator().zipWithIndex(mapper));
-    }
 
     /**
      * Representation of the singleton empty {@code List}.
@@ -1213,10 +1115,6 @@ public abstract class List<T> implements LinearSeq<T> {
             return null;
         }
 
-        @Override
-        public LinearSeq<T> retainAll(Iterable<? extends T> elements) {
-            return null;
-        }
 
         @Override
         public List<T> tail() {
@@ -1335,10 +1233,6 @@ public abstract class List<T> implements LinearSeq<T> {
             return null;
         }
 
-        @Override
-        public LinearSeq<T> retainAll(Iterable<? extends T> elements) {
-            return null;
-        }
 
         @Override
         public List<T> tail() {

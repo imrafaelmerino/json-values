@@ -25,7 +25,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.DoubleStream;
 
 /**
  * An interface for inherently recursive, multi-valued data structures. The order of elements is determined by
@@ -40,7 +39,6 @@ import java.util.stream.DoubleStream;
  * <li>{@link #headOption()}</li>
  * <li>{@link #isEmpty()}</li>
  * <li>{@link #last()}</li>
- * <li>{@link #lastOption()}</li>
  * <li>{@link #length()}</li>
  * <li>{@link #size()}</li>
  * <li>{@link #tail()}</li>
@@ -50,7 +48,6 @@ import java.util.stream.DoubleStream;
  * Iteration:
  *
  * <ul>
- * <li>{@link #forEachWithIndex(ObjIntConsumer)}</li>
  * <li>{@link #iterator()}</li>
  * </ul>
  *
@@ -59,10 +56,6 @@ import java.util.stream.DoubleStream;
  * <ul>
  * <li>{@link #max()}</li>
  * <li>{@link #maxBy(Comparator)}</li>
- * <li>{@link #maxBy(Function)}</li>
- * <li>{@link #min()}</li>
- * <li>{@link #minBy(Comparator)}</li>
- * <li>{@link #minBy(Function)}</li>
  * <li>{@link #sum()}</li>
  * </ul>
  *
@@ -70,16 +63,11 @@ import java.util.stream.DoubleStream;
  *
  * <ul>
  * <li>{@link #count(Predicate)}</li>
- * <li>{@link #fold(Object, BiFunction)}</li>
  * <li>{@link #foldLeft(Object, BiFunction)}</li>
  * <li>{@link #foldRight(Object, BiFunction)}</li>
  * <li>{@link #mkString(CharSequence, CharSequence, CharSequence)}</li>
  * <li>{@link #reduce(BiFunction)}</li>
- * <li>{@link #reduceOption(BiFunction)}</li>
  * <li>{@link #reduceLeft(BiFunction)}</li>
- * <li>{@link #reduceLeftOption(BiFunction)}</li>
- * <li>{@link #reduceRight(BiFunction)}</li>
- * <li>{@link #reduceRightOption(BiFunction)}</li>
  * </ul>
  *
  * Selection:
@@ -87,13 +75,6 @@ import java.util.stream.DoubleStream;
  * <ul>
  * <li>{@link #filter(Predicate)}</li>
  * <li>{@link #find(Predicate)}</li>
- * <li>{@link #findLast(Predicate)}</li>
- * <li>{@link #partition(Predicate)}</li>
- * <li>{@link #retainAll(Iterable)}</li>
- * <li>{@link #take(int)}</li>
- * <li>{@link #takeRight(int)}</li>
- * <li>{@link #takeUntil(Predicate)}</li>
- * <li>{@link #takeWhile(Predicate)}</li>
  * </ul>
  *
  * Tests:
@@ -110,16 +91,9 @@ import java.util.stream.DoubleStream;
  *
  * <ul>
 
- * <li>{@link #flatMap(Function)}</li>
  * <li>{@link #map(Function)}</li>
  * <li>{@link #replace(Object, Object)}</li>
- * <li>{@link #replaceAll(Object, Object)}</li>
  * <li>{@link #span(Predicate)}</li>
- * <li>{@link #unzip(Function, Function)}</li>
- * <li>{@link #unzip3(Function, Function, Function)}</li>
- * <li>{@link #zip(Iterable)}</li>
- * <li>{@link #zipAll(Iterable, Object, Object)}</li>
- * <li>{@link #zipWithIndex()}</li>
  * </ul>
  *
  * @param <T> Component type
@@ -261,29 +235,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> combine);
 
-    /**
-     * Performs an action on each element. In contrast to {@link #forEach(Consumer)},
-     * additionally the element's index is passed to the given {@code action}.
-     * <p>
-     * This is essentially the same as {@code iterator().zipWithIndex().forEach()} but performs better because
-     * no intermediate {@code Tuple2} instances are created and no boxing of int values takes place.
-     * <p>
-     * Please note that subsequent calls to {@code forEachWithIndex} might lead to different iteration orders,
-     * depending on the underlying {@code Traversable} implementation.
-     * <p>
-     * Please also note that {@code forEachWithIndex} might loop infinitely if the {@code Traversable} is lazily
-     * evaluated, like {@link Stream}.
-     *
-     * @param action A {@link ObjIntConsumer}
-     * @throws NullPointerException if {@code action} is null
-     */
-    default void forEachWithIndex(ObjIntConsumer<? super T> action) {
-        Objects.requireNonNull(action, "action is null");
-        int index = 0;
-        for (T t : this) {
-            action.accept(t, index++);
-        }
-    }
+
 
     /**
      * Gets the first value in iteration order if this {@code Traversable} is not empty, otherwise throws.
@@ -466,7 +418,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     @Override
     default Iterator<T> iterator() {
         final Traversable<T> that = this;
-        return new Iterator<T>() {
+        return new Iterator<>() {
 
             Traversable<T> traversable = that;
 
@@ -477,9 +429,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
 
             @Override
             public T next() {
-                if (!hasNext()) {
-                    throw new NoSuchElementException();
-                }
                 final T result = traversable.head();
                 traversable = traversable.tail();
                 return result;
@@ -495,14 +444,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     T last();
 
-    /**
-     * Dual of {@linkplain #headOption()}, returning the last element as {@code Option}.
-     *
-     * @return {@code Some(element)} or {@code None} if this is empty.
-     */
-    default Option<T> lastOption() {
-        return isEmpty() ? Option.none() : Option.some(last());
-    }
 
     /**
      * Computes the number of elements of this Traversable.
@@ -564,121 +505,9 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         }
     }
 
-    /**
-     * Calculates the maximum of this elements within the co-domain of a specific function.
-     *
-     * @param f   A function that maps this elements to comparable elements
-     * @param <U> The type where elements are compared
-     * @return The element of type T which is the maximum within U
-     * @throws NullPointerException if {@code f} is null.
-     */
-    default <U extends Comparable<? super U>> Option<T> maxBy(Function<? super T, ? extends U> f) {
-        Objects.requireNonNull(f, "f is null");
-        if (isEmpty()) {
-            return Option.none();
-        } else {
-            final Iterator<T> iter = iterator();
-            T tm = iter.next();
-            U um = f.apply(tm);
-            while (iter.hasNext()) {
-                final T t = iter.next();
-                final U u = f.apply(t);
-                if (u.compareTo(um) > 0) {
-                    um = u;
-                    tm = t;
-                }
-            }
-            return Option.some(tm);
-        }
-    }
 
-    /**
-     * Calculates the minimum of this elements according to their natural order in O(n). Especially the underlying
-     * order of sorted collections is not taken into account.
-     * <p>
-     * Examples:
-     * <pre>
-     * <code>
-     * List.empty().min()             // = None
-     * List.of(1, 2, 3).min()         // = Some(1)
-     * List.of("a", "b", "c").min()   // = Some("a")
-     * List.of(1.0, Double.NaN).min() // = NaN
-     * List.of(1, "a").min()          // throws
-     * </code>
-     * </pre>
-     *
-     * There is an exception for {@link Double} and {@link Float}: The minimum is defined to be {@code NaN} if
-     * this contains {@code NaN}. According to the natural order {@code NaN} would be the maximum element
-     * instead.
-     *
-     * @return {@code Some(minimum)} of this elements or {@code None} if this is empty
-     * @throws NullPointerException if an element is null
-     * @throws ClassCastException   if the elements do not have a natural order, i.e. they do not implement Comparable
-     */
-    @SuppressWarnings("unchecked")
-    default Option<T> min() {
-        // DEV-NOTE: minBy(Comparators.naturalComparator()) does not handle (Double/Float) NaN correctly
-        if (isEmpty()) {
-            return Option.none();
-        } else {
-            final T head = head();
-            final T min;
-            if (head instanceof Double) {
-                min = (T) ((Traversable<Double>) this).foldLeft((Double) head, Math::min);
-            } else if (head instanceof Float) {
-                min = (T) ((Traversable<Float>) this).foldLeft((Float) head, Math::min);
-            } else {
-                final Comparator<T> comparator = Comparators.naturalComparator();
-                min = this.foldLeft(head, (t1, t2) -> comparator.compare(t1, t2) <= 0 ? t1 : t2);
-            }
-            return Option.some(min);
-        }
-    }
 
-    /**
-     * Calculates the minimum of this elements using a specific comparator.
-     *
-     * @param comparator A non-null element comparator
-     * @return {@code Some(minimum)} of this elements or {@code None} if this is empty
-     * @throws NullPointerException if {@code comparator} is null
-     */
-    default Option<T> minBy(Comparator<? super T> comparator) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        if (isEmpty()) {
-            return Option.none();
-        } else {
-            final T value = reduce((t1, t2) -> comparator.compare(t1, t2) <= 0 ? t1 : t2);
-            return Option.some(value);
-        }
-    }
 
-    /**
-     * Calculates the minimum of this elements within the co-domain of a specific function.
-     *
-     * @param f   A function that maps this elements to comparable elements
-     * @param <U> The type where elements are compared
-     * @return The element of type T which is the minimum within U
-     * @throws NullPointerException if {@code f} is null.
-     */
-    default <U extends Comparable<? super U>> Option<T> minBy(Function<? super T, ? extends U> f) {
-        Objects.requireNonNull(f, "f is null");
-        if (isEmpty()) {
-            return Option.none();
-        } else {
-            final Iterator<T> iter = iterator();
-            T tm = iter.next();
-            U um = f.apply(tm);
-            while (iter.hasNext()) {
-                final T t = iter.next();
-                final U u = f.apply(t);
-                if (u.compareTo(um) < 0) {
-                    um = u;
-                    tm = t;
-                }
-            }
-            return Option.some(tm);
-        }
-    }
 
 
 
@@ -726,15 +555,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Traversable<T> orElse(Supplier<? extends Iterable<? extends T>> supplier);
 
-    /**
-     * Creates a partition of this {@code Traversable} by splitting this elements in two in distinct traversables
-     * according to a predicate.
-     *
-     * @param predicate A predicate which classifies an element if it is in the first or the second traversable.
-     * @return A disjoint union of two traversables. The first {@code Traversable} contains all elements that satisfy the given {@code predicate}, the second {@code Traversable} contains all elements that don't. The original order of elements is preserved.
-     * @throws NullPointerException if predicate is null
-     */
-    Tuple2<? extends Traversable<T>, ? extends Traversable<T>> partition(Predicate<? super T> predicate);
 
     @Override
     Traversable<T> peek(Consumer<? super T> action);
@@ -755,18 +575,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return reduceLeft(op);
     }
 
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op}.
-     * The order of element iteration is undetermined.
-     *
-     * @param op A BiFunction of type T
-     * @return Some of reduced value or None if the Foldable is empty.
-     * @throws NullPointerException if {@code op} is null
-     */
-    default Option<T> reduceOption(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        return reduceLeftOption(op);
-    }
+
 
     /**
      * Accumulates the elements of this Traversable by successively calling the given operation {@code op} from the left.
@@ -781,50 +590,10 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return iterator().reduceLeft(op);
     }
 
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op} from the left.
-     * <br>
-     * Shortcut for {@code isEmpty() ? Option.none() : Option.some(reduceLeft(op))}.
-     *
-     * @param op A BiFunction of type T
-     * @return Some of reduced value or None if the Traversable is empty.
-     * @throws NullPointerException if {@code op} is null
-     */
-    default Option<T> reduceLeftOption(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        return isEmpty() ? Option.none() : Option.some(reduceLeft(op));
-    }
 
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op} from the right.
-     *
-     * @param op An operation of type T
-     * @return the reduced value.
-     * @throws NoSuchElementException if this is empty
-     * @throws NullPointerException   if {@code op} is null
-     */
-    default T reduceRight(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        if (isEmpty()) {
-            throw new NoSuchElementException("reduceRight on empty");
-        } else {
-            return iterator().reduceRight(op);
-        }
-    }
 
-    /**
-     * Accumulates the elements of this Traversable by successively calling the given operation {@code op} from the right.
-     * <br>
-     * Shortcut for {@code isEmpty() ? Option.none() : Option.some(reduceRight(op))}.
-     *
-     * @param op An operation of type T
-     * @return Some of reduced value or None.
-     * @throws NullPointerException if {@code op} is null
-     */
-    default Option<T> reduceRightOption(BiFunction<? super T, ? super T, ? extends T> op) {
-        Objects.requireNonNull(op, "op is null");
-        return isEmpty() ? Option.none() : Option.some(reduceRight(op));
-    }
+
+
 
     /**
      * Replaces the first occurrence (if exists) of the given currentElement with newElement.
@@ -835,52 +604,8 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Traversable<T> replace(T currentElement, T newElement);
 
-    /**
-     * Replaces all occurrences of the given currentElement with newElement.
-     *
-     * @param currentElement An element to be substituted.
-     * @param newElement     A replacement for currentElement.
-     * @return a Traversable containing all elements of this where all occurrences of currentElement are replaced with newElement.
-     */
-    Traversable<T> replaceAll(T currentElement, T newElement);
-
-    /**
-     * Keeps all occurrences of the given elements from this.
-     *
-     * @param elements Elements to be kept.
-     * @return a Traversable containing all occurrences of the given elements.
-     * @throws NullPointerException if {@code elements} is null
-     */
-    Traversable<T> retainAll(Iterable<? extends T> elements);
 
 
-    /**
-     * Returns the single element of this Traversable or throws, if this is empty or contains more than one element.
-     *
-     * @return the single element from the Traversable
-     * @throws NoSuchElementException if the Traversable does not contain a single element.
-     */
-    default T single() {
-        return singleOption().getOrElseThrow(() -> new NoSuchElementException("Does not contain a single value"));
-    }
-
-    /**
-     * Returns the only element of a Traversable as {@code Option}.
-     *
-     * @return {@code Some(element)} or {@code None} if the Traversable does not contain a single element.
-     */
-    default Option<T> singleOption() {
-        final Iterator<T> it = iterator();
-        if (!it.hasNext()) {
-            return Option.none();
-        }
-        final T first = it.next();
-        if (it.hasNext()) {
-            return Option.none();
-        } else {
-            return Option.some(first);
-        }
-    }
 
     /**
      * Computes the number of elements of this Traversable.
@@ -938,7 +663,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      * </code>
      * </pre>
      *
-     * Please also see {@link #fold(Object, BiFunction)}, a way to do a type-safe summation of elements.
      *
      * @return a {@code Number} representing the sum of this elements
      * @throws UnsupportedOperationException if this elements are not numeric
@@ -981,170 +705,10 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Option<? extends Traversable<T>> tailOption();
 
-    /**
-     * Takes the first n elements of this or all elements, if this length &lt; n.
-     * <p>
-     * The result is equivalent to {@code sublist(0, max(0, min(length(), n)))} but does not throw if {@code n < 0} or
-     * {@code n > length()}.
-     * <p>
-     * In the case of {@code n < 0} the empty instance is returned, in the case of {@code n > length()} this is returned.
-     *
-     * @param n The number of elements to take.
-     * @return A new instance consisting of the first n elements of this or all elements, if this has less than n elements.
-     */
-    Traversable<T> take(int n);
 
-    /**
-     * Takes the last n elements of this or all elements, if this length &lt; n.
-     * <p>
-     * The result is equivalent to {@code sublist(max(0, min(length(), length() - n)), n)}, i.e. takeRight will not
-     * throw if {@code n < 0} or {@code n > length()}.
-     * <p>
-     * In the case of {@code n < 0} the empty instance is returned, in the case of {@code n > length()} this is returned.
-     *
-     * @param n The number of elements to take.
-     * @return A new instance consisting of the last n elements of this or all elements, if this has less than n elements.
-     */
-    Traversable<T> takeRight(int n);
 
-    /**
-     * Takes elements until the predicate holds for the current element.
-     * <p>
-     * Note: This is essentially the same as {@code takeWhile(predicate.negate())}. It is intended to be used with
-     * method references, which cannot be negated directly.
-     *
-     * @param predicate A condition tested subsequently for this elements.
-     * @return a new instance consisting of all elements before the first one which does satisfy the given
-     * predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Traversable<T> takeUntil(Predicate<? super T> predicate);
 
-    /**
-     * Takes elements while the predicate holds for the current element.
-     *
-     * @param predicate A condition tested subsequently for the contained elements.
-     * @return a new instance consisting of all elements before the first one which does not satisfy the
-     * given predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Traversable<T> takeWhile(Predicate<? super T> predicate);
 
-    /**
-     * Unzips this elements by mapping this elements to a pair of distinct sets.
-     *
-     * @param unzipper1 a function which converts elements of this to elements of first set
-     * @param unzipper2 a function which converts elements of this to elements of second set
-     * @param <T1>      element type returned by unzipper1
-     * @param <T2>      element type returned by unzipper2
-     * @return A pair of set containing elements split by unzipper1, unzipper2
-     * @throws NullPointerException if any of {@code unzipper1}, {@code unzipper2} are null
-     */
-    default <T1, T2> Tuple2<Iterator<T1>, Iterator<T2>> unzip(
-            Function<? super T, ? extends T1> unzipper1, Function<? super T, ? extends T2> unzipper2) {
-        Objects.requireNonNull(unzipper1, "unzipper1 is null");
-        Objects.requireNonNull(unzipper2, "unzipper2 is null");
-        final Iterator<T1> iter1 = iterator().map(unzipper1);
-        final Iterator<T2> iter2 = iterator().map(unzipper2);
-        return Tuple.of(iter1, iter2);
-    }
-
-    /**
-     * Unzips this elements by mapping this elements to three distinct sets.
-     *
-     * @param unzipper1 a function which converts elements of this to first set
-     * @param unzipper2 a function which converts elements of this to second set
-     * @param unzipper3 a function which converts elements of this to third set
-     * @param <T1>      element type returned by unzipper1
-     * @param <T2>      element type returned by unzipper2
-     * @param <T3>      element type returned by unzipper3
-     * @return A triplet of {@code Iterator} to iterate over elements of sets split by {@code unzipper1}, {@code unzipper2}, {@code unzipper3}
-     * @throws NullPointerException if any of {@code unzipper1}, {@code unzipper2}, {@code unzipper3} is null
-     */
-    default <T1, T2, T3> Tuple3<Iterator<T1>, Iterator<T2>, Iterator<T3>> unzip3(
-            Function<? super T, ? extends T1> unzipper1,
-            Function<? super T, ? extends T2> unzipper2,
-            Function<? super T, ? extends T3> unzipper3) {
-        Objects.requireNonNull(unzipper1, "unzipper1 is null");
-        Objects.requireNonNull(unzipper2, "unzipper2 is null");
-        Objects.requireNonNull(unzipper2, "unzipper3 is null");
-        final Iterator<T1> iter1 = iterator().map(unzipper1);
-        final Iterator<T2> iter2 = iterator().map(unzipper2);
-        final Iterator<T3> iter3 = iterator().map(unzipper3);
-        return Tuple.of(iter1, iter2, iter3);
-    }
-
-    /**
-     * Returns a traversable formed from this traversable and another Iterable collection by combining
-     * corresponding elements in pairs. If one of the two iterables is longer than the other, its remaining elements
-     * are ignored.
-     * <p>
-     * The length of the returned traversable is the minimum of the lengths of this traversable and {@code that}
-     * iterable.
-     *
-     * @param <U>  The type of the second half of the returned pairs.
-     * @param that The Iterable providing the second half of each result pair.
-     * @return a new traversable containing pairs consisting of corresponding elements of this traversable and {@code that} iterable.
-     * @throws NullPointerException if {@code that} is null
-     */
-    <U> Traversable<Tuple2<T, U>> zip(Iterable<? extends U> that);
-
-    /**
-     * Returns a traversable formed from this traversable and another Iterable by combining corresponding elements in
-     * pairs. If one of the two collections is shorter than the other, placeholder elements are used to extend the
-     * shorter collection to the length of the longer.
-     * <p>
-     * The length of the returned traversable is the maximum of the lengths of this traversable and {@code that}
-     * iterable.
-     * <p>
-     * Special case: if this traversable is shorter than that elements, and that elements contains duplicates, the
-     * resulting traversable may be shorter than the maximum of the lengths of this and that because a traversable
-     * contains an element at most once.
-     * <p>
-     * If this Traversable is shorter than that, thisElem values are used to fill the result.
-     * If that is shorter than this Traversable, thatElem values are used to fill the result.
-     *
-     * @param <U>      The type of the second half of the returned pairs.
-     * @param that     The Iterable providing the second half of each result pair.
-     * @param thisElem The element to be used to fill up the result if this traversable is shorter than that.
-     * @param thatElem The element to be used to fill up the result if that is shorter than this traversable.
-     * @return A new traversable containing pairs consisting of corresponding elements of this traversable and that.
-     * @throws NullPointerException if {@code that} is null
-     */
-    <U> Traversable<Tuple2<T, U>> zipAll(Iterable<? extends U> that, T thisElem, U thatElem);
-
-    /**
-     * Returns a traversable formed from this traversable and another Iterable collection by mapping elements.
-     * If one of the two iterables is longer than the other, its remaining elements are ignored.
-     * <p>
-     * The length of the returned traversable is the minimum of the lengths of this traversable and {@code that}
-     * iterable.
-     *
-     * @param <U>    The type of the second parameter of the mapper.
-     * @param <R>    The type of the mapped elements.
-     * @param that   The Iterable providing the second parameter of the mapper.
-     * @param mapper a mapper.
-     * @return a new traversable containing mapped elements of this traversable and {@code that} iterable.
-     * @throws NullPointerException if {@code that} or {@code mapper} is null
-     */
-    <U, R> Traversable<R> zipWith(Iterable<? extends U> that, BiFunction<? super T, ? super U, ? extends R> mapper);
-
-    /**
-     * Zips this traversable with its indices.
-     *
-     * @return A new traversable containing all elements of this traversable paired with their index, starting with 0.
-     */
-    Traversable<Tuple2<T, Integer>> zipWithIndex();
-
-    /**
-     * Zips this traversable with its indices by applying mapper provided.
-     *
-     * @param <U> The type of the mapped elements.
-     * @param mapper a mapper.
-     * @return a new traversable containing elements of this traversable, zipped with indices, and mapped with mapper provided.
-     * @throws NullPointerException if {@code mapper} is null
-     */
-    <U> Traversable<U> zipWithIndex(BiFunction<? super T, ? super Integer, ? extends U> mapper);
 
 }
 

@@ -80,8 +80,6 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
 
-    @Override
-    Tuple2<? extends LinearSeq<T>, ? extends LinearSeq<T>> partition(Predicate<? super T> predicate);
 
     @Override
     LinearSeq<T> peek(Consumer<? super T> action);
@@ -115,11 +113,6 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> replace(T currentElement, T newElement);
 
-    @Override
-    LinearSeq<T> replaceAll(T currentElement, T newElement);
-
-    @Override
-    LinearSeq<T> retainAll(Iterable<? extends T> elements);
 
     @Override
     LinearSeq<T> reverse();
