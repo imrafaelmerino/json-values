@@ -93,7 +93,7 @@ final class Collections {
 
 
     static <T> IterableWithSize<T> withSize(Iterable<? extends T> iterable) {
-        return isTraversableAgain(iterable) ? withSizeTraversable(iterable) : withSizeTraversable(List.ofAll(iterable));
+        return withSizeTraversable(List.ofAll(iterable));
     }
 
     private static <T> IterableWithSize<T> withSizeTraversable(Iterable<? extends T> iterable) {
