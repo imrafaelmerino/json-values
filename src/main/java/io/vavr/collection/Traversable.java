@@ -39,8 +39,6 @@ import java.util.stream.DoubleStream;
  * <li>{@link #containsAll(Iterable)}</li>
  * <li>{@link #head()}</li>
  * <li>{@link #headOption()}</li>
- * <li>{@link #init()}</li>
- * <li>{@link #initOption()}</li>
  * <li>{@link #isEmpty()}</li>
  * <li>{@link #last()}</li>
  * <li>{@link #lastOption()}</li>
@@ -54,7 +52,6 @@ import java.util.stream.DoubleStream;
  *
  * <ul>
  * <li>{@link #forEachWithIndex(ObjIntConsumer)}</li>
- * <li>{@link #grouped(int)}</li>
  * <li>{@link #iterator()}</li>
  * <li>{@link #slideBy(Function)}</li>
  * <li>{@link #sliding(int)}</li>
@@ -96,10 +93,6 @@ import java.util.stream.DoubleStream;
  * Selection:
  *
  * <ul>
- * <li>{@link #drop(int)}</li>
- * <li>{@link #dropRight(int)}</li>
- * <li>{@link #dropUntil(Predicate)}</li>
- * <li>{@link #dropWhile(Predicate)}</li>
  * <li>{@link #filter(Predicate)}</li>
  * <li>{@link #filterNot(Predicate)}</li>
  * <li>{@link #find(Predicate)}</li>
@@ -126,9 +119,7 @@ import java.util.stream.DoubleStream;
  * Transformation:
  *
  * <ul>
- * <li>{@link #distinct()}</li>
- * <li>{@link #distinctBy(Comparator)}</li>
- * <li>{@link #distinctBy(Function)}</li>
+
  * <li>{@link #flatMap(Function)}</li>
  * <li>{@link #map(Function)}</li>
  * <li>{@link #replace(Object, Object)}</li>
@@ -149,19 +140,6 @@ import java.util.stream.DoubleStream;
 @SuppressWarnings("deprecation")
 public interface Traversable<T> extends Iterable<T>,  Value<T> {
 
-    /**
-     * Narrows a widened {@code Traversable<? extends T>} to {@code Traversable<T>}
-     * by performing a type-safe cast. This is eligible because immutable/read-only
-     * collections are covariant.
-     *
-     * @param traversable An {@code Traversable}.
-     * @param <T>         Component type of the {@code Traversable}.
-     * @return the given {@code traversable} instance as narrowed type {@code Traversable<T>}.
-     */
-    @SuppressWarnings("unchecked")
-    static <T> Traversable<T> narrow(Traversable<? extends T> traversable) {
-        return (Traversable<T>) traversable;
-    }
 
     /**
      * Matches each element with a unique key that you extract from it.
@@ -251,76 +229,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return foldLeft(0, (i, t) -> predicate.test(t) ? i + 1 : i);
     }
 
-    /**
-     * Returns a new version of this which contains no duplicates. Elements are compared using {@code equals}.
-     *
-     * @return a new {@code Traversable} containing this elements without duplicates
-     */
-    Traversable<T> distinct();
 
-    /**
-     * Returns a new version of this which contains no duplicates. Elements are compared using the given
-     * {@code comparator}.
-     *
-     * @param comparator A comparator
-     * @return a new {@code Traversable} containing this elements without duplicates
-     * @throws NullPointerException if {@code comparator} is null.
-     */
-    Traversable<T> distinctBy(Comparator<? super T> comparator);
-
-    /**
-     * Returns a new version of this which contains no duplicates. Elements mapped to keys which are compared using
-     * {@code equals}.
-     * <p>
-     * The elements of the result are determined in the order of their occurrence - first match wins.
-     *
-     * @param keyExtractor A key extractor
-     * @param <U>          key type
-     * @return a new {@code Traversable} containing this elements without duplicates
-     * @throws NullPointerException if {@code keyExtractor} is null
-     */
-    <U> Traversable<T> distinctBy(Function<? super T, ? extends U> keyExtractor);
-
-    /**
-     * Drops the first n elements of this or all elements, if this length &lt; n.
-     *
-     * @param n The number of elements to drop.
-     * @return a new instance consisting of all elements of this except the first n ones, or else the empty instance,
-     * if this has less than n elements.
-     */
-    Traversable<T> drop(int n);
-
-    /**
-     * Drops the last n elements of this or all elements, if this length &lt; n.
-     *
-     * @param n The number of elements to drop.
-     * @return a new instance consisting of all elements of this except the last n ones, or else the empty instance,
-     * if this has less than n elements.
-     */
-    Traversable<T> dropRight(int n);
-
-    /**
-     * Drops elements until the predicate holds for the current element.
-     *
-     * @param predicate A condition tested subsequently for this elements.
-     * @return a new instance consisting of all elements starting from the first one which does satisfy the given
-     * predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Traversable<T> dropUntil(Predicate<? super T> predicate);
-
-    /**
-     * Drops elements while the predicate holds for the current element.
-     * <p>
-     * Note: This is essentially the same as {@code dropUntil(predicate.negate())}.
-     * It is intended to be used with method references, which cannot be negated directly.
-     *
-     * @param predicate A condition tested subsequently for this elements.
-     * @return a new instance consisting of all elements starting from the first one which does not satisfy the
-     * given predicate.
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    Traversable<T> dropWhile(Predicate<? super T> predicate);
 
     /**
      * In Vavr there are four basic classes of collections:
@@ -569,36 +478,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     }
 
 
-    /**
-     * Groups this {@code Traversable} into fixed size blocks.
-     * <p>
-     * Let length be the length of this Iterable. Then grouped is defined as follows:
-     * <ul>
-     * <li>If {@code this.isEmpty()}, the resulting {@code Iterator} is empty.</li>
-     * <li>If {@code size <= length}, the resulting {@code Iterator} will contain {@code length / size} blocks of size
-     * {@code size} and maybe a non-empty block of size {@code length % size}, if there are remaining elements.</li>
-     * <li>If {@code size > length}, the resulting {@code Iterator} will contain one block of size {@code length}.</li>
-     * </ul>
-     * Examples:
-     * <pre>
-     * <code>
-     * [].grouped(1) = []
-     * [].grouped(0) throws
-     * [].grouped(-1) throws
-     * [1,2,3,4].grouped(2) = [[1,2],[3,4]]
-     * [1,2,3,4,5].grouped(2) = [[1,2],[3,4],[5]]
-     * [1,2,3,4].grouped(5) = [[1,2,3,4]]
-     * </code>
-     * </pre>
-     *
-     * Please note that {@code grouped(int)} is a special case of {@linkplain #sliding(int, int)}, i.e.
-     * {@code grouped(size)} is the same as {@code sliding(size, size)}.
-     *
-     * @param size a positive block size
-     * @return A new Iterator of grouped blocks of the given size
-     * @throws IllegalArgumentException if {@code size} is negative or zero
-     */
-    Iterator<? extends Traversable<T>> grouped(int size);
+
 
     /**
      * Checks if this Traversable is known to have a finite size.
@@ -701,22 +581,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     int hashCode();
 
-    /**
-     * Dual of {@linkplain #tail()}, returning all elements except the last.
-     *
-     * @return a new instance containing all elements except the last.
-     * @throws UnsupportedOperationException if this is empty
-     */
-    Traversable<T> init();
 
-    /**
-     * Dual of {@linkplain #tailOption()}, returning all elements except the last as {@code Option}.
-     *
-     * @return {@code Some(traversable)} or {@code None} if this is empty.
-     */
-    default Option<? extends Traversable<T>> initOption() {
-        return isEmpty() ? Option.none() : Option.some(init());
-    }
 
     /**
      * Checks if this Traversable may consist of distinct elements only.

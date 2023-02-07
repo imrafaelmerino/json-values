@@ -19,8 +19,7 @@
 package io.vavr.collection;
 
 
-import io.vavr.collection.JavaConverters.ChangePolicy;
-import io.vavr.collection.JavaConverters.ListView;
+
 import io.vavr.control.Option;
 
 import java.util.*;
@@ -48,22 +47,8 @@ final class Collections {
         return hash(iterable, Integer::sum);
     }
 
-    static <T, C extends Seq<T>> C asJava(C source, Consumer<? super java.util.List<T>> action, ChangePolicy changePolicy) {
-        Objects.requireNonNull(action, "action is null");
-        final ListView<T, C> view = JavaConverters.asJava(source, changePolicy);
-        action.accept(view);
-        return view.getDelegate();
-    }
 
-    @SuppressWarnings("unchecked")
-    static <T, S extends Seq<T>> Iterator<S> crossProduct(S empty, S seq, int power) {
-        if (power < 0) {
-            return Iterator.empty();
-        } else {
-            return Iterator.range(0, power)
-                    .foldLeft(Iterator.of(empty), (product, ignored) -> product.flatMap(el -> seq.map(t -> (S) el.append(t))));
-        }
-    }
+
 
 
 
@@ -207,39 +192,7 @@ final class Collections {
         };
     }
 
-    @SuppressWarnings("unchecked")
-    static <T, C extends Seq<T>> C rotateLeft(C source, int n) {
-        if (source.isEmpty() || n == 0) {
-            return source;
-        } else if (n < 0) {
-            return rotateRight(source, -n);
-        } else {
-            int len = source.length();
-            int m = n % len;
-            if (m == 0) {
-                return source;
-            } else {
-                return (C) source.drop(m).appendAll(source.take(m));
-            }
-        }
-    }
 
-    @SuppressWarnings("unchecked")
-    static <T, C extends Seq<T>> C rotateRight(C source, int n) {
-        if (source.isEmpty() || n == 0) {
-            return source;
-        } else if (n < 0) {
-            return rotateLeft(source, -n);
-        } else {
-            int len = source.length();
-            int m = n % len;
-            if (m == 0) {
-                return source;
-            } else {
-                return (C) source.takeRight(m).appendAll(source.dropRight(m));
-            }
-        }
-    }
 
     static <T, U, R extends Traversable<U>> R scanLeft(Traversable<? extends T> source,
                                                        U zero, BiFunction<? super U, ? super T, ? extends U> operation, Function<Iterator<U>, R> finisher) {
@@ -248,12 +201,7 @@ final class Collections {
         return finisher.apply(iterator);
     }
 
-    static <T, U, R extends Traversable<U>> R scanRight(Traversable<? extends T> source,
-                                                        U zero, BiFunction<? super T, ? super U, ? extends U> operation, Function<Iterator<U>, R> finisher) {
-        Objects.requireNonNull(operation, "operation is null");
-        final Iterator<? extends T> reversedElements = reverseIterator(source);
-        return scanLeft(reversedElements, zero, (u, t) -> operation.apply(t, u), us -> finisher.apply(reverseIterator(us)));
-    }
+
 
     static <T, U, R extends Seq<T>> R sortBy(Seq<? extends T> source, Comparator<? super U> comparator, Function<? super T, ? extends U> mapper, Collector<T, ?, R> collector) {
         Objects.requireNonNull(comparator, "comparator is null");
@@ -374,11 +322,9 @@ final class Collections {
         }
 
         Object[] toArray() {
-            if (iterable instanceof Collection<?>) {
-                return ((Collection<? extends T>) iterable).toArray();
-            } else {
+
                 return ArrayType.asArray(iterator(), size());
-            }
+
         }
     }
 

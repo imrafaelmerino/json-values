@@ -92,7 +92,6 @@ import java.util.stream.StreamSupport;
  * <li>{@link #toJavaList()}</li>
  * <li>{@link #toJavaSet()}</li>
  * <li>{@link #toJavaStream()}</li>
- * <li>{@link #toList()}</li>
  * <li>{@link #toString()}</li>
  * </ul>
  *
@@ -599,32 +598,3 @@ public interface Value<T> extends Iterable<T> {
 
 }
 
-@SuppressWarnings("deprecation")
-interface ValueModule {
-    
-    static <T, R extends Traversable<T>> R toTraversable(
-            Value<T> value, R empty, Function<T, R> ofElement, Function<Iterable<T>, R> ofAll) {
-        if (value.isEmpty()) {
-            return empty;
-        } else if (value.isSingleValued()) {
-            return ofElement.apply(value.get());
-        } else {
-            return ofAll.apply(value);
-        }
-    }
-
-
-
-    static <T, R extends Collection<T>> R toJavaCollection(
-            Value<T> value, Function<Integer, R> containerSupplier, int defaultInitialCapacity) {
-        final int size;
-        if (value instanceof Traversable && ((Traversable) value).isTraversableAgain()) {
-            size = ((Traversable) value).size();
-        } else {
-            size = defaultInitialCapacity;
-        }
-        final R container = containerSupplier.apply(size);
-        value.forEach(container::add);
-        return container;
-    }
-}

@@ -46,48 +46,11 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> appendAll(Iterable<? extends T> elements);
 
-    @Override
-    LinearSeq<T> asJava(Consumer<? super java.util.List<T>> action);
-
-    @Override
-    LinearSeq<T> asJavaMutable(Consumer<? super java.util.List<T>> action);
 
 
-    @Override
-    LinearSeq<? extends LinearSeq<T>> combinations();
 
-    @Override
-    LinearSeq<? extends LinearSeq<T>> combinations(int k);
 
-    @Override
-    Iterator<? extends LinearSeq<T>> crossProduct(int power);
 
-    @Override
-    LinearSeq<T> distinct();
-
-    @Override
-    LinearSeq<T> distinctBy(Comparator<? super T> comparator);
-
-    @Override
-    <U> LinearSeq<T> distinctBy(Function<? super T, ? extends U> keyExtractor);
-
-    @Override
-    LinearSeq<T> drop(int n);
-
-    @Override
-    LinearSeq<T> dropUntil(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> dropWhile(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> dropRight(int n);
-
-    @Override
-    LinearSeq<T> dropRightUntil(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> dropRightWhile(Predicate<? super T> predicate);
 
     @Override
     LinearSeq<T> filter(Predicate<? super T> predicate);
@@ -101,39 +64,12 @@ public interface LinearSeq<T> extends Seq<T> {
 
 
     @Override
-    Iterator<? extends LinearSeq<T>> grouped(int size);
-
-
-
-    @Override
-    default int indexWhere(Predicate<? super T> predicate, int from) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        int i = from;
-        LinearSeq<T> these = drop(from);
-        while (!these.isEmpty()) {
-            if (predicate.test(these.head())) {
-                return i;
-            }
-            i++;
-            these = these.tail();
-        }
-        return -1;
-    }
-
-    @Override
-    LinearSeq<T> init();
-
-    @Override
-    Option<? extends LinearSeq<T>> initOption();
-
-    @Override
     LinearSeq<T> insert(int index, T element);
 
     @Override
     LinearSeq<T> insertAll(int index, Iterable<? extends T> elements);
 
-    @Override
-    LinearSeq<T> intersperse(T element);
+
 
 
 
@@ -148,11 +84,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> orElse(Supplier<? extends Iterable<? extends T>> supplier);
 
-    @Override
-    LinearSeq<T> padTo(int length, T element);
 
-    @Override
-    LinearSeq<T> patch(int from, Iterable<? extends T> that, int replaced);
 
     @Override
     Tuple2<? extends LinearSeq<T>, ? extends LinearSeq<T>> partition(Predicate<? super T> predicate);
@@ -160,8 +92,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> peek(Consumer<? super T> action);
 
-    @Override
-    LinearSeq<? extends LinearSeq<T>> permutations();
+
 
     @Override
     LinearSeq<T> prepend(T element);
@@ -204,17 +135,9 @@ public interface LinearSeq<T> extends Seq<T> {
         return reverse().iterator();
     }
 
-    @Override
-    LinearSeq<T> rotateLeft(int n);
 
-    @Override
-    LinearSeq<T> rotateRight(int n);
 
-    @Override
-    LinearSeq<T> shuffle();
 
-    @Override
-    LinearSeq<T> shuffle(Random random);
 
     @Override
     LinearSeq<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation);
@@ -225,20 +148,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     <U> LinearSeq<U> scanRight(U zero, BiFunction<? super T, ? super U, ? extends U> operation);
 
-    @Override
-    default int segmentLength(Predicate<? super T> predicate, int from) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        int i = 0;
-        LinearSeq<T> these = this.drop(from);
-        while (!these.isEmpty() && predicate.test(these.head())) {
-            i++;
-            these = these.tail();
-        }
-        return i;
-    }
 
-    @Override
-    LinearSeq<T> slice(int beginIndex, int endIndex);
 
     @Override
     Iterator<? extends LinearSeq<T>> slideBy(Function<? super T, ?> classifier);
@@ -249,14 +159,10 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     Iterator<? extends LinearSeq<T>> sliding(int size, int step);
 
-    @Override
-    LinearSeq<T> sorted();
 
     @Override
     LinearSeq<T> sorted(Comparator<? super T> comparator);
 
-    @Override
-    <U extends Comparable<? super U>> LinearSeq<T> sortBy(Function<? super T, ? extends U> mapper);
 
     @Override
     <U> LinearSeq<T> sortBy(Comparator<? super U> comparator, Function<? super T, ? extends U> mapper);
@@ -264,11 +170,8 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     Tuple2<? extends LinearSeq<T>, ? extends LinearSeq<T>> span(Predicate<? super T> predicate);
 
-    @Override
-    LinearSeq<T> subSequence(int beginIndex);
 
-    @Override
-    LinearSeq<T> subSequence(int beginIndex, int endIndex);
+
 
     @Override
     LinearSeq<T> tail();
@@ -297,8 +200,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> update(int index, T element);
 
-    @Override
-    LinearSeq<T> update(int index, Function<? super T, ? extends T> updater);
+
 
     @Override
     <U> LinearSeq<Tuple2<T, U>> zip(Iterable<? extends U> that);
@@ -315,64 +217,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     <U> LinearSeq<U> zipWithIndex(BiFunction<? super T, ? super Integer, ? extends U> mapper);
 
-    /**
-     * Searches this sequence for a specific element using a linear search. The sequence must already be sorted into
-     * ascending natural order. If it is not sorted, the results are undefined.
-     *
-     * @param element the element to find
-     * @return the index of the search element, if it is contained in the sequence;
-     * otherwise, <code>(-(<i>insertion point</i>) - 1)</code>. The
-     * <i>insertion point</i> is defined as the point at which the
-     * element would be inserted into the sequence. Note that this guarantees that
-     * the return value will be &gt;= 0 if and only if the element is found.
-     * @throws ClassCastException if T cannot be cast to {@code Comparable<? super T>}
-     */
-    @Override
-    @SuppressWarnings("unchecked")
-    default int search(T element) {
-        final ToIntFunction<T> comparison = ((Comparable<T>) element)::compareTo;
-        return LinearSeqModule.Search.linearSearch(this, comparison);
-    }
-
-    /**
-     * Searches this sequence for a specific element using a linear search. The sequence must already be sorted into
-     * ascending order according to the specified comparator. If it is not sorted, the results are undefined.
-     *
-     * @param element    the element to find
-     * @param comparator the comparator by which this sequence is ordered
-     * @return the index of the search element, if it is contained in the sequence;
-     * otherwise, <code>(-(<i>insertion point</i>) - 1)</code>. The
-     * <i>insertion point</i> is defined as the point at which the
-     * element would be inserted into the sequence. Note that this guarantees that
-     * the return value will be &gt;= 0 if and only if the element is found.
-     */
-    @Override
-    default int search(T element, Comparator<? super T> comparator) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        final ToIntFunction<T> comparison = current -> comparator.compare(element, current);
-        return LinearSeqModule.Search.linearSearch(this, comparison);
-    }
 
 }
 
-interface LinearSeqModule {
 
-
-    interface Search {
-        
-        static <T> int linearSearch(LinearSeq<T> seq, ToIntFunction<T> comparison) {
-            int idx = 0;
-            for (T current : seq) {
-                final int cmp = comparison.applyAsInt(current);
-                if (cmp == 0) {
-                    return idx;
-                } else if (cmp < 0) {
-                    return -(idx + 1);
-                }
-                idx += 1;
-            }
-            return -(idx + 1);
-        }
-    }
-
-}

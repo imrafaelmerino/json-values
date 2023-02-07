@@ -26,9 +26,7 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Collector;
 
-import static io.vavr.collection.JavaConverters.ChangePolicy.IMMUTABLE;
-import static io.vavr.collection.JavaConverters.ChangePolicy.MUTABLE;
-import static io.vavr.collection.JavaConverters.ListView;
+
 
 /**
  * An immutable {@code List} is an eager sequence of elements. Its immutability makes it suitable for concurrent programming.
@@ -217,34 +215,13 @@ public abstract class List<T> implements LinearSeq<T> {
      */
     @SuppressWarnings("unchecked")
     public static <T> List<T> ofAll(Iterable<? extends T> elements) {
-        Objects.requireNonNull(elements, "elements is null");
-        if (elements instanceof List) {
-            return (List<T>) elements;
-        } else if (elements instanceof ListView
-                && ((ListView<T, ?>) elements).getDelegate() instanceof List) {
-            return (List<T>) ((ListView<T, ?>) elements).getDelegate();
-        } else if (elements instanceof java.util.List) {
-            List<T> result = Nil.instance();
-            final java.util.List<T> list = (java.util.List<T>) elements;
-            final ListIterator<T> iterator = list.listIterator(list.size());
-            while (iterator.hasPrevious()) {
-                result = result.prepend(iterator.previous());
-            }
-            return result;
-        } else if (elements instanceof NavigableSet) {
-            List<T> result = Nil.instance();
-            final java.util.Iterator<T> iterator = ((NavigableSet<T>) elements).descendingIterator();
-            while (iterator.hasNext()) {
-                result = result.prepend(iterator.next());
-            }
-            return result;
-        } else {
+
             List<T> result = Nil.instance();
             for (T element : elements) {
                 result = result.prepend(element);
             }
             return result.reverse();
-        }
+
     }
 
     /**
@@ -661,107 +638,14 @@ public abstract class List<T> implements LinearSeq<T> {
         return List.<T> ofAll(elements).prependAll(this);
     }
 
-    @Override
-    public final java.util.List<T> asJava() {
-        return JavaConverters.asJava(this, IMMUTABLE);
-    }
-
-    @Override
-    public final List<T> asJava(Consumer<? super java.util.List<T>> action) {
-        return Collections.asJava(this, action, IMMUTABLE);
-    }
-
-    @Override
-    public final java.util.List<T> asJavaMutable() {
-        return JavaConverters.asJava(this, MUTABLE);
-    }
-
-    @Override
-    public final List<T> asJavaMutable(Consumer<? super java.util.List<T>> action) {
-        return Collections.asJava(this, action, MUTABLE);
-    }
 
 
 
 
 
-    @Override
-    public final Iterator<List<T>> crossProduct(int power) {
-        return Collections.crossProduct(empty(), this, power);
-    }
 
-    @Override
-    public final List<T> distinct() {
-        return distinctBy(Function.identity());
-    }
 
-    @Override
-    public final List<T> distinctBy(Comparator<? super T> comparator) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        final java.util.Set<T> seen = new java.util.TreeSet<>(comparator);
-        return filter(seen::add);
-    }
 
-    @Override
-    public final <U> List<T> distinctBy(Function<? super T, ? extends U> keyExtractor) {
-        Objects.requireNonNull(keyExtractor, "keyExtractor is null");
-        final java.util.Set<U> seen = new java.util.HashSet<>();
-        return filter(t -> seen.add(keyExtractor.apply(t)));
-    }
-
-    @Override
-    public final List<T> drop(int n) {
-        if (n <= 0) {
-            return this;
-        }
-        if (n >= size()) {
-            return empty();
-        }
-        List<T> list = this;
-        for (long i = n; i > 0 && !list.isEmpty(); i--) {
-            list = list.tail();
-        }
-        return list;
-    }
-
-    @Override
-    public final List<T> dropUntil(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return dropWhile(predicate.negate());
-    }
-
-    @Override
-    public final List<T> dropWhile(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        List<T> list = this;
-        while (!list.isEmpty() && predicate.test(list.head())) {
-            list = list.tail();
-        }
-        return list;
-    }
-
-    @Override
-    public final List<T> dropRight(int n) {
-        if (n <= 0) {
-            return this;
-        }
-        if (n >= length()) {
-            return empty();
-        }
-        return ofAll(iterator().dropRight(n));
-    }
-
-    @Override
-    public final List<T> dropRightUntil(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return reverse().dropUntil(predicate).reverse();
-    }
-
-    @Override
-    public final List<T> dropRightWhile(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return dropRightUntil(predicate.negate());
-    }
 
     @Override
     public final List<T> filter(Predicate<? super T> predicate) {
@@ -808,13 +692,6 @@ public abstract class List<T> implements LinearSeq<T> {
     }
 
 
-
-
-    @Override
-    public final Iterator<List<T>> grouped(int size) {
-        return sliding(size, size);
-    }
-
     @Override
     public final boolean hasDefiniteSize() {
         return true;
@@ -831,19 +708,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return -1;
     }
 
-    @Override
-    public final List<T> init() {
-        if (isEmpty()) {
-            throw new UnsupportedOperationException("init of empty list");
-        } else {
-            return dropRight(1);
-        }
-    }
-
-    @Override
-    public final Option<List<T>> initOption() {
-        return isEmpty() ? Option.none() : Option.some(init());
-    }
 
     @Override
     public abstract int length();
@@ -895,10 +759,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return result;
     }
 
-    @Override
-    public final List<T> intersperse(T element) {
-        return ofAll(iterator().intersperse(element));
-    }
+
 
     @Override
     public final boolean isTraversableAgain() {
@@ -941,35 +802,8 @@ public abstract class List<T> implements LinearSeq<T> {
         return isEmpty() ? ofAll(supplier.get()) : this;
     }
 
-    @Override
-    public final List<T> padTo(int length, T element) {
-        final int actualLength = length();
-        if (length <= actualLength) {
-            return this;
-        } else {
-            return appendAll(Iterator.continually(element).take(length - actualLength));
-        }
-    }
 
-    @Override
-    public final List<T> leftPadTo(int length, T element) {
-        final int actualLength = length();
-        if (length <= actualLength) {
-            return this;
-        } else {
-            return prependAll(Iterator.continually(element).take(length - actualLength));
-        }
-    }
 
-    @Override
-    public final List<T> patch(int from, Iterable<? extends T> that, int replaced) {
-        from = Math.max(from, 0);
-        replaced = Math.max(replaced, 0);
-        List<T> result = take(from).appendAll(that);
-        from += replaced;
-        result = result.appendAll(drop(from));
-        return result;
-    }
 
     @Override
     public final Tuple2<List<T>, List<T>> partition(Predicate<? super T> predicate) {
@@ -1203,15 +1037,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return (length() <= 1) ? this : foldLeft(empty(), List::prepend);
     }
 
-    @Override
-    public final List<T> rotateLeft(int n) {
-        return Collections.rotateLeft(this, n);
-    }
 
-    @Override
-    public final List<T> rotateRight(int n) {
-        return Collections.rotateRight(this, n);
-    }
 
     @Override
     public final List<T> scan(T zero, BiFunction<? super T, ? super T, ? extends T> operation) {
@@ -1228,34 +1054,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return null;
     }
 
-    @Override
-    public final List<T> shuffle() {
-        return Collections.shuffle(this, List::ofAll);
-    }
-
-    @Override
-    public final List<T> shuffle(Random random) {
-        return Collections.shuffle(this, random, List::ofAll);
-    }
-
-    @Override
-    public final List<T> slice(int beginIndex, int endIndex) {
-        if (beginIndex >= endIndex || beginIndex >= length() || isEmpty()) {
-            return empty();
-        } else {
-            List<T> result = Nil.instance();
-            List<T> list = this;
-            final long lowerBound = Math.max(beginIndex, 0);
-            final long upperBound = Math.min(endIndex, length());
-            for (int i = 0; i < upperBound; i++) {
-                if (i >= lowerBound) {
-                    result = result.prepend(list.head());
-                }
-                list = list.tail();
-            }
-            return result.reverse();
-        }
-    }
 
     @Override
     public final Iterator<List<T>> slideBy(Function<? super T, ?> classifier) {
@@ -1273,20 +1071,11 @@ public abstract class List<T> implements LinearSeq<T> {
     }
 
     @Override
-    public final List<T> sorted() {
-        return isEmpty() ? this : toJavaStream().sorted().collect(collector());
-    }
-
-    @Override
     public final List<T> sorted(Comparator<? super T> comparator) {
         Objects.requireNonNull(comparator, "comparator is null");
         return isEmpty() ? this : toJavaStream().sorted(comparator).collect(collector());
     }
 
-    @Override
-    public final <U extends Comparable<? super U>> List<T> sortBy(Function<? super T, ? extends U> mapper) {
-        return sortBy(U::compareTo, mapper);
-    }
 
     @Override
     public final <U> List<T> sortBy(Comparator<? super U> comparator, Function<? super T, ? extends U> mapper) {
@@ -1349,33 +1138,9 @@ public abstract class List<T> implements LinearSeq<T> {
         return "List";
     }
 
-    @Override
-    public final List<T> subSequence(int beginIndex) {
-        if (beginIndex < 0 || beginIndex > length()) {
-            throw new IndexOutOfBoundsException("subSequence(" + beginIndex + ")");
-        } else {
-            return drop(beginIndex);
-        }
-    }
 
-    @Override
-    public final List<T> subSequence(int beginIndex, int endIndex) {
-        Collections.subSequenceRangeCheck(beginIndex, endIndex, length());
-        if (beginIndex == endIndex) {
-            return empty();
-        } else if (beginIndex == 0 && endIndex == length()) {
-            return this;
-        } else {
-            List<T> result = Nil.instance();
-            List<T> list = this;
-            for (int i = 0; i < endIndex; i++, list = list.tail()) {
-                if (i >= beginIndex) {
-                    result = result.prepend(list.head());
-                }
-            }
-            return result.reverse();
-        }
-    }
+
+
 
     @Override
     public abstract List<T> tail();
@@ -1480,11 +1245,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return result;
     }
 
-    @Override
-    public final List<T> update(int index, Function<? super T, ? extends T> updater) {
-        Objects.requireNonNull(updater, "updater is null");
-        return update(index, updater.apply(get(index)));
-    }
+
 
     @Override
     public final <U> List<Tuple2<T, U>> zip(Iterable<? extends U> that) {
@@ -1553,15 +1314,7 @@ public abstract class List<T> implements LinearSeq<T> {
             return 0;
         }
 
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> combinations() {
-            return null;
-        }
 
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> combinations(int k) {
-            return null;
-        }
 
         @Override
         public int lastIndexWhere(Predicate<? super T> predicate, int end) {
@@ -1571,11 +1324,6 @@ public abstract class List<T> implements LinearSeq<T> {
         @Override
         public int lastIndexOfSlice(Iterable<? extends T> that, int end) {
             return 0;
-        }
-
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> permutations() {
-            return null;
         }
 
         @Override
@@ -1687,15 +1435,7 @@ public abstract class List<T> implements LinearSeq<T> {
             return length;
         }
 
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> combinations() {
-            return null;
-        }
 
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> combinations(int k) {
-            return null;
-        }
 
         @Override
         public int lastIndexWhere(Predicate<? super T> predicate, int end) {
@@ -1707,10 +1447,6 @@ public abstract class List<T> implements LinearSeq<T> {
             return 0;
         }
 
-        @Override
-        public LinearSeq<? extends LinearSeq<T>> permutations() {
-            return null;
-        }
 
         @Override
         public LinearSeq<T> remove(T element) {
