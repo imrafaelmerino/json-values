@@ -664,23 +664,7 @@ public abstract class List<T> implements LinearSeq<T> {
         }
     }
 
-    @Override
-    public final List<T> filterNot(Predicate<? super T> predicate){
-        Objects.requireNonNull(predicate, "predicate is null");
-        return Collections.filterNot(this, predicate);
-    }
 
-    @Override
-    public final <U> List<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
-        List<U> list = empty();
-        for (T t : this) {
-            for (U u : mapper.apply(t)) {
-                list = list.prepend(u);
-            }
-        }
-        return list.reverse();
-    }
 
     @Override
     public final T apply(Integer index) {

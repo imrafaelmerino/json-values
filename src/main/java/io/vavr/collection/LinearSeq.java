@@ -53,11 +53,7 @@ public interface LinearSeq<T> extends Seq<T> {
     @Override
     LinearSeq<T> filter(Predicate<? super T> predicate);
 
-    @Override
-    LinearSeq<T> filterNot(Predicate<? super T> predicate);
 
-    @Override
-    <U> LinearSeq<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper);
 
 
 

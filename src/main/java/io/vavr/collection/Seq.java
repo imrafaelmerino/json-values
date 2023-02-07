@@ -22,9 +22,7 @@ import io.vavr.*;
 import io.vavr.control.Option;
 
 import java.io.Serializable;
-import java.util.Comparator;
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.*;
 
 /**
@@ -413,11 +411,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
     @Override
     Seq<T> filter(Predicate<? super T> predicate);
 
-    @Override
-    Seq<T> filterNot(Predicate<? super T> predicate);
 
-    @Override
-    <U> Seq<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper);
 
     @Override
     default <U> U foldRight(U zero, BiFunction<? super T, ? super U, ? extends U> f) {

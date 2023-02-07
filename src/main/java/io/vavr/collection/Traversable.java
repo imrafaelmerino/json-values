@@ -36,7 +36,6 @@ import java.util.stream.DoubleStream;
  *
  * <ul>
  * <li>{@link #contains(Object)}</li>
- * <li>{@link #containsAll(Iterable)}</li>
  * <li>{@link #head()}</li>
  * <li>{@link #headOption()}</li>
  * <li>{@link #isEmpty()}</li>
@@ -58,14 +57,12 @@ import java.util.stream.DoubleStream;
  * Numeric operations:
  *
  * <ul>
- * <li>{@link #average()}</li>
  * <li>{@link #max()}</li>
  * <li>{@link #maxBy(Comparator)}</li>
  * <li>{@link #maxBy(Function)}</li>
  * <li>{@link #min()}</li>
  * <li>{@link #minBy(Comparator)}</li>
  * <li>{@link #minBy(Function)}</li>
- * <li>{@link #product()}</li>
  * <li>{@link #sum()}</li>
  * </ul>
  *
@@ -76,8 +73,6 @@ import java.util.stream.DoubleStream;
  * <li>{@link #fold(Object, BiFunction)}</li>
  * <li>{@link #foldLeft(Object, BiFunction)}</li>
  * <li>{@link #foldRight(Object, BiFunction)}</li>
- * <li>{@link #mkString()}</li>
- * <li>{@link #mkString(CharSequence)}</li>
  * <li>{@link #mkString(CharSequence, CharSequence, CharSequence)}</li>
  * <li>{@link #reduce(BiFunction)}</li>
  * <li>{@link #reduceOption(BiFunction)}</li>
@@ -91,7 +86,6 @@ import java.util.stream.DoubleStream;
  *
  * <ul>
  * <li>{@link #filter(Predicate)}</li>
- * <li>{@link #filterNot(Predicate)}</li>
  * <li>{@link #find(Predicate)}</li>
  * <li>{@link #findLast(Predicate)}</li>
  * <li>{@link #partition(Predicate)}</li>
@@ -105,7 +99,6 @@ import java.util.stream.DoubleStream;
  * Tests:
  *
  * <ul>
- * <li>{@link #existsUnique(Predicate)}</li>
  * <li>{@link #hasDefiniteSize()}</li>
  * <li>{@link #isDistinct()}</li>
  * <li>{@link #isOrdered()}</li>
@@ -135,81 +128,7 @@ import java.util.stream.DoubleStream;
 public interface Traversable<T> extends Iterable<T>,  Value<T> {
 
 
-    /**
-     * Matches each element with a unique key that you extract from it.
-     * If the same key is present twice, the function will return {@code None}.
-     *
-     * @param getKey A function which extracts a key from elements
-     * @param <K>    key class type
-     * @return A Map containing the elements arranged by their keys.
-     * @throws NullPointerException if {@code getKey} is null.
-     * @see #groupBy(Function)
-     */
 
-    /**
-     * Calculates the average of this elements, assuming that the element type is {@link Number}.
-     *
-     * Since we do not know if the component type {@code T} is of type {@code Number}, the
-     * {@code average()} call might throw at runtime (see examples below).
-     * <p>
-     * Examples:
-     *
-     * <pre>{@code
-     * List.empty().average()                       // = None
-     * List.of(1, 2, 3).average()                   // = Some(2.0)
-     * List.of(1.0, 10e100, 2.0, -10e100).average() // = Some(0.75)
-     * List.of(1.0, Double.NaN).average()           // = NaN
-     * List.of("apple", "pear").average()           // throws
-     * }</pre>
-     *
-     * Please note that Java's {@link DoubleStream#average()} uses the
-     * <a href="https://en.wikipedia.org/wiki/Kahan_summation_algorithm">Kahan summation algorithm</a>
-     * (also known as compensated summation), which has known limitations.
-     * <p>
-     * Vavr uses Neumaier's modification of the Kahan algorithm, which yields better results.
-     *
-     * <pre>{@code
-     * // = OptionalDouble(0.0) (wrong)
-     * j.u.s.DoubleStream.of(1.0, 10e100, 2.0, -10e100).average()
-     *
-     * // = Some(0.75) (correct)
-     * List.of(1.0, 10e100, 2.0, -10e100).average()
-     * }</pre>
-     *
-     * @return {@code Some(average)} or {@code None}, if there are no elements
-     * @throws UnsupportedOperationException if this elements are not numeric
-     */
-    default Option<Double> average() {
-        try {
-            final double[] sum = TraversableModule.neumaierSum(this, t -> ((Number) t).doubleValue());
-            final double count = sum[1];
-            return (count == 0) ? Option.none() : Option.some(sum[0] / count);
-        } catch(ClassCastException x) {
-            throw new UnsupportedOperationException("not numeric", x);
-        }
-    }
-
-
-    /**
-     * Tests if this Traversable contains all given elements.
-     * <p>
-     * The result is equivalent to
-     * {@code elements.isEmpty() ? true : contains(elements.head()) && containsAll(elements.tail())} but implemented
-     * without recursion.
-     *
-     * @param elements A List of values of type T.
-     * @return true, if this List contains all given elements, false otherwise.
-     * @throws NullPointerException if {@code elements} is null
-     */
-    default boolean containsAll(Iterable<? extends T> elements) {
-        Objects.requireNonNull(elements, "elements is null");
-        for (T element : elements) {
-            if (!contains(element)) {
-                return false;
-            }
-        }
-        return true;
-    }
 
     /**
      * Counts the elements which satisfy the given predicate.
@@ -267,27 +186,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     boolean equals(Object obj);
 
-    /**
-     * Checks, if a unique elements exists such that the predicate holds.
-     *
-     * @param predicate A Predicate
-     * @return true, if predicate holds for a unique element, false otherwise
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    default boolean existsUnique(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        boolean exists = false;
-        for (T t : this) {
-            if (predicate.test(t)) {
-                if (exists) {
-                    return false;
-                } else {
-                    exists = true;
-                }
-            }
-        }
-        return exists;
-    }
 
     /**
      * Returns a new traversable consisting of all elements which satisfy the given predicate.
@@ -298,21 +196,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
      */
     Traversable<T> filter(Predicate<? super T> predicate);
 
-    /**
-     * Returns a new traversable consisting of all elements which do not satisfy the given predicate.
-     * <p>
-     * The default implementation is equivalent to
-     *
-     * <pre>{@code filter(predicate.negate()}</pre>
-     *
-     * @param predicate A predicate
-     * @return a new traversable
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    default Traversable<T> filterNot(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return filter(predicate.negate());
-    }
 
     /**
      * Returns the first element of this which satisfies the given predicate.
@@ -331,67 +214,9 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         return Option.none();
     }
 
-    /**
-     * Returns the last element of this which satisfies the given predicate.
-     * <p>
-     * Same as {@code reverse().find(predicate)}.
-     *
-     * @param predicate A predicate.
-     * @return Some(element) or None, where element may be null (i.e. {@code List.of(null).find(e -> e == null)}).
-     * @throws NullPointerException if {@code predicate} is null
-     */
-    default Option<T> findLast(Predicate<? super T> predicate) {
-        Objects.requireNonNull(predicate, "predicate is null");
-        return iterator().findLast(predicate);
-    }
 
-    /**
-     * FlatMaps this Traversable.
-     *
-     * @param mapper A mapper
-     * @param <U>    The resulting component type.
-     * @return A new Traversable instance.
-     */
-    <U> Traversable<U> flatMap(Function<? super T, ? extends Iterable<? extends U>> mapper);
 
-    /**
-     * Folds this elements using the given associative binary operator, starting with {@code zero} and
-     * successively calling {@code combine}. The order in which the elements are combined is
-     * non-deterministic.
-     * <p>
-     * The methods {@code fold}, {@code foldLeft} and {@code foldRight} differ in how the elements are combined:
-     *
-     * <ul>
-     * <li>{@link #foldLeft(Object, BiFunction)} associates to the left</li>
-     * <li>{@link #foldRight(Object, BiFunction)} associates to the right</li>
-     * <li>
-     * {@code fold} takes an associative combine operation because the traversal of elements is
-     * unordered/non-deterministic. The associativity guarantees that in each case the result will
-     * be the same, it does not matter in which order the elements are combined. Generally binary
-     * operators aren't associative, i.e. the result may differ if elements are combined in a different
-     * order.
-     * <p>
-     * We say that this Traversable and the associative combine operation form a
-     * <a href="https://en.wikipedia.org/wiki/Monoid" target="_blank">Monoid</a>.
-     * </li>
-     * </ul>
-     *
-     * Example:
-     *
-     * <pre> {@code
-     * // = 6
-     * Set(1, 2, 3).fold(0, (a, b) -> a + b);
-     * } </pre>
-     *
-     * @param zero    A zero element to start with.
-     * @param combine A function which combines elements.
-     * @return a folded value
-     * @throws NullPointerException if {@code combine} is null
-     */
-    default T fold(T zero, BiFunction<? super T, ? super T, ? extends T> combine) {
-        Objects.requireNonNull(combine, "combine is null");
-        return foldLeft(zero, combine);
-    }
+
 
     /**
      * Folds this elements from the left, starting with {@code zero} and successively calling {@code combine}.
@@ -855,65 +680,8 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         }
     }
 
-    /**
-     * Joins the elements of this by concatenating their string representations.
-     * <p>
-     * This has the same effect as calling {@code mkCharSeq("", "", "")}.
-     *
-     * @return a new {@link CharSeq}
-     */
-    default CharSeq mkCharSeq() {
-        return mkCharSeq("", "", "");
-    }
 
-    /**
-     * Joins the string representations of this elements using a specific delimiter.
-     * <p>
-     * This has the same effect as calling {@code mkCharSeq("", delimiter, "")}.
-     *
-     * @param delimiter A delimiter string put between string representations of elements of this
-     * @return A new {@link CharSeq}
-     */
-    default CharSeq mkCharSeq(CharSequence delimiter) {
-        return mkCharSeq("", delimiter, "");
-    }
 
-    /**
-     * Joins the string representations of this elements using a specific delimiter, prefix and suffix.
-     * <p>
-     * Example: {@code List.of("a", "b", "c").mkCharSeq("Chars(", ", ", ")") = CharSeq.of("Chars(a, b, c))"}
-     *
-     * @param prefix    prefix of the resulting {@link CharSeq}
-     * @param delimiter A delimiter string put between string representations of elements of this
-     * @param suffix    suffix of the resulting {@link CharSeq}
-     * @return a new {@link CharSeq}
-     */
-    default CharSeq mkCharSeq(CharSequence prefix, CharSequence delimiter, CharSequence suffix) {
-        return CharSeq.of(mkString(prefix, delimiter, suffix));
-    }
-
-    /**
-     * Joins the elements of this by concatenating their string representations.
-     * <p>
-     * This has the same effect as calling {@code mkString("", "", "")}.
-     *
-     * @return a new String
-     */
-    default String mkString() {
-        return mkString("", "", "");
-    }
-
-    /**
-     * Joins the string representations of this elements using a specific delimiter.
-     * <p>
-     * This has the same effect as calling {@code mkString("", delimiter, "")}.
-     *
-     * @param delimiter A delimiter string put between string representations of elements of this
-     * @return A new String
-     */
-    default String mkString(CharSequence delimiter) {
-        return mkString("", delimiter, "");
-    }
 
     /**
      * Joins the string representations of this elements using a specific delimiter, prefix and suffix.
@@ -971,47 +739,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     @Override
     Traversable<T> peek(Consumer<? super T> action);
 
-    /**
-     * Calculates the product of this elements. Supported component types are {@code Byte}, {@code Double}, {@code Float},
-     * {@code Integer}, {@code Long}, {@code Short}, {@code BigInteger} and {@code BigDecimal}.
-     * <p>
-     * Examples:
-     * <pre>
-     * <code>
-     * List.empty().product()              // = 1
-     * List.of(1, 2, 3).product()          // = 6L
-     * List.of(0.1, 0.2, 0.3).product()    // = 0.006
-     * List.of("apple", "pear").product()  // throws
-     * </code>
-     * </pre>
-     *
-     * Please also see {@link #fold(Object, BiFunction)}, a way to do a type-safe multiplication of elements.
-     *
-     * @return a {@code Number} representing the sum of this elements
-     * @throws UnsupportedOperationException if this elements are not numeric
-     */
-    @SuppressWarnings("unchecked")
-    default Number product() {
-        if (isEmpty()) {
-            return 1;
-        } else {
-            try {
-                final Iterator<?> iter = iterator();
-                final Object o = iter.next();
-                if (o instanceof Integer || o instanceof Long || o instanceof Byte || o instanceof Short) {
-                    return ((Iterator<Number>) iter).foldLeft(((Number) o).longValue(), (product, number) -> product * number.longValue());
-                } else if (o instanceof BigInteger) {
-                    return ((Iterator<BigInteger>) iter).foldLeft(((BigInteger) o), BigInteger::multiply);
-                } else if (o instanceof BigDecimal) {
-                    return ((Iterator<BigDecimal>) iter).foldLeft(((BigDecimal) o), BigDecimal::multiply);
-                } else {
-                    return ((Iterator<Number>) iter).toJavaStream().mapToDouble(Number::doubleValue).reduce(((Number) o).doubleValue(), (d1, d2) -> d1 * d2);
-                }
-            } catch(ClassCastException x) {
-                throw new UnsupportedOperationException("not numeric", x);
-            }
-        }
-    }
+
 
     /**
      * Accumulates the elements of this Traversable by successively calling the given operation {@code op}.
