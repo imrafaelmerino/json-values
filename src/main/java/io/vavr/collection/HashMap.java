@@ -24,6 +24,7 @@ import io.vavr.control.Option;
 
 import java.io.Serializable;
 import java.util.Iterator;
+import java.util.Objects;
 
 
 /**
@@ -90,9 +91,19 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
         return result.size() == trie.size() ? this : wrap(result);
     }
 
-   
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        HashMap<?, ?> hashMap = (HashMap<?, ?>) o;
+        return Objects.equals(trie, hashMap.trie);
+    }
 
-  
+    @Override
+    public int hashCode() {
+        return trie.hashCode();
+    }
+
     public int size() {
         return trie.size();
     }

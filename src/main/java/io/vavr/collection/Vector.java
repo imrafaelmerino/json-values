@@ -18,20 +18,14 @@
  */
 package io.vavr.collection;
 
-import io.vavr.*;
-import io.vavr.collection.JavaConverters.ListView;
-import io.vavr.collection.VectorModule.Combinations;
-import io.vavr.control.Option;
 
-import java.io.Serializable;
+
 import java.util.*;
 import java.util.function.*;
-import java.util.stream.Collector;
 import java.util.stream.Stream;
 
 import static io.vavr.collection.Collections.withSize;
-import static io.vavr.collection.JavaConverters.ChangePolicy.IMMUTABLE;
-import static io.vavr.collection.JavaConverters.ChangePolicy.MUTABLE;
+
 
 /**
  * Vector is the default Seq implementation that provides effectively constant time access to any element.
@@ -248,22 +242,34 @@ public final class Vector<T> implements Iterable<T> {
     }
 
     
-   
+
+    @Override
     public int hashCode() {
-        //todo
-        return -1;
+        return trie.hashCode();
         //return Collections.hashOrdered(this);
     }
 
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Vector<?> vector = (Vector<?>) o;
+        return Objects.equals(trie, vector.trie);
+    }
 
-
-     public int count(Predicate<T> o) {
-        return 0;
+    public int count(Predicate<T> o) {
+        int n = 0;
+         for (T t : this) {
+             if (o.test(t)) {
+                 n+=1;
+             }
+         }
+         return n;
     }
 
     public Stream<T> toJavaStream() {
-        return null;
+        re
     }
 
 
