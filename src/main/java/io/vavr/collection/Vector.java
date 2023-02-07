@@ -89,7 +89,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> append(T element) {
-        return appendAll(Vector.of(element));
+        return appendAll(List.of(element));
     }
 
 
@@ -175,7 +175,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> prepend(T element) {
-        return prependAll(Vector.of(element));
+        return prependAll(List.of(element));
     }
 
 
