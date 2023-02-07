@@ -19,10 +19,10 @@
 package io.vavr.collection;
 
 
-
 import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static io.vavr.collection.Collections.withSize;
 
@@ -30,7 +30,7 @@ import static io.vavr.collection.Collections.withSize;
 /**
  * Vector is the default Seq implementation that provides effectively constant time access to any element.
  * Many other operations (e.g. `tail`, `drop`, `slice`) are also effectively constant.
- *
+ * <p>
  * The implementation is based on a `bit-mapped trie`, a very wide and shallow tree (i.e. depth ≤ 6).
  *
  * @param <T> Component type of the Vector.
@@ -40,19 +40,22 @@ public final class Vector<T> implements Iterable<T> {
     private static final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
 
     final BitMappedTrie<T> trie;
-    private Vector(BitMappedTrie<T> trie) { this.trie = trie; }
+
+    private Vector(BitMappedTrie<T> trie) {
+        this.trie = trie;
+    }
 
     @SuppressWarnings("ObjectEquality")
     private Vector<T> wrap(BitMappedTrie<T> trie) {
         return (trie == this.trie)
-               ? this
-               : ofAll(trie);
+                ? this
+                : ofAll(trie);
     }
 
     private static <T> Vector<T> ofAll(BitMappedTrie<T> trie) {
         return (trie.length() == 0)
-               ? empty()
-               : new Vector<>(trie);
+                ? empty()
+                : new Vector<>(trie);
     }
 
     /**
@@ -62,11 +65,10 @@ public final class Vector<T> implements Iterable<T> {
      * @return The empty Vector.
      */
     @SuppressWarnings("unchecked")
-    public static <T> Vector<T> empty() { return (Vector<T>) EMPTY; }
+    public static <T> Vector<T> empty() {
+        return (Vector<T>) EMPTY;
+    }
 
-
-
-    
 
     /**
      * Creates a Vector of the given elements.
@@ -86,44 +88,38 @@ public final class Vector<T> implements Iterable<T> {
     }
 
 
-   
-    public Vector<T> append(T element) { return appendAll(List.of(element)); }
+    public Vector<T> append(T element) {
+        return appendAll(List.of(element));
+    }
 
-   
+
     public Vector<T> appendAll(Iterable<? extends T> iterable) {
         Objects.requireNonNull(iterable, "iterable is null");
         if (isEmpty()) {
             return ofAll(iterable);
         }
-        if (Collections.isEmpty(iterable)){
+        if (Collections.isEmpty(iterable)) {
             return this;
         }
         return new Vector<>(trie.appendAll(iterable));
     }
 
-   
 
-   
     public Vector<T> drop(int n) {
         return wrap(trie.drop(n));
     }
 
-   
 
-   
     public Vector<T> dropRight(int n) {
         return take(length() - n);
     }
 
-  
 
-
-   
     public T apply(Integer index) {
         return trie.get(index);
     }
 
-   
+
     public T head() {
         if (!isEmpty()) {
             return get(0);
@@ -147,7 +143,7 @@ public final class Vector<T> implements Iterable<T> {
         throw new IndexOutOfBoundsException("get(" + index + ")");
     }
 
-   
+
     public Vector<T> init() {
         if (!isEmpty()) {
             return dropRight(1);
@@ -156,62 +152,58 @@ public final class Vector<T> implements Iterable<T> {
         }
     }
 
-   
 
-   
-    public boolean isEmpty() { return length() == 0; }
-
-
-   
-    public boolean isTraversableAgain() { return true; }
-
-   
-    public Iterator<T> iterator() {
-        return isEmpty() ? Iterator.empty()
-                         : trie.iterator();
+    public boolean isEmpty() {
+        return length() == 0;
     }
 
-   
 
-   
-    public int length() { return trie.length(); }
+    public boolean isTraversableAgain() {
+        return true;
+    }
 
 
-   
-    public Vector<T> prepend(T element) { return prependAll(List.of(element)); }
+    public Iterator<T> iterator() {
+        return isEmpty() ? Iterator.empty()
+                : trie.iterator();
+    }
 
-   
+
+    public int length() {
+        return trie.length();
+    }
+
+
+    public Vector<T> prepend(T element) {
+        return prependAll(List.of(element));
+    }
+
+
     public Vector<T> prependAll(Iterable<? extends T> iterable) {
         Objects.requireNonNull(iterable, "iterable is null");
         if (isEmpty()) {
             return ofAll(iterable);
         }
-        if (Collections.isEmpty(iterable)){
+        if (Collections.isEmpty(iterable)) {
             return this;
         }
         return new Vector<>(trie.prependAll(iterable));
     }
 
 
-  
-
-   
     public Vector<T> removeAt(int index) {
         if (isDefinedAt(index)) {
             final Vector<T> begin = take(index);
             final Vector<T> end = drop(index + 1);
             return (begin.length() > end.length())
-                   ? begin.appendAll(end)
-                   : end.prependAll(begin);
+                    ? begin.appendAll(end)
+                    : end.prependAll(begin);
         } else {
             throw new IndexOutOfBoundsException("removeAt(" + index + ")");
         }
     }
 
-    
 
-
-   
     public Vector<T> tail() {
         if (!isEmpty()) {
             return drop(1);
@@ -220,19 +212,16 @@ public final class Vector<T> implements Iterable<T> {
         }
     }
 
-   
-   
+
     public Vector<T> take(int n) {
         return wrap(trie.take(n));
     }
 
 
-
-
     boolean isDefinedAt(Integer index) {
         return 0 <= index && index < length();
     }
-   
+
     public Vector<T> update(int index, T element) {
         if (isDefinedAt(index)) {
             return wrap(trie.update(index, element));
@@ -241,7 +230,6 @@ public final class Vector<T> implements Iterable<T> {
         }
     }
 
-    
 
     @Override
     public int hashCode() {
@@ -260,18 +248,17 @@ public final class Vector<T> implements Iterable<T> {
 
     public int count(Predicate<T> o) {
         int n = 0;
-         for (T t : this) {
-             if (o.test(t)) {
-                 n+=1;
-             }
-         }
-         return n;
+        for (T t : this) {
+            if (o.test(t)) {
+                n += 1;
+            }
+        }
+        return n;
     }
 
     public Stream<T> toJavaStream() {
-        re
+        return StreamSupport.stream(spliterator(), false);
     }
-
 
 
     public T last() {
