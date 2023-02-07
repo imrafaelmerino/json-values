@@ -56,7 +56,6 @@ import java.util.function.*;
  * <ul>
  * <li>{@link #max()}</li>
  * <li>{@link #maxBy(Comparator)}</li>
- * <li>{@link #sum()}</li>
  * </ul>
  *
  * Reduction/Folding:
@@ -465,51 +464,6 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
     @Override
     <U> Traversable<U> map(Function<? super T, ? extends U> mapper);
 
-    /**
-     * Calculates the maximum of this elements according to their natural order. Especially the underlying
-     * order of sorted collections is not taken into account.
-     * <p>
-     * Examples:
-     * <pre>
-     * <code>
-     * List.empty().max()             // = None
-     * List.of(1, 2, 3).max()         // = Some(3)
-     * List.of("a", "b", "c").max()   // = Some("c")
-     * List.of(1.0, Double.NaN).max() // = NaN
-     * List.of(1, "a").max()          // throws
-     * </code>
-     * </pre>
-     *
-     * @return {@code Some(maximum)} of this elements or {@code None} if this is empty
-     * @throws NullPointerException if an element is null
-     * @throws ClassCastException   if the elements do not have a natural order, i.e. they do not implement Comparable
-     */
-    default Option<T> max() {
-        return maxBy(Comparators.naturalComparator());
-    }
-
-    /**
-     * Calculates the maximum of this elements using a specific comparator.
-     *
-     * @param comparator A non-null element comparator
-     * @return {@code Some(maximum)} of this elements or {@code None} if this is empty
-     * @throws NullPointerException if {@code comparator} is null
-     */
-    default Option<T> maxBy(Comparator<? super T> comparator) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        if (isEmpty()) {
-            return Option.none();
-        } else {
-            final T value = reduce((t1, t2) -> comparator.compare(t1, t2) >= 0 ? t1 : t2);
-            return Option.some(value);
-        }
-    }
-
-
-
-
-
-
 
 
     /**
@@ -649,46 +603,7 @@ public interface Traversable<T> extends Iterable<T>,  Value<T> {
         }
     }
 
-    /**
-     * Calculates the sum of this elements. Supported component types are {@code Byte}, {@code Double}, {@code Float},
-     * {@code Integer}, {@code Long}, {@code Short}, {@code BigInteger} and {@code BigDecimal}.
-     * <p>
-     * Examples:
-     * <pre>
-     * <code>
-     * List.empty().sum()              // = 0
-     * List.of(1, 2, 3).sum()          // = 6L
-     * List.of(0.1, 0.2, 0.3).sum()    // = 0.6
-     * List.of("apple", "pear").sum()  // throws
-     * </code>
-     * </pre>
-     *
-     *
-     * @return a {@code Number} representing the sum of this elements
-     * @throws UnsupportedOperationException if this elements are not numeric
-     */
-    @SuppressWarnings("unchecked")
-    default Number sum() {
-        if (isEmpty()) {
-            return 0;
-        } else {
-            try {
-                final Iterator<?> iter = iterator();
-                final Object o = iter.next();
-                if (o instanceof Integer || o instanceof Long || o instanceof Byte || o instanceof Short) {
-                    return ((Iterator<Number>) iter).foldLeft(((Number) o).longValue(), (sum, number) -> sum + number.longValue());
-                } else if (o instanceof BigInteger) {
-                    return ((Iterator<BigInteger>) iter).foldLeft(((BigInteger) o), BigInteger::add);
-                } else if (o instanceof BigDecimal) {
-                    return ((Iterator<BigDecimal>) iter).foldLeft(((BigDecimal) o), BigDecimal::add);
-                } else {
-                    return TraversableModule.neumaierSum(Iterator.of(o).concat(iter), t -> ((Number) t).doubleValue())[0];
-                }
-            } catch(ClassCastException x) {
-                throw new UnsupportedOperationException("not numeric", x);
-            }
-        }
-    }
+
 
     /**
      * Drops the first element of a non-empty Traversable.
