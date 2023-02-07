@@ -1070,17 +1070,9 @@ public abstract class List<T> implements LinearSeq<T> {
         return iterator().sliding(size, step).map(List::ofAll);
     }
 
-    @Override
-    public final List<T> sorted(Comparator<? super T> comparator) {
-        Objects.requireNonNull(comparator, "comparator is null");
-        return isEmpty() ? this : toJavaStream().sorted(comparator).collect(collector());
-    }
 
 
-    @Override
-    public final <U> List<T> sortBy(Comparator<? super U> comparator, Function<? super T, ? extends U> mapper) {
-        return Collections.sortBy(this, comparator, mapper, collector());
-    }
+
 
     @Override
     public final Tuple2<List<T>, List<T>> span(Predicate<? super T> predicate) {
@@ -1089,49 +1081,7 @@ public abstract class List<T> implements LinearSeq<T> {
         return Tuple.of(ofAll(itt._1), ofAll(itt._2));
     }
 
-    @Override
-    public final Tuple2<List<T>, List<T>> splitAt(int n) {
-        if (isEmpty()) {
-            return Tuple.of(empty(), empty());
-        } else {
-            List<T> init = Nil.instance();
-            List<T> tail = this;
-            while (n > 0 && !tail.isEmpty()) {
-                init = init.prepend(tail.head());
-                tail = tail.tail();
-                n--;
-            }
-            return Tuple.of(init.reverse(), tail);
-        }
-    }
 
-    @Override
-    public final Tuple2<List<T>, List<T>> splitAt(Predicate<? super T> predicate) {
-        if (isEmpty()) {
-            return Tuple.of(empty(), empty());
-        } else {
-            final Tuple2<List<T>, List<T>> t = SplitAt.splitByPredicateReversed(this, predicate);
-            if (t._2.isEmpty()) {
-                return Tuple.of(this, empty());
-            } else {
-                return Tuple.of(t._1.reverse(), t._2);
-            }
-        }
-    }
-
-    @Override
-    public final Tuple2<List<T>, List<T>> splitAtInclusive(Predicate<? super T> predicate) {
-        if (isEmpty()) {
-            return Tuple.of(empty(), empty());
-        } else {
-            final Tuple2<List<T>, List<T>> t = SplitAt.splitByPredicateReversed(this, predicate);
-            if (t._2.isEmpty() || t._2.tail().isEmpty()) {
-                return Tuple.of(this, empty());
-            } else {
-                return Tuple.of(t._1.prepend(t._2.head()).reverse(), t._2.tail());
-            }
-        }
-    }
 
     @Override
     public final String stringPrefix() {
@@ -1218,32 +1168,6 @@ public abstract class List<T> implements LinearSeq<T> {
         return f.apply(this);
     }
 
-    @Override
-    public final List<T> update(int index, T element) {
-        if (isEmpty()) {
-            throw new IndexOutOfBoundsException("update(" + index + ", e) on Nil");
-        }
-        if (index < 0) {
-            throw new IndexOutOfBoundsException("update(" + index + ", e)");
-        }
-        List<T> preceding = Nil.instance();
-        List<T> tail = this;
-        for (int i = index; i > 0; i--, tail = tail.tail()) {
-            if (tail.isEmpty()) {
-                throw new IndexOutOfBoundsException("update(" + index + ", e) on List of length " + length());
-            }
-            preceding = preceding.prepend(tail.head());
-        }
-        if (tail.isEmpty()) {
-            throw new IndexOutOfBoundsException("update(" + index + ", e) on List of length " + length());
-        }
-        // skip the current head element because it is replaced
-        List<T> result = tail.tail().prepend(element);
-        for (T next : preceding) {
-            result = result.prepend(next);
-        }
-        return result;
-    }
 
 
 

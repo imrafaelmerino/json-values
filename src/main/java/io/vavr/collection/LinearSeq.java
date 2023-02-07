@@ -21,9 +21,7 @@ package io.vavr.collection;
 import io.vavr.*;
 import io.vavr.control.Option;
 
-import java.util.Comparator;
-import java.util.Objects;
-import java.util.Random;
+
 import java.util.function.*;
 
 /**
@@ -160,12 +158,7 @@ public interface LinearSeq<T> extends Seq<T> {
     Iterator<? extends LinearSeq<T>> sliding(int size, int step);
 
 
-    @Override
-    LinearSeq<T> sorted(Comparator<? super T> comparator);
 
-
-    @Override
-    <U> LinearSeq<T> sortBy(Comparator<? super U> comparator, Function<? super T, ? extends U> mapper);
 
     @Override
     Tuple2<? extends LinearSeq<T>, ? extends LinearSeq<T>> span(Predicate<? super T> predicate);
@@ -178,27 +171,6 @@ public interface LinearSeq<T> extends Seq<T> {
 
     @Override
     Option<? extends LinearSeq<T>> tailOption();
-
-    @Override
-    LinearSeq<T> take(int n);
-
-    @Override
-    LinearSeq<T> takeUntil(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> takeWhile(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> takeRight(int n);
-
-    @Override
-    LinearSeq<T> takeRightUntil(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> takeRightWhile(Predicate<? super T> predicate);
-
-    @Override
-    LinearSeq<T> update(int index, T element);
 
 
 

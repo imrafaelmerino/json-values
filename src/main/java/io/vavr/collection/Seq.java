@@ -39,7 +39,6 @@ import java.util.function.*;
  * <li>{@link #insertAll(int, Iterable)}</li>
  * <li>{@link #prepend(Object)}</li>
  * <li>{@link #prependAll(Iterable)}</li>
- * <li>{@link #update(int, Object)}</li>
  * </ul>
  *
  * Conversion:
@@ -72,8 +71,6 @@ import java.util.function.*;
  *
  * <ul>
  * <li>{@link #reverse()}</li>
- * <li>{@link #sorted(Comparator)}</li>
- * <li>{@link #splitAt(int)}</li>
  * <li>{@link #zip(Iterable)}</li>
  * <li>{@link #zipAll(Iterable, Object, Object)}</li>
  * <li>{@link #zipWithIndex()}</li>
@@ -221,15 +218,7 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
         return lastIndexWhere(predicate, length() - 1);
     }
 
-    /**
-     * Finds index of last element satisfying some predicate as an {@code Option}.
-     *
-     * @param predicate the predicate used to test elements.
-     * @return {@code Some(index)} or {@code None} if not found.
-     */
-    default Option<Integer> lastIndexWhereOption(Predicate<? super T> predicate) {
-        return Collections.indexOption(lastIndexWhere(predicate));
-    }
+ 
 
     /**
      * Finds index of last element satisfying some predicate before or at given
@@ -411,95 +400,13 @@ public interface Seq<T> extends Traversable<T>,  Serializable {
 
 
 
-    /**
-     * Sorts this elements according to the provided {@code Comparator}. If this elements are not
-     * {@code Comparable}, a {@code java.lang.ClassCastException} may be thrown.
-     *
-     * @param comparator A comparator
-     * @return a sorted version of this
-     */
-    Seq<T> sorted(Comparator<? super T> comparator);
-
-
-    /**
-     * Sorts this elements by comparing the elements in a different domain, using the given {@code mapper}.
-     *
-     * @param comparator A comparator
-     * @param mapper     A mapper
-     * @param <U>        The domain where elements are compared
-     * @return a sorted version of this
-     * @throws NullPointerException if {@code comparator} or {@code mapper} is null
-     */
-    <U> Seq<T> sortBy(Comparator<? super U> comparator, Function<? super T, ? extends U> mapper);
-
-    /**
-     * Splits a Seq at the specified index. The result of {@code splitAt(n)} is equivalent to
-     * {@code Tuple.of(take(n), drop(n))}.
-     *
-     * @param n An index.
-     * @return A {@link Tuple} containing the first n and the remaining elements.
-     */
-    Tuple2<? extends Seq<T>, ? extends Seq<T>> splitAt(int n);
-
-    /**
-     * Splits a sequence at the first element which satisfies the {@link Predicate}, e.g. Tuple(init, element+tail).
-     *
-     * @param predicate An predicate
-     * @return A {@link Tuple} containing divided sequences
-     */
-    Tuple2<? extends Seq<T>, ? extends Seq<T>> splitAt(Predicate<? super T> predicate);
-
-    /**
-     * Splits a sequence at the first element which satisfies the {@link Predicate}, e.g. Tuple(init+element, tail).
-     *
-     * @param predicate An predicate
-     * @return A {@link Tuple} containing divided sequences
-     */
-    Tuple2<? extends Seq<T>, ? extends Seq<T>> splitAtInclusive(Predicate<? super T> predicate);
-
-    /**
-     * Tests whether this list starts with the given sequence.
-     *
-     * @param that the sequence to test
-     * @return true if that is empty or that is prefix of this collection, false otherwise.
-     */
-    default boolean startsWith(Iterable<? extends T> that) {
-        return startsWith(that, 0);
-    }
-
-    /**
-     * Tests whether this list contains the given sequence at a given index.
-     * <p>
-     * Note: If the both the receiver object this and the argument that are infinite sequences this method may not terminate.
-     *
-     * @param that   the sequence to test
-     * @param offset the index where the sequence is searched.
-     * @return true if that is empty or that is prefix of this collection starting from the given offset, false otherwise.
-     */
-    default boolean startsWith(Iterable<? extends T> that, int offset) {
-        Objects.requireNonNull(that, "that is null");
-        if (offset < 0) { return false; }
-        final Iterator<T> i = this.iterator().drop(offset);
-        final java.util.Iterator<? extends T> j = that.iterator();
-        while (i.hasNext() && j.hasNext()) {
-            if (!Objects.equals(i.next(), j.next())) {
-                return false;
-            }
-        }
-        return !j.hasNext();
-    }
+   
 
 
 
-    /**
-     * Updates the given element at the specified index.
-     *
-     * @param index   an index
-     * @param element an element
-     * @return a new Seq consisting of all previous elements, with a single one (at the given index), changed to the new value.
-     * @throws IndexOutOfBoundsException if this is empty, index &lt; 0 or index &gt;= length()
-     */
-    Seq<T> update(int index, T element);
+
+ 
+
 
 
 
