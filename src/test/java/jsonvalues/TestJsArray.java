@@ -1,6 +1,7 @@
 package jsonvalues;
 
 
+import jsonvalues.spec.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -662,11 +663,11 @@ public class TestJsArray {
                                 JsArray.parse("[1,2]")
 
         );
-        Assertions.assertThrows(MalformedJson.class,
+        Assertions.assertThrows(JsParserException.class,
                                 () -> JsArray.parse("[1,2")
         );
 
-        Assertions.assertThrows(MalformedJson.class,
+        Assertions.assertThrows(JsParserException.class,
                                 () -> JsArray.parse("[1,2")
         );
 

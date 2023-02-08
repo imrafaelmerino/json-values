@@ -76,7 +76,7 @@ class JsParsers {
         mapOfBigIntegerParser = new JsObjReader(integralParser);
         mapOfStringParser = new JsObjReader(strParser);
         mapOfInstantParser = new JsObjReader(instantParser);
-        mapOfObjParser = new JsObjReader(valueParser);
+        mapOfObjParser = new JsObjReader(objParser);
         mapOfBinaryParser = new JsObjReader(binaryParser);
         mapOfArrayParser = new JsObjReader(arrayOfValueParser);
     }

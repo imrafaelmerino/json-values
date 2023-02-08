@@ -6,9 +6,10 @@ import jsonvalues.Json;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 
- public final class JsonIO {
+public final class JsonIO {
     public static final JsonIO INSTANCE = new JsonIO();
 
     final StringCache keyCache;
@@ -60,6 +61,37 @@ import java.nio.charset.StandardCharsets;
                            .doublePrecision(JsonReader.DoublePrecision.HIGH));
     }
 
+     public JsObj parseToJsObj(final byte[] bytes) {
+         JsonReader reader = getReader(bytes);
+         try {
+             reader.getNextToken();
+             return JsParsers.PARSERS.objParser.value(reader);
+         } catch (IOException e) {
+             throw JsParserException.create("Exception parsing an object @ position=" + reader.getCurrentIndex(),
+                                            e,
+                                            true
+                                           );
+
+         } finally {
+             reader.reset();
+         }
+     }
+
+     public JsArray parseToJsArray(final byte[] bytes) {
+         JsonReader reader = getReader(bytes);
+         try {
+             reader.getNextToken();
+             return JsParsers.PARSERS.arrayOfValueParser.value(reader);
+         } catch (IOException e) {
+             throw JsParserException.create("Exception parsing an array @ position=" + reader.getCurrentIndex(),
+                                            e,
+                                            true
+                                           );
+
+         } finally {
+             reader.reset();
+         }
+     }
     JsObj parseToJsObj(final byte[] bytes,
                        final JsSpecParser parser
                       ) {
@@ -84,6 +116,8 @@ import java.nio.charset.StandardCharsets;
                           .process(bytes,
                                    bytes.length
                                   );
+
+
     }
 
     JsArray deserializeToJsArray(final byte[] bytes,

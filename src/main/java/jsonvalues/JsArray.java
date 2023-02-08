@@ -1,13 +1,10 @@
 package jsonvalues;
 
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.JsonTokenId;
+
 import fun.optic.Prism;
 import jsonvalues.spec.JsonIO;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -19,13 +16,10 @@ import java.util.function.*;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import static com.fasterxml.jackson.core.JsonToken.START_ARRAY;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.IntStream.range;
 import static jsonvalues.JsArray.TYPE.LIST;
 import static jsonvalues.JsArray.TYPE.MULTISET;
-import static jsonvalues.JsBool.FALSE;
-import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.JsObj.streamOfObj;
@@ -329,59 +323,10 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public static JsArray parse(final String str) {
 
-        try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
-            JsonToken keyEvent = parser.nextToken();
-            if (START_ARRAY != keyEvent) throw MalformedJson.expectedArray(str);
-            return new JsArray(parse(parser
-            ));
-        } catch (Exception e) {
-
-            throw new MalformedJson(e.getMessage());
-        }
+      return JsonIO.INSTANCE.parseToJsArray(str.getBytes(StandardCharsets.UTF_8));
 
     }
 
-    static Vector<JsValue> parse(final JsonParser parser) throws IOException {
-        Vector<JsValue> root = Vector.empty();
-        while (true) {
-            JsonToken token = parser.nextToken();
-            JsValue elem;
-            switch (token.id()) {
-                case JsonTokenId.ID_END_ARRAY:
-                    return root;
-                case JsonTokenId.ID_START_OBJECT:
-                    elem = new JsObj(JsObj.parse(parser)
-                    );
-                    break;
-                case JsonTokenId.ID_START_ARRAY:
-                    elem = new JsArray(parse(parser
-                    )
-                    );
-                    break;
-                case JsonTokenId.ID_STRING:
-                    elem = JsStr.of(parser.getValueAsString());
-                    break;
-                case JsonTokenId.ID_NUMBER_INT:
-                    elem = JsNumber.of(parser);
-                    break;
-                case JsonTokenId.ID_NUMBER_FLOAT:
-                    elem = JsBigDec.of(parser.getDecimalValue());
-                    break;
-                case JsonTokenId.ID_TRUE:
-                    elem = TRUE;
-                    break;
-                case JsonTokenId.ID_FALSE:
-                    elem = FALSE;
-                    break;
-                case JsonTokenId.ID_NULL:
-                    elem = NULL;
-                    break;
-                default:
-                    throw new RuntimeException("token not expected durint parsing: " + token);
-            }
-            root = root.append(elem);
-        }
-    }
 
     static Stream<JsPair> streamOfArr(final JsArray array,
                                                      final JsPath path) {

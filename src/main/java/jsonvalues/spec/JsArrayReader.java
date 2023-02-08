@@ -72,7 +72,7 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
     @Override
-    JsArray value(final JsonReader reader) throws IOException {
+    public JsArray value(final JsonReader reader) throws IOException {
         if (isEmptyArray(reader)) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
         while (reader.getNextToken() == ',') {
@@ -83,6 +83,9 @@ abstract class JsArrayReader extends AbstractReader {
         return buffer;
 
     }
+
+
+
 
     private boolean isEmptyArray(final JsonReader reader) throws IOException {
         checkSize(reader.last() != '[',

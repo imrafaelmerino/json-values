@@ -1,6 +1,7 @@
 package jsonvalues;
 
 import fun.optic.Option;
+import jsonvalues.spec.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -31,10 +32,11 @@ public class TestJsObj {
 
         final JsObj obj1 = obj.set("a",
                                    JsInt.of(1)
-        );
+                                  );
         Assertions.assertTrue(obj.isEmpty());
         Assertions.assertEquals(1,
-                                (int) obj1.getInt("a"));
+                                (int) obj1.getInt("a")
+                               );
     }
 
     @Test
@@ -50,11 +52,11 @@ public class TestJsObj {
                              JsStr.of("D"),
                              "e",
                              JsStr.of("E")
-        );
+                            );
 
         Assertions.assertEquals(5,
                                 obj.size()
-        );
+                               );
         final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase());
 
         Set<String> set = new HashSet<>(Arrays.asList("A",
@@ -62,20 +64,20 @@ public class TestJsObj {
                                                       "C",
                                                       "D",
                                                       "E"
-        ));
+                                                     ));
 
         Assertions.assertEquals(set,
                                 obj1.keySet()
-        );
+                               );
         Set<String> set1 = new HashSet<>(Arrays.asList("a",
                                                        "b",
                                                        "c",
                                                        "d",
                                                        "e"
-        ));
+                                                      ));
         Assertions.assertEquals(set1,
                                 obj.keySet()
-        );
+                               );
     }
 
     @Test
@@ -91,11 +93,11 @@ public class TestJsObj {
                              JsStr.of("D"),
                              "e",
                              JsStr.of("E")
-        );
+                            );
 
         Assertions.assertEquals(5,
                                 obj.size()
-        );
+                               );
         final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase());
 
         Set<String> set = new HashSet<>(Arrays.asList("A",
@@ -103,20 +105,20 @@ public class TestJsObj {
                                                       "C",
                                                       "D",
                                                       "E"
-        ));
+                                                     ));
 
         Assertions.assertEquals(set,
                                 obj1.keySet()
-        );
+                               );
         Set<String> set1 = new HashSet<>(Arrays.asList("a",
                                                        "b",
                                                        "c",
                                                        "d",
                                                        "e"
-        ));
+                                                      ));
         Assertions.assertEquals(set1,
                                 obj.keySet()
-        );
+                               );
     }
 
     @Test
@@ -132,15 +134,16 @@ public class TestJsObj {
                              JsInt.of(5),
                              path("/d/0/1"),
                              JsInt.of(6)
-        );
-        
+                            );
+
 
         Assertions.assertEquals(4,
                                 obj.size()
-        );
+                               );
 
         Assertions.assertEquals(6,
-                                (int) obj.getInt(path("/d/0/1")));
+                                (int) obj.getInt(path("/d/0/1"))
+                               );
 
 
     }
@@ -153,18 +156,18 @@ public class TestJsObj {
                              JsStr.of("b"),
                              "c",
                              JsInt.of(10)
-        );
+                            );
         Assertions.assertEquals(3,
                                 obj.size()
-        );
+                               );
 
         final JsObj obj1 = obj.delete("a");
         Assertions.assertEquals(3,
                                 obj.size()
-        );
+                               );
         Assertions.assertEquals(2,
                                 obj1.size()
-        );
+                               );
 
     }
 
@@ -174,18 +177,18 @@ public class TestJsObj {
                              JsInt.of(1),
                              "b",
                              JsStr.of("a")
-        );
+                            );
         Assertions.assertEquals(2,
                                 obj.size()
-        );
+                               );
 
         final JsObj obj1 = obj.delete("b");
         Assertions.assertEquals(2,
                                 obj.size()
-        );
+                               );
         Assertions.assertEquals(1,
                                 obj1.size()
-        );
+                               );
 
     }
 
@@ -197,14 +200,14 @@ public class TestJsObj {
                                       JsArray.of(1,
                                                  2,
                                                  3
-                                      )
-                             ),
+                                                )
+                                     ),
                              "b",
                              JsArray.of("a",
                                         "b",
                                         "c"
-                             )
-        );
+                                       )
+                            );
 
         JsObj obj2 = JsObj.of("a",
                               JsObj.of("b",
@@ -214,8 +217,8 @@ public class TestJsObj {
                                                   1,
                                                   2,
                                                   3
-                                       )
-                              ),
+                                                 )
+                                      ),
                               "b",
                               JsArray.of("a",
                                          "b",
@@ -223,13 +226,13 @@ public class TestJsObj {
                                          "a",
                                          "b",
                                          "c"
-                              )
-        );
+                                        )
+                             );
 
         Assertions.assertTrue(obj.equals(obj2,
                                          SET
-                              )
-        );
+                                        )
+                             );
 
     }
 
@@ -243,7 +246,7 @@ public class TestJsObj {
                                    JsLong.of(1),
                                    "d",
                                    JsBigDec.of(BigDecimal.ONE)
-        );
+                                  );
         final JsObj obj1 = JsObj.of("a",
                                     JsBigDec.of(BigDecimal.ONE),
                                     "b",
@@ -252,14 +255,14 @@ public class TestJsObj {
                                     JsInt.of(1),
                                     "d",
                                     JsBigInt.of(BigInteger.ONE)
-        );
+                                   );
 
         Assertions.assertEquals(obj,
                                 obj1
-        );
+                               );
         Assertions.assertEquals(obj.hashCode(),
                                 obj1.hashCode()
-        );
+                               );
 
     }
 
@@ -278,7 +281,7 @@ public class TestJsObj {
 
         Assertions.assertEquals(JsObj.parse("{\"b\":2,\"c\":[{\"e\":4},6]}"),
                                 result
-        );
+                               );
 
 
     }
@@ -288,36 +291,36 @@ public class TestJsObj {
         final JsObj obj = JsObj.of("a",
                                    JsObj.of("R",
                                             JsInt.of(1)
-                                   ),
+                                           ),
                                    "b",
                                    JsObj.of("R",
                                             JsInt.of(1)
-                                   ),
+                                           ),
                                    "c",
                                    JsArray.of(JsObj.of("R",
                                                        JsInt.of(1)
-                                              ),
+                                                      ),
                                               JsObj.of("S",
                                                        JsInt.of(1),
                                                        "T",
                                                        JsObj.of("R",
                                                                 JsInt.of(1)
-                                                       )
-                                              )
-                                   ),
+                                                               )
+                                                      )
+                                             ),
                                    "d",
                                    JsObj.of("d",
                                             JsInt.of(3)
-                                   ),
+                                           ),
                                    "e",
                                    NULL
-        );
+                                  );
         final JsObj result = obj.filterObjs(o -> !o.containsKey("R"));
 
 
         Assertions.assertEquals(JsObj.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
                                 result
-        );
+                               );
     }
 
     @Test
@@ -325,43 +328,43 @@ public class TestJsObj {
         final JsObj obj = JsObj.of("a",
                                    JsObj.of("R",
                                             JsInt.of(1)
-                                   ),
+                                           ),
                                    "b",
                                    JsObj.of("R",
                                             JsInt.of(1)
-                                   ),
+                                           ),
                                    "c",
                                    JsArray.of(JsObj.of("R",
                                                        JsInt.of(1)
-                                              ),
+                                                      ),
                                               JsObj.of("S",
                                                        JsInt.of(1),
                                                        "T",
                                                        JsObj.of("R",
                                                                 JsInt.of(1)
-                                                       )
-                                              )
-                                   ),
+                                                               )
+                                                      )
+                                             ),
                                    "d",
                                    JsObj.of("d",
                                             JsInt.of(3)
-                                   ),
+                                           ),
                                    "e",
                                    NULL
-        );
+                                  );
 
         final JsObj result = obj.filterObjs((p, o) ->
                                             {
                                                 Assertions.assertEquals(o,
                                                                         obj.get(p)
-                                                );
+                                                                       );
                                                 return !o.containsKey("R");
                                             });
 
 
         Assertions.assertEquals(JsObj.parse("{\"c\":[{\"S\":1}],\"d\":{\"d\":3},\"e\": null}"),
                                 result
-        );
+                               );
     }
 
     @Test
@@ -371,7 +374,7 @@ public class TestJsObj {
                                                             JsStr.of("A"),
                                                             "b1",
                                                             JsStr.of("B")
-                                                   ),
+                                                           ),
                                                    "b2",
                                                    JsStr.of("C"),
                                                    "d",
@@ -380,19 +383,19 @@ public class TestJsObj {
                                                             "e1",
                                                             JsArray.of(JsObj.of("f",
                                                                                 JsStr.of("F1")
-                                                                       ),
+                                                                               ),
                                                                        TRUE,
                                                                        JsObj.of("b3",
                                                                                 JsStr.of("G1"),
                                                                                 "c",
                                                                                 JsStr.of("G2")
-                                                                       ),
+                                                                               ),
                                                                        FALSE
-                                                            )
-                                                   ),
+                                                                      )
+                                                           ),
                                                    "b4",
                                                    JsStr.of("F")
-        );
+                                                  );
 
 
         final JsObj obj1 = obj.get()
@@ -411,7 +414,7 @@ public class TestJsObj {
                                                             JsStr.of("A"),
                                                             "b1",
                                                             JsStr.of("B")
-                                                   ),
+                                                           ),
                                                    "b2",
                                                    JsStr.of("C"),
                                                    "d",
@@ -420,19 +423,19 @@ public class TestJsObj {
                                                             "e1",
                                                             JsArray.of(JsObj.of("f",
                                                                                 JsStr.of("F1")
-                                                                       ),
+                                                                               ),
                                                                        TRUE,
                                                                        JsObj.of("b3",
                                                                                 JsStr.of("G1"),
                                                                                 "c",
                                                                                 JsStr.of("G2")
-                                                                       ),
+                                                                               ),
                                                                        FALSE
-                                                            )
-                                                   ),
+                                                                      )
+                                                           ),
                                                    "b4",
                                                    JsStr.of("F")
-        );
+                                                  );
 
 
         final JsObj obj1 = obj.get()
@@ -441,11 +444,11 @@ public class TestJsObj {
                                               Assertions.assertEquals(val,
                                                                       obj.get()
                                                                          .get(path)
-                                              );
+                                                                     );
                                               return !path.last()
                                                           .isKey(name -> name.startsWith("b"));
                                           }
-                              );
+                                         );
         Assertions.assertFalse(obj1.stream()
                                    .anyMatch(p -> p.path().last()
                                                    .isKey(name -> name.startsWith("b"))));
@@ -468,37 +471,37 @@ public class TestJsObj {
                                         JsArray.of(JsInt.of(1),
                                                    NULL,
                                                    JsInt.of(2)
-                                        ),
+                                                  ),
                                         JsObj.of("a",
                                                  NULL,
                                                  "b",
                                                  JsInt.of(1)
-                                        )
-                             )
-        );
+                                                )
+                                       )
+                            );
 
         final JsObj obj1 = obj.filterValues((path, val) -> val.isNotNull());
 
         Assertions.assertEquals(JsObj.parse("{\"a\":1,\"c\":[1,2,3,[1,2],{\"b\":1}]}\n"),
                                 obj1
-        );
+                               );
 
     }
 
     @Test
     public void test_malformed_json() {
-        final MalformedJson malformedJson = Assertions.assertThrows(MalformedJson.class,
-                                                                    () -> JsObj.parse("")
-        );
+        final JsParserException malformedJson = Assertions.assertThrows(JsParserException.class,
+                                                                        () -> JsObj.parse("")
+                                                                       );
 
-        Assertions.assertEquals("Expected a json object {...}. Received: ",
+        Assertions.assertEquals("Unexpected end of JSON input",
                                 malformedJson.getMessage()
-        );
+                               );
 
 
-        Assertions.assertThrows(MalformedJson.class,
+        Assertions.assertThrows(JsParserException.class,
                                 () -> JsObj.parse("{]")
-        );
+                               );
 
 
     }
@@ -520,7 +523,7 @@ public class TestJsObj {
 
         Assertions.assertEquals(JsObj.parse("{\"a\":11,\"b\":12,\"c\":[{\"e\":14,\"d\":13},15,16]}\n"),
                                 result
-        );
+                               );
 
 
     }
@@ -538,7 +541,7 @@ public class TestJsObj {
                                                  JsStr.of("C"),
                                                  "d",
                                                  JsStr.of("D")
-                                        ),
+                                                ),
                                         NULL,
                                         JsObj.of("d",
                                                  JsStr.of("D"),
@@ -549,10 +552,10 @@ public class TestJsObj {
                                                           JsStr.of("G"),
                                                           "h",
                                                           JsStr.of("H")
-                                                 )
-                                        )
-                             )
-        );
+                                                         )
+                                                )
+                                       )
+                            );
 
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
@@ -560,17 +563,17 @@ public class TestJsObj {
                                 obj.mapObjs(o ->
                                                     o.set("size",
                                                           JsInt.of(o.size())
-                                                    )
-                                )
-        );
+                                                         )
+                                           )
+                               );
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
                 ,
                                 obj.mapObjs(o -> o.set("size",
                                                        JsInt.of(o.size())
-                                            )
-                                )
-        );
+                                                      )
+                                           )
+                               );
 
 
     }
@@ -588,7 +591,7 @@ public class TestJsObj {
                                                  JsStr.of("C"),
                                                  "d",
                                                  JsStr.of("D")
-                                        ),
+                                                ),
                                         NULL,
                                         JsObj.of("d",
                                                  JsStr.of("D"),
@@ -599,10 +602,10 @@ public class TestJsObj {
                                                           JsStr.of("G"),
                                                           "h",
                                                           JsStr.of("H")
-                                                 )
-                                        )
-                             )
-        );
+                                                         )
+                                                )
+                                       )
+                            );
 
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
@@ -612,26 +615,26 @@ public class TestJsObj {
 
                                                 Assertions.assertEquals(o,
                                                                         obj.get(p)
-                                                );
+                                                                       );
                                                 return o.set("size",
                                                              JsInt.of(o.size())
-                                                );
+                                                            );
                                             }
-                                )
-        );
+                                           )
+                               );
 
         Assertions.assertEquals(JsObj.parse("{\"a\":\"A\",\"b\":{\"size\":0},\"c\":[],\"h\":[{\"size\":2,\"c\":\"C\",\"d\":\"D\"},null,{\"e\":\"E\",\"size\":3,\"f\":{\"size\":2,\"g\":\"G\",\"h\":\"H\"},\"d\":\"D\"}]}")
                 ,
                                 obj.mapObjs((p, o) -> {
                                                 Assertions.assertEquals(o,
                                                                         obj.get(p)
-                                                );
+                                                                       );
                                                 return o.set("size",
                                                              JsInt.of(o.size())
-                                                );
+                                                            );
                                             }
-                                )
-        );
+                                           )
+                               );
 
 
     }
@@ -643,7 +646,7 @@ public class TestJsObj {
                                             JsStr.of("A"),
                                             " b1 ",
                                             JsStr.of("B")
-                                   ),
+                                           ),
                                    " c ",
                                    JsStr.of("C"),
                                    " d ",
@@ -652,22 +655,22 @@ public class TestJsObj {
                                             " e1 ",
                                             JsArray.of(JsObj.of(" f ",
                                                                 JsStr.of("F1")
-                                                       ),
+                                                               ),
                                                        JsObj.of(" g ",
                                                                 JsStr.of("G1")
-                                                       )
-                                            )
-                                   ),
+                                                               )
+                                                      )
+                                           ),
                                    " f ",
                                    JsStr.of("F")
-        );
+                                  );
 
 
         Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapKeys((path, val) ->
                                                                    {
                                                                        Assertions.assertEquals(val,
                                                                                                obj.get(path)
-                                                                       );
+                                                                                              );
                                                                        return path.last()
                                                                                   .asKey().name.trim()
                                                                                                .toUpperCase();
@@ -703,7 +706,7 @@ public class TestJsObj {
                                             JsStr.of("A"),
                                             "b1",
                                             JsStr.of("B")
-                                   ),
+                                           ),
                                    "n",
                                    JsInt.of(1),
                                    "c",
@@ -715,17 +718,17 @@ public class TestJsObj {
                                             JsStr.of("E"),
                                             "g",
                                             JsInt.of(2)
-                                   ),
+                                           ),
                                    "f",
                                    JsStr.of("F")
-        );
+                                  );
 
 
         final JsObj obj1 = obj.mapValues((p, val) ->
                                          {
                                              Assertions.assertEquals(val,
                                                                      obj.get(p)
-                                             );
+                                                                    );
                                              return JsStr.prism.modify.apply(String::toLowerCase)
                                                                       .apply(val);
                                          });
@@ -735,18 +738,18 @@ public class TestJsObj {
                                                      {
                                                          Assertions.assertEquals(v,
                                                                                  obj1.get(p)
-                                                         );
+                                                                                );
                                                          return v.toJsStr().value;
                                                      },
                                                      (p, v) -> v.isStr()
-        );
+                                                    );
 
         char[] chars = reduced.get()
                               .toCharArray();
         Arrays.sort(chars);
         Assertions.assertEquals("abcdef",
                                 new String(chars)
-        );
+                               );
 
 
     }
@@ -760,7 +763,7 @@ public class TestJsObj {
                                             JsStr.of("A"),
                                             "b1",
                                             JsStr.of("B")
-                                   ),
+                                           ),
                                    "n",
                                    JsInt.of(1),
                                    "c",
@@ -772,10 +775,10 @@ public class TestJsObj {
                                             JsStr.of("E"),
                                             "g",
                                             JsInt.of(2)
-                                   ),
+                                           ),
                                    "f",
                                    JsStr.of("F")
-        );
+                                  );
 
 
         JsObj obj1 = obj.mapValues(val ->
@@ -785,14 +788,14 @@ public class TestJsObj {
         Optional<String> reduced = obj1.reduce(String::concat,
                                                v -> v.toJsStr().value,
                                                JsValue::isStr
-        );
+                                              );
 
         char[] chars = reduced.get()
                               .toCharArray();
         Arrays.sort(chars);
         Assertions.assertEquals("abcdef",
                                 new String(chars)
-        );
+                               );
 
 
     }
@@ -811,17 +814,17 @@ public class TestJsObj {
                              JsStr.of("a"),
                              path("/a/b/0"),
                              JsBigDec.of(BigDecimal.ONE)
-        );
+                            );
 
         Assertions.assertEquals(obj,
                                 JsObj.parse(obj.toString())
 
-        );
+                               );
 
         Assertions.assertEquals(obj,
                                 JsObj.parse(obj.toString())
 
-        );
+                               );
 
     }
 
@@ -831,15 +834,16 @@ public class TestJsObj {
         final JsObj empty = JsObj.empty();
         final JsObj a = empty.set("a",
                                   JsBigDec.of(BigDecimal.valueOf(0.1d))
-        );
+                                 );
 
         Assertions.assertTrue(
                 a.getDouble(fromKey("a"))
                  .equals(0.1d)
-        );
+                             );
         Assertions.assertEquals(0,
                                 a.getBigDec(fromKey("a"))
-                                 .compareTo(BigDecimal.valueOf(0.1d)));
+                                 .compareTo(BigDecimal.valueOf(0.1d))
+                               );
     }
 
     @Test
@@ -849,20 +853,20 @@ public class TestJsObj {
         final JsObj a = empty.set(path,
                                   JsBigDec.of(BigDecimal.valueOf(0.1d)),
                                   JsDouble.of(0.0)
-        );
+                                 );
 
         Assertions.assertTrue(
                 a.getDouble(path)
                  .equals(0.1d)
-        );
+                             );
         Assertions.assertTrue(
                 a.getDouble(path("/a/b/0"))
                  .equals(0.0d)
-        );
+                             );
         Assertions.assertTrue(
                 a.getDouble(path("/a/b/1"))
                  .equals(0.0d)
-        );
+                             );
 
     }
 
@@ -883,91 +887,113 @@ public class TestJsObj {
                            JsInstant.of(now),
                            "f",
                            JsBinary.of(bytes)
-        );
+                          );
 
         Assertions.assertNull(o.getStr("b"));
         Assertions.assertEquals("a",
                                 o.getStr("bye",
-                                         () -> "a"));
+                                         () -> "a"
+                                        )
+                               );
         Assertions.assertNull(o.getInt("b"));
         Assertions.assertEquals(1,
                                 (int) o.getInt("b",
-                                               () -> 1));
+                                               () -> 1
+                                              )
+                               );
         Assertions.assertNull(o.getBool("b"));
         Assertions.assertFalse(o.getBool("b",
-                                         () -> false));
+                                         () -> false
+                                        ));
 
         Assertions.assertNull(o.getObj("b"));
         Assertions.assertEquals(JsObj.empty(),
                                 o.getObj("b",
-                                         JsObj::empty));
+                                         JsObj::empty
+                                        )
+                               );
 
         Assertions.assertNull(o.getDouble("b"));
         Assertions.assertEquals(1.5,
                                 (double) o.getDouble("b",
-                                                     () -> 1.5));
+                                                     () -> 1.5
+                                                    )
+                               );
 
         Assertions.assertNull(o.getArray("b"));
         Assertions.assertEquals(JsArray.empty(),
                                 o.getArray("b",
-                                           JsArray::empty));
+                                           JsArray::empty
+                                          )
+                               );
 
         Assertions.assertNull(o.getLong("c"));
         Assertions.assertEquals(10L,
                                 (long) o.getLong("c",
-                                                 () -> 10L));
+                                                 () -> 10L
+                                                )
+                               );
 
         Assertions.assertNull(o.getStr("e"));
         Assertions.assertEquals("hi",
                                 o.getStr("e",
-                                         () -> "hi"));
+                                         () -> "hi"
+                                        )
+                               );
 
         Assertions.assertEquals(BigDecimal.valueOf(1.5),
                                 o.getBigDec("a")
-        );
+                               );
         Assertions.assertEquals(BigDecimal.ONE,
                                 o.getBigDec("hi",
-                                            () -> BigDecimal.ONE)
-        );
+                                            () -> BigDecimal.ONE
+                                           )
+                               );
         Assertions.assertEquals(BigInteger.valueOf(Long.MAX_VALUE),
                                 o.getBigInt("b")
-        );
+                               );
         Assertions.assertEquals(BigInteger.TEN,
                                 o.getBigInt("bye",
-                                            () -> BigInteger.TEN)
-        );
+                                            () -> BigInteger.TEN
+                                           )
+                               );
         Assertions.assertEquals(Double.valueOf(1.5),
                                 o.getDouble("c")
-        );
+                               );
         Assertions.assertEquals(Long.valueOf(15L),
                                 o.getLong("d")
-        );
+                               );
 
         Assertions.assertEquals(now,
                                 o.getInstant("e")
-        );
+                               );
 
         Assertions.assertEquals(Instant.MAX,
                                 o.getInstant("bye",
-                                             () -> Instant.MAX)
-        );
+                                             () -> Instant.MAX
+                                            )
+                               );
 
         Assertions.assertArrayEquals(o.getBinary("f"),
-                                     "hola".getBytes(StandardCharsets.UTF_8));
+                                     "hola".getBytes(StandardCharsets.UTF_8)
+                                    );
 
         Assertions.assertArrayEquals(o.getBinary("fa",
-                                                 () -> "hola".getBytes(StandardCharsets.UTF_8)),
-                                     "hola".getBytes(StandardCharsets.UTF_8));
+                                                 () -> "hola".getBytes(StandardCharsets.UTF_8)
+                                                ),
+                                     "hola".getBytes(StandardCharsets.UTF_8)
+                                    );
 
         JsObj parsed = JsObj.parse(o.toString());
 
         Assertions.assertEquals(parsed,
-                                o);
+                                o
+                               );
 
         Assertions.assertEquals(parsed.getStr("f"),
                                 Base64.getEncoder()
                                       .encodeToString("hola".getBytes(StandardCharsets.UTF_8))
-        );
+                               );
 
 
         Option<JsObj, byte[]> fOpt = JsObj.lens.str("f")
@@ -978,24 +1004,25 @@ public class TestJsObj {
 
         Assertions.assertArrayEquals(fOpt.get.apply(parsed)
                                              .get(),
-                                     "hola".getBytes(StandardCharsets.UTF_8));
+                                     "hola".getBytes(StandardCharsets.UTF_8)
+                                    );
 
 
         Assertions.assertFalse(fOpt.get.apply(JsObj.of("f",
                                                        JsStr.of("a")
-                                   ))
+                                                      ))
                                        .isPresent());
 
 
         Assertions.assertEquals(eOpt.get.apply(parsed)
                                         .get(),
                                 now
-        );
+                               );
 
         Assertions.assertFalse(eOpt.get.apply(JsObj.of("e",
                                                        JsStr.of(DateTimeFormatter.ISO_LOCAL_DATE.format(LocalDate.now(ZoneId.systemDefault())))
-                                              )
-                                   )
+                                                      )
+                                             )
                                        .isPresent());
     }
 
@@ -1021,7 +1048,7 @@ public class TestJsObj {
                                       JsInt.of(1),
                                       JsBool.FALSE,
                                       JsLong.of(1L)
-                           ),
+                                     ),
                            "i",
                            JsObj.of("a",
                                     JsInt.of(1),
@@ -1029,39 +1056,41 @@ public class TestJsObj {
                                     JsArray.of(1,
                                                2,
                                                3
-                                    ),
+                                              ),
                                     "c",
                                     JsObj.empty()
-                           )
-        );
+                                   )
+                          );
 
         Assertions.assertEquals(1,
-                                (int) a.getInt("a"));
+                                (int) a.getInt("a")
+                               );
         Assertions.assertEquals("hi",
                                 a.getStr("b")
-        );
+                               );
         Assertions.assertEquals(true,
                                 a.getBool("c")
-        );
+                               );
         Assertions.assertEquals(1L,
-                                (long) a.getLong("d"));
+                                (long) a.getLong("d")
+                               );
         Assertions.assertTrue(a.getDouble("e") == 1.5d);
         Assertions.assertEquals(BigInteger.TEN,
                                 a.getBigInt("f")
-        );
+                               );
         Assertions.assertEquals(BigDecimal.TEN,
                                 a.getBigDec("g")
-        );
+                               );
         Assertions.assertEquals(JsArray.of(1,
                                            2,
                                            3
-                                ),
+                                          ),
                                 a.getArray(JsPath.path("/i/b"))
-        );
+                               );
 
         Assertions.assertEquals(JsObj.empty(),
                                 a.getObj(JsPath.path("/i/c"))
-        );
+                               );
 
         Assertions.assertNull(a.getInt("b"));
         Assertions.assertNull(a.getLong("b"));
@@ -1073,19 +1102,19 @@ public class TestJsObj {
 
         Assertions.assertNull(
                 a.getInt("b")
-        );
+                             );
         Assertions.assertNull(a.getLong("b"));
         Assertions.assertNull(
                 a.getBigDec("b")
-        );
+                             );
         Assertions.assertNull(a.getBigInt("b")
-        );
+                             );
         Assertions.assertNull(
                 a.getBool("b")
-        );
+                             );
         Assertions.assertNull(
                 a.getObj("b")
-        );
+                             );
         Assertions.assertNull(
                 a.getArray("b"));
 

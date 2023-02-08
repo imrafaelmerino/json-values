@@ -54,9 +54,9 @@ class JsValueReader extends AbstractReader {
             case '{':
                 return objDeserializer.value(reader);
             case '[':
-                return arrayDeserializer.value(reader);
+                return arrayDeserializer.nullOrValue(reader);
             default:
-                return numberDeserializer.value(reader);
+                return numberDeserializer.nullOrValue(reader);
         }
     }
 

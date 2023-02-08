@@ -2,9 +2,6 @@ package jsonvalues;
 
 
 import jsonvalues.spec.JsonIO;
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonToken;
-import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
 import jsonvalues.JsArray.TYPE;
 
@@ -17,7 +14,6 @@ import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
-import static com.fasterxml.jackson.core.JsonToken.START_OBJECT;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
 import static jsonvalues.JsBool.FALSE;
@@ -2007,40 +2003,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @throws MalformedJson if the string doesn't represent a json object
      */
     public static JsObj parse(final String str) {
-
-        try (JsonParser parser = JacksonFactory.INSTANCE.createParser(requireNonNull(str))) {
-            JsonToken keyEvent = parser.nextToken();
-            if (START_OBJECT != keyEvent) throw MalformedJson.expectedObj(str);
-            return new JsObj(JsObj.parse(parser));
-        } catch (Exception e) {
-            throw new MalformedJson(e.getMessage());
-        }
+       return JsonIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
     }
 
-    static HashMap parse(final JsonParser parser) throws IOException {
-        HashMap map = HashMap.empty();
-        String key = parser.nextFieldName();
-        for (; key != null; key = parser.nextFieldName()) {
-            JsonToken token = parser.nextToken();
-            JsValue elem = switch (token.id()) {
-                case JsonTokenId.ID_STRING -> JsStr.of(parser.getValueAsString());
-                case JsonTokenId.ID_NUMBER_INT -> JsNumber.of(parser);
-                case JsonTokenId.ID_NUMBER_FLOAT -> JsBigDec.of(parser.getDecimalValue());
-                case JsonTokenId.ID_FALSE -> FALSE;
-                case JsonTokenId.ID_TRUE -> TRUE;
-                case JsonTokenId.ID_NULL -> NULL;
-                case JsonTokenId.ID_START_OBJECT -> new JsObj(parse(parser));
-                case JsonTokenId.ID_START_ARRAY -> new JsArray(JsArray.parse(parser));
-                default -> throw new RuntimeException("Token not expected during parsing " + token);
-            };
-            map = map.put(key,
-                          elem
-                         );
-        }
-
-        return map;
-
-    }
 
     static Stream<JsPair> streamOfObj(final JsObj obj,
                                       final JsPath path
