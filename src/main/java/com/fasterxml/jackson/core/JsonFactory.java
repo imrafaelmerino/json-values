@@ -344,30 +344,6 @@ public class JsonFactory
         _quoteChar = src._quoteChar;
     }
 
-    /**
-     * Constructor used by {@link JsonFactoryBuilder} for instantiation.
-     *
-     * @param b Builder that contains settings to use
-     *
-     * @since 2.10
-     */
-    public JsonFactory(JsonFactoryBuilder b) {
-        _objectCodec = null;
-
-        // General
-        _factoryFeatures = b._factoryFeatures;
-        _parserFeatures = b._streamReadFeatures;
-        _generatorFeatures = b._streamWriteFeatures;
-        _inputDecorator = b._inputDecorator;
-        _outputDecorator = b._outputDecorator;
-        _streamReadConstraints = b._streamReadConstraints;
-
-        // JSON-specific
-        _characterEscapes = b._characterEscapes;
-        _rootValueSeparator = b._rootValueSeparator;
-        _maximumNonEscapedChar = b._maximumNonEscapedChar;
-        _quoteChar = b._quoteChar;
-    }
 
     /**
      * Constructor for subtypes; needed to work around the fact that before 3.0,
@@ -394,34 +370,8 @@ public class JsonFactory
         _quoteChar = DEFAULT_QUOTE_CHAR;
     }
 
-    /**
-     * Method that allows construction of differently configured factory, starting
-     * with settings of this factory.
-     *
-     * @return Builder instance to use
-     *
-     * @since 2.10
-     */
-    public TSFBuilder<?,?> rebuild() {
-        // 13-Jun-2018, tatu: Verify sub-classing to prevent strange bugs in format impls
-        _requireJSONFactory("Factory implementation for format (%s) MUST override `rebuild()` method");
-        return new JsonFactoryBuilder(this);
-    }
 
-    /**
-     * Main factory method to use for constructing {@link JsonFactory} instances with
-     * different configuration: creates and returns a builder for collecting configuration
-     * settings; instance created by calling {@code build()} after all configuration
-     * set.
-     *<p>
-     * NOTE: signature unfortunately does not expose true implementation type; this
-     * will be fixed in 3.0.
-     *
-     * @return Builder instance to use
-     */
-    public static TSFBuilder<?,?> builder() {
-        return new JsonFactoryBuilder();
-    }
+
 
     /**
      * Method for constructing a new {@link JsonFactory} that has
@@ -587,7 +537,6 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
     public final JsonFactory configure(Feature f, boolean state) {
@@ -602,7 +551,6 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
     public JsonFactory enable(Feature f) {
@@ -618,7 +566,6 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @deprecated since 2.10 use {@link JsonFactoryBuilder#configure(Feature, boolean)} instead
      */
     @Deprecated
     public JsonFactory disable(Feature f) {
@@ -715,7 +662,6 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @deprecated Since 2.10 use {@link JsonFactoryBuilder#inputDecorator(InputDecorator)} instead
      */
     @Deprecated
     public JsonFactory setInputDecorator(InputDecorator d) {
@@ -822,7 +768,6 @@ public class JsonFactory
      *
      * @param d Output decorator to use, if any
      *
-     * @deprecated Since 2.10 use {@link JsonFactoryBuilder#outputDecorator(OutputDecorator)} instead
      */
     @Deprecated
     public JsonFactory setOutputDecorator(OutputDecorator d) {
