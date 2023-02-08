@@ -1230,7 +1230,7 @@ Add the following dependency to your building tool:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>11.7.0</version>
+    <version>12.0.0</version>
 </dependency>
 ```
 
@@ -1246,9 +1246,6 @@ After the development of json-values, I published some more related projects:
 * [mongo-values](https://github.com/imrafaelmerino/mongo-values) Set of codecs to use json-values with MongoDB
 * [json-scala-values](https://github.com/imrafaelmerino/json-scala-values) The Scala version
 
-json-values uses the persistent data structures from [vavr](https://www.vavr.io/),
-[Jackson](https://github.com/FasterXML/jackson) to parse a string/bytes into
-a stream of tokens, and [dsl-sjon](https://github.com/ngs-doo/dsl-json) to parse a string/bytes given a spec.
 
 ## <a name="sponsor"><a/> Sponsors
 
