@@ -31,9 +31,6 @@ package com.fasterxml.jackson.core;
     }
 
     // @since 2.7
-     JsonGenerationException(Throwable rootCause, JsonGenerator g) {
-        super(rootCause, g);
-    }
 
     // @since 2.7
      JsonGenerationException(String msg, JsonGenerator g) {
@@ -41,11 +38,6 @@ package com.fasterxml.jackson.core;
         _processor = g;
     }
 
-    // @since 2.7
-     JsonGenerationException(String msg, Throwable rootCause, JsonGenerator g) {
-        super(msg, rootCause, g);
-        _processor = g;
-    }
 
     /**
      * Fluent method that may be used to assign originating {@link JsonGenerator},

@@ -31,12 +31,12 @@ import java.net.URL;
  * @author Tatu Saloranta
  */
 @SuppressWarnings("resource")
-public class JsonFactory
+public  class JsonFactory
     extends TokenStreamFactory
     implements Versioned,
         Serializable // since 2.1 (for Android, mostly)
 {
-    private static final long serialVersionUID = 2;
+    private static  long serialVersionUID = 2;
 
     /*
     /**********************************************************
@@ -118,7 +118,7 @@ public class JsonFactory
         /**
          * Whether feature is enabled or disabled by default.
          */
-        private final boolean _defaultState;
+        private  boolean _defaultState;
 
         /**
          * Method that calculates bit set (flags) of all features that
@@ -134,7 +134,7 @@ public class JsonFactory
             return flags;
         }
 
-        private Feature(boolean defaultState) { _defaultState = defaultState; }
+         Feature(boolean defaultState) { _defaultState = defaultState; }
 
         @Override
         public boolean enabledByDefault() { return _defaultState; }
@@ -154,31 +154,31 @@ public class JsonFactory
      * Name used to identify JSON format
      * (and returned by {@link #getFormatName()}
      */
-    public final static String FORMAT_NAME_JSON = "JSON";
+    public  static String FORMAT_NAME_JSON = "JSON";
 
     /**
      * Bitfield (set of flags) of all factory features that are enabled by default.
      */
-    protected final static int DEFAULT_FACTORY_FEATURE_FLAGS = Feature.collectDefaults();
+      static int DEFAULT_FACTORY_FEATURE_FLAGS = Feature.collectDefaults();
 
     /**
      * Bitfield (set of flags) of all parser features that are enabled
      * by default.
      */
-    protected final static int DEFAULT_PARSER_FEATURE_FLAGS = JsonParser.Feature.collectDefaults();
+      static int DEFAULT_PARSER_FEATURE_FLAGS = JsonParser.Feature.collectDefaults();
 
     /**
      * Bitfield (set of flags) of all generator features that are enabled
      * by default.
      */
-    protected final static int DEFAULT_GENERATOR_FEATURE_FLAGS = JsonGenerator.Feature.collectDefaults();
+      static int DEFAULT_GENERATOR_FEATURE_FLAGS = JsonGenerator.Feature.collectDefaults();
 
-    public final static SerializableString DEFAULT_ROOT_VALUE_SEPARATOR = DefaultPrettyPrinter.DEFAULT_ROOT_VALUE_SEPARATOR;
+    public  static SerializableString DEFAULT_ROOT_VALUE_SEPARATOR = DefaultPrettyPrinter.DEFAULT_ROOT_VALUE_SEPARATOR;
 
     /**
      * @since 2.10
      */
-    public final static char DEFAULT_QUOTE_CHAR = '"';
+    public  static char DEFAULT_QUOTE_CHAR = '"';
 
     /*
     /**********************************************************
@@ -191,7 +191,7 @@ public class JsonFactory
      * It should not be linked back to the original blueprint, to
      * avoid contents from leaking between factories.
      */
-    protected final transient CharsToNameCanonicalizer _rootCharSymbols = CharsToNameCanonicalizer.createRoot();
+      transient CharsToNameCanonicalizer _rootCharSymbols = CharsToNameCanonicalizer.createRoot();
 
     /**
      * Alternative to the basic symbol table, some stream-based
@@ -202,7 +202,7 @@ public class JsonFactory
      *
      * @since 2.6
      */
-    protected final transient ByteQuadsCanonicalizer _byteSymbolCanonicalizer = ByteQuadsCanonicalizer.createRoot();
+      transient ByteQuadsCanonicalizer _byteSymbolCanonicalizer = ByteQuadsCanonicalizer.createRoot();
 
     /*
     /**********************************************************
@@ -213,17 +213,17 @@ public class JsonFactory
     /**
      * Currently enabled factory features.
      */
-    protected int _factoryFeatures = DEFAULT_FACTORY_FEATURE_FLAGS;
+     int _factoryFeatures = DEFAULT_FACTORY_FEATURE_FLAGS;
 
     /**
      * Currently enabled parser features.
      */
-    protected int _parserFeatures = DEFAULT_PARSER_FEATURE_FLAGS;
+     int _parserFeatures = DEFAULT_PARSER_FEATURE_FLAGS;
 
     /**
      * Currently enabled generator features.
      */
-    protected int _generatorFeatures = DEFAULT_GENERATOR_FEATURE_FLAGS;
+     int _generatorFeatures = DEFAULT_GENERATOR_FEATURE_FLAGS;
 
     /*
     /**********************************************************
@@ -238,14 +238,14 @@ public class JsonFactory
      * Sub-classes (like @link org.codehaus.jackson.map.MappingJsonFactory}
      * usually provide an implementation.
      */
-    protected ObjectCodec _objectCodec;
+     ObjectCodec _objectCodec;
 
     /**
      * Definition of custom character escapes to use for generators created
      * by this factory, if any. If null, standard data format specific
      * escapes are used.
      */
-    protected CharacterEscapes _characterEscapes;
+     CharacterEscapes _characterEscapes;
 
     /**
      * Read constraints to use for {@link JsonParser}s constructed using
@@ -253,19 +253,19 @@ public class JsonFactory
      *
      * @since 2.15
      */
-    final protected StreamReadConstraints _streamReadConstraints;
+      StreamReadConstraints _streamReadConstraints;
 
     /**
      * Optional helper object that may decorate input sources, to do
      * additional processing on input during parsing.
      */
-    protected InputDecorator _inputDecorator;
+     InputDecorator _inputDecorator;
 
     /**
      * Optional helper object that may decorate output object, to do
      * additional processing on output during content generation.
      */
-    protected OutputDecorator _outputDecorator;
+     OutputDecorator _outputDecorator;
 
     /**
      * Separator used between root-level values, if any; null indicates
@@ -274,7 +274,7 @@ public class JsonFactory
      *
      * @since 2.1
      */
-    protected SerializableString _rootValueSeparator = DEFAULT_ROOT_VALUE_SEPARATOR;
+     SerializableString _rootValueSeparator = DEFAULT_ROOT_VALUE_SEPARATOR;
 
     /**
      * Optional threshold used for automatically escaping character above certain character
@@ -284,14 +284,14 @@ public class JsonFactory
      *
      * @since 2.10
      */
-    protected int _maximumNonEscapedChar;
+     int _maximumNonEscapedChar;
 
     /**
      * Character used for quoting field names (if field name quoting has not
      * been disabled with {@link JsonWriteFeature#QUOTE_FIELD_NAMES})
      * and JSON String values.
      */
-    protected final char _quoteChar;
+      char _quoteChar;
 
     /*
     /**********************************************************
@@ -309,7 +309,7 @@ public class JsonFactory
      * and this reuse only works within context of a single
      * factory instance.
      */
-    public JsonFactory() { this((ObjectCodec) null); }
+    public JsonFactory() { this(null); }
 
     public JsonFactory(ObjectCodec oc) {
         _objectCodec = oc;
@@ -325,7 +325,7 @@ public class JsonFactory
      *
      * @since 2.2.1
      */
-    protected JsonFactory(JsonFactory src, ObjectCodec codec)
+     JsonFactory(JsonFactory src, ObjectCodec codec)
     {
         _objectCodec = codec;
 
@@ -345,30 +345,7 @@ public class JsonFactory
     }
 
 
-    /**
-     * Constructor for subtypes; needed to work around the fact that before 3.0,
-     * this factory has cumbersome dual role as generic type as well as actual
-     * implementation for json.
-     *
-     * @param b Builder that contains settings to use
-     * @param bogus Argument only needed to separate constructor signature; ignored
-     */
-    protected JsonFactory(TSFBuilder<?,?> b, boolean bogus) {
-        _objectCodec = null;
 
-        _factoryFeatures = b._factoryFeatures;
-        _parserFeatures = b._streamReadFeatures;
-        _generatorFeatures = b._streamWriteFeatures;
-        _inputDecorator = b._inputDecorator;
-        _outputDecorator = b._outputDecorator;
-        _streamReadConstraints = b._streamReadConstraints;
-
-        // JSON-specific: need to assign even if not really used
-        _characterEscapes = null;
-        _rootValueSeparator = null;
-        _maximumNonEscapedChar = 0;
-        _quoteChar = DEFAULT_QUOTE_CHAR;
-    }
 
 
 
@@ -396,7 +373,7 @@ public class JsonFactory
         return new JsonFactory(this, null);
     }
 
-    protected void _checkInvalidCopy(Class<?> exp)
+     void _checkInvalidCopy(Class<?> exp)
     {
         if (getClass() != exp) {
             throw new IllegalStateException("Failed copy(): "+getClass().getName()
@@ -419,7 +396,7 @@ public class JsonFactory
      *
      * @return Newly constructed instance
      */
-    protected Object readResolve() {
+     Object readResolve() {
         return new JsonFactory(this, _objectCodec);
     }
 
@@ -493,23 +470,6 @@ public class JsonFactory
 
 
 
-    /**
-     * Method that can be called to determine if a custom
-     * {@link ObjectCodec} is needed for binding data parsed
-     * using {@link JsonParser} constructed by this factory
-     * (which typically also implies the same for serialization
-     * with {@link JsonGenerator}).
-     *
-     * @return True if custom codec is needed with parsers and
-     *   generators created by this factory; false if a general
-     *   {@link ObjectCodec} is enough
-     *
-     * @since 2.1
-     */
-    public boolean requiresCustomCodec() {
-        return false;
-    }
-
 
     /*
     /**********************************************************
@@ -539,7 +499,7 @@ public class JsonFactory
      *
      */
     @Deprecated
-    public final JsonFactory configure(Feature f, boolean state) {
+    public  JsonFactory configure(Feature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
@@ -580,7 +540,7 @@ public class JsonFactory
      *
      * @return True if the specified feature is enabled
      */
-    public final boolean isEnabled(Feature f) {
+    public  boolean isEnabled(Feature f) {
         return (_factoryFeatures & f.getMask()) != 0;
     }
 
@@ -600,7 +560,7 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      */
-    public final JsonFactory configure(JsonParser.Feature f, boolean state) {
+    public  JsonFactory configure(JsonParser.Feature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
@@ -641,19 +601,11 @@ public class JsonFactory
      *
      * @since 2.10
      */
-    public final boolean isEnabled(StreamReadFeature f) {
+    public  boolean isEnabled(StreamReadFeature f) {
         return (_parserFeatures & f.mappedFeature().getMask()) != 0;
     }
 
-    /**
-     * Method for getting currently configured input decorator (if any;
-     * there is no default decorator).
-     *
-     * @return InputDecorator configured, if any
-     */
-    public InputDecorator getInputDecorator() {
-        return _inputDecorator;
-    }
+
 
     /**
      * Method for overriding currently configured input decorator
@@ -684,7 +636,7 @@ public class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      */
-    public final JsonFactory configure(JsonGenerator.Feature f, boolean state) {
+    public  JsonFactory configure(JsonGenerator.Feature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
@@ -725,7 +677,7 @@ public class JsonFactory
      *
      * @since 2.10
      */
-    public final boolean isEnabled(StreamWriteFeature f) {
+    public  boolean isEnabled(StreamWriteFeature f) {
         return (_generatorFeatures & f.mappedFeature().getMask()) != 0;
     }
 
@@ -775,26 +727,7 @@ public class JsonFactory
         return this;
     }
 
-    /**
-     * Method that allows overriding String used for separating root-level
-     * JSON values (default is single space character)
-     *
-     * @param sep Separator to use, if any; null means that no separator is
-     *   automatically added
-     *
-     * @return This factory instance (to allow call chaining)
-     */
-    public JsonFactory setRootValueSeparator(String sep) {
-        _rootValueSeparator = (sep == null) ? null : new SerializedString(sep);
-        return this;
-    }
 
-    /**
-     * @return Root value separator configured, if any
-     */
-    public String getRootValueSeparator() {
-        return (_rootValueSeparator == null) ? null : _rootValueSeparator.getValue();
-    }
 
     /*
     /**********************************************************
@@ -978,7 +911,7 @@ public class JsonFactory
      */
     @Override
     public JsonParser createParser(String content) throws IOException, JsonParseException {
-        final int strLen = content.length();
+         int strLen = content.length();
         // Actually, let's use this for medium-sized content, up to 64kB chunk (32kb char)
         if ((_inputDecorator != null) || (strLen > 0x8000) || !canUseCharArrays()) {
             // easier to just wrap in a Reader than extend InputDecorator; or, if content
@@ -993,22 +926,6 @@ public class JsonFactory
 
 
 
-    /**
-     * Method for constructing parser for parsing contents of given char array.
-     *
-     * @since 2.4
-     */
-    @Override
-    public JsonParser createParser(char[] content, int offset, int len) throws IOException {
-        _checkRangeBoundsForCharArray(content, offset, len);
-        if (_inputDecorator != null) { // easier to just wrap in a Reader than extend InputDecorator
-            return createParser(new CharArrayReader(content, offset, len));
-        }
-        return _createParser(content, offset, len,
-                _createContext(_createContentReference(content, offset, len), true),
-                // important: buffer is NOT recyclable, as it's from caller
-                false);
-    }
 
 
 
@@ -1018,38 +935,6 @@ public class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Optional method for constructing parser for non-blocking parsing
-     * interface (accessed using {@link JsonParser#getNonBlockingInputFeeder()}
-     * from constructed instance).
-     *<p>
-     * If this factory does not support non-blocking parsing (either at all,
-     * or from byte array),
-     * will throw {@link UnsupportedOperationException}.
-     *<p>
-     * Note that JSON-backed factory only supports parsing of UTF-8 encoded JSON content
-     * (and US-ASCII since it is proper subset); other encodings are not supported
-     * at this point.
-     *
-     * @since 2.9
-     */
-
-
-    /**
-     * Optional method for constructing parser for non-blocking parsing
-     * interface (accessed using {@link JsonParser#getNonBlockingInputFeeder()}
-     * from constructed instance).
-     *<p>
-     * If this factory does not support non-blocking parsing (either at all,
-     * or from byte array),
-     * will throw {@link UnsupportedOperationException}.
-     *<p>
-     * Note that JSON-backed factory only supports parsing of UTF-8 encoded JSON content
-     * (and US-ASCII since it is proper subset); other encodings are not supported
-     * at this point.
-     *
-     * @since 2.14
-     */
 
 
     /*
@@ -1410,7 +1295,7 @@ public class JsonFactory
      *
      * @since 2.1
      */
-    protected JsonParser _createParser(InputStream in, IOContext ctxt) throws IOException {
+     JsonParser _createParser(InputStream in, IOContext ctxt) throws IOException {
         try {
             return new ByteSourceJsonBootstrapper(ctxt, in).constructParser(_parserFeatures,
                     _objectCodec, _byteSymbolCanonicalizer, _rootCharSymbols, _factoryFeatures);
@@ -1446,7 +1331,7 @@ public class JsonFactory
      *
      * @since 2.1
      */
-    protected JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
+     JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
         return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,
                 _rootCharSymbols.makeChild(_factoryFeatures));
     }
@@ -1467,7 +1352,7 @@ public class JsonFactory
      *
      * @since 2.4
      */
-    protected JsonParser _createParser(char[] data, int offset, int len, IOContext ctxt,
+     JsonParser _createParser(char[] data, int offset, int len, IOContext ctxt,
             boolean recyclable) throws IOException {
         return new ReaderBasedJsonParser(ctxt, _parserFeatures, null, _objectCodec,
                 _rootCharSymbols.makeChild(_factoryFeatures),
@@ -1494,36 +1379,13 @@ public class JsonFactory
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
      */
-    protected JsonParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
+     JsonParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
     {
         return new ByteSourceJsonBootstrapper(ctxt, data, offset, len).constructParser(_parserFeatures,
                 _objectCodec, _byteSymbolCanonicalizer, _rootCharSymbols, _factoryFeatures);
     }
 
-    /**
-     * Optional factory method, expected to be overridden
-     *
-     * @param input DataInput to use for reading content to parse
-     * @param ctxt I/O context to use for parsing
-     *
-     * @return Actual parser to use
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     *
-     * @since 2.8
-     */
-    protected JsonParser _createParser(DataInput input, IOContext ctxt) throws IOException
-    {
-        // 13-May-2016, tatu: Need to take care not to accidentally create JSON parser for
-        //   non-JSON input.
-        _requireJSONFactory("InputData source not (yet?) supported for this format (%s)");
-        // Also: while we can't do full bootstrapping (due to read-ahead limitations), should
-        // at least handle possible UTF-8 BOM
-        int firstByte = ByteSourceJsonBootstrapper.skipUTF8BOM(input);
-        ByteQuadsCanonicalizer can = _byteSymbolCanonicalizer.makeChild(_factoryFeatures);
-        return new UTF8DataInputJsonParser(ctxt, _parserFeatures, input,
-                _objectCodec, can, firstByte);
-    }
+  
 
     /*
     /**********************************************************
@@ -1549,7 +1411,7 @@ public class JsonFactory
      *
      * @throws IOException if parser initialization fails due to I/O (write) problem
      */
-    protected JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException
+     JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException
     {
         WriterBasedJsonGenerator gen = new WriterBasedJsonGenerator(ctxt,
                 _generatorFeatures, _objectCodec, out, _quoteChar);
@@ -1583,7 +1445,7 @@ public class JsonFactory
      *
      * @throws IOException if parser initialization fails due to I/O (write) problem
      */
-    protected JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) throws IOException {
+     JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) throws IOException {
         UTF8JsonGenerator gen = new UTF8JsonGenerator(ctxt,
                 _generatorFeatures, _objectCodec, out, _quoteChar);
         if (_maximumNonEscapedChar > 0) {
@@ -1599,7 +1461,7 @@ public class JsonFactory
         return gen;
     }
 
-    protected Writer _createWriter(OutputStream out, JsonEncoding enc, IOContext ctxt) throws IOException
+     Writer _createWriter(OutputStream out, JsonEncoding enc, IOContext ctxt) throws IOException
     {
         // note: this should not get called any more (caller checks, dispatches)
         if (enc == JsonEncoding.UTF8) { // We have optimized writer for UTF-8
@@ -1615,7 +1477,7 @@ public class JsonFactory
     /**********************************************************
      */
 
-    protected final InputStream _decorate(InputStream in, IOContext ctxt) throws IOException {
+      InputStream _decorate(InputStream in, IOContext ctxt) throws IOException {
         if (_inputDecorator != null) {
             InputStream in2 = _inputDecorator.decorate(ctxt, in);
             if (in2 != null) {
@@ -1625,7 +1487,7 @@ public class JsonFactory
         return in;
     }
 
-    protected final Reader _decorate(Reader in, IOContext ctxt) throws IOException {
+      Reader _decorate(Reader in, IOContext ctxt) throws IOException {
         if (_inputDecorator != null) {
             Reader in2 = _inputDecorator.decorate(ctxt, in);
             if (in2 != null) {
@@ -1636,7 +1498,7 @@ public class JsonFactory
     }
 
     // @since 2.8
-    protected final DataInput _decorate(DataInput in, IOContext ctxt) throws IOException {
+      DataInput _decorate(DataInput in, IOContext ctxt) throws IOException {
         if (_inputDecorator != null) {
             DataInput in2 = _inputDecorator.decorate(ctxt, in);
             if (in2 != null) {
@@ -1646,7 +1508,7 @@ public class JsonFactory
         return in;
     }
 
-    protected final OutputStream _decorate(OutputStream out, IOContext ctxt) throws IOException {
+      OutputStream _decorate(OutputStream out, IOContext ctxt) throws IOException {
         if (_outputDecorator != null) {
             OutputStream out2 = _outputDecorator.decorate(ctxt, out);
             if (out2 != null) {
@@ -1656,7 +1518,7 @@ public class JsonFactory
         return out;
     }
 
-    protected final Writer _decorate(Writer out, IOContext ctxt) throws IOException {
+      Writer _decorate(Writer out, IOContext ctxt) throws IOException {
         if (_outputDecorator != null) {
             Writer out2 = _outputDecorator.decorate(ctxt, out);
             if (out2 != null) {
@@ -1700,7 +1562,7 @@ public class JsonFactory
      *
      * @return I/O context created
      */
-    protected IOContext _createContext(ContentReference contentRef, boolean resourceManaged) {
+     IOContext _createContext(ContentReference contentRef, boolean resourceManaged) {
         // 21-Mar-2021, tatu: Bit of defensive coding for backwards compatibility
         if (contentRef == null) {
             contentRef = ContentReference.unknown();
@@ -1719,29 +1581,13 @@ public class JsonFactory
      * @deprecated Since 2.13
      */
     @Deprecated // @since 2.13
-    protected IOContext _createContext(Object rawContentRef, boolean resourceManaged) {
+     IOContext _createContext(Object rawContentRef, boolean resourceManaged) {
         return new IOContext(_streamReadConstraints, _getBufferRecycler(),
                 _createContentReference(rawContentRef),
                 resourceManaged);
     }
 
-    /**
-     * Overridable factory method that actually instantiates desired
-     * context object for async (non-blocking) parsing
-     *
-     * @param srcRef Source reference to use for diagnostics, exception messages
-     *
-     * @return I/O context created
-     *
-     * @since 2.9.7
-     */
-    protected IOContext _createNonBlockingContext(Object srcRef) {
-        // [jackson-core#479]: allow recycling for non-blocking parser again
-        // now that access is thread-safe
-        return new IOContext(_streamReadConstraints, _getBufferRecycler(),
-                _createContentReference(srcRef),
-                false);
-    }
+ 
 
     /**
      * Overridable factory method for constructing {@link ContentReference}
@@ -1755,7 +1601,7 @@ public class JsonFactory
      *
      * @since 2.13
      */
-    protected ContentReference _createContentReference(Object contentAccessor) {
+     ContentReference _createContentReference(Object contentAccessor) {
         // 21-Mar-2021, tatu: For now assume "canHandleBinaryNatively()" is reliable
         //    indicator of textual vs binary format:
         return ContentReference.construct(!canHandleBinaryNatively(), contentAccessor);
@@ -1776,7 +1622,7 @@ public class JsonFactory
      *
      * @since 2.13
      */
-    protected ContentReference _createContentReference(Object contentAccessor,
+     ContentReference _createContentReference(Object contentAccessor,
             int offset, int length)
     {
         // 21-Mar-2021, tatu: For now assume "canHandleBinaryNatively()" is reliable
@@ -1791,29 +1637,5 @@ public class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Helper method called to work around the problem of this class both defining
-     * general API for constructing parsers+generators AND implementing the API
-     * for JSON handling. Problem here is that when adding new functionality
-     * via factory methods, it is not possible to leave these methods abstract
-     * (because we are implementing them for JSON); but there is risk that
-     * sub-classes do not override them all (plus older version can not implement).
-     * So a work-around is to add a check to ensure that factory is still one
-     * used for JSON; and if not, make base implementation of a factory method fail.
-     *
-     * @param msg Message template to use for reporting problem (if necessary)
-     *
-     * @since 2.9
-     */
-    private final void _requireJSONFactory(String msg) {
-        if (!_isJSONFactory()) {
-            throw new UnsupportedOperationException(String.format(msg, getFormatName()));
-        }
-    }
 
-    private final boolean _isJSONFactory() {
-        // NOTE: since we only really care about whether this is standard JSON-backed factory,
-        // or its sub-class / delegated to one, no need to check for equality, identity is enough
-        return getFormatName() == FORMAT_NAME_JSON;
-    }
 }
