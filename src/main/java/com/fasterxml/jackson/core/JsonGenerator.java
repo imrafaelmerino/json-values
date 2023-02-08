@@ -13,8 +13,7 @@ import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.core.JsonParser.NumberType;
 import com.fasterxml.jackson.core.io.CharacterEscapes;
-import com.fasterxml.jackson.core.type.WritableTypeId;
-import com.fasterxml.jackson.core.type.WritableTypeId.Inclusion;
+
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.core.util.VersionUtil;
 
@@ -1911,143 +1910,9 @@ public abstract class JsonGenerator
         throw new JsonGenerationException("No native support for writing Type Ids", this);
     }
 
-    /**
-     * Replacement method for {@link #writeTypeId(Object)} which is called
-     * regardless of whether format has native type ids. If it does have native
-     * type ids, those are to be used (if configuration allows this), if not,
-     * structural type id inclusion is to be used. For JSON, for example, no
-     * native type ids exist and structural inclusion is always used.
-     *<p>
-     * NOTE: databind may choose to skip calling this method for some special cases
-     * (and instead included type id via regular write methods and/or {@link #writeTypeId}
-     * -- this is discouraged, but not illegal, and may be necessary as a work-around
-     * in some cases.
-     *
-     * @param typeIdDef Full Type Id definition
-     *
-     * @return {@link WritableTypeId} for caller to retain and pass to matching
-     *   {@link #writeTypeSuffix} call
-     *
-     * @throws IOException if there is either an underlying I/O problem or encoding
-     *    issue at format layer
-     * @throws JsonGenerationException if Type ID output is not allowed
-     *   (either at all, or specifically in this position in output)
-     *
-     * @since 2.9
-     */
-    public WritableTypeId writeTypePrefix(WritableTypeId typeIdDef) throws IOException
-    {
-        Object id = typeIdDef.id;
 
-        final JsonToken valueShape = typeIdDef.valueShape;
-        if (canWriteTypeId()) {
-            typeIdDef.wrapperWritten = false;
-            // just rely on native type output method (sub-classes likely to override)
-            writeTypeId(id);
-        } else {
-            // No native type id; write wrappers
-            // Normally we only support String type ids (non-String reserved for native type ids)
-            String idStr = (id instanceof String) ? (String) id : String.valueOf(id);
-            typeIdDef.wrapperWritten = true;
 
-            Inclusion incl = typeIdDef.include;
-            // first: can not output "as property" if value not Object; if so, must do "as array"
-            if ((valueShape != JsonToken.START_OBJECT)
-                    && incl.requiresObjectContext()) {
-                typeIdDef.include = incl = Inclusion.WRAPPER_ARRAY;
-            }
 
-            switch (incl) {
-            case PARENT_PROPERTY:
-                // nothing to do here, as it has to be written in suffix...
-                break;
-            case PAYLOAD_PROPERTY:
-                // only output as native type id; otherwise caller must handle using some
-                // other mechanism, so...
-                break;
-            case METADATA_PROPERTY:
-                // must have Object context by now, so simply write as field name
-                // Note, too, that it's bit tricky, since we must print START_OBJECT that is part
-                // of value first -- and then NOT output it later on: hence return "early"
-                writeStartObject(typeIdDef.forValue);
-                writeStringField(typeIdDef.asProperty, idStr);
-                return typeIdDef;
-
-            case WRAPPER_OBJECT:
-                // NOTE: this is wrapper, not directly related to value to output, so don't pass
-                writeStartObject();
-                writeFieldName(idStr);
-                break;
-            case WRAPPER_ARRAY:
-            default: // should never occur but translate as "as-array"
-                writeStartArray(); // wrapper, not actual array object to write
-                writeString(idStr);
-            }
-        }
-        // and finally possible start marker for value itself:
-        if (valueShape == JsonToken.START_OBJECT) {
-            writeStartObject(typeIdDef.forValue);
-        } else if (valueShape == JsonToken.START_ARRAY) {
-            // should we now set the current object?
-            writeStartArray();
-        }
-        return typeIdDef;
-    }
-
-    /**
-     * Method to call along with {@link #writeTypePrefix}, but after actual value
-     * that has type id has been completely written. This allows post-processing
-     * for some cases (for example if the actual Type Id is written at the END of
-     * the value, not before or at the beginning).
-     *
-     * @param typeIdDef Value returned by the earlier matching call to {@link #writeTypePrefix(WritableTypeId)}
-     *
-     * @throws IOException if there is either an underlying I/O problem or encoding
-     *    issue at format layer
-     * @throws JsonGenerationException if Type ID output is not allowed
-     *   (either at all, or specifically in this position in output)
-     *
-     * @return Argument {@code typeIdDef}, possibly modified
-     *
-     * @since 2.9
-     */
-    public WritableTypeId writeTypeSuffix(WritableTypeId typeIdDef) throws IOException
-    {
-        final JsonToken valueShape = typeIdDef.valueShape;
-        // First: does value need closing?
-        if (valueShape == JsonToken.START_OBJECT) {
-            writeEndObject();
-        } else if (valueShape == JsonToken.START_ARRAY) {
-            writeEndArray();
-        }
-
-        if (typeIdDef.wrapperWritten) {
-            switch (typeIdDef.include) {
-            case WRAPPER_ARRAY:
-                writeEndArray();
-                break;
-            case PARENT_PROPERTY:
-                // unusually, need to output AFTER value. And no real wrapper...
-                {
-                    Object id = typeIdDef.id;
-                    String idStr = (id instanceof String) ? (String) id : String.valueOf(id);
-                    writeStringField(typeIdDef.asProperty, idStr);
-                }
-                break;
-            case METADATA_PROPERTY:
-            case PAYLOAD_PROPERTY:
-                // no actual wrapper; included within Object itself
-                break;
-            case WRAPPER_OBJECT:
-            default: // should never occur but...
-                writeEndObject();
-                break;
-            }
-        }
-        return typeIdDef;
-    }
-
-    /*
     /**********************************************************************
     /* Public API, write methods, serializing Java objects
     /**********************************************************************

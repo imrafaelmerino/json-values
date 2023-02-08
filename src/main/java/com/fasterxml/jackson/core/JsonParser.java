@@ -11,7 +11,6 @@ import java.math.BigInteger;
 import java.util.Iterator;
 
 import com.fasterxml.jackson.core.exc.InputCoercionException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
 import com.fasterxml.jackson.core.util.RequestPayload;
 
@@ -2356,38 +2355,7 @@ public abstract class JsonParser
         return _codec().readValue(this, valueType);
     }
 
-    /**
-     * Method to deserialize JSON content into a Java type, reference
-     * to which is passed as argument. Type is passed using so-called
-     * "super type token"
-     * and specifically needs to be used if the root type is a
-     * parameterized (generic) container type.
-     * <b>Note</b>: method can only be called if the parser has
-     * an object codec assigned; this is true for parsers constructed
-     * by <code>MappingJsonFactory</code> (defined in 'jackson-databind' bundle)
-     * but not for {@link JsonFactory} (unless its <code>setCodec</code>
-     * method has been explicitly called).
-     *<p>
-     * This method may advance the event stream, for structured types
-     * the current token will be the closing end marker (END_ARRAY,
-     * END_OBJECT) of the bound structure. For non-structured Json types
-     * (and for {@link JsonToken#VALUE_EMBEDDED_OBJECT})
-     * stream is not advanced.
-     *
-     * @param <T> Nominal type parameter for value type
-     *
-     * @param valueTypeRef Java type to read content as (passed to ObjectCodec that
-     *    deserializes content)
-     *
-     * @return Java value read from content
-     *
-     * @throws IOException if there is either an underlying I/O problem or decoding
-     *    issue at format layer
-     */
-    @SuppressWarnings("unchecked")
-    public <T> T readValueAs(TypeReference<?> valueTypeRef) throws IOException {
-        return (T) _codec().readValue(this, valueTypeRef);
-    }
+
 
     /**
      * Method for reading sequence of Objects from parser stream,
@@ -2405,24 +2373,6 @@ public abstract class JsonParser
      */
     public <T> Iterator<T> readValuesAs(Class<T> valueType) throws IOException {
         return _codec().readValues(this, valueType);
-    }
-
-    /**
-     * Method for reading sequence of Objects from parser stream,
-     * all with same specified value type.
-     *
-     * @param <T> Nominal type parameter for value type
-     *
-     * @param valueTypeRef Java type to read content as (passed to ObjectCodec that
-     *    deserializes content)
-     *
-     * @return Iterator for reading multiple Java values from content
-     *
-     * @throws IOException if there is either an underlying I/O problem or decoding
-     *    issue at format layer
-     */
-    public <T> Iterator<T> readValuesAs(TypeReference<T> valueTypeRef) throws IOException {
-        return _codec().readValues(this, valueTypeRef);
     }
 
     /**

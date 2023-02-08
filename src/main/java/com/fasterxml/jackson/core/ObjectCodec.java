@@ -8,8 +8,7 @@ package com.fasterxml.jackson.core;
 import java.io.IOException;
 import java.util.Iterator;
 
-import com.fasterxml.jackson.core.type.ResolvedType;
-import com.fasterxml.jackson.core.type.TypeReference;
+
 
 /**
  * Abstract class that defines the interface that {@link JsonParser} and
@@ -59,44 +58,6 @@ public abstract class ObjectCodec
     public abstract <T> T readValue(JsonParser p, Class<T> valueType)
         throws IOException;
 
-    /**
-     * Method to deserialize JSON content into a Java type, reference
-     * to which is passed as argument. Type is passed using so-called
-     * "super type token"
-     * and specifically needs to be used if the root type is a
-     * parameterized (generic) container type.
-     *
-     * @param <T> Nominal parameter for target type
-     *
-     * @param p Parser to use for decoding content to bind
-     * @param valueTypeRef Java value type to bind content to
-     *
-     * @return Value deserialized
-     *
-     * @throws IOException for low-level read issues, or
-     *   {@link JsonParseException} for decoding problems
-     */
-    public abstract <T> T readValue(JsonParser p, TypeReference<T> valueTypeRef)
-        throws IOException;
-
-    /**
-     * Method to deserialize JSON content into a POJO, type specified
-     * with fully resolved type object (so it can be a generic type,
-     * including containers like {@link java.util.Collection} and
-     * {@link java.util.Map}).
-     *
-     * @param <T> Nominal parameter for target type
-     *
-     * @param p Parser to use for decoding content to bind
-     * @param valueType Java value type to bind content to
-     *
-     * @return Value deserialized
-     *
-     * @throws IOException for low-level read issues, or
-     *   {@link JsonParseException} for decoding problems
-     */
-    public abstract <T> T readValue(JsonParser p, ResolvedType valueType)
-        throws IOException;
 
     /**
      * Method for reading sequence of Objects from parser stream,
@@ -115,39 +76,7 @@ public abstract class ObjectCodec
     public abstract <T> Iterator<T> readValues(JsonParser p, Class<T> valueType)
         throws IOException;
 
-    /**
-     * Method for reading sequence of Objects from parser stream,
-     * all with same specified value type.
-     *
-     * @param <T> Nominal parameter for target type
-     *
-     * @param p Parser to use for decoding content to bind
-     * @param valueTypeRef Java value type to bind content to
-     *
-     * @return Iterator for incrementally deserializing values
-     *
-     * @throws IOException for low-level read issues, or
-     *   {@link JsonParseException} for decoding problems
-     */
-    public abstract <T> Iterator<T> readValues(JsonParser p, TypeReference<T> valueTypeRef)
-        throws IOException;
 
-    /**
-     * Method for reading sequence of Objects from parser stream,
-     * all with same specified value type.
-     *
-     * @param <T> Nominal parameter for target type
-     *
-     * @param p Parser to use for decoding content to bind
-     * @param valueType Java value type to bind content to
-     *
-     * @return Iterator for incrementally deserializing values
-     *
-     * @throws IOException for low-level read issues, or
-     *   {@link JsonParseException} for decoding problems
-     */
-    public abstract <T> Iterator<T> readValues(JsonParser p, ResolvedType valueType)
-        throws IOException;
 
     /*
     /**********************************************************

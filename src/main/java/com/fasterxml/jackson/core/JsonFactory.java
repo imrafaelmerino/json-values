@@ -8,8 +8,6 @@ import java.io.*;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 
-import com.fasterxml.jackson.core.format.InputAccessor;
-import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.*;
 import com.fasterxml.jackson.core.json.*;
 import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
@@ -548,7 +546,6 @@ public class JsonFactory
      * Introspection method that can be used to check whether this
      * factory can create non-blocking parsers: parsers that do not
      * use blocking I/O abstractions but instead use a
-     * {@link com.fasterxml.jackson.core.async.NonBlockingInputFeeder}.
      *
      * @return Whether this factory supports non-blocking ("async") parsing or
      *    not (and consequently whether {@code createNonBlockingXxx()} method(s) work)
@@ -622,14 +619,7 @@ public class JsonFactory
         return null;
     }
 
-    public MatchStrength hasFormat(InputAccessor acc) throws IOException
-    {
-        // since we can't keep this abstract, only implement for "vanilla" instance
-        if (getClass() == JsonFactory.class) {
-            return hasJSONFormat(acc);
-        }
-        return null;
-    }
+
 
     /**
      * Method that can be called to determine if a custom
@@ -648,9 +638,6 @@ public class JsonFactory
         return false;
     }
 
-    protected MatchStrength hasJSONFormat(InputAccessor acc) throws IOException {
-        return ByteSourceJsonBootstrapper.hasJSONFormat(acc);
-    }
 
     /*
     /**********************************************************
