@@ -121,11 +121,8 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public T head() {
-        if (!isEmpty()) {
-            return get(0);
-        } else {
-            throw new NoSuchElementException("head of empty Vector");
-        }
+        return get(0);
+
     }
 
 
@@ -155,11 +152,6 @@ public final class Vector<T> implements Iterable<T> {
 
     public boolean isEmpty() {
         return length() == 0;
-    }
-
-
-    public boolean isTraversableAgain() {
-        return true;
     }
 
 
@@ -200,11 +192,11 @@ public final class Vector<T> implements Iterable<T> {
         return new Vector<>(trie.prependAll(iterable));
     }
 
-    Vector<T> reverse(){
+    Vector<T> reverse() {
         return (length() <= 1) ? this : foldLeft(empty(), Vector::prepend);
     }
 
-     <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> combine) {
+    <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> combine) {
         Objects.requireNonNull(combine, "combine is null");
         U xs = zero;
         for (T x : this) {
@@ -212,30 +204,25 @@ public final class Vector<T> implements Iterable<T> {
         }
         return xs;
     }
-     Iterator<T> reverseIterator() {
+
+    Iterator<T> reverseIterator() {
         return reverse().iterator();
     }
 
 
     public Vector<T> removeAt(int index) {
-        if (isDefinedAt(index)) {
-            final Vector<T> begin = take(index);
-            final Vector<T> end = drop(index + 1);
-            return (begin.length() > end.length())
-                    ? begin.appendAll(end)
-                    : end.prependAll(begin);
-        } else {
-            throw new IndexOutOfBoundsException("removeAt(" + index + ")");
-        }
+        final Vector<T> begin = take(index);
+        final Vector<T> end = drop(index + 1);
+        return (begin.length() > end.length())
+                ? begin.appendAll(end)
+                : end.prependAll(begin);
+
     }
 
 
     public Vector<T> tail() {
-        if (!isEmpty()) {
-            return drop(1);
-        } else {
-            throw new UnsupportedOperationException("tail of empty Vector");
-        }
+        return drop(1);
+
     }
 
 
@@ -249,11 +236,7 @@ public final class Vector<T> implements Iterable<T> {
     }
 
     public Vector<T> update(int index, T element) {
-        if (isDefinedAt(index)) {
-            return wrap(trie.update(index, element));
-        } else {
-            throw new IndexOutOfBoundsException("update(" + index + ")");
-        }
+        return wrap(trie.update(index, element));
     }
 
 
@@ -268,7 +251,7 @@ public final class Vector<T> implements Iterable<T> {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector<?> vector = (Vector<?>) o;
-        return Collections.areEqual(this,vector);
+        return Collections.areEqual(this, vector);
     }
 
     public int count(Predicate<T> o) {
@@ -287,11 +270,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public T last() {
-        if (isEmpty()) {
-            throw new NoSuchElementException("last of empty IndexedSeq");
-        } else {
-            return get(length() - 1);
-        }
+        return get(length() - 1);
     }
 
     public boolean contains(T element) {

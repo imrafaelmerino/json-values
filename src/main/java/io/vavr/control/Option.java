@@ -464,31 +464,6 @@ public abstract class Option<T> implements Iterable<T>, io.vavr.Value<T>, Serial
         return isEmpty() ? none() : some(mapper.apply(get()));
     }
 
-
-
-    /**
-     * Transforms this {@code Option}.
-     *
-     * <pre>{@code
-     * Function<Option<Integer>, String> f = o -> o.getOrElse(3).toString().concat("-transformed"));
-     *
-     * // Prints "1-transformed"
-     * System.out.println(Option.of(1).transform(f));
-     *
-     * // Prints "3-transformed"
-     * System.out.println(Option.<Integer>none().transform(f));
-     * }</pre>
-     *
-     * @param f   A transformation
-     * @param <U> Type of transformation result
-     * @return An instance of type {@code U}
-     * @throws NullPointerException if {@code f} is null
-     */
-    public final <U> U transform(Function<? super Option<T>, ? extends U> f) {
-        Objects.requireNonNull(f, "f is null");
-        return f.apply(this);
-    }
-
     @Override
     public final Iterator<T> iterator() {
         return isEmpty() ? Iterator.empty() : Iterator.of(get());

@@ -63,15 +63,8 @@ final class Collections {
 
     // @param iterable may not be null
     static boolean isEmpty(Iterable<?> iterable) {
-        return iterable instanceof Traversable && ((Traversable<?>) iterable).isEmpty()
-                || !iterable.iterator().hasNext();
+        return !iterable.iterator().hasNext();
     }
-
-    static <T> boolean isTraversableAgain(Iterable<? extends T> iterable) {
-        return (iterable instanceof Collection) ||
-                (iterable instanceof Traversable && ((Traversable<?>) iterable).isTraversableAgain());
-    }
-
 
 
 
@@ -88,9 +81,6 @@ final class Collections {
         throw new RuntimeException();
     }
 
-    private static <T> IterableWithSize<T> withSizeTraversable(Iterable<? extends T> iterable) {
-            return new IterableWithSize<>(iterable, ((Traversable<?>) iterable).size());
-    }
 
     static class IterableWithSize<T> {
         private final Iterable<? extends T> iterable;
