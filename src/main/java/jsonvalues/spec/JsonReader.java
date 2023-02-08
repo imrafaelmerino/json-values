@@ -35,7 +35,6 @@ class JsonReader {
         WHITESPACE[-29 + 128] = true;
     }
 
-    private int tokenStart;
     private int currentIndex = 0;
     private long currentPosition = 0;
     private byte last = ' ';
@@ -270,12 +269,11 @@ class JsonReader {
         if (available == len) {
             readLimit = length - currentIndex;
             length = readLimit;
-            currentIndex = 0;
         } else {
             readLimit = Math.min(available, bufferLenWithExtraSpace);
             this.length = available;
-            currentIndex = 0;
         }
+        currentIndex = 0;
         return available;
     }
 
@@ -407,7 +405,7 @@ class JsonReader {
 
 
     public int scanNumber() {
-        tokenStart = currentIndex - 1;
+        int tokenStart = currentIndex - 1;
         int i = 1;
         int ci = currentIndex;
         byte bb = last;
@@ -686,89 +684,6 @@ class JsonReader {
 
     public long positionInStream(int offset) {
         return currentPosition + currentIndex - offset;
-    }
-
-    public int fillName() throws IOException {
-        int hash = calcHash();
-        if (read() != ':') {
-            if (!wasWhiteSpace() || getNextToken() != ':') {
-                throw newParseError("Expecting ':' after attribute name");
-            }
-        }
-        return hash;
-    }
-
-
-    public int calcHash() throws IOException {
-        if (last != '"') throw newParseError("Expecting '\"' for attribute name start");
-        tokenStart = currentIndex;
-        int ci = currentIndex;
-        long hash = 0x811c9dc5;
-        if (stream != null) {
-            while (ci < readLimit) {
-                byte b = buffer[ci];
-                if (b == '\\') {
-                    if (ci == readLimit - 1) {
-                        return calcHashAndCopyName(hash, ci);
-                    }
-                    b = buffer[++ci];
-                } else if (b == '"') {
-                    break;
-                }
-                ci++;
-                hash ^= b;
-                hash *= 0x1000193;
-            }
-            if (ci >= readLimit) {
-                return calcHashAndCopyName(hash, ci);
-            }
-           currentIndex = ci + 1;
-        } else {
-            //TODO: use length instead!? this will read data after used buffer size
-            while (ci < buffer.length) {
-                byte b = buffer[ci++];
-                if (b == '\\') {
-                    if (ci == buffer.length) throw newParseError("Expecting '\"' for attribute name end");
-                    b = buffer[ci++];
-                } else if (b == '"') {
-                    break;
-                }
-                hash ^= b;
-                hash *= 0x1000193;
-            }
-            currentIndex = ci;
-        }
-        return (int) hash;
-    }
-
-
-    private int calcHashAndCopyName(long hash, int ci) throws IOException {
-        int soFar = ci - tokenStart;
-        long startPosition = currentPosition - soFar;
-        while (chars.length < soFar) {
-            chars = Arrays.copyOf(chars, chars.length * 2);
-        }
-        int i = 0;
-        for (; i < soFar; i++) {
-            chars[i] = (char) buffer[i + tokenStart];
-        }
-        currentIndex = ci;
-        do {
-            byte b = read();
-            if (b == '\\') {
-                b = read();
-            } else if (b == '"') {
-                return (int) hash;
-            }
-            if (i == chars.length) {
-                chars = Arrays.copyOf(chars, chars.length * 2);
-            }
-            chars[i++] = (char) b;
-            hash ^= b;
-            hash *= 0x1000193;
-        } while (!isEndOfStream());
-        //TODO: check offset
-        throw newParseErrorAt("JSON string was not closed with a double quote", (int) startPosition);
     }
 
 

@@ -320,7 +320,7 @@ final class BitMappedTrie<T> {
     }
 
     @SuppressWarnings("unchecked")
-    <T2> int visit(LeafVisitor<T2> visitor) {
+    <T2> void visit(LeafVisitor<T2> visitor) {
         int globalIndex = 0, start = lastDigit(offset);
         for (int index = 0; index < length; ) {
             final T2 leaf = (T2) getLeaf(index);
@@ -331,7 +331,6 @@ final class BitMappedTrie<T> {
             index += end - start;
             start = 0;
         }
-        return globalIndex;
     }
 
     private int getMin(int start, int index, Object leaf) {

@@ -56,30 +56,21 @@ import java.util.Optional;
         return trie.getOrElse(key, defaultValue);
     }
 
-   
-
   
     public boolean isEmpty() {
         return trie.isEmpty();
     }
-
-
-
 
   
     public HashMap put(String key, JsValue value) {
         return new HashMap(trie.put(key, value));
     }
 
-    
-
   
     public HashMap remove(String key) {
         final HashArrayMappedTrie result = trie.remove(key);
         return result.size() == trie.size() ? this : wrap(result);
     }
-
-
 
     public int size() {
         return trie.size();
