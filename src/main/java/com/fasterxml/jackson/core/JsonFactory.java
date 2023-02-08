@@ -535,60 +535,8 @@ public class JsonFactory
      */
     public boolean canUseCharArrays() { return true; }
 
-    /**
-     * Introspection method that can be used to check whether this
-     * factory can create non-blocking parsers: parsers that do not
-     * use blocking I/O abstractions but instead use a
-     *
-     * @return Whether this factory supports non-blocking ("async") parsing or
-     *    not (and consequently whether {@code createNonBlockingXxx()} method(s) work)
-     *
-     * @since 2.9
-     */
-    @Override
-    public boolean canParseAsync() {
-        // 31-May-2017, tatu: Jackson 2.9 does support async parsing for JSON,
-        //   but not all other formats, so need to do this:
-        return _isJSONFactory();
-    }
 
-    @Override
-    public Class<? extends FormatFeature> getFormatReadFeatureType() {
-        return null;
-    }
 
-    @Override
-    public Class<? extends FormatFeature> getFormatWriteFeatureType() {
-        return null;
-    }
-
-    /*
-    /**********************************************************
-    /* Format detection functionality
-    /**********************************************************
-     */
-
-    /**
-     * Method that can be used to quickly check whether given schema
-     * is something that parsers and/or generators constructed by this
-     * factory could use. Note that this means possible use, at the level
-     * of data format (i.e. schema is for same data format as parsers and
-     * generators this factory constructs); individual schema instances
-     * may have further usage restrictions.
-     *
-     * @param schema Schema instance to check
-     *
-     * @return Whether parsers and generators constructed by this factory
-     *   can use specified format schema instance
-     */
-    @Override
-    public boolean canUseSchema(FormatSchema schema) {
-        if (schema == null){
-            return false;
-        }
-        String ourFormat = getFormatName();
-        return (ourFormat != null) && ourFormat.equals(schema.getSchemaType());
-    }
 
     /**
      * Method that returns short textual id identifying format
@@ -708,38 +656,6 @@ public class JsonFactory
         return (_factoryFeatures & f.getMask()) != 0;
     }
 
-    @Override
-    public final int getParserFeatures() {
-        return _parserFeatures;
-    }
-
-    @Override
-    public final int getGeneratorFeatures() {
-        return _generatorFeatures;
-    }
-
-    // MUST be overridden by sub-classes that support format-specific parser features
-    @Override
-    public int getFormatParserFeatures() {
-        return 0;
-    }
-
-    // MUST be overridden by sub-classes that support format-specific generator features
-    @Override
-    public int getFormatGeneratorFeatures() {
-        return 0;
-    }
-
-    /*
-    /**********************************************************************
-    /* Constraints violation checking (2.15)
-    /**********************************************************************
-     */
-
-    @Override
-    public StreamReadConstraints streamReadConstraints() {
-        return _streamReadConstraints;
-    }
 
     /*
     /**********************************************************
@@ -786,17 +702,7 @@ public class JsonFactory
         return this;
     }
 
-    /**
-     * Method for checking if the specified parser feature is enabled.
-     *
-     * @param f Feature to check
-     *
-     * @return True if specified feature is enabled
-     */
-    @Override
-    public final boolean isEnabled(JsonParser.Feature f) {
-        return (_parserFeatures & f.getMask()) != 0;
-    }
+
 
     /**
      * Method for checking if the specified stream read feature is enabled.
@@ -881,17 +787,7 @@ public class JsonFactory
         return this;
     }
 
-    /**
-     * Check whether specified generator feature is enabled.
-     *
-     * @param f Feature to check
-     *
-     * @return Whether specified feature is enabled
-     */
-    @Override
-    public final boolean isEnabled(JsonGenerator.Feature f) {
-        return (_generatorFeatures & f.getMask()) != 0;
-    }
+
 
     /**
      * Check whether specified stream write feature is enabled.
@@ -1328,59 +1224,8 @@ public class JsonFactory
         return _createGenerator(_decorate(w, ctxt), ctxt);
     }
 
-    /**
-     * Method for constructing JSON generator for writing JSON content
-     * to specified file, overwriting contents it might have (or creating
-     * it if such file does not yet exist).
-     * Encoding to use must be specified, and needs to be one of available
-     * types (as per JSON specification).
-     *<p>
-     * Underlying stream <b>is owned</b> by the generator constructed,
-     * i.e. generator will handle closing of file when
-     * {@link JsonGenerator#close} is called.
-     *
-     * @param f File to write contents to
-     * @param enc Character encoding to use
-     *
-     * @since 2.1
-     */
-    @Override
-    public JsonGenerator createGenerator(File f, JsonEncoding enc) throws IOException
-    {
-        OutputStream out = _fileOutputStream(f);
-        // true -> yes, we have to manage the stream since we created it
-        IOContext ctxt = _createContext(_createContentReference(out), true);
-        ctxt.setEncoding(enc);
-        if (enc == JsonEncoding.UTF8) {
-            return _createUTF8Generator(_decorate(out, ctxt), ctxt);
-        }
-        Writer w = _createWriter(out, enc, ctxt);
-        return _createGenerator(_decorate(w, ctxt), ctxt);
-    }
 
-    /**
-     * Method for constructing generator for writing content using specified
-     * {@link DataOutput} instance.
-     *
-     * @since 2.8
-     */
-    @Override
-    public JsonGenerator createGenerator(DataOutput out, JsonEncoding enc) throws IOException {
-        return createGenerator(_createDataOutputWrapper(out), enc);
-    }
 
-    /**
-     * Convenience method for constructing generator that uses default
-     * encoding of the format (UTF-8 for JSON and most other data formats).
-     *<p>
-     * Note: there are formats that use fixed encoding (like most binary data formats).
-     *
-     * @since 2.8
-     */
-    @Override
-    public JsonGenerator createGenerator(DataOutput out) throws IOException {
-        return createGenerator(_createDataOutputWrapper(out), JsonEncoding.UTF8);
-    }
 
     /*
     /**********************************************************

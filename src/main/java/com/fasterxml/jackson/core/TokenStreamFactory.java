@@ -56,61 +56,12 @@ import java.net.URL;
      */
      abstract boolean canHandleBinaryNatively();
 
-    /**
-     * Introspection method that can be used to check whether this
-     * factory can create non-blocking parsers: parsers that do not
-     * use blocking I/O abstractions but instead use a
-     * {@link com.fasterxml.jackson.core.async.NonBlockingInputFeeder}.
-     *
-     * @return Whether this factory supports non-blocking ("async") parsing or
-     *    not (and consequently whether {@code createNonBlockingXxx()} method(s) work)
-     */
-     abstract boolean canParseAsync();
 
-    /**
-     * Method for accessing kind of {@link FormatFeature} that a parser
-     * {@link JsonParser} produced by this factory would accept, if any;
-     * <code>null</code> returned if none.
-     *
-     * @return Type of format-specific stream read features, if any; {@code null} if none
-     *
-     * @since 2.6
-     */
-     abstract Class<? extends FormatFeature> getFormatReadFeatureType();
 
-    /**
-     * Method for accessing kind of {@link FormatFeature} that a parser
-     * {@link JsonGenerator} produced by this factory would accept, if any;
-     * <code>null</code> returned if none.
-     *
-     * @return Type of format-specific stream read features, if any; {@code null} if none
-     *
-     * @since 2.6
-     */
-     abstract Class<? extends FormatFeature> getFormatWriteFeatureType();
 
-    /*
-    /**********************************************************************
-    /* Format detection functionality
-    /**********************************************************************
-     */
 
-    /**
-     * Method that can be used to quickly check whether given schema
-     * is something that parsers and/or generators constructed by this
-     * factory could use. Note that this means possible use, at the level
-     * of data format (i.e. schema is for same data format as parsers and
-     * generators this factory constructs); individual schema instances
-     * may have further usage restrictions.
-     *
-     * @param schema Schema instance to check
-     *
-     * @return Whether parsers and generators constructed by this factory
-     *   can use specified format schema instance
-     *
-     * @since 2.1
-     */
-     abstract boolean canUseSchema(FormatSchema schema);
+
+
 
     /**
      * Method that returns short textual id identifying format
@@ -120,42 +71,8 @@ import java.net.URL;
      */
      abstract String getFormatName();
 
-    /*
-    /**********************************************************************
-    /* Configuration access
-    /**********************************************************************
-     */
 
-     abstract boolean isEnabled(JsonParser.Feature f);
-     abstract boolean isEnabled(JsonGenerator.Feature f);
 
-     abstract int getParserFeatures();
-     abstract int getGeneratorFeatures();
-
-     abstract int getFormatParserFeatures();
-     abstract int getFormatGeneratorFeatures();
-
-    /*
-    /**********************************************************************
-    /* Constraints violation checking (2.15)
-    /**********************************************************************
-     */
-
-    /**
-     * Get the constraints to apply when performing streaming reads.
-     *
-     * @return Constraints to apply to reads done by {@link JsonParser}s constructed
-     *   by this factory.
-     *
-     * @since 2.15
-     */
-     abstract StreamReadConstraints streamReadConstraints();
-
-    /*
-    /**********************************************************************
-    /* Factory methods, parsers
-    /**********************************************************************
-     */
 
      abstract JsonParser createParser(byte[] data) throws IOException;
      abstract JsonParser createParser(byte[] data, int offset, int len) throws IOException;
@@ -175,9 +92,7 @@ import java.net.URL;
     /**********************************************************************
      */
 
-     abstract JsonGenerator createGenerator(DataOutput out, JsonEncoding enc) throws IOException;
-     abstract JsonGenerator createGenerator(DataOutput out) throws IOException;
-     abstract JsonGenerator createGenerator(File f, JsonEncoding enc) throws IOException;
+
      abstract JsonGenerator createGenerator(OutputStream out) throws IOException;
      abstract JsonGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException;
      abstract JsonGenerator createGenerator(Writer w) throws IOException;
@@ -290,9 +205,7 @@ import java.net.URL;
     }
 
     // @since 2.14
-    protected void _checkRangeBoundsForCharArray(char[] data, int offset, int len)
-        throws IOException
-    {
+    protected void _checkRangeBoundsForCharArray(char[] data, int offset, int len) {
         if (data == null) {
             _reportRangeError("Invalid `char[]` argument: `null`");
         }
