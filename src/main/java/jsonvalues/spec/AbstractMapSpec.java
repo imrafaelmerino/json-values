@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 
-import io.vavr.Tuple2;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
@@ -30,10 +29,10 @@ abstract class AbstractMapSpec extends AbstractNullableSpec {
 
         JsObj obj = value.toJsObj();
 
-        for (Tuple2<String, JsValue> pair : obj) {
-            if (predicate.test(pair._2))
-                errors.add(SpecError.of(path.key(pair._1),
-                                        new JsError(pair._2,
+        for (var pair : obj) {
+            if (predicate.test(pair.value()))
+                errors.add(SpecError.of(path.key(pair.key()),
+                                        new JsError(pair.value(),
                                                 code)));
         }
 

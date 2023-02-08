@@ -37,7 +37,7 @@ import static io.vavr.collection.Collections.withSize;
  */
 public final class Vector<T> implements Iterable<T> {
 
-    private static final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
+    private static  final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
 
     final BitMappedTrie<T> trie;
 
@@ -156,8 +156,7 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Iterator<T> iterator() {
-        return isEmpty() ? Iterator.empty()
-                : trie.iterator();
+        return trie.iterator();
     }
 
 
@@ -285,6 +284,10 @@ public final class Vector<T> implements Iterable<T> {
             }
         }
         return false;
+    }
+
+    public <U> Vector<U> map(Function<T,U> map) {
+        return new Vector<>(trie.map(map));
     }
 }
 

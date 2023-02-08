@@ -8,6 +8,7 @@ import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.UnaryOperator;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
@@ -467,7 +468,7 @@ public final class JsPath implements Comparable<JsPath> {
     @Override
     public String toString() {
         if (positions.isEmpty()) return "";
-        return positions.iterator()
+        return positions
                         .map(pos -> pos.match(key ->
                                               {
                                                   if (key.equals("")) return key;
@@ -481,10 +482,8 @@ public final class JsPath implements Comparable<JsPath> {
                              )
 
                         )
-                        .mkString("/",
-                                  "/",
-                                  ""
-                        );
+                        .toJavaStream()
+                        .collect(Collectors.joining("/","/",""));
     }
 
     /**

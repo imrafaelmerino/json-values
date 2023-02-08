@@ -19,52 +19,47 @@
 package io.vavr.collection;
 
 
-import io.vavr.Tuple2;
-import io.vavr.control.Option;
-
-import java.io.Serializable;
+import jsonvalues.JsPair;
+import jsonvalues.JsValue;
 import java.util.Iterator;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 
 /**
  * An immutable {@code HashMap} implementation based on a
  * <a href="https://en.wikipedia.org/wiki/Hash_array_mapped_trie">Hash array mapped trie (HAMT)</a>.
  */
-public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
+public final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode>  {
 
     private static final long serialVersionUID = 1L;
 
-    private static final HashMap<?, ?> EMPTY = new HashMap<>(HashArrayMappedTrie.empty());
+    private static final HashMap EMPTY = new HashMap(HashArrayMappedTrie.empty());
 
-    private final HashArrayMappedTrie<K, V> trie;
+    private final HashArrayMappedTrie trie;
 
-    private HashMap(HashArrayMappedTrie<K, V> trie) {
+    private HashMap(HashArrayMappedTrie trie) {
         this.trie = trie;
     }
-    
-  
 
     @SuppressWarnings("unchecked")
-    public static <K, V> HashMap<K, V> empty() {
-        return (HashMap<K, V>) EMPTY;
+    public static  HashMap empty() {
+        return  EMPTY;
     }
-
-   
-
   
-    public boolean containsKey(K key) {
+    public boolean containsKey(String key) {
         return trie.containsKey(key);
     }
 
 
   
-    public Option<V> get(K key) {
+    public Optional<JsValue> get(String key) {
         return trie.get(key);
     }
 
   
-    public V getOrElse(K key, V defaultValue) {
+    public JsValue getOrElse(String key, JsValue defaultValue) {
         return trie.getOrElse(key, defaultValue);
     }
 
@@ -79,15 +74,15 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
 
 
   
-    public HashMap<K, V> put(K key, V value) {
-        return new HashMap<>(trie.put(key, value));
+    public HashMap put(String key, JsValue value) {
+        return new HashMap(trie.put(key, value));
     }
 
     
 
   
-    public HashMap<K, V> remove(K key) {
-        final HashArrayMappedTrie<K, V> result = trie.remove(key);
+    public HashMap remove(String key) {
+        final HashArrayMappedTrie result = trie.remove(key);
         return result.size() == trie.size() ? this : wrap(result);
     }
 
@@ -95,7 +90,7 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        HashMap<?, ?> hashMap = (HashMap<?, ?>) o;
+        HashMap hashMap = (HashMap) o;
         return Objects.equals(trie, hashMap.trie);
     }
 
@@ -109,17 +104,18 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
     }
 
     
-    private static <K, V> HashMap<K, V> wrap(HashArrayMappedTrie<K, V> trie) {
-        return trie.isEmpty() ? empty() : new HashMap<>(trie);
+    private static HashMap wrap(HashArrayMappedTrie trie) {
+        return trie.isEmpty() ? empty() : new HashMap(trie);
     }
 
-    public java.util.Set<K> keySet() {
-        return trie.keysIterator().toJavaSet();
+    public Iterator<String> keySet() {
+        return trie.keysIterator();
     }
 
 
-    public boolean containsValue(V value){
-        for (V v : trie.valuesIterator()) {
+    public boolean containsValue(JsValue value){
+        for (Iterator<JsValue> it = trie.valuesIterator(); it.hasNext(); ) {
+            JsValue v = it.next();
             if(v.equals(value)) return true;
         }
 
@@ -127,7 +123,7 @@ public final class HashMap<K, V> implements Iterable<Tuple2<K,V>>  {
     }
 
     @Override
-    public Iterator<Tuple2<K, V>> iterator() {
+    public Iterator<HashArrayMappedTrieModule.LeafNode> iterator() {
         return trie.iterator();
     }
 }

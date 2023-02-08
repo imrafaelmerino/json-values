@@ -1,7 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
-
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
@@ -15,14 +13,14 @@ final class OpMapObjObjs {
                      BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn,
                      JsPath startingPath
     ) {
-        for (Tuple2<String, JsValue> next : json) {
-            JsPath headPath = startingPath.key(next._1);
+        for (var next : json) {
+            JsPath headPath = startingPath.key(next.key());
 
-            if (next._2.isObj()) {
+            if (next.value().isObj()) {
                 JsValue mapped = fn.apply(headPath,
-                                          next._2.toJsObj()
+                                          next.value().toJsObj()
                 );
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 mapped.isObj() ?
                                 map(mapped.toJsObj(),
                                     fn,
@@ -31,9 +29,9 @@ final class OpMapObjObjs {
                                                :
                                 mapped
                 );
-            } else if (next._2.isArray()) {
-                json = json.set(next._1,
-                                OpMapArrObjs.map(next._2.toJsArray(),
+            } else if (next.value().isArray()) {
+                json = json.set(next.key(),
+                                OpMapArrObjs.map(next.value().toJsArray(),
                                                  fn,
                                                  headPath.index(-1)
                                 )
@@ -48,13 +46,13 @@ final class OpMapObjObjs {
 
     static JsObj map(JsObj json,
                      final Function<? super JsObj, ? extends JsValue> fn) {
-        for (Tuple2<String, JsValue> next : json) {
+        for (var next : json) {
 
-            if (next._2.isObj()) {
+            if (next.value().isObj()) {
                 JsValue mapped = fn.apply(
-                        next._2.toJsObj()
+                        next.value().toJsObj()
                 );
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 mapped.isObj() ?
                                 map(mapped.toJsObj(),
                                     fn
@@ -62,9 +60,9 @@ final class OpMapObjObjs {
                                                :
                                 mapped
                 );
-            } else if (next._2.isArray()) {
-                json = json.set(next._1,
-                                OpMapArrObjs.map(next._2.toJsArray(),
+            } else if (next.value().isArray()) {
+                json = json.set(next.key(),
+                                OpMapArrObjs.map(next.value().toJsArray(),
                                                  fn
                                 )
                 );

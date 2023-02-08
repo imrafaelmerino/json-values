@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
 
 import java.util.Optional;
 import java.util.function.*;
@@ -16,23 +15,23 @@ final class OpMapReduce {
                                      Function<? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
                                      Optional<T> acc) {
-        for (Tuple2<String, JsValue> head : obj) {
-            if (head._2.isObj()) {
-                acc = reduceObj(head._2.toJsObj(),
+        for (var head : obj) {
+            if (head.value().isObj()) {
+                acc = reduceObj(head.value().toJsObj(),
                                 predicate,
                                 map,
                                 op,
                                 acc
                 );
-            } else if (head._2.isArray()) {
-                acc = reduceArr(head._2.toJsArray(),
+            } else if (head.value().isArray()) {
+                acc = reduceArr(head.value().toJsArray(),
                                 predicate,
                                 map,
                                 op,
                                 acc
                 );
             } else {
-                acc = reducer(head._2.toJsPrimitive(),
+                acc = reducer(head.value().toJsPrimitive(),
                               acc,
                               predicate,
                               map,
@@ -124,18 +123,18 @@ final class OpMapReduce {
                                      BinaryOperator<T> op,
                                      Optional<T> acc) {
 
-        for (Tuple2<String, JsValue> head : obj) {
-            JsPath headPath = startingPath.key(head._1);
-            if (head._2.isObj()) {
-                acc = reduceObj(head._2.toJsObj(),
-                                startingPath.key(head._1),
+        for (var head : obj) {
+            JsPath headPath = startingPath.key(head.key());
+            if (head.value().isObj()) {
+                acc = reduceObj(head.value().toJsObj(),
+                                startingPath.key(head.key()),
                                 predicate,
                                 map,
                                 op,
                                 acc
                 );
-            } else if (head._2.isArray()) {
-                acc = reduceArr(head._2.toJsArray(),
+            } else if (head.value().isArray()) {
+                acc = reduceArr(head.value().toJsArray(),
                                 startingPath.index(-1),
                                 predicate,
                                 map,
@@ -144,7 +143,7 @@ final class OpMapReduce {
                 );
             } else {
                 acc = reducer(headPath,
-                              head._2.toJsPrimitive(),
+                              head.value().toJsPrimitive(),
                               acc,
                               predicate,
                               map,

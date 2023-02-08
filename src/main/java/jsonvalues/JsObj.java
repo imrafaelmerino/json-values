@@ -1,12 +1,12 @@
 package jsonvalues;
 
+import io.vavr.collection.HashArrayMappedTrieModule;
 import io.vavr.collection.HashMap;
 import jsonvalues.spec.JsonIO;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
-import io.vavr.Tuple2;
 import jsonvalues.JsArray.TYPE;
 
 import java.io.IOException;
@@ -14,6 +14,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Optional;
 import java.util.Set;
@@ -33,7 +34,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * Represents an immutable JSON object. A JSON object is an unordered set of name/element pairs.
  * The underlying data structure is a persistent {@link HashMap} from the library vavr.
  */
-public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, JsValue>> {
+public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
      * the empty Json Object
      */
@@ -57,7 +58,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
             );
     @SuppressWarnings("squid:S3008")
     private static final JsPath EMPTY_PATH = JsPath.empty();
-    private final HashMap<String, JsValue> map;
+    private final HashMap map;
     private volatile int hashcode;
     @SuppressWarnings("squid:S3077")
     private volatile String str;
@@ -66,7 +67,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
         this.map = HashMap.empty();
     }
 
-    JsObj(final HashMap<String, JsValue> myMap) {
+    JsObj(final HashMap myMap) {
         this.map = myMap;
     }
 
@@ -2017,8 +2018,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
         }
     }
 
-    static HashMap<String, JsValue> parse(final JsonParser parser) throws IOException {
-        HashMap<String, JsValue> map = HashMap.empty();
+    static HashMap parse(final JsonParser parser) throws IOException {
+        HashMap map = HashMap.empty();
         String key = parser.nextFieldName();
         for (; key != null; key = parser.nextFieldName()) {
             JsonToken token = parser.nextToken();
@@ -2111,7 +2112,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
      * @return a Set containing each key of this JsObj
      */
     public Set<String> keySet() {
-        return map.keySet();
+        Set<String> keys = new HashSet<>();
+        Iterator<String> iter = map.keySet();
+        while (iter.hasNext())keys.add(iter.next());
+        return keys;
     }
 
     @Override
@@ -2738,7 +2742,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
                                                  .map(it -> it.equals(map.get(f)
                                                                          .get())
                                                  )
-                                                 .getOrElse(false) && thatMap.keySet()
+                                                 .orElse(false) && thatMap.keySet()
                                                                              .stream()
                                                                              .allMatch(map::containsKey));
     }
@@ -2784,7 +2788,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
     }
 
     @SuppressWarnings("squid:S1602")
-    private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap<String, JsValue> pmap) {
+    private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap pmap) {
         return (head, tail) ->
                 (!pmap.containsKey(head) || !pmap.get(head)
                                                  .filter(JsValue::isPrimitive)
@@ -2804,8 +2808,23 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
     }
 
     @Override
-    public Iterator<Tuple2<String, JsValue>> iterator() {
-        return map.iterator();
+    public Iterator<JsObjPair> iterator() {
+
+        Iterator<HashArrayMappedTrieModule.LeafNode> iterator = map.iterator();
+
+        return new Iterator<JsObjPair>() {
+            @Override
+            public boolean hasNext() {
+                return iterator.hasNext();
+            }
+
+            @Override
+            public JsObjPair next() {
+                var next = iterator.next();
+                return new JsObjPair(next.key(),next.value());
+            }
+        };
+
     }
 
 
@@ -2848,16 +2867,16 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
         JsObj result = JsObj.empty();
-        for (Tuple2<String, JsValue> aVal : a) {
+        for (var aVal : a) {
 
-            if (b.containsKey(aVal._1)) {
-                JsValue bVal = b.get(aVal._1);
+            if (b.containsKey(aVal.key())) {
+                JsValue bVal = b.get(aVal.key());
 
-                if (bVal.equals(aVal._2)) result = result.set(aVal._1,
-                                                              aVal._2);
-                else if (bVal.isJson() && bVal.isSameType(aVal._2)) {
-                    result = result.set(aVal._1,
-                                        OpIntersectionJsons.intersectionAll(aVal._2.toJson(),
+                if (bVal.equals(aVal.value())) result = result.set(aVal.key(),
+                                                              aVal.value());
+                else if (bVal.isJson() && bVal.isSameType(aVal.value())) {
+                    result = result.set(aVal.key(),
+                                        OpIntersectionJsons.intersectionAll(aVal.value().toJson(),
                                                                             bVal.toJson(),
                                                                             ARRAY_AS
                                         )
@@ -2880,17 +2899,17 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<Tuple2<String, Js
 
         if (b.isEmpty()) return a;
         JsObj result = a;
-        for (Tuple2<String, JsValue> bVal : b) {
-            if (!a.containsKey(bVal._1))
-                result = result.set(bVal._1,
-                                    bVal._2
+        for (var bVal : b) {
+            if (!a.containsKey(bVal.key()))
+                result = result.set(bVal.key(),
+                                    bVal.value()
                 );
-            JsValue aVal = a.get(bVal._1);
-            if (aVal.isJson() && aVal.isSameType(bVal._2)) {
+            JsValue aVal = a.get(bVal.key());
+            if (aVal.isJson() && aVal.isSameType(bVal.value())) {
                 Json<?> aJson = aVal.toJson();
-                Json<?> bJson = bVal._2.toJson();
+                Json<?> bJson = bVal.value().toJson();
 
-                result = result.set(bVal._1,
+                result = result.set(bVal.key(),
                                     OpUnionJsons.unionAll(aJson,
                                                           bJson,
                                                           ARRAY_AS

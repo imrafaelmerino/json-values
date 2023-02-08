@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -14,20 +13,20 @@ final class OpFilterObjElems {
                         JsPath startingPath,
                         BiPredicate<? super JsPath, ? super JsPrimitive> predicate
     ) {
-        for (Tuple2<String, JsValue> next : json) {
-            JsPath headPath = startingPath.key(next._1);
+        for (var next : json) {
+            JsPath headPath = startingPath.key(next.key());
 
-            JsValue headElem = next._2;
+            JsValue headElem = next.value();
 
             if (headElem.isObj()) {
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 filter(headElem.toJsObj(),
                                        headPath,
                                        predicate
                                 )
                 );
             } else if (headElem.isArray()) {
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 OpFilterArrElems
                                         .filter(headElem.toJsArray(),
                                                 headPath,
@@ -39,7 +38,7 @@ final class OpFilterObjElems {
                                       headElem.toJsPrimitive()
                                 )) {
 
-                json = json.delete(next._1);
+                json = json.delete(next.key());
             }
 
         }
@@ -51,18 +50,18 @@ final class OpFilterObjElems {
 
     static JsObj filter(JsObj json,
                         Predicate<? super JsPrimitive> predicate) {
-        for (Tuple2<String, JsValue> next : json) {
+        for (var next : json) {
 
-            JsValue headElem = next._2;
+            JsValue headElem = next.value();
 
             if (headElem.isObj()) {
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 filter(headElem.toJsObj(),
                                        predicate
                                 )
                 );
             } else if (headElem.isArray()) {
-                json = json.set(next._1,
+                json = json.set(next.key(),
                                 OpFilterArrElems
                                         .filter(headElem.toJsArray(),
                                                 predicate
@@ -72,7 +71,7 @@ final class OpFilterObjElems {
                                 .test(headElem.toJsPrimitive()
                                 )) {
 
-                json = json.delete(next._1);
+                json = json.delete(next.key());
             }
 
         }

@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
 
 import java.util.function.BiPredicate;
 import java.util.function.Predicate;
@@ -14,22 +13,22 @@ final class OpFilterObjObjs {
     static JsObj filter(JsObj json,
                         JsPath startingPath,
                         BiPredicate<? super JsPath, ? super JsObj> predicate) {
-        for (Tuple2<String, JsValue> next : json) {
-            if (next._2.isObj()) {
-                JsPath path = startingPath.key(next._1);
+        for (var next : json) {
+            if (next.value().isObj()) {
+                JsPath path = startingPath.key(next.key());
                 if (predicate.negate().test(path,
-                                            next._2.toJsObj())) {
-                    json = json.delete(next._1);
+                                            next.value().toJsObj())) {
+                    json = json.delete(next.key());
                 } else {
-                    json = json.set(next._1,
-                                    filter(next._2.toJsObj(),
+                    json = json.set(next.key(),
+                                    filter(next.value().toJsObj(),
                                            path,
                                            predicate));
                 }
-            } else if (next._2.isArray()) {
-                JsPath path = startingPath.key(next._1);
-                json = json.set(next._1,
-                                OpFilterArrObjs.filter(next._2.toJsArray(),
+            } else if (next.value().isArray()) {
+                JsPath path = startingPath.key(next.key());
+                json = json.set(next.key(),
+                                OpFilterArrObjs.filter(next.value().toJsArray(),
                                                        path,
                                                        predicate));
             }
@@ -40,18 +39,18 @@ final class OpFilterObjObjs {
 
     static JsObj filter(JsObj json,
                         Predicate<? super JsObj> predicate) {
-        for (Tuple2<String, JsValue> next : json) {
-            if (next._2.isObj()) {
-                if (predicate.negate().test(next._2.toJsObj())) {
-                    json = json.delete(next._1);
+        for (var next : json) {
+            if (next.value().isObj()) {
+                if (predicate.negate().test(next.value().toJsObj())) {
+                    json = json.delete(next.key());
                 } else {
-                    json = json.set(next._1,
-                                    filter(next._2.toJsObj(),
+                    json = json.set(next.key(),
+                                    filter(next.value().toJsObj(),
                                            predicate));
                 }
-            } else if (next._2.isArray()) {
-                json = json.set(next._1,
-                                OpFilterArrObjs.filter(next._2.toJsArray(),
+            } else if (next.value().isArray()) {
+                json = json.set(next.key(),
+                                OpFilterArrObjs.filter(next.value().toJsArray(),
                                                        predicate));
             }
         }

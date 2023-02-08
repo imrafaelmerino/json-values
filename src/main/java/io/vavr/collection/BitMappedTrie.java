@@ -19,6 +19,7 @@
 package io.vavr.collection;
 
 import java.io.Serializable;
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -54,7 +55,7 @@ final class BitMappedTrie<T> implements Serializable {
     private static final BitMappedTrie<?> EMPTY = new BitMappedTrie<>(obj(), obj().empty(), 0, 0, 0);
 
     @SuppressWarnings("unchecked")
-    static <T> BitMappedTrie<T> empty() { return (BitMappedTrie<T>) EMPTY; }
+    static  BitMappedTrie empty() { return  EMPTY; }
 
     final ArrayType<T> type;
     private final Object array;
@@ -281,7 +282,7 @@ final class BitMappedTrie<T> implements Serializable {
     }
 
     Iterator<T> iterator() {
-        return new Iterator<T>() {
+        return new Iterator<>() {
             private final int globalLength = BitMappedTrie.this.length;
             private int globalIndex = 0;
 

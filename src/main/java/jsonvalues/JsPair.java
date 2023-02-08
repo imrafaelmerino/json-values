@@ -1,3 +1,5 @@
 package jsonvalues;
 
-public record JsPair(JsPath path, JsValue value) {}
+public record JsPair(JsPath path, JsValue value) {
+
+}

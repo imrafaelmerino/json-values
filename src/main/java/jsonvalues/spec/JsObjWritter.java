@@ -1,10 +1,8 @@
 package jsonvalues.spec;
 
-import io.vavr.Tuple2;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
-import java.util.Iterator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,11 +21,11 @@ final class JsObjWritter implements JsonWriter.WriteObject<JsObj> {
         int size = requireNonNull(value).size();
         sw.writeByte(JsonWriter.OBJECT_START);
         if (size > 0) {
-            final Iterator<Tuple2<String, JsValue>> iterator = value.iterator();
-            Tuple2<String, JsValue> kv = iterator.next();
-            sw.writeString(kv._1);
+            var iterator = value.iterator();
+            var kv = iterator.next();
+            sw.writeString(kv.key());
             sw.writeByte(JsonWriter.SEMI);
-            final JsValue fist = kv._2;
+            final JsValue fist = kv.value();
             valueSerializer.serialize(sw,
                                       fist
             );
@@ -35,9 +33,9 @@ final class JsObjWritter implements JsonWriter.WriteObject<JsObj> {
             for (int i = 1; i < size; i++) {
                 sw.writeByte(JsonWriter.COMMA);
                 kv = iterator.next();
-                sw.writeString(kv._1);
+                sw.writeString(kv.key());
                 sw.writeByte(JsonWriter.SEMI);
-                final JsValue keyValue = kv._2;
+                final JsValue keyValue = kv.value();
                 valueSerializer.serialize(sw,
                                           keyValue
                 );

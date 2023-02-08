@@ -1,6 +1,5 @@
 package jsonvalues;
 
-import io.vavr.Tuple2;
 
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -17,28 +16,28 @@ final class OpMapObjKeys {
     ) {
         JsObj result = JsObj.empty();
 
-        for (Tuple2<String, JsValue> next : json) {
-            JsPath headPath = startingPath.key(next._1);
+        for (var next : json) {
+            JsPath headPath = startingPath.key(next.key());
             String keyMapped = fn.apply(headPath,
-                                        next._2
+                                        next.value()
             );
-            if (next._2.isObj()) {
+            if (next.value().isObj()) {
                 result = result.set(keyMapped,
-                                    map(next._2.toJsObj(),
+                                    map(next.value().toJsObj(),
                                         fn,
                                         headPath
                                     )
                 );
-            } else if (next._2.isArray()) {
+            } else if (next.value().isArray()) {
                 result = result.set(keyMapped,
-                                    OpMapArrKeys.map(next._2.toJsArray(),
+                                    OpMapArrKeys.map(next.value().toJsArray(),
                                                         fn,
                                                         headPath.index(-1)
                                     )
                 );
             } else {
                 result = result.set(keyMapped,
-                                    next._2
+                                    next.value()
                 );
             }
 
@@ -52,23 +51,23 @@ final class OpMapObjKeys {
                      Function<? super String, String> fn) {
         JsObj result = JsObj.empty();
 
-        for (Tuple2<String, JsValue> next : json) {
-            String keyMapped = fn.apply(next._1);
-            if (next._2.isObj()) {
+        for (var next : json) {
+            String keyMapped = fn.apply(next.key());
+            if (next.value().isObj()) {
                 result = result.set(keyMapped,
-                                    map(next._2.toJsObj(),
+                                    map(next.value().toJsObj(),
                                         fn
                                     )
                 );
-            } else if (next._2.isArray()) {
+            } else if (next.value().isArray()) {
                 result = result.set(keyMapped,
-                                    OpMapArrKeys.map(next._2.toJsArray(),
+                                    OpMapArrKeys.map(next.value().toJsArray(),
                                                         fn
                                     )
                 );
             } else {
                 result = result.set(keyMapped,
-                                    next._2
+                                    next.value()
                 );
             }
 
