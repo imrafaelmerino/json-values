@@ -155,6 +155,7 @@ import static jsonvalues.Collections.withSize;
     }
 
 
+    @Override
     public Iterator<T> iterator() {
         return trie.iterator();
     }

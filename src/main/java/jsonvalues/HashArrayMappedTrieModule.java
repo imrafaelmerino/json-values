@@ -1,10 +1,7 @@
 package jsonvalues;
 
 import java.io.Serializable;
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
 import static jsonvalues.HashArrayMappedTrieModule.Action.REMOJsValueE;
@@ -117,7 +114,7 @@ import static java.util.Arrays.copyOf;
         }
 
         static Object[] update(Object[] arr, int index, Object newElement) {
-            final Object[] newArr = copyOf(arr, arr.length);
+            final Object[] newArr = Arrays.copyOf(arr, arr.length);
             newArr[index] = newElement;
             return newArr;
         }
