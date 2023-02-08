@@ -23,23 +23,7 @@ import java.net.URL;
     /**********************************************************************
      */
 
-    /**
-     * Introspection method that higher-level functionality may call
-     * to see whether underlying data format requires a stable ordering
-     * of object properties or not.
-     * This is usually used for determining
-     * whether to force a stable ordering (like alphabetic ordering by name)
-     * if no ordering if explicitly specified.
-     *<p>
-     * Default implementation returns <code>false</code> as JSON does NOT
-     * require stable ordering. Formats that require ordering include positional
-     * textual formats like <code>CSV</code>, and schema-based binary formats
-     * like <code>Avro</code>.
-     *
-     * @return Whether format supported by this factory
-     *   requires Object properties to be ordered.
-     */
-     abstract boolean requiresPropertyOrdering();
+
 
     /**
      * Introspection method that higher-level functionality may call
@@ -76,9 +60,8 @@ import java.net.URL;
 
      abstract JsonParser createParser(byte[] data) throws IOException;
      abstract JsonParser createParser(byte[] data, int offset, int len) throws IOException;
-     abstract JsonParser createParser(char[] content) throws IOException;
+
      abstract JsonParser createParser(char[] content, int offset, int len) throws IOException;
-     abstract JsonParser createParser(DataInput in) throws IOException;
      abstract JsonParser createParser(File f) throws IOException;
      abstract JsonParser createParser(InputStream in) throws IOException;
      abstract JsonParser createParser(Reader r) throws IOException;
@@ -103,9 +86,6 @@ import java.net.URL;
     /**********************************************************************
      */
 
-    protected OutputStream _createDataOutputWrapper(DataOutput out) {
-        return new DataOutputAsStream(out);
-    }
 
     /**
      * Helper method used for constructing an optimal stream for
@@ -156,21 +136,7 @@ import java.net.URL;
         return new FileInputStream(f);
     }
 
-    /**
-     * Helper methods used for constructing an {@link OutputStream} for
-     * generator to use, when target is to be written into given {@link File}.
-     *
-     * @param f File to open stream for
-     *
-     * @return {@link OutputStream} constructed
-     *
-     * @throws IOException If there is a problem opening the stream
-     *
-     * @since 2.14
-     */
-    protected OutputStream _fileOutputStream(File f) throws IOException {
-        return new FileOutputStream(f);
-    }
+
 
     /*
     /**********************************************************************

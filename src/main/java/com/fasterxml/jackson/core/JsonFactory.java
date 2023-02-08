@@ -479,26 +479,7 @@ public class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Introspection method that higher-level functionality may call
-     * to see whether underlying data format requires a stable ordering
-     * of object properties or not.
-     * This is usually used for determining
-     * whether to force a stable ordering (like alphabetic ordering by name)
-     * if no ordering if explicitly specified.
-     *<p>
-     * Default implementation returns <code>false</code> as JSON does NOT
-     * require stable ordering. Formats that require ordering include positional
-     * textual formats like <code>CSV</code>, and schema-based binary formats
-     * like <code>Avro</code>.
-     *
-     * @return Whether format supported by this factory
-     *   requires Object properties to be ordered.
-     *
-     * @since 2.3
-     */
-    @Override
-    public boolean requiresPropertyOrdering() { return false; }
+
 
     /**
      * Introspection method that higher-level functionality may call
@@ -1065,16 +1046,7 @@ public class JsonFactory
         return _createParser(buf, 0, strLen, ctxt, true);
     }
 
-    /**
-     * Method for constructing parser for parsing
-     * contents of given char array.
-     *
-     * @since 2.4
-     */
-    @Override
-    public JsonParser createParser(char[] content) throws IOException {
-        return createParser(content, 0, content.length);
-    }
+
 
     /**
      * Method for constructing parser for parsing contents of given char array.
@@ -1093,20 +1065,7 @@ public class JsonFactory
                 false);
     }
 
-    /**
-     * Optional method for constructing parser for reading contents from specified {@link DataInput}
-     * instance.
-     *<p>
-     * If this factory does not support {@link DataInput} as source,
-     * will throw {@link UnsupportedOperationException}
-     *
-     * @since 2.8
-     */
-    @Override
-    public JsonParser createParser(DataInput in) throws IOException {
-        IOContext ctxt = _createContext(_createContentReference(in), false);
-        return _createParser(_decorate(in, ctxt), ctxt);
-    }
+
 
     /*
     /**********************************************************
