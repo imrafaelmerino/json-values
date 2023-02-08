@@ -24,8 +24,6 @@ import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static jsonvalues.Collections.withSize;
-
 
 /**
  * Vector is the default Seq implementation that provides effectively constant time access to any element.
@@ -35,10 +33,10 @@ import static jsonvalues.Collections.withSize;
  *
  * @param <T> Component type of the Vector.
  */
- final class Vector<T> implements Iterable<T> {
+final class Vector<T> implements Iterable<T> {
 
     @SuppressWarnings("unchecked")
-    private static  final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
+    private static final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
 
     final BitMappedTrie<T> trie;
 
@@ -71,37 +69,13 @@ import static jsonvalues.Collections.withSize;
     }
 
 
-    /**
-     * Creates a Vector of the given elements.
-     * <p>
-     * The resulting vector has the same iteration order as the given iterable of elements
-     * if the iteration order of the elements is stable.
-     *
-     * @param <T>      Component type of the Vector.
-     * @param iterable An Iterable of elements.
-     * @return A vector containing the given elements in the same order.
-     * @throws NullPointerException if {@code elements} is null
-     */
-    public static <T> Vector<T> ofAll(Iterable<? extends T> iterable) {
-        final Object[] values = withSize(iterable).toArray();
-        return ofAll(BitMappedTrie.ofAll(values));
-    }
-
-
     public Vector<T> append(T element) {
-        return new Vector<>(trie.appendAll(java.util.List.of(element)));
+        return new Vector<>(trie.appendAll(Vector.of(element)));
     }
 
 
-    public Vector<T> appendAll(Iterable<? extends T> iterable) {
-        Objects.requireNonNull(iterable, "iterable is null");
-  /*      if (isEmpty()) {
-            return ofAll(iterable);
-        }
-        if (Collections.isEmpty(iterable)) {
-            return this;
-        }*/
-        return new Vector<>(trie.appendAll(iterable));
+    public Vector<T> appendAll(Vector<T> vector) {
+        return new Vector<>(trie.appendAll(vector));
     }
 
 
@@ -122,7 +96,6 @@ import static jsonvalues.Collections.withSize;
 
     public T head() {
         return get(0);
-
     }
 
 
@@ -134,19 +107,12 @@ import static jsonvalues.Collections.withSize;
      * @throws IndexOutOfBoundsException if this is empty, index &lt; 0 or index &gt;= length()
      */
     public T get(int index) {
-        if (isDefinedAt(index)) {
-            return apply(index);
-        }
-        throw new IndexOutOfBoundsException("get(" + index + ")");
+        return apply(index);
     }
 
 
     public Vector<T> init() {
-        if (!isEmpty()) {
             return dropRight(1);
-        } else {
-            throw new UnsupportedOperationException("init of empty Vector");
-        }
     }
 
 
@@ -181,12 +147,12 @@ import static jsonvalues.Collections.withSize;
         return ofAll(BitMappedTrie.ofAll(new Object[]{element}));
     }
 
-    public Vector<T> prependAll(Iterable<? extends T> iterable) {
+    public Vector<T> prependAll(Vector<T> iterable) {
         Objects.requireNonNull(iterable, "iterable is null");
         if (isEmpty()) {
-            return ofAll(iterable);
+            return iterable;
         }
-        if (Collections.isEmpty(iterable)) {
+        if (iterable.isEmpty()) {
             return this;
         }
         return new Vector<>(trie.prependAll(iterable));
@@ -230,11 +196,6 @@ import static jsonvalues.Collections.withSize;
         return wrap(trie.take(n));
     }
 
-
-    boolean isDefinedAt(Integer index) {
-        return 0 <= index && index < length();
-    }
-
     public Vector<T> update(int index, T element) {
         return wrap(trie.update(index, element));
     }
@@ -242,16 +203,33 @@ import static jsonvalues.Collections.withSize;
 
     @Override
     public int hashCode() {
-        return Collections.hashOrdered(this);
+        return hash(this, (acc, hash) -> acc * 31 + hash);
     }
 
+
+    private int hash(Vector<T> iterable, IntBinaryOperator accumulator) {
+
+        int hashCode = 1;
+        for (var o : iterable) {
+            hashCode = accumulator.applyAsInt(hashCode, Objects.hashCode(o));
+        }
+        return hashCode;
+
+    }
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Vector<?> vector = (Vector<?>) o;
-        return Collections.areEqual(this, vector);
+        final java.util.Iterator<?> iter1 = this.iterator();
+        final java.util.Iterator<?> iter2 = vector.iterator();
+        while (iter1.hasNext() && iter2.hasNext()) {
+            if (!Objects.equals(iter1.next(), iter2.next())) {
+                return false;
+            }
+        }
+        return iter1.hasNext() == iter2.hasNext();
     }
 
     public int count(Predicate<T> o) {
@@ -287,9 +265,11 @@ import static jsonvalues.Collections.withSize;
         return false;
     }
 
-    public <U> Vector<U> map(Function<T,U> map) {
+    public <U> Vector<U> map(Function<T, U> map) {
         return new Vector<>(trie.map(map));
     }
+
+
 }
 
 

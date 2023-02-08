@@ -1,9 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.spec.JsObjSpecParser;
-import jsonvalues.spec.JsObjSpec;
-import jsonvalues.spec.JsParserException;
-import jsonvalues.spec.JsSpecs;
+import jsonvalues.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

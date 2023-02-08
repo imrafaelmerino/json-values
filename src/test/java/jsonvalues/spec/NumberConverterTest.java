@@ -3,6 +3,7 @@ package jsonvalues.spec;
 
 
 
+import jsonvalues.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

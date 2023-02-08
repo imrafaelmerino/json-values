@@ -6,7 +6,6 @@ import java.util.*;
 import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
 import static jsonvalues.HashArrayMappedTrieModule.Action.REMOJsValueE;
 import static java.lang.Integer.bitCount;
-import static java.util.Arrays.copyOf;
 
  interface HashArrayMappedTrieModule {
 

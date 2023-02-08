@@ -29,7 +29,6 @@ interface ArrayType<T> {
     @SuppressWarnings("unchecked")
     static <T> ArrayType<T> obj() { return (ArrayType<T>) ObjectArrayType.INSTANCE; }
 
-    Class<T> type();
     int lengthOf(Object array);
     T getAt(Object array, int index);
 
@@ -92,25 +91,12 @@ interface ArrayType<T> {
         return result;
     }
 
-    /** Store the content of an iterable in an array */
-    static Object[] asArray(java.util.Iterator<?> it, int length) {
-        final Object[] array = new Object[length];
-        for (int i = 0; i < length; i++) {
-            array[i] = it.next();
-        }
-        return array;
-    }
-
-
 
     final class ObjectArrayType implements ArrayType<Object>{
         static final ObjectArrayType INSTANCE = new ObjectArrayType();
         static final Object[] EMPTY = new Object[0];
 
         private static Object[] cast(Object array) { return (Object[]) array; }
-
-        @Override
-        public Class<Object> type() { return Object.class; }
 
         @Override
         public Object[] empty() { return EMPTY; }

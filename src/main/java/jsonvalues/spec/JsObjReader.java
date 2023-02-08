@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsObj;
+import jsonvalues.JsParserException;
 
 import java.io.IOException;
 import java.util.Optional;

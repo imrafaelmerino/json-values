@@ -1,6 +1,8 @@
 package jsonvalues.spec;
 
 
+import jsonvalues.JsParserException;
+
 import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;

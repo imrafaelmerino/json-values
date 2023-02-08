@@ -1,5 +1,7 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsParserException;
+
 import java.io.IOException;
 
 abstract class AbstractJsObjReader extends AbstractReader {

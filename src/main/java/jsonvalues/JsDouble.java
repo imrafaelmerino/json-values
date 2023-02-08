@@ -98,8 +98,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isDouble()) return value == number.toJsDouble().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isInt()) return intEquals(number.toJsInt());

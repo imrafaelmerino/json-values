@@ -5,7 +5,6 @@ import jsonvalues.spec.JsonIO;
 import fun.optic.Prism;
 import jsonvalues.JsArray.TYPE;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
@@ -16,8 +15,6 @@ import java.util.stream.Stream;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
-import static jsonvalues.JsBool.FALSE;
-import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNothing.NOTHING;
 import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
@@ -2000,7 +1997,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      *
      * @param str the string to be parsed
      * @return a JsOb object
-     * @throws MalformedJson if the string doesn't represent a json object
+     * @throws JsParserException if the string doesn't represent a json object
      */
     public static JsObj parse(final String str) {
        return JsonIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
@@ -2791,21 +2788,21 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @SuppressWarnings("squid:S1602")
     private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap pmap) {
         return (head, tail) ->
-                (!pmap.containsKey(head) || !pmap.get(head)
-                                                 .filter(JsValue::isPrimitive)
-                                                 .isEmpty())
+                (!pmap.containsKey(head) || pmap.get(head)
+                                                .filter(JsValue::isPrimitive)
+                                                .isPresent())
                         ||
                         (
                                 tail.head()
-                                    .isKey() && !pmap.get(head)
-                                                     .filter(JsValue::isArray)
-                                                     .isEmpty()
+                                    .isKey() && pmap.get(head)
+                                                    .filter(JsValue::isArray)
+                                                    .isPresent()
                         )
                         ||
                         (tail.head()
-                             .isIndex() && !pmap.get(head)
-                                                .filter(JsValue::isObj)
-                                                .isEmpty());
+                             .isIndex() && pmap.get(head)
+                                               .filter(JsValue::isObj)
+                                               .isPresent());
     }
 
     @Override
@@ -2813,7 +2810,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         Iterator<HashArrayMappedTrieModule.LeafNode> iterator = map.iterator();
 
-        return new Iterator<JsObjPair>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();

@@ -1,7 +1,6 @@
 package jsonvalues;
 
 import fun.optic.Option;
-import jsonvalues.spec.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

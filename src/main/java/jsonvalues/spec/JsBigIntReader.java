@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsBigInt;
+import jsonvalues.JsParserException;
 
 import java.io.IOException;
 import java.math.BigDecimal;

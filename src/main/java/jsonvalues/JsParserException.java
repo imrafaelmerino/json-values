@@ -1,4 +1,4 @@
-package jsonvalues.spec;
+package jsonvalues;
 
 
 public class JsParserException extends RuntimeException {

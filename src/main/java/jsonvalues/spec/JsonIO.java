@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 import jsonvalues.JsArray;
 import jsonvalues.JsObj;
+import jsonvalues.JsParserException;
 import jsonvalues.Json;
 
 import java.io.*;

@@ -2,9 +2,9 @@
  * \   \/   /      \   \/   /   __/   /      \   \/   /      \
  *  \______/___/\___\______/___/_____/___/\___\______/___/\___\
  *
- * Copyright 2023 JsValueavr, https://vavr.io
+ * Copyright 2023 vavr, https://vavr.io
  *
- * Licensed under the Apache License, JsValueersion 2.0 (the "License");
+ * Licensed under the Apache License, version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
@@ -22,7 +22,6 @@ package jsonvalues;
 import jsonvalues.HashArrayMappedTrieModule.EmptyNode;
 
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -32,10 +31,9 @@ import java.util.function.Function;
  */
 interface HashArrayMappedTrie extends Iterable<HashArrayMappedTrieModule.LeafNode> {
 
-     static  <T, U> Iterator<U> map(Iterator<T> iter, Function<? super T, ? extends U> mapper) {
-        Objects.requireNonNull(mapper, "mapper is null");
-
-        return new Iterator<U>() {
+     static  <T, U> Iterator<U> map(Iterator<T> iter,
+                                    Function<? super T, ? extends U> mapper) {
+        return new Iterator<>() {
 
             @Override
             public boolean hasNext() {
@@ -62,7 +60,7 @@ interface HashArrayMappedTrie extends Iterable<HashArrayMappedTrieModule.LeafNod
 
     Optional<JsValue> get(String key);
 
-    JsValue getOrElse(String key, JsValue defaultJsValuealue);
+    JsValue getOrElse(String key, JsValue defaultValue);
 
     boolean containsKey(String key);
 
@@ -73,14 +71,10 @@ interface HashArrayMappedTrie extends Iterable<HashArrayMappedTrieModule.LeafNod
     @Override
     Iterator<HashArrayMappedTrieModule.LeafNode> iterator();
 
-    /**
-     * Provide unboxed access to the keys in the trie.
-     */
+
     Iterator<String> keysIterator();
 
-    /**
-     * Provide unboxed access to the values in the trie.
-     */
+
     Iterator<JsValue> valuesIterator();
 }
 

@@ -319,7 +319,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      *
      * @param str the string to be parsed
      * @return a JsArray
-     * @throws MalformedJson if the string doesnt represent a json array
+     * @throws JsParserException if the string doesnt represent a json array
      */
     public static JsArray parse(final String str) {
 

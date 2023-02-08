@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 
 import jsonvalues.JsBool;
+import jsonvalues.JsParserException;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 

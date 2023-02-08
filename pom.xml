@@ -80,7 +80,7 @@
                         <arg>-XDcompilePolicy=simple</arg>
                         <arg>-Xplugin:ErrorProne</arg>
                         <arg>--enable-preview</arg>
-                        <arg> -Xlint:preview</arg>
+                        <arg> -Xlint:unchecked</arg>
                     </compilerArgs>
                     <annotationProcessorPaths>
                         <path>

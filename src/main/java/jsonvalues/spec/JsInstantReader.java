@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsInstant;
+import jsonvalues.JsParserException;
 
 import java.io.IOException;
 import java.time.Instant;

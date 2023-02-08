@@ -23,7 +23,6 @@ import java.util.Iterator;
 import java.util.function.Function;
 
 import static jsonvalues.ArrayType.obj;
-import static jsonvalues.Collections.withSize;
 import static jsonvalues.NodeModifier.COPY_NODE;
 import static jsonvalues.NodeModifier.IDENTITY;
 
@@ -97,10 +96,8 @@ final class BitMappedTrie<T> {
     }
 
 
-    BitMappedTrie<T> prependAll(Iterable<? extends T> iterable) {
-        final Collections.IterableWithSize<? extends T> iter = withSize(iterable);
-        return prepend(iter.reverseIterator(), iter.size());
-
+    BitMappedTrie<T> prependAll(Vector<T> iterable) {
+        return prepend(iterable.reverseIterator(), iterable.length());
     }
 
     private BitMappedTrie<T> prepend(java.util.Iterator<? extends T> iterator, int size) {
@@ -138,9 +135,8 @@ final class BitMappedTrie<T> {
         };
     }
 
-    BitMappedTrie<T> appendAll(Iterable<? extends T> iterable) {
-        final Collections.IterableWithSize<? extends T> iter = withSize(iterable);
-        return append(iter.iterator(), iter.size());
+    BitMappedTrie<T> appendAll(Vector<T> iterable) {
+        return append(iterable.iterator(), iterable.length());
     }
 
     private BitMappedTrie<T> append(java.util.Iterator<? extends T> iterator, int size) {
