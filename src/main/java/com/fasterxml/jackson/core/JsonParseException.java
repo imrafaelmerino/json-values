@@ -15,15 +15,7 @@ package com.fasterxml.jackson.core;
 {
     private static final long serialVersionUID = 2L; // 2.7
 
-    @Deprecated // since 2.7
-     JsonParseException(String msg, JsonLocation loc) {
-        super(msg, loc, null);
-    }
 
-    @Deprecated // since 2.7
-     JsonParseException(String msg, JsonLocation loc, Throwable root) {
-        super(msg, loc, root);
-    }
 
     /**
      * Constructor that uses current parsing location as location, and
@@ -45,32 +37,7 @@ package com.fasterxml.jackson.core;
     }
 
     // @since 2.7
-     JsonParseException(JsonParser p, String msg, JsonLocation loc) {
-        super(p, msg, loc);
-    }
 
-    // @since 2.7
-     JsonParseException(JsonParser p, String msg, JsonLocation loc, Throwable root) {
-        super(msg, loc, root);
-    }
-
-    /**
-     * Fluent method that may be used to assign originating {@link JsonParser},
-     * to be accessed using {@link #getProcessor()}.
-     *<p>
-     * NOTE: `this` instance is modified and no new instance is constructed.
-     *
-     * @param p Parser instance to assign to this exception
-     *
-     * @return This exception instance to allow call chaining
-     *
-     * @since 2.7
-     */
-    @Override
-     JsonParseException withParser(JsonParser p) {
-        _processor = p;
-        return this;
-    }
 
 
 

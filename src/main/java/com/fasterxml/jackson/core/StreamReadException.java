@@ -32,28 +32,6 @@ package com.fasterxml.jackson.core;
         _processor = p;
     }
 
-    // @since 2.13
-    protected StreamReadException(JsonParser p, String msg, JsonLocation loc,
-            Throwable rootCause) {
-        super(msg, loc, rootCause);
-        _processor = p;
-    }
-
-    protected StreamReadException(String msg, JsonLocation loc, Throwable rootCause) {
-        super(msg, loc, rootCause);
-    }
-
-    /**
-     * Fluent method that may be used to assign originating {@link JsonParser},
-     * to be accessed using {@link #getProcessor()}.
-     *<p>
-     * NOTE: `this` instance is modified and no new instance is constructed.
-     *
-     * @param p Parser instance to assign to this exception
-     *
-     * @return This exception instance to allow call chaining
-     */
-     abstract StreamReadException withParser(JsonParser p);
 
 
     @Override

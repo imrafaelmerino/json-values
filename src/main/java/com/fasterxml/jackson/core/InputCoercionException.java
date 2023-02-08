@@ -39,18 +39,6 @@ package com.fasterxml.jackson.core;
         _targetType = targetType;
     }
 
-    /**
-     * Fluent method that may be used to assign originating {@link JsonParser},
-     * to be accessed using {@link #getProcessor()}.
-     *<p>
-     * NOTE: `this` instance is modified and no new instance is constructed.
-     */
-    @Override
-     InputCoercionException withParser(JsonParser p) {
-        _processor = p;
-        return this;
-    }
-
 
 
     /**
