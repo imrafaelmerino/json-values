@@ -16,23 +16,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vavr.collection;
+package jsonvalues;
 
 
-import io.vavr.collection.HashArrayMappedTrieModule.EmptyNode;
-import jsonvalues.JsValue;
+import jsonvalues.HashArrayMappedTrieModule.EmptyNode;
 
-import java.io.Serializable;
 import java.util.Iterator;
-import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 
-import static java.lang.Integer.bitCount;
-import static java.util.Arrays.copyOf;
-import static io.vavr.collection.HashArrayMappedTrieModule.Action.PUT;
-import static io.vavr.collection.HashArrayMappedTrieModule.Action.REMOJsValueE;
 
 /**
  * An immutable <a href="https://en.wikipedia.org/wiki/Hash_array_mapped_trie">Hash array mapped trie (HAMT)</a>.

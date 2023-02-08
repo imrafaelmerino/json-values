@@ -16,24 +16,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vavr.collection;
+package jsonvalues;
 
 
-import jsonvalues.JsPair;
-import jsonvalues.JsValue;
 import java.util.Iterator;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.Set;
 
 
 /**
  * An immutable {@code HashMap} implementation based on a
  * <a href="https://en.wikipedia.org/wiki/Hash_array_mapped_trie">Hash array mapped trie (HAMT)</a>.
  */
-public final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode>  {
-
-    private static final long serialVersionUID = 1L;
+ final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode>  {
 
     private static final HashMap EMPTY = new HashMap(HashArrayMappedTrie.empty());
 
@@ -43,7 +37,6 @@ public final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNod
         this.trie = trie;
     }
 
-    @SuppressWarnings("unchecked")
     public static  HashMap empty() {
         return  EMPTY;
     }
@@ -86,18 +79,7 @@ public final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNod
         return result.size() == trie.size() ? this : wrap(result);
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        HashMap hashMap = (HashMap) o;
-        return Objects.equals(trie, hashMap.trie);
-    }
 
-    @Override
-    public int hashCode() {
-        return Collections.hashUnordered(this);
-    }
 
     public int size() {
         return trie.size();

@@ -9,7 +9,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
 
 
-public class DslNumberConverter {
+public class DslNumberConverterTest {
 
     /**
      * this is the reason I implemented MyNumberConverter . I consider this a bug from dsl-json

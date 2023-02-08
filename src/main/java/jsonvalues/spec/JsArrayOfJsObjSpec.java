@@ -9,7 +9,7 @@ import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-public class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec, JsArraySpec {
+ class JsArrayOfJsObjSpec extends AbstractSizableArrSpec implements JsSpec, JsArraySpec {
 
     private final JsObjSpec spec;
 

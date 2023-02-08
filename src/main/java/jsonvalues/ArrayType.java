@@ -1,4 +1,4 @@
-package io.vavr.collection;
+package jsonvalues;
 
 /*  __    __  __  __    __  ___
  * \  \  /  /    \  \  /  /  __/
@@ -19,12 +19,6 @@ package io.vavr.collection;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-
-/*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*\
-   G E N E R A T O R   C R A F T E D
-\*-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-*/
-
-
 
 /**
  * Helper to replace reflective array access.
@@ -106,10 +100,6 @@ interface ArrayType<T> {
         }
         return array;
     }
-
-
-
-
 
 
 

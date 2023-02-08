@@ -8,7 +8,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 
 
-public final class JsonIO {
+ public final class JsonIO {
     public static final JsonIO INSTANCE = new JsonIO();
 
     final StringCache keyCache;

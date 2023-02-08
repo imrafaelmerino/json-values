@@ -10,7 +10,7 @@ import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
 import static jsonvalues.spec.JsSpecs.*;
-import static jsonvalues.spec.Fun.assertErrorIs;
+import static jsonvalues.spec.FunTest.assertErrorIs;
 
 public class TestJsArraySpec {
 

@@ -8,9 +8,9 @@ import org.junit.jupiter.api.Assertions;
 import java.util.Set;
 
 
-class Fun {
+class FunTest {
 
-    private Fun() {
+    private FunTest() {
     }
 
     public static void assertErrorIs(final Set<SpecError> error,

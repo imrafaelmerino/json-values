@@ -5,7 +5,7 @@ package jsonvalues.spec;
  * By default key cache is enabled. Everything else is not configured.
  * To load `META-INF/services` call `includeServiceLoader()`
  */
-public class Settings {
+ class Settings {
      StringCache keyCache = new SimpleStringCache();
      StringCache valuesCache;
      JsonReader.ErrorInfo errorInfo = JsonReader.ErrorInfo.WITH_STACK_TRACE;

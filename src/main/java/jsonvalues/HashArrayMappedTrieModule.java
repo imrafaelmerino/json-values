@@ -1,6 +1,4 @@
-package io.vavr.collection;
-
-import jsonvalues.JsValue;
+package jsonvalues;
 
 import java.io.Serializable;
 import java.util.Iterator;
@@ -8,12 +6,12 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-import static io.vavr.collection.HashArrayMappedTrieModule.Action.PUT;
-import static io.vavr.collection.HashArrayMappedTrieModule.Action.REMOJsValueE;
+import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
+import static jsonvalues.HashArrayMappedTrieModule.Action.REMOJsValueE;
 import static java.lang.Integer.bitCount;
 import static java.util.Arrays.copyOf;
 
-public interface HashArrayMappedTrieModule {
+ interface HashArrayMappedTrieModule {
 
     enum Action {
         PUT, REMOJsValueE
@@ -41,19 +39,14 @@ public interface HashArrayMappedTrieModule {
             return ptr < total;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         public LeafNode next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
             Object node = nodes[level];
             while (!(node instanceof LeafNode)) {
                 node = findNextLeaf();
             }
             ptr++;
-            if (node instanceof LeafList) {
-                final LeafList leaf = (LeafList) node;
+            if (node instanceof final LeafList leaf) {
                 nodes[level] = leaf.tail;
                 return leaf;
             } else {
@@ -62,7 +55,6 @@ public interface HashArrayMappedTrieModule {
             }
         }
 
-        @SuppressWarnings("unchecked")
         private Object findNextLeaf() {
             AbstractNode node = null;
             while (level > 0) {
@@ -91,13 +83,11 @@ public interface HashArrayMappedTrieModule {
             return level;
         }
 
-        @SuppressWarnings("unchecked")
         private static AbstractNode getChild(AbstractNode node, int index) {
-            if (node instanceof IndexedNode) {
-                final Object[] subNodes = ((IndexedNode) node).subNodes;
+            if (node instanceof IndexedNode indexedNode) {
+                final Object[] subNodes = indexedNode.subNodes;
                 return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
-            } else if (node instanceof ArrayNode) {
-                final ArrayNode arrayNode = (ArrayNode) node;
+            } else if (node instanceof ArrayNode arrayNode) {
                 return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
             }
             return null;
@@ -212,7 +202,6 @@ public interface HashArrayMappedTrieModule {
         private EmptyNode() {
         }
 
-        @SuppressWarnings("unchecked")
         static EmptyNode instance() {
             return INSTANCE;
         }
@@ -257,15 +246,6 @@ public interface HashArrayMappedTrieModule {
             };
         }
 
-        /**
-         * Instance control for object serialization.
-         *
-         * @return The singleton instance of EmptyNode.
-         * @see Serializable
-         */
-        private Object readResolve() {
-            return INSTANCE;
-        }
     }
 
     /**
@@ -307,9 +287,8 @@ public interface HashArrayMappedTrieModule {
     /**
      * Representation of a HAMT leaf node with single element.
      */
-    final class LeafSingleton extends LeafNode implements Serializable {
+    final class LeafSingleton extends LeafNode  {
 
-        private static final long serialJsValueersionUID = 1L;
 
         private final int hash;
         private final String key;
@@ -331,8 +310,8 @@ public interface HashArrayMappedTrieModule {
         }
 
         @Override
-        JsValue lookup(int shift, int keyHash, String key, JsValue defaultJsValuealue) {
-            return equals(keyHash, key) ? value : defaultJsValuealue;
+        JsValue lookup(int shift, int keyHash, String key, JsValue defaultValue) {
+            return equals(keyHash, key) ? value : defaultValue;
         }
 
         @Override
@@ -459,8 +438,7 @@ public interface HashArrayMappedTrieModule {
             }
             LeafNode result = leaf1;
             LeafNode tail = leaf2;
-            while (tail instanceof LeafList) {
-                final LeafList list = (LeafList) tail;
+            while (tail instanceof LeafList list) {
                 result = new LeafList(list.hash, list.key, list.value, result);
                 tail = list.tail;
             }
@@ -492,7 +470,7 @@ public interface HashArrayMappedTrieModule {
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<LeafNode>() {
+            return new Iterator<>() {
                 LeafNode node = LeafList.this;
 
                 @Override
@@ -535,9 +513,8 @@ public interface HashArrayMappedTrieModule {
     /**
      * Representation of a HAMT indexed node.
      */
-    final class IndexedNode extends AbstractNode implements Serializable {
+    final class IndexedNode extends AbstractNode {
 
-        private static final long serialJsValueersionUID = 1L;
 
         private final int bitmap;
         private final int size;
@@ -549,7 +526,6 @@ public interface HashArrayMappedTrieModule {
             this.subNodes = subNodes;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         Optional<JsValue> lookup(int shift, int keyHash, String key) {
             final int frag = hashFragment(shift, keyHash);
@@ -562,7 +538,6 @@ public interface HashArrayMappedTrieModule {
             }
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         JsValue lookup(int shift, int keyHash, String key, JsValue defaultJsValuealue) {
             final int frag = hashFragment(shift, keyHash);
@@ -575,7 +550,6 @@ public interface HashArrayMappedTrieModule {
             }
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         AbstractNode modify(int shift, int keyHash, String key, JsValue value, Action action) {
             final int frag = hashFragment(shift, keyHash);
@@ -647,9 +621,8 @@ public interface HashArrayMappedTrieModule {
     /**
      * Representation of a HAMT array node.
      */
-    final class ArrayNode extends AbstractNode implements Serializable {
+    final class ArrayNode extends AbstractNode {
 
-        private static final long serialJsValueersionUID = 1L;
 
         private final Object[] subNodes;
         private final int count;
@@ -661,7 +634,6 @@ public interface HashArrayMappedTrieModule {
             this.size = size;
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         Optional<JsValue> lookup(int shift, int keyHash, String key) {
             final int frag = hashFragment(shift, keyHash);
@@ -669,7 +641,6 @@ public interface HashArrayMappedTrieModule {
             return child.lookup(shift + SIZE, keyHash, key);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         JsValue lookup(int shift, int keyHash, String key, JsValue defaultJsValuealue) {
             final int frag = hashFragment(shift, keyHash);
@@ -677,7 +648,6 @@ public interface HashArrayMappedTrieModule {
             return child.lookup(shift + SIZE, keyHash, key, defaultJsValuealue);
         }
 
-        @SuppressWarnings("unchecked")
         @Override
         AbstractNode modify(int shift, int keyHash, String key, JsValue value, Action action) {
             final int frag = hashFragment(shift, keyHash);
@@ -696,7 +666,6 @@ public interface HashArrayMappedTrieModule {
             }
         }
 
-        @SuppressWarnings("unchecked")
         private IndexedNode pack(int idx, Object[] elements) {
             final Object[] arr = new Object[count - 1];
             int bitmap = 0;

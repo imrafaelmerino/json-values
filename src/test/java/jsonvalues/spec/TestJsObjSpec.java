@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
 import static jsonvalues.spec.JsSpecs.*;
-import static jsonvalues.spec.Fun.assertErrorIs;
+import static jsonvalues.spec.FunTest.assertErrorIs;
 
 public class TestJsObjSpec {
 

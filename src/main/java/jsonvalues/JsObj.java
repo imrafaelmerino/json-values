@@ -1,7 +1,6 @@
 package jsonvalues;
 
-import io.vavr.collection.HashArrayMappedTrieModule;
-import io.vavr.collection.HashMap;
+
 import jsonvalues.spec.JsonIO;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
@@ -14,10 +13,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Instant;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.*;
 import java.util.stream.Stream;
 
@@ -52,8 +48,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      */
     public static final Prism<JsValue, JsObj> prism =
             new Prism<>(s -> s.isObj() ?
-                             Optional.of(s.toJsObj()) :
-                             Optional.empty(),
+                    Optional.of(s.toJsObj()) :
+                    Optional.empty(),
                         o -> o
             );
     @SuppressWarnings("squid:S3008")
@@ -77,20 +73,21 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     public static JsObj of(final String key,
                            final JsValue el
-    ) {
+                          ) {
 
         return JsObj.EMPTY.set(JsPath.empty()
                                      .key(requireNonNull(key)),
                                el
-        );
+                              );
     }
 
     public static JsObj of(final JsPath path,
                            final JsValue el
-    ) {
+                          ) {
 
         return JsObj.EMPTY.set(requireNonNull(path),
-                               requireNonNull(el));
+                               requireNonNull(el)
+                              );
     }
 
 
@@ -98,26 +95,28 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el1,
                            final String key2,
                            final JsValue el2
-    ) {
+                          ) {
 
         return of(key1,
                   el1
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key2)),
-              el2
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key2)),
+                       el2
+                      );
     }
 
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
                            final JsPath path2,
                            final JsValue el2
-    ) {
+                          ) {
 
         return of(path1,
-                  el1)
+                  el1
+                 )
                 .set(requireNonNull(path2),
-                     requireNonNull(el2));
+                     requireNonNull(el2)
+                    );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -127,15 +126,15 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el2,
                            final String key3,
                            final JsValue el3
-    ) {
+                          ) {
         return of(key1,
                   el1,
                   key2,
                   el2
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key3)),
-              el3
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key3)),
+                       el3
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -145,14 +144,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el2,
                            final JsPath path3,
                            final JsValue el3
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
                   el2
-        ).set(requireNonNull(path3),
-              requireNonNull(el3)
-        );
+                 ).set(requireNonNull(path3),
+                       requireNonNull(el3)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -164,7 +163,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el3,
                            final String key4,
                            final JsValue el4
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -172,10 +171,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el2,
                   key3,
                   el3
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key4)),
-              el4
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key4)),
+                       el4
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -187,16 +186,16 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el3,
                            final JsPath path4,
                            final JsValue el4
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
                   el2,
                   path3,
                   el3
-        ).set(requireNonNull(path4),
-              requireNonNull(el4)
-        );
+                 ).set(requireNonNull(path4),
+                       requireNonNull(el4)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -210,7 +209,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el4,
                            final String key5,
                            final JsValue el5
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -220,10 +219,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el3,
                   key4,
                   el4
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key5)),
-              el5
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key5)),
+                       el5
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -237,7 +236,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el4,
                            final JsPath path5,
                            final JsValue el5
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -246,9 +245,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el3,
                   path4,
                   el4
-        ).set(requireNonNull(path5),
-              requireNonNull(el5)
-        );
+                 ).set(requireNonNull(path5),
+                       requireNonNull(el5)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -264,7 +263,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el5,
                            final String key6,
                            final JsValue el6
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -276,10 +275,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el4,
                   key5,
                   el5
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key6)),
-              el6
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key6)),
+                       el6
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -295,7 +294,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el5,
                            final JsPath path6,
                            final JsValue el6
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -306,9 +305,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el4,
                   path5,
                   el5
-        ).set(requireNonNull(path6),
-              requireNonNull(el6)
-        );
+                 ).set(requireNonNull(path6),
+                       requireNonNull(el6)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -326,7 +325,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el6,
                            final String key7,
                            final JsValue el7
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -340,10 +339,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el5,
                   key6,
                   el6
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key7)),
-              el7
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key7)),
+                       el7
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -361,7 +360,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el6,
                            final JsPath path7,
                            final JsValue el7
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -374,9 +373,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el5,
                   path6,
                   el6
-        ).set(requireNonNull(path7),
-              requireNonNull(el7)
-        );
+                 ).set(requireNonNull(path7),
+                       requireNonNull(el7)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -396,7 +395,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el7,
                            final String key8,
                            final JsValue el8
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -412,10 +411,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el6,
                   key7,
                   el7
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key8)),
-              el8
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key8)),
+                       el8
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -435,7 +434,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el7,
                            final JsPath path8,
                            final JsValue el8
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -450,9 +449,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el6,
                   path7,
                   el7
-        ).set(requireNonNull(path8),
-              requireNonNull(el8)
-        );
+                 ).set(requireNonNull(path8),
+                       requireNonNull(el8)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -474,7 +473,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el8,
                            final String key9,
                            final JsValue el9
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -492,10 +491,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el7,
                   key8,
                   el8
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key9)),
-              el9
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key9)),
+                       el9
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -517,7 +516,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el8,
                            final JsPath path9,
                            final JsValue el9
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -534,9 +533,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el7,
                   path8,
                   el8
-        ).set(requireNonNull(path9),
-              requireNonNull(el9)
-        );
+                 ).set(requireNonNull(path9),
+                       requireNonNull(el9)
+                      );
     }
 
 
@@ -561,7 +560,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el9,
                            final String key10,
                            final JsValue el10
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -581,10 +580,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el8,
                   key9,
                   el9
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key10)),
-              el10
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key10)),
+                       el10
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -608,7 +607,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el9,
                            final JsPath path10,
                            final JsValue el10
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -627,9 +626,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el8,
                   path9,
                   el9
-        ).set(requireNonNull(path10),
-              requireNonNull(el10)
-        );
+                 ).set(requireNonNull(path10),
+                       requireNonNull(el10)
+                      );
     }
 
 
@@ -656,7 +655,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el10,
                            final String key11,
                            final JsValue el11
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -678,10 +677,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el9,
                   key10,
                   el10
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key11)),
-              el11
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key11)),
+                       el11
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -707,7 +706,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el10,
                            final JsPath path11,
                            final JsValue el11
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -728,9 +727,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el9,
                   path10,
                   el10
-        ).set(requireNonNull(path11),
-              requireNonNull(el11)
-        );
+                 ).set(requireNonNull(path11),
+                       requireNonNull(el11)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -758,7 +757,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el11,
                            final String key12,
                            final JsValue el12
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -782,10 +781,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el10,
                   key11,
                   el11
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key12)),
-              el12
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key12)),
+                       el12
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -813,7 +812,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el11,
                            final JsPath path12,
                            final JsValue el12
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -836,9 +835,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el10,
                   path11,
                   el11
-        ).set(requireNonNull(path12),
-              requireNonNull(el12)
-        );
+                 ).set(requireNonNull(path12),
+                       requireNonNull(el12)
+                      );
     }
 
 
@@ -869,7 +868,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el12,
                            final String key13,
                            final JsValue el13
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -895,10 +894,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el11,
                   key12,
                   el12
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key13)),
-              el13
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key13)),
+                       el13
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -928,7 +927,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el12,
                            final JsPath path13,
                            final JsValue el13
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -953,9 +952,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el11,
                   path12,
                   el12
-        ).set(requireNonNull(path13),
-              requireNonNull(el13)
-        );
+                 ).set(requireNonNull(path13),
+                       requireNonNull(el13)
+                      );
     }
 
 
@@ -988,7 +987,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el13,
                            final String key14,
                            final JsValue el14
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1016,10 +1015,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el12,
                   key13,
                   el13
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key14)),
-              el14
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key14)),
+                       el14
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1051,7 +1050,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el13,
                            final JsPath path14,
                            final JsValue el14
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1078,9 +1077,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el12,
                   path13,
                   el13
-        ).set(requireNonNull(path14),
-              requireNonNull(el14)
-        );
+                 ).set(requireNonNull(path14),
+                       requireNonNull(el14)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1114,7 +1113,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el14,
                            final String key15,
                            final JsValue el15
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1144,10 +1143,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el13,
                   key14,
                   el14
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key15)),
-              el15
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key15)),
+                       el15
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1181,7 +1180,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el14,
                            final JsPath path15,
                            final JsValue el15
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1210,9 +1209,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el13,
                   path14,
                   el14
-        ).set(requireNonNull(path15),
-              requireNonNull(el15)
-        );
+                 ).set(requireNonNull(path15),
+                       requireNonNull(el15)
+                      );
     }
 
 
@@ -1249,7 +1248,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el15,
                            final String key16,
                            final JsValue el16
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1281,10 +1280,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el14,
                   key15,
                   el15
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key16)),
-              el16
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key16)),
+                       el16
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1320,7 +1319,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el15,
                            final JsPath path16,
                            final JsValue el16
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1351,9 +1350,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el14,
                   path15,
                   el15
-        ).set(requireNonNull(path16),
-              requireNonNull(el16)
-        );
+                 ).set(requireNonNull(path16),
+                       requireNonNull(el16)
+                      );
     }
 
 
@@ -1392,7 +1391,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el16,
                            final String key17,
                            final JsValue el17
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1426,10 +1425,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el15,
                   key16,
                   el16
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key17)),
-              el17
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key17)),
+                       el17
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1467,7 +1466,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el16,
                            final JsPath path17,
                            final JsValue el17
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1500,9 +1499,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el15,
                   path16,
                   el16
-        ).set(requireNonNull(path17),
-              requireNonNull(el17)
-        );
+                 ).set(requireNonNull(path17),
+                       requireNonNull(el17)
+                      );
     }
 
 
@@ -1543,7 +1542,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el17,
                            final String key18,
                            final JsValue el18
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1579,10 +1578,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el16,
                   key17,
                   el17
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key18)),
-              el18
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key18)),
+                       el18
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1622,7 +1621,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el17,
                            final JsPath path18,
                            final JsValue el18
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1657,9 +1656,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el16,
                   path17,
                   el17
-        ).set(requireNonNull(path18),
-              requireNonNull(el18)
-        );
+                 ).set(requireNonNull(path18),
+                       requireNonNull(el18)
+                      );
     }
 
 
@@ -1702,7 +1701,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el18,
                            final String key19,
                            final JsValue el19
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1740,10 +1739,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el17,
                   key18,
                   el18
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key19)),
-              el19
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key19)),
+                       el19
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1785,7 +1784,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el18,
                            final JsPath path19,
                            final JsValue el19
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1822,9 +1821,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el17,
                   path18,
                   el18
-        ).set(requireNonNull(path19),
-              requireNonNull(el19)
-        );
+                 ).set(requireNonNull(path19),
+                       requireNonNull(el19)
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1868,7 +1867,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el19,
                            final String key20,
                            final JsValue el20
-    ) {
+                          ) {
 
         return of(key1,
                   el1,
@@ -1908,10 +1907,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el18,
                   key19,
                   el19
-        ).set(JsPath.empty()
-                    .key(requireNonNull(key20)),
-              el20
-        );
+                 ).set(JsPath.empty()
+                             .key(requireNonNull(key20)),
+                       el20
+                      );
     }
 
     @SuppressWarnings("squid:S00107")
@@ -1955,7 +1954,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            final JsValue el19,
                            final JsPath path20,
                            final JsValue el20
-    ) {
+                          ) {
         return of(path1,
                   el1,
                   path2,
@@ -1994,9 +1993,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   el18,
                   path19,
                   el19
-        ).set(requireNonNull(path20),
-              requireNonNull(el20)
-        );
+                 ).set(requireNonNull(path20),
+                       requireNonNull(el20)
+                      );
     }
 
 
@@ -2036,7 +2035,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
             };
             map = map.put(key,
                           elem
-            );
+                         );
         }
 
         return map;
@@ -2044,40 +2043,41 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     static Stream<JsPair> streamOfObj(final JsObj obj,
-                                                     final JsPath path
-    ) {
+                                      final JsPath path
+                                     ) {
 
         requireNonNull(path);
         return requireNonNull(obj).ifEmptyElse(() -> Stream.of(new JsPair(path,
-                                                                       obj
+                                                                          obj
                                                )),
                                                () -> obj.keySet()
                                                         .stream()
-                                                        .map(key ->new JsPair(path.key(key),
-                                                                            get(obj,
-                                                                                Key.of(key)
-                                                                            )
+                                                        .map(key -> new JsPair(path.key(key),
+                                                                               get(obj,
+                                                                                   Key.of(key)
+                                                                                  )
                                                         ))
                                                         .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
                                                                                                               pair.path()
-                                                                                             ),
+                                                                                                             ),
                                                                                              a -> streamOfArr(a,
                                                                                                               pair.path()
-                                                                                             ),
-                                                                                             e -> Stream.of(pair))
+                                                                                                             ),
+                                                                                             e -> Stream.of(pair)
+                                                                                            )
                                                                                  .apply(pair.value()))
-        );
+                                              );
 
     }
 
     private static JsValue get(final JsObj obj,
                                final Position position
-    ) {
+                              ) {
         return requireNonNull(position).match(key -> obj.map.getOrElse(key,
                                                                        NOTHING
-                                              ),
+                                                                      ),
                                               index -> NOTHING
-        );
+                                             );
     }
 
     /**
@@ -2089,11 +2089,13 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      */
     public JsObj set(final String key,
                      final JsValue value
-    ) {
+                    ) {
         requireNonNull(key);
         return ifNothingElse(() -> this.delete(key),
                              elem -> new JsObj(map.put(key,
-                                                       elem))).apply(requireNonNull(value));
+                                                       elem
+                                                      ))
+                            ).apply(requireNonNull(value));
     }
 
     public JsObj delete(final String key) {
@@ -2114,7 +2116,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public Set<String> keySet() {
         Set<String> keys = new HashSet<>();
         Iterator<String> iter = map.keySet();
-        while (iter.hasNext())keys.add(iter.next());
+        while (iter.hasNext()) keys.add(iter.next());
         return keys;
     }
 
@@ -2123,7 +2125,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         if (path.isEmpty()) return this;
         final JsValue e = get(this,
                               path.head()
-        );
+                             );
         final JsPath tail = path.tail();
         if (tail.isEmpty()) return e;
         if (e.isPrimitive()) return NOTHING;
@@ -2136,7 +2138,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpFilterObjElems.filter(this,
                                        JsPath.empty(),
                                        requireNonNull(filter)
-        );
+                                      );
 
     }
 
@@ -2144,7 +2146,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public JsObj filterValues(final Predicate<? super JsPrimitive> filter) {
         return OpFilterObjElems.filter(this,
                                        requireNonNull(filter)
-        );
+                                      );
     }
 
     @Override
@@ -2152,14 +2154,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpFilterObjKeys.filter(this,
                                       JsPath.empty(),
                                       filter
-        );
+                                     );
     }
 
     @Override
     public JsObj filterKeys(final Predicate<? super String> filter) {
         return OpFilterObjKeys.filter(this,
                                       filter
-        );
+                                     );
     }
 
 
@@ -2168,7 +2170,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpFilterObjObjs.filter(this,
                                       JsPath.empty(),
                                       requireNonNull(filter)
-        );
+                                     );
 
     }
 
@@ -2176,7 +2178,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public JsObj filterObjs(final Predicate<? super JsObj> filter) {
         return OpFilterObjObjs.filter(this,
                                       requireNonNull(filter)
-        );
+                                     );
     }
 
     @Override
@@ -2189,14 +2191,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpMapObjElems.map(this,
                                  requireNonNull(fn),
                                  EMPTY_PATH
-        );
+                                );
     }
 
     @Override
     public JsObj mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
         return OpMapObjElems.map(this,
                                  requireNonNull(fn)
-        );
+                                );
     }
 
 
@@ -2205,14 +2207,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpMapObjKeys.map(this,
                                 requireNonNull(fn),
                                 EMPTY_PATH
-        );
+                               );
     }
 
     @Override
     public JsObj mapKeys(final Function<? super String, String> fn) {
         return OpMapObjKeys.map(this,
                                 requireNonNull(fn)
-        );
+                               );
     }
 
     @Override
@@ -2220,14 +2222,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return OpMapObjObjs.map(this,
                                 requireNonNull(fn),
                                 JsPath.empty()
-        );
+                               );
     }
 
     @Override
     public JsObj mapObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapObjObjs.map(this,
                                 requireNonNull(fn)
-        );
+                               );
     }
 
     @Override
@@ -2235,7 +2237,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                      final JsValue value,
                      final JsValue padElement
 
-    ) {
+                    ) {
         requireNonNull(value);
         if (requireNonNull(path).isEmpty()) return this;
         return path.head()
@@ -2244,53 +2246,55 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               final JsPath tail = path.tail();
 
                               return tail.isEmpty() ?
-                                     ifNothingElse(() -> this.delete(head),
-                                                   elem -> new JsObj(map.put(head,
-                                                                             elem
-                                                   ))
-                                     )
-                                             .apply(value) :
-                                     isReplaceWithEmptyJson(map).test(head,
-                                                                      tail
-                                     ) ?
-                                     new JsObj(map.put(head,
-                                                       tail.head()
-                                                           .match(key -> JsObj.EMPTY
-                                                                          .set(tail,
-                                                                               value,
-                                                                               padElement
-                                                                          ),
-                                                                  index -> JsArray.EMPTY
-                                                                          .set(tail,
-                                                                               value,
-                                                                               padElement
+                                      ifNothingElse(() -> this.delete(head),
+                                                    elem -> new JsObj(map.put(head,
+                                                                              elem
+                                                                             ))
+                                                   )
+                                              .apply(value) :
+                                      isReplaceWithEmptyJson(map).test(head,
+                                                                       tail
+                                                                      ) ?
+                                              new JsObj(map.put(head,
+                                                                tail.head()
+                                                                    .match(key -> JsObj.EMPTY
+                                                                                   .set(tail,
+                                                                                        value,
+                                                                                        padElement
+                                                                                       ),
+                                                                           index -> JsArray.EMPTY
+                                                                                   .set(tail,
+                                                                                        value,
+                                                                                        padElement
+                                                                                       )
                                                                           )
-                                                           )
-                                     )) :
-                                     new JsObj(map.put(head,
-                                                       map.get(head)
-                                                          .get()
-                                                          .toJson()
-                                                          .set(tail,
-                                                               value,
-                                                               padElement
-                                                          )
-                                     ));
+                                                               )) :
+                                              new JsObj(map.put(head,
+                                                                map.get(head)
+                                                                   .get()
+                                                                   .toJson()
+                                                                   .set(tail,
+                                                                        value,
+                                                                        padElement
+                                                                       )
+                                                               ));
                           },
                           index -> this
 
-                   );
+                         );
 
     }
 
     @Override
     public JsObj set(final JsPath path,
-                     final JsValue element) {
+                     final JsValue element
+                    ) {
         return ifNothingElse(() -> this.delete(path),
                              e -> set(path,
                                       e,
                                       NULL
-                             )).apply(requireNonNull(element));
+                                     )
+                            ).apply(requireNonNull(element));
     }
 
 
@@ -2298,27 +2302,28 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                   final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                   final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-    ) {
+                                 ) {
         return OpMapReduce.reduceObj(this,
                                      JsPath.empty(),
                                      requireNonNull(predicate),
                                      map,
                                      op,
                                      Optional.empty()
-        );
+                                    );
 
     }
 
     @Override
     public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                   final Function<? super JsPrimitive, R> map,
-                                  final Predicate<? super JsPrimitive> predicate) {
+                                  final Predicate<? super JsPrimitive> predicate
+                                 ) {
         return OpMapReduce.reduceObj(this,
                                      requireNonNull(predicate),
                                      map,
                                      op,
                                      Optional.empty()
-        );
+                                    );
     }
 
     @Override
@@ -2330,17 +2335,17 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               if (!map.containsKey(key)) return this;
                               final JsPath tail = path.tail();
                               return tail.isEmpty() ?
-                                     new JsObj(map.remove(key)) :
-                                     MatchExp.ifJsonElse(json -> new JsObj(map.put(key,
-                                                                                   json.delete(tail)
-                                                         )),
-                                                         e -> this
-                                             )
-                                             .apply(map.get(key)
-                                                       .get());
+                                      new JsObj(map.remove(key)) :
+                                      MatchExp.ifJsonElse(json -> new JsObj(map.put(key,
+                                                                                    json.delete(tail)
+                                                                                   )),
+                                                          e -> this
+                                                         )
+                                              .apply(map.get(key)
+                                                        .get());
                           },
                           index -> this
-                   );
+                         );
 
 
     }
@@ -2354,7 +2359,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public Stream<JsPair> stream() {
         return streamOfObj(this,
                            JsPath.empty()
-        );
+                          );
     }
 
     /**
@@ -2368,7 +2373,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @SuppressWarnings("squid:S00117")
     public boolean equals(final JsObj that,
                           final TYPE ARRAY_AS
-    ) {
+                         ) {
         if (isEmpty()) return that.isEmpty();
         if (that.isEmpty()) return isEmpty();
         return keySet().stream()
@@ -2382,7 +2387,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                          return elem.toJson()
                                                     .equals(thatElem,
                                                             ARRAY_AS
-                                                    );
+                                                           );
                                      return elem.equals(thatElem);
                                  }) && that.keySet()
                                            .stream()
@@ -2402,7 +2407,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public JsValue get(final String key) {
         return map.getOrElse(requireNonNull(key),
                              NOTHING
-        );
+                            );
     }
 
     /**
@@ -2426,7 +2431,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the JsArray located at the given key or the default value provided
      */
     public JsArray getArray(final String key,
-                            final Supplier<JsArray> orElse) {
+                            final Supplier<JsArray> orElse
+                           ) {
         return JsArray.prism.getOptional.apply(get(requireNonNull(key)))
                                         .orElseGet(requireNonNull(orElse));
 
@@ -2455,7 +2461,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the BigDecimal located at the given key or the default value provided
      */
     public BigDecimal getBigDec(final String key,
-                                final Supplier<BigDecimal> orElse) {
+                                final Supplier<BigDecimal> orElse
+                               ) {
         return JsBigDec.prism.getOptional.apply(get(requireNonNull(key)))
                                          .orElseGet(requireNonNull(orElse));
 
@@ -2485,7 +2492,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the bytes located at the given key or the default value provided
      */
     public byte[] getBinary(final String key,
-                            final Supplier<byte[]> orElse) {
+                            final Supplier<byte[]> orElse
+                           ) {
         return JsBinary.prism.getOptional.apply(get(requireNonNull(key)))
                                          .orElseGet(requireNonNull(orElse));
 
@@ -2514,7 +2522,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the BigInteger located at the given key or null
      */
     public BigInteger getBigInt(final String key,
-                                final Supplier<BigInteger> orElse) {
+                                final Supplier<BigInteger> orElse
+                               ) {
         return JsBigInt.prism.getOptional.apply(get(requireNonNull(key)))
                                          .orElseGet(requireNonNull(orElse));
 
@@ -2543,7 +2552,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the instant located at the given key or null
      */
     public Instant getInstant(final String key,
-                              final Supplier<Instant> orElse) {
+                              final Supplier<Instant> orElse
+                             ) {
         return JsInstant.prism.getOptional.apply(get(requireNonNull(key)))
                                           .orElseGet(requireNonNull(orElse));
 
@@ -2570,7 +2580,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the Boolean located at the given key or null
      */
     public Boolean getBool(final String key,
-                           final Supplier<Boolean> orElse) {
+                           final Supplier<Boolean> orElse
+                          ) {
         return JsBool.prism.getOptional.apply(get(requireNonNull(key)))
                                        .orElseGet(requireNonNull(orElse));
 
@@ -2602,7 +2613,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the decimal number located at the given key or null
      */
     public Double getDouble(final String key,
-                            final Supplier<Double> orElse) {
+                            final Supplier<Double> orElse
+                           ) {
         return JsDouble.prism.getOptional.apply(get(requireNonNull(key)))
                                          .orElseGet(requireNonNull(orElse));
 
@@ -2630,7 +2642,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the integral number located at the given key or null
      */
     public Integer getInt(final String key,
-                          final Supplier<Integer> orElse) {
+                          final Supplier<Integer> orElse
+                         ) {
         return JsInt.prism.getOptional.apply(get(requireNonNull(key)))
                                       .orElseGet(requireNonNull(orElse));
 
@@ -2659,7 +2672,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the integral number located at the given key or the default value provided
      */
     public Long getLong(final String key,
-                        final Supplier<Long> orElse) {
+                        final Supplier<Long> orElse
+                       ) {
         return JsLong.prism.getOptional.apply(get(requireNonNull(key)))
                                        .orElseGet(requireNonNull(orElse));
 
@@ -2686,7 +2700,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the json object located at the given key or the default value
      */
     public JsObj getObj(final String key,
-                        final Supplier<JsObj> orElse) {
+                        final Supplier<JsObj> orElse
+                       ) {
         return JsObj.prism.getOptional.apply(get(requireNonNull(key)))
                                       .orElseGet(requireNonNull(orElse));
 
@@ -2712,7 +2727,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      * @return the string located at the given key or null
      */
     public String getStr(final String key,
-                         final Supplier<String> orElse) {
+                         final Supplier<String> orElse
+                        ) {
         return JsStr.prism.getOptional.apply(get(requireNonNull(key)))
                                       .orElseGet(requireNonNull(orElse));
     }
@@ -2737,19 +2753,34 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     @Override
-    public boolean equals(final Object that) {
-        if (!(that instanceof final JsObj thatMap)) return false;
-        if (this == that) return true;
-        if (isEmpty()) return thatMap.isEmpty();
-        return keySet().stream()
-                       .allMatch(f -> thatMap.map.get(f)
-                                                 .map(it -> it.equals(map.get(f)
-                                                                         .get())
-                                                 )
-                                                 .orElse(false) && thatMap.keySet()
-                                                                             .stream()
-                                                                             .allMatch(map::containsKey));
+    public boolean equals(final Object o) {
+
+        if (o == this)
+            return true;
+        if (!(o instanceof JsObj m))
+            return false;
+        if (m.size() != size())
+            return false;
+
+        try {
+            for (JsObjPair e : this) {
+                var key = e.key();
+                var value = e.value();
+                if (value == null) {
+                    if (!(m.get(key) == null && m.containsKey(key)))
+                        return false;
+                } else {
+                    if (!value.equals(m.get(key)))
+                        return false;
+                }
+            }
+        } catch (ClassCastException | NullPointerException unused) {
+            return false;
+        }
+
+        return true;
     }
+
 
 
     @Override
@@ -2757,7 +2788,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         String result = str;
         if (result == null)
             str = result = new String(JsonIO.INSTANCE.serialize(this),
-                                      StandardCharsets.UTF_8);
+                                      StandardCharsets.UTF_8
+            );
         return result;
     }
 
@@ -2783,12 +2815,12 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @Override
     public JsObj intersection(final JsObj that,
                               final TYPE ARRAY_AS
-    ) {
+                             ) {
 
         return intersection(this,
                             requireNonNull(that),
                             requireNonNull(ARRAY_AS)
-        );
+                           );
     }
 
     @SuppressWarnings("squid:S1602")
@@ -2825,7 +2857,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
             @Override
             public JsObjPair next() {
                 var next = iterator.next();
-                return new JsObjPair(next.key(),next.value());
+                return new JsObjPair(next.key(), next.value());
             }
         };
 
@@ -2848,7 +2880,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @Override
     public JsObj union(final JsObj that,
                        final TYPE ARRAY_AS
-    ) {
+                      ) {
         requireNonNull(that);
         requireNonNull(ARRAY_AS);
         return ifEmptyElse(() -> that,
@@ -2856,9 +2888,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                                   () -> union(this,
                                                               that,
                                                               ARRAY_AS
-                                                  )
-                           )
-        );
+                                                             )
+                                                 )
+                          );
 
     }
 
@@ -2867,7 +2899,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     private JsObj intersection(final JsObj a,
                                final JsObj b,
                                final JsArray.TYPE ARRAY_AS
-    ) {
+                              ) {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
         JsObj result = JsObj.empty();
@@ -2877,14 +2909,15 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                 JsValue bVal = b.get(aVal.key());
 
                 if (bVal.equals(aVal.value())) result = result.set(aVal.key(),
-                                                              aVal.value());
+                                                                   aVal.value()
+                                                                  );
                 else if (bVal.isJson() && bVal.isSameType(aVal.value())) {
                     result = result.set(aVal.key(),
                                         OpIntersectionJsons.intersectionAll(aVal.value().toJson(),
                                                                             bVal.toJson(),
                                                                             ARRAY_AS
-                                        )
-                    );
+                                                                           )
+                                       );
                 }
             }
 
@@ -2899,7 +2932,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     private JsObj union(final JsObj a,
                         final JsObj b,
                         final JsArray.TYPE ARRAY_AS
-    ) {
+                       ) {
 
         if (b.isEmpty()) return a;
         JsObj result = a;
@@ -2907,7 +2940,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
             if (!a.containsKey(bVal.key()))
                 result = result.set(bVal.key(),
                                     bVal.value()
-                );
+                                   );
             JsValue aVal = a.get(bVal.key());
             if (aVal.isJson() && aVal.isSameType(bVal.value())) {
                 Json<?> aJson = aVal.toJson();
@@ -2917,8 +2950,8 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                     OpUnionJsons.unionAll(aJson,
                                                           bJson,
                                                           ARRAY_AS
-                                    )
-                );
+                                                         )
+                                   );
             }
         }
 

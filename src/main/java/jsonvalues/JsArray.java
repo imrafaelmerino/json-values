@@ -5,7 +5,6 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.core.JsonTokenId;
 import fun.optic.Prism;
-import io.vavr.collection.Vector;
 import jsonvalues.spec.JsonIO;
 
 import java.io.IOException;

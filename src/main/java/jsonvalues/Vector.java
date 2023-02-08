@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vavr.collection;
+package jsonvalues;
 
 
 import java.util.*;
@@ -24,7 +24,7 @@ import java.util.function.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
-import static io.vavr.collection.Collections.withSize;
+import static jsonvalues.Collections.withSize;
 
 
 /**
@@ -35,8 +35,9 @@ import static io.vavr.collection.Collections.withSize;
  *
  * @param <T> Component type of the Vector.
  */
-public final class Vector<T> implements Iterable<T> {
+ final class Vector<T> implements Iterable<T> {
 
+    @SuppressWarnings("unchecked")
     private static  final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
 
     final BitMappedTrie<T> trie;
@@ -81,7 +82,6 @@ public final class Vector<T> implements Iterable<T> {
      * @return A vector containing the given elements in the same order.
      * @throws NullPointerException if {@code elements} is null
      */
-    @SuppressWarnings("unchecked")
     public static <T> Vector<T> ofAll(Iterable<? extends T> iterable) {
         final Object[] values = withSize(iterable).toArray();
         return ofAll(BitMappedTrie.ofAll(values));

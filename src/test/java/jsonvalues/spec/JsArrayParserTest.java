@@ -13,7 +13,7 @@ import java.math.BigInteger;
 
 import static jsonvalues.spec.JsSpecs.*;
 
-public class TestJsArrayParser {
+public class JsArrayParserTest {
 
 
     @Test

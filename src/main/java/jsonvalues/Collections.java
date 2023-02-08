@@ -16,7 +16,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.vavr.collection;
+package jsonvalues;
 
 
 import java.util.*;
@@ -39,9 +39,7 @@ final class Collections {
         return iter1.hasNext() == iter2.hasNext();
     }
 
-    static int hashUnordered(Iterable<?> iterable) {
-        return hash(iterable, Integer::sum);
-    }
+
 
 
     // hashes the elements respecting their order
@@ -73,9 +71,10 @@ final class Collections {
     }
 
 
+    @SuppressWarnings("unchecked")
     static <T> IterableWithSize<T> withSize(Iterable<? extends T> iterable) {
-        if(iterable instanceof java.util.List l) return new IterableWithSize<>(l, l.size());
-        if(iterable instanceof Vector l) return new IterableWithSize<>(l, l.length());
+        if(iterable instanceof java.util.List l) return new IterableWithSize<T>(l, l.size());
+        if(iterable instanceof Vector l) return new IterableWithSize<T>(l, l.length());
 
         //TODO
         throw new RuntimeException();
