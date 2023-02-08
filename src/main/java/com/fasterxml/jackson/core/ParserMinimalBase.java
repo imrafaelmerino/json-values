@@ -17,7 +17,7 @@ import static com.fasterxml.jackson.core.JsonTokenId.*;
  * (size) and functionality that is specific to certain types
  * of parser implementations; but not necessarily to number of methods.
  */
-public abstract class ParserMinimalBase extends JsonParser
+ abstract class ParserMinimalBase extends JsonParser
 {
     // Control chars:
     protected final static int INT_TAB = '\t';
@@ -155,7 +155,7 @@ public abstract class ParserMinimalBase extends JsonParser
     protected ParserMinimalBase(int features) { super(features); }
 
     // NOTE: had base impl in 2.3 and before; but shouldn't
-    // public abstract Version version();
+    //  abstract Version version();
 
     /*
     /**********************************************************
@@ -165,10 +165,10 @@ public abstract class ParserMinimalBase extends JsonParser
 
     // from base class:
 
-    //public void enableFeature(Feature f)
-    //public void disableFeature(Feature f)
-    //public void setFeature(Feature f, boolean state)
-    //public boolean isFeatureEnabled(Feature f)
+    // void enableFeature(Feature f)
+    // void disableFeature(Feature f)
+    // void setFeature(Feature f, boolean state)
+    // boolean isFeatureEnabled(Feature f)
 
     /*
     /**********************************************************
@@ -176,24 +176,25 @@ public abstract class ParserMinimalBase extends JsonParser
     /**********************************************************
      */
 
-    @Override public abstract JsonToken nextToken() throws IOException;
+    @Override
+    public abstract JsonToken nextToken() throws IOException;
 
-    @Override public JsonToken currentToken() { return _currToken; }
-    @Override public int currentTokenId() {
+    @Override  JsonToken currentToken() { return _currToken; }
+    @Override  int currentTokenId() {
         final JsonToken t = _currToken;
         return (t == null) ? JsonTokenId.ID_NO_TOKEN : t.id();
     }
 
-    @Override public JsonToken getCurrentToken() { return _currToken; }
+    @Override  JsonToken getCurrentToken() { return _currToken; }
 
     @Deprecated
-    @Override public int getCurrentTokenId() {
+    @Override  int getCurrentTokenId() {
         final JsonToken t = _currToken;
         return (t == null) ? JsonTokenId.ID_NO_TOKEN : t.id();
     }
 
-    @Override public boolean hasCurrentToken() { return _currToken != null; }
-    @Override public boolean hasTokenId(int id) {
+    @Override  boolean hasCurrentToken() { return _currToken != null; }
+    @Override  boolean hasTokenId(int id) {
         final JsonToken t = _currToken;
         if (t == null) {
             return (JsonTokenId.ID_NO_TOKEN == id);
@@ -201,16 +202,16 @@ public abstract class ParserMinimalBase extends JsonParser
         return t.id() == id;
     }
 
-    @Override public boolean hasToken(JsonToken t) {
+    @Override  boolean hasToken(JsonToken t) {
         return (_currToken == t);
     }
 
-    @Override public boolean isExpectedStartArrayToken() { return _currToken == JsonToken.START_ARRAY; }
-    @Override public boolean isExpectedStartObjectToken() { return _currToken == JsonToken.START_OBJECT; }
-    @Override public boolean isExpectedNumberIntToken() { return _currToken == JsonToken.VALUE_NUMBER_INT; }
+    @Override  boolean isExpectedStartArrayToken() { return _currToken == JsonToken.START_ARRAY; }
+    @Override  boolean isExpectedStartObjectToken() { return _currToken == JsonToken.START_OBJECT; }
+    @Override  boolean isExpectedNumberIntToken() { return _currToken == JsonToken.VALUE_NUMBER_INT; }
 
     @Override
-    public JsonToken nextValue() throws IOException {
+     JsonToken nextValue() throws IOException {
         // Implementation should be as trivial as follows; only needs to change if
         // we are to skip other tokens (for example, if comments were exposed as tokens)
         JsonToken t = nextToken();
@@ -221,7 +222,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public JsonParser skipChildren() throws IOException
+     JsonParser skipChildren() throws IOException
     {
         if (_currToken != JsonToken.START_OBJECT
             && _currToken != JsonToken.START_ARRAY) {
@@ -266,64 +267,65 @@ public abstract class ParserMinimalBase extends JsonParser
      */
     protected abstract void _handleEOF() throws JsonParseException;
 
-    //public JsonToken getCurrentToken()
-    //public boolean hasCurrentToken()
+    // JsonToken getCurrentToken()
+    // boolean hasCurrentToken()
 
-    @Override public abstract String getCurrentName() throws IOException;
-    @Override public abstract void close() throws IOException;
-    @Override public abstract boolean isClosed();
+    @Override  abstract String getCurrentName() throws IOException;
+    @Override
+    public abstract void close() throws IOException;
+    @Override  abstract boolean isClosed();
 
-    @Override public abstract JsonStreamContext getParsingContext();
+    @Override  abstract JsonStreamContext getParsingContext();
 
-//    public abstract JsonLocation getTokenLocation();
+//     abstract JsonLocation getTokenLocation();
 
-//   public abstract JsonLocation getCurrentLocation();
+//    abstract JsonLocation getCurrentLocation();
 
     /*
     /**********************************************************
-    /* Public API, token state overrides
+    /*  API, token state overrides
     /**********************************************************
      */
 
-    @Override public void clearCurrentToken() {
+    @Override  void clearCurrentToken() {
         if (_currToken != null) {
             _lastClearedToken = _currToken;
             _currToken = null;
         }
     }
 
-    @Override public JsonToken getLastClearedToken() { return _lastClearedToken; }
+    @Override  JsonToken getLastClearedToken() { return _lastClearedToken; }
 
-    @Override public abstract void overrideCurrentName(String name);
+    @Override  abstract void overrideCurrentName(String name);
 
     /*
     /**********************************************************
-    /* Public API, access to token information, text
+    /*  API, access to token information, text
     /**********************************************************
      */
 
-    @Override public abstract String getText() throws IOException;
-    @Override public abstract char[] getTextCharacters() throws IOException;
-    @Override public abstract boolean hasTextCharacters();
-    @Override public abstract int getTextLength() throws IOException;
-    @Override public abstract int getTextOffset() throws IOException;
+    @Override  abstract String getText() throws IOException;
+    @Override  abstract char[] getTextCharacters() throws IOException;
+    @Override  abstract boolean hasTextCharacters();
+    @Override  abstract int getTextLength() throws IOException;
+    @Override  abstract int getTextOffset() throws IOException;
 
     /*
     /**********************************************************
-    /* Public API, access to token information, binary
+    /*  API, access to token information, binary
     /**********************************************************
      */
 
-    @Override public abstract byte[] getBinaryValue(Base64Variant b64variant) throws IOException;
+    @Override  abstract byte[] getBinaryValue(Base64Variant b64variant) throws IOException;
 
     /*
     /**********************************************************
-    /* Public API, access with conversion/coercion
+    /*  API, access with conversion/coercion
     /**********************************************************
      */
 
     @Override
-    public boolean getValueAsBoolean(boolean defaultValue) throws IOException
+     boolean getValueAsBoolean(boolean defaultValue) throws IOException
     {
         JsonToken t = _currToken;
         if (t != null) {
@@ -360,7 +362,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public int getValueAsInt() throws IOException
+     int getValueAsInt() throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -370,7 +372,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public int getValueAsInt(int defaultValue) throws IOException
+     int getValueAsInt(int defaultValue) throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -401,7 +403,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public long getValueAsLong() throws IOException
+     long getValueAsLong() throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -411,7 +413,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public long getValueAsLong(long defaultValue) throws IOException
+     long getValueAsLong(long defaultValue) throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -441,7 +443,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public double getValueAsDouble(double defaultValue) throws IOException
+     double getValueAsDouble(double defaultValue) throws IOException
     {
         JsonToken t = _currToken;
         if (t != null) {
@@ -478,7 +480,7 @@ public abstract class ParserMinimalBase extends JsonParser
     }
 
     @Override
-    public String getValueAsString(String defaultValue) throws IOException {
+     String getValueAsString(String defaultValue) throws IOException {
         if (_currToken == JsonToken.VALUE_STRING) {
             return getText();
         }

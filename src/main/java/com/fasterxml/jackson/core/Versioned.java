@@ -13,7 +13,7 @@ package com.fasterxml.jackson.core;
  * (beyond mechanisms that deployment system may have), as well as for possible
  * workarounds.
  */
-public interface Versioned {
+ interface Versioned {
     /**
      * Method called to detect version of the component that implements this interface;
      * returned version should never be null, but may return specific "not available"

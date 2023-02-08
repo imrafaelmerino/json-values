@@ -8,12 +8,12 @@ import java.io.IOException;
  *
  * @since 2.5
  */
-public class DefaultIndenter
+ class DefaultIndenter
     extends DefaultPrettyPrinter.NopIndenter
 {
     private static final long serialVersionUID = 1L;
 
-    public final static String SYS_LF;
+     final static String SYS_LF;
     static {
         String lf;
         try {
@@ -24,7 +24,7 @@ public class DefaultIndenter
         SYS_LF = lf;
     }
 
-    public static final DefaultIndenter SYSTEM_LINEFEED_INSTANCE = new DefaultIndenter("  ", SYS_LF);
+     static final DefaultIndenter SYSTEM_LINEFEED_INSTANCE = new DefaultIndenter("  ", SYS_LF);
 
     /**
      * We expect to rarely get indentation deeper than this number of levels,
@@ -38,7 +38,7 @@ public class DefaultIndenter
     /**
      * Indent with two spaces and the system's default line feed
      */
-    public DefaultIndenter() {
+     DefaultIndenter() {
         this("  ", SYS_LF);
     }
 
@@ -49,7 +49,7 @@ public class DefaultIndenter
      * @param indent Indentation String to prepend for a single level of indentation
      * @param eol End-of-line marker to use after indented line
      */
-    public DefaultIndenter(String indent, String eol)
+     DefaultIndenter(String indent, String eol)
     {
         charsPerLevel = indent.length();
 
@@ -63,7 +63,7 @@ public class DefaultIndenter
         this.eol = eol;
     }
 
-    public DefaultIndenter withLinefeed(String lf)
+     DefaultIndenter withLinefeed(String lf)
     {
         if (lf.equals(eol)) {
             return this;
@@ -71,7 +71,7 @@ public class DefaultIndenter
         return new DefaultIndenter(getIndent(), lf);
     }
 
-    public DefaultIndenter withIndent(String indent)
+     DefaultIndenter withIndent(String indent)
     {
         if (indent.equals(getIndent())) {
             return this;
@@ -96,11 +96,11 @@ public class DefaultIndenter
         }
     }
 
-    public String getEol() {
+     String getEol() {
         return eol;
     }
 
-    public String getIndent() {
+     String getIndent() {
         return new String(indents, 0, charsPerLevel);
     }
 }

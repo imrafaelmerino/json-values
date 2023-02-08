@@ -8,7 +8,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.13
  */
-public abstract class StreamWriteException
+ abstract class StreamWriteException
     extends JsonProcessingException
 {
     private final static long serialVersionUID = 2L;
@@ -38,8 +38,8 @@ public abstract class StreamWriteException
      *
      * @return This exception instance (to allow call chaining)
      */
-    public abstract StreamWriteException withGenerator(JsonGenerator g);
+     abstract StreamWriteException withGenerator(JsonGenerator g);
 
     @Override
-    public JsonGenerator getProcessor() { return _processor; }
+     JsonGenerator getProcessor() { return _processor; }
 }

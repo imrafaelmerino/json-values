@@ -28,7 +28,7 @@ import static com.fasterxml.jackson.core.JsonTokenId.*;
  *
  * @since 2.8
  */
-public class UTF8DataInputJsonParser
+ class UTF8DataInputJsonParser
     extends ParserBase
 {
     final static byte BYTE_LF = (byte) '\n';
@@ -114,7 +114,7 @@ public class UTF8DataInputJsonParser
     /**********************************************************
      */
 
-    public UTF8DataInputJsonParser(IOContext ctxt, int features, DataInput inputData,
+     UTF8DataInputJsonParser(IOContext ctxt, int features, DataInput inputData,
             ObjectCodec codec, ByteQuadsCanonicalizer sym,
             int firstByte)
     {
@@ -126,17 +126,17 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public ObjectCodec getCodec() {
+     ObjectCodec getCodec() {
         return _objectCodec;
     }
 
     @Override
-    public void setCodec(ObjectCodec c) {
+     void setCodec(ObjectCodec c) {
         _objectCodec = c;
     }
 
     @Override // @since 2.12
-    public JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
+     JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
         return JSON_READ_CAPABILITIES;
     }
 
@@ -147,12 +147,12 @@ public class UTF8DataInputJsonParser
      */
 
     @Override
-    public int releaseBuffered(OutputStream out) throws IOException {
+     int releaseBuffered(OutputStream out) throws IOException {
         return 0;
     }
 
     @Override
-    public Object getInputSource() {
+     Object getInputSource() {
         return _inputData;
     }
 
@@ -181,12 +181,12 @@ public class UTF8DataInputJsonParser
 
     /*
     /**********************************************************
-    /* Public API, data access
+    /*  API, data access
     /**********************************************************
      */
 
     @Override
-    public String getText() throws IOException
+     String getText() throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -199,7 +199,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int getText(Writer writer) throws IOException
+     int getText(Writer writer) throws IOException
     {
         JsonToken t = _currToken;
         if (t == JsonToken.VALUE_STRING) {
@@ -243,7 +243,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public String getValueAsString(String defValue) throws IOException
+     String getValueAsString(String defValue) throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -259,7 +259,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int getValueAsInt() throws IOException
+     int getValueAsInt() throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -278,7 +278,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int getValueAsInt(int defValue) throws IOException
+     int getValueAsInt(int defValue) throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -316,7 +316,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public char[] getTextCharacters() throws IOException
+     char[] getTextCharacters() throws IOException
     {
         if (_currToken != null) { // null only before/after document
             switch (_currToken.id()) {
@@ -353,7 +353,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int getTextLength() throws IOException
+     int getTextLength() throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -375,7 +375,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int getTextOffset() throws IOException
+     int getTextOffset() throws IOException
     {
         // Most have offset of 0, only some may have other values:
         if (_currToken != null) {
@@ -398,7 +398,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException
+     byte[] getBinaryValue(Base64Variant b64variant) throws IOException
     {
         if (_currToken != JsonToken.VALUE_STRING &&
                 (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {
@@ -429,7 +429,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
+     int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
     {
         // if we have already read the token, just use whatever we may have
         if (!_tokenIncomplete || _currToken != JsonToken.VALUE_STRING) {
@@ -568,7 +568,7 @@ public class UTF8DataInputJsonParser
 
     /*
     /**********************************************************
-    /* Public API, traversal, basic
+    /*  API, traversal, basic
     /**********************************************************
      */
 
@@ -763,7 +763,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public void finishToken() throws IOException {
+     void finishToken() throws IOException {
         if (_tokenIncomplete) {
             _tokenIncomplete = false;
             _finishString(); // only strings can be incomplete
@@ -772,12 +772,12 @@ public class UTF8DataInputJsonParser
 
     /*
     /**********************************************************
-    /* Public API, traversal, nextXxxValue/nextFieldName
+    /*  API, traversal, nextXxxValue/nextFieldName
     /**********************************************************
      */
 
     // Can not implement without look-ahead...
-//    public boolean nextFieldName(SerializableString str) throws IOException
+//     boolean nextFieldName(SerializableString str) throws IOException
 
     @Override
     public String nextFieldName() throws IOException
@@ -885,7 +885,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public String nextTextValue() throws IOException
+     String nextTextValue() throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -911,7 +911,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public int nextIntValue(int defaultValue) throws IOException
+     int nextIntValue(int defaultValue) throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -933,7 +933,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public long nextLongValue(long defaultValue) throws IOException
+     long nextLongValue(long defaultValue) throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -955,7 +955,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public Boolean nextBooleanValue() throws IOException
+     Boolean nextBooleanValue() throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -2963,7 +2963,7 @@ public class UTF8DataInputJsonParser
      */
 
     @Override
-    public JsonLocation getTokenLocation() {
+     JsonLocation getTokenLocation() {
         // 03-Jan-2020, tatu: Should probably track this, similar to how
         //   streaming parsers do it, but... not done yet
 
@@ -2978,7 +2978,7 @@ public class UTF8DataInputJsonParser
     }
 
     @Override
-    public JsonLocation getCurrentLocation() {
+     JsonLocation getCurrentLocation() {
         // No column tracking since we do not have pointers, DataInput has no offset
         final int col = -1;
         return new JsonLocation(_contentReference(), -1L, -1L,

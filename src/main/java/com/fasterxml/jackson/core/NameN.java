@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Generic implementation of PName used for "long" names, where long
  * means that its byte (UTF-8) representation is 13 bytes or more.
  */
-public final class NameN extends Name
+ final class NameN extends Name
 {
     private final int q1, q2, q3, q4; // first four quads
     private final int qlen; // total number of quads (4 + q.length)
@@ -23,7 +23,7 @@ public final class NameN extends Name
         qlen = quadLen;
     }
 
-    public static NameN construct(String name, int hash, int[] q, int qlen)
+     static NameN construct(String name, int hash, int[] q, int qlen)
     {
         /* We have specialized implementations for shorter
          * names, so let's not allow runt instances here
@@ -51,18 +51,18 @@ public final class NameN extends Name
 
     // Implies quad length == 1, never matches
     @Override
-    public boolean equals(int quad) { return false; }
+     boolean equals(int quad) { return false; }
 
     // Implies quad length == 2, never matches
     @Override
-    public boolean equals(int quad1, int quad2) { return false; }
+     boolean equals(int quad1, int quad2) { return false; }
 
     // Implies quad length == 3, never matches
     @Override
-    public boolean equals(int quad1, int quad2, int quad3) { return false; }
+     boolean equals(int quad1, int quad2, int quad3) { return false; }
 
     @Override
-    public boolean equals(int[] quads, int len) {
+     boolean equals(int[] quads, int len) {
         if (len != qlen) { return false; }
 
         // Will always have >= 4 quads, can unroll

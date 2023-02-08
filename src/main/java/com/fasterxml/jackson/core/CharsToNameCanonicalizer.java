@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicReference;
  * master table concurrently with child instances can only be done if
  * access to master instance is read-only (i.e. no modifications done).
  */
-public final class CharsToNameCanonicalizer
+ final class CharsToNameCanonicalizer
 {
     /* If we use "multiply-add" based hash algorithm, this is the multiplier
      * we use.
@@ -48,7 +48,7 @@ public final class CharsToNameCanonicalizer
      * Note that JDK uses 31; but it seems that 33 produces fewer collisions,
      * at least with tests we have.
      */
-    public final static int HASH_MULT = 33;
+     final static int HASH_MULT = 33;
 
     /**
      * Default initial table size. Shouldn't be miniscule (as there's
@@ -285,7 +285,7 @@ public final class CharsToNameCanonicalizer
      *
      * @return Root instance to use for constructing new child instances
      */
-    public static CharsToNameCanonicalizer createRoot() {
+     static CharsToNameCanonicalizer createRoot() {
         // Need to use a variable seed, to thwart hash-collision based attacks.
         // 14-Feb-2017, tatu: not sure it actually helps, at all, since it won't
         //   change mixing or any of the steps. Should likely just remove in future.
@@ -314,7 +314,7 @@ public final class CharsToNameCanonicalizer
      *
      * @return Actual canonicalizer instance that can be used by a parser
      */
-    public CharsToNameCanonicalizer makeChild(int flags) {
+     CharsToNameCanonicalizer makeChild(int flags) {
         return new CharsToNameCanonicalizer(this, flags, _seed, _tableInfo.get());
     }
 
@@ -324,7 +324,7 @@ public final class CharsToNameCanonicalizer
      * safely and efficiently, and without calling code having to know about parent
      * information.
      */
-    public void release() {
+     void release() {
         // If nothing has been added, nothing to do
         if (!maybeDirty()) { return; }
 
@@ -367,14 +367,14 @@ public final class CharsToNameCanonicalizer
 
     /*
     /**********************************************************
-    /* Public API, generic accessors:
+    /*  API, generic accessors:
     /**********************************************************
      */
 
     /**
      * @return Number of symbol entries contained by this canonicalizer instance
      */
-    public int size() {
+     int size() {
         if (_tableInfo != null) { // root table
             return _tableInfo.get().size;
         }
@@ -388,9 +388,9 @@ public final class CharsToNameCanonicalizer
      *
      * @return number of primary slots table has currently
      */
-    public int bucketCount() {  return _symbols.length; }
-    public boolean maybeDirty() { return !_hashShared; }
-    public int hashSeed() { return _seed; }
+     int bucketCount() {  return _symbols.length; }
+     boolean maybeDirty() { return !_hashShared; }
+     int hashSeed() { return _seed; }
 
     /**
      * Method mostly needed by unit tests; calculates number of
@@ -401,7 +401,7 @@ public final class CharsToNameCanonicalizer
      *
      * @return Number of collisions in the primary hash area
      */
-    public int collisionCount() {
+     int collisionCount() {
         int count = 0;
 
         for (Bucket bucket : _buckets) {
@@ -421,15 +421,15 @@ public final class CharsToNameCanonicalizer
      *
      * @since 2.1
      */
-    public int maxCollisionLength() { return _longestCollisionList; }
+     int maxCollisionLength() { return _longestCollisionList; }
 
     /*
     /**********************************************************
-    /* Public API, accessing symbols:
+    /*  API, accessing symbols:
     /**********************************************************
      */
 
-    public String findSymbol(char[] buffer, int start, int len, int h)
+     String findSymbol(char[] buffer, int start, int len, int h)
     {
         if (len < 1) { // empty Strings are simplest to handle up front
             return "";
@@ -563,7 +563,7 @@ public final class CharsToNameCanonicalizer
      *
      * @return Index value calculated
      */
-    public int _hashToIndex(int rawHash) {
+     int _hashToIndex(int rawHash) {
         // doing these seems to help a bit
         rawHash += (rawHash >>> 15);
         rawHash ^= (rawHash << 7);
@@ -583,7 +583,7 @@ public final class CharsToNameCanonicalizer
      *
      * @return Hash code calculated
      */
-    public int calcHash(char[] buffer, int start, int len) {
+     int calcHash(char[] buffer, int start, int len) {
         int hash = _seed;
         for (int i = start, end = start+len; i < end; ++i) {
             hash = (hash * HASH_MULT) + (int) buffer[i];
@@ -592,7 +592,7 @@ public final class CharsToNameCanonicalizer
         return (hash == 0) ? 1 : hash;
     }
 
-    public int calcHash(String key)
+     int calcHash(String key)
     {
         final int len = key.length();
 
@@ -749,7 +749,7 @@ public final class CharsToNameCanonicalizer
     // For debugging, comment out
     /*
     @Override
-    public String toString()
+     String toString()
     {
         StringBuilder sb = new StringBuilder();
         int primaryCount = 0;
@@ -807,17 +807,17 @@ public final class CharsToNameCanonicalizer
      */
     static final class Bucket
     {
-        public final String symbol;
-        public final Bucket next;
-        public final int length;
+         final String symbol;
+         final Bucket next;
+         final int length;
 
-        public Bucket(String s, Bucket n) {
+         Bucket(String s, Bucket n) {
             symbol = s;
             next = n;
             length = (n == null) ? 1 : n.length+1;
         }
 
-        public String has(char[] buf, int start, int len) {
+         String has(char[] buf, int start, int len) {
             if (symbol.length() != len) {
                 return null;
             }
@@ -845,7 +845,7 @@ public final class CharsToNameCanonicalizer
         final String[] symbols;
         final Bucket[] buckets;
 
-        public TableInfo(int size, int longestCollisionList,
+         TableInfo(int size, int longestCollisionList,
                 String[] symbols, Bucket[] buckets)
         {
             this.size = size;
@@ -854,7 +854,7 @@ public final class CharsToNameCanonicalizer
             this.buckets = buckets;
         }
 
-        public TableInfo(CharsToNameCanonicalizer src)
+         TableInfo(CharsToNameCanonicalizer src)
         {
             this.size = src._size;
             this.longestCollisionList = src._longestCollisionList;
@@ -862,7 +862,7 @@ public final class CharsToNameCanonicalizer
             this.buckets = src._buckets;
         }
 
-        public static TableInfo createInitial(int sz) {
+         static TableInfo createInitial(int sz) {
             return new TableInfo(0,
                     0, // longestCollisionList
                     new String[sz], new Bucket[sz >> 1]);

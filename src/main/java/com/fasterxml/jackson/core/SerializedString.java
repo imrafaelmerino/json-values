@@ -12,7 +12,7 @@ import java.nio.ByteBuffer;
  * Class is final for performance reasons and since this is not designed to
  * be extensible or customizable (customizations would occur in calling code)
  */
-public class SerializedString
+ class SerializedString
     implements SerializableString, Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -46,7 +46,7 @@ public class SerializedString
 
     protected /*volatile*/ char[] _quotedChars;
 
-    public SerializedString(String v) {
+     SerializedString(String v) {
         if (v == null) {
             throw new IllegalStateException("Null String illegal for SerializedString");
         }
@@ -250,13 +250,13 @@ public class SerializedString
      */
 
     @Override
-    public final String toString() { return _value; }
+     public final String toString() { return _value; }
 
     @Override
     public final int hashCode() { return _value.hashCode(); }
 
     @Override
-    public final boolean equals(Object o) {
+     public final boolean equals(Object o) {
         if (o == this) return true;
         if (o == null || o.getClass() != getClass()) return false;
         SerializedString other = (SerializedString) o;

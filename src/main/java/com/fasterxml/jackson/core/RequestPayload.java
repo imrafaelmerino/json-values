@@ -10,7 +10,7 @@ import java.io.IOException;
  *
  * @since 2.8
  */
-public class RequestPayload
+ class RequestPayload
     implements java.io.Serializable // just in case, even though likely included as transient
 {
     private static final long serialVersionUID = 1L;
@@ -24,7 +24,7 @@ public class RequestPayload
     // Charset if the request payload is set in bytes
     protected String _charset;
 
-    public RequestPayload(byte[] bytes, String charset) {
+     RequestPayload(byte[] bytes, String charset) {
         if (bytes == null) {
             throw new IllegalArgumentException();
         }
@@ -32,7 +32,7 @@ public class RequestPayload
         _charset = (charset == null || charset.isEmpty()) ? "UTF-8" : charset;
     }
 
-    public RequestPayload(CharSequence str) {
+     RequestPayload(CharSequence str) {
         if (str == null) {
             throw new IllegalArgumentException();
         }
@@ -45,7 +45,7 @@ public class RequestPayload
      * @return Object which is a raw request payload i.e, either byte[] or
      *         String
      */
-    public Object getRawPayload() {
+     Object getRawPayload() {
         if (_payloadAsBytes != null) {
             return _payloadAsBytes;
         }

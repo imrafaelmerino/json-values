@@ -9,7 +9,7 @@ import static com.fasterxml.jackson.core.JsonTokenId.*;
  * based on a {@link Reader} to handle low-level character
  * conversion tasks.
  */
-public class ReaderBasedJsonParser
+ class ReaderBasedJsonParser
     extends ParserBase
 {
     @SuppressWarnings("deprecation")
@@ -130,7 +130,7 @@ public class ReaderBasedJsonParser
      *
      * @since 2.4
      */
-    public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,
+     ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,
             ObjectCodec codec, CharsToNameCanonicalizer st,
             char[] inputBuffer, int start, int end,
             boolean bufferRecyclable)
@@ -159,7 +159,7 @@ public class ReaderBasedJsonParser
      * @param codec {@code ObjectCodec} to delegate object deserialization to
      * @param st Name canonicalizer to use
      */
-    public ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,
+     ReaderBasedJsonParser(IOContext ctxt, int features, Reader r,
         ObjectCodec codec, CharsToNameCanonicalizer st)
     {
         super(ctxt, features);
@@ -179,16 +179,16 @@ public class ReaderBasedJsonParser
     /**********************************************************
      */
 
-    @Override public ObjectCodec getCodec() { return _objectCodec; }
-    @Override public void setCodec(ObjectCodec c) { _objectCodec = c; }
+    @Override  ObjectCodec getCodec() { return _objectCodec; }
+    @Override  void setCodec(ObjectCodec c) { _objectCodec = c; }
 
     @Override // @since 2.12
-    public JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
+     JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
         return JSON_READ_CAPABILITIES;
     }
 
     @Override
-    public int releaseBuffered(Writer w) throws IOException {
+     int releaseBuffered(Writer w) throws IOException {
         int count = _inputEnd - _inputPtr;
         if (count < 1) { return 0; }
         // let's just advance ptr to end
@@ -198,7 +198,7 @@ public class ReaderBasedJsonParser
         return count;
     }
 
-    @Override public Object getInputSource() { return _reader; }
+    @Override  Object getInputSource() { return _reader; }
 
     @Deprecated // since 2.8
     protected char getNextChar(String eofMsg) throws IOException {
@@ -294,7 +294,7 @@ public class ReaderBasedJsonParser
 
     /*
     /**********************************************************
-    /* Public API, data access
+    /*  API, data access
     /**********************************************************
      */
 
@@ -305,7 +305,7 @@ public class ReaderBasedJsonParser
      * Method can be called for any event.
      */
     @Override
-    public final String getText() throws IOException
+     final String getText() throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -318,7 +318,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override // since 2.8
-    public int getText(Writer writer) throws IOException
+     int getText(Writer writer) throws IOException
     {
         JsonToken t = _currToken;
         if (t == JsonToken.VALUE_STRING) {
@@ -365,7 +365,7 @@ public class ReaderBasedJsonParser
 
     // @since 2.1
     @Override
-    public final String getValueAsString(String defValue) throws IOException {
+     final String getValueAsString(String defValue) throws IOException {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
                 _tokenIncomplete = false;
@@ -398,7 +398,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public final char[] getTextCharacters() throws IOException
+     final char[] getTextCharacters() throws IOException
     {
         if (_currToken != null) { // null only before/after document
             switch (_currToken.id()) {
@@ -432,7 +432,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public final int getTextLength() throws IOException
+     final int getTextLength() throws IOException
     {
         if (_currToken != null) { // null only before/after document
             switch (_currToken.id()) {
@@ -455,7 +455,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public final int getTextOffset() throws IOException
+     final int getTextOffset() throws IOException
     {
         // Most have offset of 0, only some may have other values:
         if (_currToken != null) {
@@ -478,7 +478,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException
+     byte[] getBinaryValue(Base64Variant b64variant) throws IOException
     {
         if ((_currToken == JsonToken.VALUE_EMBEDDED_OBJECT) && (_binaryValue != null)) {
             return _binaryValue;
@@ -509,7 +509,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
+     int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
     {
         // if we have already read the token, just use whatever we may have
         if (!_tokenIncomplete || _currToken != JsonToken.VALUE_STRING) {
@@ -664,7 +664,7 @@ public class ReaderBasedJsonParser
 
     /*
     /**********************************************************
-    /* Public API, traversal
+    /*  API, traversal
     /**********************************************************
      */
 
@@ -825,7 +825,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public void finishToken() throws IOException {
+     void finishToken() throws IOException {
         if (_tokenIncomplete) {
             _tokenIncomplete = false;
             _finishString(); // only strings can be incomplete
@@ -834,13 +834,13 @@ public class ReaderBasedJsonParser
 
     /*
     /**********************************************************
-    /* Public API, nextXxx() overrides
+    /*  API, nextXxx() overrides
     /**********************************************************
      */
 
     // Implemented since 2.7
     @Override
-    public boolean nextFieldName(SerializableString sstr) throws IOException
+     boolean nextFieldName(SerializableString sstr) throws IOException
     {
         // // // Note: most of code below is copied from nextToken()
 
@@ -1210,7 +1210,7 @@ public class ReaderBasedJsonParser
     }
     // note: identical to one in UTF8StreamJsonParser
     @Override
-    public final String nextTextValue() throws IOException
+     final String nextTextValue() throws IOException
     {
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
             _nameCopied = false;
@@ -1237,7 +1237,7 @@ public class ReaderBasedJsonParser
 
     // note: identical to one in Utf8StreamParser
     @Override
-    public final int nextIntValue(int defaultValue) throws IOException
+     final int nextIntValue(int defaultValue) throws IOException
     {
         if (_currToken == JsonToken.FIELD_NAME) {
             _nameCopied = false;
@@ -1260,7 +1260,7 @@ public class ReaderBasedJsonParser
 
     // note: identical to one in Utf8StreamParser
     @Override
-    public final long nextLongValue(long defaultValue) throws IOException
+     final long nextLongValue(long defaultValue) throws IOException
     {
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
             _nameCopied = false;
@@ -1283,7 +1283,7 @@ public class ReaderBasedJsonParser
 
     // note: identical to one in UTF8StreamJsonParser
     @Override
-    public final Boolean nextBooleanValue() throws IOException
+     final Boolean nextBooleanValue() throws IOException
     {
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
             _nameCopied = false;
@@ -2962,7 +2962,7 @@ public class ReaderBasedJsonParser
      */
 
     @Override
-    public JsonLocation getTokenLocation()
+     JsonLocation getTokenLocation()
     {
         if (_currToken == JsonToken.FIELD_NAME) {
             long total = _currInputProcessed + (_nameStartOffset-1);
@@ -2974,7 +2974,7 @@ public class ReaderBasedJsonParser
     }
 
     @Override
-    public JsonLocation getCurrentLocation() {
+     JsonLocation getCurrentLocation() {
         final int col = _inputPtr - _currInputRowStart + 1; // 1-based
         return new JsonLocation(_contentReference(),
                 -1L, _currInputProcessed + _inputPtr,

@@ -11,7 +11,7 @@ import java.net.URL;
  *
  * @since 2.10
  */
-public abstract class TokenStreamFactory
+ abstract class TokenStreamFactory
     implements Versioned,
     Serializable
 {
@@ -39,7 +39,7 @@ public abstract class TokenStreamFactory
      * @return Whether format supported by this factory
      *   requires Object properties to be ordered.
      */
-    public abstract boolean requiresPropertyOrdering();
+     abstract boolean requiresPropertyOrdering();
 
     /**
      * Introspection method that higher-level functionality may call
@@ -54,7 +54,7 @@ public abstract class TokenStreamFactory
      * @return Whether format supported by this factory
      *    supports native binary content
      */
-    public abstract boolean canHandleBinaryNatively();
+     abstract boolean canHandleBinaryNatively();
 
     /**
      * Introspection method that can be used to check whether this
@@ -65,7 +65,7 @@ public abstract class TokenStreamFactory
      * @return Whether this factory supports non-blocking ("async") parsing or
      *    not (and consequently whether {@code createNonBlockingXxx()} method(s) work)
      */
-    public abstract boolean canParseAsync();
+     abstract boolean canParseAsync();
 
     /**
      * Method for accessing kind of {@link FormatFeature} that a parser
@@ -76,7 +76,7 @@ public abstract class TokenStreamFactory
      *
      * @since 2.6
      */
-    public abstract Class<? extends FormatFeature> getFormatReadFeatureType();
+     abstract Class<? extends FormatFeature> getFormatReadFeatureType();
 
     /**
      * Method for accessing kind of {@link FormatFeature} that a parser
@@ -87,7 +87,7 @@ public abstract class TokenStreamFactory
      *
      * @since 2.6
      */
-    public abstract Class<? extends FormatFeature> getFormatWriteFeatureType();
+     abstract Class<? extends FormatFeature> getFormatWriteFeatureType();
 
     /*
     /**********************************************************************
@@ -110,7 +110,7 @@ public abstract class TokenStreamFactory
      *
      * @since 2.1
      */
-    public abstract boolean canUseSchema(FormatSchema schema);
+     abstract boolean canUseSchema(FormatSchema schema);
 
     /**
      * Method that returns short textual id identifying format
@@ -118,7 +118,7 @@ public abstract class TokenStreamFactory
      *
      * @return Name of the format handled by parsers, generators this factory creates
      */
-    public abstract String getFormatName();
+     abstract String getFormatName();
 
     /*
     /**********************************************************************
@@ -126,14 +126,14 @@ public abstract class TokenStreamFactory
     /**********************************************************************
      */
 
-    public abstract boolean isEnabled(JsonParser.Feature f);
-    public abstract boolean isEnabled(JsonGenerator.Feature f);
+     abstract boolean isEnabled(JsonParser.Feature f);
+     abstract boolean isEnabled(JsonGenerator.Feature f);
 
-    public abstract int getParserFeatures();
-    public abstract int getGeneratorFeatures();
+     abstract int getParserFeatures();
+     abstract int getGeneratorFeatures();
 
-    public abstract int getFormatParserFeatures();
-    public abstract int getFormatGeneratorFeatures();
+     abstract int getFormatParserFeatures();
+     abstract int getFormatGeneratorFeatures();
 
     /*
     /**********************************************************************
@@ -149,7 +149,7 @@ public abstract class TokenStreamFactory
      *
      * @since 2.15
      */
-    public abstract StreamReadConstraints streamReadConstraints();
+     abstract StreamReadConstraints streamReadConstraints();
 
     /*
     /**********************************************************************
@@ -157,16 +157,16 @@ public abstract class TokenStreamFactory
     /**********************************************************************
      */
 
-    public abstract JsonParser createParser(byte[] data) throws IOException;
-    public abstract JsonParser createParser(byte[] data, int offset, int len) throws IOException;
-    public abstract JsonParser createParser(char[] content) throws IOException;
-    public abstract JsonParser createParser(char[] content, int offset, int len) throws IOException;
-    public abstract JsonParser createParser(DataInput in) throws IOException;
-    public abstract JsonParser createParser(File f) throws IOException;
-    public abstract JsonParser createParser(InputStream in) throws IOException;
-    public abstract JsonParser createParser(Reader r) throws IOException;
-    public abstract JsonParser createParser(String content) throws IOException;
-    public abstract JsonParser createParser(URL url) throws IOException;
+     abstract JsonParser createParser(byte[] data) throws IOException;
+     abstract JsonParser createParser(byte[] data, int offset, int len) throws IOException;
+     abstract JsonParser createParser(char[] content) throws IOException;
+     abstract JsonParser createParser(char[] content, int offset, int len) throws IOException;
+     abstract JsonParser createParser(DataInput in) throws IOException;
+     abstract JsonParser createParser(File f) throws IOException;
+     abstract JsonParser createParser(InputStream in) throws IOException;
+     abstract JsonParser createParser(Reader r) throws IOException;
+     abstract JsonParser createParser(String content) throws IOException;
+     abstract JsonParser createParser(URL url) throws IOException;
 
 
     /*
@@ -175,12 +175,12 @@ public abstract class TokenStreamFactory
     /**********************************************************************
      */
 
-    public abstract JsonGenerator createGenerator(DataOutput out, JsonEncoding enc) throws IOException;
-    public abstract JsonGenerator createGenerator(DataOutput out) throws IOException;
-    public abstract JsonGenerator createGenerator(File f, JsonEncoding enc) throws IOException;
-    public abstract JsonGenerator createGenerator(OutputStream out) throws IOException;
-    public abstract JsonGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException;
-    public abstract JsonGenerator createGenerator(Writer w) throws IOException;
+     abstract JsonGenerator createGenerator(DataOutput out, JsonEncoding enc) throws IOException;
+     abstract JsonGenerator createGenerator(DataOutput out) throws IOException;
+     abstract JsonGenerator createGenerator(File f, JsonEncoding enc) throws IOException;
+     abstract JsonGenerator createGenerator(OutputStream out) throws IOException;
+     abstract JsonGenerator createGenerator(OutputStream out, JsonEncoding enc) throws IOException;
+     abstract JsonGenerator createGenerator(Writer w) throws IOException;
 
     /*
     /**********************************************************************

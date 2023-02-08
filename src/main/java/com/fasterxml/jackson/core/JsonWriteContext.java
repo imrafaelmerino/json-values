@@ -5,16 +5,16 @@ package com.fasterxml.jackson.core;
  * core methods needed, and also exposes
  * more complete API to generator implementation classes.
  */
-public class JsonWriteContext extends JsonStreamContext
+ class JsonWriteContext extends JsonStreamContext
 {
     // // // Return values for writeValue()
 
-    public final static int STATUS_OK_AS_IS = 0;
-    public final static int STATUS_OK_AFTER_COMMA = 1;
-    public final static int STATUS_OK_AFTER_COLON = 2;
-    public final static int STATUS_OK_AFTER_SPACE = 3; // in root context
-    public final static int STATUS_EXPECT_VALUE = 4;
-    public final static int STATUS_EXPECT_NAME = 5;
+     final static int STATUS_OK_AS_IS = 0;
+     final static int STATUS_OK_AFTER_COMMA = 1;
+     final static int STATUS_OK_AFTER_COLON = 2;
+     final static int STATUS_OK_AFTER_SPACE = 3; // in root context
+     final static int STATUS_EXPECT_VALUE = 4;
+     final static int STATUS_EXPECT_NAME = 5;
 
     /**
      * Parent context for this context; null for root context.
@@ -89,13 +89,13 @@ public class JsonWriteContext extends JsonStreamContext
      * resets current duplicate-detection state (if any).
      * Parent link left as-is since it is {@code final}.
      *<p>
-     * NOTE: Public since 2.12.
+     * NOTE:  since 2.12.
      *
      * @param type Type to assign to this context node
      *
      * @return This context instance to allow call-chaining
      */
-    public JsonWriteContext reset(int type) {
+     JsonWriteContext reset(int type) {
         _type = type;
         _index = -1;
         _currentName = null;
@@ -112,7 +112,7 @@ public class JsonWriteContext extends JsonStreamContext
      * resets current duplicate-detection state (if any).
      * Parent link left as-is since it is {@code final}.
      *<p>
-     * NOTE: Public since 2.12.
+     * NOTE:  since 2.12.
      *
      * @param type Type to assign to this context node
      * @param currValue Current value to assign to this context node
@@ -121,7 +121,7 @@ public class JsonWriteContext extends JsonStreamContext
      *
      * @since 2.10
      */
-    public JsonWriteContext reset(int type, Object currValue) {
+     JsonWriteContext reset(int type, Object currValue) {
         _type = type;
         _index = -1;
         _currentName = null;
@@ -131,18 +131,18 @@ public class JsonWriteContext extends JsonStreamContext
         return this;
     }
 
-    public JsonWriteContext withDupDetector(DupDetector dups) {
+     JsonWriteContext withDupDetector(DupDetector dups) {
         _dups = dups;
         return this;
     }
 
     @Override
-    public Object getCurrentValue() {
+     Object getCurrentValue() {
         return _currentValue;
     }
 
     @Override
-    public void setCurrentValue(Object v) {
+     void setCurrentValue(Object v) {
         _currentValue = v;
     }
 
@@ -158,13 +158,13 @@ public class JsonWriteContext extends JsonStreamContext
      * @return Context instance created
      */
     @Deprecated
-    public static JsonWriteContext createRootContext() { return createRootContext(null); }
+     static JsonWriteContext createRootContext() { return createRootContext(null); }
 
-    public static JsonWriteContext createRootContext(DupDetector dd) {
+     static JsonWriteContext createRootContext(DupDetector dd) {
         return new JsonWriteContext(TYPE_ROOT, null, dd);
     }
 
-    public JsonWriteContext createChildArrayContext() {
+     JsonWriteContext createChildArrayContext() {
         JsonWriteContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new JsonWriteContext(TYPE_ARRAY, this,
@@ -175,7 +175,7 @@ public class JsonWriteContext extends JsonStreamContext
     }
 
     /* @since 2.10 */
-    public JsonWriteContext createChildArrayContext(Object currValue) {
+     JsonWriteContext createChildArrayContext(Object currValue) {
         JsonWriteContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new JsonWriteContext(TYPE_ARRAY, this,
@@ -185,7 +185,7 @@ public class JsonWriteContext extends JsonStreamContext
         return ctxt.reset(TYPE_ARRAY, currValue);
     }
 
-    public JsonWriteContext createChildObjectContext() {
+     JsonWriteContext createChildObjectContext() {
         JsonWriteContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new JsonWriteContext(TYPE_OBJECT, this,
@@ -196,7 +196,7 @@ public class JsonWriteContext extends JsonStreamContext
     }
 
     /* @since 2.10 */
-    public JsonWriteContext createChildObjectContext(Object currValue) {
+     JsonWriteContext createChildObjectContext(Object currValue) {
         JsonWriteContext ctxt = _child;
         if (ctxt == null) {
             _child = ctxt = new JsonWriteContext(TYPE_OBJECT, this,
@@ -206,10 +206,10 @@ public class JsonWriteContext extends JsonStreamContext
         return ctxt.reset(TYPE_OBJECT, currValue);
     }
 
-    @Override public final JsonWriteContext getParent() { return _parent; }
-    @Override public final String getCurrentName() { return _currentName; }
+    @Override  final JsonWriteContext getParent() { return _parent; }
+    @Override  final String getCurrentName() { return _currentName; }
     // @since 2.9
-    @Override public boolean hasCurrentName() { return _currentName != null; }
+    @Override  boolean hasCurrentName() { return _currentName != null; }
 
     /**
      * Method that can be used to both clear the accumulated references
@@ -223,13 +223,13 @@ public class JsonWriteContext extends JsonStreamContext
      *
      * @since 2.7
      */
-    public JsonWriteContext clearAndGetParent() {
+     JsonWriteContext clearAndGetParent() {
         _currentValue = null;
         // could also clear the current name, but seems cheap enough to leave?
         return _parent;
     }
 
-    public DupDetector getDupDetector() {
+     DupDetector getDupDetector() {
         return _dups;
     }
 
@@ -242,7 +242,7 @@ public class JsonWriteContext extends JsonStreamContext
      *
      * @throws JsonProcessingException if duplicate check restriction is violated
      */
-    public int writeFieldName(String name) throws JsonProcessingException {
+     int writeFieldName(String name) throws JsonProcessingException {
         if ((_type != TYPE_OBJECT) || _gotName) {
             return STATUS_EXPECT_VALUE;
         }
@@ -260,7 +260,7 @@ public class JsonWriteContext extends JsonStreamContext
         }
     }
 
-    public int writeValue() {
+     int writeValue() {
         // Most likely, object:
         if (_type == TYPE_OBJECT) {
             if (!_gotName) {

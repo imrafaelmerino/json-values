@@ -10,7 +10,7 @@ import java.io.IOException;
  *
  * @since 2.1
  */
-public abstract class JsonGeneratorImpl extends GeneratorBase
+ abstract class JsonGeneratorImpl extends GeneratorBase
 {
     /*
     /**********************************************************
@@ -110,7 +110,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase
      */
 
     @SuppressWarnings("deprecation")
-    public JsonGeneratorImpl(IOContext ctxt, int features, ObjectCodec codec)
+     JsonGeneratorImpl(IOContext ctxt, int features, ObjectCodec codec)
     {
         super(features, codec);
         _ioContext = ctxt;
@@ -141,7 +141,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase
 
     @SuppressWarnings("deprecation")
     @Override
-    public JsonGenerator enable(Feature f) {
+     JsonGenerator enable(Feature f) {
         super.enable(f);
         if (f == Feature.QUOTE_FIELD_NAMES) {
             _cfgUnqNames = false;
@@ -153,7 +153,7 @@ public abstract class JsonGeneratorImpl extends GeneratorBase
 
     @SuppressWarnings("deprecation")
     @Override
-    public JsonGenerator disable(Feature f) {
+     JsonGenerator disable(Feature f) {
         super.disable(f);
         if (f == Feature.QUOTE_FIELD_NAMES) {
             _cfgUnqNames = true;
@@ -172,18 +172,18 @@ public abstract class JsonGeneratorImpl extends GeneratorBase
     }
 
     @Override
-    public JsonGenerator setHighestNonEscapedChar(int charCode) {
+     JsonGenerator setHighestNonEscapedChar(int charCode) {
         _maximumNonEscapedChar = (charCode < 0) ? 0 : charCode;
         return this;
     }
 
     @Override
-    public int getHighestEscapedChar() {
+     int getHighestEscapedChar() {
         return _maximumNonEscapedChar;
     }
 
     @Override
-    public JsonGenerator setCharacterEscapes(CharacterEscapes esc)
+     JsonGenerator setCharacterEscapes(CharacterEscapes esc)
     {
         _characterEscapes = esc;
         if (esc == null) { // revert to standard escapes
@@ -199,18 +199,18 @@ public abstract class JsonGeneratorImpl extends GeneratorBase
      * it creates.
      */
     @Override
-    public CharacterEscapes getCharacterEscapes() {
+     CharacterEscapes getCharacterEscapes() {
         return _characterEscapes;
     }
 
     @Override
-    public JsonGenerator setRootValueSeparator(SerializableString sep) {
+     JsonGenerator setRootValueSeparator(SerializableString sep) {
         _rootValueSeparator = sep;
         return this;
     }
 
     @Override
-    public JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
+     JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
         return JSON_WRITE_CAPABILITIES;
     }
 

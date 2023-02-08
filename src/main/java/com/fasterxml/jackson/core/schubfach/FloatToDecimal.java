@@ -36,7 +36,7 @@ import static java.lang.Integer.numberOfLeadingZeros;
  *
  * @author Raffaello Giulietti
  */
-final public class FloatToDecimal {
+public final  class FloatToDecimal {
     /*
     For full details about this code see the following references:
 
@@ -111,7 +111,7 @@ final public class FloatToDecimal {
         -d.ddddddddE-ee     H + 6 characters
     where there are H digits d
      */
-    public final int MAX_CHARS = H + 6;
+     final int MAX_CHARS = H + 6;
 
     // Numerical results are created here...
     private final byte[] bytes = new byte[MAX_CHARS];
@@ -235,7 +235,7 @@ final public class FloatToDecimal {
      * @param  v the {@code float} to be rendered.
      * @return a string rendering of the argument.
      */
-    public static String toString(float v) {
+     public static String toString(float v) {
         return new FloatToDecimal().toDecimalString(v);
     }
 

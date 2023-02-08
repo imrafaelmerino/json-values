@@ -15,7 +15,7 @@ package com.fasterxml.jackson.core;
  * listed as allowed), they can use {@link java.io.Reader} /
  * {@link java.io.Writer} instances as input
  */
-public enum JsonEncoding {
+ enum JsonEncoding {
     UTF8("UTF-8", false, 8), // N/A for big-endian, really
         UTF16_BE("UTF-16BE", true, 16),
         UTF16_LE("UTF-16LE", false, 16),
@@ -41,7 +41,7 @@ public enum JsonEncoding {
      *
      * @return Matching encoding name that JDK will support.
      */
-    public String getJavaName() { return _javaName; }
+     String getJavaName() { return _javaName; }
 
     /**
      * Whether encoding is big-endian (if encoding supports such
@@ -51,7 +51,7 @@ public enum JsonEncoding {
      * @return True for big-endian encodings; false for little-endian
      *   (or if not applicable)
      */
-    public boolean isBigEndian() { return _bigEndian; }
+     boolean isBigEndian() { return _bigEndian; }
 
-    public int bits() { return _bits; }
+     int bits() { return _bits; }
 }

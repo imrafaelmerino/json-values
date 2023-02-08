@@ -9,7 +9,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.8
  */
-public class JsonpCharacterEscapes extends CharacterEscapes
+ class JsonpCharacterEscapes extends CharacterEscapes
 {
     private static final long serialVersionUID = 1L;
 
@@ -19,12 +19,12 @@ public class JsonpCharacterEscapes extends CharacterEscapes
 
     private static final JsonpCharacterEscapes sInstance = new JsonpCharacterEscapes();
 
-    public static JsonpCharacterEscapes instance() {
+     static JsonpCharacterEscapes instance() {
         return sInstance;
     }
 
     @Override
-    public SerializableString getEscapeSequence(int ch)
+     SerializableString getEscapeSequence(int ch)
     {
         switch (ch) {
         case 0x2028:
@@ -37,7 +37,7 @@ public class JsonpCharacterEscapes extends CharacterEscapes
     }
 
     @Override
-    public int[] getEscapeCodesForAscii() {
+     int[] getEscapeCodesForAscii() {
         return asciiEscapes;
     }
 }

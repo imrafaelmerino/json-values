@@ -13,7 +13,7 @@ package com.fasterxml.jackson.core;
  * Note that optional group and artifact id properties are new with Jackson 2.0:
  * if provided, they should align with Maven artifact information.
  */
-public class Version
+ class Version
     implements Comparable<Version>, java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -46,12 +46,12 @@ public class Version
      * @deprecated Use variant that takes group and artifact ids
      */
     @Deprecated
-    public Version(int major, int minor, int patchLevel, String snapshotInfo)
+     Version(int major, int minor, int patchLevel, String snapshotInfo)
     {
         this(major, minor, patchLevel, snapshotInfo, null, null);
     }
 
-    public Version(int major, int minor, int patchLevel, String snapshotInfo,
+     Version(int major, int minor, int patchLevel, String snapshotInfo,
             String groupId, String artifactId)
     {
         _majorVersion = major;
@@ -69,7 +69,7 @@ public class Version
      * @return Version instance to use as a placeholder when actual version is not known
      *   (or not relevant)
      */
-    public static Version unknownVersion() { return UNKNOWN_VERSION; }
+     static Version unknownVersion() { return UNKNOWN_VERSION; }
 
     /**
      * @return {@code True} if this instance is the one returned by
@@ -77,9 +77,9 @@ public class Version
      *
      * @since 2.7 to replace misspelled {@link #isUknownVersion()}
      */
-    public boolean isUnknownVersion() { return (this == UNKNOWN_VERSION); }
+     boolean isUnknownVersion() { return (this == UNKNOWN_VERSION); }
 
-    public boolean isSnapshot() { return (_snapshotInfo != null && _snapshotInfo.length() > 0); }
+     boolean isSnapshot() { return (_snapshotInfo != null && _snapshotInfo.length() > 0); }
 
     /**
      * @return {@code True} if this instance is the one returned by
@@ -88,20 +88,21 @@ public class Version
      * @deprecated Since 2.7 use correctly spelled method {@link #isUnknownVersion()}
      */
     @Deprecated
-    public boolean isUknownVersion() { return isUnknownVersion(); }
+     boolean isUknownVersion() { return isUnknownVersion(); }
 
-    public int getMajorVersion() { return _majorVersion; }
-    public int getMinorVersion() { return _minorVersion; }
-    public int getPatchLevel() { return _patchLevel; }
+     int getMajorVersion() { return _majorVersion; }
+     int getMinorVersion() { return _minorVersion; }
+     int getPatchLevel() { return _patchLevel; }
 
-    public String getGroupId() { return _groupId; }
-    public String getArtifactId() { return _artifactId; }
+     String getGroupId() { return _groupId; }
+     String getArtifactId() { return _artifactId; }
 
-    public String toFullString() {
+     String toFullString() {
         return _groupId + '/' + _artifactId + '/' + toString();
     }
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(_majorVersion).append('.');
         sb.append(_minorVersion).append('.');
@@ -112,7 +113,8 @@ public class Version
         return sb.toString();
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         return _artifactId.hashCode() ^ _groupId.hashCode() + _majorVersion - _minorVersion + _patchLevel;
     }
 

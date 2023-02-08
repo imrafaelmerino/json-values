@@ -6,7 +6,7 @@ import java.io.Reader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class JsonGeneratorDelegate extends JsonGenerator
+ class JsonGeneratorDelegate extends JsonGenerator
 {
     /**
      * Delegate object that method calls are delegated to.
@@ -26,7 +26,7 @@ public class JsonGeneratorDelegate extends JsonGenerator
     /**********************************************************************
      */
 
-    public JsonGeneratorDelegate(JsonGenerator d) {
+     JsonGeneratorDelegate(JsonGenerator d) {
         this(d, true);
     }
 
@@ -36,112 +36,113 @@ public class JsonGeneratorDelegate extends JsonGenerator
      *   and which defines whether copy methods are handled locally (false), or
      *   delegated to configured
      */
-    public JsonGeneratorDelegate(JsonGenerator d, boolean delegateCopyMethods) {
+     JsonGeneratorDelegate(JsonGenerator d, boolean delegateCopyMethods) {
         delegate = d;
         this.delegateCopyMethods = delegateCopyMethods;
     }
 
     /*
     /**********************************************************************
-    /* Public API, metadata/state access
+    /*  API, metadata/state access
     /**********************************************************************
      */
 
-    @Override public ObjectCodec getCodec() { return delegate.getCodec(); }
+    @Override  ObjectCodec getCodec() { return delegate.getCodec(); }
 
-    @Override public JsonGenerator setCodec(ObjectCodec oc) {
+    @Override  JsonGenerator setCodec(ObjectCodec oc) {
         delegate.setCodec(oc);
         return this;
     }
 
-    @Override public void setSchema(FormatSchema schema) { delegate.setSchema(schema); }
-    @Override public FormatSchema getSchema() { return delegate.getSchema(); }
-    @Override public Version version() { return delegate.version(); }
-    @Override public Object getOutputTarget() { return delegate.getOutputTarget(); }
-    @Override public int getOutputBuffered() { return delegate.getOutputBuffered(); }
+    @Override  void setSchema(FormatSchema schema) { delegate.setSchema(schema); }
+    @Override  FormatSchema getSchema() { return delegate.getSchema(); }
+    @Override
+    public Version version() { return delegate.version(); }
+    @Override  Object getOutputTarget() { return delegate.getOutputTarget(); }
+    @Override  int getOutputBuffered() { return delegate.getOutputBuffered(); }
 
-    @Override public void assignCurrentValue(Object v) { delegate.assignCurrentValue(v); }
-    @Override public Object currentValue() { return delegate.currentValue(); }
+    @Override  void assignCurrentValue(Object v) { delegate.assignCurrentValue(v); }
+    @Override  Object currentValue() { return delegate.currentValue(); }
 
     // TODO: deprecate in 2.14 or later
     @Override
-    public void setCurrentValue(Object v) { delegate.setCurrentValue(v); }
+     void setCurrentValue(Object v) { delegate.setCurrentValue(v); }
 
     // TODO: deprecate in 2.14 or later
     @Override
-    public Object getCurrentValue() { return delegate.getCurrentValue(); }
+     Object getCurrentValue() { return delegate.getCurrentValue(); }
 
     /*
     /**********************************************************************
-    /* Public API, capability introspection
+    /*  API, capability introspection
     /**********************************************************************
      */
 
     @Override
-    public boolean canUseSchema(FormatSchema schema) { return delegate.canUseSchema(schema); }
+     boolean canUseSchema(FormatSchema schema) { return delegate.canUseSchema(schema); }
 
     @Override
-    public boolean canWriteTypeId() { return delegate.canWriteTypeId(); }
+     boolean canWriteTypeId() { return delegate.canWriteTypeId(); }
 
     @Override
-    public boolean canWriteObjectId() { return delegate.canWriteObjectId(); }
+     boolean canWriteObjectId() { return delegate.canWriteObjectId(); }
 
     @Override
-    public boolean canWriteBinaryNatively() { return delegate.canWriteBinaryNatively(); }
+     boolean canWriteBinaryNatively() { return delegate.canWriteBinaryNatively(); }
 
     @Override
-    public boolean canOmitFields() { return delegate.canOmitFields(); }
+     boolean canOmitFields() { return delegate.canOmitFields(); }
 
     @Override
-    public boolean canWriteFormattedNumbers() { return delegate.canWriteFormattedNumbers(); }
+     boolean canWriteFormattedNumbers() { return delegate.canWriteFormattedNumbers(); }
 
     @Override
-    public JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
+     JacksonFeatureSet<StreamWriteCapability> getWriteCapabilities() {
         return delegate.getWriteCapabilities();
     }
 
     /*
     /**********************************************************************
-    /* Public API, configuration
+    /*  API, configuration
     /**********************************************************************
      */
 
     @Override
-    public JsonGenerator enable(Feature f) {
+     JsonGenerator enable(Feature f) {
         delegate.enable(f);
         return this;
     }
 
     @Override
-    public JsonGenerator disable(Feature f) {
+     JsonGenerator disable(Feature f) {
         delegate.disable(f);
         return this;
     }
 
     @Override
-    public boolean isEnabled(Feature f) { return delegate.isEnabled(f); }
+     boolean isEnabled(Feature f) { return delegate.isEnabled(f); }
 
     // final, can't override (and no need to)
-    //public final JsonGenerator configure(Feature f, boolean state)
+    // final JsonGenerator configure(Feature f, boolean state)
 
     @Override
-    public int getFeatureMask() { return delegate.getFeatureMask(); }
+     int getFeatureMask() { return delegate.getFeatureMask(); }
 
     @Override
     @Deprecated
-    public JsonGenerator setFeatureMask(int mask) {
+     JsonGenerator setFeatureMask(int mask) {
         delegate.setFeatureMask(mask);
         return this;
     }
 
     @Override
-    public JsonGenerator overrideStdFeatures(int values, int mask) {
+     JsonGenerator overrideStdFeatures(int values, int mask) {
         delegate.overrideStdFeatures(values, mask);
         return this;
     }
 
     @Override
-    public JsonGenerator overrideFormatFeatures(int values, int mask) {
+     JsonGenerator overrideFormatFeatures(int values, int mask) {
         delegate.overrideFormatFeatures(values, mask);
         return this;
     }
@@ -153,266 +154,266 @@ public class JsonGeneratorDelegate extends JsonGenerator
       */
 
     @Override
-    public JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
+     JsonGenerator setPrettyPrinter(PrettyPrinter pp) {
         delegate.setPrettyPrinter(pp);
         return this;
     }
 
     @Override
-    public PrettyPrinter getPrettyPrinter() { return delegate.getPrettyPrinter(); }
+     PrettyPrinter getPrettyPrinter() { return delegate.getPrettyPrinter(); }
 
     @Override
-    public JsonGenerator useDefaultPrettyPrinter() { delegate.useDefaultPrettyPrinter();
+     JsonGenerator useDefaultPrettyPrinter() { delegate.useDefaultPrettyPrinter();
         return this; }
 
     @Override
-    public JsonGenerator setHighestNonEscapedChar(int charCode) { delegate.setHighestNonEscapedChar(charCode);
+     JsonGenerator setHighestNonEscapedChar(int charCode) { delegate.setHighestNonEscapedChar(charCode);
         return this; }
 
     @Override
-    public int getHighestEscapedChar() { return delegate.getHighestEscapedChar(); }
+     int getHighestEscapedChar() { return delegate.getHighestEscapedChar(); }
 
     @Override
-    public CharacterEscapes getCharacterEscapes() {  return delegate.getCharacterEscapes(); }
+     CharacterEscapes getCharacterEscapes() {  return delegate.getCharacterEscapes(); }
 
     @Override
-    public JsonGenerator setCharacterEscapes(CharacterEscapes esc) { delegate.setCharacterEscapes(esc);
+     JsonGenerator setCharacterEscapes(CharacterEscapes esc) { delegate.setCharacterEscapes(esc);
         return this; }
 
     @Override
-    public JsonGenerator setRootValueSeparator(SerializableString sep) { delegate.setRootValueSeparator(sep);
+     JsonGenerator setRootValueSeparator(SerializableString sep) { delegate.setRootValueSeparator(sep);
         return this; }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, structural
+    /*  API, write methods, structural
     /**********************************************************************
      */
 
     @Override
-    public void writeStartArray() throws IOException { delegate.writeStartArray(); }
+     void writeStartArray() throws IOException { delegate.writeStartArray(); }
 
     @SuppressWarnings("deprecation")
     @Override
-    public void writeStartArray(int size) throws IOException { delegate.writeStartArray(size); }
+     void writeStartArray(int size) throws IOException { delegate.writeStartArray(size); }
 
     @Override
-    public void writeStartArray(Object forValue) throws IOException { delegate.writeStartArray(forValue); }
+     void writeStartArray(Object forValue) throws IOException { delegate.writeStartArray(forValue); }
 
     @Override
-    public void writeStartArray(Object forValue, int size) throws IOException { delegate.writeStartArray(forValue, size); }
+     void writeStartArray(Object forValue, int size) throws IOException { delegate.writeStartArray(forValue, size); }
 
     @Override
-    public void writeEndArray() throws IOException { delegate.writeEndArray(); }
+     void writeEndArray() throws IOException { delegate.writeEndArray(); }
 
     @Override
-    public void writeStartObject() throws IOException { delegate.writeStartObject(); }
+     void writeStartObject() throws IOException { delegate.writeStartObject(); }
 
     @Override
-    public void writeStartObject(Object forValue) throws IOException { delegate.writeStartObject(forValue); }
+     void writeStartObject(Object forValue) throws IOException { delegate.writeStartObject(forValue); }
 
     @Override
-    public void writeStartObject(Object forValue, int size) throws IOException {
+     void writeStartObject(Object forValue, int size) throws IOException {
         delegate.writeStartObject(forValue, size);
     }
 
     @Override
-    public void writeEndObject() throws IOException { delegate.writeEndObject(); }
+     void writeEndObject() throws IOException { delegate.writeEndObject(); }
 
     @Override
-    public void writeFieldName(String name) throws IOException {
+     void writeFieldName(String name) throws IOException {
         delegate.writeFieldName(name);
     }
 
     @Override
-    public void writeFieldName(SerializableString name) throws IOException {
+     void writeFieldName(SerializableString name) throws IOException {
         delegate.writeFieldName(name);
     }
 
     @Override
-    public void writeFieldId(long id) throws IOException {
+     void writeFieldId(long id) throws IOException {
         delegate.writeFieldId(id);
     }
 
     @Override
-    public void writeArray(int[] array, int offset, int length) throws IOException {
+     void writeArray(int[] array, int offset, int length) throws IOException {
         delegate.writeArray(array, offset, length);
     }
 
     @Override
-    public void writeArray(long[] array, int offset, int length) throws IOException {
+     void writeArray(long[] array, int offset, int length) throws IOException {
         delegate.writeArray(array, offset, length);
     }
 
     @Override
-    public void writeArray(double[] array, int offset, int length) throws IOException {
+     void writeArray(double[] array, int offset, int length) throws IOException {
         delegate.writeArray(array, offset, length);
     }
 
     @Override
-    public void writeArray(String[] array, int offset, int length) throws IOException {
+     void writeArray(String[] array, int offset, int length) throws IOException {
         delegate.writeArray(array, offset, length);
     }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, text/String values
+    /*  API, write methods, text/String values
     /**********************************************************************
      */
 
     @Override
-    public void writeString(String text) throws IOException { delegate.writeString(text); }
+     void writeString(String text) throws IOException { delegate.writeString(text); }
 
     @Override
-    public void writeString(Reader reader, int len) throws IOException {
+     void writeString(Reader reader, int len) throws IOException {
         delegate.writeString(reader, len);
     }
 
     @Override
-    public void writeString(char[] text, int offset, int len) throws IOException { delegate.writeString(text, offset, len); }
+     void writeString(char[] text, int offset, int len) throws IOException { delegate.writeString(text, offset, len); }
 
     @Override
-    public void writeString(SerializableString text) throws IOException { delegate.writeString(text); }
+     void writeString(SerializableString text) throws IOException { delegate.writeString(text); }
 
     @Override
-    public void writeRawUTF8String(byte[] text, int offset, int length) throws IOException { delegate.writeRawUTF8String(text, offset, length); }
+     void writeRawUTF8String(byte[] text, int offset, int length) throws IOException { delegate.writeRawUTF8String(text, offset, length); }
 
     @Override
-    public void writeUTF8String(byte[] text, int offset, int length) throws IOException { delegate.writeUTF8String(text, offset, length); }
+     void writeUTF8String(byte[] text, int offset, int length) throws IOException { delegate.writeUTF8String(text, offset, length); }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, binary/raw content
+    /*  API, write methods, binary/raw content
     /**********************************************************************
      */
 
     @Override
-    public void writeRaw(String text) throws IOException { delegate.writeRaw(text); }
+     void writeRaw(String text) throws IOException { delegate.writeRaw(text); }
 
     @Override
-    public void writeRaw(String text, int offset, int len) throws IOException { delegate.writeRaw(text, offset, len); }
+     void writeRaw(String text, int offset, int len) throws IOException { delegate.writeRaw(text, offset, len); }
 
     @Override
-    public void writeRaw(SerializableString raw) throws IOException { delegate.writeRaw(raw); }
+     void writeRaw(SerializableString raw) throws IOException { delegate.writeRaw(raw); }
 
     @Override
-    public void writeRaw(char[] text, int offset, int len) throws IOException { delegate.writeRaw(text, offset, len); }
+     void writeRaw(char[] text, int offset, int len) throws IOException { delegate.writeRaw(text, offset, len); }
 
     @Override
-    public void writeRaw(char c) throws IOException { delegate.writeRaw(c); }
+     void writeRaw(char c) throws IOException { delegate.writeRaw(c); }
 
     @Override
-    public void writeRawValue(String text) throws IOException { delegate.writeRawValue(text); }
+     void writeRawValue(String text) throws IOException { delegate.writeRawValue(text); }
 
     @Override
-    public void writeRawValue(String text, int offset, int len) throws IOException { delegate.writeRawValue(text, offset, len); }
+     void writeRawValue(String text, int offset, int len) throws IOException { delegate.writeRawValue(text, offset, len); }
 
     @Override
-    public void writeRawValue(char[] text, int offset, int len) throws IOException { delegate.writeRawValue(text, offset, len); }
+     void writeRawValue(char[] text, int offset, int len) throws IOException { delegate.writeRawValue(text, offset, len); }
 
     @Override
-    public void writeBinary(Base64Variant b64variant, byte[] data, int offset, int len) throws IOException { delegate.writeBinary(b64variant, data, offset, len); }
+     void writeBinary(Base64Variant b64variant, byte[] data, int offset, int len) throws IOException { delegate.writeBinary(b64variant, data, offset, len); }
 
     @Override
-    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException { return delegate.writeBinary(b64variant, data, dataLength); }
+     int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException { return delegate.writeBinary(b64variant, data, dataLength); }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, other value types
+    /*  API, write methods, other value types
     /**********************************************************************
      */
 
     @Override
-    public void writeNumber(short v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(short v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(int v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(int v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(long v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(long v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(BigInteger v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(BigInteger v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(double v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(double v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(float v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(float v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(BigDecimal v) throws IOException { delegate.writeNumber(v); }
+     void writeNumber(BigDecimal v) throws IOException { delegate.writeNumber(v); }
 
     @Override
-    public void writeNumber(String encodedValue) throws IOException, UnsupportedOperationException { delegate.writeNumber(encodedValue); }
+     void writeNumber(String encodedValue) throws IOException, UnsupportedOperationException { delegate.writeNumber(encodedValue); }
 
     @Override
-    public void writeNumber(char[] encodedValueBuffer, int offset, int length) throws IOException, UnsupportedOperationException { delegate.writeNumber(encodedValueBuffer, offset, length); }
+     void writeNumber(char[] encodedValueBuffer, int offset, int length) throws IOException, UnsupportedOperationException { delegate.writeNumber(encodedValueBuffer, offset, length); }
 
     @Override
-    public void writeBoolean(boolean state) throws IOException { delegate.writeBoolean(state); }
+     void writeBoolean(boolean state) throws IOException { delegate.writeBoolean(state); }
 
     @Override
-    public void writeNull() throws IOException { delegate.writeNull(); }
+     void writeNull() throws IOException { delegate.writeNull(); }
 
     /*
     /**********************************************************************
-    /* Public API, convenience field-write methods
+    /*  API, convenience field-write methods
     /**********************************************************************
      */
 
     // 04-Oct-2019, tatu: Reminder: these should NOT be delegated, unless matching
     //    methods in `FilteringGeneratorDelegate` are re-defined to "split" calls again
 
-//    public void writeBinaryField(String fieldName, byte[] data) throws IOException {
-//    public void writeBooleanField(String fieldName, boolean value) throws IOException {
-//    public void writeNullField(String fieldName) throws IOException {
-//    public void writeStringField(String fieldName, String value) throws IOException {
-//    public void writeNumberField(String fieldName, short value) throws IOException {
+//     void writeBinaryField(String fieldName, byte[] data) throws IOException {
+//     void writeBooleanField(String fieldName, boolean value) throws IOException {
+//     void writeNullField(String fieldName) throws IOException {
+//     void writeStringField(String fieldName, String value) throws IOException {
+//     void writeNumberField(String fieldName, short value) throws IOException {
 
-//    public void writeArrayFieldStart(String fieldName) throws IOException {
-//    public void writeObjectFieldStart(String fieldName) throws IOException {
-//    public void writeObjectField(String fieldName, Object pojo) throws IOException {
-//    public void writePOJOField(String fieldName, Object pojo) throws IOException {
+//     void writeArrayFieldStart(String fieldName) throws IOException {
+//     void writeObjectFieldStart(String fieldName) throws IOException {
+//     void writeObjectField(String fieldName, Object pojo) throws IOException {
+//     void writePOJOField(String fieldName, Object pojo) throws IOException {
 
     // Sole exception being this method as it is not a "combo" method
 
     @Override
-    public void writeOmittedField(String fieldName) throws IOException {
+     void writeOmittedField(String fieldName) throws IOException {
         delegate.writeOmittedField(fieldName);
     }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, Native Ids
+    /*  API, write methods, Native Ids
     /**********************************************************************
      */
 
     @Override
-    public void writeObjectId(Object id) throws IOException { delegate.writeObjectId(id); }
+     void writeObjectId(Object id) throws IOException { delegate.writeObjectId(id); }
 
     @Override
-    public void writeObjectRef(Object id) throws IOException { delegate.writeObjectRef(id); }
+     void writeObjectRef(Object id) throws IOException { delegate.writeObjectRef(id); }
 
     @Override
-    public void writeTypeId(Object id) throws IOException { delegate.writeTypeId(id); }
+     void writeTypeId(Object id) throws IOException { delegate.writeTypeId(id); }
 
     @Override
-    public void writeEmbeddedObject(Object object) throws IOException { delegate.writeEmbeddedObject(object); }
+     void writeEmbeddedObject(Object object) throws IOException { delegate.writeEmbeddedObject(object); }
 
     /*
     /**********************************************************************
-    /* Public API, write methods, serializing Java objects
+    /*  API, write methods, serializing Java objects
     /**********************************************************************
      */
 
     @Override // since 2.13
-    public void writePOJO(Object pojo) throws IOException {
+     void writePOJO(Object pojo) throws IOException {
         writeObject(pojo);
     }
 
     @Override
-    public void writeObject(Object pojo) throws IOException {
+     void writeObject(Object pojo) throws IOException {
         if (delegateCopyMethods) {
             delegate.writeObject(pojo);
             return;
@@ -430,7 +431,7 @@ public class JsonGeneratorDelegate extends JsonGenerator
     }
 
     @Override
-    public void writeTree(TreeNode tree) throws IOException {
+     void writeTree(TreeNode tree) throws IOException {
         if (delegateCopyMethods) {
             delegate.writeTree(tree);
             return;
@@ -449,7 +450,7 @@ public class JsonGeneratorDelegate extends JsonGenerator
 
     /*
     /**********************************************************************
-    /* Public API, convenience field write methods
+    /*  API, convenience field write methods
     /**********************************************************************
      */
 
@@ -457,40 +458,42 @@ public class JsonGeneratorDelegate extends JsonGenerator
 
     /*
     /**********************************************************************
-    /* Public API, copy-through methods
+    /*  API, copy-through methods
     /**********************************************************************
      */
 
     @Override
-    public void copyCurrentEvent(JsonParser p) throws IOException {
+     void copyCurrentEvent(JsonParser p) throws IOException {
         if (delegateCopyMethods) delegate.copyCurrentEvent(p);
         else super.copyCurrentEvent(p);
     }
 
     @Override
-    public void copyCurrentStructure(JsonParser p) throws IOException {
+     void copyCurrentStructure(JsonParser p) throws IOException {
         if (delegateCopyMethods) delegate.copyCurrentStructure(p);
         else super.copyCurrentStructure(p);
     }
 
     /*
     /**********************************************************************
-    /* Public API, context access
+    /*  API, context access
     /**********************************************************************
      */
 
-    @Override public JsonStreamContext getOutputContext() { return delegate.getOutputContext(); }
+    @Override  JsonStreamContext getOutputContext() { return delegate.getOutputContext(); }
 
     /*
     /**********************************************************************
-    /* Public API, buffer handling
+    /*  API, buffer handling
     /**********************************************************************
      */
 
-    @Override public void flush() throws IOException { delegate.flush(); }
-    @Override public void close() throws IOException { delegate.close(); }
+    @Override
+    public void flush() throws IOException { delegate.flush(); }
+    @Override
+    public void close() throws IOException { delegate.close(); }
 
-    @Override public boolean isClosed() { return delegate.isClosed(); }
+    @Override  boolean isClosed() { return delegate.isClosed(); }
 
     /*
     /**********************************************************************
@@ -499,12 +502,12 @@ public class JsonGeneratorDelegate extends JsonGenerator
      */
 
     @Deprecated // since 2.11
-    public JsonGenerator getDelegate() { return delegate; }
+     JsonGenerator getDelegate() { return delegate; }
 
     /**
      * @return Underlying generator that calls are delegated to
      *
      * @since 2.11
      */
-    public JsonGenerator delegate() { return delegate; }
+     JsonGenerator delegate() { return delegate; }
 }

@@ -10,7 +10,7 @@ import java.io.*;
  * This is similar to {@link PushbackInputStream}, but here there's
  * only one implicit pushback, when instance is constructed.
  */
-public final class MergedStream extends InputStream
+ final class MergedStream extends InputStream
 {
     final private IOContext _ctxt;
 
@@ -22,7 +22,7 @@ public final class MergedStream extends InputStream
 
     final private int _end;
 
-    public MergedStream(IOContext ctxt, InputStream in, byte[] buf, int start, int end) {
+     MergedStream(IOContext ctxt, InputStream in, byte[] buf, int start, int end) {
         _ctxt = ctxt;
         _in = in;
         _b = buf;
@@ -38,21 +38,25 @@ public final class MergedStream extends InputStream
         return _in.available();
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         _free();
         _in.close();
     }
 
-    @Override public synchronized void mark(int readlimit) {
+    @Override
+    public synchronized void mark(int readlimit) {
         if (_b == null) { _in.mark(readlimit); }
     }
 
-    @Override public boolean markSupported() {
+    @Override
+    public boolean markSupported() {
         // Only supports marks past the initial rewindable section...
         return (_b == null) && _in.markSupported();
     }
 
-    @Override public int read() throws IOException {
+    @Override
+    public int read() throws IOException {
         if (_b != null) {
             int c = _b[_ptr++] & 0xFF;
             if (_ptr >= _end) {
@@ -63,7 +67,8 @@ public final class MergedStream extends InputStream
         return _in.read();
     }
 
-    @Override public int read(byte[] b) throws IOException {
+    @Override
+    public int read(byte[] b) throws IOException {
         return read(b, 0, b.length);
     }
 

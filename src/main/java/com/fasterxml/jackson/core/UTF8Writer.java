@@ -2,7 +2,7 @@ package com.fasterxml.jackson.core;
 
 import java.io.*;
 
-public final class UTF8Writer extends Writer
+ final class UTF8Writer extends Writer
 {
     final static int SURR1_FIRST = 0xD800;
     final static int SURR1_LAST = 0xDBFF;
@@ -26,7 +26,7 @@ public final class UTF8Writer extends Writer
      */
     private int _surrogate;
 
-    public UTF8Writer(IOContext ctxt, OutputStream out)
+     UTF8Writer(IOContext ctxt, OutputStream out)
     {
         _context = ctxt;
         _out = out;

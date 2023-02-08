@@ -7,7 +7,7 @@ import java.io.*;
  * Since JDK does not come with UTF-32/UCS-4, let's implement a simple
  * decoder to use.
  */
-public class UTF32Reader extends Reader
+ class UTF32Reader extends Reader
 {
     /**
      * JSON actually limits available Unicode range in the high end
@@ -54,7 +54,7 @@ public class UTF32Reader extends Reader
     /**********************************************************
      */
 
-    public UTF32Reader(IOContext ctxt, InputStream in, byte[] buf, int ptr, int len, boolean isBigEndian) {
+     UTF32Reader(IOContext ctxt, InputStream in, byte[] buf, int ptr, int len, boolean isBigEndian) {
         _context = ctxt;
         _in = in;
         _buffer = buf;
@@ -66,7 +66,7 @@ public class UTF32Reader extends Reader
 
     /*
     /**********************************************************
-    /* Public API
+    /*  API
     /**********************************************************
      */
 

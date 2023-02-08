@@ -12,7 +12,7 @@ import com.fasterxml.jackson.core.JsonToken;
  *
  * @since 2.8
  */
-public class JsonEOFException extends JsonParseException
+ class JsonEOFException extends JsonParseException
 {
     private static final long serialVersionUID = 1L;
 
@@ -22,7 +22,7 @@ public class JsonEOFException extends JsonParseException
      */
     protected final JsonToken _token;
 
-    public JsonEOFException(JsonParser p, JsonToken token, String msg) {
+     JsonEOFException(JsonParser p, JsonToken token, String msg) {
         super(p, msg);
         _token = token;
     }
@@ -33,7 +33,7 @@ public class JsonEOFException extends JsonParseException
      *
      * @return JsonToken that was being decoded while encountering end-of-input
      */
-    public JsonToken getTokenBeingDecoded() {
+     JsonToken getTokenBeingDecoded() {
         return _token;
     }
 }

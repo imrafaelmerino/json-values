@@ -21,17 +21,17 @@ import java.util.Arrays;
  *
  * @since 2.13
  */
-public final class BigDecimalParser
+ final class BigDecimalParser
 {
     final static int MAX_CHARS_TO_REPORT = 1000;
 
     private BigDecimalParser() {}
 
-    public static BigDecimal parse(String valueStr) {
+     static BigDecimal parse(String valueStr) {
         return parse(valueStr.toCharArray());
     }
 
-    public static BigDecimal parse(final char[] chars, final int off, final int len) {
+     static BigDecimal parse(final char[] chars, final int off, final int len) {
         try {
             if (len < 500) {
                 return new BigDecimal(chars, off, len);
@@ -58,11 +58,11 @@ public final class BigDecimalParser
         }
     }
 
-    public static BigDecimal parse(char[] chars) {
+     static BigDecimal parse(char[] chars) {
         return parse(chars, 0, chars.length);
     }
 
-    public static BigDecimal parseWithFastParser(final String valueStr) {
+     static BigDecimal parseWithFastParser(final String valueStr) {
         try {
             return JavaBigDecimalParser.parseBigDecimal(valueStr);
         } catch (NumberFormatException nfe) {
@@ -73,7 +73,7 @@ public final class BigDecimalParser
         }
     }
 
-    public static BigDecimal parseWithFastParser(final char[] ch, final int off, final int len) {
+     static BigDecimal parseWithFastParser(final char[] ch, final int off, final int len) {
         try {
             return JavaBigDecimalParser.parseBigDecimal(ch, off, len);
         } catch (NumberFormatException nfe) {

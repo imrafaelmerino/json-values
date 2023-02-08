@@ -9,11 +9,11 @@ import java.io.*;
  * for BOM handling, which is a property of underlying
  * streams.
  */
-public final class ByteSourceJsonBootstrapper
+ final class ByteSourceJsonBootstrapper
 {
-    public final static byte UTF8_BOM_1 = (byte) 0xEF;
-    public final static byte UTF8_BOM_2 = (byte) 0xBB;
-    public final static byte UTF8_BOM_3 = (byte) 0xBF;
+     final static byte UTF8_BOM_1 = (byte) 0xEF;
+     final static byte UTF8_BOM_2 = (byte) 0xBB;
+     final static byte UTF8_BOM_3 = (byte) 0xBF;
 
     /*
     /**********************************************************
@@ -77,7 +77,7 @@ public final class ByteSourceJsonBootstrapper
     /**********************************************************
      */
 
-    public ByteSourceJsonBootstrapper(IOContext ctxt, InputStream in) {
+     ByteSourceJsonBootstrapper(IOContext ctxt, InputStream in) {
         _context = ctxt;
         _in = in;
         _inputBuffer = ctxt.allocReadIOBuffer();
@@ -86,7 +86,7 @@ public final class ByteSourceJsonBootstrapper
         _bufferRecyclable = true;
     }
 
-    public ByteSourceJsonBootstrapper(IOContext ctxt, byte[] inputBuffer, int inputStart, int inputLen) {
+     ByteSourceJsonBootstrapper(IOContext ctxt, byte[] inputBuffer, int inputStart, int inputLen) {
         _context = ctxt;
         _in = null;
         _inputBuffer = inputBuffer;
@@ -112,7 +112,7 @@ public final class ByteSourceJsonBootstrapper
      *
      * @throws IOException If read from underlying input source fails
      */
-    public JsonEncoding detectEncoding() throws IOException
+     JsonEncoding detectEncoding() throws IOException
     {
         boolean foundEncoding = false;
 
@@ -184,7 +184,7 @@ public final class ByteSourceJsonBootstrapper
      *
      * @since 2.8
      */
-    public static int skipUTF8BOM(DataInput input) throws IOException
+     static int skipUTF8BOM(DataInput input) throws IOException
     {
         int b = input.readUnsignedByte();
         if (b != 0xEF) {
@@ -212,7 +212,7 @@ public final class ByteSourceJsonBootstrapper
      */
 
     @SuppressWarnings("resource")
-    public Reader constructReader() throws IOException
+     Reader constructReader() throws IOException
     {
         JsonEncoding enc = _context.getEncoding();
         switch (enc.bits()) {
@@ -241,7 +241,7 @@ public final class ByteSourceJsonBootstrapper
         throw new RuntimeException("Internal error"); // should never get here
     }
 
-    public JsonParser constructParser(int parserFeatures, ObjectCodec codec,
+     JsonParser constructParser(int parserFeatures, ObjectCodec codec,
             ByteQuadsCanonicalizer rootByteSymbols, CharsToNameCanonicalizer rootCharSymbols,
             int factoryFeatures) throws IOException
     {

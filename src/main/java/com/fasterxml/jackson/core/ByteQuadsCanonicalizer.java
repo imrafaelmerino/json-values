@@ -24,7 +24,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @since 2.6
  */
-public final class ByteQuadsCanonicalizer
+ final class ByteQuadsCanonicalizer
 {
     /**
      * Initial size of the primary hash area. Each entry consumes 4 ints (16 bytes),
@@ -333,7 +333,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Root instance to use for constructing new child instances
      */
-    public static ByteQuadsCanonicalizer createRoot() {
+     static ByteQuadsCanonicalizer createRoot() {
         // Need to use a variable seed, to thwart hash-collision based attacks.
         // 14-Feb-2017, tatu: Does this actually help?
         long now = System.currentTimeMillis();
@@ -356,7 +356,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Actual canonicalizer instance that can be used by a parser
      */
-    public ByteQuadsCanonicalizer makeChild(int flags) {
+     ByteQuadsCanonicalizer makeChild(int flags) {
         return new ByteQuadsCanonicalizer(this, _seed,
                 _tableInfo.get(),
                 JsonFactory.Feature.INTERN_FIELD_NAMES.enabledIn(flags),
@@ -375,7 +375,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @since 2.13
      */
-    public ByteQuadsCanonicalizer makeChildOrPlaceholder(int flags) {
+     ByteQuadsCanonicalizer makeChildOrPlaceholder(int flags) {
         if (JsonFactory.Feature.CANONICALIZE_FIELD_NAMES.enabledIn(flags)) {
             // inlined "makeChild()"
             return new ByteQuadsCanonicalizer(this, _seed,
@@ -392,7 +392,7 @@ public final class ByteQuadsCanonicalizer
      * safely and efficiently, and without calling code having to know about parent
      * information.
      */
-    public void release()
+     void release()
     {
         // we will try to merge if child table has new entries
         // 28-Jul-2019, tatu: From [core#548]: do not share if immediate rehash needed
@@ -435,7 +435,7 @@ public final class ByteQuadsCanonicalizer
     /**
      * @return Number of symbol entries contained by this canonicalizer instance
      */
-    public int size()
+     int size()
     {
         if (_tableInfo != null) { // root table
             return _tableInfo.get().count;
@@ -447,7 +447,7 @@ public final class ByteQuadsCanonicalizer
     /**
      * @return number of primary slots table has currently
      */
-    public int bucketCount() { return _hashSize; }
+     int bucketCount() { return _hashSize; }
 
     /**
      * Method called to check to quickly see if a child symbol table
@@ -456,9 +456,9 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Whether main hash area has been modified
      */
-    public boolean maybeDirty() { return !_hashShared; }
+     boolean maybeDirty() { return !_hashShared; }
 
-    public int hashSeed() { return _seed; }
+     int hashSeed() { return _seed; }
 
     /**
      * @return True for "real", canonicalizing child tables; false for
@@ -466,7 +466,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @since 2.13
      */
-    public boolean isCanonicalizing() {
+     boolean isCanonicalizing() {
         // couple of options, but for now missing parent linkage simplest:
         return _parent != null;
     }
@@ -478,7 +478,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Number of entries in the primary hash area
      */
-    public int primaryCount()
+     int primaryCount()
     {
         int count = 0;
         for (int offset = 3, end = _secondaryStart; offset < end; offset += 4) {
@@ -495,7 +495,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Number of entries in the secondary hash area
      */
-    public int secondaryCount() {
+     int secondaryCount() {
         int count = 0;
         int offset = _secondaryStart + 3;
         for (int end = _tertiaryStart; offset < end; offset += 4) {
@@ -512,7 +512,7 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Number of entries in the tertiary hash area
      */
-    public int tertiaryCount() {
+     int tertiaryCount() {
         int count = 0;
         int offset = _tertiaryStart + 3; // to 1.5x, starting point of tertiary
         for (int end = offset + _hashSize; offset < end; offset += 4) {
@@ -529,12 +529,12 @@ public final class ByteQuadsCanonicalizer
      *
      * @return Number of entries in the linear spill-over areay
      */
-    public int spilloverCount() {
+     int spilloverCount() {
         // difference between spillover end, start, divided by 4 (four ints per slot)
         return (_spilloverEnd - _spilloverStart()) >> 2;
     }
 
-    public int totalCount()
+     int totalCount()
     {
         int count = 0;
         for (int offset = 3, end = (_hashSize << 3); offset < end; offset += 4) {
@@ -559,11 +559,11 @@ public final class ByteQuadsCanonicalizer
 
     /*
     /**********************************************************
-    /* Public API, accessing symbols
+    /*  API, accessing symbols
     /**********************************************************
      */
 
-    public String findName(int q1)
+     String findName(int q1)
     {
         int offset = _calcOffset(calcHash(q1));
         // first: primary match?
@@ -595,7 +595,7 @@ public final class ByteQuadsCanonicalizer
         return _findSecondary(offset, q1);
     }
 
-    public String findName(int q1, int q2)
+     String findName(int q1, int q2)
     {
         int offset = _calcOffset(calcHash(q1, q2));
 
@@ -625,7 +625,7 @@ public final class ByteQuadsCanonicalizer
         return _findSecondary(offset, q1, q2);
     }
 
-    public String findName(int q1, int q2, int q3)
+     String findName(int q1, int q2, int q3)
     {
         int offset = _calcOffset(calcHash(q1, q2, q3));
         final int[] hashArea = _hashArea;
@@ -653,7 +653,7 @@ public final class ByteQuadsCanonicalizer
         return _findSecondary(offset, q1, q2, q3);
     }
 
-    public String findName(int[] q, int qlen)
+     String findName(int[] q, int qlen)
     {
         /* This version differs significantly, because longer names do not fit within cell.
          * Rather, they contain hash in main slot, and offset+length to extension area
@@ -861,7 +861,7 @@ public final class ByteQuadsCanonicalizer
     /**********************************************************
      */
 
-    public String addName(String name, int q1) {
+     String addName(String name, int q1) {
         _verifySharing();
         if (_intern) {
             name = InternCache.instance.intern(name);
@@ -874,7 +874,7 @@ public final class ByteQuadsCanonicalizer
         return name;
     }
 
-    public String addName(String name, int q1, int q2) {
+     String addName(String name, int q1, int q2) {
         _verifySharing();
         if (_intern) {
             name = InternCache.instance.intern(name);
@@ -894,7 +894,7 @@ public final class ByteQuadsCanonicalizer
         return name;
     }
 
-    public String addName(String name, int q1, int q2, int q3) {
+     String addName(String name, int q1, int q2, int q3) {
         _verifySharing();
         if (_intern) {
             name = InternCache.instance.intern(name);
@@ -909,7 +909,7 @@ public final class ByteQuadsCanonicalizer
         return name;
     }
 
-    public String addName(String name, int[] q, int qlen)
+     String addName(String name, int[] q, int qlen)
     {
         _verifySharing();
         if (_intern) {
@@ -1114,7 +1114,7 @@ public final class ByteQuadsCanonicalizer
     private final static int MULT2 = 65599;
     private final static int MULT3 = 31;
 
-    public int calcHash(int q1)
+     int calcHash(int q1)
     {
         int hash = q1 ^ _seed;
         /* 29-Mar-2015, tatu: Earlier used 15 + 9 right shifts, which worked ok
@@ -1128,7 +1128,7 @@ public final class ByteQuadsCanonicalizer
         return hash;
     }
 
-    public int calcHash(int q1, int q2)
+     int calcHash(int q1, int q2)
     {
         // For two quads, let's change algorithm a bit, to spice
         // things up (can do bit more processing anyway)
@@ -1145,7 +1145,7 @@ public final class ByteQuadsCanonicalizer
         return hash;
     }
 
-    public int calcHash(int q1, int q2, int q3)
+     int calcHash(int q1, int q2, int q3)
     { // use same algorithm as multi-byte, tested to work well
         int hash = q1 ^ _seed;
         hash += (hash >>> 9);
@@ -1163,7 +1163,7 @@ public final class ByteQuadsCanonicalizer
         return hash;
     }
 
-    public int calcHash(int[] q, int qlen)
+     int calcHash(int[] q, int qlen)
     {
         if (qlen < 4) {
             throw new IllegalArgumentException();
@@ -1359,15 +1359,15 @@ public final class ByteQuadsCanonicalizer
      */
     private final static class TableInfo
     {
-        public final int size;
-        public final int count;
-        public final int tertiaryShift;
-        public final int[] mainHash;
-        public final String[] names;
-        public final int spilloverEnd;
-        public final int longNameOffset;
+         final int size;
+         final int count;
+         final int tertiaryShift;
+         final int[] mainHash;
+         final String[] names;
+         final int spilloverEnd;
+         final int longNameOffset;
 
-        public TableInfo(int size, int count, int tertiaryShift,
+         TableInfo(int size, int count, int tertiaryShift,
                 int[] mainHash, String[] names, int spilloverEnd, int longNameOffset)
         {
             this.size = size;
@@ -1379,7 +1379,7 @@ public final class ByteQuadsCanonicalizer
             this.longNameOffset = longNameOffset;
         }
 
-        public TableInfo(ByteQuadsCanonicalizer src)
+         TableInfo(ByteQuadsCanonicalizer src)
         {
             size = src._hashSize;
             count = src._count;
@@ -1390,7 +1390,7 @@ public final class ByteQuadsCanonicalizer
             longNameOffset = src._longNameOffset;
         }
 
-        public static TableInfo createInitial(int sz) {
+         static TableInfo createInitial(int sz) {
             int hashAreaSize = sz << 3;
             int tertShift = _calcTertiaryShift(sz);
 

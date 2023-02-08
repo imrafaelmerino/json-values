@@ -5,8 +5,8 @@ package com.fasterxml.jackson.core;
  * packageVersion-generate execution of maven-replacer-plugin in
  * pom.xml.
  */
-public final class PackageVersion implements Versioned {
-    public final static Version VERSION = VersionUtil.parseVersion(
+ final class PackageVersion implements Versioned {
+     final static Version VERSION = VersionUtil.parseVersion(
             "2.13.3", "com.fasterxml.jackson.core", "jackson-core");
 
     @Override

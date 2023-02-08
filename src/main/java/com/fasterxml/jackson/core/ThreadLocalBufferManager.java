@@ -46,14 +46,14 @@ class ThreadLocalBufferManager
 
     /*
     /**********************************************************
-    /* Public API
+    /*  API
     /**********************************************************
      */
 
     /**
      * Returns the lazily initialized singleton instance
      */
-    public static ThreadLocalBufferManager instance() {
+     static ThreadLocalBufferManager instance() {
         return ThreadLocalBufferManagerHolder.manager;
     }
 
@@ -63,7 +63,7 @@ class ThreadLocalBufferManager
      * application to survive much longer than the application itself.
      * It will clear all bufRecyclers from the SoftRefs and release all SoftRefs itself from our set.
      */
-    public int releaseBuffers() {
+     int releaseBuffers() {
         synchronized (RELEASE_LOCK) {
             int count = 0;
             // does this need to be in sync block too? Looping over Map definitely has to but...
@@ -77,7 +77,7 @@ class ThreadLocalBufferManager
         }
     }
 
-    public SoftReference<BufferRecycler> wrapAndTrack(BufferRecycler br) {
+     SoftReference<BufferRecycler> wrapAndTrack(BufferRecycler br) {
         SoftReference<BufferRecycler> newRef;
         newRef = new SoftReference<BufferRecycler>(br, _refQueue);
         // also retain softRef to br in a set to be able to release it on shutdown

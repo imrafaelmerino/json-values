@@ -21,7 +21,7 @@ import java.io.*;
  *
  * @since 2.3
  */
-public class JsonPointer implements Serializable
+ class JsonPointer implements Serializable
 {
     private static final long serialVersionUID = 1L;
 
@@ -30,7 +30,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.9
      */
-    public final static char SEPARATOR = '/';
+     final static char SEPARATOR = '/';
 
     /**
      * Marker instance used to represent segment that matches current
@@ -149,7 +149,7 @@ public class JsonPointer implements Serializable
      *   expression: currently the only such expression is one that does NOT start with
      *   a slash ('/').
      */
-    public static JsonPointer compile(String expr) throws IllegalArgumentException
+     static JsonPointer compile(String expr) throws IllegalArgumentException
     {
         // First quick checks for well-known 'empty' pointer
         if ((expr == null) || expr.length() == 0) {
@@ -170,7 +170,7 @@ public class JsonPointer implements Serializable
      *
      * @return Compiled {@link JsonPointer} path expression
      */
-    public static JsonPointer valueOf(String expr) { return compile(expr); }
+     static JsonPointer valueOf(String expr) { return compile(expr); }
 
     /**
      * Accessor for an "empty" expression, that is, one you can get by
@@ -183,7 +183,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.10
      */
-    public static JsonPointer empty() { return EMPTY; }
+     static JsonPointer empty() { return EMPTY; }
 
     /**
      * Factory method that will construct a pointer instance that describes
@@ -197,7 +197,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.9
      */
-    public static JsonPointer forPath(JsonStreamContext context,
+     static JsonPointer forPath(JsonStreamContext context,
             boolean includeRoot)
     {
         // First things first: last segment may be for START_ARRAY/START_OBJECT,
@@ -293,7 +293,7 @@ public class JsonPointer implements Serializable
 
     /*
     /**********************************************************
-    /* Public API
+    /*  API
     /**********************************************************
      */
 
@@ -306,25 +306,25 @@ public class JsonPointer implements Serializable
      *
      * @since 2.14
      */
-    public int length() {
+     int length() {
         return _asString.length() - _asStringOffset;
     }
 
-    public boolean matches() { return _nextSegment == null; }
-    public String getMatchingProperty() { return _matchingPropertyName; }
-    public int getMatchingIndex() { return _matchingElementIndex; }
+     boolean matches() { return _nextSegment == null; }
+     String getMatchingProperty() { return _matchingPropertyName; }
+     int getMatchingIndex() { return _matchingElementIndex; }
 
     /**
      * @return True if the root selector matches property name (that is, could
      * match field value of JSON Object node)
      */
-    public boolean mayMatchProperty() { return _matchingPropertyName != null; }
+     boolean mayMatchProperty() { return _matchingPropertyName != null; }
 
     /**
      * @return True if the root selector matches element index (that is, could
      * match an element of JSON Array node)
      */
-    public boolean mayMatchElement() { return _matchingElementIndex >= 0; }
+     boolean mayMatchElement() { return _matchingElementIndex >= 0; }
 
     /**
      * @return  the leaf of current JSON Pointer expression: leaf is the last
@@ -332,7 +332,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.5
      */
-    public JsonPointer last() {
+     JsonPointer last() {
         JsonPointer current = this;
         if (current == EMPTY) {
             return null;
@@ -360,7 +360,7 @@ public class JsonPointer implements Serializable
      *
      * @return Either `this` instance, `tail`, or a newly created combination, as per description above.
      */
-    public JsonPointer append(JsonPointer tail) {
+     JsonPointer append(JsonPointer tail) {
         if (this == EMPTY) {
             return tail;
         }
@@ -397,7 +397,7 @@ public class JsonPointer implements Serializable
      *
      * @return Either `this` instance, or a newly created combination, as per description above.
      */
-    public JsonPointer appendProperty(String property) {
+     JsonPointer appendProperty(String property) {
         if (property == null || property.isEmpty()) {
             return this;
         }
@@ -424,7 +424,7 @@ public class JsonPointer implements Serializable
      * @return Newly created combination, as per description above.
      * @throws IllegalArgumentException if element index is negative
      */
-    public JsonPointer appendIndex(int index) {
+     JsonPointer appendIndex(int index) {
         if (index < 0) {
             throw new IllegalArgumentException("Negative index cannot be appended");
         }
@@ -446,7 +446,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.5
      */
-    public boolean matchesProperty(String name) {
+     boolean matchesProperty(String name) {
         return (_nextSegment != null) && _matchingPropertyName.equals(name);
     }
 
@@ -461,7 +461,7 @@ public class JsonPointer implements Serializable
      * @return Remaining path after matching specified property, if there is match;
      *    {@code null} otherwise
      */
-    public JsonPointer matchProperty(String name) {
+     JsonPointer matchProperty(String name) {
         if ((_nextSegment != null) && _matchingPropertyName.equals(name)) {
             return _nextSegment;
         }
@@ -478,7 +478,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.5
      */
-    public boolean matchesElement(int index) {
+     boolean matchesElement(int index) {
         return (index == _matchingElementIndex) && (index >= 0);
     }
 
@@ -495,7 +495,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.6
      */
-    public JsonPointer matchElement(int index) {
+     JsonPointer matchElement(int index) {
         if ((index != _matchingElementIndex) || (index < 0)) {
             return null;
         }
@@ -515,7 +515,7 @@ public class JsonPointer implements Serializable
      * @return Tail of this pointer, if it has any; {@code null} if this pointer only
      *    has the current segment
      */
-    public JsonPointer tail() {
+     JsonPointer tail() {
         return _nextSegment;
     }
 
@@ -535,7 +535,7 @@ public class JsonPointer implements Serializable
      *
      * @since 2.5
      */
-    public JsonPointer head() {
+     JsonPointer head() {
         JsonPointer h = _head;
         if (h == null) {
             if (this != EMPTY) {
@@ -552,14 +552,16 @@ public class JsonPointer implements Serializable
     /**********************************************************
      */
 
-    @Override public String toString() {
+    @Override
+    public String toString() {
         if (_asStringOffset <= 0) {
             return _asString;
         }
         return _asString.substring(_asStringOffset);
     }
 
-    @Override public int hashCode() {
+    @Override
+    public int hashCode() {
         int h = _hashCode;
         if (h == 0) {
             // Alas, this is bit wasteful, creating temporary String, but
@@ -574,7 +576,8 @@ public class JsonPointer implements Serializable
         return h;
     }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         if (o == this) return true;
         if (o == null) return false;
         if (!(o instanceof JsonPointer)) return false;
@@ -781,9 +784,9 @@ public class JsonPointer implements Serializable
      * expressions.
      */
     private static class PointerParent {
-        public final PointerParent parent;
-        public final int fullPathOffset;
-        public final String segment;
+         final PointerParent parent;
+         final int fullPathOffset;
+         final String segment;
 
         PointerParent(PointerParent pp, int fpo, String sgm) {
             parent = pp;
@@ -797,17 +800,17 @@ public class JsonPointer implements Serializable
      * from context.
      */
     private static class PointerSegment {
-        public final PointerSegment next;
-        public final String property;
-        public final int index;
+         final PointerSegment next;
+         final String property;
+         final int index;
 
         // Offset within external buffer, updated when constructing
-        public int pathOffset;
+         int pathOffset;
 
         // And we actually need 2-way traversal, it turns out so:
-        public PointerSegment prev;
+         PointerSegment prev;
 
-        public PointerSegment(PointerSegment next, String pn, int ix) {
+         PointerSegment(PointerSegment next, String pn, int ix) {
             this.next = next;
             property = pn;
             index = ix;
@@ -842,7 +845,7 @@ public class JsonPointer implements Serializable
     {
         private String _fullPath;
 
-        public Serialization() { }
+         Serialization() { }
 
         Serialization(String fullPath) {
             _fullPath = fullPath;
@@ -854,7 +857,7 @@ public class JsonPointer implements Serializable
         }
 
         @Override
-        public void readExternal(ObjectInput in) throws IOException, ClassNotFoundException {
+        public void readExternal(ObjectInput in) throws IOException {
             _fullPath = in.readUTF();
         }
 

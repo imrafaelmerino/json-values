@@ -8,21 +8,21 @@ import java.util.Arrays;
  * For JSON this applies to both property names and String values.
  */
 @SuppressWarnings("serial")
-public abstract class CharacterEscapes
+ abstract class CharacterEscapes
     implements java.io.Serializable // since 2.1
 {
     /**
      * Value used for lookup tables to indicate that matching characters
      * do not need to be escaped.
      */
-    public final static int ESCAPE_NONE = 0;
+     final static int ESCAPE_NONE = 0;
 
     /**
      * Value used for lookup tables to indicate that matching characters
      * are to be escaped using standard escaping; for JSON this means
      * (for example) using "backslash - u" escape method.
      */
-    public final static int ESCAPE_STANDARD = -1;
+     final static int ESCAPE_STANDARD = -1;
 
     /**
      * Value used for lookup tables to indicate that matching characters
@@ -30,7 +30,7 @@ public abstract class CharacterEscapes
      * to {@link #getEscapeSequence} is needed to figure out exact escape
      * sequence to output.
      */
-    public final static int ESCAPE_CUSTOM = -2;
+     final static int ESCAPE_CUSTOM = -2;
 
     /**
      * Method generators can call to get lookup table for determining
@@ -44,7 +44,7 @@ public abstract class CharacterEscapes
      *    that combination of backslash and character with that value is to be used)
      *    to indicate that specific escape sequence is to be used.
      */
-    public abstract int[] getEscapeCodesForAscii();
+     abstract int[] getEscapeCodesForAscii();
 
     /**
      * Method generators can call to get lookup table for determining
@@ -57,7 +57,7 @@ public abstract class CharacterEscapes
      *
      * @return Escape sequence to use for the character, if any; {@code null} if not
      */
-    public abstract SerializableString getEscapeSequence(int ch);
+     abstract SerializableString getEscapeSequence(int ch);
 
     /**
      * Helper method that can be used to get a copy of standard JSON
@@ -68,7 +68,7 @@ public abstract class CharacterEscapes
      * @return Set of escapes, similar to {@link #getEscapeCodesForAscii()} (array of
      *    128 {@code int}s), but a copy that caller owns and is free to modify
      */
-    public static int[] standardAsciiEscapesForJSON()
+     static int[] standardAsciiEscapesForJSON()
     {
         int[] esc = CharTypes.get7BitOutputEscapes();
         return Arrays.copyOf(esc, esc.length);

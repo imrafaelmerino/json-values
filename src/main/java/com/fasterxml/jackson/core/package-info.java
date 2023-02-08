@@ -1,5 +1,5 @@
 /**
- * Main public API classes of the core streaming JSON
+ * Main  API classes of the core streaming JSON
  * processor: most importantly {@link com.fasterxml.jackson.core.JsonFactory}
  * used for constructing
  * JSON parser ({@link com.fasterxml.jackson.core.JsonParser})
@@ -7,7 +7,7 @@
  * ({@link com.fasterxml.jackson.core.JsonGenerator})
  * instances.
  * <p>
- * Public API of the higher-level mapping interfaces ("Mapping API")
+ *  API of the higher-level mapping interfaces ("Mapping API")
  * is found from the "jackson-databind" bundle, except for following
  * base interfaces that are defined here:
  * <ul>

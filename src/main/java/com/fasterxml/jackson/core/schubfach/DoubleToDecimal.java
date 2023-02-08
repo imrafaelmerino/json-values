@@ -37,7 +37,7 @@ import static java.lang.Long.numberOfLeadingZeros;
  *
  * @author Raffaello Giulietti
  */
-final public class DoubleToDecimal {
+public final  class DoubleToDecimal {
     /*
     For full details about this code see the following references:
 
@@ -112,7 +112,7 @@ final public class DoubleToDecimal {
         -d.ddddddddddddddddE-eee    H + 7 characters
     where there are H digits d
      */
-    public final int MAX_CHARS = H + 7;
+     final int MAX_CHARS = H + 7;
 
     // Numerical results are created here...
     private final byte[] bytes = new byte[MAX_CHARS];
@@ -236,7 +236,7 @@ final public class DoubleToDecimal {
      * @param v the {@code double} to be rendered.
      * @return a string rendering of the argument.
      */
-    public static String toString(double v) {
+     public static String toString(double v) {
         return new DoubleToDecimal().toDecimalString(v);
     }
 

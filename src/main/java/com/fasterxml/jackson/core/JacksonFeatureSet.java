@@ -8,7 +8,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.12
  */
-public final class JacksonFeatureSet<F extends JacksonFeature>
+ final class JacksonFeatureSet<F extends JacksonFeature>
 {
     protected int _enabled;
 
@@ -34,7 +34,7 @@ public final class JacksonFeatureSet<F extends JacksonFeature>
      *
      * @return Feature set instance constructed
      */
-    public static <F extends JacksonFeature> JacksonFeatureSet<F> fromDefaults(F[] allFeatures) {
+     static <F extends JacksonFeature> JacksonFeatureSet<F> fromDefaults(F[] allFeatures) {
         // first sanity check
         if (allFeatures.length > 31) {
             final String desc = allFeatures[0].getClass().getName();
@@ -52,7 +52,7 @@ desc, allFeatures.length));
         return new JacksonFeatureSet<F>(flags);
     }
 
-    public static <F extends JacksonFeature> JacksonFeatureSet<F> fromBitmask(int bitmask) {
+     static <F extends JacksonFeature> JacksonFeatureSet<F> fromBitmask(int bitmask) {
         return new JacksonFeatureSet<F>(bitmask);
     }
 
@@ -65,7 +65,7 @@ desc, allFeatures.length));
      *
      * @return Newly created set of state of feature changed; {@code this} if not
      */
-    public JacksonFeatureSet<F> with(F feature) {
+     JacksonFeatureSet<F> with(F feature) {
         int newMask = _enabled | feature.getMask();
         return (newMask == _enabled) ? this : new JacksonFeatureSet<F>(newMask);
     }
@@ -79,7 +79,7 @@ desc, allFeatures.length));
      *
      * @return Newly created set of state of feature changed; {@code this} if not
      */
-    public JacksonFeatureSet<F> without(F feature) {
+     JacksonFeatureSet<F> without(F feature) {
         int newMask = _enabled & ~feature.getMask();
         return (newMask == _enabled) ? this : new JacksonFeatureSet<F>(newMask);
     }
@@ -91,7 +91,7 @@ desc, allFeatures.length));
      *
      * @return True if feature is enabled in this set; false otherwise
      */
-    public boolean isEnabled(F feature) {
+     boolean isEnabled(F feature) {
         return (feature.getMask() & _enabled) != 0;
     }
 
@@ -100,7 +100,7 @@ desc, allFeatures.length));
      *
      * @return Bitmask of enabled features
      */
-    public int asBitmask() {
+     int asBitmask() {
         return _enabled;
     }
 }

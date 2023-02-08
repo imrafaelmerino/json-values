@@ -10,7 +10,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.12
  */
-public abstract class JacksonException extends java.io.IOException
+ abstract class JacksonException extends java.io.IOException
 {
     private final static long serialVersionUID = 123; // eclipse complains otherwise
 
@@ -49,7 +49,7 @@ public abstract class JacksonException extends java.io.IOException
      * @return Location in input or output that triggered the problem reported, if
      *    available; {@code null} otherwise.
      */
-    public abstract JsonLocation getLocation();
+     abstract JsonLocation getLocation();
 
     /**
      * Method that allows accessing the original "message" argument,
@@ -59,7 +59,7 @@ public abstract class JacksonException extends java.io.IOException
      * @return Original, unmodified {@code message} argument used to construct
      *    this exception instance
      */
-    public abstract String getOriginalMessage();
+     abstract String getOriginalMessage();
 
     /**
      * Method that allows accessing underlying processor that triggered
@@ -75,5 +75,5 @@ public abstract class JacksonException extends java.io.IOException
      *
      * @return Originating processor, if available; {@code null} if not.
      */
-    public abstract Object getProcessor();
+     abstract Object getProcessor();
 }

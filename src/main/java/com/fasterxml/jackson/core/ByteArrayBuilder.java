@@ -26,9 +26,9 @@ import java.util.*;
  * theoretically this builder can aggregate more content it will not be usable
  * as things are. Behavior may be improved if we solve the access problem.
  */
-public final class ByteArrayBuilder extends OutputStream
+ final class ByteArrayBuilder extends OutputStream
 {
-    public final static byte[] NO_BYTES = new byte[0];
+     final static byte[] NO_BYTES = new byte[0];
 
     // Size of the first block we will allocate.
     private final static int INITIAL_BLOCK_SIZE = 500;
@@ -48,11 +48,11 @@ public final class ByteArrayBuilder extends OutputStream
     private byte[] _currBlock;
     private int _currBlockPtr;
 
-    public ByteArrayBuilder() { this(null); }
-    public ByteArrayBuilder(BufferRecycler br) { this(br, INITIAL_BLOCK_SIZE); }
-    public ByteArrayBuilder(int firstBlockSize) { this(null, firstBlockSize); }
+     ByteArrayBuilder() { this(null); }
+     ByteArrayBuilder(BufferRecycler br) { this(br, INITIAL_BLOCK_SIZE); }
+     ByteArrayBuilder(int firstBlockSize) { this(null, firstBlockSize); }
 
-    public ByteArrayBuilder(BufferRecycler br, int firstBlockSize) {
+     ByteArrayBuilder(BufferRecycler br, int firstBlockSize) {
         _bufferRecycler = br;
         // 04-Sep-2020, tatu: Let's make this bit more robust and refuse to allocate
         //    humongous blocks even if requested
@@ -68,11 +68,11 @@ public final class ByteArrayBuilder extends OutputStream
         _currBlockPtr = initialLen;
     }
 
-    public static ByteArrayBuilder fromInitial(byte[] initialBlock, int length) {
+     static ByteArrayBuilder fromInitial(byte[] initialBlock, int length) {
         return new ByteArrayBuilder(null, initialBlock, length);
     }
 
-    public void reset() {
+     void reset() {
         _pastLen = 0;
         _currBlockPtr = 0;
 
@@ -86,7 +86,7 @@ public final class ByteArrayBuilder extends OutputStream
      *
      * @since 2.9
      */
-    public int size() {
+     int size() {
         return _pastLen + _currBlockPtr;
     }
 
@@ -95,7 +95,7 @@ public final class ByteArrayBuilder extends OutputStream
      * using. After calling the method, no other accessors can be used (and
      * attempt to do so may result in an exception)
      */
-    public void release() {
+     void release() {
         reset();
         if (_bufferRecycler != null && _currBlock != null) {
             _bufferRecycler.releaseByteBuffer(BufferRecycler.BYTE_WRITE_CONCAT_BUFFER, _currBlock);
@@ -103,14 +103,14 @@ public final class ByteArrayBuilder extends OutputStream
         }
     }
 
-    public void append(int i) {
+     void append(int i) {
         if (_currBlockPtr >= _currBlock.length) {
             _allocMore();
         }
         _currBlock[_currBlockPtr++] = (byte) i;
     }
 
-    public void appendTwoBytes(int b16) {
+     void appendTwoBytes(int b16) {
         if ((_currBlockPtr + 1) < _currBlock.length) {
             _currBlock[_currBlockPtr++] = (byte) (b16 >> 8);
             _currBlock[_currBlockPtr++] = (byte) b16;
@@ -120,7 +120,7 @@ public final class ByteArrayBuilder extends OutputStream
         }
     }
 
-    public void appendThreeBytes(int b24) {
+     void appendThreeBytes(int b24) {
         if ((_currBlockPtr + 2) < _currBlock.length) {
             _currBlock[_currBlockPtr++] = (byte) (b24 >> 16);
             _currBlock[_currBlockPtr++] = (byte) (b24 >> 8);
@@ -133,7 +133,7 @@ public final class ByteArrayBuilder extends OutputStream
     }
 
     // @since 2.9
-    public void appendFourBytes(int b32) {
+     void appendFourBytes(int b32) {
         if ((_currBlockPtr + 3) < _currBlock.length) {
             _currBlock[_currBlockPtr++] = (byte) (b32 >> 24);
             _currBlock[_currBlockPtr++] = (byte) (b32 >> 16);
@@ -153,7 +153,7 @@ public final class ByteArrayBuilder extends OutputStream
      *
      * @return Aggregated contents as a {@code byte[]}
      */
-    public byte[] toByteArray()
+     byte[] toByteArray()
     {
         int totalLen = _pastLen + _currBlockPtr;
 
@@ -192,7 +192,7 @@ public final class ByteArrayBuilder extends OutputStream
      *
      * @return Segment to use for writing
      */
-    public byte[] resetAndGetFirstSegment() {
+     byte[] resetAndGetFirstSegment() {
         reset();
         return _currBlock;
     }
@@ -204,7 +204,7 @@ public final class ByteArrayBuilder extends OutputStream
      *
      * @return Segment to use for writing
      */
-    public byte[] finishCurrentSegment() {
+     byte[] finishCurrentSegment() {
         _allocMore();
         return _currBlock;
     }
@@ -218,14 +218,14 @@ public final class ByteArrayBuilder extends OutputStream
      *
      * @return Coalesced contents
      */
-    public byte[] completeAndCoalesce(int lastBlockLength) {
+     byte[] completeAndCoalesce(int lastBlockLength) {
         _currBlockPtr = lastBlockLength;
         return toByteArray();
     }
 
-    public byte[] getCurrentSegment() { return _currBlock; }
-    public void setCurrentSegmentLength(int len) { _currBlockPtr = len; }
-    public int getCurrentSegmentLength() { return _currBlockPtr; }
+     byte[] getCurrentSegment() { return _currBlock; }
+     void setCurrentSegmentLength(int len) { _currBlockPtr = len; }
+     int getCurrentSegmentLength() { return _currBlockPtr; }
 
     /*
     /**********************************************************
@@ -260,8 +260,10 @@ public final class ByteArrayBuilder extends OutputStream
         append(b);
     }
 
-    @Override public void close() { /* NOP */ }
-    @Override public void flush() { /* NOP */ }
+    @Override
+    public void close() { /* NOP */ }
+    @Override
+    public void flush() { /* NOP */ }
 
     /*
     /**********************************************************

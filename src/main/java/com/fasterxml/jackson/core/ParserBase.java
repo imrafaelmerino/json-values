@@ -12,7 +12,7 @@ import java.util.Arrays;
  * implementations. Contains most common things that are independent
  * of actual underlying input source.
  */
-public abstract class ParserBase extends ParserMinimalBase
+ abstract class ParserBase extends ParserMinimalBase
 {
     // JSON capabilities are the same as defaults
     // @since 2.12
@@ -253,15 +253,16 @@ public abstract class ParserBase extends ParserMinimalBase
         _parsingContext = JsonReadContext.createRootContext(dups);
     }
 
-    @Override public Version version() { return PackageVersion.VERSION; }
+    @Override
+    public Version version() { return PackageVersion.VERSION; }
 
     @Override
-    public Object getCurrentValue() {
+     Object getCurrentValue() {
         return _parsingContext.getCurrentValue();
     }
 
     @Override
-    public void setCurrentValue(Object v) {
+     void setCurrentValue(Object v) {
         _parsingContext.setCurrentValue(v);
     }
 
@@ -272,7 +273,7 @@ public abstract class ParserBase extends ParserMinimalBase
      */
 
     @Override
-    public JsonParser enable(Feature f) {
+     JsonParser enable(Feature f) {
         _features |= f.getMask();
         if (f == Feature.STRICT_DUPLICATE_DETECTION) { // enabling dup detection?
             if (_parsingContext.getDupDetector() == null) { // but only if disabled currently
@@ -283,7 +284,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override
-    public JsonParser disable(Feature f) {
+     JsonParser disable(Feature f) {
         _features &= ~f.getMask();
         if (f == Feature.STRICT_DUPLICATE_DETECTION) {
             _parsingContext = _parsingContext.withDupDetector(null);
@@ -293,7 +294,7 @@ public abstract class ParserBase extends ParserMinimalBase
 
     @Override
     @Deprecated
-    public JsonParser setFeatureMask(int newMask) {
+     JsonParser setFeatureMask(int newMask) {
         int changes = (_features ^ newMask);
         if (changes != 0) {
             _features = newMask;
@@ -303,7 +304,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override // since 2.7
-    public JsonParser overrideStdFeatures(int values, int mask) {
+     JsonParser overrideStdFeatures(int values, int mask) {
         int oldState = _features;
         int newState = (oldState & ~mask) | (values & mask);
         int changed = oldState ^ newState;
@@ -348,7 +349,7 @@ public abstract class ParserBase extends ParserMinimalBase
      * Method that can be called to get the name associated with
      * the current event.
      */
-    @Override public String getCurrentName() throws IOException {
+    @Override  String getCurrentName() throws IOException {
         // [JACKSON-395]: start markers require information from parent
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
             JsonReadContext parent = _parsingContext.getParent();
@@ -359,7 +360,7 @@ public abstract class ParserBase extends ParserMinimalBase
         return _parsingContext.getCurrentName();
     }
 
-    @Override public void overrideCurrentName(String name) {
+    @Override  void overrideCurrentName(String name) {
         // Simple, but need to look for START_OBJECT/ARRAY's "off-by-one" thing:
         JsonReadContext ctxt = _parsingContext;
         if (_currToken == JsonToken.START_OBJECT || _currToken == JsonToken.START_ARRAY) {
@@ -374,7 +375,8 @@ public abstract class ParserBase extends ParserMinimalBase
         }
     }
 
-    @Override public void close() throws IOException {
+    @Override
+    public void close() throws IOException {
         if (!_closed) {
             // 19-Jan-2018, tatu: as per [core#440] need to ensure no more data assumed available
             _inputPtr = Math.max(_inputPtr, _inputEnd);
@@ -389,8 +391,8 @@ public abstract class ParserBase extends ParserMinimalBase
         }
     }
 
-    @Override public boolean isClosed() { return _closed; }
-    @Override public JsonReadContext getParsingContext() { return _parsingContext; }
+    @Override  boolean isClosed() { return _closed; }
+    @Override  JsonReadContext getParsingContext() { return _parsingContext; }
 
     /**
      * Method that return the <b>starting</b> location of the current
@@ -398,7 +400,7 @@ public abstract class ParserBase extends ParserMinimalBase
      * that starts the current token.
      */
     @Override
-    public JsonLocation getTokenLocation() {
+     JsonLocation getTokenLocation() {
         return new JsonLocation(_contentReference(),
                 -1L, getTokenCharacterOffset(), // bytes, chars
                 getTokenLineNr(),
@@ -410,7 +412,7 @@ public abstract class ParserBase extends ParserMinimalBase
      * usually for error reporting purposes
      */
     @Override
-    public JsonLocation getCurrentLocation() {
+     JsonLocation getCurrentLocation() {
         int col = _inputPtr - _currInputRowStart + 1; // 1-based
         return new JsonLocation(_contentReference(),
                 -1L, _currInputProcessed + _inputPtr, // bytes, chars
@@ -419,12 +421,12 @@ public abstract class ParserBase extends ParserMinimalBase
 
     /*
     /**********************************************************
-    /* Public API, access to token information, text and similar
+    /*  API, access to token information, text and similar
     /**********************************************************
      */
 
     @Override
-    public boolean hasTextCharacters() {
+     boolean hasTextCharacters() {
         if (_currToken == JsonToken.VALUE_STRING) { return true; } // usually true
         if (_currToken == JsonToken.FIELD_NAME) { return _nameCopied; }
         return false;
@@ -432,7 +434,7 @@ public abstract class ParserBase extends ParserMinimalBase
 
     @SuppressWarnings("resource")
     @Override // since 2.7
-    public byte[] getBinaryValue(Base64Variant variant) throws IOException
+     byte[] getBinaryValue(Base64Variant variant) throws IOException
     {
         if (_binaryValue == null) {
             if (_currToken != JsonToken.VALUE_STRING) {
@@ -447,13 +449,13 @@ public abstract class ParserBase extends ParserMinimalBase
 
     /*
     /**********************************************************
-    /* Public low-level accessors
+    /*  low-level accessors
     /**********************************************************
      */
 
-    public long getTokenCharacterOffset() { return _tokenInputTotal; }
-    public int getTokenLineNr() { return _tokenInputRow; }
-    public int getTokenColumnNr() {
+     long getTokenCharacterOffset() { return _tokenInputTotal; }
+     int getTokenLineNr() { return _tokenInputRow; }
+     int getTokenColumnNr() {
         // note: value of -1 means "not available"; otherwise convert from 0-based to 1-based
         int col = _tokenInputCol;
         return (col < 0) ? col : (col + 1);
@@ -527,7 +529,7 @@ public abstract class ParserBase extends ParserMinimalBase
     /**********************************************************
      */
 
-    public ByteArrayBuilder _getByteArrayBuilder()
+     ByteArrayBuilder _getByteArrayBuilder()
     {
         if (_byteArrayBuilder == null) {
             _byteArrayBuilder = new ByteArrayBuilder();
@@ -601,7 +603,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override
-    public boolean isNaN() throws IOException {
+     boolean isNaN() throws IOException {
         if (_currToken == JsonToken.VALUE_NUMBER_FLOAT) {
             if ((_numTypesValid & NR_DOUBLE) != 0) {
                 return !Double.isFinite(_getNumberDouble());
@@ -612,12 +614,12 @@ public abstract class ParserBase extends ParserMinimalBase
 
     /*
     /**********************************************************
-    /* Numeric accessors of public API
+    /* Numeric accessors of  API
     /**********************************************************
      */
 
     @Override
-    public Number getNumberValue() throws IOException
+     Number getNumberValue() throws IOException
     {
         if (_numTypesValid == NR_UNKNOWN) {
             _parseNumericValue(NR_UNKNOWN); // will also check event type
@@ -652,7 +654,7 @@ public abstract class ParserBase extends ParserMinimalBase
 
     // NOTE: mostly copied from above
     @Override
-    public Number getNumberValueExact() throws IOException
+     Number getNumberValueExact() throws IOException
     {
         if (_currToken == JsonToken.VALUE_NUMBER_INT) {
             if (_numTypesValid == NR_UNKNOWN) {
@@ -686,7 +688,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override // since 2.15
-    public Object getNumberValueDeferred() throws IOException
+     Object getNumberValueDeferred() throws IOException
     {
         if (_currToken == JsonToken.VALUE_NUMBER_INT) {
             if (_numTypesValid == NR_UNKNOWN) {
@@ -730,7 +732,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override
-    public NumberType getNumberType() throws IOException
+     NumberType getNumberType() throws IOException
     {
         if (_numTypesValid == NR_UNKNOWN) {
             _parseNumericValue(NR_UNKNOWN); // will also check event type
@@ -803,7 +805,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override
-    public float getFloatValue() throws IOException
+     float getFloatValue() throws IOException
     {
         /* 22-Jan-2009, tatu: Bounds/range checks would be tricky
          *   here, so let's not bother even trying...
@@ -825,7 +827,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override
-    public double getDoubleValue() throws IOException
+     double getDoubleValue() throws IOException
     {
         if ((_numTypesValid & NR_DOUBLE) == 0) {
             if (_numTypesValid == NR_UNKNOWN) {
@@ -853,7 +855,7 @@ public abstract class ParserBase extends ParserMinimalBase
     }
 
     @Override // @since 2.15
-    public StreamReadConstraints streamReadConstraints() {
+     StreamReadConstraints streamReadConstraints() {
         return _streamReadConstraints;
     }
 

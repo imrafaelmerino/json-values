@@ -11,7 +11,7 @@ import java.math.BigDecimal;
  *
  * @since 2.10
  */
-public enum StreamWriteFeature
+ enum StreamWriteFeature
     implements JacksonFeature // since 2.12
 {
     // // Low-level I/O / content features
@@ -152,7 +152,7 @@ public enum StreamWriteFeature
      *
      * @return Bit mask of all features that are enabled by default
      */
-    public static int collectDefaults()
+     static int collectDefaults()
     {
         int flags = 0;
         for (StreamWriteFeature f : values()) {
@@ -170,5 +170,5 @@ public enum StreamWriteFeature
     @Override
     public int getMask() { return _mask; }
 
-    public JsonGenerator.Feature mappedFeature() { return _mappedFeature; }
+     JsonGenerator.Feature mappedFeature() { return _mappedFeature; }
 }

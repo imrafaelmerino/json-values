@@ -11,7 +11,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuilder>
+ class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuilder>
 {
     protected CharacterEscapes _characterEscapes;
 
@@ -26,13 +26,13 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      */
     protected char _quoteChar = JsonFactory.DEFAULT_QUOTE_CHAR;
 
-    public JsonFactoryBuilder() {
+     JsonFactoryBuilder() {
         super();
         _rootValueSeparator = JsonFactory.DEFAULT_ROOT_VALUE_SEPARATOR;
         _maximumNonEscapedChar = 0;
     }
 
-    public JsonFactoryBuilder(JsonFactory base) {
+     JsonFactoryBuilder(JsonFactory base) {
         super(base);
         _characterEscapes = base.getCharacterEscapes();
         _rootValueSeparator = base._rootValueSeparator;
@@ -48,13 +48,13 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     // // // JSON-parsing features
 
     @Override
-    public JsonFactoryBuilder enable(JsonReadFeature f) {
+     JsonFactoryBuilder enable(JsonReadFeature f) {
         _legacyEnable(f.mappedFeature());
         return this;
     }
 
     @Override
-    public JsonFactoryBuilder enable(JsonReadFeature first, JsonReadFeature... other) {
+     JsonFactoryBuilder enable(JsonReadFeature first, JsonReadFeature... other) {
         _legacyEnable(first.mappedFeature());
         enable(first);
         for (JsonReadFeature f : other) {
@@ -64,13 +64,13 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     }
 
     @Override
-    public JsonFactoryBuilder disable(JsonReadFeature f) {
+     JsonFactoryBuilder disable(JsonReadFeature f) {
         _legacyDisable(f.mappedFeature());
         return this;
     }
 
     @Override
-    public JsonFactoryBuilder disable(JsonReadFeature first, JsonReadFeature... other) {
+     JsonFactoryBuilder disable(JsonReadFeature first, JsonReadFeature... other) {
         _legacyDisable(first.mappedFeature());
         for (JsonReadFeature f : other) {
             _legacyEnable(f.mappedFeature());
@@ -79,14 +79,14 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     }
 
     @Override
-    public JsonFactoryBuilder configure(JsonReadFeature f, boolean state) {
+     JsonFactoryBuilder configure(JsonReadFeature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
     // // // JSON-generating features
 
     @Override
-    public JsonFactoryBuilder enable(JsonWriteFeature f) {
+     JsonFactoryBuilder enable(JsonWriteFeature f) {
         JsonGenerator.Feature old = f.mappedFeature();
         if (old != null) {
             _legacyEnable(old);
@@ -95,7 +95,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     }
 
     @Override
-    public JsonFactoryBuilder enable(JsonWriteFeature first, JsonWriteFeature... other) {
+     JsonFactoryBuilder enable(JsonWriteFeature first, JsonWriteFeature... other) {
         _legacyEnable(first.mappedFeature());
         for (JsonWriteFeature f : other) {
             _legacyEnable(f.mappedFeature());
@@ -104,13 +104,13 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     }
 
     @Override
-    public JsonFactoryBuilder disable(JsonWriteFeature f) {
+     JsonFactoryBuilder disable(JsonWriteFeature f) {
         _legacyDisable(f.mappedFeature());
         return this;
     }
 
     @Override
-    public JsonFactoryBuilder disable(JsonWriteFeature first, JsonWriteFeature... other) {
+     JsonFactoryBuilder disable(JsonWriteFeature first, JsonWriteFeature... other) {
         _legacyDisable(first.mappedFeature());
         for (JsonWriteFeature f : other) {
             _legacyDisable(f.mappedFeature());
@@ -119,7 +119,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
     }
 
     @Override
-    public JsonFactoryBuilder configure(JsonWriteFeature f, boolean state) {
+     JsonFactoryBuilder configure(JsonWriteFeature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
@@ -133,7 +133,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      *
      * @return This builder instance (to allow call chaining)
      */
-    public JsonFactoryBuilder characterEscapes(CharacterEscapes esc) {
+     JsonFactoryBuilder characterEscapes(CharacterEscapes esc) {
         _characterEscapes = esc;
         return this;
     }
@@ -147,7 +147,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      *
      * @return This builder instance (to allow call chaining)
      */
-    public JsonFactoryBuilder rootValueSeparator(String sep) {
+     JsonFactoryBuilder rootValueSeparator(String sep) {
         _rootValueSeparator = (sep == null) ? null : new SerializedString(sep);
         return this;
     }
@@ -161,7 +161,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      *
      * @return This builder instance (to allow call chaining)
      */
-    public JsonFactoryBuilder rootValueSeparator(SerializableString sep) {
+     JsonFactoryBuilder rootValueSeparator(SerializableString sep) {
         _rootValueSeparator = sep;
         return this;
     }
@@ -186,7 +186,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      *
      * @return This builder instance (to allow call chaining)
      */
-    public JsonFactoryBuilder highestNonEscapedChar(int maxNonEscaped) {
+     JsonFactoryBuilder highestNonEscapedChar(int maxNonEscaped) {
         _maximumNonEscapedChar = (maxNonEscaped <= 0) ? 0 : Math.max(127, maxNonEscaped);
         return this;
     }
@@ -204,7 +204,7 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
      *
      * @return This builder instance (to allow call chaining)
      */
-    public JsonFactoryBuilder quoteChar(char ch) {
+     JsonFactoryBuilder quoteChar(char ch) {
         // 12-Aug-2019, tatu: Due to implementation details, escaping characters beyond
         //    7-bit ASCII set has deep overhead so let's limit set. If we absolutely
         //    must it is possible of course, but leads to problems combining with
@@ -218,15 +218,15 @@ public class JsonFactoryBuilder extends TSFBuilder<JsonFactory, JsonFactoryBuild
 
     // // // Accessors for JSON-specific settings
 
-    public CharacterEscapes characterEscapes() { return _characterEscapes; }
-    public SerializableString rootValueSeparator() { return _rootValueSeparator; }
+     CharacterEscapes characterEscapes() { return _characterEscapes; }
+     SerializableString rootValueSeparator() { return _rootValueSeparator; }
 
-    public int highestNonEscapedChar() { return _maximumNonEscapedChar; }
+     int highestNonEscapedChar() { return _maximumNonEscapedChar; }
 
-    public char quoteChar() { return _quoteChar; }
+     char quoteChar() { return _quoteChar; }
 
     @Override
-    public JsonFactory build() {
+     JsonFactory build() {
         // 28-Dec-2017, tatu: No special settings beyond base class ones, so:
         return new JsonFactory(this);
     }

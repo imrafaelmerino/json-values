@@ -9,7 +9,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public class InputCoercionException extends StreamReadException {
+ class InputCoercionException extends StreamReadException {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -32,7 +32,7 @@ public class InputCoercionException extends StreamReadException {
      * @param inputType Shape of input that failed to coerce
      * @param targetType Target type of failed coercion
      */
-    public InputCoercionException(JsonParser p, String msg,
+     InputCoercionException(JsonParser p, String msg,
             JsonToken inputType, Class<?> targetType) {
         super(p, msg);
         _inputType = inputType;
@@ -46,13 +46,13 @@ public class InputCoercionException extends StreamReadException {
      * NOTE: `this` instance is modified and no new instance is constructed.
      */
     @Override
-    public InputCoercionException withParser(JsonParser p) {
+     InputCoercionException withParser(JsonParser p) {
         _processor = p;
         return this;
     }
 
     @Override
-    public InputCoercionException withRequestPayload(RequestPayload p) {
+     InputCoercionException withRequestPayload(RequestPayload p) {
         _requestPayload = p;
         return this;
     }
@@ -63,7 +63,7 @@ public class InputCoercionException extends StreamReadException {
      *
      * @return "Shape" of input for which coercion failed, as {@link JsonToken}
      */
-    public JsonToken getInputType() {
+     JsonToken getInputType() {
         return _inputType;
     }
 
@@ -73,7 +73,7 @@ public class InputCoercionException extends StreamReadException {
      *
      * @return Target type of failed conversion
      */
-    public Class<?> getTargetType() {
+     Class<?> getTargetType() {
         return _targetType;
     }
 }

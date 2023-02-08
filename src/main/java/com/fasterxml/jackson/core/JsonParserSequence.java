@@ -11,7 +11,7 @@ import java.util.*;
  * Fairly simple use of {@link JsonParserDelegate}: only need
  * to override {@link #nextToken} to handle transition
  */
-public class JsonParserSequence extends JsonParserDelegate
+ class JsonParserSequence extends JsonParserDelegate
 {
     /**
      * Parsers other than the first one (which is initially assigned
@@ -84,7 +84,7 @@ public class JsonParserSequence extends JsonParserDelegate
      *
      * @return Sequence instance constructed
      */
-    public static JsonParserSequence createFlattened(boolean checkForExistingToken,
+     static JsonParserSequence createFlattened(boolean checkForExistingToken,
             JsonParser first, JsonParser second)
     {
         if (!(first instanceof JsonParserSequence || second instanceof JsonParserSequence)) {
@@ -107,7 +107,7 @@ public class JsonParserSequence extends JsonParserDelegate
     }
 
     @Deprecated // since 2.8
-    public static JsonParserSequence createFlattened(JsonParser first, JsonParser second) {
+     static JsonParserSequence createFlattened(JsonParser first, JsonParser second) {
         return createFlattened(false, first, second);
     }
 
@@ -159,7 +159,7 @@ public class JsonParserSequence extends JsonParserDelegate
      * state correct here.
      */
     @Override
-    public JsonParser skipChildren() throws IOException
+     JsonParser skipChildren() throws IOException
     {
         if ((delegate.currentToken() != JsonToken.START_OBJECT)
             && (delegate.currentToken() != JsonToken.START_ARRAY)) {
@@ -197,7 +197,7 @@ public class JsonParserSequence extends JsonParserDelegate
      *
      * @return Number of actual underlying parsers this sequence has
      */
-    public int containedParsersCount() {
+     int containedParsersCount() {
         return _parsers.length;
     }
 

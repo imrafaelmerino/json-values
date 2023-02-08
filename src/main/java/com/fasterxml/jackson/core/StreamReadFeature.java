@@ -10,7 +10,7 @@ import java.io.Reader;
  *
  * @since 2.10
  */
-public enum StreamReadFeature
+ enum StreamReadFeature
     implements JacksonFeature // since 2.12
 {
     // // // Low-level I/O handling features:
@@ -140,7 +140,7 @@ public enum StreamReadFeature
      *
      * @return Bit mask of all features that are enabled by default
      */
-    public static int collectDefaults()
+     static int collectDefaults()
     {
         int flags = 0;
         for (StreamReadFeature f : values()) {
@@ -158,5 +158,5 @@ public enum StreamReadFeature
     @Override
     public int getMask() { return _mask; }
 
-    public JsonParser.Feature mappedFeature() { return _mappedFeature; }
+     JsonParser.Feature mappedFeature() { return _mappedFeature; }
 }

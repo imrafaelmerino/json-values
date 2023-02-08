@@ -11,7 +11,7 @@ import java.io.Serializable;
  *
  * @since 2.9
  */
-public class Separators implements Serializable
+ class Separators implements Serializable
 {
     private static final long serialVersionUID = 1;
 
@@ -19,45 +19,45 @@ public class Separators implements Serializable
     private final char objectEntrySeparator;
     private final char arrayValueSeparator;
 
-    public static Separators createDefaultInstance() {
+     static Separators createDefaultInstance() {
         return new Separators();
     }
 
-    public Separators() {
+     Separators() {
         this(':', ',', ',');
     }
 
-    public Separators(char objectFieldValueSeparator,
+     Separators(char objectFieldValueSeparator,
             char objectEntrySeparator, char arrayValueSeparator) {
         this.objectFieldValueSeparator = objectFieldValueSeparator;
         this.objectEntrySeparator = objectEntrySeparator;
         this.arrayValueSeparator = arrayValueSeparator;
     }
 
-    public Separators withObjectFieldValueSeparator(char sep) {
+     Separators withObjectFieldValueSeparator(char sep) {
         return (objectFieldValueSeparator == sep) ? this
                 : new Separators(sep, objectEntrySeparator, arrayValueSeparator);
     }
 
-    public Separators withObjectEntrySeparator(char sep) {
+     Separators withObjectEntrySeparator(char sep) {
         return (objectEntrySeparator == sep) ? this
                 : new Separators(objectFieldValueSeparator, sep, arrayValueSeparator);
     }
 
-    public Separators withArrayValueSeparator(char sep) {
+     Separators withArrayValueSeparator(char sep) {
         return (arrayValueSeparator == sep) ? this
                 : new Separators(objectFieldValueSeparator, objectEntrySeparator, sep);
     }
 
-    public char getObjectFieldValueSeparator() {
+     char getObjectFieldValueSeparator() {
         return objectFieldValueSeparator;
     }
 
-    public char getObjectEntrySeparator() {
+     char getObjectEntrySeparator() {
         return objectEntrySeparator;
     }
 
-    public char getArrayValueSeparator() {
+     char getArrayValueSeparator() {
         return arrayValueSeparator;
     }
 }

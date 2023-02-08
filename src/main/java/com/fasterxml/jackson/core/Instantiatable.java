@@ -13,7 +13,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.1
  */
-public interface Instantiatable<T>
+ interface Instantiatable<T>
 {
     /**
      * Method called to ensure that we have a non-blueprint object to use;

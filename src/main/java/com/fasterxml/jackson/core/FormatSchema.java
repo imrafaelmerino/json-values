@@ -23,7 +23,7 @@ package com.fasterxml.jackson.core;
  * used for tagging "some kind of schema" -- instead of passing opaque
  * {@link Object} -- for documentation purposes.
  */
-public interface FormatSchema
+ interface FormatSchema
 {
     /**
      * Method that can be used to get an identifier that can be used for diagnostics

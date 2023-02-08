@@ -30,7 +30,7 @@ package com.fasterxml.jackson.core;
  *
  * @author Tatu Saloranta
  */
-public final class Base64Variants
+ final class Base64Variants
 {
     final static String STD_BASE64_ALPHABET = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
 
@@ -46,7 +46,7 @@ public final class Base64Variants
      *<p>
      * Writes padding on output; requires padding when reading (may change later with a call to {@link Base64Variant#withWritePadding})
      */
-    public final static Base64Variant MIME;
+     final static Base64Variant MIME;
     static {
         MIME = new Base64Variant("MIME", STD_BASE64_ALPHABET, true, '=', 76);
     }
@@ -59,7 +59,7 @@ public final class Base64Variants
      *<p>
      * Writes padding on output; requires padding when reading (may change later with a call to {@link Base64Variant#withWritePadding})
      */
-    public final static Base64Variant MIME_NO_LINEFEEDS;
+     final static Base64Variant MIME_NO_LINEFEEDS;
     static {
         MIME_NO_LINEFEEDS = new Base64Variant(MIME, "MIME-NO-LINEFEEDS", Integer.MAX_VALUE);
     }
@@ -70,7 +70,7 @@ public final class Base64Variants
      *<p>
      * Writes padding on output; requires padding when reading (may change later with a call to {@link Base64Variant#withWritePadding})
      */
-    public final static Base64Variant PEM = new Base64Variant(MIME, "PEM", true, '=', 64);
+     final static Base64Variant PEM = new Base64Variant(MIME, "PEM", true, '=', 64);
 
     /**
      * This non-standard variant is usually used when encoded data needs to be
@@ -85,7 +85,7 @@ public final class Base64Variants
      *<p>
      * Does not write padding on output; does not accept padding when reading (may change later with a call to {@link Base64Variant#withWritePadding})
      */
-    public final static Base64Variant MODIFIED_FOR_URL;
+     final static Base64Variant MODIFIED_FOR_URL;
     static {
         StringBuilder sb = new StringBuilder(STD_BASE64_ALPHABET);
         // Replace plus with hyphen, slash with underscore (and no padding)
@@ -103,7 +103,7 @@ public final class Base64Variants
      *
      * @return Default variant ({@code MIME_NO_LINEFEEDS})
      */
-    public static Base64Variant getDefaultVariant() {
+     static Base64Variant getDefaultVariant() {
         return MIME_NO_LINEFEEDS;
     }
 
@@ -118,7 +118,7 @@ public final class Base64Variants
      *
      * @throws IllegalArgumentException if no standard variant with given name exists
      */
-    public static Base64Variant valueOf(String name) throws IllegalArgumentException
+     static Base64Variant valueOf(String name) throws IllegalArgumentException
     {
         if (MIME._name.equals(name)) {
             return MIME;

@@ -8,11 +8,11 @@ import java.io.*;
  *
  * @since 2.8
  */
-public class DataOutputAsStream extends OutputStream
+ class DataOutputAsStream extends OutputStream
 {
     protected final DataOutput _output;
 
-    public DataOutputAsStream(DataOutput out) {
+     DataOutputAsStream(DataOutput out) {
         super();
         _output = out;
     }
@@ -36,9 +36,9 @@ public class DataOutputAsStream extends OutputStream
 
     /*
     @Override
-    public void flush() throws IOException { }
+     void flush() throws IOException { }
 
     @Override
-    public void close() throws IOException { }
+     void close() throws IOException { }
     */
 }

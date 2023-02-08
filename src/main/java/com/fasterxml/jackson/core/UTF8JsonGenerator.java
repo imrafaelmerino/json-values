@@ -4,7 +4,7 @@ import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 
-public class UTF8JsonGenerator
+ class UTF8JsonGenerator
     extends JsonGeneratorImpl
 {
     private final static byte BYTE_u = (byte) 'u';
@@ -110,7 +110,7 @@ public class UTF8JsonGenerator
 
     // @since 2.10
     @SuppressWarnings("deprecation")
-    public UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
+     UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
             OutputStream out, char quoteChar)
     {
         super(ctxt, features, codec);
@@ -139,7 +139,7 @@ public class UTF8JsonGenerator
     }
 
     // @since 2.10
-    public UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
+     UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
             OutputStream out, char quoteChar,
             byte[] outputBuffer, int outputOffset, boolean bufferRecyclable)
     {
@@ -162,13 +162,13 @@ public class UTF8JsonGenerator
     }
 
     @Deprecated // since 2.10
-    public UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
+     UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
             OutputStream out) {
         this(ctxt, features, codec, out, JsonFactory.DEFAULT_QUOTE_CHAR);
     }
 
     @Deprecated // since 2.10
-    public UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
+     UTF8JsonGenerator(IOContext ctxt, int features, ObjectCodec codec,
             OutputStream out,
             byte[] outputBuffer, int outputOffset, boolean bufferRecyclable)
     {
@@ -183,12 +183,12 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public Object getOutputTarget() {
+     Object getOutputTarget() {
         return _outputStream;
     }
 
     @Override
-    public int getOutputBuffered() {
+     int getOutputBuffered() {
         // Assuming tail is always valid, set to 0 on close
         return _outputTail;
     }
@@ -200,7 +200,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public void writeFieldName(String name)  throws IOException
+     void writeFieldName(String name)  throws IOException
     {
         if (_cfgPrettyPrinter != null) {
             _writePPFieldName(name);
@@ -250,7 +250,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeFieldName(SerializableString name) throws IOException
+     void writeFieldName(SerializableString name) throws IOException
     {
         if (_cfgPrettyPrinter != null) {
             _writePPFieldName(name);
@@ -302,7 +302,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public final void writeStartArray() throws IOException
+     final void writeStartArray() throws IOException
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext();
@@ -317,7 +317,7 @@ public class UTF8JsonGenerator
     }
 
     @Override // since 2.12
-    public final void writeStartArray(Object currentValue) throws IOException
+     final void writeStartArray(Object currentValue) throws IOException
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext(currentValue);
@@ -332,7 +332,7 @@ public class UTF8JsonGenerator
     }
 
     @Override // since 2.12
-    public void writeStartArray(Object currentValue, int size) throws IOException
+     void writeStartArray(Object currentValue, int size) throws IOException
     {
         _verifyValueWrite("start an array");
         _writeContext = _writeContext.createChildArrayContext(currentValue);
@@ -347,7 +347,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public final void writeEndArray() throws IOException
+     final void writeEndArray() throws IOException
     {
         if (!_writeContext.inArray()) {
             _reportError("Current context not Array but "+_writeContext.typeDesc());
@@ -364,7 +364,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public final void writeStartObject() throws IOException
+     final void writeStartObject() throws IOException
     {
         _verifyValueWrite("start an object");
         _writeContext = _writeContext.createChildObjectContext();
@@ -379,7 +379,7 @@ public class UTF8JsonGenerator
     }
 
     @Override // since 2.8
-    public void writeStartObject(Object forValue) throws IOException
+     void writeStartObject(Object forValue) throws IOException
     {
         _verifyValueWrite("start an object");
         JsonWriteContext ctxt = _writeContext.createChildObjectContext(forValue);
@@ -395,12 +395,12 @@ public class UTF8JsonGenerator
     }
 
     @Override // since 2.14
-    public void writeStartObject(Object forValue, int size) throws IOException {
+     void writeStartObject(Object forValue, int size) throws IOException {
         writeStartObject(forValue);
     }
 
     @Override
-    public final void writeEndObject() throws IOException
+     final void writeEndObject() throws IOException
     {
         if (!_writeContext.inObject()) {
             _reportError("Current context not Object but "+_writeContext.typeDesc());
@@ -498,7 +498,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public void writeString(String text) throws IOException
+     void writeString(String text) throws IOException
     {
         _verifyValueWrite(WRITE_STRING);
         if (text == null) {
@@ -523,7 +523,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeString(Reader reader, int len) throws IOException {
+     void writeString(Reader reader, int len) throws IOException {
         _verifyValueWrite(WRITE_STRING);
         if (reader == null) {
             _reportError("null reader");
@@ -566,7 +566,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeString(char[] text, int offset, int len) throws IOException
+     void writeString(char[] text, int offset, int len) throws IOException
     {
         _verifyValueWrite(WRITE_STRING);
         if (_outputTail >= _outputEnd) {
@@ -590,7 +590,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public final void writeString(SerializableString text) throws IOException
+     final void writeString(SerializableString text) throws IOException
     {
         _verifyValueWrite(WRITE_STRING);
         if (_outputTail >= _outputEnd) {
@@ -610,7 +610,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeRawUTF8String(byte[] text, int offset, int len) throws IOException
+     void writeRawUTF8String(byte[] text, int offset, int len) throws IOException
     {
         _checkRangeBoundsForByteArray(text, offset, len);
         _verifyValueWrite(WRITE_STRING);
@@ -626,7 +626,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeUTF8String(byte[] text, int offset, int len) throws IOException
+     void writeUTF8String(byte[] text, int offset, int len) throws IOException
     {
         _checkRangeBoundsForByteArray(text, offset, len);
         _verifyValueWrite(WRITE_STRING);
@@ -653,7 +653,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public void writeRaw(String text) throws IOException {
+     void writeRaw(String text) throws IOException {
         final int len = text.length();
         final char[] buf = _charBuffer;
         if (len <= buf.length) {
@@ -665,7 +665,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeRaw(String text, int offset, int len) throws IOException
+     void writeRaw(String text, int offset, int len) throws IOException
     {
         _checkRangeBoundsForString(text, offset, len);
 
@@ -710,7 +710,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeRaw(SerializableString text) throws IOException
+     void writeRaw(SerializableString text) throws IOException
     {
         int len = text.appendUnquotedUTF8(_outputBuffer, _outputTail);
         if (len < 0) {
@@ -722,7 +722,7 @@ public class UTF8JsonGenerator
 
     // since 2.5
     @Override
-    public void writeRawValue(SerializableString text) throws IOException {
+     void writeRawValue(SerializableString text) throws IOException {
         _verifyValueWrite(WRITE_RAW);
         int len = text.appendUnquotedUTF8(_outputBuffer, _outputTail);
         if (len < 0) {
@@ -734,7 +734,7 @@ public class UTF8JsonGenerator
 
     // @TODO: rewrite for speed...
     @Override
-    public final void writeRaw(char[] cbuf, int offset, int len) throws IOException
+     final void writeRaw(char[] cbuf, int offset, int len) throws IOException
     {
         _checkRangeBoundsForCharArray(cbuf, offset, len);
 
@@ -778,7 +778,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeRaw(char ch) throws IOException
+     void writeRaw(char ch) throws IOException
     {
         if ((_outputTail + 3) >= _outputEnd) {
             _flushBuffer();
@@ -875,7 +875,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public void writeBinary(Base64Variant b64variant,
+     void writeBinary(Base64Variant b64variant,
             byte[] data, int offset, int len)
         throws IOException, JsonGenerationException
     {
@@ -896,7 +896,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public int writeBinary(Base64Variant b64variant,
+     int writeBinary(Base64Variant b64variant,
             InputStream data, int dataLength)
         throws IOException, JsonGenerationException
     {
@@ -936,7 +936,7 @@ public class UTF8JsonGenerator
      */
 
     @Override
-    public void writeNumber(short s) throws IOException
+     void writeNumber(short s) throws IOException
     {
         _verifyValueWrite(WRITE_NUMBER);
         // up to 5 digits and possible minus sign
@@ -960,7 +960,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(int i) throws IOException
+     void writeNumber(int i) throws IOException
     {
         _verifyValueWrite(WRITE_NUMBER);
         // up to 10 digits and possible minus sign
@@ -985,7 +985,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(long l) throws IOException
+     void writeNumber(long l) throws IOException
     {
         _verifyValueWrite(WRITE_NUMBER);
         if (_cfgNumbersAsStrings) {
@@ -1010,7 +1010,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(BigInteger value) throws IOException
+     void writeNumber(BigInteger value) throws IOException
     {
         _verifyValueWrite(WRITE_NUMBER);
         if (value == null) {
@@ -1024,7 +1024,7 @@ public class UTF8JsonGenerator
 
     @SuppressWarnings("deprecation")
     @Override
-    public void writeNumber(double d) throws IOException
+     void writeNumber(double d) throws IOException
     {
         if (_cfgNumbersAsStrings ||
             (NumberOutput.notFinite(d)
@@ -1039,7 +1039,7 @@ public class UTF8JsonGenerator
 
     @SuppressWarnings("deprecation")
     @Override
-    public void writeNumber(float f) throws IOException
+     void writeNumber(float f) throws IOException
     {
         if (_cfgNumbersAsStrings ||
             (NumberOutput.notFinite(f)
@@ -1053,7 +1053,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(BigDecimal value) throws IOException
+     void writeNumber(BigDecimal value) throws IOException
     {
         // Don't really know max length for big decimal, no point checking
         _verifyValueWrite(WRITE_NUMBER);
@@ -1067,7 +1067,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(String encodedValue) throws IOException
+     void writeNumber(String encodedValue) throws IOException
     {
         _verifyValueWrite(WRITE_NUMBER);
         if (encodedValue == null) {
@@ -1080,7 +1080,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNumber(char[] encodedValueBuffer, int offset, int length) throws IOException {
+     void writeNumber(char[] encodedValueBuffer, int offset, int length) throws IOException {
         _verifyValueWrite(WRITE_NUMBER);
         if (_cfgNumbersAsStrings) {
             _writeQuotedRaw(encodedValueBuffer, offset, length);
@@ -1116,7 +1116,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeBoolean(boolean state) throws IOException
+     void writeBoolean(boolean state) throws IOException
     {
         _verifyValueWrite(WRITE_BOOLEAN);
         if ((_outputTail + 5) >= _outputEnd) {
@@ -1129,7 +1129,7 @@ public class UTF8JsonGenerator
     }
 
     @Override
-    public void writeNull() throws IOException
+     void writeNull() throws IOException
     {
         _verifyValueWrite(WRITE_NULL);
         _writeNull();

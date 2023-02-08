@@ -10,12 +10,12 @@ import java.math.BigDecimal;
  * to applications, adds shared internal methods that sub-classes
  * can use and adds some abstract methods sub-classes must implement.
  */
-public abstract class GeneratorBase extends JsonGenerator
+ abstract class GeneratorBase extends JsonGenerator
 {
-    public final static int SURR1_FIRST = 0xD800;
-    public final static int SURR1_LAST = 0xDBFF;
-    public final static int SURR2_FIRST = 0xDC00;
-    public final static int SURR2_LAST = 0xDFFF;
+     final static int SURR1_FIRST = 0xD800;
+     final static int SURR1_LAST = 0xDBFF;
+     final static int SURR2_FIRST = 0xDC00;
+     final static int SURR2_LAST = 0xDFFF;
 
     /**
      * Set of feature masks related to features that need updates of other
@@ -125,15 +125,16 @@ public abstract class GeneratorBase extends JsonGenerator
      * @return Version number of the generator (version of the jar that contains
      *     generator implementation class)
      */
-    @Override public Version version() { return PackageVersion.VERSION; }
+    @Override
+    public Version version() { return PackageVersion.VERSION; }
 
     @Override
-    public Object getCurrentValue() {
+     Object getCurrentValue() {
         return _writeContext.getCurrentValue();
     }
 
     @Override
-    public void setCurrentValue(Object v) {
+     void setCurrentValue(Object v) {
         if (_writeContext != null) {
             _writeContext.setCurrentValue(v);
         }
@@ -146,14 +147,14 @@ public abstract class GeneratorBase extends JsonGenerator
      */
 
 
-    @Override public final boolean isEnabled(Feature f) { return (_features & f.getMask()) != 0; }
-    @Override public int getFeatureMask() { return _features; }
+    @Override  final boolean isEnabled(Feature f) { return (_features & f.getMask()) != 0; }
+    @Override  int getFeatureMask() { return _features; }
 
-    //public JsonGenerator configure(Feature f, boolean state) { }
+    // JsonGenerator configure(Feature f, boolean state) { }
 
     @SuppressWarnings("deprecation")
     @Override
-    public JsonGenerator enable(Feature f) {
+     JsonGenerator enable(Feature f) {
         final int mask = f.getMask();
         _features |= mask;
         if ((mask & DERIVED_FEATURES_MASK) != 0) {
@@ -173,7 +174,7 @@ public abstract class GeneratorBase extends JsonGenerator
 
     @SuppressWarnings("deprecation")
     @Override
-    public JsonGenerator disable(Feature f) {
+     JsonGenerator disable(Feature f) {
         final int mask = f.getMask();
         _features &= ~mask;
         if ((mask & DERIVED_FEATURES_MASK) != 0) {
@@ -190,7 +191,7 @@ public abstract class GeneratorBase extends JsonGenerator
 
     @Override
     @Deprecated
-    public JsonGenerator setFeatureMask(int newMask) {
+     JsonGenerator setFeatureMask(int newMask) {
         int changed = newMask ^ _features;
         _features = newMask;
         if (changed != 0) {
@@ -200,7 +201,7 @@ public abstract class GeneratorBase extends JsonGenerator
     }
 
     @Override // since 2.7
-    public JsonGenerator overrideStdFeatures(int values, int mask) {
+     JsonGenerator overrideStdFeatures(int values, int mask) {
         int oldState = _features;
         int newState = (oldState & ~mask) | (values & mask);
         int changed = oldState ^ newState;
@@ -245,7 +246,7 @@ public abstract class GeneratorBase extends JsonGenerator
         }
     }
 
-    @Override public JsonGenerator useDefaultPrettyPrinter() {
+    @Override  JsonGenerator useDefaultPrettyPrinter() {
         // Should not override a pretty printer if one already assigned.
         if (getPrettyPrinter() != null) {
             return this;
@@ -253,16 +254,16 @@ public abstract class GeneratorBase extends JsonGenerator
         return setPrettyPrinter(_constructDefaultPrettyPrinter());
     }
 
-    @Override public JsonGenerator setCodec(ObjectCodec oc) {
+    @Override  JsonGenerator setCodec(ObjectCodec oc) {
         _objectCodec = oc;
         return this;
     }
 
-    @Override public ObjectCodec getCodec() { return _objectCodec; }
+    @Override  ObjectCodec getCodec() { return _objectCodec; }
 
     /*
     /**********************************************************
-    /* Public API, accessors
+    /*  API, accessors
     /**********************************************************
      */
 
@@ -271,21 +272,21 @@ public abstract class GeneratorBase extends JsonGenerator
      * base type in 2.8 to allow for overriding by subtypes that use
      * custom context type.
      */
-    @Override public JsonStreamContext getOutputContext() { return _writeContext; }
+    @Override  JsonStreamContext getOutputContext() { return _writeContext; }
 
     /*
     /**********************************************************
-    /* Public API, write methods, structural
+    /*  API, write methods, structural
     /**********************************************************
      */
 
-    //public void writeStartArray() throws IOException
-    //public void writeEndArray() throws IOException
-    //public void writeStartObject() throws IOException
-    //public void writeEndObject() throws IOException
+    // void writeStartArray() throws IOException
+    // void writeEndArray() throws IOException
+    // void writeStartObject() throws IOException
+    // void writeEndObject() throws IOException
 
     @Override // since 2.8
-    public void writeStartObject(Object forValue) throws IOException
+     void writeStartObject(Object forValue) throws IOException
     {
         writeStartObject();
         if (forValue != null) {
@@ -295,51 +296,51 @@ public abstract class GeneratorBase extends JsonGenerator
 
     /*
     /**********************************************************
-    /* Public API, write methods, textual
+    /*  API, write methods, textual
     /**********************************************************
      */
 
-    @Override public void writeFieldName(SerializableString name) throws IOException {
+    @Override  void writeFieldName(SerializableString name) throws IOException {
         writeFieldName(name.getValue());
     }
 
-    //public abstract void writeString(String text) throws IOException;
+    // abstract void writeString(String text) throws IOException;
 
-    //public abstract void writeString(char[] text, int offset, int len) throws IOException;
+    // abstract void writeString(char[] text, int offset, int len) throws IOException;
 
-    //public abstract void writeString(Reader reader, int len) throws IOException;
+    // abstract void writeString(Reader reader, int len) throws IOException;
 
-    //public abstract void writeRaw(String text) throws IOException,;
+    // abstract void writeRaw(String text) throws IOException,;
 
-    //public abstract void writeRaw(char[] text, int offset, int len) throws IOException;
+    // abstract void writeRaw(char[] text, int offset, int len) throws IOException;
 
     @Override
-    public void writeString(SerializableString text) throws IOException {
+     void writeString(SerializableString text) throws IOException {
         writeString(text.getValue());
     }
 
-    @Override public void writeRawValue(String text) throws IOException {
+    @Override  void writeRawValue(String text) throws IOException {
         _verifyValueWrite("write raw value");
         writeRaw(text);
     }
 
-    @Override public void writeRawValue(String text, int offset, int len) throws IOException {
+    @Override  void writeRawValue(String text, int offset, int len) throws IOException {
         _verifyValueWrite("write raw value");
         writeRaw(text, offset, len);
     }
 
-    @Override public void writeRawValue(char[] text, int offset, int len) throws IOException {
+    @Override  void writeRawValue(char[] text, int offset, int len) throws IOException {
         _verifyValueWrite("write raw value");
         writeRaw(text, offset, len);
     }
 
-    @Override public void writeRawValue(SerializableString text) throws IOException {
+    @Override  void writeRawValue(SerializableString text) throws IOException {
         _verifyValueWrite("write raw value");
         writeRaw(text);
     }
 
     @Override
-    public int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException {
+     int writeBinary(Base64Variant b64variant, InputStream data, int dataLength) throws IOException {
         // Let's implement this as "unsupported" to make it easier to add new parser impls
         _reportUnsupportedOperation();
         return 0;
@@ -347,30 +348,30 @@ public abstract class GeneratorBase extends JsonGenerator
 
     /*
     /**********************************************************
-    /* Public API, write methods, primitive
+    /*  API, write methods, primitive
     /**********************************************************
      */
 
     // Not implemented at this level, added as placeholders
 
      /*
-    public abstract void writeNumber(int i)
-    public abstract void writeNumber(long l)
-    public abstract void writeNumber(double d)
-    public abstract void writeNumber(float f)
-    public abstract void writeNumber(BigDecimal dec)
-    public abstract void writeBoolean(boolean state)
-    public abstract void writeNull()
+     abstract void writeNumber(int i)
+     abstract void writeNumber(long l)
+     abstract void writeNumber(double d)
+     abstract void writeNumber(float f)
+     abstract void writeNumber(BigDecimal dec)
+     abstract void writeBoolean(boolean state)
+     abstract void writeNull()
     */
 
     /*
     /**********************************************************
-    /* Public API, write methods, POJOs, trees
+    /*  API, write methods, POJOs, trees
     /**********************************************************
      */
 
     @Override
-    public void writeObject(Object value) throws IOException {
+     void writeObject(Object value) throws IOException {
         if (value == null) {
             // important: call method that does check value write:
             writeNull();
@@ -389,7 +390,7 @@ public abstract class GeneratorBase extends JsonGenerator
     }
 
     @Override
-    public void writeTree(TreeNode rootNode) throws IOException {
+     void writeTree(TreeNode rootNode) throws IOException {
         // As with 'writeObject()', we are not check if write would work
         if (rootNode == null) {
             writeNull();
@@ -403,13 +404,15 @@ public abstract class GeneratorBase extends JsonGenerator
 
     /*
     /**********************************************************
-    /* Public API, low-level output handling
+    /*  API, low-level output handling
     /**********************************************************
      */
 
-    @Override public abstract void flush() throws IOException;
-    @Override public void close() throws IOException { _closed = true; }
-    @Override public boolean isClosed() { return _closed; }
+    @Override
+    public abstract void flush() throws IOException;
+    @Override
+    public void close() throws IOException { _closed = true; }
+    @Override  boolean isClosed() { return _closed; }
 
     /*
     /**********************************************************

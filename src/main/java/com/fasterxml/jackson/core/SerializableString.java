@@ -21,7 +21,7 @@ import java.nio.ByteBuffer;
  *
  * @see SerializedString
  */
-public interface SerializableString
+ interface SerializableString
 {
     /**
      * Returns unquoted String that this object represents (and offers

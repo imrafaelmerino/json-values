@@ -12,11 +12,11 @@ import java.io.*;
  * if so, instance of this class can be given as the writer to
  * <code>JsonGenerator</code>.
  */
-public final class SegmentedStringWriter extends Writer
+ final class SegmentedStringWriter extends Writer
 {
     final private TextBuffer _buffer;
 
-    public SegmentedStringWriter(BufferRecycler br) {
+     SegmentedStringWriter(BufferRecycler br) {
         super();
         _buffer = new TextBuffer(br);
     }
@@ -47,8 +47,10 @@ public final class SegmentedStringWriter extends Writer
         return this;
     }
 
-    @Override public void close() { } // NOP
-    @Override public void flush() { } // NOP
+    @Override
+    public void close() { } // NOP
+    @Override
+    public void flush() { } // NOP
 
     @Override
     public void write(char[] cbuf) { _buffer.append(cbuf, 0, cbuf.length); }
@@ -80,7 +82,7 @@ public final class SegmentedStringWriter extends Writer
      *
      * @return String that contains all aggregated content
      */
-    public String getAndClear() {
+     String getAndClear() {
         String result = _buffer.contentsAsString();
         _buffer.releaseBuffers();
         return result;

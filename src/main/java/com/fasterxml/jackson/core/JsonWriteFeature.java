@@ -5,7 +5,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public enum JsonWriteFeature
+ enum JsonWriteFeature
     implements FormatFeature
 {
     // // // Support for non-standard data format constructs: comments
@@ -123,7 +123,7 @@ public enum JsonWriteFeature
      *
      * @return Bit mask of all features that are enabled by default
      */
-    public static int collectDefaults()
+     static int collectDefaults()
     {
         int flags = 0;
         for (JsonWriteFeature f : values()) {
@@ -148,5 +148,5 @@ public enum JsonWriteFeature
     @Override
     public boolean enabledIn(int flags) { return (flags & _mask) != 0; }
 
-    public JsonGenerator.Feature mappedFeature() { return _mappedFeature; }
+     JsonGenerator.Feature mappedFeature() { return _mappedFeature; }
 }

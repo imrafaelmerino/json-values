@@ -15,7 +15,7 @@ import java.util.*;
  *
  * @since 2.3
  */
-public class DupDetector
+ class DupDetector
 {
     /**
      * We need to store a back-reference here to parser/generator.
@@ -35,25 +35,25 @@ public class DupDetector
         _source = src;
     }
 
-    public static DupDetector rootDetector(JsonParser p) {
+     static DupDetector rootDetector(JsonParser p) {
         return new DupDetector(p);
     }
 
-    public static DupDetector rootDetector(JsonGenerator g) {
+     static DupDetector rootDetector(JsonGenerator g) {
         return new DupDetector(g);
     }
 
-    public DupDetector child() {
+     DupDetector child() {
         return new DupDetector(_source);
     }
 
-    public void reset() {
+     void reset() {
         _firstName = null;
         _secondName = null;
         _seen = null;
     }
 
-    public JsonLocation findLocation() {
+     JsonLocation findLocation() {
         // ugly but:
         if (_source instanceof JsonParser) {
             return ((JsonParser)_source).getCurrentLocation();
@@ -67,7 +67,7 @@ public class DupDetector
      *
      * @since 2.7
      */
-    public Object getSource() {
+     Object getSource() {
         return _source;
     }
 
@@ -83,7 +83,7 @@ public class DupDetector
      * @throws JsonParseException to report possible operation problem (default implementation
      *    never throws it)
      */
-    public boolean isDup(String name) throws JsonParseException
+     boolean isDup(String name) throws JsonParseException
     {
         if (_firstName == null) {
             _firstName = name;

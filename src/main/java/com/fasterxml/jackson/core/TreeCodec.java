@@ -8,10 +8,10 @@ import java.io.IOException;
  *
  * @since 2.3
  */
-public abstract class TreeCodec
+ abstract class TreeCodec
 {
-    public abstract <T extends TreeNode> T readTree(JsonParser p) throws IOException, JsonProcessingException;
-    public abstract void writeTree(JsonGenerator g, TreeNode tree) throws IOException, JsonProcessingException;
+     abstract <T extends TreeNode> T readTree(JsonParser p) throws IOException, JsonProcessingException;
+     abstract void writeTree(JsonGenerator g, TreeNode tree) throws IOException, JsonProcessingException;
 
     /**
      * @return Node that represents "missing" node during traversal: something
@@ -19,7 +19,7 @@ public abstract class TreeCodec
      *
      * @since 2.10
      */
-    public TreeNode missingNode() {
+     TreeNode missingNode() {
         return null;
     }
 
@@ -28,11 +28,11 @@ public abstract class TreeCodec
      *
      * @since 2.10
      */
-    public TreeNode nullNode() {
+     TreeNode nullNode() {
         return null;
     }
 
-    public abstract TreeNode createArrayNode();
-    public abstract TreeNode createObjectNode();
-    public abstract JsonParser treeAsTokens(TreeNode node);
+     abstract TreeNode createArrayNode();
+     abstract TreeNode createObjectNode();
+     abstract JsonParser treeAsTokens(TreeNode node);
 }

@@ -12,11 +12,11 @@ import static com.fasterxml.jackson.core.BigDecimalParser.MAX_CHARS_TO_REPORT;
  *
  * @since 2.15
  */
-public final class BigIntegerParser
+ final class BigIntegerParser
 {
     private BigIntegerParser() {}
 
-    public static BigInteger parseWithFastParser(final String valueStr) {
+     static BigInteger parseWithFastParser(final String valueStr) {
         try {
             return JavaBigIntegerParser.parseBigInteger(valueStr);
         } catch (NumberFormatException nfe) {
@@ -27,7 +27,7 @@ public final class BigIntegerParser
         }
     }
 
-    public static BigInteger parseWithFastParser(final String valueStr, final int radix) {
+     static BigInteger parseWithFastParser(final String valueStr, final int radix) {
         try {
             return JavaBigIntegerParser.parseBigInteger(valueStr, radix);
         } catch (NumberFormatException nfe) {

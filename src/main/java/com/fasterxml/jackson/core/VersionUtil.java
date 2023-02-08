@@ -23,7 +23,7 @@ import com.fasterxml.jackson.core.Versioned;
  * Note that functionality for reading "VERSION.txt" was removed completely
  * from Jackson 2.6.
  */
-public class VersionUtil
+ class VersionUtil
 {
     private final static Pattern V_SEP = Pattern.compile("[-_./;:]");
 
@@ -36,7 +36,7 @@ public class VersionUtil
     protected VersionUtil() { }
 
     @Deprecated // since 2.9
-    public Version version() { return Version.unknownVersion(); }
+     Version version() { return Version.unknownVersion(); }
 
     /*
     /**********************************************************************
@@ -48,7 +48,7 @@ public class VersionUtil
      * Loads version information by introspecting a class named
      * "PackageVersion" in the same package as the given class.
      *<p>
-     * If the class could not be found or does not have a public
+     * If the class could not be found or does not have a 
      * static Version field named "VERSION", returns "empty" {@link Version}
      * returned by {@link Version#unknownVersion()}.
      *
@@ -57,7 +57,7 @@ public class VersionUtil
      * @return Version information discovered if any;
      *  {@link Version#unknownVersion()} if none
      */
-    public static Version versionFor(Class<?> cls)
+     static Version versionFor(Class<?> cls)
     {
         Version v = null;
         try {
@@ -86,7 +86,7 @@ public class VersionUtil
      * @deprecated Since 2.12 simply use {@link #versionFor(Class)} instead
      */
     @Deprecated
-    public static Version packageVersionFor(Class<?> cls) {
+     static Version packageVersionFor(Class<?> cls) {
         return versionFor(cls);
     }
 
@@ -106,7 +106,7 @@ public class VersionUtil
      */
     @SuppressWarnings("resource")
     @Deprecated // since 2.6
-    public static Version mavenVersionFor(ClassLoader cl, String groupId, String artifactId)
+     static Version mavenVersionFor(ClassLoader cl, String groupId, String artifactId)
     {
         InputStream pomProperties = cl.getResourceAsStream("META-INF/maven/"
                 + groupId.replaceAll("\\.", "/")+ "/" + artifactId + "/pom.properties");
@@ -137,7 +137,7 @@ public class VersionUtil
      * @return Version instance constructed from parsed components, if successful;
      *    {@link Version#unknownVersion()} if parsing of components fail
      */
-    public static Version parseVersion(String s, String groupId, String artifactId)
+     static Version parseVersion(String s, String groupId, String artifactId)
     {
         if (s != null && (s = s.trim()).length() > 0) {
             String[] parts = V_SEP.split(s);
@@ -172,7 +172,7 @@ public class VersionUtil
     /**********************************************************************
      */
 
-    public final static void throwInternal() {
+     final static void throwInternal() {
         throw new RuntimeException("Internal error: this code path should never get executed");
     }
 }

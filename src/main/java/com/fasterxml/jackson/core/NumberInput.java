@@ -12,7 +12,7 @@ import java.math.BigInteger;
  * NOTE! Does NOT validate against maximum length limits: caller must
  * do that if and as necessary.
  */
-public final class NumberInput
+ final class NumberInput
 {
     // numbers with more than these characters are better parsed with BigDecimalParser
     // parsing numbers with many digits in Java is slower than O(n)
@@ -25,7 +25,7 @@ public final class NumberInput
      * @deprecated Since 2.14 -- do not use
      */
     @Deprecated // since 2.14
-    public final static String NASTY_SMALL_DOUBLE = "2.2250738585072012e-308";
+     final static String NASTY_SMALL_DOUBLE = "2.2250738585072012e-308";
 
     /**
      * Constants needed for parsing longs from basic int parsing methods
@@ -40,7 +40,7 @@ public final class NumberInput
      * regular 32-bit signed int type. This means that length is
      * between 1 and 9 digits (inclusive) and there is no sign character.
      *<p>
-     * Note: public to let unit tests call it; not meant to be used by any
+     * Note:  to let unit tests call it; not meant to be used by any
      * code outside this package.
      *
      * @param ch Buffer that contains integer value to decode
@@ -49,7 +49,7 @@ public final class NumberInput
      *
      * @return Decoded {@code int} value
      */
-    public static int parseInt(char[] ch, int off, int len)
+     static int parseInt(char[] ch, int off, int len)
     {
         if (len > 0 && ch[off] == '+') {
             off++;
@@ -92,7 +92,7 @@ public final class NumberInput
      *
      * @return Decoded {@code int} value
      */
-    public static int parseInt(String s)
+     static int parseInt(String s)
     {
         /* Ok: let's keep strategy simple: ignoring optional minus sign,
          * we'll accept 1 - 9 digits and parse things efficiently;
@@ -145,7 +145,7 @@ public final class NumberInput
         return neg ? -num : num;
     }
 
-    public static long parseLong(char[] ch, int off, int len)
+     static long parseLong(char[] ch, int off, int len)
     {
         // Note: caller must ensure length is [10, 18]
         int len1 = len-9;
@@ -170,7 +170,7 @@ public final class NumberInput
      *
      * @since 2.15.0
      */
-    public static long parseLong19(char[] ch, int off, boolean negative)
+     static long parseLong19(char[] ch, int off, boolean negative)
     {
         // Note: caller must ensure length is 19
         long num = 0L;
@@ -188,7 +188,7 @@ public final class NumberInput
      *
      * @return Decoded {@code long} value
      */
-    public static long parseLong(String s)
+     static long parseLong(String s)
     {
         // Ok, now; as the very first thing, let's just optimize case of "fake longs";
         // that is, if we know they must be ints, call int parsing
@@ -215,7 +215,7 @@ public final class NumberInput
      * @return {@code True} if specified String representation is within Java
      *   {@code long} range; {@code false} if not.
      */
-    public static boolean inLongRange(char[] ch, int off, int len,
+     static boolean inLongRange(char[] ch, int off, int len,
             boolean negative)
     {
         String cmpStr = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
@@ -243,7 +243,7 @@ public final class NumberInput
      * @return {@code True} if specified String representation is within Java
      *   {@code long} range; {@code false} if not.
      */
-    public static boolean inLongRange(String s, boolean negative)
+     static boolean inLongRange(String s, boolean negative)
     {
         String cmp = negative ? MIN_LONG_STR_NO_SIGN : MAX_LONG_STR;
         int cmpLen = cmp.length();
@@ -261,7 +261,7 @@ public final class NumberInput
         return true;
     }
 
-    public static int parseAsInt(String s, int def)
+     static int parseAsInt(String s, int def)
     {
         if (s == null) {
             return def;
@@ -300,7 +300,7 @@ public final class NumberInput
         return def;
     }
 
-    public static long parseAsLong(String s, long def)
+     static long parseAsLong(String s, long def)
     {
         if (s == null) {
             return def;
@@ -345,7 +345,7 @@ public final class NumberInput
      * @return closest matching double (or `def` if there is an issue with `s`) where useFastParser=false
      * @see #parseAsDouble(String, double, boolean)
      */
-    public static double parseAsDouble(final String s, final double def)
+     static double parseAsDouble(final String s, final double def)
     {
         return parseAsDouble(s, def, false);
     }
@@ -357,7 +357,7 @@ public final class NumberInput
      * @return closest matching double (or `def` if there is an issue with `s`)
      * @since 2.14
      */
-    public static double parseAsDouble(String s, final double def, final boolean useFastParser)
+     static double parseAsDouble(String s, final double def, final boolean useFastParser)
     {
         if (s == null) { return def; }
         s = s.trim();
@@ -377,7 +377,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a double where useFastParser=false
      * @see #parseDouble(String, boolean)
      */
-    public static double parseDouble(final String s) throws NumberFormatException {
+     static double parseDouble(final String s) throws NumberFormatException {
         return parseDouble(s, false);
     }
 
@@ -388,7 +388,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a double
      * @since v2.14
      */
-    public static double parseDouble(final String s, final boolean useFastParser) throws NumberFormatException {
+     static double parseDouble(final String s, final boolean useFastParser) throws NumberFormatException {
         return useFastParser ? JavaDoubleParser.parseDouble(s) : Double.parseDouble(s);
     }
 
@@ -399,7 +399,7 @@ public final class NumberInput
      * @see #parseFloat(String, boolean)
      * @since v2.14
      */
-    public static float parseFloat(final String s) throws NumberFormatException {
+     static float parseFloat(final String s) throws NumberFormatException {
         return parseFloat(s, false);
     }
 
@@ -410,7 +410,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a float
      * @since v2.14
      */
-    public static float parseFloat(final String s, final boolean useFastParser) throws NumberFormatException {
+     static float parseFloat(final String s, final boolean useFastParser) throws NumberFormatException {
         return useFastParser ? JavaFloatParser.parseFloat(s) : Float.parseFloat(s);
     }
 
@@ -419,7 +419,7 @@ public final class NumberInput
      * @return a BigDecimal
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      */
-    public static BigDecimal parseBigDecimal(final String s) throws NumberFormatException {
+     static BigDecimal parseBigDecimal(final String s) throws NumberFormatException {
         return BigDecimalParser.parse(s);
     }
 
@@ -430,7 +430,7 @@ public final class NumberInput
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      * @since v2.15
      */
-    public static BigDecimal parseBigDecimal(final String s, final boolean useFastParser) throws NumberFormatException {
+     static BigDecimal parseBigDecimal(final String s, final boolean useFastParser) throws NumberFormatException {
         return useFastParser ?
                 BigDecimalParser.parseWithFastParser(s) :
                 BigDecimalParser.parse(s);
@@ -443,7 +443,7 @@ public final class NumberInput
      * @return a BigDecimal
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      */
-    public static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len) throws NumberFormatException {
+     static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len) throws NumberFormatException {
         return BigDecimalParser.parse(ch, off, len);
     }
 
@@ -456,7 +456,7 @@ public final class NumberInput
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      * @since v2.15
      */
-    public static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len,
+     static BigDecimal parseBigDecimal(final char[] ch, final int off, final int len,
                                              final boolean useFastParser)
             throws NumberFormatException {
         return useFastParser ?
@@ -469,7 +469,7 @@ public final class NumberInput
      * @return a BigDecimal
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      */
-    public static BigDecimal parseBigDecimal(final char[] ch) throws NumberFormatException {
+     static BigDecimal parseBigDecimal(final char[] ch) throws NumberFormatException {
         return BigDecimalParser.parse(ch);
     }
 
@@ -480,7 +480,7 @@ public final class NumberInput
      * @throws NumberFormatException if the char array cannot be represented by a BigDecimal
      * @since v2.15
      */
-    public static BigDecimal parseBigDecimal(final char[] ch, final boolean useFastParser) throws NumberFormatException {
+     static BigDecimal parseBigDecimal(final char[] ch, final boolean useFastParser) throws NumberFormatException {
         return useFastParser ?
                 BigDecimalParser.parseWithFastParser(ch, 0, ch.length) :
                 BigDecimalParser.parse(ch);
@@ -492,7 +492,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a BigInteger
      * @since v2.14
      */
-    public static BigInteger parseBigInteger(final String s) throws NumberFormatException {
+     static BigInteger parseBigInteger(final String s) throws NumberFormatException {
         if (s.length() > LARGE_INT_SIZE) {
             return BigDecimalParser.parse(s).toBigInteger();
         }
@@ -506,7 +506,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a BigInteger
      * @since v2.15
      */
-    public static BigInteger parseBigInteger(final String s, final boolean useFastParser) throws NumberFormatException {
+     static BigInteger parseBigInteger(final String s, final boolean useFastParser) throws NumberFormatException {
         if (useFastParser) {
             return BigIntegerParser.parseWithFastParser(s);
         } else {
@@ -522,7 +522,7 @@ public final class NumberInput
      * @throws NumberFormatException if string cannot be represented by a BigInteger
      * @since v2.15
      */
-    public static BigInteger parseBigIntegerWithRadix(final String s, final int radix,
+     static BigInteger parseBigIntegerWithRadix(final String s, final int radix,
                                                       final boolean useFastParser) throws NumberFormatException {
         if (useFastParser) {
             return BigIntegerParser.parseWithFastParser(s, radix);

@@ -19,7 +19,7 @@ import java.io.IOException;
  * a stateless implementation; that is, a single instance can be
  * shared between threads.
  */
-public class MinimalPrettyPrinter
+ class MinimalPrettyPrinter
     implements PrettyPrinter, java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -37,16 +37,16 @@ public class MinimalPrettyPrinter
     /**********************************************************
      */
 
-    public MinimalPrettyPrinter() {
+     MinimalPrettyPrinter() {
         this(DEFAULT_ROOT_VALUE_SEPARATOR.toString());
     }
 
-    public MinimalPrettyPrinter(String rootValueSeparator) {
+     MinimalPrettyPrinter(String rootValueSeparator) {
         _rootValueSeparator = rootValueSeparator;
         _separators = DEFAULT_SEPARATORS;
     }
 
-    public void setRootValueSeparator(String sep) {
+     void setRootValueSeparator(String sep) {
         _rootValueSeparator = sep;
     }
 
@@ -57,7 +57,7 @@ public class MinimalPrettyPrinter
      *
      * @since 2.9
      */
-    public MinimalPrettyPrinter setSeparators(Separators separators) {
+     MinimalPrettyPrinter setSeparators(Separators separators) {
         _separators = separators;
         return this;
     }

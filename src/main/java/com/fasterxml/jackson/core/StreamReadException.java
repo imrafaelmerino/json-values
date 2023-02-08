@@ -8,7 +8,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public abstract class StreamReadException
+ abstract class StreamReadException
     extends JsonProcessingException
 {
     final static long serialVersionUID = 2L;
@@ -59,7 +59,7 @@ public abstract class StreamReadException
      *
      * @return This exception instance to allow call chaining
      */
-    public abstract StreamReadException withParser(JsonParser p);
+     abstract StreamReadException withParser(JsonParser p);
 
     /**
      * Fluent method that may be used to assign payload to this exception,
@@ -71,10 +71,10 @@ public abstract class StreamReadException
      *
      * @return This exception instance to allow call chaining
      */
-    public abstract StreamReadException withRequestPayload(RequestPayload payload);
+     abstract StreamReadException withRequestPayload(RequestPayload payload);
 
     @Override
-    public JsonParser getProcessor() {
+     JsonParser getProcessor() {
         return _processor;
     }
 
@@ -84,7 +84,7 @@ public abstract class StreamReadException
      *
      * @return request body, if payload was specified; `null` otherwise
      */
-    public RequestPayload getRequestPayload() {
+     RequestPayload getRequestPayload() {
         return _requestPayload;
     }
 
@@ -94,7 +94,7 @@ public abstract class StreamReadException
      *
      * @return request body as String, if payload was specified; `null` otherwise
      */
-    public String getRequestPayloadAsString() {
+     String getRequestPayloadAsString() {
         return (_requestPayload != null) ? _requestPayload.toString() : null;
     }
 

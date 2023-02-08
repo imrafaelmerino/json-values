@@ -22,7 +22,7 @@ import java.util.*;
  *    </li>
  * </ul>
  */
-public final class TextBuffer
+ final class TextBuffer
 {
     final static char[] NO_CHARS = new char[0];
 
@@ -118,7 +118,7 @@ public final class TextBuffer
     /**********************************************************
      */
 
-    public TextBuffer( BufferRecycler allocator) {
+     TextBuffer( BufferRecycler allocator) {
         _allocator = allocator;
     }
 
@@ -141,7 +141,7 @@ public final class TextBuffer
      *
      * @since 2.10
      */
-    public static TextBuffer fromInitial(char[] initialSegment) {
+     static TextBuffer fromInitial(char[] initialSegment) {
         return new TextBuffer(null, initialSegment);
     }
 
@@ -156,7 +156,7 @@ public final class TextBuffer
      * aggregated contents (that is, {@code _currentSegment}, to retain
      * current token text if (but only if!) already aggregated.
      */
-    public void releaseBuffers()
+     void releaseBuffers()
     {
         // inlined `resetWithEmpty()` (except leaving `_resultString` as-is
         {
@@ -188,7 +188,7 @@ public final class TextBuffer
      * Method called to clear out any content text buffer may have, and
      * initializes buffer to use non-shared data.
      */
-    public void resetWithEmpty()
+     void resetWithEmpty()
     {
         _inputStart = -1; // indicates shared buffer not used
         _currentSize = 0;
@@ -212,7 +212,7 @@ public final class TextBuffer
      *
      * @since 2.9
      */
-    public void resetWith(char ch)
+     void resetWith(char ch)
     {
         _inputStart = -1;
         _inputLen = 0;
@@ -239,7 +239,7 @@ public final class TextBuffer
      * @param offset Offset of the first content character in {@code buf}
      * @param len Length of content in {@code buf}
      */
-    public void resetWithShared(char[] buf, int offset, int len)
+     void resetWithShared(char[] buf, int offset, int len)
     {
         // First, let's clear intermediate values, if any:
         _resultString = null;
@@ -256,7 +256,7 @@ public final class TextBuffer
         }
     }
 
-    public void resetWithCopy(char[] buf, int offset, int len)
+     void resetWithCopy(char[] buf, int offset, int len)
     {
         _inputBuffer = null;
         _inputStart = -1; // indicates shared buffer not used
@@ -276,7 +276,7 @@ public final class TextBuffer
     }
 
     // @since 2.9
-    public void resetWithCopy(String text, int start, int len)
+     void resetWithCopy(String text, int start, int len)
     {
         _inputBuffer = null;
         _inputStart = -1;
@@ -294,7 +294,7 @@ public final class TextBuffer
         append(text, start, len);
     }
 
-    public void resetWithString(String value)
+     void resetWithString(String value)
     {
         _inputBuffer = null;
         _inputStart = -1;
@@ -318,7 +318,7 @@ public final class TextBuffer
      *
      * @since 2.9
      */
-    public char[] getBufferWithoutReset() {
+     char[] getBufferWithoutReset() {
         return _currentSegment;
     }
 
@@ -330,7 +330,7 @@ public final class TextBuffer
      * @return token as text
      * @since 2.15
      */
-    public String finishAndReturn(int lastSegmentEnd, boolean trimTrailingSpaces)
+     String finishAndReturn(int lastSegmentEnd, boolean trimTrailingSpaces)
     {
         if (trimTrailingSpaces) {
             // First, see if it's enough to trim end of current segment:
@@ -392,14 +392,14 @@ public final class TextBuffer
 
     /*
     /**********************************************************
-    /* Accessors for implementing public interface
+    /* Accessors for implementing  interface
     /**********************************************************
      */
 
     /**
      * @return Number of characters currently stored in this buffer
      */
-    public int size() {
+     int size() {
         if (_inputStart >= 0) { // shared copy from input buf
             return _inputLen;
         }
@@ -413,7 +413,7 @@ public final class TextBuffer
         return _segmentSize + _currentSize;
     }
 
-    public int getTextOffset() {
+     int getTextOffset() {
         /* Only shared input buffer can have non-zero offset; buffer
          * segments start at 0, and if we have to create a combo buffer,
          * that too will start from beginning of the buffer
@@ -428,7 +428,7 @@ public final class TextBuffer
      * @return {@code True} if access via {@link #getTextBuffer()} would be efficient
      *   (that is, content already available as aggregated {@code char[]})
      */
-    public boolean hasTextAsCharacters()
+     boolean hasTextAsCharacters()
     {
         // if we have array in some form, sure
         if (_inputStart >= 0 || _resultArray != null)  return true;
@@ -444,7 +444,7 @@ public final class TextBuffer
      *
      * @return Aggregated {@code char[]} that contains all buffered content
      */
-    public char[] getTextBuffer()
+     char[] getTextBuffer()
     {
         // Are we just using shared input buffer?
         if (_inputStart >= 0) return _inputBuffer;
@@ -473,7 +473,7 @@ public final class TextBuffer
      *
      * @return Aggregated buffered contents as a {@link String}
      */
-    public String contentsAsString()
+     String contentsAsString()
     {
         if (_resultString == null) {
             // Has array been requested? Can make a shortcut, if so:
@@ -513,7 +513,7 @@ public final class TextBuffer
         return _resultString;
     }
 
-    public char[] contentsAsArray() {
+     char[] contentsAsArray() {
         char[] result = _resultArray;
         if (result == null) {
             _resultArray = result = resultArray();
@@ -532,17 +532,17 @@ public final class TextBuffer
      *
      * @since 2.14
      */
-    public double contentsAsDouble(final boolean useFastParser) throws NumberFormatException {
+     double contentsAsDouble(final boolean useFastParser) throws NumberFormatException {
         return NumberInput.parseDouble(contentsAsString(), useFastParser);
     }
 
     @Deprecated // @since 2.14
-    public double contentsAsDouble() throws NumberFormatException {
+     double contentsAsDouble() throws NumberFormatException {
         return contentsAsDouble(false);
     }
 
     @Deprecated // @since 2.14
-    public float contentsAsFloat() throws NumberFormatException {
+     float contentsAsFloat() throws NumberFormatException {
         return contentsAsFloat(false);
     }
 
@@ -556,7 +556,7 @@ public final class TextBuffer
      * @throws NumberFormatException if contents are not a valid Java number
      * @since 2.14
      */
-    public float contentsAsFloat(boolean useFastParser) throws NumberFormatException {
+     float contentsAsFloat(boolean useFastParser) throws NumberFormatException {
         final String numStr = contentsAsString();
         return NumberInput.parseFloat(numStr, useFastParser);
     }
@@ -569,7 +569,7 @@ public final class TextBuffer
      *   directly instead
      */
     @Deprecated
-    public BigDecimal contentsAsDecimal() throws NumberFormatException {
+     BigDecimal contentsAsDecimal() throws NumberFormatException {
         // Was more optimized earlier, removing special handling due to deprecation
         return NumberInput.parseBigDecimal(contentsAsArray());
     }
@@ -589,7 +589,7 @@ public final class TextBuffer
      *
      * @since 2.9
      */
-    public int contentsAsInt(boolean neg) {
+     int contentsAsInt(boolean neg) {
         if ((_inputStart >= 0) && (_inputBuffer != null)) {
             if (neg) {
                 return -NumberInput.parseInt(_inputBuffer, _inputStart+1, _inputLen-1);
@@ -617,7 +617,7 @@ public final class TextBuffer
      *
      * @since 2.9
      */
-    public long contentsAsLong(boolean neg) {
+     long contentsAsLong(boolean neg) {
         if ((_inputStart >= 0) && (_inputBuffer != null)) {
             if (neg) {
                 return -NumberInput.parseLong(_inputBuffer, _inputStart+1, _inputLen-1);
@@ -641,7 +641,7 @@ public final class TextBuffer
      *
      * @since 2.8
      */
-    public int contentsToWriter(Writer w) throws IOException
+     int contentsToWriter(Writer w) throws IOException
     {
         if (_resultArray != null) {
             w.write(_resultArray);
@@ -679,7 +679,7 @@ public final class TextBuffer
 
     /*
     /**********************************************************
-    /* Public mutators:
+    /*  mutators:
     /**********************************************************
      */
 
@@ -687,13 +687,13 @@ public final class TextBuffer
      * Method called to make sure that buffer is not using shared input
      * buffer; if it is, it will copy such contents to private buffer.
      */
-    public void ensureNotShared() {
+     void ensureNotShared() {
         if (_inputStart >= 0) {
             unshare(16);
         }
     }
 
-    public void append(char c) {
+     void append(char c) {
         // Using shared buffer so far?
         if (_inputStart >= 0) {
             unshare(16);
@@ -709,7 +709,7 @@ public final class TextBuffer
         curr[_currentSize++] = c;
     }
 
-    public void append(char[] c, int start, int len)
+     void append(char[] c, int start, int len)
     {
         // Can't append to shared buf (sanity check)
         if (_inputStart >= 0) {
@@ -745,7 +745,7 @@ public final class TextBuffer
         } while (len > 0);
     }
 
-    public void append(String str, int offset, int len)
+     void append(String str, int offset, int len)
     {
         // Can't append to shared buf (sanity check)
         if (_inputStart >= 0) {
@@ -786,7 +786,7 @@ public final class TextBuffer
     /**********************************************************
      */
 
-    public char[] getCurrentSegment()
+     char[] getCurrentSegment()
     {
         /* Since the intention of the caller is to directly add stuff into
          * buffers, we should NOT have anything in shared buffer... ie. may
@@ -806,7 +806,7 @@ public final class TextBuffer
         return _currentSegment;
     }
 
-    public char[] emptyAndGetCurrentSegment()
+     char[] emptyAndGetCurrentSegment()
     {
         // inlined 'resetWithEmpty()'
         _inputStart = -1; // indicates shared buffer not used
@@ -828,8 +828,8 @@ public final class TextBuffer
         return curr;
     }
 
-    public int getCurrentSegmentSize() { return _currentSize; }
-    public void setCurrentLength(int len) { _currentSize = len; }
+     int getCurrentSegmentSize() { return _currentSize; }
+     void setCurrentLength(int len) { _currentSize = len; }
 
     /**
      * Convenience method that finishes the current active content segment
@@ -843,7 +843,7 @@ public final class TextBuffer
      *
      * @since 2.6
      */
-    public String setCurrentAndReturn(int len) {
+     String setCurrentAndReturn(int len) {
         _currentSize = len;
         // We can simplify handling here compared to full `contentsAsString()`:
         if (_segmentSize > 0) { // longer text; call main method
@@ -856,7 +856,7 @@ public final class TextBuffer
         return str;
     }
 
-    public char[] finishCurrentSegment() {
+     char[] finishCurrentSegment() {
         if (_segments == null) {
             _segments = new ArrayList<char[]>();
         }
@@ -886,7 +886,7 @@ public final class TextBuffer
      *
      * @return Expanded current segment
      */
-    public char[] expandCurrentSegment()
+     char[] expandCurrentSegment()
     {
         final char[] curr = _currentSegment;
         // Let's grow by 50% by default
@@ -910,7 +910,7 @@ public final class TextBuffer
      *
      * @since 2.4
      */
-    public char[] expandCurrentSegment(int minSize) {
+     char[] expandCurrentSegment(int minSize) {
         char[] curr = _currentSegment;
         if (curr.length >= minSize) return curr;
         _currentSegment = curr = Arrays.copyOf(curr, minSize);
@@ -928,7 +928,8 @@ public final class TextBuffer
      * {@link #contentsAsString}, since it's not guaranteed that resulting
      * String is cached.
      */
-    @Override public String toString() { return contentsAsString(); }
+    @Override
+    public String toString() { return contentsAsString(); }
 
     /*
     /**********************************************************

@@ -20,19 +20,19 @@ import java.io.IOException;
  * state corruption.
  * Stateless implementations need not do this; but those are less common.
  */
-public interface PrettyPrinter
+ interface PrettyPrinter
 {
     /**
      * @since 2.9
      */
-    public final static Separators DEFAULT_SEPARATORS = Separators.createDefaultInstance();
+     final static Separators DEFAULT_SEPARATORS = Separators.createDefaultInstance();
 
     /**
      * Default String used for separating root values is single space.
      *
      * @since 2.9
      */
-    public final static SerializedString DEFAULT_ROOT_VALUE_SEPARATOR = new SerializedString(" ");
+     final static SerializedString DEFAULT_ROOT_VALUE_SEPARATOR = new SerializedString(" ");
 
     /*
     /**********************************************************

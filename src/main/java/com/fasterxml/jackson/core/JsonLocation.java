@@ -15,7 +15,7 @@ package com.fasterxml.jackson.core;
  * Instead if would make sense to explicitly implementing equality checks
  * using specific criteria caller desires.
  */
-public class JsonLocation
+ class JsonLocation
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 2L; // in 2.13
@@ -24,7 +24,7 @@ public class JsonLocation
      * @deprecated Since 2.13 use {@link ContentReference#DEFAULT_MAX_CONTENT_SNIPPET} instead
      */
     @Deprecated
-    public static final int MAX_CONTENT_SNIPPET = 500;
+     static final int MAX_CONTENT_SNIPPET = 500;
 
     /**
      * Shared immutable "N/A location" that can be returned to indicate
@@ -33,7 +33,7 @@ public class JsonLocation
      * NOTE: before 2.9, Location was given as String "N/A"; with 2.9 it was
      * removed so that source should be indicated as "UNKNOWN".
      */
-    public final static JsonLocation NA = new JsonLocation(ContentReference.unknown(),
+     final static JsonLocation NA = new JsonLocation(ContentReference.unknown(),
             -1L, -1L, -1, -1);
 
     protected final long _totalBytes;
@@ -64,13 +64,13 @@ public class JsonLocation
     /**********************************************************************
      */
 
-    public JsonLocation(ContentReference contentRef, long totalChars,
+     JsonLocation(ContentReference contentRef, long totalChars,
             int lineNr, int colNr)
     {
         this(contentRef, -1L, totalChars, lineNr, colNr);
     }
 
-    public JsonLocation(ContentReference contentRef, long totalBytes, long totalChars,
+     JsonLocation(ContentReference contentRef, long totalBytes, long totalChars,
             int lineNr, int columnNr)
     {
         // 14-Mar-2021, tatu: Defensive programming, but also for convenience...
@@ -85,12 +85,12 @@ public class JsonLocation
     }
 
     @Deprecated // since 2.13
-    public JsonLocation(Object srcRef, long totalChars, int lineNr, int columnNr) {
+     JsonLocation(Object srcRef, long totalChars, int lineNr, int columnNr) {
         this(_wrap(srcRef), totalChars, lineNr, columnNr);
     }
 
     @Deprecated // since 2.13
-    public JsonLocation(Object srcRef, long totalBytes, long totalChars,
+     JsonLocation(Object srcRef, long totalBytes, long totalChars,
             int lineNr, int columnNr) {
         this(_wrap(srcRef), totalBytes, totalChars, lineNr, columnNr);
     }
@@ -120,7 +120,7 @@ public class JsonLocation
      *
      * @since 2.13 (to replace {@code getSourceRef})
      */
-    public ContentReference contentReference() {
+     ContentReference contentReference() {
         return _contentReference;
     }
 
@@ -137,7 +137,7 @@ public class JsonLocation
      * @deprecated Since 2.13 Use {@link #contentReference} instead
      */
     @Deprecated
-    public Object getSourceRef() {
+     Object getSourceRef() {
         return _contentReference.getRawContent();
     }
 
@@ -147,7 +147,7 @@ public class JsonLocation
      *
      * @return Line number of the location (1-based), if available; {@code -1} if not.
      */
-    public int getLineNr() { return _lineNr; }
+     int getLineNr() { return _lineNr; }
 
     /**
      * Access for getting column position of this location, if available.
@@ -155,19 +155,19 @@ public class JsonLocation
      *
      * @return Column position of the location (1-based), if available; {@code -1} if not.
      */
-    public int getColumnNr() { return _columnNr; }
+     int getColumnNr() { return _columnNr; }
 
     /**
      * @return Character offset within underlying stream, reader or writer,
      *   if available; {@code -1} if not.
      */
-    public long getCharOffset() { return _totalChars; }
+     long getCharOffset() { return _totalChars; }
 
     /**
      * @return Byte offset within underlying stream, reader or writer,
      *   if available; {@code -1} if not.
      */
-    public long getByteOffset() { return _totalBytes; }
+     long getByteOffset() { return _totalBytes; }
 
     /**
      * Accessor for getting a textual description of source reference
@@ -183,7 +183,7 @@ public class JsonLocation
      *
      * @since 2.9
      */
-    public String sourceDescription() {
+     String sourceDescription() {
         // 04-Apr-2021, tatu: Construct lazily but retain
         if (_sourceDescription == null) {
             _sourceDescription = _contentReference.buildSourceDescription();
@@ -200,12 +200,12 @@ public class JsonLocation
      *
      * @since 2.13
      */
-    public String offsetDescription() {
+     String offsetDescription() {
         return appendOffsetDescription(new StringBuilder(40)).toString();
     }
 
     // @since 2.13
-    public StringBuilder appendOffsetDescription(StringBuilder sb)
+     StringBuilder appendOffsetDescription(StringBuilder sb)
     {
         // 04-Apr-2021, tatu: [core#694] For binary content, we have no line
         //    number or column position indicators; try using what we do have

@@ -10,18 +10,18 @@ package com.fasterxml.jackson.core;
  * (content that does not conform to JSON syntax as per specification)
  * is encountered.
  */
-public class JsonParseException
+ class JsonParseException
     extends StreamReadException
 {
     private static final long serialVersionUID = 2L; // 2.7
 
     @Deprecated // since 2.7
-    public JsonParseException(String msg, JsonLocation loc) {
+     JsonParseException(String msg, JsonLocation loc) {
         super(msg, loc, null);
     }
 
     @Deprecated // since 2.7
-    public JsonParseException(String msg, JsonLocation loc, Throwable root) {
+     JsonParseException(String msg, JsonLocation loc, Throwable root) {
         super(msg, loc, root);
     }
 
@@ -35,22 +35,22 @@ public class JsonParseException
      *
      * @since 2.7
      */
-    public JsonParseException(JsonParser p, String msg) {
+     JsonParseException(JsonParser p, String msg) {
         super(p, msg);
     }
 
     // @since 2.7
-    public JsonParseException(JsonParser p, String msg, Throwable root) {
+     JsonParseException(JsonParser p, String msg, Throwable root) {
         super(p, msg, root);
     }
 
     // @since 2.7
-    public JsonParseException(JsonParser p, String msg, JsonLocation loc) {
+     JsonParseException(JsonParser p, String msg, JsonLocation loc) {
         super(p, msg, loc);
     }
 
     // @since 2.7
-    public JsonParseException(JsonParser p, String msg, JsonLocation loc, Throwable root) {
+     JsonParseException(JsonParser p, String msg, JsonLocation loc, Throwable root) {
         super(msg, loc, root);
     }
 
@@ -67,7 +67,7 @@ public class JsonParseException
      * @since 2.7
      */
     @Override
-    public JsonParseException withParser(JsonParser p) {
+     JsonParseException withParser(JsonParser p) {
         _processor = p;
         return this;
     }
@@ -85,26 +85,26 @@ public class JsonParseException
      * @since 2.8
      */
     @Override
-    public JsonParseException withRequestPayload(RequestPayload payload) {
+     JsonParseException withRequestPayload(RequestPayload payload) {
         _requestPayload = payload;
         return this;
     }
 
     // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
     @Override
-    public JsonParser getProcessor() {
+     JsonParser getProcessor() {
         return super.getProcessor();
     }
 
     // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
     @Override
-    public RequestPayload getRequestPayload() {
+     RequestPayload getRequestPayload() {
         return super.getRequestPayload();
     }
 
     // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
     @Override
-    public String getRequestPayloadAsString() {
+     String getRequestPayloadAsString() {
         return super.getRequestPayloadAsString();
     }
 

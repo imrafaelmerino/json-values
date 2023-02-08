@@ -6,7 +6,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public abstract class TSFBuilder<F extends JsonFactory,
+ abstract class TSFBuilder<F extends JsonFactory,
     B extends TSFBuilder<F,B>>
 {
     /*
@@ -110,37 +110,37 @@ public abstract class TSFBuilder<F extends JsonFactory,
 
     // // // Accessors
 
-    public int factoryFeaturesMask() { return _factoryFeatures; }
-    public int streamReadFeatures() { return _streamReadFeatures; }
-    public int streamWriteFeatures() { return _streamWriteFeatures; }
+     int factoryFeaturesMask() { return _factoryFeatures; }
+     int streamReadFeatures() { return _streamReadFeatures; }
+     int streamWriteFeatures() { return _streamWriteFeatures; }
 
-    public InputDecorator inputDecorator() { return _inputDecorator; }
-    public OutputDecorator outputDecorator() { return _outputDecorator; }
+     InputDecorator inputDecorator() { return _inputDecorator; }
+     OutputDecorator outputDecorator() { return _outputDecorator; }
 
     // // // Factory features
 
-    public B enable(JsonFactory.Feature f) {
+     B enable(JsonFactory.Feature f) {
         _factoryFeatures |= f.getMask();
         return _this();
     }
 
-    public B disable(JsonFactory.Feature f) {
+     B disable(JsonFactory.Feature f) {
         _factoryFeatures &= ~f.getMask();
         return _this();
     }
 
-    public B configure(JsonFactory.Feature f, boolean state) {
+     B configure(JsonFactory.Feature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
     // // // StreamReadFeatures (replacement of non-json-specific parser features)
 
-    public B enable(StreamReadFeature f) {
+     B enable(StreamReadFeature f) {
         _streamReadFeatures |= f.mappedFeature().getMask();
         return _this();
     }
 
-    public B enable(StreamReadFeature first, StreamReadFeature... other) {
+     B enable(StreamReadFeature first, StreamReadFeature... other) {
         _streamReadFeatures |= first.mappedFeature().getMask();
         for (StreamReadFeature f : other) {
             _streamReadFeatures |= f.mappedFeature().getMask();
@@ -148,12 +148,12 @@ public abstract class TSFBuilder<F extends JsonFactory,
         return _this();
     }
 
-    public B disable(StreamReadFeature f) {
+     B disable(StreamReadFeature f) {
         _streamReadFeatures &= ~f.mappedFeature().getMask();
         return _this();
     }
 
-    public B disable(StreamReadFeature first, StreamReadFeature... other) {
+     B disable(StreamReadFeature first, StreamReadFeature... other) {
         _streamReadFeatures &= ~first.mappedFeature().getMask();
         for (StreamReadFeature f : other) {
             _streamReadFeatures &= ~f.mappedFeature().getMask();
@@ -161,18 +161,18 @@ public abstract class TSFBuilder<F extends JsonFactory,
         return _this();
     }
 
-    public B configure(StreamReadFeature f, boolean state) {
+     B configure(StreamReadFeature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
     // // // StreamWriteFeatures (replacement of non-json-specific generator features)
 
-    public B enable(StreamWriteFeature f) {
+     B enable(StreamWriteFeature f) {
         _streamWriteFeatures |= f.mappedFeature().getMask();
         return _this();
     }
 
-    public B enable(StreamWriteFeature first, StreamWriteFeature... other) {
+     B enable(StreamWriteFeature first, StreamWriteFeature... other) {
         _streamWriteFeatures |= first.mappedFeature().getMask();
         for (StreamWriteFeature f : other) {
             _streamWriteFeatures |= f.mappedFeature().getMask();
@@ -180,12 +180,12 @@ public abstract class TSFBuilder<F extends JsonFactory,
         return _this();
     }
 
-    public B disable(StreamWriteFeature f) {
+     B disable(StreamWriteFeature f) {
         _streamWriteFeatures &= ~f.mappedFeature().getMask();
         return _this();
     }
 
-    public B disable(StreamWriteFeature first, StreamWriteFeature... other) {
+     B disable(StreamWriteFeature first, StreamWriteFeature... other) {
         _streamWriteFeatures &= ~first.mappedFeature().getMask();
         for (StreamWriteFeature f : other) {
             _streamWriteFeatures &= ~f.mappedFeature().getMask();
@@ -193,7 +193,7 @@ public abstract class TSFBuilder<F extends JsonFactory,
         return _this();
     }
 
-    public B configure(StreamWriteFeature f, boolean state) {
+     B configure(StreamWriteFeature f, boolean state) {
         return state ? enable(f) : disable(f);
     }
 
@@ -206,23 +206,23 @@ public abstract class TSFBuilder<F extends JsonFactory,
 
     // // // JSON-specific, reads
 
-    public B enable(JsonReadFeature f) {
+     B enable(JsonReadFeature f) {
         return _failNonJSON(f);
     }
 
-    public B enable(JsonReadFeature first, JsonReadFeature... other) {
+     B enable(JsonReadFeature first, JsonReadFeature... other) {
         return _failNonJSON(first);
     }
 
-    public B disable(JsonReadFeature f) {
+     B disable(JsonReadFeature f) {
         return _failNonJSON(f);
     }
 
-    public B disable(JsonReadFeature first, JsonReadFeature... other) {
+     B disable(JsonReadFeature first, JsonReadFeature... other) {
         return _failNonJSON(first);
     }
 
-    public B configure(JsonReadFeature f, boolean state) {
+     B configure(JsonReadFeature f, boolean state) {
         return _failNonJSON(f);
     }
 
@@ -233,34 +233,34 @@ public abstract class TSFBuilder<F extends JsonFactory,
 
     // // // JSON-specific, writes
 
-    public B enable(JsonWriteFeature f) {
+     B enable(JsonWriteFeature f) {
         return _failNonJSON(f);
     }
 
-    public B enable(JsonWriteFeature first, JsonWriteFeature... other) {
+     B enable(JsonWriteFeature first, JsonWriteFeature... other) {
         return _failNonJSON(first);
     }
 
-    public B disable(JsonWriteFeature f) {
+     B disable(JsonWriteFeature f) {
         return _failNonJSON(f);
     }
 
-    public B disable(JsonWriteFeature first, JsonWriteFeature... other) {
+     B disable(JsonWriteFeature first, JsonWriteFeature... other) {
         return _failNonJSON(first);
     }
 
-    public B configure(JsonWriteFeature f, boolean state) {
+     B configure(JsonWriteFeature f, boolean state) {
         return _failNonJSON(f);
     }
 
     // // // Other configuration
 
-    public B inputDecorator(InputDecorator dec) {
+     B inputDecorator(InputDecorator dec) {
         _inputDecorator = dec;
         return _this();
     }
 
-    public B outputDecorator(OutputDecorator dec) {
+     B outputDecorator(OutputDecorator dec) {
         _outputDecorator = dec;
         return _this();
     }
@@ -272,7 +272,7 @@ public abstract class TSFBuilder<F extends JsonFactory,
      * @return this factory
      * @since 2.15
      */
-    public B streamReadConstraints(StreamReadConstraints streamReadConstraints) {
+     B streamReadConstraints(StreamReadConstraints streamReadConstraints) {
         _streamReadConstraints = streamReadConstraints;
         return _this();
     }
@@ -285,7 +285,7 @@ public abstract class TSFBuilder<F extends JsonFactory,
      *
      * @return {@link TokenStreamFactory} build based on current configuration
      */
-    public abstract F build();
+     abstract F build();
 
     // silly convenience cast method we need
     @SuppressWarnings("unchecked")

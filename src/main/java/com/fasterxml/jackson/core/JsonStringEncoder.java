@@ -11,7 +11,7 @@ import java.util.Arrays;
  * Reason is that conversion method results are expected to be cached so that
  * these methods will not be hot spots during normal operation.
  */
-public final class JsonStringEncoder
+ final class JsonStringEncoder
 {
     /*
     /**********************************************************************
@@ -46,7 +46,7 @@ public final class JsonStringEncoder
     // Since 2.10 we have stateless singleton and NO fancy ThreadLocal/SofRef caching!!!
     private final static JsonStringEncoder instance = new JsonStringEncoder();
 
-    public JsonStringEncoder() { }
+     JsonStringEncoder() { }
 
     /**
      * Factory method for getting an instance; this is either recycled per-thread instance,
@@ -54,13 +54,13 @@ public final class JsonStringEncoder
      *
      * @return Static stateless encoder instance
      */
-    public static JsonStringEncoder getInstance() {
+     static JsonStringEncoder getInstance() {
         return instance;
     }
 
     /*
     /**********************************************************************
-    /* Public API
+    /*  API
     /**********************************************************************
      */
 
@@ -72,7 +72,7 @@ public final class JsonStringEncoder
      *
      * @return JSON-escaped String matching {@code input}
      */
-    public char[] quoteAsString(String input)
+     char[] quoteAsString(String input)
     {
         final int inputLen = input.length();
         char[] outputBuffer = new char[_initialCharBufSize(inputLen)];
@@ -147,7 +147,7 @@ public final class JsonStringEncoder
      *
      * @since 2.10
      */
-    public char[] quoteAsString(CharSequence input)
+     char[] quoteAsString(CharSequence input)
     {
         // 15-Aug-2019, tatu: Optimize common case as JIT can't get rid of overhead otherwise
         if (input instanceof String) {
@@ -229,7 +229,7 @@ public final class JsonStringEncoder
      *
      * @since 2.8
      */
-    public void quoteAsString(CharSequence input, StringBuilder output)
+     void quoteAsString(CharSequence input, StringBuilder output)
     {
         final int[] escCodes = CharTypes.get7BitOutputEscapes();
         final int escCodeCount = escCodes.length;
@@ -273,7 +273,7 @@ public final class JsonStringEncoder
      * @return UTF-8 encoded bytes of JSON-escaped {@code text}
      */
     @SuppressWarnings("resource")
-    public byte[] quoteAsUTF8(String text)
+     byte[] quoteAsUTF8(String text)
     {
         int inputPtr = 0;
         int inputEnd = text.length();
@@ -379,7 +379,7 @@ public final class JsonStringEncoder
      * @return UTF-8 encoded bytes of {@code text} (without any escaping)
      */
     @SuppressWarnings("resource")
-    public byte[] encodeAsUTF8(String text)
+     byte[] encodeAsUTF8(String text)
     {
         int inputPtr = 0;
         int inputEnd = text.length();
@@ -480,7 +480,7 @@ public final class JsonStringEncoder
      * @since 2.11
      */
     @SuppressWarnings("resource")
-    public byte[] encodeAsUTF8(CharSequence text)
+     byte[] encodeAsUTF8(CharSequence text)
     {
         int inputPtr = 0;
         int inputEnd = text.length();

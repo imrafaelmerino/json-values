@@ -19,7 +19,7 @@ import java.util.Objects;
  *
  * @since 2.13
  */
-public class ContentReference
+ class ContentReference
     // sort of: we will read back as "UNKNOWN"
     implements java.io.Serializable
 {
@@ -42,7 +42,7 @@ public class ContentReference
      *
      * @since 2.9
      */
-    public static final int DEFAULT_MAX_CONTENT_SNIPPET = 500;
+     static final int DEFAULT_MAX_CONTENT_SNIPPET = 500;
 
     /**
      * Reference to the actual underlying content.
@@ -96,15 +96,15 @@ public class ContentReference
      * @return Placeholder "unknown" (or "empty") instance to use instead of
      *    {@code null} reference
      */
-    public static ContentReference unknown() {
+     static ContentReference unknown() {
         return UNKNOWN_CONTENT;
     }
 
-    public static ContentReference construct(boolean isContentTextual, Object rawContent) {
+     static ContentReference construct(boolean isContentTextual, Object rawContent) {
         return new ContentReference(isContentTextual, rawContent);
     }
 
-    public static ContentReference construct(boolean isContentTextual, Object rawContent,
+     static ContentReference construct(boolean isContentTextual, Object rawContent,
             int offset, int length) {
         return new ContentReference(isContentTextual, rawContent, offset, length);
     }
@@ -121,7 +121,7 @@ public class ContentReference
      * @return Instance with minimal information about content (basically just
      *    raw content reference without offsets
      */
-    public static ContentReference rawReference(boolean isContentTextual,
+     static ContentReference rawReference(boolean isContentTextual,
             Object rawContent)
     {
         // Just to avoid russian-doll-nesting, let's:
@@ -131,7 +131,7 @@ public class ContentReference
         return new ContentReference(isContentTextual, rawContent);
     }
 
-    public static ContentReference rawReference(Object rawContent) {
+     static ContentReference rawReference(Object rawContent) {
         return rawReference(false, rawContent);
     }
 
@@ -162,16 +162,16 @@ public class ContentReference
     /**********************************************************************
      */
 
-    public boolean hasTextualContent() {
+     boolean hasTextualContent() {
         return _isContentTextual;
     }
 
-    public Object getRawContent() {
+     Object getRawContent() {
         return _rawContent;
     }
 
-    public int contentOffset() { return _offset; }
-    public int contentLength() { return _length; }
+     int contentOffset() { return _offset; }
+     int contentLength() { return _length; }
 
     /**
      * Internal accessor, overridable, used for checking length (in units in
@@ -196,7 +196,7 @@ public class ContentReference
      *
      * @return Description constructed
      */
-    public String buildSourceDescription() {
+     String buildSourceDescription() {
         return appendSourceDescription(new StringBuilder(200)).toString();
     }
 
@@ -208,7 +208,7 @@ public class ContentReference
      *
      * @return StringBuilder passed as argument (for call chaining)
      */
-    public StringBuilder appendSourceDescription(StringBuilder sb)
+     StringBuilder appendSourceDescription(StringBuilder sb)
     {
         final Object srcRef = getRawContent();
 

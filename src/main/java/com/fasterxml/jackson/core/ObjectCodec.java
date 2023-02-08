@@ -19,7 +19,7 @@ import java.util.Iterator;
  * <code>com.fasterxml.jackson.databind.ObjectMapper</code>,
  * defined in the "jackson-databind".
  */
-public abstract class ObjectCodec
+ abstract class ObjectCodec
     extends TreeCodec // since 2.3
     implements Versioned // since 2.3
 {
@@ -55,7 +55,7 @@ public abstract class ObjectCodec
      * @throws IOException for low-level read issues, or
      *   {@link JsonParseException} for decoding problems
      */
-    public abstract <T> T readValue(JsonParser p, Class<T> valueType)
+     abstract <T> T readValue(JsonParser p, Class<T> valueType)
         throws IOException;
 
 
@@ -73,7 +73,7 @@ public abstract class ObjectCodec
      * @throws IOException for low-level read issues, or
      *   {@link JsonParseException} for decoding problems
      */
-    public abstract <T> Iterator<T> readValues(JsonParser p, Class<T> valueType)
+     abstract <T> Iterator<T> readValues(JsonParser p, Class<T> valueType)
         throws IOException;
 
 
@@ -94,7 +94,7 @@ public abstract class ObjectCodec
      * @throws IOException for low-level write issues, or
      *   {@link JsonGenerationException} for decoding problems
      */
-    public abstract void writeValue(JsonGenerator gen, Object value) throws IOException;
+     abstract void writeValue(JsonGenerator gen, Object value) throws IOException;
 
     /*
     /**********************************************************
@@ -116,7 +116,7 @@ public abstract class ObjectCodec
      *   {@link JsonParseException} for decoding problems
      */
     @Override
-    public abstract <T extends TreeNode> T readTree(JsonParser p) throws IOException;
+     abstract <T extends TreeNode> T readTree(JsonParser p) throws IOException;
 
     /**
      * Method for serializing JSON content from given Tree instance, using
@@ -129,7 +129,7 @@ public abstract class ObjectCodec
      *   {@link JsonGenerationException} for decoding problems
      */
     @Override
-    public abstract void writeTree(JsonGenerator gen, TreeNode tree) throws IOException;
+     abstract void writeTree(JsonGenerator gen, TreeNode tree) throws IOException;
 
     /**
      * Method for construct root level Object nodes
@@ -138,7 +138,7 @@ public abstract class ObjectCodec
      * @return Object node created
      */
     @Override
-    public abstract TreeNode createObjectNode();
+     abstract TreeNode createObjectNode();
 
     /**
      * Method for construct root level Array nodes
@@ -147,7 +147,7 @@ public abstract class ObjectCodec
      * @return Array node created
      */
     @Override
-    public abstract TreeNode createArrayNode();
+     abstract TreeNode createArrayNode();
 
     /**
      * Method for constructing a {@link JsonParser} for reading
@@ -159,7 +159,7 @@ public abstract class ObjectCodec
      * @return Parser constructed for traversing over contents of specified node
      */
     @Override
-    public abstract JsonParser treeAsTokens(TreeNode n);
+     abstract JsonParser treeAsTokens(TreeNode n);
 
     /*
     /**********************************************************
@@ -181,7 +181,7 @@ public abstract class ObjectCodec
      *
      * @throws JsonProcessingException if structural conversion fails
      */
-    public abstract <T> T treeToValue(TreeNode n, Class<T> valueType)
+     abstract <T> T treeToValue(TreeNode n, Class<T> valueType)
         throws JsonProcessingException;
 
     /*
@@ -196,7 +196,7 @@ public abstract class ObjectCodec
      * @return Underlying {@link JsonFactory} instance
      */
     @Deprecated
-    public JsonFactory getJsonFactory() { return getFactory(); }
+     JsonFactory getJsonFactory() { return getFactory(); }
 
     /**
      * Accessor for finding underlying data format factory
@@ -204,5 +204,5 @@ public abstract class ObjectCodec
      *
      * @return Underlying {@link JsonFactory} instance
      */
-    public JsonFactory getFactory() { return getJsonFactory(); }
+     JsonFactory getFactory() { return getJsonFactory(); }
 }

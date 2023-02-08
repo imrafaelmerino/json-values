@@ -8,7 +8,7 @@ import java.io.*;
  * reader) around original input source, and apply additional
  * processing during read operations.
  */
-public abstract class InputDecorator
+ abstract class InputDecorator
     implements Serializable // since 2.1
 {
     private static final long serialVersionUID = 1L;
@@ -29,7 +29,7 @@ public abstract class InputDecorator
      *
      * @throws IOException if construction of {@link InputStream} fails
      */
-    public abstract InputStream decorate(IOContext ctxt, InputStream in)
+     abstract InputStream decorate(IOContext ctxt, InputStream in)
         throws IOException;
 
     /**
@@ -51,7 +51,7 @@ public abstract class InputDecorator
      *
      * @throws IOException if construction of {@link InputStream} fails
      */
-    public abstract InputStream decorate(IOContext ctxt, byte[] src, int offset, int length)
+     abstract InputStream decorate(IOContext ctxt, byte[] src, int offset, int length)
         throws IOException;
 
     /**
@@ -74,7 +74,7 @@ public abstract class InputDecorator
      *
      * @since 2.8
      */
-    public DataInput decorate(IOContext ctxt, DataInput input)
+     DataInput decorate(IOContext ctxt, DataInput input)
         throws IOException {
         throw new UnsupportedOperationException();
     }
@@ -95,5 +95,5 @@ public abstract class InputDecorator
      *
      * @throws IOException if construction of {@link Reader} fails
      */
-    public abstract Reader decorate(IOContext ctxt, Reader r) throws IOException;
+     abstract Reader decorate(IOContext ctxt, Reader r) throws IOException;
 }

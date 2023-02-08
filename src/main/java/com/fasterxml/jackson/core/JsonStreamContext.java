@@ -15,25 +15,25 @@ package com.fasterxml.jackson.core;
  * example, output within Array context can differ from that of
  * Object context.
  */
-public abstract class JsonStreamContext
+ abstract class JsonStreamContext
 {
     // // // Type constants used internally
-    // // // (but exposed publicly as of 2.12 as possibly needed)
+    // // // (but exposed ly as of 2.12 as possibly needed)
 
     /**
      * Indicator for "Root Value" context (has not parent)
      */
-    public final static int TYPE_ROOT = 0;
+     final static int TYPE_ROOT = 0;
 
     /**
      * Indicator for "Array" context.
      */
-    public final static int TYPE_ARRAY = 1;
+     final static int TYPE_ARRAY = 1;
 
     /**
      * Indicator for "Object" context.
      */
-    public final static int TYPE_OBJECT = 2;
+     final static int TYPE_OBJECT = 2;
 
     /**
      * Indicates logical type of context as one of {@code TYPE_xxx} constants.
@@ -78,7 +78,7 @@ public abstract class JsonStreamContext
 
     /*
     /**********************************************************
-    /* Public API, accessors
+    /*  API, accessors
     /**********************************************************
      */
 
@@ -88,7 +88,7 @@ public abstract class JsonStreamContext
      *
      * @return Parent context of this context, if any; {@code null} for Root contexts
      */
-    public abstract JsonStreamContext getParent();
+     abstract JsonStreamContext getParent();
 
     /**
      * Method that returns true if this context is an Array context;
@@ -96,7 +96,7 @@ public abstract class JsonStreamContext
      *
      * @return {@code True} if this context represents an Array; {@code false} otherwise
      */
-    public final boolean inArray() { return _type == TYPE_ARRAY; }
+     final boolean inArray() { return _type == TYPE_ARRAY; }
 
     /**
      * Method that returns true if this context is a Root context;
@@ -105,7 +105,7 @@ public abstract class JsonStreamContext
      *
      * @return {@code True} if this context represents a sequence of Root values; {@code false} otherwise
      */
-    public final boolean inRoot() { return _type == TYPE_ROOT; }
+     final boolean inRoot() { return _type == TYPE_ROOT; }
 
     /**
      * Method that returns true if this context is an Object context;
@@ -113,7 +113,7 @@ public abstract class JsonStreamContext
      *
      * @return {@code True} if this context represents an Object; {@code false} otherwise
      */
-    public final boolean inObject() { return _type == TYPE_OBJECT; }
+     final boolean inObject() { return _type == TYPE_OBJECT; }
 
     /**
      * @return Type description String
@@ -121,7 +121,7 @@ public abstract class JsonStreamContext
      * @deprecated Since 2.8 use {@link #typeDesc} instead
      */
     @Deprecated // since 2.8
-    public final String getTypeDesc() {
+     final String getTypeDesc() {
         switch (_type) {
         case TYPE_ROOT: return "ROOT";
         case TYPE_ARRAY: return "ARRAY";
@@ -139,7 +139,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.8
      */
-    public String typeDesc() {
+     String typeDesc() {
         switch (_type) {
         case TYPE_ROOT: return "root";
         case TYPE_ARRAY: return "Array";
@@ -151,12 +151,12 @@ public abstract class JsonStreamContext
     /**
      * @return Number of entries that are complete and started.
      */
-    public final int getEntryCount() { return _index + 1; }
+     final int getEntryCount() { return _index + 1; }
 
     /**
      * @return Index of the currently processed entry, if any
      */
-    public final int getCurrentIndex() { return (_index < 0) ? 0 : _index; }
+     final int getCurrentIndex() { return (_index < 0) ? 0 : _index; }
 
     /**
      * Method that may be called to verify whether this context has valid index:
@@ -167,7 +167,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.9
      */
-    public boolean hasCurrentIndex() { return _index >= 0; }
+     boolean hasCurrentIndex() { return _index >= 0; }
 
     /**
      * Method that may be called to check if this context is either:
@@ -188,7 +188,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.9
      */
-    public boolean hasPathSegment() {
+     boolean hasPathSegment() {
         if (_type == TYPE_OBJECT) {
             return hasCurrentName();
         } else if (_type == TYPE_ARRAY) {
@@ -204,7 +204,7 @@ public abstract class JsonStreamContext
      *
      * @return Current field name within context, if any; {@code null} if none
      */
-    public abstract String getCurrentName();
+     abstract String getCurrentName();
 
     /**
      * @return {@code True} if a call to {@link #getCurrentName()} would return non-{@code null}
@@ -212,7 +212,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.9
      */
-    public boolean hasCurrentName() { return getCurrentName() != null; }
+     boolean hasCurrentName() { return getCurrentName() != null; }
 
     /**
      * Method for accessing currently active value being used by data-binding
@@ -228,7 +228,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.5
      */
-    public Object getCurrentValue() {
+     Object getCurrentValue() {
         return null;
     }
 
@@ -241,7 +241,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.5
      */
-    public void setCurrentValue(Object v) { }
+     void setCurrentValue(Object v) { }
 
     /**
      * Factory method for constructing a {@link JsonPointer} that points to the current
@@ -252,7 +252,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.9
      */
-    public JsonPointer pathAsPointer() {
+     JsonPointer pathAsPointer() {
         return JsonPointer.forPath(this, false);
     }
 
@@ -267,7 +267,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.9
      */
-    public JsonPointer pathAsPointer(boolean includeRoot) {
+     JsonPointer pathAsPointer(boolean includeRoot) {
         return JsonPointer.forPath(this, includeRoot);
     }
 
@@ -285,7 +285,7 @@ public abstract class JsonStreamContext
      *
      * @since 2.13
      */
-    public JsonLocation startLocation(ContentReference srcRef) {
+     JsonLocation startLocation(ContentReference srcRef) {
         return JsonLocation.NA;
     }
 
@@ -297,7 +297,7 @@ public abstract class JsonStreamContext
      * @deprecated Since 2.13 use {@link #startLocation} instead
      */
     @Deprecated
-    public JsonLocation getStartLocation(Object srcRef) {
+     JsonLocation getStartLocation(Object srcRef) {
         return JsonLocation.NA;
     }
 

@@ -8,7 +8,7 @@ import static com.fasterxml.jackson.core.JsonTokenId.*;
  * This is a concrete implementation of {@link JsonParser}, which is
  * based on a {@link InputStream} as the input source.
  */
-public class UTF8StreamJsonParser
+ class UTF8StreamJsonParser
     extends ParserBase
 {
     final static byte BYTE_LF = (byte) '\n';
@@ -149,7 +149,7 @@ public class UTF8StreamJsonParser
      * @deprecated Since 2.10
      */
     @Deprecated
-    public UTF8StreamJsonParser(IOContext ctxt, int features, InputStream in,
+     UTF8StreamJsonParser(IOContext ctxt, int features, InputStream in,
             ObjectCodec codec, ByteQuadsCanonicalizer sym,
             byte[] inputBuffer, int start, int end,
             boolean bufferRecyclable)
@@ -175,7 +175,7 @@ public class UTF8StreamJsonParser
      * @param bufferRecyclable Whether {@code inputBuffer} passed is managed by Jackson core
      *    (and thereby needs recycling)
      */
-    public UTF8StreamJsonParser(IOContext ctxt, int features, InputStream in,
+     UTF8StreamJsonParser(IOContext ctxt, int features, InputStream in,
             ObjectCodec codec, ByteQuadsCanonicalizer sym,
             byte[] inputBuffer, int start, int end, int bytesPreProcessed,
             boolean bufferRecyclable)
@@ -194,17 +194,17 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public ObjectCodec getCodec() {
+     ObjectCodec getCodec() {
         return _objectCodec;
     }
 
     @Override
-    public void setCodec(ObjectCodec c) {
+     void setCodec(ObjectCodec c) {
         _objectCodec = c;
     }
 
     @Override // @since 2.12
-    public JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
+     JacksonFeatureSet<StreamReadCapability> getReadCapabilities() {
         return JSON_READ_CAPABILITIES;
     }
 
@@ -215,7 +215,7 @@ public class UTF8StreamJsonParser
      */
 
     @Override
-    public int releaseBuffered(OutputStream out) throws IOException
+     int releaseBuffered(OutputStream out) throws IOException
     {
         int count = _inputEnd - _inputPtr;
         if (count < 1) {
@@ -229,7 +229,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public Object getInputSource() {
+     Object getInputSource() {
         return _inputStream;
     }
 
@@ -314,12 +314,12 @@ public class UTF8StreamJsonParser
 
     /*
     /**********************************************************
-    /* Public API, data access
+    /*  API, data access
     /**********************************************************
      */
 
     @Override
-    public String getText() throws IOException
+     String getText() throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -332,7 +332,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override // since 2.8
-    public int getText(Writer writer) throws IOException
+     int getText(Writer writer) throws IOException
     {
         JsonToken t = _currToken;
         if (t == JsonToken.VALUE_STRING) {
@@ -379,7 +379,7 @@ public class UTF8StreamJsonParser
 
     // @since 2.1
     @Override
-    public String getValueAsString(String defValue) throws IOException
+     String getValueAsString(String defValue) throws IOException
     {
         if (_currToken == JsonToken.VALUE_STRING) {
             if (_tokenIncomplete) {
@@ -396,7 +396,7 @@ public class UTF8StreamJsonParser
 
     // since 2.6
     @Override
-    public int getValueAsInt() throws IOException
+     int getValueAsInt() throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -416,7 +416,7 @@ public class UTF8StreamJsonParser
 
     // since 2.6
     @Override
-    public int getValueAsInt(int defValue) throws IOException
+     int getValueAsInt(int defValue) throws IOException
     {
         JsonToken t = _currToken;
         if ((t == JsonToken.VALUE_NUMBER_INT) || (t == JsonToken.VALUE_NUMBER_FLOAT)) {
@@ -454,7 +454,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public char[] getTextCharacters() throws IOException
+     char[] getTextCharacters() throws IOException
     {
         if (_currToken != null) { // null only before/after document
             switch (_currToken.id()) {
@@ -491,7 +491,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public int getTextLength() throws IOException
+     int getTextLength() throws IOException
     {
         if (_currToken != null) { // null only before/after document
             switch (_currToken.id()) {
@@ -516,7 +516,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public int getTextOffset() throws IOException
+     int getTextOffset() throws IOException
     {
         // Most have offset of 0, only some may have other values:
         if (_currToken != null) {
@@ -539,7 +539,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public byte[] getBinaryValue(Base64Variant b64variant) throws IOException
+     byte[] getBinaryValue(Base64Variant b64variant) throws IOException
     {
         if (_currToken != JsonToken.VALUE_STRING &&
                 (_currToken != JsonToken.VALUE_EMBEDDED_OBJECT || _binaryValue == null)) {
@@ -566,7 +566,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
+     int readBinaryValue(Base64Variant b64variant, OutputStream out) throws IOException
     {
         // if we have already read the token, just use whatever we may have
         if (!_tokenIncomplete || _currToken != JsonToken.VALUE_STRING) {
@@ -722,7 +722,7 @@ public class UTF8StreamJsonParser
 
     /*
     /**********************************************************
-    /* Public API, traversal, basic
+    /*  API, traversal, basic
     /**********************************************************
      */
 
@@ -918,7 +918,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public void finishToken() throws IOException {
+     void finishToken() throws IOException {
         if (_tokenIncomplete) {
             _tokenIncomplete = false;
             _finishString(); // only strings can be incomplete
@@ -927,12 +927,12 @@ public class UTF8StreamJsonParser
 
     /*
     /**********************************************************
-    /* Public API, traversal, nextXxxValue/nextFieldName
+    /*  API, traversal, nextXxxValue/nextFieldName
     /**********************************************************
      */
 
     @Override
-    public boolean nextFieldName(SerializableString str) throws IOException
+     boolean nextFieldName(SerializableString str) throws IOException
     {
         // // // Note: most of code below is copied from nextToken()
         _numTypesValid = NR_UNKNOWN;
@@ -1311,7 +1311,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public String nextTextValue() throws IOException
+     String nextTextValue() throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -1338,7 +1338,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public int nextIntValue(int defaultValue) throws IOException
+     int nextIntValue(int defaultValue) throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -1361,7 +1361,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public long nextLongValue(long defaultValue) throws IOException
+     long nextLongValue(long defaultValue) throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -1384,7 +1384,7 @@ public class UTF8StreamJsonParser
     }
 
     @Override
-    public Boolean nextBooleanValue() throws IOException
+     Boolean nextBooleanValue() throws IOException
     {
         // two distinct cases; either got name and we know next type, or 'other'
         if (_currToken == JsonToken.FIELD_NAME) { // mostly copied from '_nextAfterName'
@@ -3849,7 +3849,7 @@ public class UTF8StreamJsonParser
 
     // As per [core#108], must ensure we call the right method
     @Override
-    public JsonLocation getTokenLocation()
+     JsonLocation getTokenLocation()
     {
         if (_currToken == JsonToken.FIELD_NAME) {
             long total = _currInputProcessed + (_nameStartOffset-1);
@@ -3862,7 +3862,7 @@ public class UTF8StreamJsonParser
 
     // As per [core#108], must ensure we call the right method
     @Override
-    public JsonLocation getCurrentLocation()
+     JsonLocation getCurrentLocation()
     {
         int col = _inputPtr - _currInputRowStart + 1; // 1-based
         return new JsonLocation(_contentReference(),

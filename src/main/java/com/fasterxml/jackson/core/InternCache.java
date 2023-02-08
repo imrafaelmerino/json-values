@@ -11,7 +11,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * Note: that this class extends {@link java.util.LinkedHashMap} is an implementation
  * detail -- no code should ever directly call Map methods.
  */
-public final class InternCache
+ final class InternCache
     extends ConcurrentHashMap<String,String> // since 2.3
 {
     private static final long serialVersionUID = 1L;
@@ -25,7 +25,7 @@ public final class InternCache
      */
     private final static int MAX_ENTRIES = 180;
 
-    public final static InternCache instance = new InternCache();
+     final static InternCache instance = new InternCache();
 
     /**
      * As minor optimization let's try to avoid "flush storms",
@@ -36,7 +36,7 @@ public final class InternCache
 
     private InternCache() { super(MAX_ENTRIES, 0.8f, 4); }
 
-    public String intern(String input) {
+     String intern(String input) {
         String result = get(input);
         if (result != null) { return result; }
 

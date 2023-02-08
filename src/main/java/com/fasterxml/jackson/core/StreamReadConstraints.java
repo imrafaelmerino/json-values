@@ -7,7 +7,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.15
  */
-public class StreamReadConstraints
+ class StreamReadConstraints
     implements java.io.Serializable
 {
     private static final long serialVersionUID = 1L;
@@ -15,14 +15,14 @@ public class StreamReadConstraints
     /**
      * Default setting for maximum length: see {@link Builder#maxNumberLength(int)} for details.
      */
-    public static final int DEFAULT_MAX_NUM_LEN = 1000;
+     static final int DEFAULT_MAX_NUM_LEN = 1000;
 
     protected final int _maxNumLen;
 
     private static final StreamReadConstraints DEFAULT =
         new StreamReadConstraints(DEFAULT_MAX_NUM_LEN);
 
-    public static final class Builder {
+     static final class Builder {
         private int maxNumLen;
 
         /**
@@ -36,7 +36,7 @@ public class StreamReadConstraints
          *
          * @since 2.15
          */
-        public Builder maxNumberLength(final int maxNumLen) {
+         Builder maxNumberLength(final int maxNumLen) {
             if (maxNumLen < 0) {
                 throw new IllegalArgumentException("Cannot set maxNumberLength to a negative value");
             }
@@ -56,7 +56,7 @@ public class StreamReadConstraints
             maxNumLen = src._maxNumLen;
         }
 
-        public StreamReadConstraints build() {
+         StreamReadConstraints build() {
             return new StreamReadConstraints(maxNumLen);
         }
     }
@@ -71,11 +71,11 @@ public class StreamReadConstraints
         _maxNumLen = maxNumLen;
     }
 
-    public static Builder builder() {
+     static Builder builder() {
         return new Builder();
     }
 
-    public static StreamReadConstraints defaults() {
+     static StreamReadConstraints defaults() {
         return DEFAULT;
     }
 
@@ -83,7 +83,7 @@ public class StreamReadConstraints
      * @return New {@link Builder} initialized with settings of this constraints
      *   instance
      */
-    public Builder rebuild() {
+     Builder rebuild() {
         return new Builder(this);
     }
 
@@ -99,7 +99,7 @@ public class StreamReadConstraints
      *
      * @return Maximum allowed number length
      */
-    public int getMaxNumberLength() {
+     int getMaxNumberLength() {
         return _maxNumLen;
     }
 
@@ -120,7 +120,7 @@ public class StreamReadConstraints
      *
      * @throws NumberFormatException If length exceeds maximum
      */
-    public void validateFPLength(int length) throws NumberFormatException
+     void validateFPLength(int length) throws NumberFormatException
     {
         if (length > _maxNumLen) {
             throw new NumberFormatException(String.format("Number length (%d) exceeds the maximum length (%d)",
@@ -139,7 +139,7 @@ public class StreamReadConstraints
      *
      * @throws NumberFormatException If length exceeds maximum
      */
-    public void validateIntegerLength(int length) throws NumberFormatException
+     void validateIntegerLength(int length) throws NumberFormatException
     {
         if (length > _maxNumLen) {
             throw new NumberFormatException(String.format("Number length (%d) exceeds the maximum length (%d)",

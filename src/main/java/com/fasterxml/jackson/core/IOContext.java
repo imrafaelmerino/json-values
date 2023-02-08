@@ -9,7 +9,7 @@ package com.fasterxml.jackson.core;
  *<p>
  * NOTE: non-final since 2.4, to allow sub-classing.
  */
-public class IOContext
+ class IOContext
 {
     /*
     /**********************************************************************
@@ -115,7 +115,7 @@ public class IOContext
      *
      * @since 2.15
      */
-    public IOContext(StreamReadConstraints src, BufferRecycler br,
+     IOContext(StreamReadConstraints src, BufferRecycler br,
                      ContentReference contentRef, boolean managedResource)
     {
         _streamReadConstraints = (src == null) ?
@@ -134,13 +134,13 @@ public class IOContext
      * @since 2.13
      */
     @Deprecated // since 2.15
-    public IOContext(BufferRecycler br, ContentReference contentRef, boolean managedResource)
+     IOContext(BufferRecycler br, ContentReference contentRef, boolean managedResource)
     {
         this(null, br, contentRef, managedResource);
     }
 
     @Deprecated // since 2.13
-    public IOContext(BufferRecycler br, Object rawContent, boolean managedResource) {
+     IOContext(BufferRecycler br, Object rawContent, boolean managedResource) {
         this(br, ContentReference.rawReference(rawContent), managedResource);
     }
 
@@ -148,27 +148,27 @@ public class IOContext
      * @return constraints for streaming reads
      * @since 2.15
      */
-    public StreamReadConstraints streamReadConstraints() {
+     StreamReadConstraints streamReadConstraints() {
         return _streamReadConstraints;
     }
 
-    public void setEncoding(JsonEncoding enc) {
+     void setEncoding(JsonEncoding enc) {
         _encoding = enc;
     }
 
-    public IOContext withEncoding(JsonEncoding enc) {
+     IOContext withEncoding(JsonEncoding enc) {
         _encoding = enc;
         return this;
     }
 
     /*
     /**********************************************************************
-    /* Public API, accessors
+    /*  API, accessors
     /**********************************************************************
      */
 
-    public JsonEncoding getEncoding() { return _encoding; }
-    public boolean isResourceManaged() { return _managedResource; }
+     JsonEncoding getEncoding() { return _encoding; }
+     boolean isResourceManaged() { return _managedResource; }
 
     /**
      * Accessor for getting (some) information about input source, mostly
@@ -178,7 +178,7 @@ public class IOContext
      *
      * @since 2.13
      */
-    public ContentReference contentReference() {
+     ContentReference contentReference() {
         return _contentReference;
     }
 
@@ -187,15 +187,15 @@ public class IOContext
      * @return "Raw" source reference
      */
     @Deprecated
-    public Object getSourceReference() { return _sourceRef; }
+     Object getSourceReference() { return _sourceRef; }
 
     /*
     /**********************************************************************
-    /* Public API, buffer management
+    /*  API, buffer management
     /**********************************************************************
      */
 
-    public TextBuffer constructTextBuffer() {
+     TextBuffer constructTextBuffer() {
         return new TextBuffer(_bufferRecycler);
     }
 
@@ -207,7 +207,7 @@ public class IOContext
      *
      * @return Allocated or recycled byte buffer
      */
-    public byte[] allocReadIOBuffer() {
+     byte[] allocReadIOBuffer() {
         _verifyAlloc(_readIOBuffer);
         return (_readIOBuffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_READ_IO_BUFFER));
     }
@@ -222,7 +222,7 @@ public class IOContext
      *
      * @since 2.4
      */
-    public byte[] allocReadIOBuffer(int minSize) {
+     byte[] allocReadIOBuffer(int minSize) {
         _verifyAlloc(_readIOBuffer);
         return (_readIOBuffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_READ_IO_BUFFER, minSize));
     }
@@ -235,7 +235,7 @@ public class IOContext
      *
      * @return Allocated or recycled byte buffer
      */
-    public byte[] allocWriteEncodingBuffer() {
+     byte[] allocWriteEncodingBuffer() {
         _verifyAlloc(_writeEncodingBuffer);
         return (_writeEncodingBuffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_WRITE_ENCODING_BUFFER));
     }
@@ -250,7 +250,7 @@ public class IOContext
      *
      * @since 2.4
      */
-    public byte[] allocWriteEncodingBuffer(int minSize) {
+     byte[] allocWriteEncodingBuffer(int minSize) {
         _verifyAlloc(_writeEncodingBuffer);
         return (_writeEncodingBuffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_WRITE_ENCODING_BUFFER, minSize));
     }
@@ -263,7 +263,7 @@ public class IOContext
      *
      * @return Allocated or recycled byte buffer
      */
-    public byte[] allocBase64Buffer() {
+     byte[] allocBase64Buffer() {
         _verifyAlloc(_base64Buffer);
         return (_base64Buffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_BASE64_CODEC_BUFFER));
     }
@@ -278,28 +278,28 @@ public class IOContext
      *
      * @since 2.9
      */
-    public byte[] allocBase64Buffer(int minSize) {
+     byte[] allocBase64Buffer(int minSize) {
         _verifyAlloc(_base64Buffer);
         return (_base64Buffer = _bufferRecycler.allocByteBuffer(BufferRecycler.BYTE_BASE64_CODEC_BUFFER, minSize));
     }
 
-    public char[] allocTokenBuffer() {
+     char[] allocTokenBuffer() {
         _verifyAlloc(_tokenCBuffer);
         return (_tokenCBuffer = _bufferRecycler.allocCharBuffer(BufferRecycler.CHAR_TOKEN_BUFFER));
     }
 
     // @since 2.4
-    public char[] allocTokenBuffer(int minSize) {
+     char[] allocTokenBuffer(int minSize) {
         _verifyAlloc(_tokenCBuffer);
         return (_tokenCBuffer = _bufferRecycler.allocCharBuffer(BufferRecycler.CHAR_TOKEN_BUFFER, minSize));
     }
 
-    public char[] allocConcatBuffer() {
+     char[] allocConcatBuffer() {
         _verifyAlloc(_concatCBuffer);
         return (_concatCBuffer = _bufferRecycler.allocCharBuffer(BufferRecycler.CHAR_CONCAT_BUFFER));
     }
 
-    public char[] allocNameCopyBuffer(int minSize) {
+     char[] allocNameCopyBuffer(int minSize) {
         _verifyAlloc(_nameCopyBuffer);
         return (_nameCopyBuffer = _bufferRecycler.allocCharBuffer(BufferRecycler.CHAR_NAME_COPY_BUFFER, minSize));
     }
@@ -310,7 +310,7 @@ public class IOContext
      *
      * @param buf Buffer instance to release (return for recycling)
      */
-    public void releaseReadIOBuffer(byte[] buf) {
+     void releaseReadIOBuffer(byte[] buf) {
         if (buf != null) {
             // Let's do sanity checks to ensure once-and-only-once release,
             // as well as avoiding trying to release buffers not owned
@@ -320,7 +320,7 @@ public class IOContext
         }
     }
 
-    public void releaseWriteEncodingBuffer(byte[] buf) {
+     void releaseWriteEncodingBuffer(byte[] buf) {
         if (buf != null) {
             // Let's do sanity checks to ensure once-and-only-once release,
             // as well as avoiding trying to release buffers not owned
@@ -330,7 +330,7 @@ public class IOContext
         }
     }
 
-    public void releaseBase64Buffer(byte[] buf) {
+     void releaseBase64Buffer(byte[] buf) {
         if (buf != null) { // sanity checks, release once-and-only-once, must be one owned
             _verifyRelease(buf, _base64Buffer);
             _base64Buffer = null;
@@ -338,7 +338,7 @@ public class IOContext
         }
     }
 
-    public void releaseTokenBuffer(char[] buf) {
+     void releaseTokenBuffer(char[] buf) {
         if (buf != null) {
             _verifyRelease(buf, _tokenCBuffer);
             _tokenCBuffer = null;
@@ -346,7 +346,7 @@ public class IOContext
         }
     }
 
-    public void releaseConcatBuffer(char[] buf) {
+     void releaseConcatBuffer(char[] buf) {
         if (buf != null) {
             // 14-Jan-2014, tatu: Let's actually allow upgrade of the original buffer.
             _verifyRelease(buf, _concatCBuffer);
@@ -355,7 +355,7 @@ public class IOContext
         }
     }
 
-    public void releaseNameCopyBuffer(char[] buf) {
+     void releaseNameCopyBuffer(char[] buf) {
         if (buf != null) {
             // 14-Jan-2014, tatu: Let's actually allow upgrade of the original buffer.
             _verifyRelease(buf, _nameCopyBuffer);

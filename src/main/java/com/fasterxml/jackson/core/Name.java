@@ -7,7 +7,7 @@ package com.fasterxml.jackson.core;
  *
  * @author Tatu Saloranta
  */
-public abstract class Name
+ abstract class Name
 {
     protected final String _name;
 
@@ -18,7 +18,7 @@ public abstract class Name
         _hashCode = hashCode;
     }
 
-    public String getName() { return _name; }
+     String getName() { return _name; }
 
     /*
     /**********************************************************
@@ -26,13 +26,13 @@ public abstract class Name
     /**********************************************************
      */
 
-    public abstract boolean equals(int q1);
+     abstract boolean equals(int q1);
 
-    public abstract boolean equals(int q1, int q2);
+     abstract boolean equals(int q1, int q2);
 
-    public abstract boolean equals(int q1, int q2, int q3);
+     abstract boolean equals(int q1, int q2, int q3);
 
-    public abstract boolean equals(int[] quads, int qlen);
+     abstract boolean equals(int[] quads, int qlen);
 
     /*
     /**********************************************************
@@ -40,11 +40,14 @@ public abstract class Name
     /**********************************************************
      */
 
-    @Override public String toString() { return _name; }
+    @Override
+    public String toString() { return _name; }
 
-    @Override public final int hashCode() { return _hashCode; }
+    @Override
+    public final int hashCode() { return _hashCode; }
 
-    @Override public boolean equals(Object o) {
+    @Override
+    public boolean equals(Object o) {
         // Canonical instances, can usually just do identity comparison
         return (o == this);
     }

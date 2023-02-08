@@ -10,7 +10,7 @@ import java.lang.ref.SoftReference;
  *
  * @since 2.9.2
  */
-public class BufferRecyclers
+ class BufferRecyclers
 {
     /**
      * System property that is checked to see if recycled buffers (see {@link BufferRecycler})
@@ -19,7 +19,7 @@ public class BufferRecyclers
      *
      * @since 2.9.6
      */
-    public final static String SYSTEM_PROPERTY_TRACK_REUSABLE_BUFFERS
+     final static String SYSTEM_PROPERTY_TRACK_REUSABLE_BUFFERS
         = "com.fasterxml.jackson.core.util.BufferRecyclers.trackReusableBuffers";
 
     /*
@@ -60,7 +60,7 @@ public class BufferRecyclers
      *
      * @return {@link BufferRecycler} to use
      */
-    public static BufferRecycler getBufferRecycler()
+     static BufferRecycler getBufferRecycler()
     {
         SoftReference<BufferRecycler> ref = _recyclerRef.get();
         BufferRecycler br = (ref == null) ? null : ref.get();
@@ -90,7 +90,7 @@ public class BufferRecyclers
      *
      * @since 2.9.6
      */
-    public static int releaseBuffers() {
+     static int releaseBuffers() {
         if (_bufferRecyclerTracker != null) {
             return _bufferRecyclerTracker.releaseBuffers();
         }
@@ -113,7 +113,7 @@ public class BufferRecyclers
      *    in 2.12.5, to be removed from 3.0)
      */
     @Deprecated
-    public static JsonStringEncoder getJsonStringEncoder() {
+     static JsonStringEncoder getJsonStringEncoder() {
         return JsonStringEncoder.getInstance();
     }
 
@@ -128,7 +128,7 @@ public class BufferRecyclers
      *    in 2.12.5, to be removed from 3.0)
      */
     @Deprecated
-    public static byte[] encodeAsUTF8(String text) {
+     static byte[] encodeAsUTF8(String text) {
         return JsonStringEncoder.getInstance().encodeAsUTF8(text);
     }
 
@@ -144,7 +144,7 @@ public class BufferRecyclers
      *    in 2.12.5, to be removed from 3.0)
      */
     @Deprecated
-    public static char[] quoteAsJsonText(String rawText) {
+     static char[] quoteAsJsonText(String rawText) {
         return JsonStringEncoder.getInstance().quoteAsString(rawText);
     }
 
@@ -159,7 +159,7 @@ public class BufferRecyclers
      *    in 2.12.5, to be removed from 3.0)
      */
     @Deprecated
-    public static void quoteAsJsonText(CharSequence input, StringBuilder output) {
+     static void quoteAsJsonText(CharSequence input, StringBuilder output) {
         JsonStringEncoder.getInstance().quoteAsString(input, output);
     }
 
@@ -175,7 +175,7 @@ public class BufferRecyclers
      *    in 2.12.5, to be removed from 3.0)
      */
     @Deprecated
-    public static byte[] quoteAsJsonUTF8(String rawText) {
+     static byte[] quoteAsJsonUTF8(String rawText) {
         return JsonStringEncoder.getInstance().quoteAsUTF8(rawText);
     }
 }

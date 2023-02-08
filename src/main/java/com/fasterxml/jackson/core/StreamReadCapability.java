@@ -11,7 +11,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.12
  */
-public enum StreamReadCapability
+ enum StreamReadCapability
     implements JacksonFeature
 {
     /**

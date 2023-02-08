@@ -3,7 +3,7 @@ package com.fasterxml.jackson.core;
 import com.fasterxml.jackson.core.schubfach.DoubleToDecimal;
 import com.fasterxml.jackson.core.schubfach.FloatToDecimal;
 
-public final class NumberOutput
+ final class NumberOutput
 {
     private static int MILLION = 1000000;
     private static int BILLION = 1000000000;
@@ -65,7 +65,7 @@ public final class NumberOutput
      *
      * @return Offset within buffer after outputting {@code int}
      */
-    public static int outputInt(int v, char[] b, int off)
+     static int outputInt(int v, char[] b, int off)
     {
         if (v < 0) {
             if (v == Integer.MIN_VALUE) {
@@ -118,7 +118,7 @@ public final class NumberOutput
         return _full3(ones, b, off);
     }
 
-    public static int outputInt(int v, byte[] b, int off)
+     static int outputInt(int v, byte[] b, int off)
     {
         if (v < 0) {
             if (v == Integer.MIN_VALUE) {
@@ -176,7 +176,7 @@ public final class NumberOutput
      *
      * @return Offset within buffer after outputting {@code long}
      */
-    public static int outputLong(long v, char[] b, int off)
+     static int outputLong(long v, char[] b, int off)
     {
         // First: does it actually fit in an int?
         if (v < 0L) {
@@ -211,7 +211,7 @@ public final class NumberOutput
         return _outputFullBillion((int) v, b, off);
     }
 
-    public static int outputLong(long v, byte[] b, int off)
+     static int outputLong(long v, byte[] b, int off)
     {
         if (v < 0L) {
             if (v > MIN_INT_AS_LONG) {
@@ -254,7 +254,7 @@ public final class NumberOutput
     /* !!! 05-Aug-2008, tatus: Any ways to further optimize
      *   these? (or need: only called by diagnostics methods?)
      */
-    public static String toString(int v)
+     static String toString(int v)
     {
         // Lookup table for small values
         if (v < sSmallIntStrs.length) {
@@ -269,7 +269,7 @@ public final class NumberOutput
         return Integer.toString(v);
     }
 
-    public static String toString(long v) {
+     static String toString(long v) {
         if (v <= Integer.MAX_VALUE && v >= Integer.MIN_VALUE) {
             return toString((int) v);
         }
@@ -280,7 +280,7 @@ public final class NumberOutput
      * @param v double
      * @return double as a string
      */
-    public static String toString(final double v) {
+     static String toString(final double v) {
         return toString(v, false);
     }
 
@@ -290,7 +290,7 @@ public final class NumberOutput
      * @return double as a string
      * @since 2.14
      */
-    public static String toString(final double v, final boolean useFastWriter) {
+     static String toString(final double v, final boolean useFastWriter) {
         return useFastWriter ? DoubleToDecimal.toString(v) : Double.toString(v);
     }
 
@@ -299,7 +299,7 @@ public final class NumberOutput
      * @return float as a string
      * @since 2.6
      */
-    public static String toString(final float v) {
+     static String toString(final float v) {
         return toString(v, false);
     }
 
@@ -309,7 +309,7 @@ public final class NumberOutput
      * @return float as a string
      * @since 2.14
      */
-    public static String toString(final float v, final boolean useFastWriter) {
+     static String toString(final float v, final boolean useFastWriter) {
         return useFastWriter ? FloatToDecimal.toString(v) : Float.toString(v);
     }
 
@@ -329,7 +329,7 @@ public final class NumberOutput
      *
      * Since 2.10
      */
-    public static boolean notFinite(double value) {
+     static boolean notFinite(double value) {
         return !Double.isFinite(value);
     }
 
@@ -343,7 +343,7 @@ public final class NumberOutput
      *
      * Since 2.10
      */
-    public static boolean notFinite(float value) {
+     static boolean notFinite(float value) {
         return !Float.isFinite(value);
     }
 

@@ -13,24 +13,24 @@ import java.util.concurrent.atomic.AtomicReferenceArray;
  * Rewritten in 2.10 to be thread-safe (see [jackson-core#479] for details),
  * to not rely on {@code ThreadLocal} access.
  */
-public class BufferRecycler
+ class BufferRecycler
 {
     /**
      * Buffer used for reading byte-based input.
      */
-    public final static int BYTE_READ_IO_BUFFER = 0;
+     final static int BYTE_READ_IO_BUFFER = 0;
 
     /**
      * Buffer used for temporarily storing encoded content; used
      * for example by UTF-8 encoding writer
      */
-    public final static int BYTE_WRITE_ENCODING_BUFFER = 1;
+     final static int BYTE_WRITE_ENCODING_BUFFER = 1;
 
     /**
      * Buffer used for temporarily concatenating output; used for
      * example when requesting output as byte array.
      */
-    public final static int BYTE_WRITE_CONCAT_BUFFER = 2;
+     final static int BYTE_WRITE_CONCAT_BUFFER = 2;
 
     /**
      * Buffer used for concatenating binary data that is either being
@@ -38,19 +38,19 @@ public class BufferRecycler
      *
      * @since 2.1
      */
-    public final static int BYTE_BASE64_CODEC_BUFFER = 3;
+     final static int BYTE_BASE64_CODEC_BUFFER = 3;
 
     /**
      * Buffer used as input buffer for tokenization for character-based parsers.
      */
-    public final static int CHAR_TOKEN_BUFFER = 0;
+     final static int CHAR_TOKEN_BUFFER = 0;
 
     /**
      * Buffer used by generators; for byte-backed generators for buffering of
      * {@link String} values to output (before encoding into UTF-8),
      * and for char-backed generators as actual concatenation buffer.
      */
-    public final static int CHAR_CONCAT_BUFFER = 1;
+     final static int CHAR_CONCAT_BUFFER = 1;
 
     /**
      * Used through {@link TextBuffer}: directly by parsers (to concatenate
@@ -62,14 +62,14 @@ public class BufferRecycler
      * but may result in retention of larger chunks for big content
      * (long text values during parsing; bigger output documents for generation).
      */
-    public final static int CHAR_TEXT_BUFFER = 2;
+     final static int CHAR_TEXT_BUFFER = 2;
 
     /**
      * For parsers, temporary buffer into which {@code char[]} for names is copied
      * when requested as such; for {@code WriterBasedGenerator} used for buffering
      * during {@code writeString(Reader)} operation (not commonly used).
      */
-    public final static int CHAR_NAME_COPY_BUFFER = 3;
+     final static int CHAR_NAME_COPY_BUFFER = 3;
 
     // Buffer lengths
 
@@ -92,7 +92,7 @@ public class BufferRecycler
      * Default constructor used for creating instances of this default
      * implementation.
      */
-    public BufferRecycler() {
+     BufferRecycler() {
         this(4, 4);
     }
 
@@ -112,7 +112,7 @@ public class BufferRecycler
 
     /*
     /**********************************************************
-    /* Public API, byte buffers
+    /*  API, byte buffers
     /**********************************************************
      */
 
@@ -121,11 +121,11 @@ public class BufferRecycler
      *
      * @return Buffer allocated (possibly recycled)
      */
-    public final byte[] allocByteBuffer(int ix) {
+     final byte[] allocByteBuffer(int ix) {
         return allocByteBuffer(ix, 0);
     }
 
-    public byte[] allocByteBuffer(int ix, int minSize) {
+     byte[] allocByteBuffer(int ix, int minSize) {
         final int DEF_SIZE = byteBufferLength(ix);
         if (minSize < DEF_SIZE) {
             minSize = DEF_SIZE;
@@ -137,21 +137,21 @@ public class BufferRecycler
         return buffer;
     }
 
-    public void releaseByteBuffer(int ix, byte[] buffer) {
+     void releaseByteBuffer(int ix, byte[] buffer) {
         _byteBuffers.set(ix, buffer);
     }
 
     /*
     /**********************************************************
-    /* Public API, char buffers
+    /*  API, char buffers
     /**********************************************************
      */
 
-    public final char[] allocCharBuffer(int ix) {
+     final char[] allocCharBuffer(int ix) {
         return allocCharBuffer(ix, 0);
     }
 
-    public char[] allocCharBuffer(int ix, int minSize) {
+     char[] allocCharBuffer(int ix, int minSize) {
         final int DEF_SIZE = charBufferLength(ix);
         if (minSize < DEF_SIZE) {
             minSize = DEF_SIZE;
@@ -163,7 +163,7 @@ public class BufferRecycler
         return buffer;
     }
 
-    public void releaseCharBuffer(int ix, char[] buffer) {
+     void releaseCharBuffer(int ix, char[] buffer) {
         _charBuffers.set(ix, buffer);
     }
 

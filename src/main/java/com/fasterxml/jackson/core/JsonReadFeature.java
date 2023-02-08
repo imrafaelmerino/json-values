@@ -6,7 +6,7 @@ package com.fasterxml.jackson.core;
  *
  * @since 2.10
  */
-public enum JsonReadFeature
+ enum JsonReadFeature
     implements FormatFeature
 {
     // // // Support for non-standard data format constructs: comments
@@ -226,7 +226,7 @@ public enum JsonReadFeature
      *
      * @return Bit mask of all features that are enabled by default
      */
-    public static int collectDefaults()
+     static int collectDefaults()
     {
         int flags = 0;
         for (JsonReadFeature f : values()) {
@@ -251,5 +251,5 @@ public enum JsonReadFeature
     @Override
     public boolean enabledIn(int flags) { return (flags & _mask) != 0; }
 
-    public JsonParser.Feature mappedFeature() { return _mappedFeature; }
+     JsonParser.Feature mappedFeature() { return _mappedFeature; }
 }
