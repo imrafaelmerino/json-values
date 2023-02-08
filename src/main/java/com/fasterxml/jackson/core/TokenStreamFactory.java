@@ -58,14 +58,9 @@ import java.net.URL;
 
 
 
-     abstract JsonParser createParser(byte[] data) throws IOException;
-     abstract JsonParser createParser(byte[] data, int offset, int len) throws IOException;
 
-     abstract JsonParser createParser(File f) throws IOException;
-     abstract JsonParser createParser(InputStream in) throws IOException;
      abstract JsonParser createParser(Reader r) throws IOException;
      abstract JsonParser createParser(String content) throws IOException;
-     abstract JsonParser createParser(URL url) throws IOException;
 
 
     /*

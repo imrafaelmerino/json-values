@@ -730,13 +730,6 @@ public  class JsonFactory
      *
      * @since 2.1
      */
-    @Override
-    public JsonParser createParser(File f) throws IOException {
-        // true, since we create InputStream from File
-        IOContext ctxt = _createContext(_createContentReference(f), true);
-        InputStream in = _fileInputStream(f);
-        return _createParser(_decorate(in, ctxt), ctxt);
-    }
 
     /**
      * Method for constructing JSON parser instance to parse
@@ -756,13 +749,7 @@ public  class JsonFactory
      *
      * @since 2.1
      */
-    @Override
-    public JsonParser createParser(URL url) throws IOException {
-        // true, since we create InputStream from URL
-        IOContext ctxt = _createContext(_createContentReference(url), true);
-        InputStream in = _optimizedStreamFromURL(url);
-        return _createParser(_decorate(in, ctxt), ctxt);
-    }
+
 
     /**
      * Method for constructing JSON parser instance to parse
@@ -785,11 +772,7 @@ public  class JsonFactory
      *
      * @since 2.1
      */
-    @Override
-    public JsonParser createParser(InputStream in) throws IOException {
-        IOContext ctxt = _createContext(_createContentReference(in), false);
-        return _createParser(_decorate(in, ctxt), ctxt);
-    }
+
 
     /**
      * Method for constructing parser for parsing
@@ -818,17 +801,6 @@ public  class JsonFactory
      *
      * @since 2.1
      */
-    @Override
-    public JsonParser createParser(byte[] data) throws IOException {
-        IOContext ctxt = _createContext(_createContentReference(data), true);
-        if (_inputDecorator != null) {
-            InputStream in = _inputDecorator.decorate(ctxt, data, 0, data.length);
-            if (in != null) {
-                return _createParser(in, ctxt);
-            }
-        }
-        return _createParser(data, 0, data.length, ctxt);
-    }
 
     /**
      * Method for constructing parser for parsing
@@ -840,19 +812,7 @@ public  class JsonFactory
      *
      * @since 2.1
      */
-    @Override
-    public JsonParser createParser(byte[] data, int offset, int len) throws IOException {
-        _checkRangeBoundsForByteArray(data, offset, len);
-        IOContext ctxt = _createContext(_createContentReference(data, offset, len), true);
-        // [JACKSON-512]: allow wrapping with InputDecorator
-        if (_inputDecorator != null) {
-            InputStream in = _inputDecorator.decorate(ctxt, data, offset, len);
-            if (in != null) {
-                return _createParser(in, ctxt);
-            }
-        }
-        return _createParser(data, offset, len, ctxt);
-    }
+
 
     /**
      * Method for constructing parser for parsing
@@ -967,149 +927,6 @@ public  class JsonFactory
 
 
 
-    /*
-    /**********************************************************
-    /* Deprecated parser factory methods: to be removed from 3.x
-    /**********************************************************
-     */
-
-    /**
-     * Method for constructing JSON parser instance to parse
-     * contents of specified file.
-     *<p>
-     * Encoding is auto-detected from contents according to JSON
-     * specification recommended mechanism. Json specification
-     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
-     * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(Reader)}.
-     *
-     *<p>
-     * Underlying input stream (needed for reading contents)
-     * will be <b>owned</b> (and managed, i.e. closed as need be) by
-     * the parser, since caller has no access to it.
-     *
-     * @param f File that contains JSON content to parse
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(File)} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(File f) throws IOException {
-        return createParser(f);
-    }
-
-    /**
-     * Method for constructing JSON parser instance to parse
-     * contents of resource reference by given URL.
-     *<p>
-     * Encoding is auto-detected from contents according to JSON
-     * specification recommended mechanism. Json specification
-     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
-     * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(Reader)}.
-     *<p>
-     * Underlying input stream (needed for reading contents)
-     * will be <b>owned</b> (and managed, i.e. closed as need be) by
-     * the parser, since caller has no access to it.
-     *
-     * @param url URL pointing to resource that contains JSON content to parse
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(URL)} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(URL url) throws IOException {
-        return createParser(url);
-    }
-
-    /**
-     * Method for constructing JSON parser instance to parse
-     * the contents accessed via specified input stream.
-     *<p>
-     * The input stream will <b>not be owned</b> by
-     * the parser, it will still be managed (i.e. closed if
-     * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link JsonParser.Feature#AUTO_CLOSE_SOURCE}
-     * is enabled.
-     *<p>
-     *
-     * Note: no encoding argument is taken since it can always be
-     * auto-detected as suggested by JSON RFC. Json specification
-     * supports only UTF-8, UTF-16 and UTF-32 as valid encodings,
-     * so auto-detection implemented only for this charsets.
-     * For other charsets use {@link #createParser(Reader)}.
-     *
-     * @param in InputStream to use for reading JSON content to parse
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(InputStream)} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(InputStream in) throws IOException {
-        return createParser(in);
-    }
-
-    /**
-     * Method for constructing parser for parsing
-     * the contents accessed via specified Reader.
-     <p>
-     * The read stream will <b>not be owned</b> by
-     * the parser, it will still be managed (i.e. closed if
-     * end-of-stream is reacher, or parser close method called)
-     * if (and only if) {@link JsonParser.Feature#AUTO_CLOSE_SOURCE}
-     * is enabled.
-     *
-     * @param r Reader to use for reading JSON content to parse
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(Reader)} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(Reader r) throws IOException {
-        return createParser(r);
-    }
-
-    /**
-     * Method for constructing parser for parsing the contents of given byte array.
-     *
-     * @param data Input content to parse
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(byte[])} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(byte[] data) throws IOException {
-        return createParser(data);
-    }
-
-    /**
-     * Method for constructing parser for parsing
-     * the contents of given byte array.
-     *
-     * @param data Buffer that contains data to parse
-     * @param offset Offset of the first data byte within buffer
-     * @param len Length of contents to parse within buffer
-     *
-     * @return Parser constructed
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @deprecated Since 2.2, use {@link #createParser(byte[],int,int)} instead.
-     */
-    @Deprecated
-    public JsonParser createJsonParser(byte[] data, int offset, int len) throws IOException {
-        return createParser(data, offset, len);
-    }
-
     /**
      * Method for constructing parser for parsing
      * contents of given String.
@@ -1213,41 +1030,6 @@ public  class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Overridable factory method that actually instantiates desired parser
-     * given {@link InputStream} and context object.
-     *<p>
-     * This method is specifically designed to remain
-     * compatible between minor versions so that sub-classes can count
-     * on it being called as expected. That is, it is part of official
-     * interface from sub-class perspective, although not a public
-     * method available to users of factory implementations.
-     *
-     * @param in InputStream to use for reading content to parse
-     * @param ctxt I/O context to use for parsing
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     *
-     * @return Parser constructed
-     *
-     * @since 2.1
-     */
-     JsonParser _createParser(InputStream in, IOContext ctxt) throws IOException {
-        try {
-            return new ByteSourceJsonBootstrapper(ctxt, in).constructParser(_parserFeatures,
-                    _objectCodec, _byteSymbolCanonicalizer, _rootCharSymbols, _factoryFeatures);
-        } catch (IOException | RuntimeException e) {
-            // 10-Jun-2022, tatu: For [core#763] may need to close InputStream here
-            if (ctxt.isResourceManaged()) {
-                try {
-                    in.close();
-                } catch (Exception e2) {
-                    e.addSuppressed(e2);
-                }
-            }
-            throw e;
-        }
-    }
 
     /**
      * Overridable factory method that actually instantiates parser
@@ -1294,31 +1076,6 @@ public  class JsonFactory
                         data, offset, offset+len, recyclable);
     }
 
-    /**
-     * Overridable factory method that actually instantiates parser
-     * using given {@link Reader} object for reading content
-     * passed as raw byte array.
-     *<p>
-     * This method is specifically designed to remain
-     * compatible between minor versions so that sub-classes can count
-     * on it being called as expected. That is, it is part of official
-     * interface from sub-class perspective, although not a public
-     * method available to users of factory implementations.
-     *
-     * @param data Buffer that contains content to parse
-     * @param offset Offset to the first character of data to parse
-     * @param len Number of characters within buffer to parse
-     * @param ctxt I/O context to use for parsing
-     *
-     * @return Actual parser to use
-     *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     */
-     JsonParser _createParser(byte[] data, int offset, int len, IOContext ctxt) throws IOException
-    {
-        return new ByteSourceJsonBootstrapper(ctxt, data, offset, len).constructParser(_parserFeatures,
-                _objectCodec, _byteSymbolCanonicalizer, _rootCharSymbols, _factoryFeatures);
-    }
 
   
 
