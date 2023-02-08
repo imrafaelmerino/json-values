@@ -10,9 +10,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import com.fasterxml.jackson.core.exc.InputCoercionException;
-import com.fasterxml.jackson.core.util.JacksonFeatureSet;
-import com.fasterxml.jackson.core.util.RequestPayload;
+
 
 /**
  * Base class that defines public API for reading JSON content.
@@ -84,7 +82,7 @@ public abstract class JsonParser
          * explicitly enabled.
          *<p>
          * NOTE: while not technically deprecated, since 2.10 recommended to use
-         * {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_JAVA_COMMENTS} instead.
+         * {@link JsonReadFeature#ALLOW_JAVA_COMMENTS} instead.
          */
         ALLOW_COMMENTS(false),
 
@@ -101,7 +99,7 @@ public abstract class JsonParser
          * explicitly enabled.
          *<p>
          * NOTE: while not technically deprecated, since 2.10 recommended to use
-         * {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_YAML_COMMENTS} instead.
+         * {@link JsonReadFeature#ALLOW_YAML_COMMENTS} instead.
          */
         ALLOW_YAML_COMMENTS(false),
 
@@ -115,7 +113,7 @@ public abstract class JsonParser
          * this is a non-standard feature, and as such disabled by default.
          *<p>
          * NOTE: while not technically deprecated, since 2.10 recommended to use
-         * {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_UNQUOTED_FIELD_NAMES} instead.
+         * {@link JsonReadFeature#ALLOW_UNQUOTED_FIELD_NAMES} instead.
          */
         ALLOW_UNQUOTED_FIELD_NAMES(false),
 
@@ -131,7 +129,7 @@ public abstract class JsonParser
          * this is a non-standard feature, and as such disabled by default.
          *<p>
          * NOTE: while not technically deprecated, since 2.10 recommended to use
-         * {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_SINGLE_QUOTES} instead.
+         * {@link JsonReadFeature#ALLOW_SINGLE_QUOTES} instead.
          */
         ALLOW_SINGLE_QUOTES(false),
 
@@ -146,7 +144,7 @@ public abstract class JsonParser
          * Since JSON specification requires quoting for all control characters,
          * this is a non-standard feature, and as such disabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_UNESCAPED_CONTROL_CHARS} instead
+         * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_UNESCAPED_CONTROL_CHARS} instead
          */
         @Deprecated
         ALLOW_UNQUOTED_CONTROL_CHARS(false),
@@ -160,7 +158,7 @@ public abstract class JsonParser
          * Since JSON specification requires quoting for all control characters,
          * this is a non-standard feature, and as such disabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER} instead
+         * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER} instead
          */
         @Deprecated
         ALLOW_BACKSLASH_ESCAPING_ANY_CHARACTER(false),
@@ -175,25 +173,25 @@ public abstract class JsonParser
          * Since JSON specification does not allow leading zeroes,
          * this is a non-standard feature, and as such disabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_LEADING_ZEROS_FOR_NUMBERS} instead
+         * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_LEADING_ZEROS_FOR_NUMBERS} instead
          */
          @Deprecated
         ALLOW_NUMERIC_LEADING_ZEROS(false),
 
         /**
-         * @deprecated Use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS} instead
+         * @deprecated Use {@link JsonReadFeature#ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS} instead
          */
         @Deprecated
         ALLOW_LEADING_PLUS_SIGN_FOR_NUMBERS(false),
 
         /**
-         * @deprecated Use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS} instead
+         * @deprecated Use {@link JsonReadFeature#ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS} instead
          */
         @Deprecated
         ALLOW_LEADING_DECIMAL_POINT_FOR_NUMBERS(false),
 
         /**
-         * @deprecated Use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS} instead
+         * @deprecated Use {@link JsonReadFeature#ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS} instead
          */
         @Deprecated
         ALLOW_TRAILING_DECIMAL_POINT_FOR_NUMBERS(false),
@@ -216,7 +214,7 @@ public abstract class JsonParser
          * Since JSON specification does not allow use of such values,
          * this is a non-standard feature, and as such disabled by default.
           *
-          * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_NON_NUMERIC_NUMBERS} instead
+          * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_NON_NUMERIC_NUMBERS} instead
           */
          @Deprecated
          ALLOW_NON_NUMERIC_NUMBERS(false),
@@ -237,7 +235,7 @@ public abstract class JsonParser
           *
           * @since 2.8
           *
-          * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_MISSING_VALUES} instead
+          * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_MISSING_VALUES} instead
           */
          @Deprecated
          ALLOW_MISSING_VALUES(false),
@@ -263,7 +261,7 @@ public abstract class JsonParser
           *
           * @since 2.9
           *
-          * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonReadFeature#ALLOW_TRAILING_COMMA} instead
+          * @deprecated Since 2.10 use {@link JsonReadFeature#ALLOW_TRAILING_COMMA} instead
           */
          @Deprecated
          ALLOW_TRAILING_COMMA(false),

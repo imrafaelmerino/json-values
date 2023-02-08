@@ -5,9 +5,6 @@
 
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.io.CharTypes;
-import com.fasterxml.jackson.core.io.ContentReference;
-
 /**
  * Shared base class for streaming processing contexts used during
  * reading and writing of Json content using Streaming API.

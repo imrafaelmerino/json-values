@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.util.JacksonFeature;
 
 /**
  * Set of on/off capabilities that a {@link JsonParser} for given format

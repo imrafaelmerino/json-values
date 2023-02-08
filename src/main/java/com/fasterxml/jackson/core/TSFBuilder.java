@@ -1,10 +1,5 @@
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.io.InputDecorator;
-import com.fasterxml.jackson.core.io.OutputDecorator;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
-
 /**
  * Since 2.10, Builder class is offered for creating token stream factories
  * with difference configurations: with 3.x they will be fully immutable.

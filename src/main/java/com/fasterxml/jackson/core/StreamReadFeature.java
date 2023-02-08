@@ -3,7 +3,6 @@ package com.fasterxml.jackson.core;
 import java.io.InputStream;
 import java.io.Reader;
 
-import com.fasterxml.jackson.core.util.JacksonFeature;
 
 /**
  * Token reader (parser) features not-specific to any particular format backend.

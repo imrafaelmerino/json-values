@@ -1,8 +1,5 @@
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.io.CharacterEscapes;
-import com.fasterxml.jackson.core.io.SerializedString;
-
 /**
  * Convenience {@link CharacterEscapes} implementation that escapes
  * Unicode characters `0x2028` and `0x2029` (in addition to characters

@@ -3,8 +3,6 @@ package com.fasterxml.jackson.core;
 import java.io.*;
 import java.net.URL;
 
-import com.fasterxml.jackson.core.io.DataOutputAsStream;
-
 /**
  * Intermediate base class for actual format-specific factories for constructing
  * parsers (reading) and generators (writing). Although full power will only be

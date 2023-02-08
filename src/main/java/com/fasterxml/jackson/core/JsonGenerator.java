@@ -12,10 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
 import com.fasterxml.jackson.core.JsonParser.NumberType;
-import com.fasterxml.jackson.core.io.CharacterEscapes;
 
-import com.fasterxml.jackson.core.util.JacksonFeatureSet;
-import com.fasterxml.jackson.core.util.VersionUtil;
 
 import static com.fasterxml.jackson.core.JsonTokenId.*;
 
@@ -114,7 +111,7 @@ public abstract class JsonGenerator
          *<p>
          * Feature is enabled by default (since it is required by JSON specification).
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonWriteFeature#QUOTE_FIELD_NAMES} instead
+         * @deprecated Since 2.10 use {@link JsonWriteFeature#QUOTE_FIELD_NAMES} instead
          */
         @Deprecated
         QUOTE_FIELD_NAMES(true),
@@ -131,7 +128,7 @@ public abstract class JsonGenerator
          *<p>
          * Feature is enabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonWriteFeature#WRITE_NAN_AS_STRINGS} instead
+         * @deprecated Since 2.10 use {@link JsonWriteFeature#WRITE_NAN_AS_STRINGS} instead
          */
          @Deprecated
         QUOTE_NON_NUMERIC_NUMBERS(true),
@@ -153,7 +150,7 @@ public abstract class JsonGenerator
          *<p>
          * Feature is disabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonWriteFeature#ESCAPE_NON_ASCII} instead
+         * @deprecated Since 2.10 use {@link JsonWriteFeature#ESCAPE_NON_ASCII} instead
          */
         @Deprecated
         ESCAPE_NON_ASCII(false),
@@ -178,7 +175,7 @@ public abstract class JsonGenerator
          *<p>
          * Feature is disabled by default.
          *
-         * @deprecated Since 2.10 use {@link com.fasterxml.jackson.core.json.JsonWriteFeature#WRITE_NUMBERS_AS_STRINGS} instead
+         * @deprecated Since 2.10 use {@link JsonWriteFeature#WRITE_NUMBERS_AS_STRINGS} instead
          */
         @Deprecated
         WRITE_NUMBERS_AS_STRINGS(false),
@@ -260,7 +257,7 @@ public abstract class JsonGenerator
          * Feature is enabled by default.
          *
          * @since 2.14
-         * @deprecated Use {@link com.fasterxml.jackson.core.json.JsonWriteFeature#WRITE_HEX_UPPER_CASE} instead
+         * @deprecated Use {@link JsonWriteFeature#WRITE_HEX_UPPER_CASE} instead
          */
         @Deprecated
         WRITE_HEX_UPPER_CASE(true);

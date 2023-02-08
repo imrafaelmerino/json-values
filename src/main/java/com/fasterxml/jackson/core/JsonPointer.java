@@ -2,8 +2,6 @@ package com.fasterxml.jackson.core;
 
 import java.io.*;
 
-import com.fasterxml.jackson.core.io.NumberInput;
-
 /**
  * Implementation of
  * <a href="http://tools.ietf.org/html/draft-ietf-appsawg-json-pointer-03">JSON Pointer</a>

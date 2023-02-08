@@ -5,9 +5,6 @@
 
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.exc.StreamReadException;
-import com.fasterxml.jackson.core.util.RequestPayload;
-
 /**
  * Exception type for parsing problems, used when non-well-formed content
  * (content that does not conform to JSON syntax as per specification)

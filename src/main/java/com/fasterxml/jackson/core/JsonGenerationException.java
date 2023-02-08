@@ -5,8 +5,6 @@
 
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.exc.StreamWriteException;
-
 /**
  * Exception type for exceptions during JSON writing, such as trying
  * to output  content in wrong context (non-matching end-array or end-object,

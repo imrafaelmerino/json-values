@@ -1,6 +1,5 @@
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.util.JacksonFeature;
 
 /**
  * Marker interface that is to be implemented by data format - specific features.

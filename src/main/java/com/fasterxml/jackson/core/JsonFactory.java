@@ -8,14 +8,7 @@ import java.io.*;
 import java.lang.ref.SoftReference;
 import java.net.URL;
 
-import com.fasterxml.jackson.core.io.*;
-import com.fasterxml.jackson.core.json.*;
-import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
-import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
-import com.fasterxml.jackson.core.util.BufferRecycler;
-import com.fasterxml.jackson.core.util.BufferRecyclers;
-import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
-import com.fasterxml.jackson.core.util.JacksonFeature;
+
 
 /**
  * The main factory class of Jackson package, used to configure and

@@ -5,8 +5,6 @@
 
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.io.ContentReference;
-
 /**
  * Object that encapsulates Location information used for reporting
  * parsing (or potentially generation) errors, as well as current location

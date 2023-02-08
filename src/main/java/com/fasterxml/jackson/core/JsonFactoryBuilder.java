@@ -1,10 +1,5 @@
 package com.fasterxml.jackson.core;
 
-import com.fasterxml.jackson.core.io.CharacterEscapes;
-import com.fasterxml.jackson.core.io.SerializedString;
-import com.fasterxml.jackson.core.json.JsonReadFeature;
-import com.fasterxml.jackson.core.json.JsonWriteFeature;
-
 /**
  * {@link TSFBuilder}
  * implementation for constructing vanilla {@link JsonFactory}
