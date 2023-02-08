@@ -12,8 +12,6 @@ import com.fasterxml.jackson.core.format.InputAccessor;
 import com.fasterxml.jackson.core.format.MatchStrength;
 import com.fasterxml.jackson.core.io.*;
 import com.fasterxml.jackson.core.json.*;
-import com.fasterxml.jackson.core.json.async.NonBlockingByteBufferJsonParser;
-import com.fasterxml.jackson.core.json.async.NonBlockingJsonParser;
 import com.fasterxml.jackson.core.sym.ByteQuadsCanonicalizer;
 import com.fasterxml.jackson.core.sym.CharsToNameCanonicalizer;
 import com.fasterxml.jackson.core.util.BufferRecycler;
@@ -1242,7 +1240,6 @@ public class JsonFactory
 
     /**
      * Optional method for constructing parser for non-blocking parsing
-     * via {@link com.fasterxml.jackson.core.async.ByteArrayFeeder}
      * interface (accessed using {@link JsonParser#getNonBlockingInputFeeder()}
      * from constructed instance).
      *<p>
@@ -1256,20 +1253,10 @@ public class JsonFactory
      *
      * @since 2.9
      */
-    @Override
-    public JsonParser createNonBlockingByteArrayParser() throws IOException
-    {
-        // 17-May-2017, tatu: Need to take care not to accidentally create JSON parser
-        //   for non-JSON input:
-        _requireJSONFactory("Non-blocking source not (yet?) supported for this format (%s)");
-        IOContext ctxt = _createNonBlockingContext(null);
-        ByteQuadsCanonicalizer can = _byteSymbolCanonicalizer.makeChild(_factoryFeatures);
-        return new NonBlockingJsonParser(ctxt, _parserFeatures, can);
-    }
+
 
     /**
      * Optional method for constructing parser for non-blocking parsing
-     * via {@link com.fasterxml.jackson.core.async.ByteBufferFeeder}
      * interface (accessed using {@link JsonParser#getNonBlockingInputFeeder()}
      * from constructed instance).
      *<p>
@@ -1283,16 +1270,7 @@ public class JsonFactory
      *
      * @since 2.14
      */
-    @Override
-    public JsonParser createNonBlockingByteBufferParser() throws IOException
-    {
-        // 17-May-2017, tatu: Need to take care not to accidentally create JSON parser
-        //   for non-JSON input:
-        _requireJSONFactory("Non-blocking source not (yet?) supported for this format (%s)");
-        IOContext ctxt = _createNonBlockingContext(null);
-        ByteQuadsCanonicalizer can = _byteSymbolCanonicalizer.makeChild(_factoryFeatures);
-        return new NonBlockingByteBufferJsonParser(ctxt, _parserFeatures, can);
-    }
+
 
     /*
     /**********************************************************

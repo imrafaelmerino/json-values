@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Iterator;
 
-import com.fasterxml.jackson.core.async.NonBlockingInputFeeder;
 import com.fasterxml.jackson.core.exc.InputCoercionException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.core.util.JacksonFeatureSet;
@@ -588,7 +587,6 @@ public abstract class JsonParser
      * it may not be changed after construction.
      *<p>
      * If non-blocking decoding is (@code true}, it is possible to call
-     * {@link #getNonBlockingInputFeeder()} to obtain object to use
      * for feeding input; otherwise (<code>false</code> returned)
      * input is read by blocking
      *
@@ -607,9 +605,6 @@ public abstract class JsonParser
      *
      * @since 2.9
      */
-    public NonBlockingInputFeeder getNonBlockingInputFeeder() {
-        return null;
-    }
 
     /**
      * Accessor for getting metadata on capabilities of this parser, based on
