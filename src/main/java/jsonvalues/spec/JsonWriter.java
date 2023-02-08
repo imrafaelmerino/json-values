@@ -44,7 +44,6 @@ class JsonWriter {
     }
 
     private int position;
-    private long flushed;
     private OutputStream target;
     private byte[] buffer;
 
@@ -95,7 +94,6 @@ class JsonWriter {
                 throw new JsSerializerException("Unable to write to target stream.", ex);
             }
             position = 0;
-            flushed += size;
             if (padding > buffer.length) {
                 buffer = Arrays.copyOf(buffer, buffer.length + buffer.length / 2 + padding);
             }
@@ -393,15 +391,6 @@ class JsonWriter {
     }
 
     /**
-     * Total bytes currently flushed to stream
-     *
-     * @return bytes flushed
-     */
-    long flushed() {
-        return flushed;
-    }
-
-    /**
      * Resets the writer - same as calling reset(OutputStream = null)
      */
     void reset() {
@@ -417,7 +406,6 @@ class JsonWriter {
     void reset(OutputStream stream) {
         position = 0;
         target = stream;
-        flushed = 0;
     }
 
     /**
@@ -435,24 +423,11 @@ class JsonWriter {
             } catch (IOException ex) {
                 throw new JsSerializerException("Unable to write to target stream.", ex);
             }
-            flushed += position;
             position = 0;
         }
     }
 
-    /**
-     * This is deprecated method which exists only for backward compatibility
-     *
-     * @throws IOException unable to write to target stream
-     */
-    @Deprecated
-    void close() throws IOException {
-        if (target != null && position != 0) {
-            target.write(buffer, 0, position);
-            position = 0;
-            flushed = 0;
-        }
-    }
+
 
     /**
      * Custom objects can be serialized based on the implementation specified through this interface.

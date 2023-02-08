@@ -34,13 +34,11 @@ class JsonReader {
     }
 
     private int tokenStart;
-    private int nameEnd;
     private int currentIndex = 0;
     private long currentPosition = 0;
     private byte last = ' ';
 
     private int length;
-    private final char[] tmp;
 
     byte[] buffer;
     char[] chars;
@@ -93,7 +91,6 @@ class JsonReader {
             int maxNumberDigits,
             int maxStringBuffer
                       ) {
-        this.tmp = tmp;
         this.buffer = buffer;
         this.length = length;
         this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -723,7 +720,7 @@ class JsonReader {
             if (ci >= readLimit) {
                 return calcHashAndCopyName(hash, ci);
             }
-            nameEnd = currentIndex = ci + 1;
+           currentIndex = ci + 1;
         } else {
             //TODO: use length instead!? this will read data after used buffer size
             while (ci < buffer.length) {
@@ -737,7 +734,7 @@ class JsonReader {
                 hash ^= b;
                 hash *= 0x1000193;
             }
-            nameEnd = currentIndex = ci;
+            currentIndex = ci;
         }
         return (int) hash;
     }
@@ -759,7 +756,6 @@ class JsonReader {
             if (b == '\\') {
                 b = read();
             } else if (b == '"') {
-                nameEnd = -1;
                 return (int) hash;
             }
             if (i == chars.length) {
@@ -858,9 +854,8 @@ class JsonReader {
     /**
      * Check if the last read token is an array end
      *
-     * @throws IOException it's not array end
      */
-    public void checkArrayEnd() throws IOException {
+    public void checkArrayEnd()  {
         if (last != ']') {
             if (currentIndex >= length) throw newParseErrorAt("Unexpected end of JSON in collection", 0, eof);
             throw newParseError("Expecting ']' as array end");

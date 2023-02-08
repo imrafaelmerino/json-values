@@ -18,7 +18,6 @@ class JsObjLens<S extends Json<S>> extends Lens<S, JsObj> {
         );
     }
 
-
     @Override
     public <B> Lens<S, B> compose(final Lens<JsObj, B> other) {
         return new Lens<>(this.get.andThen(other.get),

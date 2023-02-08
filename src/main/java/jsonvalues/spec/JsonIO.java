@@ -6,7 +6,6 @@ import jsonvalues.Json;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.Optional;
 
 
 public final class JsonIO {
@@ -21,7 +20,7 @@ public final class JsonIO {
     final ThreadLocal<JsonWriter> localWriter;
     final ThreadLocal<JsonReader> localReader;
     static final JsValueWritter valueSerializer = new JsValueWritter();
-    static final JsObjWritter objSerializer = new JsObjWritter(valueSerializer);
+    static final JsObjWriter objSerializer = new JsObjWriter(valueSerializer);
     static final JsArrayWritter arraySerializer = new JsArrayWritter(valueSerializer);
 
     static {

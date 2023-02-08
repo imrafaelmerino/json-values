@@ -6,11 +6,11 @@ import jsonvalues.JsValue;
 
 import static java.util.Objects.requireNonNull;
 
-final class JsObjWritter implements JsonWriter.WriteObject<JsObj> {
+final class JsObjWriter implements JsonWriter.WriteObject<JsObj> {
 
     private final JsValueWritter valueSerializer;
 
-    public JsObjWritter(final JsValueWritter valueSerializer) {
+    public JsObjWriter(final JsValueWritter valueSerializer) {
         this.valueSerializer = valueSerializer;
     }
 
