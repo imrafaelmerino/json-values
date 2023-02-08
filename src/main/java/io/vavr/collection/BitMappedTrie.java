@@ -76,7 +76,7 @@ final class BitMappedTrie<T> implements Serializable {
     }
 
     static <T> BitMappedTrie<T> ofAll(Object array) {
-        final ArrayType<T> type = ArrayType.of(array);
+        final ArrayType<T> type = ArrayType.obj();
         final int size = type.lengthOf(array);
         return (size == 0) ? empty() : ofAll(array, type, size);
     }

@@ -2727,8 +2727,12 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @SuppressWarnings("squid:S1206")
     public int hashCode() {
         int result = hashcode;
-        if (result == 0)
-            hashcode = result = map.hashCode();
+        if (result == 0) {
+            for (var next : map) {
+                result += next.key().hashCode() ^ next.value().hashCode();
+            }
+            hashcode = result;
+        }
         return result;
     }
 
