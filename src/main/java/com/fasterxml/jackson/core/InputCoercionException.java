@@ -51,11 +51,7 @@ package com.fasterxml.jackson.core;
         return this;
     }
 
-    @Override
-     InputCoercionException withRequestPayload(RequestPayload p) {
-        _requestPayload = p;
-        return this;
-    }
+
 
     /**
      * Accessor for getting information about input type (in form of token, giving "shape"

@@ -406,12 +406,7 @@ import java.util.Iterator;
      */
     protected int _features;
 
-    /**
-     * Optional container that holds the request payload which will be displayed on JSON parsing error.
-     *
-     * @since 2.8
-     */
-    protected transient RequestPayload _requestPayload;
+
 
     /*
     /**********************************************************
@@ -463,39 +458,8 @@ import java.util.Iterator;
      */
      Object getInputSource() { return null; }
 
-    /**
-     * Sets the payload to be passed if {@link JsonParseException} is thrown.
-     *
-     * @param payload Payload to pass
-     *
-     * @since 2.8
-     */
-     void setRequestPayloadOnError(RequestPayload payload) {
-        _requestPayload = payload;
-    }
 
-    /**
-     * Sets the byte[] request payload and the charset
-     *
-     * @param payload Payload to pass
-     * @param charset Character encoding for (lazily) decoding payload
-     *
-     * @since 2.8
-     */
-      void setRequestPayloadOnError(byte[] payload, String charset) {
-         _requestPayload = (payload == null) ? null : new RequestPayload(payload, charset);
-     }
 
-     /**
-      * Sets the String request payload
-      *
-      * @param payload Payload to pass
-      *
-      * @since 2.8
-      */
-     void setRequestPayloadOnError(String payload) {
-        _requestPayload = (payload == null) ? null : new RequestPayload(payload);
-    }
 
     /*
     /**********************************************************************
@@ -1905,8 +1869,7 @@ import java.util.Iterator;
         if (t == JsonToken.VALUE_TRUE) return true;
         if (t == JsonToken.VALUE_FALSE) return false;
         throw new JsonParseException(this,
-            String.format("Current token (%s) not of boolean type", t))
-                .withRequestPayload(_requestPayload);
+            String.format("Current token (%s) not of boolean type", t));
     }
 
     /**
@@ -2415,8 +2378,7 @@ import java.util.Iterator;
      * @return {@link JsonParseException} constructed
      */
     protected JsonParseException _constructError(String msg) {
-        return new JsonParseException(this, msg)
-            .withRequestPayload(_requestPayload);
+        return new JsonParseException(this, msg);
     }
 
     /**
@@ -2471,9 +2433,6 @@ import java.util.Iterator;
      */
     protected JsonParseException _constructReadException(String msg, Throwable t) {
         JsonParseException e = new JsonParseException(this, msg, t);
-        if (_requestPayload != null) {
-            e = e.withRequestPayload(_requestPayload);
-        }
         return e;
     }
 }

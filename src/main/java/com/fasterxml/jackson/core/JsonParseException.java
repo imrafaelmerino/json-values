@@ -72,23 +72,7 @@ package com.fasterxml.jackson.core;
         return this;
     }
 
-    /**
-     * Fluent method that may be used to assign payload to this exception,
-     * to let recipient access it for diagnostics purposes.
-     *<p>
-     * NOTE: `this` instance is modified and no new instance is constructed.
-     *
-     * @param payload Payload to assign to this exception
-     *
-     * @return This exception instance to allow call chaining
-     *
-     * @since 2.8
-     */
-    @Override
-     JsonParseException withRequestPayload(RequestPayload payload) {
-        _requestPayload = payload;
-        return this;
-    }
+
 
     // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
     @Override
@@ -96,17 +80,8 @@ package com.fasterxml.jackson.core;
         return super.getProcessor();
     }
 
-    // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
-    @Override
-     RequestPayload getRequestPayload() {
-        return super.getRequestPayload();
-    }
 
-    // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
-    @Override
-     String getRequestPayloadAsString() {
-        return super.getRequestPayloadAsString();
-    }
+
 
     // NOTE: overloaded in 2.10 just to retain binary compatibility with 2.9 (remove from 3.0)
     @Override
