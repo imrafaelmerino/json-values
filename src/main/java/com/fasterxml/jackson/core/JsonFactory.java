@@ -551,18 +551,7 @@ public  class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Method for enabling or disabling specified parser feature
-     * (check {@link JsonParser.Feature} for list of features)
-     *
-     * @param f Feature to enable/disable
-     * @param state Whether to enable or disable the feature
-     *
-     * @return This factory instance (to allow call chaining)
-     */
-    public  JsonFactory configure(JsonParser.Feature f, boolean state) {
-        return state ? enable(f) : disable(f);
-    }
+
 
     /**
      * Method for enabling specified parser feature
@@ -627,18 +616,7 @@ public  class JsonFactory
     /**********************************************************
      */
 
-    /**
-     * Method for enabling or disabling specified generator feature
-     * (check {@link JsonGenerator.Feature} for list of features)
-     *
-     * @param f Feature to enable/disable
-     * @param state Whether to enable or disable the feature
-     *
-     * @return This factory instance (to allow call chaining)
-     */
-    public  JsonFactory configure(JsonGenerator.Feature f, boolean state) {
-        return state ? enable(f) : disable(f);
-    }
+
 
     /**
      * Method for enabling specified generator features
@@ -681,37 +659,10 @@ public  class JsonFactory
         return (_generatorFeatures & f.mappedFeature().getMask()) != 0;
     }
 
-    /**
-     * Method for accessing custom escapes factory uses for {@link JsonGenerator}s
-     * it creates.
-     *
-     * @return Configured {@code CharacterEscapes}, if any; {@code null} if none
-     */
-    public CharacterEscapes getCharacterEscapes() { return _characterEscapes; }
 
-    /**
-     * Method for defining custom escapes factory uses for {@link JsonGenerator}s
-     * it creates.
-     *
-     * @param esc CharaterEscapes to set (or {@code null} for "none")
-     *
-     * @return This factory instance (to allow call chaining)
-     */
-    public JsonFactory setCharacterEscapes(CharacterEscapes esc) {
-        _characterEscapes = esc;
-        return this;
-    }
 
-    /**
-     * Method for getting currently configured output decorator (if any;
-     * there is no default decorator).
-     *
-     * @return OutputDecorator configured for generators factory creates, if any;
-     *    {@code null} if none.
-     */
-    public OutputDecorator getOutputDecorator() {
-        return _outputDecorator;
-    }
+
+
 
     /**
      * Method for overriding currently configured output decorator
@@ -780,7 +731,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(File f) throws IOException, JsonParseException {
+    public JsonParser createParser(File f) throws IOException {
         // true, since we create InputStream from File
         IOContext ctxt = _createContext(_createContentReference(f), true);
         InputStream in = _fileInputStream(f);
@@ -806,7 +757,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(URL url) throws IOException, JsonParseException {
+    public JsonParser createParser(URL url) throws IOException {
         // true, since we create InputStream from URL
         IOContext ctxt = _createContext(_createContentReference(url), true);
         InputStream in = _optimizedStreamFromURL(url);
@@ -835,7 +786,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(InputStream in) throws IOException, JsonParseException {
+    public JsonParser createParser(InputStream in) throws IOException {
         IOContext ctxt = _createContext(_createContentReference(in), false);
         return _createParser(_decorate(in, ctxt), ctxt);
     }
@@ -855,7 +806,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(Reader r) throws IOException, JsonParseException {
+    public JsonParser createParser(Reader r) throws IOException {
         // false -> we do NOT own Reader (did not create it)
         IOContext ctxt = _createContext(_createContentReference(r), false);
         return _createParser(_decorate(r, ctxt), ctxt);
@@ -868,7 +819,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(byte[] data) throws IOException, JsonParseException {
+    public JsonParser createParser(byte[] data) throws IOException {
         IOContext ctxt = _createContext(_createContentReference(data), true);
         if (_inputDecorator != null) {
             InputStream in = _inputDecorator.decorate(ctxt, data, 0, data.length);
@@ -890,7 +841,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(byte[] data, int offset, int len) throws IOException, JsonParseException {
+    public JsonParser createParser(byte[] data, int offset, int len) throws IOException {
         _checkRangeBoundsForByteArray(data, offset, len);
         IOContext ctxt = _createContext(_createContentReference(data, offset, len), true);
         // [JACKSON-512]: allow wrapping with InputDecorator
@@ -910,7 +861,7 @@ public  class JsonFactory
      * @since 2.1
      */
     @Override
-    public JsonParser createParser(String content) throws IOException, JsonParseException {
+    public JsonParser createParser(String content) throws IOException {
          int strLen = content.length();
         // Actually, let's use this for medium-sized content, up to 64kB chunk (32kb char)
         if ((_inputDecorator != null) || (strLen > 0x8000) || !canUseCharArrays()) {
@@ -1042,12 +993,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(File)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(File f) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(File f) throws IOException {
         return createParser(f);
     }
 
@@ -1070,12 +1019,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(URL)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(URL url) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(URL url) throws IOException {
         return createParser(url);
     }
 
@@ -1101,12 +1048,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(InputStream)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(InputStream in) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(InputStream in) throws IOException {
         return createParser(in);
     }
 
@@ -1125,12 +1070,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(Reader)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(Reader r) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(Reader r) throws IOException {
         return createParser(r);
     }
 
@@ -1142,12 +1085,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(byte[])} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(byte[] data) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(byte[] data) throws IOException {
         return createParser(data);
     }
 
@@ -1162,12 +1103,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(byte[],int,int)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(byte[] data, int offset, int len) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(byte[] data, int offset, int len) throws IOException {
         return createParser(data, offset, len);
     }
 
@@ -1180,12 +1119,10 @@ public  class JsonFactory
      * @return Parser constructed
      *
      * @throws IOException if parser initialization fails due to I/O (read) problem
-     * @throws JsonParseException if parser initialization fails due to content decoding problem
-     *
      * @deprecated Since 2.2, use {@link #createParser(String)} instead.
      */
     @Deprecated
-    public JsonParser createJsonParser(String content) throws IOException, JsonParseException {
+    public JsonParser createJsonParser(String content) throws IOException {
         return createParser(content);
     }
 
@@ -1327,11 +1264,9 @@ public  class JsonFactory
      *
      * @return Actual parser to use
      *
-     * @throws IOException if parser initialization fails due to I/O (read) problem
-     *
      * @since 2.1
      */
-     JsonParser _createParser(Reader r, IOContext ctxt) throws IOException {
+     JsonParser _createParser(Reader r, IOContext ctxt) {
         return new ReaderBasedJsonParser(ctxt, _parserFeatures, r, _objectCodec,
                 _rootCharSymbols.makeChild(_factoryFeatures));
     }
@@ -1409,10 +1344,8 @@ public  class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @throws IOException if parser initialization fails due to I/O (write) problem
      */
-     JsonGenerator _createGenerator(Writer out, IOContext ctxt) throws IOException
-    {
+     JsonGenerator _createGenerator(Writer out, IOContext ctxt) {
         WriterBasedJsonGenerator gen = new WriterBasedJsonGenerator(ctxt,
                 _generatorFeatures, _objectCodec, out, _quoteChar);
         if (_maximumNonEscapedChar > 0) {
@@ -1443,9 +1376,8 @@ public  class JsonFactory
      *
      * @return This factory instance (to allow call chaining)
      *
-     * @throws IOException if parser initialization fails due to I/O (write) problem
      */
-     JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) throws IOException {
+     JsonGenerator _createUTF8Generator(OutputStream out, IOContext ctxt) {
         UTF8JsonGenerator gen = new UTF8JsonGenerator(ctxt,
                 _generatorFeatures, _objectCodec, out, _quoteChar);
         if (_maximumNonEscapedChar > 0) {
@@ -1497,16 +1429,7 @@ public  class JsonFactory
         return in;
     }
 
-    // @since 2.8
-      DataInput _decorate(DataInput in, IOContext ctxt) throws IOException {
-        if (_inputDecorator != null) {
-            DataInput in2 = _inputDecorator.decorate(ctxt, in);
-            if (in2 != null) {
-                return in2;
-            }
-        }
-        return in;
-    }
+
 
       OutputStream _decorate(OutputStream out, IOContext ctxt) throws IOException {
         if (_outputDecorator != null) {

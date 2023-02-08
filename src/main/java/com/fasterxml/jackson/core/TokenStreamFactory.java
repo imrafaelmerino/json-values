@@ -169,21 +169,6 @@ import java.net.URL;
         }
     }
 
-    // @since 2.14
-    protected void _checkRangeBoundsForCharArray(char[] data, int offset, int len) {
-        if (data == null) {
-            _reportRangeError("Invalid `char[]` argument: `null`");
-        }
-        final int dataLen = data.length;
-        final int end = offset+len;
-        // Note: we are checking same things as with other bounds-checks
-        int anyNegs = offset | len | end | (dataLen - end);
-        if (anyNegs < 0) {
-            _reportRangeError(String.format(
-                    "Invalid 'offset' (%d) and/or 'len' (%d) arguments for `char[]` of length %d",
-                    offset, len, dataLen));
-        }
-    }
 
     protected <T> T _reportRangeError(String msg) throws IllegalArgumentException
     {
