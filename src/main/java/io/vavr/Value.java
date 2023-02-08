@@ -351,39 +351,6 @@ public interface Value<T> extends Iterable<T> {
 
 
 
-
-
-    /**
-     * Converts this to a Java array with component type {@code Object}
-     *
-     * <pre>{@code
-     * // = [] of type Object[]
-     * Future.<String> of(() -> { throw new Error(); })
-     *       .toJavaArray()
-     *
-     * // = [ok] of type Object[]
-     * Try.of(() -> "ok")
-     *    .toJavaArray()
-     *
-     * // = [1, 2, 3] of type Object[]
-     * List.of(1, 2, 3)
-     *     .toJavaArray()
-     * }</pre>
-     *
-     * @return A new Java array.
-     */
-    default Object[] toJavaArray() {
-        if ((this instanceof Traversable<?>) && ((Traversable<?>) this).isTraversableAgain()) {
-            final Object[] results = new Object[((Traversable<T>) this).size()];
-            final Iterator<T> iter = iterator();
-            Arrays.setAll(results, i -> iter.next());
-            return results;
-
-        } else {
-            return toJavaList().toArray();
-        }
-    }
-
     /**
      * Converts this to a Java array having an accurate component type.
      *

@@ -64,7 +64,6 @@ final class Collections {
     // @param iterable may not be null
     static boolean isEmpty(Iterable<?> iterable) {
         return iterable instanceof Traversable && ((Traversable<?>) iterable).isEmpty()
-                || iterable instanceof Collection && ((Collection<?>) iterable).isEmpty()
                 || !iterable.iterator().hasNext();
     }
 
@@ -73,27 +72,20 @@ final class Collections {
                 (iterable instanceof Traversable && ((Traversable<?>) iterable).isTraversableAgain());
     }
 
-    static <T> T last(Traversable<T> source) {
-        if (source.isEmpty()) {
-            throw new NoSuchElementException("last of empty " + source.stringPrefix());
-        } else {
-            final Iterator<T> it = source.iterator();
-            T result = null;
-            while (it.hasNext()) {
-                result = it.next();
-            }
-            return result;
-        }
-    }
+
 
 
     static <T> Iterator<T> reverseIterator(Iterable<T> iterable) {
-        return ((LinearSeq<T>) iterable).reverseIterator();
+        return ((Vector) iterable).reverseIterator();
     }
 
 
     static <T> IterableWithSize<T> withSize(Iterable<? extends T> iterable) {
-        return withSizeTraversable(List.ofAll(iterable));
+        if(iterable instanceof java.util.List l) return new IterableWithSize<>(l, l.size());
+        if(iterable instanceof Vector l) return new IterableWithSize<>(l, l.length());
+
+        //TODO
+        throw new RuntimeException();
     }
 
     private static <T> IterableWithSize<T> withSizeTraversable(Iterable<? extends T> iterable) {

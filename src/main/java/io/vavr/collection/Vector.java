@@ -89,18 +89,18 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> append(T element) {
-        return appendAll(List.of(element));
+        return new Vector<>(trie.appendAll(java.util.List.of(element)));
     }
 
 
     public Vector<T> appendAll(Iterable<? extends T> iterable) {
         Objects.requireNonNull(iterable, "iterable is null");
-        if (isEmpty()) {
+  /*      if (isEmpty()) {
             return ofAll(iterable);
         }
         if (Collections.isEmpty(iterable)) {
             return this;
-        }
+        }*/
         return new Vector<>(trie.appendAll(iterable));
     }
 
@@ -175,9 +175,19 @@ public final class Vector<T> implements Iterable<T> {
 
 
     public Vector<T> prepend(T element) {
-        return prependAll(List.of(element));
+        return prependAll(Vector.of(element));
     }
 
+    /**
+     * Returns a singleton {@code Vector}, i.e. a {@code Vector} of one element.
+     *
+     * @param element An element.
+     * @param <T>     The component type
+     * @return A new Vector instance containing the given element
+     */
+    public static <T> Vector<T> of(T element) {
+        return ofAll(BitMappedTrie.ofAll(new Object[]{element}));
+    }
 
     public Vector<T> prependAll(Iterable<? extends T> iterable) {
         Objects.requireNonNull(iterable, "iterable is null");
@@ -188,6 +198,22 @@ public final class Vector<T> implements Iterable<T> {
             return this;
         }
         return new Vector<>(trie.prependAll(iterable));
+    }
+
+    Vector<T> reverse(){
+        return (length() <= 1) ? this : foldLeft(empty(), Vector::prepend);
+    }
+
+     <U> U foldLeft(U zero, BiFunction<? super U, ? super T, ? extends U> combine) {
+        Objects.requireNonNull(combine, "combine is null");
+        U xs = zero;
+        for (T x : this) {
+            xs = combine.apply(xs, x);
+        }
+        return xs;
+    }
+     Iterator<T> reverseIterator() {
+        return reverse().iterator();
     }
 
 
