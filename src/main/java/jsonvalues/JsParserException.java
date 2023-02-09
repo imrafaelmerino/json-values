@@ -17,7 +17,7 @@ public class JsParserException extends RuntimeException {
 				: new ParsingStacklessException(reason);
 	}
 
-	public static JsParserException create(String reason, int index, boolean withStackTrace) {
+	public static JsParserException create(String reason, long index, boolean withStackTrace) {
 		return withStackTrace
 				? new JsParserException(reason+" @ position="+index)
 				: new ParsingStacklessException(reason+" @ position="+index);

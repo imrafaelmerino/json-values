@@ -3,8 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsParserException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.util.*;
 
 /**
@@ -17,7 +15,6 @@ import java.util.*;
 class JsonReader {
 
     private static final boolean[] WHITESPACE = new boolean[256];
-    private static final Charset utf8 = StandardCharsets.UTF_8;
 
     static {
         WHITESPACE[9 + 128] = true;
@@ -33,6 +30,7 @@ class JsonReader {
     }
 
     private int currentIndex = 0;
+    private long currentPosition = 0;
     private byte last = ' ';
 
     private int length;
@@ -51,7 +49,7 @@ class JsonReader {
     private final byte[] originalBuffer;
     private final int originalBufferLenWithExtraSpace;
 
-    public enum DoublePrecision {
+     enum DoublePrecision {
         EXACT(0),
         HIGH(1),
         DEFAULT(3),
@@ -135,7 +133,8 @@ class JsonReader {
      * @return itself
      * @throws IOException unable to read from stream
      */
-    public JsonReader process(InputStream stream) throws IOException {
+     JsonReader process(InputStream stream) throws IOException {
+        this.currentPosition = 0;
         this.currentIndex = 0;
         this.stream = stream;
         this.readLimit = Math.min(this.length, bufferLenWithExtraSpace);
@@ -154,7 +153,7 @@ class JsonReader {
      * @param newLength length of buffer which can be used
      * @return itself
      */
-    public JsonReader process(byte[] newBuffer, int newLength) {
+     JsonReader process(byte[] newBuffer, int newLength) {
         if (newBuffer != null) {
             this.buffer = newBuffer;
             this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -174,13 +173,8 @@ class JsonReader {
      *
      * @return size of JSON input
      */
-    public int length() {
+     int length() {
         return length;
-    }
-
-    @Override
-    public String toString() {
-        return new String(buffer, 0, length, utf8);
     }
 
     private static int readFully(byte[] buffer, InputStream stream, int offset) throws IOException {
@@ -203,7 +197,7 @@ class JsonReader {
      * @return next byte
      * @throws IOException when end of JSON input
      */
-    public byte read() throws IOException {
+     byte read() throws IOException {
         if (stream != null && currentIndex > readLimit) {
             prepareNextBlock();
         }
@@ -217,6 +211,7 @@ class JsonReader {
         int len = length - currentIndex;
         System.arraycopy(buffer, currentIndex, buffer, 0, len);
         int available = readFully(buffer, stream, len);
+        currentPosition += currentIndex;
         if (available == len) {
             readLimit = length - currentIndex;
             length = readLimit;
@@ -244,22 +239,27 @@ class JsonReader {
      *
      * @return which was the last byte read
      */
-    public byte last() {
+     byte last() {
         return last;
     }
-    
-    public JsParserException newParseError(String description) {
-        return JsParserException.create(description, currentIndex,false);
+    private long positionInStream(int offset) {
+        return currentPosition + currentIndex - offset;
     }
 
+     JsParserException newParseError(String description) {
+        return JsParserException.create(description, positionInStream(0),false);
+    }
 
+     JsParserException newParseError(String description,int offset) {
+        return JsParserException.create(description, positionInStream(offset),false);
+    }
     
-    public int getCurrentIndex() {
+     int getCurrentIndex() {
         return currentIndex;
     }
 
 
-    public int scanNumber() {
+     int scanNumber() {
         int tokenStart = currentIndex - 1;
         int i = 1;
         int ci = currentIndex;
@@ -276,7 +276,7 @@ class JsonReader {
 
     char[] prepareBuffer(int start, int len) throws JsParserException {
         if (len > maxNumberDigits) {
-            throw newParseError("Too many digits detected in number ("+ len+")");
+            throw newParseError("Too many digits detected in number ("+ len+")",len);
         }
         while (chars.length < len) {
             chars = Arrays.copyOf(chars, chars.length * 2);
@@ -307,7 +307,7 @@ class JsonReader {
      * @return parsed string
      * @throws IOException error reading string input
      */
-    public String readString() throws IOException {
+     String readString() throws IOException {
         int len = parseString();
         return valuesCache == null ? new String(chars, 0, len) : valuesCache.get(chars, len);
     }
@@ -331,7 +331,7 @@ class JsonReader {
                 return i;
             }
             // If we encounter a backslash, which is a beginning of an escape sequence
-            // or a high bit was set - indicating an UTF-8 encoded multibyte character,
+            // or a high bit was set - indicating a UTF-8 encoded multibyte character,
             // there is no chance that we can decode the string without instantiating
             // a temporary buffer, so quit this loop
             if ((bb ^ '\\') < 1) break;
@@ -525,7 +525,7 @@ class JsonReader {
      * @return next non-whitespace byte in the JSON input
      * @throws IOException unable to get next byte (end of stream, ...)
      */
-    public byte getNextToken() throws IOException {
+     byte getNextToken() throws IOException {
         read();
         if (WHITESPACE[last + 128]) {
             while (wasWhiteSpace()) {
@@ -543,7 +543,7 @@ class JsonReader {
      * @return parsed key value
      * @throws IOException unable to parse string input
      */
-    public String readKey() throws IOException {
+     String readKey() throws IOException {
         int len = parseString();
         String key = keyCache != null ? keyCache.get(chars, len) : new String(chars, 0, len);
         if (getNextToken() != ':') throw newParseError("Expecting ':' after attribute name");
@@ -560,7 +560,7 @@ class JsonReader {
      * @return true if 'null' value is at current position
      * @throws JsParserException invalid 'null' value detected
      */
-    public boolean wasNull() throws JsParserException {
+     boolean wasNull() throws JsParserException {
         if (last == 'n') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'u'
                     && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 'l') {
@@ -581,7 +581,7 @@ class JsonReader {
      * @return true if 'true' value is at current position
      * @throws JsParserException invalid 'true' value detected
      */
-    public boolean wasTrue() throws JsParserException {
+     boolean wasTrue() throws JsParserException {
         if (last == 't') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'r'
                     && buffer[currentIndex + 1] == 'u' && buffer[currentIndex + 2] == 'e') {
@@ -602,7 +602,7 @@ class JsonReader {
      * @return true if 'false' value is at current position
      * @throws JsParserException invalid 'false' value detected
      */
-    public boolean wasFalse() throws JsParserException {
+     boolean wasFalse() throws JsParserException {
         if (last == 'f') {
             if (currentIndex + 3 < length && buffer[currentIndex] == 'a'
                     && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 's'
@@ -619,7 +619,7 @@ class JsonReader {
     /**
      * Check if the last read token is an array end
      */
-    public void checkArrayEnd() {
+     void checkArrayEnd() {
         if (last != ']') {
             if (currentIndex >= length) throw newParseError("Unexpected end of JSON in collection");
             throw newParseError("Expecting ']' as array end");

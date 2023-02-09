@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Arrays;
 
 /** A very fast and memory efficient class to encode and decode to and from BASE64 in full accordance
  * with RFC 2045.<br><br>
@@ -73,13 +72,7 @@ import java.util.Arrays;
 abstract class Base64 {
 	private static final char[] CA = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/".toCharArray();
 	private static final byte[] BA;
-	private static final int[] IA = new int[256];
 	static {
-		Arrays.fill(IA, -1);
-		for (int i = 0, iS = CA.length; i < iS; i++) {
-			IA[CA[i]] = i;
-		}
-		IA['='] = 0;
 		BA = new byte[CA.length];
 		for (int i = 0; i < CA.length; i++) {
 			BA[i] = (byte)CA[i];
