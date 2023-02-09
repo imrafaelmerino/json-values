@@ -1,6 +1,6 @@
 package jsonvalues;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -86,9 +86,15 @@ public final class JsPath implements Comparable<JsPath> {
                           .replace("~0",
                                    "~");
     private static final UnaryOperator<String> decode = token ->
-            URLDecoder.decode(token,
-                                     StandardCharsets.UTF_8
+    {
+        try {
+            return URLDecoder.decode(token,
+                                     "UTF-8"
             );
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+    };
     private final Vector<Position> positions;
 
 

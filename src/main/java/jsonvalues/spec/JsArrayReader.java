@@ -116,7 +116,7 @@ abstract class JsArrayReader extends AbstractReader {
 
         final JsArray array = value(reader);
         final Optional<JsError> result = fn.apply(array);
-        if (result.isEmpty()) return array;
+        if (!result.isPresent()) return array;
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                          reader.getPositionInStream()
                                         );

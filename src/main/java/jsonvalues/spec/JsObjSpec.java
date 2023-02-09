@@ -1147,7 +1147,7 @@ public final class JsObjSpec implements JsSpec {
             return errors;
         }
         JsObj json = parentValue.toJsObj();
-        for (var next : json) {
+        for (jsonvalues.JsObjPair next : json) {
             String key = next.key();
             JsValue value = next.value();
             JsPath keyPath = JsPath.fromKey(key);

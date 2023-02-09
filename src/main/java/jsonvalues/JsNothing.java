@@ -7,6 +7,7 @@ package jsonvalues;
  * return nothing when no element is found, what makes them total on the input path.
  */
 public final class JsNothing implements JsValue {
+    public static final int TYPE_ID = 4;
     /**
      * The singleton nothing value.
      */
@@ -15,6 +16,10 @@ public final class JsNothing implements JsValue {
     private JsNothing() {
     }
 
+    @Override
+    public int id() {
+        return TYPE_ID;
+    }
 
     @Override
     public JsPrimitive toJsPrimitive() {

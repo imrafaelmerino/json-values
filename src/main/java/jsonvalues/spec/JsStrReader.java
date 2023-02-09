@@ -19,7 +19,7 @@ final class JsStrReader extends AbstractReader {
                        ) throws IOException {
         String value = reader.readString();
         Optional<JsError> result = fn.apply(value);
-        if (result.isEmpty()) return JsStr.of(value);
+        if (!result.isPresent()) return JsStr.of(value);
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                          reader.getPositionInStream()
                                         );

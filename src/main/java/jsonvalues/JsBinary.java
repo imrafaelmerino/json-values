@@ -20,6 +20,7 @@ import static java.util.Objects.requireNonNull;
  * }
  */
 public final class JsBinary extends JsPrimitive {
+    public static final int TYPE_ID = 10;
     /**
      * prism between the sum type JsValue and JsBinary
      */
@@ -61,6 +62,10 @@ public final class JsBinary extends JsPrimitive {
         return new JsBinary(requireNonNull(Base64.getDecoder().decode(base64)));
     }
 
+    @Override
+    public int id() {
+        return TYPE_ID;
+    }
 
     @Override
     public JsPrimitive toJsPrimitive() {

@@ -31,6 +31,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * Represents a json array, which is an ordered list of elements.
  */
 public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
+    public static final int TYPE_ID = 4;
     /**
      * lenses defined for a Json array
      */
@@ -1184,6 +1185,10 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
+    @Override
+    public int id() {
+        return TYPE_ID;
+    }
     @Override
     public boolean isArray() {
         return true;

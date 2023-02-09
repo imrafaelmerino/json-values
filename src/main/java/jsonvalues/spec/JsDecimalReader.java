@@ -22,7 +22,7 @@ final class JsDecimalReader extends AbstractReader {
                           ) throws IOException {
         final BigDecimal value = NumberConverter.deserializeDecimal(reader);
         final Optional<JsError> result = fn.apply(value);
-        if (result.isEmpty()) return JsBigDec.of(value);
+        if (!result.isPresent()) return JsBigDec.of(value);
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                          reader.getPositionInStream()
                                         );

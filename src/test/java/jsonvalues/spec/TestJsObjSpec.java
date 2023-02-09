@@ -18,6 +18,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -1474,11 +1475,11 @@ public class TestJsObjSpec {
 
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.errorCode)
-                                          .toList()
+                                          .collect(Collectors.toList())
                                           .contains(CONSTANT_CONDITION));
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.value)
-                                          .toList()
+                                          .collect(Collectors.toList())
                                           .contains(JsInt.of(1)));
 
 

@@ -48,7 +48,7 @@ import static java.util.Objects.requireNonNull;
  * @see JsObj to work with jsons that are objects
  * @see JsArray to work with jsons that are arrays
  */
-public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray, JsObj {
+public interface Json<T extends Json<T>> extends JsValue  {
 
 
     /**
