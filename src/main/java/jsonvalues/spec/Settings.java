@@ -8,7 +8,6 @@ package jsonvalues.spec;
 class Settings {
     StringCache keyCache = new SimpleStringCache();
     StringCache valuesCache;
-    JsonReader.ErrorInfo errorInfo = JsonReader.ErrorInfo.WITH_STACK_TRACE;
     JsonReader.DoublePrecision doublePrecision = JsonReader.DoublePrecision.DEFAULT;
     int maxNumberDigits = 512;
     int maxStringBuffer = 128 * 1024 * 1024;
@@ -28,15 +27,6 @@ class Settings {
      */
     Settings useStringValuesCache() {
         this.valuesCache = new SimpleStringCache();
-        return this;
-    }
-
-    /**
-     * @param errorInfo information about error in parsing exception
-     * @return itself
-     */
-    Settings errorInfo(JsonReader.ErrorInfo errorInfo) {
-        this.errorInfo = errorInfo;
         return this;
     }
 

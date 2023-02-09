@@ -6,8 +6,7 @@ import java.util.function.Predicate;
 
 final class OpFilterObjElems {
 
-    private OpFilterObjElems() {
-    }
+    private OpFilterObjElems() {}
 
     static JsObj filter(JsObj json,
                         JsPath startingPath,

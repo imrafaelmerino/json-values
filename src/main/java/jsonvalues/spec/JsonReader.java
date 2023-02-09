@@ -1,8 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsParserException;
-
-import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.Charset;
@@ -15,7 +13,6 @@ import java.util.*;
  * Deserialized instances can obtain TContext information provided with this reader.
  * <p>
  * JsonReader can be reused by calling process methods.
- *
  */
 class JsonReader {
 
@@ -36,7 +33,6 @@ class JsonReader {
     }
 
     private int currentIndex = 0;
-    private long currentPosition = 0;
     private byte last = ' ';
 
     private int length;
@@ -55,13 +51,6 @@ class JsonReader {
     private final byte[] originalBuffer;
     private final int originalBufferLenWithExtraSpace;
 
-    public enum ErrorInfo {
-        WITH_STACK_TRACE,
-        DESCRIPTION_AND_POSITION,
-        DESCRIPTION_ONLY,
-        MINIMAL
-    }
-
     public enum DoublePrecision {
         EXACT(0),
         HIGH(1),
@@ -75,7 +64,6 @@ class JsonReader {
         }
     }
 
-    private final ErrorInfo errorInfo;
     DoublePrecision doublePrecision;
     int doubleLengthLimit;
     int maxNumberDigits;
@@ -87,7 +75,6 @@ class JsonReader {
             int length,
             StringCache keyCache,
             StringCache valuesCache,
-            ErrorInfo errorInfo,
             DoublePrecision doublePrecision,
             int maxNumberDigits,
             int maxStringBuffer
@@ -98,7 +85,6 @@ class JsonReader {
         this.chars = tmp;
         this.keyCache = keyCache;
         this.valuesCache = valuesCache;
-        this.errorInfo = errorInfo;
         this.doublePrecision = doublePrecision;
         this.maxNumberDigits = maxNumberDigits;
         this.maxStringBuffer = maxStringBuffer;
@@ -108,19 +94,17 @@ class JsonReader {
     }
 
 
-
     JsonReader(
             byte[] buffer,
             int length,
             char[] tmp,
             StringCache keyCache,
             StringCache valuesCache,
-            ErrorInfo errorInfo,
             DoublePrecision doublePrecision,
             int maxNumberDigits,
             int maxStringBuffer
               ) {
-        this(tmp, buffer, length, keyCache, valuesCache, errorInfo, doublePrecision,  maxNumberDigits, maxStringBuffer);
+        this(tmp, buffer, length, keyCache, valuesCache, doublePrecision, maxNumberDigits, maxStringBuffer);
         if (length > buffer.length) {
             throw new IllegalArgumentException("length can't be longer than buffer.length");
         } else if (length < buffer.length) {
@@ -128,27 +112,6 @@ class JsonReader {
         }
     }
 
-
-    /**
-     * Will be removed. Exists only for backward compatibility
-     *
-     * @param stream process stream
-     * @throws IOException error reading from stream
-     */
-    @Deprecated
-    public void reset(InputStream stream) throws IOException {
-        process(stream);
-    }
-
-    /**
-     * Will be removed. Exists only for backward compatibility
-     *
-     * @param size size of byte[] input to use
-     */
-    @Deprecated
-    void reset(int size) {
-        process(null, size);
-    }
 
     /**
      * Reset reader after processing input
@@ -173,7 +136,6 @@ class JsonReader {
      * @throws IOException unable to read from stream
      */
     public JsonReader process(InputStream stream) throws IOException {
-        this.currentPosition = 0;
         this.currentIndex = 0;
         this.stream = stream;
         this.readLimit = Math.min(this.length, bufferLenWithExtraSpace);
@@ -194,8 +156,8 @@ class JsonReader {
      */
     public JsonReader process(byte[] newBuffer, int newLength) {
         if (newBuffer != null) {
-        this.buffer = newBuffer;
-        this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
+            this.buffer = newBuffer;
+            this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
         }
         if (newLength > buffer.length) {
             throw new IllegalArgumentException("length can't be longer than buffer.length");
@@ -231,18 +193,8 @@ class JsonReader {
         return position;
     }
 
-    private static class EmptyEOFException extends EOFException {
-        @Override
-        public synchronized Throwable fillInStackTrace() {
-            return this;
-        }
-    }
 
-    private static final EOFException eof = new EmptyEOFException();
 
-    boolean withStackTrace() {
-        return errorInfo == ErrorInfo.WITH_STACK_TRACE;
-    }
 
     /**
      * Read next byte from the JSON input.
@@ -256,7 +208,7 @@ class JsonReader {
             prepareNextBlock();
         }
         if (currentIndex >= length) {
-            throw JsParserException.create("Unexpected end of JSON input", eof, withStackTrace());
+            throw JsParserException.create("Unexpected end of JSON input", currentIndex,false);
         }
         return last = buffer[currentIndex++];
     }
@@ -265,7 +217,6 @@ class JsonReader {
         int len = length - currentIndex;
         System.arraycopy(buffer, currentIndex, buffer, 0, len);
         int available = readFully(buffer, stream, len);
-        currentPosition += currentIndex;
         if (available == len) {
             readLimit = length - currentIndex;
             length = readLimit;
@@ -296,112 +247,16 @@ class JsonReader {
     public byte last() {
         return last;
     }
-
-    private void positionDescription(int offset, StringBuilder error) {
-        error.append("at position: ").append(positionInStream(offset));
-        if (currentIndex > offset) {
-            try {
-                int maxLen = Math.min(currentIndex - offset, 20);
-                String prefix = new String(buffer, currentIndex - offset - maxLen, maxLen, utf8);
-                error.append(", following: `");
-                error.append(prefix);
-                error.append('`');
-            } catch (Exception ignore) {
-            }
-        }
-        if (currentIndex - offset < readLimit) {
-            try {
-                int maxLen = Math.min(readLimit - currentIndex + offset, 20);
-                String suffix = new String(buffer, currentIndex - offset, maxLen, utf8);
-                error.append(", before: `");
-                error.append(suffix);
-                error.append('`');
-            } catch (Exception ignore) {
-            }
-        }
-    }
-
-    private final StringBuilder error = new StringBuilder(0);
-
+    
     public JsParserException newParseError(String description) {
-        return newParseError(description, 0);
-    }
-
-    public JsParserException newParseError(String description, int positionOffset) {
-        if (errorInfo == ErrorInfo.MINIMAL) return JsParserException.create(description, false);
-        error.setLength(0);
-        error.append(description);
-        error.append(". Found ");
-        error.append((char) last);
-        if (errorInfo == ErrorInfo.DESCRIPTION_ONLY) return JsParserException.create(error.toString(), false);
-        error.append(" ");
-        positionDescription(positionOffset, error);
-        return JsParserException.create(error.toString(), withStackTrace());
-    }
-
-    public JsParserException newParseErrorAt(String description, int positionOffset) {
-        if (errorInfo == ErrorInfo.MINIMAL || errorInfo == ErrorInfo.DESCRIPTION_ONLY) {
-            return JsParserException.create(description, false);
-        }
-        error.setLength(0);
-        error.append(description);
-        error.append(" ");
-        positionDescription(positionOffset, error);
-        return JsParserException.create(error.toString(), withStackTrace());
-    }
-
-    public JsParserException newParseErrorAt(String description, int positionOffset, Exception cause) {
-        if (errorInfo == ErrorInfo.MINIMAL) return JsParserException.create(description, cause, false);
-        error.setLength(0);
-        String msg = cause.getMessage();
-        if (msg != null && msg.length() > 0) {
-            error.append(msg);
-            if (!msg.endsWith(".")) {
-                error.append(".");
-            }
-            error.append(" ");
-        }
-        error.append(description);
-        if (errorInfo == ErrorInfo.DESCRIPTION_ONLY) return JsParserException.create(error.toString(), cause, false);
-        error.append(" ");
-        positionDescription(positionOffset, error);
-        return JsParserException.create(error.toString(), withStackTrace());
+        return JsParserException.create(description, currentIndex,false);
     }
 
 
-
-    public JsParserException newParseErrorWith(
-            String description, Object argument
-                                              ) {
-        return newParseErrorWith(description, 0, "", description, argument, "");
-    }
-
-    public JsParserException newParseErrorWith(
-            String shortDescription,
-            int positionOffset,
-            String longDescriptionPrefix,
-            String longDescriptionMessage, Object argument,
-            String longDescriptionSuffix
-                                              ) {
-        if (errorInfo == ErrorInfo.MINIMAL) return JsParserException.create(shortDescription, false);
-        error.setLength(0);
-        error.append(longDescriptionPrefix);
-        error.append(longDescriptionMessage);
-        error.append(": '");
-        error.append(argument);
-        error.append("'");
-        error.append(longDescriptionSuffix);
-        if (errorInfo == ErrorInfo.DESCRIPTION_ONLY) return JsParserException.create(error.toString(), false);
-        error.append(" ");
-        positionDescription(positionOffset, error);
-        return JsParserException.create(error.toString(), withStackTrace());
-    }
-
-
+    
     public int getCurrentIndex() {
         return currentIndex;
     }
-
 
 
     public int scanNumber() {
@@ -421,7 +276,7 @@ class JsonReader {
 
     char[] prepareBuffer(int start, int len) throws JsParserException {
         if (len > maxNumberDigits) {
-            throw newParseErrorWith("Too many digits detected in number", len, "", "Too many digits detected in number", len, "");
+            throw newParseError("Too many digits detected in number ("+ len+")");
         }
         while (chars.length < len) {
             chars = Arrays.copyOf(chars, chars.length * 2);
@@ -443,7 +298,6 @@ class JsonReader {
     }
 
 
-
     /**
      * Read string from JSON input.
      * If values cache is used, string will be looked up from the cache.
@@ -462,7 +316,7 @@ class JsonReader {
     int parseString() throws IOException {
         int startIndex = currentIndex;
         if (last != '"') throw newParseError("Expecting '\"' for string start");
-        else if (currentIndex == length) throw newParseErrorAt("Premature end of JSON string", 0);
+        else if (currentIndex == length) throw newParseError("Premature end of JSON string");
 
         byte bb;
         int ci = currentIndex;
@@ -486,7 +340,7 @@ class JsonReader {
         if (i == _tmp.length) {
             int newSize = chars.length * 2;
             if (newSize > maxStringBuffer) {
-                throw newParseErrorWith("Maximum string buffer limit exceeded", maxStringBuffer);
+                throw newParseError("Maximum string buffer limit exceeded ("+maxStringBuffer+")");
             }
             _tmp = chars = Arrays.copyOf(chars, newSize);
         }
@@ -504,7 +358,7 @@ class JsonReader {
                 if (soFar >= _tmpLen - 6) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseErrorWith("Maximum string buffer limit exceeded", maxStringBuffer);
+                        throw newParseError("Maximum string buffer limit exceeded (" +maxStringBuffer+")");
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -539,13 +393,13 @@ class JsonReader {
                         break;
 
                     default:
-                        throw newParseErrorWith("Invalid escape combination detected", bc);
+                        throw newParseError("Invalid escape combination detected (" +bc+")");
                 }
             } else if ((bc & 0x80) != 0) {
                 if (soFar >= _tmpLen - 4) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseErrorWith("Maximum string buffer limit exceeded", maxStringBuffer);
+                        throw newParseError("Maximum string buffer limit exceeded ("+ maxStringBuffer+")");
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -563,13 +417,13 @@ class JsonReader {
                             bc = ((bc & 0x07) << 18) + ((u2 & 0x3F) << 12) + ((u3 & 0x3F) << 6) + (u4 & 0x3F);
                         } else {
                             // there are legal 5 & 6 byte combinations, but none are _valid_
-                            throw newParseErrorAt("Invalid unicode character detected", 0);
+                            throw newParseError("Invalid unicode character detected");
                         }
 
                         if (bc >= 0x10000) {
                             // check if valid unicode
                             if (bc >= 0x110000) {
-                                throw newParseErrorAt("Invalid unicode character detected", 0);
+                                throw newParseError("Invalid unicode character detected");
                             }
 
                             // split surrogates
@@ -583,7 +437,7 @@ class JsonReader {
             } else if (soFar >= _tmpLen) {
                 int newSize = chars.length * 2;
                 if (newSize > maxStringBuffer) {
-                    throw newParseErrorWith("Maximum string buffer limit exceeded", maxStringBuffer);
+                    throw newParseError("Maximum string buffer limit exceeded (" +maxStringBuffer+")");
                 }
                 _tmp = chars = Arrays.copyOf(chars, newSize);
                 _tmpLen = _tmp.length;
@@ -591,14 +445,14 @@ class JsonReader {
 
             _tmp[soFar++] = (char) bc;
         }
-        throw newParseErrorAt("JSON string was not closed with a double quote", 0);
+        throw newParseError("JSON string was not closed with a double quote");
     }
 
     private int hexToInt(byte value) throws JsParserException {
         if (value >= '0' && value <= '9') return value - 0x30;
         if (value >= 'A' && value <= 'F') return value - 0x37;
         if (value >= 'a' && value <= 'f') return value - 0x57;
-        throw newParseErrorWith("Could not parse unicode escape, expected a hexadecimal digit", value);
+        throw newParseError("Could not parse unicode escape, expected a hexadecimal digit");
     }
 
     private boolean wasWhiteSpace() {
@@ -682,12 +536,6 @@ class JsonReader {
     }
 
 
-    public long positionInStream(int offset) {
-        return currentPosition + currentIndex - offset;
-    }
-
-
-
     /**
      * Read key value of JSON input.
      * If key cache is used, it will be looked up from there.
@@ -720,7 +568,7 @@ class JsonReader {
                 last = 'l';
                 return true;
             }
-            throw newParseErrorAt("Invalid null constant found", 0);
+            throw newParseError("Invalid null constant found");
         }
         return false;
     }
@@ -741,7 +589,7 @@ class JsonReader {
                 last = 'e';
                 return true;
             }
-            throw newParseErrorAt("Invalid true constant found", 0);
+            throw newParseError("Invalid true constant found");
         }
         return false;
     }
@@ -763,26 +611,20 @@ class JsonReader {
                 last = 'e';
                 return true;
             }
-            throw newParseErrorAt("Invalid false constant found", 0);
+            throw newParseError("Invalid false constant found");
         }
         return false;
     }
 
     /**
      * Check if the last read token is an array end
-     *
      */
-    public void checkArrayEnd()  {
+    public void checkArrayEnd() {
         if (last != ']') {
-            if (currentIndex >= length) throw newParseErrorAt("Unexpected end of JSON in collection", 0, eof);
+            if (currentIndex >= length) throw newParseError("Unexpected end of JSON in collection");
             throw newParseError("Expecting ']' as array end");
         }
     }
-
-
-
-
-
 
 
 }

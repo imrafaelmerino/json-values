@@ -273,7 +273,7 @@ public final class JsSpecs {
     }
 
     /**
-     * non-nullable number
+     * non-nullable number spec
      *
      * @return a spec
      */
@@ -282,6 +282,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of integers spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -296,6 +297,7 @@ public final class JsSpecs {
 
 
     /**
+     * returns an array of big integers spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -309,6 +311,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of numbers spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -322,6 +325,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of objects spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -335,6 +339,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of decimal numbers spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -348,6 +353,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of boolean spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -361,6 +367,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of strings spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec
@@ -374,6 +381,7 @@ public final class JsSpecs {
     }
 
     /**
+     * returns an array of longs spec
      * @param minLength minimum length of the array  (inclusive)
      * @param maxLength maximum length of the array  (inclusive)
      * @return a spec

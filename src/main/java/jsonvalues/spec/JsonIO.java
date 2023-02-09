@@ -14,7 +14,6 @@ public final class JsonIO {
 
     final StringCache keyCache;
     final StringCache valuesCache;
-    private final JsonReader.ErrorInfo errorInfo;
     private final JsonReader.DoublePrecision doublePrecision;
     private final int maxNumberDigits;
     private final int maxStringSize;
@@ -41,7 +40,6 @@ public final class JsonIO {
                                       new char[64],
                                       self.keyCache,
                                       self.valuesCache,
-                                      self.errorInfo,
                                       self.doublePrecision,
                                       self.maxNumberDigits,
                                       self.maxStringSize
@@ -50,14 +48,13 @@ public final class JsonIO {
         };
         this.keyCache = settings.keyCache;
         this.valuesCache = settings.valuesCache;
-        this.errorInfo = settings.errorInfo;
         this.doublePrecision = settings.doublePrecision;
         this.maxNumberDigits = settings.maxNumberDigits;
         this.maxStringSize = settings.maxStringBuffer;
     }
 
     JsonIO() {
-        this(new Settings().errorInfo(JsonReader.ErrorInfo.MINIMAL)
+        this(new Settings()
                            .doublePrecision(JsonReader.DoublePrecision.HIGH));
     }
 
@@ -254,7 +251,6 @@ public final class JsonIO {
                               new char[64],
                               keyCache,
                               valuesCache,
-                              errorInfo,
                               doublePrecision,
                               maxNumberDigits,
                               maxStringSize

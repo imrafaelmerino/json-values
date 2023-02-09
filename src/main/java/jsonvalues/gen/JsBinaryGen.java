@@ -44,7 +44,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
     }
 
     /**
-     *
+     * returns an arbitrary Json bytes generator
      * @param minLength minimum number of bytes (inclusive)
      * @param maxLength maximum number of bytes (inclusive)
      * @return an arbitrary Json bytes generator
@@ -56,6 +56,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
     }
 
     /**
+     * returns a biased Json bytes generator
      * @param minLength minimum number of bytes (inclusive)
      * @param maxLength maximum number of bytes (inclusive)
      * @return a biased Json bytes generator

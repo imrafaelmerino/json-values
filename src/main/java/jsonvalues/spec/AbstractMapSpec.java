@@ -14,6 +14,7 @@ abstract class AbstractMapSpec extends AbstractNullableSpec {
         super(nullable);
     }
 
+
     protected Set<SpecError> test(JsPath path,
                         JsValue value,
                         Predicate<JsValue> predicate,

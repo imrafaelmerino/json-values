@@ -34,6 +34,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
+     * returns an fixed-size array generator
      * @param gen  the element generator
      * @param size the size of the generated array
      * @return a JsArray generator
@@ -47,6 +48,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
+     * returns an array generator
      * @param gen     the element generator
      * @param minSize the minimum size of the arrays
      * @param maxSize the maximum size of the arrays
@@ -72,6 +74,7 @@ public final class JsArrayGen implements Gen<JsArray> {
     }
 
     /**
+     * returns a biased array generator
      * @param gen     the element generator
      * @param minSize the minimum size of the arrays
      * @param maxSize the maximum size of the arrays

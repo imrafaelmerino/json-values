@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.spec.JsError;
 
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -20,7 +19,7 @@ class ParserErrors {
 
     static final IntFunction<String> TOO_SHORT_ARRAY = min -> "Too short array. Min size: " + min;
 
-    static final String INTEGRAL_NUMBER_EXPECTED = "Integral number expected.";
+    static final String INTEGRAL_NUMBER_EXPECTED = "Integral number expected";
 
     static final String EXPECTING_FOR_LIST_START = "Expecting '[' for Json array start";
 
@@ -30,10 +29,10 @@ class ParserErrors {
 
     static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "BigInteger with fractional part";
 
-    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key " + key + " has no spec associated to it. Strict specs don't allow this." +
+    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key '" + key + "' has no spec associated to it. Strict specs don't allow this" +
             "Either declare de spec lenient or add a new spec for the missing key";
 
-    static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The JSON doesn't conform the spec because he key " + key + " doesn't exist and it's required";
+    static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The JSON doesn't conform the spec because the required key '" + key + "' doesn't exist";
 
     static final Function<JsError, String> JS_ERROR_2_STR = e -> e.error().name();
 
@@ -53,7 +52,7 @@ class ParserErrors {
 
     static final String LONG_OVERFLOW = "Long overflow";
 
-    static final String EXPECTING_LONG_INSTEAD_OF_DECIMAL = "Expecting long, but found decimal value ";
+    static final String EXPECTING_LONG_INSTEAD_OF_DECIMAL = "Expecting long, but found decimal value";
 
     static final String UNKNOWN_DIGIT = "Unknown digit";
 

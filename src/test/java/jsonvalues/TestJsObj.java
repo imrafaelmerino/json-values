@@ -493,7 +493,7 @@ public class TestJsObj {
                                                                         () -> JsObj.parse("")
                                                                        );
 
-        Assertions.assertEquals("Unexpected end of JSON input",
+        Assertions.assertEquals("Unexpected end of JSON input @ position=0",
                                 malformedJson.getMessage()
                                );
 
