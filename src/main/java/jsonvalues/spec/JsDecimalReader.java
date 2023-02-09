@@ -13,20 +13,19 @@ import java.util.function.Function;
 final class JsDecimalReader extends AbstractReader {
 
     @Override
-    JsBigDec value(final JsonReader reader) throws IOException {
+    JsBigDec value(final JsReader reader) throws IOException {
         return JsBigDec.of(NumberConverter.deserializeDecimal(reader));
     }
 
-    JsBigDec valueSuchThat(final JsonReader reader,
+    JsBigDec valueSuchThat(final JsReader reader,
                            final Function<BigDecimal, Optional<JsError>> fn
                           ) throws IOException {
         final BigDecimal value = NumberConverter.deserializeDecimal(reader);
         final Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return JsBigDec.of(value);
-        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                         reader.getCurrentIndex()
+                                        );
     }
 
 

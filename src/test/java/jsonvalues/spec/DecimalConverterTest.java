@@ -1,11 +1,6 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsBigDec;
-import jsonvalues.spec.JsonIO;
-import jsonvalues.spec.JsonReader;
-import jsonvalues.spec.JsonWriter;
-import jsonvalues.spec.NumberConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -44,7 +39,7 @@ public class DecimalConverterTest {
         final int count = values.length;
 
         final byte[] buf = new byte[1024];
-        final JsonWriter jw = new JsonWriter(buf);
+        final JsWriter jw = new JsWriter(buf);
 
         for (int i = 0; i < count - 1; i++) {
             // setup
@@ -100,9 +95,9 @@ public class DecimalConverterTest {
         final int count = values.length;
 
         final byte[] buf = VALUES.getBytes(StandardCharsets.ISO_8859_1);
-        JsonReader jr = dslJson.newReader(buf);
-        JsonReader jsr = dslJson.newReader(new ByteArrayInputStream(buf),
-                                           new byte[64]);
+        JsReader jr = dslJson.newReader(buf);
+        JsReader jsr = dslJson.newReader(new ByteArrayInputStream(buf),
+                                         new byte[64]);
 
         // first digit in values
         Assertions.assertEquals('0',
@@ -189,12 +184,12 @@ public class DecimalConverterTest {
             final String plainForm = check.toPlainString();
             final byte[] body = plainForm.getBytes(StandardCharsets.ISO_8859_1);
 
-            final JsonReader jr = dslJson.newReader(body);
+            final JsReader jr = dslJson.newReader(body);
             jr.getNextToken();
             final BigDecimal parsed1 = NumberConverter.deserializeDecimal(jr);
 
-            final JsonReader jsr = dslJson.newReader(new ByteArrayInputStream(body),
-                                                     new byte[64]);
+            final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(body),
+                                                   new byte[64]);
             jsr.getNextToken();
             final BigDecimal parsed2 = NumberConverter.deserializeDecimal(jsr);
 

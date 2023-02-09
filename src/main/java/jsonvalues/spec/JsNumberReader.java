@@ -9,20 +9,19 @@ import java.util.function.Function;
 
 final class JsNumberReader extends AbstractReader {
 
-    JsNumber valueSuchThat(final JsonReader reader,
+    JsNumber valueSuchThat(final JsReader reader,
                            final Function<JsNumber, Optional<JsError>> fn
                           ) throws IOException {
         final JsNumber value = value(reader);
         final Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
-        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                         reader.getCurrentIndex()
+                                        );
     }
 
     @Override
-    JsNumber value(final JsonReader reader) throws IOException {
+    JsNumber value(final JsReader reader) throws IOException {
         Number number = NumberConverter.deserializeNumber(reader);
         if (number instanceof Double) return JsDouble.of(((double) number));
         if (number instanceof Long) {

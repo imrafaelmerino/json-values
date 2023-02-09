@@ -8,7 +8,7 @@ package jsonvalues.spec;
 class Settings {
     StringCache keyCache = new SimpleStringCache();
     StringCache valuesCache;
-    JsonReader.DoublePrecision doublePrecision = JsonReader.DoublePrecision.DEFAULT;
+    JsReader.DoublePrecision doublePrecision = JsReader.DoublePrecision.DEFAULT;
     int maxNumberDigits = 512;
     int maxStringBuffer = 128 * 1024 * 1024;
 
@@ -36,7 +36,7 @@ class Settings {
      * @param precision type of double deserialization
      * @return itself
      */
-    Settings doublePrecision(JsonReader.DoublePrecision precision) {
+    Settings doublePrecision(JsReader.DoublePrecision precision) {
         this.doublePrecision = precision;
         return this;
     }

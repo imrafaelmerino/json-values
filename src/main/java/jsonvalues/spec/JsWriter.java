@@ -27,10 +27,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * For maximum performance JsonWriter instances should be reused (to avoid allocation of new byte[] buffer instances).
  * They should not be shared across threads (concurrently) so for Thread reuse it's best to use patterns such as ThreadLocal.
  */
-class JsonWriter {
+class JsWriter {
 
 
-    JsonWriter(byte[] buffer) {
+    JsWriter(byte[] buffer) {
         this.buffer = buffer;
     }
 
@@ -50,7 +50,7 @@ class JsonWriter {
     private byte[] buffer;
 
 
-    JsonWriter(int size) {
+    JsWriter(int size) {
         this.buffer = new byte[size];
     }
 
@@ -438,7 +438,7 @@ class JsonWriter {
      * @param <T> type
      */
     interface WriteObject<T> {
-        void write(JsonWriter writer, T value);
+        void write(JsWriter writer, T value);
     }
 
 

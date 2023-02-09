@@ -7,18 +7,18 @@ import java.util.Objects;
 
 final class JsValueWritter {
 
-    private JsonWriter.WriteObject<JsObj> objectSerializer;
-    private JsonWriter.WriteObject<JsArray> arraySerializer;
+    private JsWriter.WriteObject<JsObj> objectSerializer;
+    private JsWriter.WriteObject<JsArray> arraySerializer;
 
-    public void setObjectSerializer(final JsonWriter.WriteObject<JsObj> objectSerializer) {
+    public void setObjectSerializer(final JsWriter.WriteObject<JsObj> objectSerializer) {
         this.objectSerializer = Objects.requireNonNull(objectSerializer);
     }
 
-    public void setArraySerializer(final JsonWriter.WriteObject<JsArray> arraySerializer) {
+    public void setArraySerializer(final JsWriter.WriteObject<JsArray> arraySerializer) {
         this.arraySerializer = Objects.requireNonNull(arraySerializer);
     }
 
-    void serialize(final JsonWriter writer,
+    void serialize(final JsWriter writer,
                    final JsValue value
                   ) {
 

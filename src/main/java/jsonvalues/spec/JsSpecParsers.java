@@ -20,14 +20,13 @@ import static jsonvalues.spec.JsParsers.PARSERS;
  final class JsSpecParsers {
 
     public static final JsSpecParsers INSTANCE = new JsSpecParsers();
-    private final BiFunction<JsonReader, JsError, JsParserException> newParseException;
+    private final BiFunction<JsReader, JsError, JsParserException> newParseException;
 
     private JsSpecParsers() {
         newParseException = (reader, error) ->
-                JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(error),
-                                         reader.getCurrentIndex(),
-                                         false
-                                        );
+                JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(error),
+                                           reader.getCurrentIndex()
+                                          );
     }
 
     public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<JsError>> p,

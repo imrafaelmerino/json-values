@@ -40,46 +40,44 @@ abstract class NumberConverter {
     private NumberConverter() {
     }
 
-    static void numberException(JsonReader reader,
+    static void numberException(JsReader reader,
                                 int start,
                                 int end,
                                 String message
                                )  {
         int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw JsParserException.create(ParserErrors.TOO_MANY_DIGITS,
-                                           reader.getCurrentIndex()
-                    , false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+                                             reader.getCurrentIndex()
+                                            );
         }
-        throw JsParserException.create(message,
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(message,
+                                         reader.getCurrentIndex()
+                                        );
 
     }
 
 
     private static BigDecimal parseNumberGeneric(char[] buf,
                                                  int len,
-                                                 JsonReader reader
+                                                 JsReader reader
                                                 ) {
         int end = len;
         while (end > 0 && Character.isWhitespace(buf[end - 1])) {
             end--;
         }
         if (end > reader.maxNumberDigits)
-            throw JsParserException.create(ParserErrors.TOO_MANY_DIGITS,
-                                           reader.getCurrentIndex(), false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+                                             reader.getCurrentIndex()
+                                            );
 
         int offset = buf[0] == '-' ?
                 1 :
                 0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9')
-            throw JsParserException.create(ParserErrors.LEADING_ZERO,
-                                           reader.getCurrentIndex(), false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.LEADING_ZERO,
+                                             reader.getCurrentIndex()
+                                            );
 
         try {
             return new BigDecimal(buf,
@@ -87,15 +85,15 @@ abstract class NumberConverter {
                                   end
             );
         } catch (NumberFormatException nfe) {
-            throw JsParserException.create(nfe.getMessage() != null ?
+            throw JsParserException.reasonAt(nfe.getMessage() != null ?
                                                   nfe.getMessage() :
                                                   ParserErrors.NOT_VALID_NUMBER,
-                                           reader.getCurrentIndex(), false
-                                          );
+                                             reader.getCurrentIndex()
+                                            );
         }
     }
 
-    private static NumberConverter.NumberInfo readLongNumber(JsonReader reader,
+    private static NumberConverter.NumberInfo readLongNumber(JsReader reader,
                                                              int start
                                                             ) throws  IOException {
         int len = reader.length() - start;
@@ -109,10 +107,9 @@ abstract class NumberConverter {
             int oldLen = len;
             len += end;
             if (len > reader.maxNumberDigits) {
-                throw JsParserException.create(ParserErrors.TOO_MANY_DIGITS,
-                                               reader.getCurrentIndex(),
-                                               false
-                                              );
+                throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+                                                 reader.getCurrentIndex()
+                                                );
             }
             char[] tmp = result;
             result = new char[len];
@@ -138,7 +135,7 @@ abstract class NumberConverter {
 
 
     public static void serialize(int value,
-                                 JsonWriter sw
+                                 JsWriter sw
                                 ) {
         byte[] buf = sw.ensureCapacity(11);
         int position = sw.size();
@@ -218,7 +215,7 @@ abstract class NumberConverter {
         return pos + 6;
     }
 
-    public static int deserializeInt(JsonReader reader) throws JsParserException {
+    public static int deserializeInt(JsReader reader) throws JsParserException {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         byte[] buf = reader.buffer;
@@ -254,7 +251,7 @@ abstract class NumberConverter {
     }
 
     private static int parsePositiveInt(byte[] buf,
-                                        JsonReader reader,
+                                        JsReader reader,
                                         int start,
                                         int end,
                                         int offset
@@ -304,7 +301,7 @@ abstract class NumberConverter {
     }
 
     private static int parseNegativeInt(byte[] buf,
-                                        JsonReader reader,
+                                        JsReader reader,
                                         int start,
                                         int end
                                        ) throws JsParserException {
@@ -376,7 +373,7 @@ abstract class NumberConverter {
     }
 
     public static void serialize(long value,
-                                 JsonWriter sw
+                                 JsWriter sw
                                 ) {
         byte[] buf = sw.ensureCapacity(21);
         int position = sw.size();
@@ -546,7 +543,7 @@ abstract class NumberConverter {
         return pos + 15;
     }
 
-    public static long deserializeLong(JsonReader reader)  {
+    public static long deserializeLong(JsReader reader)  {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         byte[] buf = reader.buffer;
@@ -643,7 +640,7 @@ abstract class NumberConverter {
         return value;
     }
 
-    private static long parseLongGeneric(JsonReader reader,
+    private static long parseLongGeneric(JsReader reader,
                                          int start,
                                          int end
                                         )  {
@@ -669,12 +666,12 @@ abstract class NumberConverter {
     }
 
     public static void serialize(BigDecimal value,
-                                 JsonWriter sw
+                                 JsWriter sw
                                 ) {
         sw.writeAscii(value.toString());
     }
 
-    public static BigDecimal deserializeDecimal(JsonReader reader) throws IOException {
+    public static BigDecimal deserializeDecimal(JsReader reader) throws IOException {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
@@ -712,7 +709,7 @@ abstract class NumberConverter {
     }
 
     private static BigDecimal parsePositiveDecimal(byte[] buf,
-                                                   JsonReader reader,
+                                                   JsReader reader,
                                                    int start,
                                                    int end
                                                   ) {
@@ -849,7 +846,7 @@ abstract class NumberConverter {
     }
 
     private static BigDecimal parseNegativeDecimal(byte[] buf,
-                                                   JsonReader reader,
+                                                   JsReader reader,
                                                    int start,
                                                    int end
                                                   )  {
@@ -988,7 +985,7 @@ abstract class NumberConverter {
 
     private static Number tryLongFromBigDecimal(char[] buf,
                                                 int len,
-                                                JsonReader reader
+                                                JsReader reader
                                                )  {
         BigDecimal num = parseNumberGeneric(buf,
                                             len,
@@ -1006,7 +1003,7 @@ abstract class NumberConverter {
         return num;
     }
 
-    public static Number deserializeNumber(JsonReader reader) throws IOException {
+    public static Number deserializeNumber(JsReader reader) throws IOException {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
@@ -1044,7 +1041,7 @@ abstract class NumberConverter {
     }
 
     private static Number parsePositiveNumber(byte[] buf,
-                                              JsonReader reader,
+                                              JsReader reader,
                                               int start,
                                               int end
                                              )  {
@@ -1184,7 +1181,7 @@ abstract class NumberConverter {
     }
 
     private static Number parseNegativeNumber(byte[] buf,
-                                              JsonReader reader,
+                                              JsReader reader,
                                               int start,
                                               int end
                                              )  {

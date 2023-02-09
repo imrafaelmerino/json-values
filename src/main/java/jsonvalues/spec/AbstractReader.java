@@ -9,13 +9,13 @@ import java.io.IOException;
 abstract class AbstractReader {
     static final JsObj EMPTY_OBJ = JsObj.empty();
 
-    JsValue nullOrValue(final JsonReader reader) throws IOException {
+    JsValue nullOrValue(final JsReader reader) throws IOException {
 
         return reader.wasNull() ?
                JsNull.NULL :
                value(reader);
     }
 
-    abstract JsValue value(final JsonReader reader) throws IOException;
+    abstract JsValue value(final JsReader reader) throws IOException;
 
 }

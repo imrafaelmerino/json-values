@@ -15,20 +15,19 @@ final class JsObjReader extends AbstractJsObjReader {
         this.valueDeserializer = valueDeserializer;
     }
 
-    JsObj valueSuchThat(final JsonReader reader,
+    JsObj valueSuchThat(final JsReader reader,
                         final Function<JsObj, Optional<JsError>> fn
                        ) throws IOException {
         final JsObj value = value(reader);
         final Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
-        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                         reader.getCurrentIndex()
+                                        );
     }
 
     @Override
-    public JsObj value(final JsonReader reader) throws IOException {
+    public JsObj value(final JsReader reader) throws IOException {
         if (isEmptyObj(reader)) return EMPTY_OBJ;
 
         String key = reader.readKey();
@@ -44,10 +43,9 @@ final class JsObjReader extends AbstractJsObjReader {
                          );
         }
         if (nextToken != '}')
-            throw JsParserException.create(ParserErrors.EXPECTING_FOR_MAP_END,
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
+                                             reader.getCurrentIndex()
+                                            );
         return map;
     }
 

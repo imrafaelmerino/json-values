@@ -16,7 +16,7 @@ final class JsArrayOfValueReader extends JsArrayReader {
         this.parser = parser;
     }
 
-    JsValue nullOrArrayEachSuchThat(final JsonReader reader,
+    JsValue nullOrArrayEachSuchThat(final JsReader reader,
                                     final Function<JsValue, Optional<JsError>> fn,
                                     final int min,
                                     final int max
@@ -29,7 +29,7 @@ final class JsArrayOfValueReader extends JsArrayReader {
     }
 
 
-    JsArray arrayEachSuchThat(final JsonReader reader,
+    JsArray arrayEachSuchThat(final JsReader reader,
                               final Function<JsValue, Optional<JsError>> fn,
                               final int min,
                               final int max

@@ -28,22 +28,21 @@ class JsValueReader extends AbstractReader {
         this.arrayDeserializer = arrayDeserializer;
     }
 
-    JsValue valueSuchThat(JsonReader reader,
+    JsValue valueSuchThat(JsReader reader,
                           Function<JsValue, Optional<JsError>> fn
 
                          ) throws IOException {
         JsValue value = value(reader);
         Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
-        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                         reader.getCurrentIndex()
+                                        );
     }
 
     @Override
     @SuppressWarnings("FallThrough")
-    JsValue value(JsonReader reader) throws IOException {
+    JsValue value(JsReader reader) throws IOException {
         switch (reader.last()) {
             case 't':
                 if (reader.wasTrue()) return JsBool.TRUE;

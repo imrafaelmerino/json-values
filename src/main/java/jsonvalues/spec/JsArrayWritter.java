@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 import static java.util.Objects.requireNonNull;
 
 
-final class JsArrayWritter implements JsonWriter.WriteObject<JsArray> {
+final class JsArrayWritter implements JsWriter.WriteObject<JsArray> {
     private final JsValueWritter valueSerializer;
 
     JsArrayWritter(final JsValueWritter valueSerializer) {
@@ -14,25 +14,25 @@ final class JsArrayWritter implements JsonWriter.WriteObject<JsArray> {
     }
 
     @Override
-    public void write(final JsonWriter writer,
+    public void write(final JsWriter writer,
                       final JsArray list
                      ) {
         int size = requireNonNull(list).size();
-        writer.writeByte(JsonWriter.ARRAY_START);
+        writer.writeByte(JsWriter.ARRAY_START);
         if (size != 0) {
             final JsValue first = list.get(0);
             valueSerializer.serialize(writer,
                                       first
                                      );
             for (int i = 1; i < size; i++) {
-                writer.writeByte(JsonWriter.COMMA);
+                writer.writeByte(JsWriter.COMMA);
                 final JsValue value = list.get(i);
                 valueSerializer.serialize(writer,
                                           value
                                          );
             }
         }
-        writer.writeByte(JsonWriter.ARRAY_END);
+        writer.writeByte(JsWriter.ARRAY_END);
     }
 
 

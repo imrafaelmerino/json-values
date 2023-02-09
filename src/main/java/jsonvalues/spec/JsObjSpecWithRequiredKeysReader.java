@@ -26,14 +26,13 @@ final class JsObjSpecWithRequiredKeysReader extends JsObjSpecReader {
 
 
     @Override
-    JsObj value(JsonReader reader) throws IOException {
+    JsObj value(JsReader reader) throws IOException {
         JsObj obj = super.value(reader);
         for (String key : required) {
             if (!obj.containsKey(key))
-                throw JsParserException.create(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
-                                               reader.getCurrentIndex(),
-                                               false
-                                              );
+                throw JsParserException.reasonAt(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
+                                                 reader.getCurrentIndex()
+                                                );
         }
         return obj;
 

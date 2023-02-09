@@ -11,22 +11,21 @@ import java.util.function.Function;
 
 final class JsBigIntReader extends AbstractReader {
     @Override
-    JsBigInt value(final JsonReader reader) throws IOException {
+    JsBigInt value(final JsReader reader) throws IOException {
         try {
 
             return JsBigInt.of(NumberConverter.deserializeDecimal(reader)
                                               .toBigIntegerExact());
 
         } catch (ArithmeticException e) {
-            throw JsParserException.create(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
+                                             reader.getCurrentIndex()
+                                            );
         }
 
     }
 
-    JsBigInt valueSuchThat(final JsonReader reader,
+    JsBigInt valueSuchThat(final JsReader reader,
                            final Function<BigInteger, Optional<JsError>> fn
                           ) throws IOException {
         try {
@@ -35,15 +34,13 @@ final class JsBigIntReader extends AbstractReader {
             final Optional<JsError> result = fn.apply(value);
             if (result.isEmpty()) return JsBigInt.of(value);
 
-            throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                             reader.getCurrentIndex()
+                                            );
         } catch (ArithmeticException e) {
-            throw JsParserException.create(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
+                                             reader.getCurrentIndex()
+                                            );
         }
 
     }

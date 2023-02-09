@@ -12,7 +12,7 @@ import java.util.*;
  * <p>
  * JsonReader can be reused by calling process methods.
  */
-class JsonReader {
+class JsReader {
 
     private static final boolean[] WHITESPACE = new boolean[256];
 
@@ -67,7 +67,7 @@ class JsonReader {
     int maxNumberDigits;
     private final int maxStringBuffer;
 
-    private JsonReader(
+    private JsReader(
             char[] tmp,
             byte[] buffer,
             int length,
@@ -76,7 +76,7 @@ class JsonReader {
             DoublePrecision doublePrecision,
             int maxNumberDigits,
             int maxStringBuffer
-                      ) {
+                    ) {
         this.buffer = buffer;
         this.length = length;
         this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -92,7 +92,7 @@ class JsonReader {
     }
 
 
-    JsonReader(
+    JsReader(
             byte[] buffer,
             int length,
             char[] tmp,
@@ -101,7 +101,7 @@ class JsonReader {
             DoublePrecision doublePrecision,
             int maxNumberDigits,
             int maxStringBuffer
-              ) {
+            ) {
         this(tmp, buffer, length, keyCache, valuesCache, doublePrecision, maxNumberDigits, maxStringBuffer);
         if (length > buffer.length) {
             throw new IllegalArgumentException("length can't be longer than buffer.length");
@@ -133,7 +133,7 @@ class JsonReader {
      * @return itself
      * @throws IOException unable to read from stream
      */
-     JsonReader process(InputStream stream) throws IOException {
+     JsReader process(InputStream stream) throws IOException {
         this.currentPosition = 0;
         this.currentIndex = 0;
         this.stream = stream;
@@ -153,7 +153,7 @@ class JsonReader {
      * @param newLength length of buffer which can be used
      * @return itself
      */
-     JsonReader process(byte[] newBuffer, int newLength) {
+     JsReader process(byte[] newBuffer, int newLength) {
         if (newBuffer != null) {
             this.buffer = newBuffer;
             this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -202,7 +202,7 @@ class JsonReader {
             prepareNextBlock();
         }
         if (currentIndex >= length) {
-            throw JsParserException.create("Unexpected end of JSON input", currentIndex,false);
+            throw JsParserException.reasonAt("Unexpected end of JSON input", currentIndex);
         }
         return last = buffer[currentIndex++];
     }
@@ -246,12 +246,17 @@ class JsonReader {
         return currentPosition + currentIndex - offset;
     }
 
+    public long positionInStream() {
+        return positionInStream(0);
+    }
+
+
      JsParserException newParseError(String description) {
-        return JsParserException.create(description, positionInStream(0),false);
+        return JsParserException.reasonAt(description, positionInStream(0));
     }
 
      JsParserException newParseError(String description,int offset) {
-        return JsParserException.create(description, positionInStream(offset),false);
+        return JsParserException.reasonAt(description, positionInStream(offset));
     }
     
      int getCurrentIndex() {

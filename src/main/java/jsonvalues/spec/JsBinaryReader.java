@@ -9,15 +9,14 @@ import java.util.Base64;
 
 final class JsBinaryReader extends AbstractReader {
     @Override
-    JsBinary value(final JsonReader reader) throws IOException {
+    JsBinary value(final JsReader reader) throws IOException {
         try {
             byte[] bytes = Base64.getDecoder().decode(reader.readString());
             return JsBinary.of(bytes);
         } catch (IllegalArgumentException e) {
-            throw JsParserException.create(e.getMessage(),
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(e.getMessage(),
+                                             reader.getCurrentIndex()
+                                            );
         }
     }
 

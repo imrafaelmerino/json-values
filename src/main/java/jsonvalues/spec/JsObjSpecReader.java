@@ -25,7 +25,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
     }
 
     @Override
-    JsObj value(final JsonReader reader) throws IOException {
+    JsObj value(final JsReader reader) throws IOException {
         if (isEmptyObj(reader)) return EMPTY_OBJ;
         String key = reader.readKey();
         throwErrorIfStrictAndKeyMissing(reader,
@@ -54,28 +54,25 @@ class JsObjSpecReader extends AbstractJsObjReader {
 
         }
         if (nextToken != '}')
-            throw JsParserException.create(ParserErrors.EXPECTING_FOR_MAP_END,
-                                           reader.getCurrentIndex()
-                    , false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
+                                             reader.getCurrentIndex()
+                                            );
 
         if (predicate != null && !predicate.test(obj))
-            throw JsParserException.create(ParserErrors.OBJ_CONDITION,
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
+                                             reader.getCurrentIndex()
+                                            );
         return obj;
 
     }
 
-    private void throwErrorIfStrictAndKeyMissing(final JsonReader reader,
+    private void throwErrorIfStrictAndKeyMissing(final JsReader reader,
                                                  final String key
                                                 ) {
         if (strict && !parsers.containsKey(key)) {
-            throw JsParserException.create(ParserErrors.SPEC_NOT_FOUND.apply(key),
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.SPEC_NOT_FOUND.apply(key),
+                                             reader.getCurrentIndex()
+                                            );
         }
     }
 

@@ -9,45 +9,42 @@ import jsonvalues.JsValue;
 final class JsBoolReader extends AbstractReader {
 
     @Override
-    JsBool value(final JsonReader reader) throws JsParserException {
+    JsBool value(final JsReader reader) throws JsParserException {
 
         if (reader.wasTrue()) return JsBool.TRUE;
         if (reader.wasFalse()) return JsBool.FALSE;
-        throw JsParserException.create(ParserErrors.BOOL_EXPECTED,
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.BOOL_EXPECTED,
+                                         reader.getCurrentIndex()
+                                        );
     }
 
-    JsValue nullOrTrue(final JsonReader reader) throws JsParserException {
+    JsValue nullOrTrue(final JsReader reader) throws JsParserException {
         return reader.wasNull() ?
                 JsNull.NULL :
                 True(reader);
     }
 
-    JsBool True(final JsonReader reader) throws JsParserException {
+    JsBool True(final JsReader reader) throws JsParserException {
         if (reader.wasTrue()) return JsBool.TRUE;
-        throw JsParserException.create(ParserErrors.TRUE_EXPECTED,
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.TRUE_EXPECTED,
+                                         reader.getCurrentIndex()
+                                        );
 
     }
 
-    JsValue nullOrFalse(final JsonReader reader) throws JsParserException {
+    JsValue nullOrFalse(final JsReader reader) throws JsParserException {
         return reader.wasNull() ?
                 JsNull.NULL :
                 False(reader);
 
     }
 
-    JsBool False(final JsonReader reader) throws JsParserException {
+    JsBool False(final JsReader reader) throws JsParserException {
 
         if (reader.wasFalse()) return JsBool.FALSE;
-        throw JsParserException.create(ParserErrors.FALSE_EXPECTED,
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.FALSE_EXPECTED,
+                                         reader.getCurrentIndex()
+                                        );
 
     }
 

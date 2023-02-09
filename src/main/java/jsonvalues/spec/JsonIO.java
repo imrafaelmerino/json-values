@@ -14,11 +14,11 @@ public final class JsonIO {
 
     final StringCache keyCache;
     final StringCache valuesCache;
-    private final JsonReader.DoublePrecision doublePrecision;
+    private final JsReader.DoublePrecision doublePrecision;
     private final int maxNumberDigits;
     private final int maxStringSize;
-    final ThreadLocal<JsonWriter> localWriter;
-    final ThreadLocal<JsonReader> localReader;
+    final ThreadLocal<JsWriter> localWriter;
+    final ThreadLocal<JsReader> localReader;
     static final JsValueWritter valueSerializer = new JsValueWritter();
     static final JsObjWriter objSerializer = new JsObjWriter(valueSerializer);
     static final JsArrayWritter arraySerializer = new JsArrayWritter(valueSerializer);
@@ -34,15 +34,15 @@ public final class JsonIO {
         this.localWriter = ThreadLocal.withInitial(() -> newWriter(512));
         this.localReader = new ThreadLocal<>() {
             @Override
-            protected JsonReader initialValue() {
-                return new JsonReader(new byte[4096],
-                                      4096,
-                                      new char[64],
-                                      self.keyCache,
-                                      self.valuesCache,
-                                      self.doublePrecision,
-                                      self.maxNumberDigits,
-                                      self.maxStringSize
+            protected JsReader initialValue() {
+                return new JsReader(new byte[4096],
+                                    4096,
+                                    new char[64],
+                                    self.keyCache,
+                                    self.valuesCache,
+                                    self.doublePrecision,
+                                    self.maxNumberDigits,
+                                    self.maxStringSize
                 );
             }
         };
@@ -55,19 +55,18 @@ public final class JsonIO {
 
     JsonIO() {
         this(new Settings()
-                           .doublePrecision(JsonReader.DoublePrecision.HIGH));
+                           .doublePrecision(JsReader.DoublePrecision.HIGH));
     }
 
      public JsObj parseToJsObj(final byte[] bytes) {
-         JsonReader reader = getReader(bytes);
+         JsReader reader = getReader(bytes);
          try {
              reader.getNextToken();
              return JsParsers.PARSERS.objParser.value(reader);
          } catch (IOException e) {
-             throw JsParserException.create("Exception parsing an object @ position=" + reader.getCurrentIndex(),
-                                            e,
-                                            true
-                                           );
+             throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getCurrentIndex(),
+                                                e
+                                               );
 
          } finally {
              reader.reset();
@@ -75,15 +74,14 @@ public final class JsonIO {
      }
 
      public JsArray parseToJsArray(final byte[] bytes) {
-         JsonReader reader = getReader(bytes);
+         JsReader reader = getReader(bytes);
          try {
              reader.getNextToken();
              return JsParsers.PARSERS.arrayOfValueParser.value(reader);
          } catch (IOException e) {
-             throw JsParserException.create("Exception parsing an array @ position=" + reader.getCurrentIndex(),
-                                            e,
-                                            true
-                                           );
+             throw JsParserException.reasonFrom("Exception parsing an array @ position=" + reader.getCurrentIndex(),
+                                                e
+                                               );
 
          } finally {
              reader.reset();
@@ -92,23 +90,22 @@ public final class JsonIO {
     JsObj parseToJsObj(final byte[] bytes,
                        final JsSpecParser parser
                       ) {
-        JsonReader reader = getReader(bytes);
+        JsReader reader = getReader(bytes);
         try {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
         } catch (IOException e) {
-            throw JsParserException.create("Exception parsing an object @ position=" + reader.getCurrentIndex(),
-                                           e,
-                                           true
-                                          );
+            throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getCurrentIndex(),
+                                               e
+                                              );
 
         } finally {
             reader.reset();
         }
     }
 
-    private JsonReader getReader(final byte[] bytes) {
+    private JsReader getReader(final byte[] bytes) {
         return localReader.get()
                           .process(bytes,
                                    bytes.length
@@ -120,16 +117,15 @@ public final class JsonIO {
     JsArray deserializeToJsArray(final byte[] bytes,
                                  final JsSpecParser parser
                                 ) {
-        JsonReader reader = getReader(bytes);
+        JsReader reader = getReader(bytes);
         try {
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
         } catch (IOException e) {
-            throw JsParserException.create("Exception deserializing an array @ position=" + reader.getCurrentIndex(),
-                                           e,
-                                           true
-                                          );
+            throw JsParserException.reasonFrom("Exception deserializing an array @ position=" + reader.getCurrentIndex(),
+                                               e
+                                              );
         } finally {
             reader.reset();
         }
@@ -139,23 +135,22 @@ public final class JsonIO {
                        final JsSpecParser parser
 
                       ) {
-        JsonReader reader = null;
+        JsReader reader = null;
         try {
             reader = getReader(is);
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsObj();
         } catch (IOException e) {
-            throw JsParserException.create("Exception while parsing an object",
-                                           e,
-                                           true
-                                          );
+            throw JsParserException.reasonFrom("Exception while parsing an object",
+                                               e
+                                              );
         } finally {
             if (reader != null) reader.reset();
         }
     }
 
-    private JsonReader getReader(final InputStream is) throws IOException {
+    private JsReader getReader(final InputStream is) throws IOException {
 
         return localReader.get()
                           .process(is);
@@ -165,14 +160,14 @@ public final class JsonIO {
      JsArray deserializeToJsArray(final InputStream is,
                                         final JsSpecParser parser
                                        ) {
-        JsonReader reader = null;
+        JsReader reader = null;
         try {
             reader = getReader(is);
             reader.getNextToken();
             return parser.parse(reader)
                          .toJsArray();
         } catch (IOException e) {
-            throw JsParserException.create("Exception while deserialization an array", e, true);
+            throw JsParserException.reasonFrom("Exception while deserialization an array", e);
         } finally {
             if (reader != null) reader.reset();
         }
@@ -194,7 +189,7 @@ public final class JsonIO {
     public void serialize(final Json<?> json,
                           final OutputStream stream
                          ) {
-        final JsonWriter jw = localWriter.get();
+        final JsWriter jw = localWriter.get();
         try {
             jw.reset(stream);
             switch (json) {
@@ -233,8 +228,8 @@ public final class JsonIO {
      * @param size initial buffer size
      * @return bound writer
      */
-    JsonWriter newWriter(int size) {
-        return new JsonWriter(size);
+    JsWriter newWriter(int size) {
+        return new JsWriter(size);
     }
 
     /**
@@ -245,15 +240,15 @@ public final class JsonIO {
      * @param bytes input bytes
      * @return bound reader
      */
-    JsonReader newReader(byte[] bytes) {
-        return new JsonReader(bytes,
-                              bytes.length,
-                              new char[64],
-                              keyCache,
-                              valuesCache,
-                              doublePrecision,
-                              maxNumberDigits,
-                              maxStringSize
+    JsReader newReader(byte[] bytes) {
+        return new JsReader(bytes,
+                            bytes.length,
+                            new char[64],
+                            keyCache,
+                            valuesCache,
+                            doublePrecision,
+                            maxNumberDigits,
+                            maxStringSize
         );
     }
 
@@ -269,8 +264,8 @@ public final class JsonIO {
      * @return bound reader
      * @throws IOException unable to read from stream
      */
-    JsonReader newReader(InputStream stream, byte[] buffer) throws IOException {
-        JsonReader reader = newReader(buffer);
+    JsReader newReader(InputStream stream, byte[] buffer) throws IOException {
+        JsReader reader = newReader(buffer);
         reader.process(stream);
         return reader;
     }

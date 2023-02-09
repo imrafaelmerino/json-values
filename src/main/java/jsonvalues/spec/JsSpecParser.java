@@ -7,5 +7,5 @@ import java.io.IOException;
 
 @FunctionalInterface
  interface JsSpecParser {
-    JsValue parse(JsonReader reader) throws IOException;
+    JsValue parse(JsReader reader) throws IOException;
 }

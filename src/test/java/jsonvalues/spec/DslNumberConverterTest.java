@@ -20,9 +20,9 @@ public class DslNumberConverterTest {
     @Test
     public void testNumber()  {
         JsonIO dslJson = new JsonIO();
-        Supplier<JsonReader> reader = () -> {
+        Supplier<JsReader> reader = () -> {
             try {
-                JsonReader r = dslJson.newReader("\"1\"".getBytes(StandardCharsets.UTF_8));
+                JsReader r = dslJson.newReader("\"1\"".getBytes(StandardCharsets.UTF_8));
                 r.getNextToken();
                 return r;
             } catch (IOException e) {
@@ -40,9 +40,9 @@ public class DslNumberConverterTest {
     public void deserializeDecimal() throws IOException {
 
         JsonIO dslJson = new JsonIO();
-        Supplier<JsonReader> reader = () -> {
+        Supplier<JsReader> reader = () -> {
             try {
-                JsonReader r = dslJson.newReader("-3.6914651842717967331576316562991741501E-197".getBytes(StandardCharsets.UTF_8));
+                JsReader r = dslJson.newReader("-3.6914651842717967331576316562991741501E-197".getBytes(StandardCharsets.UTF_8));
                 r.getNextToken();
                 return r;
             } catch (IOException e) {
@@ -63,9 +63,9 @@ public class DslNumberConverterTest {
     public void deserializeDecimal1() throws IOException {
 
         JsonIO dslJson = new JsonIO();
-        Supplier<JsonReader> reader = () -> {
+        Supplier<JsReader> reader = () -> {
             try {
-                JsonReader r = dslJson.newReader("1.705166916240390773522933255090892244333869968630006064E+114".getBytes(StandardCharsets.UTF_8));
+                JsReader r = dslJson.newReader("1.705166916240390773522933255090892244333869968630006064E+114".getBytes(StandardCharsets.UTF_8));
                 r.getNextToken();
                 return r;
             } catch (IOException e) {

@@ -18,7 +18,7 @@ abstract class JsArrayReader extends AbstractReader {
         this.parser = parser;
     }
 
-    JsValue nullOrArray(final JsonReader reader,
+    JsValue nullOrArray(final JsReader reader,
                         int min,
                         int max
                        ) throws IOException {
@@ -31,7 +31,7 @@ abstract class JsArrayReader extends AbstractReader {
                      );
     }
 
-    JsArray array(final JsonReader reader,
+    JsArray array(final JsReader reader,
                   int min,
                   int max
                  ) throws IOException {
@@ -73,7 +73,7 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
     @Override
-    public JsArray value(final JsonReader reader) throws IOException {
+    public JsArray value(final JsReader reader) throws IOException {
         if (isEmptyArray(reader)) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
         while (reader.getNextToken() == ',') {
@@ -88,7 +88,7 @@ abstract class JsArrayReader extends AbstractReader {
 
 
 
-    private boolean isEmptyArray(final JsonReader reader) throws IOException {
+    private boolean isEmptyArray(final JsReader reader) throws IOException {
         checkSize(reader.last() != '[',
                   ParserErrors.EXPECTING_FOR_LIST_START,
                   reader.getCurrentIndex()
@@ -97,7 +97,7 @@ abstract class JsArrayReader extends AbstractReader {
         return reader.last() == ']';
     }
 
-    public JsValue nullOrArraySuchThat(final JsonReader reader,
+    public JsValue nullOrArraySuchThat(final JsReader reader,
                                        final Function<JsArray, Optional<JsError>> fn
                                       ) throws IOException {
 
@@ -110,20 +110,19 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
 
-    JsArray arraySuchThat(final JsonReader reader,
+    JsArray arraySuchThat(final JsReader reader,
                           final Function<JsArray, Optional<JsError>> fn
                          ) throws IOException {
 
         final JsArray array = value(reader);
         final Optional<JsError> result = fn.apply(array);
         if (result.isEmpty()) return array;
-        throw JsParserException.create(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                       reader.getCurrentIndex(),
-                                       false
-                                      );
+        throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+                                         reader.getCurrentIndex()
+                                        );
     }
 
-    JsArray arrayEachSuchThat(final JsonReader reader,
+    JsArray arrayEachSuchThat(final JsReader reader,
                               final IOCallable<JsValue> f,
                               final int min,
                               final int max
@@ -157,13 +156,12 @@ abstract class JsArrayReader extends AbstractReader {
                            int reader
                           ) {
         if (error)
-            throw JsParserException.create(message,
-                                           reader,
-                                           false
-                                          );
+            throw JsParserException.reasonAt(message,
+                                             reader
+                                            );
     }
 
-    JsValue nullOrArrayEachSuchThat(final JsonReader reader,
+    JsValue nullOrArrayEachSuchThat(final JsReader reader,
                                     final IOCallable<JsValue> fn,
                                     final int min,
                                     final int max

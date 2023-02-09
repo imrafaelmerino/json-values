@@ -15,7 +15,7 @@ final class JsArraySpecReader {
         this.parsers = parsers;
     }
 
-    JsValue nullOrArray(final JsonReader reader) throws IOException {
+    JsValue nullOrArray(final JsReader reader) throws IOException {
 
         return reader.wasNull() ?
                 JsNull.NULL :
@@ -24,12 +24,11 @@ final class JsArraySpecReader {
     }
 
 
-    JsArray array(final JsonReader reader) throws IOException {
+    JsArray array(final JsReader reader) throws IOException {
         if (reader.last() != '[')
-            throw JsParserException.create(ParserErrors.EXPECTING_FOR_LIST_START,
-                                           reader.getCurrentIndex(),
-                                           false
-                                          );
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_LIST_START,
+                                             reader.getCurrentIndex()
+                                            );
         reader.getNextToken();
         if (reader.last() == ']') return JsArray.empty();
         JsArray buffer = JsArray.empty();
