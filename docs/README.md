@@ -1230,7 +1230,7 @@ Add the following dependency to your building tool:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>12.0.0</version>
+    <version>11.8.0</version>
 </dependency>
 ```
 
