@@ -55,12 +55,12 @@ class JsObjSpecReader extends AbstractJsObjReader {
         }
         if (nextToken != '}')
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
 
         if (predicate != null && !predicate.test(obj))
             throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         return obj;
 
@@ -71,7 +71,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
                                                 ) {
         if (strict && !parsers.containsKey(key)) {
             throw JsParserException.reasonAt(ParserErrors.SPEC_NOT_FOUND.apply(key),
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         }
     }

@@ -10,7 +10,7 @@ abstract class AbstractJsObjReader extends AbstractReader {
 
         if (reader.last() != '{')
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_START,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         return reader.getNextToken() == '}';
     }

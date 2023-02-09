@@ -16,7 +16,7 @@ final class JsInstantReader extends AbstractReader {
             return JsInstant.of(Instant.from(ISO_INSTANT.parse(reader.readString())));
         } catch (DateTimeParseException e) {
             throw JsParserException.reasonAt(e.getMessage(),
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         }
 

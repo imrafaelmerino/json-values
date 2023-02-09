@@ -27,7 +27,7 @@ final class JsArraySpecReader {
     JsArray array(final JsReader reader) throws IOException {
         if (reader.last() != '[')
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_LIST_START,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         reader.getNextToken();
         if (reader.last() == ']') return JsArray.empty();

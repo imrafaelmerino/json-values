@@ -242,21 +242,21 @@ class JsReader {
      byte last() {
         return last;
     }
-    private long positionInStream(int offset) {
+    private long getPositionInStream(int offset) {
         return currentPosition + currentIndex - offset;
     }
 
-    public long positionInStream() {
-        return positionInStream(0);
+    public long getPositionInStream() {
+        return getPositionInStream(0);
     }
 
 
      JsParserException newParseError(String description) {
-        return JsParserException.reasonAt(description, positionInStream(0));
+        return JsParserException.reasonAt(description, getPositionInStream(0));
     }
 
      JsParserException newParseError(String description,int offset) {
-        return JsParserException.reasonAt(description, positionInStream(offset));
+        return JsParserException.reasonAt(description, getPositionInStream(offset));
     }
     
      int getCurrentIndex() {

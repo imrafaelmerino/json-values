@@ -25,7 +25,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
     private JsSpecParsers() {
         newParseException = (reader, error) ->
                 JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(error),
-                                           reader.getCurrentIndex()
+                                           reader.getPositionInStream()
                                           );
     }
 

@@ -14,7 +14,7 @@ final class JsBoolReader extends AbstractReader {
         if (reader.wasTrue()) return JsBool.TRUE;
         if (reader.wasFalse()) return JsBool.FALSE;
         throw JsParserException.reasonAt(ParserErrors.BOOL_EXPECTED,
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
     }
 
@@ -27,7 +27,7 @@ final class JsBoolReader extends AbstractReader {
     JsBool True(final JsReader reader) throws JsParserException {
         if (reader.wasTrue()) return JsBool.TRUE;
         throw JsParserException.reasonAt(ParserErrors.TRUE_EXPECTED,
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
 
     }
@@ -43,7 +43,7 @@ final class JsBoolReader extends AbstractReader {
 
         if (reader.wasFalse()) return JsBool.FALSE;
         throw JsParserException.reasonAt(ParserErrors.FALSE_EXPECTED,
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
 
     }

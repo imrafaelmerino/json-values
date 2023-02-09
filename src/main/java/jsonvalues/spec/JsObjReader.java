@@ -22,7 +22,7 @@ final class JsObjReader extends AbstractJsObjReader {
         final Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
     }
 
@@ -44,7 +44,7 @@ final class JsObjReader extends AbstractJsObjReader {
         }
         if (nextToken != '}')
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         return map;
     }

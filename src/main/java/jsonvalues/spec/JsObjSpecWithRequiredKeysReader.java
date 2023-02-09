@@ -31,7 +31,7 @@ final class JsObjSpecWithRequiredKeysReader extends JsObjSpecReader {
         for (String key : required) {
             if (!obj.containsKey(key))
                 throw JsParserException.reasonAt(ParserErrors.REQUIRED_KEY_NOT_FOUND.apply(key),
-                                                 reader.getCurrentIndex()
+                                                 reader.getPositionInStream()
                                                 );
         }
         return obj;

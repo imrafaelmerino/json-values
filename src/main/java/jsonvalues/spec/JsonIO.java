@@ -64,7 +64,7 @@ public final class JsonIO {
              reader.getNextToken();
              return JsParsers.PARSERS.objParser.value(reader);
          } catch (IOException e) {
-             throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getCurrentIndex(),
+             throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getPositionInStream(),
                                                 e
                                                );
 
@@ -79,7 +79,7 @@ public final class JsonIO {
              reader.getNextToken();
              return JsParsers.PARSERS.arrayOfValueParser.value(reader);
          } catch (IOException e) {
-             throw JsParserException.reasonFrom("Exception parsing an array @ position=" + reader.getCurrentIndex(),
+             throw JsParserException.reasonFrom("Exception parsing an array @ position=" + reader.getPositionInStream(),
                                                 e
                                                );
 
@@ -96,7 +96,7 @@ public final class JsonIO {
             return parser.parse(reader)
                          .toJsObj();
         } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getCurrentIndex(),
+            throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getPositionInStream(),
                                                e
                                               );
 
@@ -123,7 +123,7 @@ public final class JsonIO {
             return parser.parse(reader)
                          .toJsArray();
         } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception deserializing an array @ position=" + reader.getCurrentIndex(),
+            throw JsParserException.reasonFrom("Exception deserializing an array @ position=" + reader.getPositionInStream(),
                                                e
                                               );
         } finally {

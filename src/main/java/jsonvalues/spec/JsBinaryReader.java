@@ -15,7 +15,7 @@ final class JsBinaryReader extends AbstractReader {
             return JsBinary.of(bytes);
         } catch (IllegalArgumentException e) {
             throw JsParserException.reasonAt(e.getMessage(),
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         }
     }

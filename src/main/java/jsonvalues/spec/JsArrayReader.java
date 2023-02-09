@@ -37,7 +37,7 @@ abstract class JsArrayReader extends AbstractReader {
                  ) throws IOException {
         if (checkIfEmpty(isEmptyArray(reader),
                          min,
-                         reader.getCurrentIndex()
+                         reader.getPositionInStream()
                         )) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
         while (reader.getNextToken() == ',') {
@@ -45,13 +45,13 @@ abstract class JsArrayReader extends AbstractReader {
             buffer = buffer.append(parser.value(reader));
             checkSize(buffer.size() > max,
                       ParserErrors.TOO_LONG_ARRAY.apply(max),
-                      reader.getCurrentIndex()
+                      reader.getPositionInStream()
                      );
 
         }
         checkSize(buffer.size() < min,
                   ParserErrors.TOO_SHORT_ARRAY.apply(min),
-                  reader.getCurrentIndex()
+                  reader.getPositionInStream()
                  );
 
         reader.checkArrayEnd();
@@ -60,7 +60,7 @@ abstract class JsArrayReader extends AbstractReader {
 
     private boolean checkIfEmpty(boolean error,
                                  int min,
-                                 int reader
+                                 long reader
                                 ) {
         if (error) {
             checkSize(min > 0,
@@ -91,7 +91,7 @@ abstract class JsArrayReader extends AbstractReader {
     private boolean isEmptyArray(final JsReader reader) throws IOException {
         checkSize(reader.last() != '[',
                   ParserErrors.EXPECTING_FOR_LIST_START,
-                  reader.getCurrentIndex()
+                  reader.getPositionInStream()
                  );
         reader.getNextToken();
         return reader.last() == ']';
@@ -118,7 +118,7 @@ abstract class JsArrayReader extends AbstractReader {
         final Optional<JsError> result = fn.apply(array);
         if (result.isEmpty()) return array;
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
     }
 
@@ -130,7 +130,7 @@ abstract class JsArrayReader extends AbstractReader {
 
         if (checkIfEmpty(isEmptyArray(reader),
                          min,
-                         reader.getCurrentIndex()
+                         reader.getPositionInStream()
                         )) return EMPTY;
         JsArray buffer = EMPTY.append(f.call());
         while (reader.getNextToken() == ',') {
@@ -138,12 +138,12 @@ abstract class JsArrayReader extends AbstractReader {
             buffer = buffer.append(f.call());
             checkSize(buffer.size() > max,
                       ParserErrors.TOO_LONG_ARRAY.apply(max),
-                      reader.getCurrentIndex()
+                      reader.getPositionInStream()
                      );
         }
         checkSize(buffer.size() < min,
                   ParserErrors.TOO_SHORT_ARRAY.apply(min),
-                  reader.getCurrentIndex()
+                  reader.getPositionInStream()
                  );
 
         reader.checkArrayEnd();
@@ -153,7 +153,7 @@ abstract class JsArrayReader extends AbstractReader {
 
     private void checkSize(boolean error,
                            String message,
-                           int reader
+                           long reader
                           ) {
         if (error)
             throw JsParserException.reasonAt(message,

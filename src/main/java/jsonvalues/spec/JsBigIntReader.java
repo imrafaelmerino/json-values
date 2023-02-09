@@ -19,7 +19,7 @@ final class JsBigIntReader extends AbstractReader {
 
         } catch (ArithmeticException e) {
             throw JsParserException.reasonAt(ParserErrors.INTEGRAL_NUMBER_EXPECTED,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         }
 
@@ -35,11 +35,11 @@ final class JsBigIntReader extends AbstractReader {
             if (result.isEmpty()) return JsBigInt.of(value);
 
             throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         } catch (ArithmeticException e) {
             throw JsParserException.reasonAt(ParserErrors.BIG_INTEGER_WITH_FRACTIONAL_PART,
-                                             reader.getCurrentIndex()
+                                             reader.getPositionInStream()
                                             );
         }
 

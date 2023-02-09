@@ -36,7 +36,7 @@ class JsValueReader extends AbstractReader {
         Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
-                                         reader.getCurrentIndex()
+                                         reader.getPositionInStream()
                                         );
     }
 
