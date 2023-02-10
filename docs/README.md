@@ -1275,7 +1275,7 @@ Java >= 17
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>12.0.0</version>
+    <version>12.1.0</version>
 </dependency>
 ```
 
