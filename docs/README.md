@@ -8,7 +8,7 @@
 <br/>
 Java >= 17
 <br/>
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/12.0.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/12.0.0/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/12.1.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/12.1.0/jar)
 
 
 “_Simplicity is a great virtue, but it requires hard work to achieve it and education to appreciate it.
@@ -1252,7 +1252,7 @@ great talk that elaborates ironically on this point.
 
 Java 8 or greater for versions lower than 11.9.0 (only fixes are accepted)
 
-Java 17 or greater for versions greater than 12.0.0.
+Java 17 or greater for versions greater than 12.1.0.
 
 ## <a name="installation"><a/> Installation
 
