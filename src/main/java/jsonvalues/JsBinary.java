@@ -34,6 +34,9 @@ public final class JsBinary extends JsPrimitive {
             },
                         JsBinary::of
             );
+    /**
+     * the array of bytes
+     */
     public final byte[] value;
 
     private JsBinary(final byte[] value) {

@@ -16,7 +16,7 @@ import java.util.stream.IntStream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represent a JsArray generator. It can be created from the static factory methods biased and
+ * Represents a JsArray generator. It can be created from the static factory methods biased and
  * arbitrary, specifying an element generator that produces JsValue and the size of the array
  * (either a bound interval or a fixed size).
  */

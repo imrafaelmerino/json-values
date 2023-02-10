@@ -100,7 +100,6 @@ public final class JsDoubleGen implements Gen<JsDouble> {
      *
      * @param min lower bound of the interval (inclusive)
      * @param max upper bound of the interval (inclusive)
-     * <p>
      *
      * @return a biased JsDouble generator
      */

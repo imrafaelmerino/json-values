@@ -5,9 +5,9 @@ import jsonvalues.JsNull;
 import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 abstract class JsArrayReader extends AbstractReader {
 
@@ -21,7 +21,7 @@ abstract class JsArrayReader extends AbstractReader {
     JsValue nullOrArray(final JsReader reader,
                         int min,
                         int max
-                       ) throws IOException {
+                       ) throws JsParserException {
 
         return reader.wasNull() ?
                 JsNull.NULL :
@@ -34,14 +34,14 @@ abstract class JsArrayReader extends AbstractReader {
     JsArray array(final JsReader reader,
                   int min,
                   int max
-                 ) throws IOException {
+                 ) throws JsParserException {
         if (checkIfEmpty(isEmptyArray(reader),
                          min,
                          reader.getPositionInStream()
                         )) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
-        while (reader.getNextToken() == ',') {
-            reader.getNextToken();
+        while (reader.readNextToken() == ',') {
+            reader.readNextToken();
             buffer = buffer.append(parser.value(reader));
             checkSize(buffer.size() > max,
                       ParserErrors.TOO_LONG_ARRAY.apply(max),
@@ -73,11 +73,11 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
     @Override
-    public JsArray value(final JsReader reader) throws IOException {
+    public JsArray value(final JsReader reader) throws JsParserException {
         if (isEmptyArray(reader)) return EMPTY;
         JsArray buffer = EMPTY.append(parser.value(reader));
-        while (reader.getNextToken() == ',') {
-            reader.getNextToken();
+        while (reader.readNextToken() == ',') {
+            reader.readNextToken();
             buffer = buffer.append(parser.value(reader));
         }
         reader.checkArrayEnd();
@@ -88,18 +88,18 @@ abstract class JsArrayReader extends AbstractReader {
 
 
 
-    private boolean isEmptyArray(final JsReader reader) throws IOException {
+    private boolean isEmptyArray(final JsReader reader) throws JsParserException {
         checkSize(reader.last() != '[',
                   ParserErrors.EXPECTING_FOR_LIST_START,
                   reader.getPositionInStream()
                  );
-        reader.getNextToken();
+        reader.readNextToken();
         return reader.last() == ']';
     }
 
     public JsValue nullOrArraySuchThat(final JsReader reader,
                                        final Function<JsArray, Optional<JsError>> fn
-                                      ) throws IOException {
+                                      ) throws JsParserException {
 
         return reader.wasNull() ?
                 JsNull.NULL :
@@ -112,7 +112,7 @@ abstract class JsArrayReader extends AbstractReader {
 
     JsArray arraySuchThat(final JsReader reader,
                           final Function<JsArray, Optional<JsError>> fn
-                         ) throws IOException {
+                         ) throws JsParserException {
 
         final JsArray array = value(reader);
         final Optional<JsError> result = fn.apply(array);
@@ -123,19 +123,19 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
     JsArray arrayEachSuchThat(final JsReader reader,
-                              final IOCallable<JsValue> f,
+                              final Supplier<JsValue> f,
                               final int min,
                               final int max
-                             ) throws IOException {
+                             ) throws JsParserException {
 
         if (checkIfEmpty(isEmptyArray(reader),
                          min,
                          reader.getPositionInStream()
                         )) return EMPTY;
-        JsArray buffer = EMPTY.append(f.call());
-        while (reader.getNextToken() == ',') {
-            reader.getNextToken();
-            buffer = buffer.append(f.call());
+        JsArray buffer = EMPTY.append(f.get());
+        while (reader.readNextToken() == ',') {
+            reader.readNextToken();
+            buffer = buffer.append(f.get());
             checkSize(buffer.size() > max,
                       ParserErrors.TOO_LONG_ARRAY.apply(max),
                       reader.getPositionInStream()
@@ -162,10 +162,10 @@ abstract class JsArrayReader extends AbstractReader {
     }
 
     JsValue nullOrArrayEachSuchThat(final JsReader reader,
-                                    final IOCallable<JsValue> fn,
+                                    final Supplier<JsValue> fn,
                                     final int min,
                                     final int max
-                                   ) throws IOException {
+                                   ) throws JsParserException {
 
         return reader.wasNull() ?
                 JsNull.NULL :

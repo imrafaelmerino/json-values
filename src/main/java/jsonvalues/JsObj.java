@@ -1,9 +1,9 @@
 package jsonvalues;
 
 
-import jsonvalues.spec.JsonIO;
 import fun.optic.Prism;
 import jsonvalues.JsArray.TYPE;
+import jsonvalues.spec.JsIO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collector.Characteristics;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
@@ -20,14 +22,14 @@ import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
 
 /**
- * Represents an immutable JSON object. A JSON object is an unordered set of name/element pairs.
+ * Represents an immutable and persistent JSON object. It's an unordered set of name/element pairs.
  * The underlying data structure is a persistent {@link HashMap} from the library vavr.
  */
 public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
      * the empty Json Object
      */
-    public static final JsObj EMPTY = new JsObj(HashMap.empty());
+    static final JsObj EMPTY = new JsObj(HashMap.empty());
     /**
      * lenses defined for a Json object
      */
@@ -52,18 +54,22 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @SuppressWarnings("squid:S3077")
     private volatile String str;
 
-    public JsObj() {
-        this.map = HashMap.empty();
-    }
-
     JsObj(final HashMap myMap) {
         this.map = myMap;
     }
 
+    /**
+     * Returns the empty JSON object
+     * @return the empty JSON object
+     */
     public static JsObj empty() {
         return EMPTY;
     }
 
+    /**
+     * Static factory method to create one-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final String key,
                            final JsValue el
                           ) {
@@ -74,6 +80,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               );
     }
 
+    /**
+     * Static factory method to create one-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final JsPath path,
                            final JsValue el
                           ) {
@@ -83,6 +93,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               );
     }
 
+    /**
+     * Static factory method to create two-element JSON object
+     * @return an immutable and persistent JSON object
+     */
 
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -98,6 +112,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create two-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
                            final JsPath path2,
@@ -112,6 +130,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                     );
     }
 
+    /**
+     * Static factory method to create three-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -129,7 +151,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el3
                       );
     }
-
+    /**
+     * Static factory method to create three-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -146,6 +171,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        requireNonNull(el3)
                       );
     }
+    /**
+     * Static factory method to create four-element JSON object
+     * @return an immutable and persistent JSON object
+     */
 
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
@@ -169,7 +198,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el4
                       );
     }
-
+    /**
+     * Static factory method to create four-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -190,7 +222,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        requireNonNull(el4)
                       );
     }
-
+    /**
+     * Static factory method to create five-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -218,6 +253,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create five-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -243,6 +282,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create six-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -274,6 +317,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create six-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -303,6 +350,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seven-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -338,6 +389,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seven-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -371,6 +426,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eight-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -410,6 +469,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eight-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -447,6 +510,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create nine-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -489,7 +556,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el9
                       );
     }
-
+    /**
+     * Static factory method to create nine-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -531,7 +601,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create ten-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -579,6 +652,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create ten-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -625,6 +702,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create eleven-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -676,6 +757,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eleven-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -724,7 +809,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        requireNonNull(el11)
                       );
     }
-
+    /**
+     * Static factory method to create twelve-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -780,6 +868,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create twelve-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -834,6 +926,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create thirteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -892,7 +988,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el13
                       );
     }
-
+    /**
+     * Static factory method to create thirteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -950,7 +1049,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create fourteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1013,7 +1115,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el14
                       );
     }
-
+    /**
+     * Static factory method to create fourteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1075,6 +1180,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create fifteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1142,6 +1251,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create fifteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1208,6 +1321,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create sixteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1279,6 +1396,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create sixteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1348,7 +1469,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create seventeen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1424,6 +1548,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seventeen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1497,7 +1625,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create eighteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1576,7 +1707,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el18
                       );
     }
-
+    /**
+     * Static factory method to create eighteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1654,7 +1788,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create nineteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1737,7 +1874,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el19
                       );
     }
-
+    /**
+     * Static factory method to create nineteen-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1818,7 +1958,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        requireNonNull(el19)
                       );
     }
-
+    /**
+     * Static factory method to create twenty-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1905,7 +2048,10 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        el20
                       );
     }
-
+    /**
+     * Static factory method to create twenty-element JSON object
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1993,16 +2139,26 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
 
     /**
-     * Tries to parse the string into an immutable JSON object.
+     * Parses the given string into an immutable and persistent JSON object.
      *
      * @param str the string to be parsed
      * @return a JsOb object
      * @throws JsParserException if the string doesn't represent a json object
      */
-    public static JsObj parse(final String str) {
-       return JsonIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
+    public static JsObj parse(final String str) throws JsParserException {
+        return JsIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Parses the given array of bytes into an immutable and persistent JSON object.
+     *
+     * @param bytes the array of bytes
+     * @return a JsObj object
+     * @throws JsParserException if the string doesn't represent a json object
+     */
+    public static JsObj parse(final byte[] bytes) throws JsParserException {
+        return JsIO.INSTANCE.parseToJsObj(bytes);
+    }
 
     static Stream<JsPair> streamOfObj(final JsObj obj,
                                       final JsPath path
@@ -2047,7 +2203,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
      *
      * @param key   the key
      * @param value the element
-     * @return a new json object
+     * @return a new JSON
      */
     public JsObj set(final String key,
                      final JsValue value
@@ -2060,6 +2216,13 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                             ).apply(requireNonNull(value));
     }
 
+    /**
+     * Removes the element in this json located at the given key, if it exists, returning the same this
+     * instance otherwise
+     *
+     * @param key the key
+     * @return a new JSON
+     */
     public JsObj delete(final String key) {
         if (!map.containsKey(requireNonNull(key))) return this;
         return new JsObj(map.remove(key));
@@ -2071,9 +2234,9 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns a set containing each key fo this object.
+     * Returns a set containing each key of this object.
      *
-     * @return a Set containing each key of this JsObj
+     * @return a set containing each key of this JsObj
      */
     public Set<String> keySet() {
         Set<String> keys = new HashSet<>();
@@ -2219,16 +2382,14 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                                                       ) ?
                                               new JsObj(map.put(head,
                                                                 tail.head()
-                                                                    .match(key -> JsObj.EMPTY
-                                                                                   .set(tail,
-                                                                                        value,
-                                                                                        padElement
-                                                                                       ),
-                                                                           index -> JsArray.EMPTY
-                                                                                   .set(tail,
-                                                                                        value,
-                                                                                        padElement
-                                                                                       )
+                                                                    .match(key -> JsObj.EMPTY.set(tail,
+                                                                                                  value,
+                                                                                                  padElement
+                                                                                                 ),
+                                                                           index -> JsArray.EMPTY.set(tail,
+                                                                                                      value,
+                                                                                                      padElement
+                                                                                                     )
                                                                           )
                                                                )) :
                                               new JsObj(map.put(head,
@@ -2322,6 +2483,20 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         return streamOfObj(this,
                            JsPath.empty()
                           );
+    }
+
+    /**
+     * Returns an stream of (key,value) pairs
+     *
+     * @return an stream of (key,value) pairs
+     */
+    public Stream<JsObjPair> streamOfKeys() {
+        return StreamSupport.stream(Spliterators.spliterator(iterator(),
+                                                             size(),
+                                                             Characteristics.UNORDERED.ordinal()
+                                                            ),
+                                    false
+                                   );
     }
 
     /**
@@ -2744,12 +2919,11 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
-
     @Override
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(JsonIO.INSTANCE.serialize(this),
+            str = result = new String(JsIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8
             );
         return result;

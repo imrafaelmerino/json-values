@@ -7,7 +7,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 /**
- * Represents the location of a first-level element in a json, either a Key in a JsObj or an Index in
+ * Represents the location of a first-level element in a JSON, either a Key in a JsObj or an Index in
  * a JsArray.
  */
 public sealed interface Position extends Comparable<Position> permits Index, Key {

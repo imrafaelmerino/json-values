@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-
 import java.util.Set;
 
 

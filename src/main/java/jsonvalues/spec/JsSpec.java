@@ -25,6 +25,18 @@ public interface JsSpec {
      */
     JsSpecParser parser();
 
+    /**
+     * Low level method to parse a JSON value by value from a reader. Returns the next value
+     * according to the current state of the reader if it conforms this spec, otherwise a
+     * JsParserException is thrown
+     * @param reader the reader
+     * @return the next token as a JsValue
+     */
+    default JsValue readNextValue(JsReader reader){
+        reader.readNextToken();
+        return parser().parse(reader);
+    }
+
 
     /**
      * verify if the given value satisfy this spec.

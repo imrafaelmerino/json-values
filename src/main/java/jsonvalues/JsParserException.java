@@ -1,6 +1,10 @@
 package jsonvalues;
 
 
+/**
+ * Represent an exception that is thrown while parsing an array of bytes or string into a JSON.
+ *
+ */
 public class JsParserException extends RuntimeException {
 
 	private JsParserException(String reason) {
@@ -22,9 +26,6 @@ public class JsParserException extends RuntimeException {
 		return this;
 	}
 
-	public static JsParserException reasonFrom(String reason, Throwable cause) {
-		return new JsParserException(reason, cause);
-	}
 
 
 }

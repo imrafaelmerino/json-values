@@ -7,6 +7,9 @@ import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Class to create JSON array parsers from specs
+ */
 public final class JsArraySpecParser {
 
     private final JsSpecParser parser;
@@ -31,9 +34,9 @@ public final class JsArraySpecParser {
      */
     public JsArray parse(final byte[] bytes) {
 
-        return JsonIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
-                                                    this.parser
-                                                   );
+        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
+                                                  this.parser
+                                                 );
     }
 
 
@@ -47,7 +50,7 @@ public final class JsArraySpecParser {
      * @return a try computation with the result
      */
     public JsArray parse(String str) {
-        return JsonIO.INSTANCE
+        return JsIO.INSTANCE
                 .deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
                                       this.parser
                 );
@@ -63,9 +66,9 @@ public final class JsArraySpecParser {
      * @return a try computation with the result
      */
     public JsArray parse(InputStream inputstream) {
-        return JsonIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
-                                                    this.parser
-                                                   );
+        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
+                                                  this.parser
+                                                 );
 
     }
 

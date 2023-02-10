@@ -3,7 +3,7 @@ package jsonvalues;
 
 
 import fun.optic.Prism;
-import jsonvalues.spec.JsonIO;
+import jsonvalues.spec.JsIO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,7 +28,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
 
 
 /**
- * Represents a json array, which is an ordered list of elements.
+ * Represents an immutable and persistent JSON array. It's an ordered list of elements.
  */
 public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
@@ -40,7 +40,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     public static final JsOptics.JsArrayOptionals optional = JsOptics.array.optional;
 
-    public static final JsArray EMPTY = new JsArray(Vector.empty());
+
+    static final JsArray EMPTY = new JsArray(Vector.empty());
     /**
      * prism between the sum type JsValue and JsArray
      */
@@ -55,15 +56,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     private volatile int hashcode;
     private volatile String str;
 
-
     JsArray(Vector<JsValue> seq) {
         this.seq = seq;
     }
 
-    public JsArray() {
-        this.seq = Vector.empty();
-    }
-
+    /**
+     * Returns the empty JSON array
+     * @return the empty JSON array
+     */
     public static JsArray empty() {
         return EMPTY;
     }
@@ -72,12 +72,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Returns an immutable array.
      *
-     * @param e    a JsValue
-     * @param e1   a JsValue
-     * @param e2   a JsValue
-     * @param e3   a JsValue
-     * @param e4   a JsValue
-     * @param rest more optional JsValue
      * @return an immutable JsArray
      */
     // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
@@ -104,14 +98,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable five-element array.
+     * Returns an immutable and persistent five-element array.
      *
      * @param e  a JsValue
      * @param e1 a JsValue
      * @param e2 a JsValue
      * @param e3 a JsValue
      * @param e4 a JsValue
-     * @return an immutable five-element JsArray
+     * @return an immutable and persistent five-element JsArray
      */
     //squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
     @SuppressWarnings("squid:S00107")
@@ -315,15 +309,28 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Tries to parse the string into an immutable json array.
+     * Parses the given string into an immutable and persistent JSON array.
      *
      * @param str the string to be parsed
      * @return a JsArray
      * @throws JsParserException if the string doesnt represent a json array
      */
-    public static JsArray parse(final String str) {
+    public static JsArray parse(final String str) throws JsParserException{
 
-      return JsonIO.INSTANCE.parseToJsArray(str.getBytes(StandardCharsets.UTF_8));
+      return JsIO.INSTANCE.parseToJsArray(str.getBytes(StandardCharsets.UTF_8));
+
+    }
+
+    /**
+     * Parses the given array of bytes into an immutable and persistent JSON array.
+     *
+     * @param bytes the array of bytes
+     * @return a JsArray
+     * @throws JsParserException if the string doesn't represent a JSON array
+     */
+    public static JsArray parse(final byte[] bytes) throws JsParserException{
+
+        return JsIO.INSTANCE.parseToJsArray(bytes);
 
     }
 
@@ -1057,6 +1064,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         );
     }
 
+    /**
+     * Returns the values of the array as a stream
+     * @return an stream of values
+     */
+    public Stream<JsValue> streamOfValues() {
+        return seq.toJavaStream();
+    }
+
 
     private boolean yContainsX(final Vector<JsValue> x,
                                final Vector<JsValue> y
@@ -1125,7 +1140,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(JsonIO.INSTANCE.serialize(this),
+            str = result = new String(JsIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8);
 
         return result;

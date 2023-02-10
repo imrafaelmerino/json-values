@@ -3,9 +3,9 @@ package jsonvalues;
 import java.io.Serializable;
 import java.util.*;
 
+import static java.lang.Integer.bitCount;
 import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
 import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
-import static java.lang.Integer.bitCount;
 
  interface HashArrayMappedTrieModule {
 

@@ -4,7 +4,7 @@ package jsonvalues;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represents the index of a value in a json array.
+ * Represents the index of a value in a JSON array.
  */
 public final class Index implements Position {
 

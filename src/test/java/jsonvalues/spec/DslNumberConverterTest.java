@@ -4,7 +4,7 @@ import jsonvalues.JsBigDec;
 import jsonvalues.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import java.io.IOException;
+
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 import java.util.function.Supplier;
@@ -19,15 +19,11 @@ public class DslNumberConverterTest {
      */
     @Test
     public void testNumber()  {
-        JsonIO dslJson = new JsonIO();
+        JsIO dslJson = new JsIO();
         Supplier<JsReader> reader = () -> {
-            try {
                 JsReader r = dslJson.newReader("\"1\"".getBytes(StandardCharsets.UTF_8));
-                r.getNextToken();
+                r.readNextToken();
                 return r;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         };
 
         //my implementation returns an error
@@ -37,17 +33,13 @@ public class DslNumberConverterTest {
     }
 
     @Test
-    public void deserializeDecimal() throws IOException {
+    public void deserializeDecimal() throws JsParserException {
 
-        JsonIO dslJson = new JsonIO();
+        JsIO dslJson = new JsIO();
         Supplier<JsReader> reader = () -> {
-            try {
                 JsReader r = dslJson.newReader("-3.6914651842717967331576316562991741501E-197".getBytes(StandardCharsets.UTF_8));
-                r.getNextToken();
+                r.readNextToken();
                 return r;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
         };
 
 
@@ -60,17 +52,14 @@ public class DslNumberConverterTest {
     }
 
     @Test
-    public void deserializeDecimal1() throws IOException {
+    public void deserializeDecimal1() throws JsParserException {
 
-        JsonIO dslJson = new JsonIO();
+        JsIO dslJson = new JsIO();
         Supplier<JsReader> reader = () -> {
-            try {
                 JsReader r = dslJson.newReader("1.705166916240390773522933255090892244333869968630006064E+114".getBytes(StandardCharsets.UTF_8));
-                r.getNextToken();
+                r.readNextToken();
                 return r;
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
+
         };
 
         Assertions.assertEquals(JsBigDec.of(new BigDecimal("1.705166916240390773522933255090892244333869968630006064E+114")),

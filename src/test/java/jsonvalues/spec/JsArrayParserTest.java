@@ -4,7 +4,6 @@ import fun.gen.Combinators;
 import fun.gen.Gen;
 import jsonvalues.*;
 import jsonvalues.gen.*;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

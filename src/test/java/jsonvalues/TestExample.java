@@ -3,8 +3,8 @@ package jsonvalues;
 
 import fun.optic.Lens;
 import fun.optic.Option;
-import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsSpecs;
 import jsonvalues.spec.SpecError;
 import org.junit.jupiter.api.Assertions;

@@ -1,16 +1,24 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsObj;
-import jsonvalues.JsParserException;
-import jsonvalues.Json;
+import jsonvalues.*;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.Objects;
 
-
-public final class JsonIO {
-    public static final JsonIO INSTANCE = new JsonIO();
+/**
+ * Singleton instance to create JSON readers and writers to parse bytes into JSON and serialize JSON into bytes.
+ * Only a few a methods are exposed since this class is vastly used internally. You may be interested in
+ * creating JsReaders only to parse bytes or strings token by token.
+ *
+ * @see JsReader
+ * @see JsSpec#readNextValue(JsReader)
+ */
+public final class JsIO {
+    /**
+     * Singleton instance
+     */
+    public static final JsIO INSTANCE = new JsIO();
 
     final StringCache keyCache;
     final StringCache valuesCache;
@@ -29,8 +37,8 @@ public final class JsonIO {
     }
 
 
-    JsonIO(Settings settings) {
-        final JsonIO self = this;
+    JsIO(Settings settings) {
+        final JsIO self = this;
         this.localWriter = ThreadLocal.withInitial(() -> newWriter(512));
         this.localReader = new ThreadLocal<>() {
             @Override
@@ -53,79 +61,93 @@ public final class JsonIO {
         this.maxStringSize = settings.maxStringBuffer;
     }
 
-    JsonIO() {
+    JsIO() {
         this(new Settings()
-                           .doublePrecision(JsReader.DoublePrecision.HIGH));
+                     .doublePrecision(JsReader.DoublePrecision.HIGH));
     }
-
-     public JsObj parseToJsObj(final byte[] bytes) {
-         JsReader reader = getReader(bytes);
-         try {
-             reader.getNextToken();
-             return JsParsers.PARSERS.objParser.value(reader);
-         } catch (IOException e) {
-             throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getPositionInStream(),
-                                                e
-                                               );
-
-         } finally {
-             reader.reset();
-         }
-     }
-
-     public JsArray parseToJsArray(final byte[] bytes) {
-         JsReader reader = getReader(bytes);
-         try {
-             reader.getNextToken();
-             return JsParsers.PARSERS.arrayOfValueParser.value(reader);
-         } catch (IOException e) {
-             throw JsParserException.reasonFrom("Exception parsing an array @ position=" + reader.getPositionInStream(),
-                                                e
-                                               );
-
-         } finally {
-             reader.reset();
-         }
-     }
-    JsObj parseToJsObj(final byte[] bytes,
-                       final JsSpecParser parser
-                      ) {
-        JsReader reader = getReader(bytes);
+    /**
+     * Parses the given array of bytes into an immutable and persistent JSON object.
+     *
+     * @param bytes the array of bytes
+     * @return a JsObj object
+     * @throws JsParserException if the string doesn't represent a json object
+     */
+    public JsObj parseToJsObj(final byte[] bytes) {
+        JsReader reader = createReader(bytes);
         try {
-            reader.getNextToken();
-            return parser.parse(reader)
-                         .toJsObj();
-        } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception parsing an object @ position=" + reader.getPositionInStream(),
-                                               e
-                                              );
-
+            reader.readNextToken();
+            return JsParsers.PARSERS.objParser.value(reader);
         } finally {
             reader.reset();
         }
     }
 
-    private JsReader getReader(final byte[] bytes) {
+    /**
+     * Parses the given array of bytes into an immutable and persistent JSON array.
+     *
+     * @param bytes the array of bytes
+     * @return a JsArray object
+     * @throws JsParserException if the string doesn't represent a json object
+     */
+    public JsArray parseToJsArray(final byte[] bytes) {
+        JsReader reader = createReader(bytes);
+        try {
+            reader.readNextToken();
+            return JsParsers.PARSERS.arrayOfValueParser.value(reader);
+        } finally {
+            reader.reset();
+        }
+    }
+
+    JsObj parseToJsObj(final byte[] bytes,
+                       final JsSpecParser parser
+                      ) {
+        JsReader reader = createReader(bytes);
+        try {
+            reader.readNextToken();
+            return parser.parse(reader)
+                         .toJsObj();
+        } finally {
+            reader.reset();
+        }
+    }
+
+    /**
+     * Creates a JSON reader from an array of bytes.
+     *
+     * @param bytes the array of bytes
+     * @return a JSON reader
+     */
+    public JsReader createReader(final byte[] bytes) {
         return localReader.get()
-                          .process(bytes,
+                          .process(Objects.requireNonNull(bytes),
                                    bytes.length
                                   );
 
 
     }
 
+    /**
+     * Creates a JSON reader from an input stream.
+     *
+     * @param is the input stream
+     * @return a JSON reader
+     */
+    public JsReader createReader(final InputStream is) throws JsParserException {
+
+        return localReader.get()
+                          .process(Objects.requireNonNull(is));
+
+    }
+
     JsArray deserializeToJsArray(final byte[] bytes,
                                  final JsSpecParser parser
                                 ) {
-        JsReader reader = getReader(bytes);
+        JsReader reader = createReader(bytes);
         try {
-            reader.getNextToken();
+            reader.readNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception deserializing an array @ position=" + reader.getPositionInStream(),
-                                               e
-                                              );
         } finally {
             reader.reset();
         }
@@ -133,47 +155,39 @@ public final class JsonIO {
 
     JsObj parseToJsObj(final InputStream is,
                        final JsSpecParser parser
-
                       ) {
         JsReader reader = null;
         try {
-            reader = getReader(is);
-            reader.getNextToken();
+            reader = createReader(is);
+            reader.readNextToken();
             return parser.parse(reader)
                          .toJsObj();
-        } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception while parsing an object",
-                                               e
-                                              );
         } finally {
             if (reader != null) reader.reset();
         }
     }
 
-    private JsReader getReader(final InputStream is) throws IOException {
 
-        return localReader.get()
-                          .process(is);
-
-    }
-
-     JsArray deserializeToJsArray(final InputStream is,
-                                        final JsSpecParser parser
-                                       ) {
+    JsArray deserializeToJsArray(final InputStream is,
+                                 final JsSpecParser parser
+                                ) {
         JsReader reader = null;
         try {
-            reader = getReader(is);
-            reader.getNextToken();
+            reader = createReader(is);
+            reader.readNextToken();
             return parser.parse(reader)
                          .toJsArray();
-        } catch (IOException e) {
-            throw JsParserException.reasonFrom("Exception while deserialization an array", e);
         } finally {
             if (reader != null) reader.reset();
         }
     }
 
-    public byte[] serialize(final Json<?> json) {
+    /**
+     * Serializes the specified JSON into an array of bytes
+     * @param json the JSON
+     * @return an array of bytes
+     */
+    public byte[] serialize(final Json<?> json) throws JsSerializerException {
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             INSTANCE.serialize(json,
@@ -186,9 +200,14 @@ public final class JsonIO {
         }
     }
 
+    /**
+     * Serializes the specified JSON into the given output stream
+     * @param json the JSON
+     * @param stream the stream
+     */
     public void serialize(final Json<?> json,
                           final OutputStream stream
-                         ) {
+                         ) throws JsSerializerException {
         final JsWriter jw = localWriter.get();
         try {
             jw.reset(stream);
@@ -204,6 +223,12 @@ public final class JsonIO {
     }
 
 
+    /**
+     * Serializes a JSON into a formatted string
+     * @param json the json
+     * @param indentLength the indentation length
+     * @return a string representation of the JSON
+     */
     public String toPrettyString(final Json<?> json,
                                  int indentLength
                                 ) {
@@ -220,8 +245,7 @@ public final class JsonIO {
     }
 
     /**
-     * Create a writer bound to this DSL-JSON.
-     * Ideally it should be reused.
+     * Creates a writer. Ideally it should be reused.
      * Bound writer can use lookups to find custom writers.
      * This can be used to serialize unknown types such as Object.class
      *
@@ -233,7 +257,7 @@ public final class JsonIO {
     }
 
     /**
-     * Create a reader bound to this DSL-JSON.
+     * Creates a reader.
      * Bound reader can reuse key cache (which is used during Map deserialization)
      * This reader can be reused via process method.
      *
@@ -254,7 +278,7 @@ public final class JsonIO {
 
 
     /**
-     * Create a reader bound to this DSL-JSON.
+     * Creates a reader.
      * Bound reader can reuse key cache (which is used during Map deserialization)
      * Created reader can be reused (using process method).
      * This is convenience method for creating a new reader and binding it to stream.
@@ -262,9 +286,9 @@ public final class JsonIO {
      * @param stream input stream
      * @param buffer temporary buffer
      * @return bound reader
-     * @throws IOException unable to read from stream
+     * @throws JsParserException unable to read from stream
      */
-    JsReader newReader(InputStream stream, byte[] buffer) throws IOException {
+    JsReader newReader(InputStream stream, byte[] buffer) throws JsParserException {
         JsReader reader = newReader(buffer);
         reader.process(stream);
         return reader;

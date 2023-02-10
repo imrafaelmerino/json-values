@@ -21,8 +21,8 @@ import java.util.Set;
 
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
-import static jsonvalues.spec.JsSpecs.*;
 import static jsonvalues.spec.FunTest.assertErrorIs;
+import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsObjSpec {
 

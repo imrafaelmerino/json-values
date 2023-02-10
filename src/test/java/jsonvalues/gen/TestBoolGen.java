@@ -1,6 +1,5 @@
 package jsonvalues.gen;
 
-import fun.gen.BoolGen;
 import jsonvalues.JsBool;
 import org.junit.jupiter.api.Test;
 

@@ -5,7 +5,6 @@ import jsonvalues.JsNull;
 import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
-import java.io.IOException;
 import java.util.List;
 
 final class JsArraySpecReader {
@@ -15,7 +14,7 @@ final class JsArraySpecReader {
         this.parsers = parsers;
     }
 
-    JsValue nullOrArray(final JsReader reader) throws IOException {
+    JsValue nullOrArray(final JsReader reader) throws JsParserException {
 
         return reader.wasNull() ?
                 JsNull.NULL :
@@ -24,20 +23,20 @@ final class JsArraySpecReader {
     }
 
 
-    JsArray array(final JsReader reader) throws IOException {
+    JsArray array(final JsReader reader) throws JsParserException {
         if (reader.last() != '[')
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_LIST_START,
                                              reader.getPositionInStream()
                                             );
-        reader.getNextToken();
+        reader.readNextToken();
         if (reader.last() == ']') return JsArray.empty();
         JsArray buffer = JsArray.empty();
         int i = 0;
         buffer = buffer.append(parsers.get(i)
                                       .parse(reader));
-        while (reader.getNextToken() == ',') {
+        while (reader.readNextToken() == ',') {
             i = i + 1;
-            reader.getNextToken();
+            reader.readNextToken();
             buffer = buffer.append(parsers.get(i)
                                           .parse(reader));
 

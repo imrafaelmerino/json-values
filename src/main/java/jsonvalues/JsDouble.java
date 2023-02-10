@@ -13,7 +13,7 @@ import java.util.function.DoubleUnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json number of type double.
+ * Represents an immutable JSON number of type double.
  */
 public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     /**

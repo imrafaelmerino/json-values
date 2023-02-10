@@ -1,6 +1,5 @@
 package jsonvalues.optics;
 
-import fun.gen.BigIntGen;
 import jsonvalues.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

@@ -1,10 +1,15 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsObj;
+
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Class to create JSON object parsers from specs
+ */
 public final class JsObjSpecParser {
 
 
@@ -28,9 +33,9 @@ public final class JsObjSpecParser {
      * @return a try computation with the result
      */
     public JsObj parse(byte[] bytes) {
-        return JsonIO.INSTANCE.parseToJsObj(requireNonNull(bytes),
-                                            parser
-                                           );
+        return JsIO.INSTANCE.parseToJsObj(requireNonNull(bytes),
+                                          parser
+                                         );
 
     }
 
@@ -45,9 +50,9 @@ public final class JsObjSpecParser {
      */
     public JsObj parse(String str) {
 
-        return JsonIO.INSTANCE.parseToJsObj(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
-                                            parser
-                                           );
+        return JsIO.INSTANCE.parseToJsObj(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
+                                          parser
+                                         );
     }
 
     /**
@@ -60,9 +65,9 @@ public final class JsObjSpecParser {
      * @return a try computation with the result
      */
     public JsObj parse(InputStream inputstream) {
-        return JsonIO.INSTANCE.parseToJsObj(requireNonNull(inputstream),
-                                            parser
-                                           );
+        return JsIO.INSTANCE.parseToJsObj(requireNonNull(inputstream),
+                                          parser
+                                         );
     }
 
 

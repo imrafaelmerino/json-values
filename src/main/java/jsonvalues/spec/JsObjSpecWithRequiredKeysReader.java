@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsObj;
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Predicate;
@@ -26,7 +25,7 @@ final class JsObjSpecWithRequiredKeysReader extends JsObjSpecReader {
 
 
     @Override
-    JsObj value(JsReader reader) throws IOException {
+    JsObj value(JsReader reader) throws JsParserException {
         JsObj obj = super.value(reader);
         for (String key : required) {
             if (!obj.containsKey(key))

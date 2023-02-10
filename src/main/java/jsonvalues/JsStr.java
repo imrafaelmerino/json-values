@@ -13,7 +13,7 @@ import java.util.function.UnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json string.
+ * Represents an immutable JSON string.
  */
 public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
 

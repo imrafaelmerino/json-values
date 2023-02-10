@@ -2,7 +2,7 @@ package jsonvalues;
 
 
 /**
- * Represents null, which a valid json value. It's a singleton, only the instance {@link jsonvalues.JsNull#NULL} exists.
+ * Represents null. It's a singleton, only the instance {@link jsonvalues.JsNull#NULL} exists.
  */
 public final class JsNull extends JsPrimitive {
     /**
@@ -25,7 +25,7 @@ public final class JsNull extends JsPrimitive {
     }
 
     /**
-     * Returns the hashcode of this json null
+     * Returns the hashcode of this JSON null
      *
      * @return 1
      */

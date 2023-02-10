@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsBigInt;
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
@@ -11,7 +10,7 @@ import java.util.function.Function;
 
 final class JsBigIntReader extends AbstractReader {
     @Override
-    JsBigInt value(final JsReader reader) throws IOException {
+    JsBigInt value(final JsReader reader) throws JsParserException {
         try {
 
             return JsBigInt.of(NumberConverter.deserializeDecimal(reader)
@@ -27,7 +26,7 @@ final class JsBigIntReader extends AbstractReader {
 
     JsBigInt valueSuchThat(final JsReader reader,
                            final Function<BigInteger, Optional<JsError>> fn
-                          ) throws IOException {
+                          ) throws JsParserException {
         try {
             BigDecimal bigDecimal = NumberConverter.deserializeDecimal(reader);
             final BigInteger value = bigDecimal.toBigIntegerExact();

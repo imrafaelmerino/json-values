@@ -1,7 +1,7 @@
 package jsonvalues;
 
-import jsonvalues.spec.JsonIO;
 import jsonvalues.JsArray.TYPE;
+import jsonvalues.spec.JsIO;
 
 import java.io.OutputStream;
 import java.math.BigDecimal;
@@ -15,9 +15,10 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * <pre>
- * Represents a json of type T, where T is the type of the container, either a JsObj or a JsArray.
+ * Represents an immutable and persistent JSON of type T, where T is the type of the container, either a JsObj or a JsArray.
  * A json of any type can be modeled as a set of pairs {@link JsPair}=({@link JsPath}, {@link JsValue}), where:
- * - a JsValue is a {@link JsBool} or {@link JsStr} or {@link JsNumber} or {@link JsNull}, or another {@link Json} like {@link JsObj} or {@link JsArray},
+ * - a JsValue is a {@link JsBool} or {@link JsStr} or {@link JsNumber} or {@link JsNull}, or another {@link Json} like
+ * {@link JsObj} or {@link JsArray},
  * what makes the data structure recursive.
  * - a JsPath represents the location of the element in the json.
  * For example, the json
@@ -59,8 +60,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return pretty print version of the string representation of this Json
      */
     default String toPrettyString(int indentLength) {
-        return JsonIO.INSTANCE.toPrettyString(this,
-                                              indentLength);
+        return JsIO.INSTANCE.toPrettyString(this,
+                                            indentLength);
 
     }
 
@@ -71,8 +72,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return pretty print version of the string representation of this Json
      */
     default String toPrettyString() {
-        return JsonIO.INSTANCE.toPrettyString(this,
-                                              2);
+        return JsIO.INSTANCE.toPrettyString(this,
+                                            2);
     }
 
 
@@ -659,9 +660,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @param outputstream the output stream
      */
     default void serialize(final OutputStream outputstream) {
-        JsonIO.INSTANCE.serialize(this,
-                                  requireNonNull(outputstream)
-                                 );
+        JsIO.INSTANCE.serialize(this,
+                                requireNonNull(outputstream)
+                               );
     }
 
     /**
@@ -671,7 +672,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @return this Json serialized into an array of bytes
      */
     default byte[] serialize() {
-        return JsonIO.INSTANCE.serialize(this);
+        return JsIO.INSTANCE.serialize(this);
     }
 
 

@@ -1,7 +1,7 @@
 package jsonvalues;
 
 /**
- * Represents an immutable json number. It's a marker interface for the types {@link JsInt}, {@link JsLong}, {@link JsDouble}, {@link JsBigInt} and {@link JsBigDec}
+ * Represents an immutable JSON number. It's a marker interface for the types {@link JsInt}, {@link JsLong}, {@link JsDouble}, {@link JsBigInt} and {@link JsBigDec}
  */
 public abstract sealed class JsNumber extends JsPrimitive permits JsBigDec, JsBigInt, JsDouble, JsInt, JsLong {
 

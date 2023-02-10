@@ -6,7 +6,6 @@ import jsonvalues.JsParserException;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -31,7 +30,7 @@ class JsValueReader extends AbstractReader {
     JsValue valueSuchThat(JsReader reader,
                           Function<JsValue, Optional<JsError>> fn
 
-                         ) throws IOException {
+                         ) throws JsParserException {
         JsValue value = value(reader);
         Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
@@ -42,7 +41,7 @@ class JsValueReader extends AbstractReader {
 
     @Override
     @SuppressWarnings("FallThrough")
-    JsValue value(JsReader reader) throws IOException {
+    JsValue value(JsReader reader) throws JsParserException {
         switch (reader.last()) {
             case 't':
                 if (reader.wasTrue()) return JsBool.TRUE;

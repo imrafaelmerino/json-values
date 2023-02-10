@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsObj;
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -17,7 +16,7 @@ final class JsObjReader extends AbstractJsObjReader {
 
     JsObj valueSuchThat(final JsReader reader,
                         final Function<JsObj, Optional<JsError>> fn
-                       ) throws IOException {
+                       ) throws JsParserException {
         final JsObj value = value(reader);
         final Optional<JsError> result = fn.apply(value);
         if (result.isEmpty()) return value;
@@ -27,7 +26,7 @@ final class JsObjReader extends AbstractJsObjReader {
     }
 
     @Override
-    public JsObj value(final JsReader reader) throws IOException {
+    public JsObj value(final JsReader reader) throws JsParserException {
         if (isEmptyObj(reader)) return EMPTY_OBJ;
 
         String key = reader.readKey();
@@ -35,8 +34,8 @@ final class JsObjReader extends AbstractJsObjReader {
                                   valueDeserializer.value(reader)
                                  );
         byte nextToken;
-        while ((nextToken = reader.getNextToken()) == ',') {
-            reader.getNextToken();
+        while ((nextToken = reader.readNextToken()) == ',') {
+            reader.readNextToken();
             key = reader.readKey();
             map = map.set(key,
                           valueDeserializer.value(reader)

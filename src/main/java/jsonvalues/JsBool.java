@@ -6,7 +6,7 @@ import fun.optic.Prism;
 import java.util.Optional;
 
 /**
- * Represents an immutable json boolean. Only two instances are created: {@link #FALSE} and {@link #TRUE}
+ * Represents an immutable JSON boolean. Only two instances are created: {@link #FALSE} and {@link #TRUE}
  */
 public final class JsBool extends JsPrimitive {
     /**
@@ -69,7 +69,7 @@ public final class JsBool extends JsPrimitive {
     }
 
     /**
-     * Returns the hashcode of this json boolean.
+     * Returns the hashcode of this JSON boolean.
      *
      * @return 1 if true, 0 if false
      */
@@ -81,7 +81,7 @@ public final class JsBool extends JsPrimitive {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this json boolean.
+     * Indicates whether some other object is "equal to" this JSON boolean.
      *
      * @param that the reference object with which to compare.
      * @return true if <code>that</code> is a JsBool with the same value as <code>this</code> JsBool
