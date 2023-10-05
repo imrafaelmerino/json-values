@@ -16,7 +16,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static jsonvalues.JsBool.TRUE;
@@ -1471,13 +1473,20 @@ public class TestJsObjSpec {
                                                                );
 
 
-        Assertions.assertTrue(errorPairSet.stream().map(it -> it.errorCode)
-                                          .toList()
-                                          .contains(CONSTANT_CONDITION));
+        List<ERROR_CODE> result = new ArrayList<>();
+        for (SpecError specError : errorPairSet) {
+            ERROR_CODE errorCode = specError.errorCode;
+            result.add(errorCode);
+        }
+        Assertions.assertTrue(result
+                                      .contains(CONSTANT_CONDITION));
 
-        Assertions.assertTrue(errorPairSet.stream().map(it -> it.value)
-                                          .toList()
-                                          .contains(JsInt.of(1)));
+        List<JsValue> list = new ArrayList<>();
+        for (SpecError it : errorPairSet) {
+            JsValue value = it.value;
+            list.add(value);
+        }
+        Assertions.assertTrue(list.contains(JsInt.of(1)));
 
 
         JsObjSpec spec = JsObjSpec.of("a",

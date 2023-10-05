@@ -78,7 +78,7 @@ public class PrettifyTest {
                 indent('\t', 800) + "42\n" +
                 "]";
 
-        Assertions.assertEquals(expected, out.toString(StandardCharsets.UTF_8));
+        Assertions.assertEquals(expected, out.toString("UTF-8"));
     }
 
     private String indent(char b, int size) {
@@ -97,7 +97,7 @@ public class PrettifyTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         MyPrettifyOutputStream prettifyStream = new MyPrettifyOutputStream(out,MyPrettifyOutputStream.IndentType.SPACES,2);
         prettifyStream.write(rawJson.getBytes(StandardCharsets.UTF_8));
-        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
+        Assertions.assertEquals(formattedJson, out.toString("UTF-8"));
     }
 
     private void testWriteByteByByte(String rawJson, String formattedJson) throws IOException {
@@ -106,7 +106,7 @@ public class PrettifyTest {
         for (byte b : rawJson.getBytes(StandardCharsets.UTF_8)) {
             prettifyStream.write(b);
         }
-        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
+        Assertions.assertEquals(formattedJson, out.toString("UTF-8"));
     }
 
     private void testWriteByChunks(String rawJson, String formattedJson) throws IOException {
@@ -115,7 +115,7 @@ public class PrettifyTest {
         for (byte[] chunk : splitArray(rawJson.getBytes(StandardCharsets.UTF_8), 5)) {
             prettifyStream.write(chunk);
         }
-        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
+        Assertions.assertEquals(formattedJson, out.toString("UTF-8"));
     }
 
     private static byte[][] splitArray(final byte[] array, final int chunkSize) {

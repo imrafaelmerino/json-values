@@ -248,7 +248,11 @@ public final class JsIO {
                                                       indentLength
                            )
                           );
-        return baos.toString(StandardCharsets.UTF_8);
+        try {
+            return baos.toString("UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

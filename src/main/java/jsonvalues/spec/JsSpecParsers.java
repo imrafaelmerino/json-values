@@ -138,7 +138,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
                 JsValue value = PARSERS.objParser.nullOrValue(reader);
                 if (value == JsNull.NULL) return value;
                 Optional<JsError> opErr = predicate.apply(value.toJsObj());
-                if (opErr.isEmpty()) return value;
+                if (!opErr.isPresent()) return value;
                 throw newParseException.apply(reader,
                                               opErr.get()
                                              );
@@ -149,7 +149,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsObj value = PARSERS.objParser.value(reader);
             Optional<JsError> result = predicate.apply(value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -260,7 +260,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.valueParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> result = predicate.apply(value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -368,7 +368,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.strParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsStr().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -378,7 +378,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsStr value = PARSERS.strParser.value(reader);
 
             Optional<JsError> result = predicate.apply(value.value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             else throw newParseException.apply(reader,
                                                result.get()
                                               );
@@ -447,7 +447,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.numberParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsNumber());
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -457,7 +457,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsNumber value = PARSERS.numberParser.value(reader);
             Optional<JsError> result = predicate.apply(value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -512,7 +512,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.integralParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsBigInt().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -521,7 +521,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsBigInt integral = PARSERS.integralParser.value(reader);
             Optional<JsError> result = predicate.apply(integral.value);
-            if (result.isEmpty()) return integral;
+            if (!result.isPresent()) return integral;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -626,7 +626,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.decimalParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsBigDec().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -638,7 +638,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             {
                 JsBigDec decimal = PARSERS.decimalParser.value(reader);
                 Optional<JsError> result = predicate.apply(decimal.value);
-                if (result.isEmpty()) return decimal;
+                if (!result.isPresent()) return decimal;
                 throw newParseException.apply(reader,
                                               result.get()
                                              );
@@ -722,7 +722,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             if (value == JsNull.NULL) return value;
             else {
                 Optional<JsError> optErr = predicate.apply(value.toJsLong().value);
-                if (optErr.isEmpty()) return value;
+                if (!optErr.isPresent()) return value;
                 throw newParseException.apply(reader,
                                               optErr.get()
                                              );
@@ -733,7 +733,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsLong value = PARSERS.longParser.value(reader);
             Optional<JsError> result = predicate.apply(value.value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -797,7 +797,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.binaryParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsBinary().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -807,7 +807,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsBinary value = PARSERS.binaryParser.value(reader);
             Optional<JsError> result = predicate.apply(value.value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -830,7 +830,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.intParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsInt().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -840,7 +840,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsInt value = PARSERS.intParser.value(reader);
             Optional<JsError> result = predicate.apply(value.value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );
@@ -863,7 +863,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
             JsValue value = PARSERS.instantParser.nullOrValue(reader);
             if (value == JsNull.NULL) return value;
             Optional<JsError> opErr = predicate.apply(value.toJsInstant().value);
-            if (opErr.isEmpty()) return value;
+            if (!opErr.isPresent()) return value;
             throw newParseException.apply(reader,
                                           opErr.get()
                                          );
@@ -873,7 +873,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         {
             JsInstant value = PARSERS.instantParser.value(reader);
             Optional<JsError> result = predicate.apply(value.value);
-            if (result.isEmpty()) return value;
+            if (!result.isPresent()) return value;
             throw newParseException.apply(reader,
                                           result.get()
                                          );

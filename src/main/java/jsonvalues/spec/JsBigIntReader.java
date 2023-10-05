@@ -31,7 +31,7 @@ final class JsBigIntReader extends AbstractReader {
             BigDecimal bigDecimal = NumberConverter.deserializeDecimal(reader);
             final BigInteger value = bigDecimal.toBigIntegerExact();
             final Optional<JsError> result = fn.apply(value);
-            if (result.isEmpty()) return JsBigInt.of(value);
+            if (!result.isPresent()) return JsBigInt.of(value);
 
             throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                              reader.getPositionInStream()

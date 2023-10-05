@@ -4,12 +4,13 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 
 public class TestJsSerializer {
 
     @Test
-    public void test() {
+    public void test() throws UnsupportedEncodingException {
 
         JsObj obj = JsObj.of("a",
                              JsInt.of(1),
@@ -34,7 +35,7 @@ public class TestJsSerializer {
         final ByteArrayOutputStream outputstream = new ByteArrayOutputStream();
         obj.serialize(outputstream);
         Assertions.assertEquals(obj,
-                                JsObj.parse(outputstream.toString(StandardCharsets.UTF_8)));
+                                JsObj.parse(outputstream.toString("UTF-8")));
 
     }
 }
