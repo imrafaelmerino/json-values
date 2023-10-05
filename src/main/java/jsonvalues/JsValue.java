@@ -12,13 +12,13 @@ import java.util.function.Predicate;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a JSON element of any type. Every JSON type implements this interface.
- * This interface implements two kinds of methods:
+ * Represents a JSON element of any type. Every JSON type implements this interface. This interface implements two kinds
+ * of methods:
  * <p>
- * 1. Classificatory methods, which start with the prefix <b>isXXX</b>.
- * 2. Accessory methods to convert the JsValue to the real implementation, which start with the prefix toJsXXX.
+ * 1. Classificatory methods, which start with the prefix <b>isXXX</b>. 2. Accessory methods to convert the JsValue to
+ * the real implementation, which start with the prefix toJsXXX.
  */
-public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
+public interface JsValue {
 
     /**
      * Returns this JsValue as a JsBool.
@@ -43,9 +43,11 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
     JsPrimitive toJsPrimitive();
 
     /**
-     * Returns true if this JsValue is a JsBinary or a JsString with a value that is an array of bytes encoded in base64.
+     * Returns true if this JsValue is a JsBinary or a JsString with a value that is an array of bytes encoded in
+     * base64.
      *
-     * @return True if this JsValue is a JsBinary or a JsString with a value that is an array of bytes encoded in base64.
+     * @return True if this JsValue is a JsBinary or a JsString with a value that is an array of bytes encoded in
+     * base64.
      */
     default boolean isBinary() {
         return false;
@@ -144,8 +146,8 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
      * Returns this JsValue as a JsInstant.
      *
      * @return This JsValue as a JsInstant.
-     * @throws UserError if this JsValue is not a JsInstant or cannot be converted to JsInstant,
-     *                   e.g., if it's not a JsInstant or a JsString with a date formatted in ISO-8601.
+     * @throws UserError if this JsValue is not a JsInstant or cannot be converted to JsInstant, e.g., if it's not a
+     *                   JsInstant or a JsString with a date formatted in ISO-8601.
      */
     default JsInstant toJsInstant() {
         if (this instanceof JsInstant) return ((JsInstant) this);
@@ -160,8 +162,8 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
      * Returns this JsValue as a JsBinary.
      *
      * @return This JsValue as a JsBinary.
-     * @throws UserError if this JsValue is not a JsBinary or cannot be converted to JsBinary,
-     *                   e.g., if it's not a JsBinary or a JsString with a value encoded in base64.
+     * @throws UserError if this JsValue is not a JsBinary or cannot be converted to JsBinary, e.g., if it's not a
+     *                   JsBinary or a JsString with a value encoded in base64.
      */
     default JsBinary toJsBinary() {
         if (this instanceof JsBinary) return ((JsBinary) this);

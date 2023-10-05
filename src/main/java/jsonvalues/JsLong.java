@@ -89,7 +89,8 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null) return false;
-        if (!(that instanceof JsNumber number)) return false;
+        if (!(that instanceof JsNumber)) return false;
+        JsNumber number = (JsNumber) that;
         if (number.isLong()) return value == number.toJsLong().value;
         if (number.isInt()) return intEquals(number.toJsInt());
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());

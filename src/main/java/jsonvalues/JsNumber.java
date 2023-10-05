@@ -1,10 +1,10 @@
 package jsonvalues;
 
 /**
- * Represents a sealed abstract class for JSON number values. It serves as a common base class for various
+ * Represents an  abstract class for JSON number values. It serves as a common base class for various
  * numeric JSON types, such as integers and floating-point numbers. Instances of this class are immutable.
  * <p>
- * This class is part of a sealed hierarchy and permits specific subclasses for different numeric JSON types.
+ * This class is part of a hierarchy and permits specific subclasses for different numeric JSON types.
  *
  * @see JsBigDec   Represents a JSON number of type big decimal.
  * @see JsBigInt   Represents a JSON number of type big integer.
@@ -12,8 +12,7 @@ package jsonvalues;
  * @see JsInt      Represents a JSON number of type integer.
  * @see JsLong     Represents a JSON number of type long integer.
  */
-public abstract sealed class JsNumber extends JsPrimitive
-        permits JsBigDec, JsBigInt, JsDouble, JsInt, JsLong {
+public abstract  class JsNumber extends JsPrimitive {
 
     @Override
     public JsPrimitive toJsPrimitive() {

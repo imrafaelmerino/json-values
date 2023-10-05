@@ -11,48 +11,22 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 /**
  * DslJson writes JSON into JsonWriter which has two primary modes of operation:
  * <p>
- * * targeting specific output stream
- * * buffering the entire response in memory
+ * * targeting specific output stream * buffering the entire response in memory
  * <p>
- * In both cases JsonWriter writes into an byte[] buffer.
- * If stream is used as target, it will copy buffer into the stream whenever there is no more room in buffer for new data.
- * If stream is not used as target, it will grow the buffer to hold the encoded result.
- * To use stream as target reset(OutputStream) must be called before processing.
- * This class provides low level methods for JSON serialization.
+ * In both cases JsonWriter writes into an byte[] buffer. If stream is used as target, it will copy buffer into the
+ * stream whenever there is no more room in buffer for new data. If stream is not used as target, it will grow the
+ * buffer to hold the encoded result. To use stream as target reset(OutputStream) must be called before processing. This
+ * class provides low level methods for JSON serialization.
  * <p>
- * After the processing is done,
- * in case then stream was used as target, flush() must be called to copy the remaining of the buffer into stream.
- * When entire response was buffered in memory, buffer can be copied to stream or resulting byte[] can be used directly.
+ * After the processing is done, in case then stream was used as target, flush() must be called to copy the remaining of
+ * the buffer into stream. When entire response was buffered in memory, buffer can be copied to stream or resulting
+ * byte[] can be used directly.
  * <p>
  * For maximum performance JsonWriter instances should be reused (to avoid allocation of new byte[] buffer instances).
- * They should not be shared across threads (concurrently) so for Thread reuse it's best to use patterns such as ThreadLocal.
+ * They should not be shared across threads (concurrently) so for Thread reuse it's best to use patterns such as
+ * ThreadLocal.
  */
 class JsWriter {
-
-
-    JsWriter(byte[] buffer) {
-        this.buffer = buffer;
-    }
-
-    byte[] ensureCapacity(int free) {
-        if (position + free >= buffer.length) {
-            enlargeOrFlush(position, free);
-        }
-        return buffer;
-    }
-
-    void advance(int size) {
-        position += size;
-    }
-
-    private int position;
-    private OutputStream target;
-    private byte[] buffer;
-
-
-    JsWriter(int size) {
-        this.buffer = new byte[size];
-    }
 
 
     /**
@@ -87,6 +61,26 @@ class JsWriter {
      * Helper for writing JSON escape: \\
      */
     static byte ESCAPE = '\\';
+    private int position;
+    private OutputStream target;
+    private byte[] buffer;
+    JsWriter(byte[] buffer) {
+        this.buffer = buffer;
+    }
+    JsWriter(int size) {
+        this.buffer = new byte[size];
+    }
+
+    byte[] ensureCapacity(int free) {
+        if (position + free >= buffer.length) {
+            enlargeOrFlush(position, free);
+        }
+        return buffer;
+    }
+
+    void advance(int size) {
+        position += size;
+    }
 
     private void enlargeOrFlush(int size, int padding) {
         if (target != null) {
@@ -133,8 +127,7 @@ class JsWriter {
     }
 
     /**
-     * Write a quoted string into the JSON.
-     * String will be appropriately escaped according to JSON escaping rules.
+     * Write a quoted string into the JSON. String will be appropriately escaped according to JSON escaping rules.
      *
      * @param value string to write
      */
@@ -191,115 +184,87 @@ class JsWriter {
                     _result[cur + 1] = 'u';
                     _result[cur + 2] = '0';
                     _result[cur + 3] = '0';
-                    switch (c) {
-                        case 0 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '0';
-                        }
-                        case 1 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '1';
-                        }
-                        case 2 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '2';
-                        }
-                        case 3 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '3';
-                        }
-                        case 4 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '4';
-                        }
-                        case 5 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '5';
-                        }
-                        case 6 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '6';
-                        }
-                        case 7 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = '7';
-                        }
-                        case 11 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = 'B';
-                        }
-                        case 14 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = 'E';
-                        }
-                        case 15 -> {
-                            _result[cur + 4] = '0';
-                            _result[cur + 5] = 'F';
-                        }
-                        case 16 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '0';
-                        }
-                        case 17 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '1';
-                        }
-                        case 18 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '2';
-                        }
-                        case 19 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '3';
-                        }
-                        case 20 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '4';
-                        }
-                        case 21 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '5';
-                        }
-                        case 22 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '6';
-                        }
-                        case 23 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '7';
-                        }
-                        case 24 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '8';
-                        }
-                        case 25 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = '9';
-                        }
-                        case 26 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'A';
-                        }
-                        case 27 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'B';
-                        }
-                        case 28 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'C';
-                        }
-                        case 29 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'D';
-                        }
-                        case 30 -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'E';
-                        }
-                        default -> {
-                            _result[cur + 4] = '1';
-                            _result[cur + 5] = 'F';
-                        }
+                    if (c == 0) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '0';
+                    } else if (c == 1) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '1';
+                    } else if (c == 2) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '2';
+                    } else if (c == 3) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '3';
+                    } else if (c == 4) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '4';
+                    } else if (c == 5) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '5';
+                    } else if (c == 6) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '6';
+                    } else if (c == 7) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = '7';
+                    } else if (c == 11) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = 'B';
+                    } else if (c == 14) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = 'E';
+                    } else if (c == 15) {
+                        _result[cur + 4] = '0';
+                        _result[cur + 5] = 'F';
+                    } else if (c == 16) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '0';
+                    } else if (c == 17) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '1';
+                    } else if (c == 18) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '2';
+                    } else if (c == 19) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '3';
+                    } else if (c == 20) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '4';
+                    } else if (c == 21) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '5';
+                    } else if (c == 22) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '6';
+                    } else if (c == 23) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '7';
+                    } else if (c == 24) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '8';
+                    } else if (c == 25) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = '9';
+                    } else if (c == 26) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'A';
+                    } else if (c == 27) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'B';
+                    } else if (c == 28) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'C';
+                    } else if (c == 29) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'D';
+                    } else if (c == 30) {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'E';
+                    } else {
+                        _result[cur + 4] = '1';
+                        _result[cur + 5] = 'F';
                     }
                     cur += 6;
                 }
@@ -334,8 +299,7 @@ class JsWriter {
     }
 
     /**
-     * Write string consisting of only ascii characters.
-     * String will not be escaped according to JSON escaping rules.
+     * Write string consisting of only ascii characters. String will not be escaped according to JSON escaping rules.
      *
      * @param value ascii string
      */
@@ -351,8 +315,7 @@ class JsWriter {
 
 
     /**
-     * Encode bytes as Base 64.
-     * Provided value can't be null.
+     * Encode bytes as Base 64. Provided value can't be null.
      *
      * @param value bytes to encode
      */
@@ -373,8 +336,7 @@ class JsWriter {
 
 
     /**
-     * Current buffer.
-     * If buffer grows, a new instance will be created and old one will not be used anymore.
+     * Current buffer. If buffer grows, a new instance will be created and old one will not be used anymore.
      *
      * @return current buffer
      */
@@ -383,8 +345,8 @@ class JsWriter {
     }
 
     /**
-     * Current position in the buffer. When stream is not used, this is also equivalent
-     * to the size of the resulting JSON in bytes
+     * Current position in the buffer. When stream is not used, this is also equivalent to the size of the resulting
+     * JSON in bytes
      *
      * @return position in the populated buffer
      */
@@ -400,8 +362,8 @@ class JsWriter {
     }
 
     /**
-     * Resets the writer - specifies the target stream and sets the position in buffer to 0.
-     * If stream is set to null, JsonWriter will work in growing byte[] buffer mode (entire response will be buffered in memory).
+     * Resets the writer - specifies the target stream and sets the position in buffer to 0. If stream is set to null,
+     * JsonWriter will work in growing byte[] buffer mode (entire response will be buffered in memory).
      *
      * @param stream sets/clears the target stream
      */
@@ -411,10 +373,9 @@ class JsWriter {
     }
 
     /**
-     * If stream was used, copies the buffer to stream and resets the position in buffer to 0.
-     * It will not reset the stream as target,
-     * meaning new usages of the JsonWriter will try to use the already provided stream.
-     * It will not do anything if stream was not used
+     * If stream was used, copies the buffer to stream and resets the position in buffer to 0. It will not reset the
+     * stream as target, meaning new usages of the JsonWriter will try to use the already provided stream. It will not
+     * do anything if stream was not used
      * <p>
      * To reset the stream to null use reset() or reset(OutputStream) methods.
      */
@@ -430,10 +391,9 @@ class JsWriter {
     }
 
 
-
     /**
-     * Custom objects can be serialized based on the implementation specified through this interface.
-     * Annotation processor creates custom deserializers at compile time and registers them into DslJson.
+     * Custom objects can be serialized based on the implementation specified through this interface. Annotation
+     * processor creates custom deserializers at compile time and registers them into DslJson.
      *
      * @param <T> type
      */

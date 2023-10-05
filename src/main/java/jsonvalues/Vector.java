@@ -214,7 +214,7 @@ final class Vector<T> implements Iterable<T> {
     private int hash(Vector<T> iterable, IntBinaryOperator accumulator) {
 
         int hashCode = 1;
-        for (var o : iterable) {
+        for (T o : iterable) {
             hashCode = accumulator.applyAsInt(hashCode, Objects.hashCode(o));
         }
         return hashCode;

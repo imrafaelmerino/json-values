@@ -20,8 +20,8 @@ final class JsObjWriter implements JsWriter.WriteObject<JsObj> {
         int size = requireNonNull(value).size();
         sw.writeByte(JsWriter.OBJECT_START);
         if (size > 0) {
-            var iterator = value.iterator();
-            var kv = iterator.next();
+            java.util.Iterator<jsonvalues.JsObjPair> iterator = value.iterator();
+            jsonvalues.JsObjPair kv = iterator.next();
             sw.writeString(kv.key());
             sw.writeByte(JsWriter.SEMI);
             final JsValue fist = kv.value();

@@ -22,36 +22,57 @@ final class JsValueWritter {
                    final JsValue value
                   ) {
 
-        switch (value) {
-            case JsBool bool -> writer.writeAscii(Boolean.toString(bool.value));
-            case JsNull ignored -> writer.writeNull();
-            case JsStr str -> writer.writeString(str.value);
-            case JsObj obj -> objectSerializer.write(writer,
-                                                     obj
-                                                    );
-            case JsArray arr -> arraySerializer.write(writer,
-                                                      arr
-                                                     );
-            case JsDouble d -> NumberConverter.serialize(d.toJsBigDec().value,
-                                                         writer
-                                                        );
-            case JsBigDec bd -> NumberConverter.serialize(bd.value,
-                                                          writer
-                                                         );
-            case JsBigInt bi -> writer.writeAscii(bi.value.toString());
-            case JsLong l -> NumberConverter.serialize(l.value,
-                                                       writer
-                                                      );
-            case JsInt i -> NumberConverter.serialize(i.value,
-                                                      writer
-                                                     );
-            case JsBinary b -> {
-                byte[] xs = b.value;
-                if (xs.length == 0) writer.writeString("");
-                else writer.writeBinary(xs);
-            }
-            case JsInstant instant -> writer.writeString(instant.value.toString());
-            case JsNothing ignored -> writer.writeString("");
+        if (Objects.requireNonNull(value) instanceof JsBool) {
+            JsBool bool = (JsBool) Objects.requireNonNull(value);
+            writer.writeAscii(Boolean.toString(bool.value));
+        } else if (value instanceof JsNull) {
+            writer.writeNull();
+        } else if (value instanceof JsStr) {
+            JsStr str = (JsStr) value;
+            writer.writeString(str.value);
+        } else if (value instanceof JsObj) {
+            JsObj obj = (JsObj) value;
+            objectSerializer.write(writer,
+                                   obj
+                                  );
+        } else if (value instanceof JsArray) {
+            JsArray arr = (JsArray) value;
+            arraySerializer.write(writer,
+                                  arr
+                                 );
+        } else if (value instanceof JsDouble) {
+            JsDouble d = (JsDouble) value;
+            NumberConverter.serialize(d.toJsBigDec().value,
+                                      writer
+                                     );
+        } else if (value instanceof JsBigDec) {
+            JsBigDec bd = (JsBigDec) value;
+            NumberConverter.serialize(bd.value,
+                                      writer
+                                     );
+        } else if (value instanceof JsBigInt) {
+            JsBigInt bi = (JsBigInt) value;
+            writer.writeAscii(bi.value.toString());
+        } else if (value instanceof JsLong) {
+            JsLong l = (JsLong) value;
+            NumberConverter.serialize(l.value,
+                                      writer
+                                     );
+        } else if (value instanceof JsInt) {
+            JsInt i = (JsInt) value;
+            NumberConverter.serialize(i.value,
+                                      writer
+                                     );
+        } else if (value instanceof JsBinary) {
+            JsBinary b = (JsBinary) value;
+            byte[] xs = b.value;
+            if (xs.length == 0) writer.writeString("");
+            else writer.writeBinary(xs);
+        } else if (value instanceof JsInstant) {
+            JsInstant instant = (JsInstant) value;
+            writer.writeString(instant.value.toString());
+        } else if (value instanceof JsNothing) {
+            writer.writeString("");
         }
 
     }

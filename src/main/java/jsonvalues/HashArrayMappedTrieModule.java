@@ -7,7 +7,7 @@ import static java.lang.Integer.bitCount;
 import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
 import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
- interface HashArrayMappedTrieModule {
+interface HashArrayMappedTrieModule {
 
     enum Action {
         PUT, REMOVE
@@ -30,6 +30,32 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
             level = downstairs(nodes, indexes, root, 0);
         }
 
+        private static int downstairs(Object[] nodes, int[] indexes, AbstractNode root, int level) {
+            while (true) {
+                nodes[level] = root;
+                indexes[level] = 0;
+                root = getChild(root, 0);
+                if (root == null) {
+                    break;
+                } else {
+                    level++;
+                }
+            }
+            return level;
+        }
+
+        private static AbstractNode getChild(AbstractNode node, int index) {
+            if (node instanceof IndexedNode) {
+                IndexedNode indexedNode = (IndexedNode) node;
+                final Object[] subNodes = indexedNode.subNodes;
+                return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
+            } else if (node instanceof ArrayNode) {
+                ArrayNode arrayNode = (ArrayNode) node;
+                return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
+            }
+            return null;
+        }
+
         @Override
         public boolean hasNext() {
             return ptr < total;
@@ -37,7 +63,7 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
         @Override
         public LeafNode next() {
-            if(!hasNext()){
+            if (!hasNext()) {
                 throw new NoSuchElementException();
             }
             Object node = nodes[level];
@@ -45,7 +71,8 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
                 node = findNextLeaf();
             }
             ptr++;
-            if (node instanceof final LeafList leaf) {
+            if (node instanceof LeafList) {
+                final LeafList leaf = (LeafList) node;
                 nodes[level] = leaf.tail;
                 return leaf;
             } else {
@@ -66,30 +93,6 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
             }
             level = downstairs(nodes, indexes, node, level + 1);
             return nodes[level];
-        }
-
-        private static int downstairs(Object[] nodes, int[] indexes, AbstractNode root, int level) {
-            while (true) {
-                nodes[level] = root;
-                indexes[level] = 0;
-                root = getChild(root, 0);
-                if (root == null) {
-                    break;
-                } else {
-                    level++;
-                }
-            }
-            return level;
-        }
-
-        private static AbstractNode getChild(AbstractNode node, int index) {
-            if (node instanceof IndexedNode indexedNode) {
-                final Object[] subNodes = indexedNode.subNodes;
-                return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
-            } else if (node instanceof ArrayNode arrayNode) {
-                return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
-            }
-            return null;
         }
     }
 
@@ -232,7 +235,7 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<>() {
+            return new Iterator<LeafNode>() {
                 @Override
                 public boolean hasNext() {
                     return false;
@@ -251,12 +254,6 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
      * Representation of a HAMT leaf.
      */
     abstract class LeafNode extends AbstractNode {
-
-        public abstract String key();
-
-        public abstract JsValue value();
-
-        abstract int hash();
 
         static AbstractNode mergeLeaves(int shift, LeafNode leaf1, LeafSingleton leaf2) {
             final int h1 = leaf1.hash();
@@ -277,6 +274,12 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
             }
         }
 
+        public abstract String key();
+
+        public abstract JsValue value();
+
+        abstract int hash();
+
         @Override
         public boolean isEmpty() {
             return false;
@@ -286,7 +289,7 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
     /**
      * Representation of a HAMT leaf node with single element.
      */
-    final class LeafSingleton extends LeafNode  {
+    final class LeafSingleton extends LeafNode {
 
 
         private final int hash;
@@ -329,7 +332,7 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<>() {
+            return new Iterator<LeafNode>() {
 
                 boolean hasNext = true;
 
@@ -381,12 +384,32 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
             this.tail = tail;
         }
 
+        private static AbstractNode mergeNodes(LeafNode leaf1, LeafNode leaf2) {
+            if (leaf2 == null) {
+                return leaf1;
+            }
+            if (leaf1 instanceof LeafSingleton) {
+                return new LeafList(leaf1.hash(), leaf1.key(), leaf1.value(), leaf2);
+            }
+            if (leaf2 instanceof LeafSingleton) {
+                return new LeafList(leaf2.hash(), leaf2.key(), leaf2.value(), leaf1);
+            }
+            LeafNode result = leaf1;
+            LeafNode tail = leaf2;
+            while (tail instanceof LeafList) {
+                LeafList list = (LeafList) tail;
+                result = new LeafList(list.hash, list.key, list.value, result);
+                tail = list.tail;
+            }
+            return new LeafList(tail.hash(), tail.key(), tail.value(), result);
+        }
+
         @Override
         Optional<JsValue> lookup(int shift, int keyHash, String key) {
             if (hash != keyHash) {
                 return Optional.empty();
             }
-            var iter = nodes();
+            Iterator<LeafNode> iter = nodes();
             while (iter.hasNext()) {
                 LeafNode next = iter.next();
                 if (Objects.equals(next.key(), key)) return Optional.of(next.value());
@@ -425,25 +448,6 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
             }
         }
 
-        private static AbstractNode mergeNodes(LeafNode leaf1, LeafNode leaf2) {
-            if (leaf2 == null) {
-                return leaf1;
-            }
-            if (leaf1 instanceof LeafSingleton) {
-                return new LeafList(leaf1.hash(), leaf1.key(), leaf1.value(), leaf2);
-            }
-            if (leaf2 instanceof LeafSingleton) {
-                return new LeafList(leaf2.hash(), leaf2.key(), leaf2.value(), leaf1);
-            }
-            LeafNode result = leaf1;
-            LeafNode tail = leaf2;
-            while (tail instanceof LeafList list) {
-                result = new LeafList(list.hash, list.key, list.value, result);
-                tail = list.tail;
-            }
-            return new LeafList(tail.hash(), tail.key(), tail.value(), result);
-        }
-
         private AbstractNode removeElement(String k) {
             if (Objects.equals(k, this.key)) {
                 return tail;
@@ -469,7 +473,7 @@ import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<>() {
+            return new Iterator<LeafNode>() {
                 LeafNode node = LeafList.this;
 
                 @Override

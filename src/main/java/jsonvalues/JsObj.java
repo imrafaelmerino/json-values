@@ -53,7 +53,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * JsObj commonData = person.intersection(otherPerson, JsObj.TYPE.SET);
  * }</pre>
  */
-public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
+public class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
      * Using the {@code lens} field, you can apply various optical operations to {@code JsObj} instances
      * in a functional and declarative manner, making it easier to modify or query the content of a
@@ -3486,7 +3486,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     public int hashCode() {
         int result = hashcode;
         if (result == 0) {
-            for (var next : map) {
+            for (HashArrayMappedTrieModule.LeafNode next : map) {
                 result += next.key().hashCode() ^ next.value().hashCode();
             }
             hashcode = result;
@@ -3499,15 +3499,16 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         if (o == this)
             return true;
-        if (!(o instanceof JsObj m))
+        if (!(o instanceof JsObj))
             return false;
+        JsObj m = (JsObj) o;
         if (m.size() != size())
             return false;
 
         try {
             for (JsObjPair e : this) {
-                var key = e.key();
-                var value = e.value();
+                String key = e.key();
+                JsValue value = e.value();
                 if (value == null) {
                     if (!(m.get(key) == null && m.containsKey(key)))
                         return false;
@@ -3576,7 +3577,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         Iterator<HashArrayMappedTrieModule.LeafNode> iterator = map.iterator();
 
-        return new Iterator<>() {
+        return new Iterator<JsObjPair>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -3584,7 +3585,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
             @Override
             public JsObjPair next() {
-                var next = iterator.next();
+                HashArrayMappedTrieModule.LeafNode next = iterator.next();
                 return new JsObjPair(next.key(), next.value());
             }
         };
@@ -3617,7 +3618,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
         JsObj result = JsObj.empty();
-        for (var aVal : a) {
+        for (JsObjPair aVal : a) {
 
             if (b.containsKey(aVal.key())) {
                 JsValue bVal = b.get(aVal.key());
@@ -3649,7 +3650,7 @@ public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         if (b.isEmpty()) return a;
         JsObj result = a;
-        for (var bVal : b) {
+        for (JsObjPair bVal : b) {
             if (!a.containsKey(bVal.key()))
                 result = result.set(bVal.key(),
                                     bVal.value()

@@ -1416,7 +1416,7 @@ For Java 8 or higher:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>11.9.0</version>
+    <version>11.9.1</version>
 </dependency>
 ```
 

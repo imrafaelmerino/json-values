@@ -95,7 +95,8 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber number)) return false;
+        if (!(that instanceof JsNumber)) return false;
+        JsNumber number = (JsNumber) that;
         if (number.isBigDec()) return value.compareTo(number.toJsBigDec().value) == 0;
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());
         if (number.isInt()) return intEquals(number.toJsInt());

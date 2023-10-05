@@ -88,7 +88,8 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber number)) return false;
+        if (!(that instanceof JsNumber)) return false;
+        JsNumber number = (JsNumber) that;
         if (number.isBigInt()) return value.equals(number.toJsBigInt().value);
         if (number.isInt()) return intEquals(number.toJsInt());
         if (number.isLong()) return longEquals(number.toJsLong());

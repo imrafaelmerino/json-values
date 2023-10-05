@@ -64,7 +64,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     public int compareTo(final JsDouble o) {
         return Double.compare(value,
                               requireNonNull(o).value
-        );
+                             );
     }
 
     /**
@@ -89,8 +89,8 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this json double. Numbers of different types
-     * are equals if they have the same value.
+     * Indicates whether some other object is "equal to" this json double. Numbers of different types are equals if they
+     * have the same value.
      *
      * @param that the reference object with which to compare.
      * @return true if that is a JsNumber with the same value as this JsDouble
@@ -98,7 +98,8 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber number)) return false;
+        if (!(that instanceof JsNumber)) return false;
+        JsNumber number = (JsNumber) that;
         if (number.isDouble()) return value == number.toJsDouble().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isInt()) return intEquals(number.toJsInt());
@@ -160,8 +161,8 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     }
 
     /**
-     * Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty
-     * optional is returned if this {@code double} has a nonzero fractional part.
+     * Converts this {@code double} to a {@code BigInteger}, checking for lost information.  An empty optional is
+     * returned if this {@code double} has a nonzero fractional part.
      *
      * @return this double as a bigint wrapped in an Optional
      */
