@@ -1,9 +1,9 @@
 package jsonvalues.spec;
 
 
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -78,13 +78,13 @@ public class PrettifyTest {
                 indent('\t', 800) + "42\n" +
                 "]";
 
-        Assertions.assertEquals(expected, out.toString());
+        Assertions.assertEquals(expected, out.toString(StandardCharsets.UTF_8));
     }
 
     private String indent(char b, int size) {
         byte[] bytes = new byte[size];
         Arrays.fill(bytes, (byte) b);
-        return new String(bytes);
+        return new String(bytes,StandardCharsets.UTF_8);
     }
 
     private void testPrettify(String rawJson, String formattedJson) throws IOException {
@@ -97,7 +97,7 @@ public class PrettifyTest {
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         MyPrettifyOutputStream prettifyStream = new MyPrettifyOutputStream(out,MyPrettifyOutputStream.IndentType.SPACES,2);
         prettifyStream.write(rawJson.getBytes(StandardCharsets.UTF_8));
-        Assertions.assertEquals(formattedJson, out.toString());
+        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
     }
 
     private void testWriteByteByByte(String rawJson, String formattedJson) throws IOException {
@@ -106,7 +106,7 @@ public class PrettifyTest {
         for (byte b : rawJson.getBytes(StandardCharsets.UTF_8)) {
             prettifyStream.write(b);
         }
-        Assertions.assertEquals(formattedJson, out.toString());
+        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
     }
 
     private void testWriteByChunks(String rawJson, String formattedJson) throws IOException {
@@ -115,7 +115,7 @@ public class PrettifyTest {
         for (byte[] chunk : splitArray(rawJson.getBytes(StandardCharsets.UTF_8), 5)) {
             prettifyStream.write(chunk);
         }
-        Assertions.assertEquals(formattedJson, out.toString());
+        Assertions.assertEquals(formattedJson, out.toString(StandardCharsets.UTF_8));
     }
 
     private static byte[][] splitArray(final byte[] array, final int chunkSize) {

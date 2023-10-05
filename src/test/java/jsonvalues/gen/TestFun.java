@@ -15,37 +15,26 @@ public class TestFun {
         if (errorMargin < 0.0) throw new IllegalArgumentException("errorMargin < 0");
         if (errorMargin > 1.0) throw new IllegalArgumentException("errorMargin > 1");
 
-        System.out.println("error of margin specified: " + errorMargin);
-        System.out.println(values);
         List<Long> valueCounts = values.stream().map(key -> {
             if (!counts.containsKey(key))
                 throw new RuntimeException(key + " was not generated");
             return counts.get(key);
         }).collect(Collectors.toList());
         long expected = avg(valueCounts);
-        System.out.println("expected number of times: " + expected);
 
         final Predicate<Long> isOk = isInMargin(expected,
                                                 errorMargin);
         values.forEach(val -> {
-            System.out.println("generated value " + val);
-            System.out.println("real number of times generated: " + counts.get(val));
             Assertions.assertTrue(isOk.test(counts.get(val)));
         });
     }
 
-    /**
-     * @param expected the expected number of generations
-     * @param margin   the tolerable margin of error in % [0,1]
-     * @return a predicate that is true if the number of times a value was generated is ok
-     */
+
     static Predicate<Long> isInMargin(long expected,
                                       double margin) {
         return times -> {
             long abs = Math.abs(times - expected);
             double v = margin * expected;
-            System.out.println("difference "+abs);
-            System.out.println("margin "+v);
             return abs < v;
         };
     }

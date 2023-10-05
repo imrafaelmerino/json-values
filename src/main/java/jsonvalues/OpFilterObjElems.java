@@ -12,7 +12,7 @@ final class OpFilterObjElems {
                         JsPath startingPath,
                         BiPredicate<? super JsPath, ? super JsPrimitive> predicate
     ) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
             JsPath headPath = startingPath.key(next.key());
 
             JsValue headElem = next.value();
@@ -49,7 +49,7 @@ final class OpFilterObjElems {
 
     static JsObj filter(JsObj json,
                         Predicate<? super JsPrimitive> predicate) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
 
             JsValue headElem = next.value();
 

@@ -7,7 +7,6 @@ package jsonvalues;
  */
 public final class UserError extends RuntimeException {
 
-    private static final long serialVersionUID = 1L;
     private static final String GENERAL_MESSAGE = "%s. Suggestion: %s.";
 
     private UserError(final String message) {

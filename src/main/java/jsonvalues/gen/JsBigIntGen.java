@@ -33,29 +33,33 @@ import static java.util.Objects.requireNonNull;
 public final class JsBigIntGen implements Gen<JsBigInt> {
     private final Gen<BigInteger> gen;
 
-    /**
-     * Creates a JsBigInt generator from a specified big integer generator
-     *
-     * @param gen the big integer generator
-     */
+
     private JsBigIntGen(final Gen<BigInteger> gen) {
         this.gen = requireNonNull(gen);
     }
 
+    /**
+     * Returns an arbitrary JSON big integer generator with a specified number of bits.
+     *
+     * @param bits The number of bits for the generated big integer.
+     * @return An arbitrary JSON big integer generator.
+     */
     public static Gen<JsBigInt> arbitrary(int bits) {
         return new JsBigIntGen(BigIntGen.arbitrary(bits));
     }
 
 
+    /**
+     * Returns a biased JSON big integer generator with a specified number of bits.
+     *
+     * @param bits The number of bits for the generated big integer.
+     * @return A biased JSON big integer generator.
+     */
     public static Gen<JsBigInt> biased(int bits) {
         return new JsBigIntGen(BigIntGen.biased(bits));
     }
 
-    /**
-     * Returns a supplier from the specified seed that generates a new JsBigInt each time it's called
-     * @param seed the generator seed
-     * @return a JsBigInt supplier
-     */
+
     @Override
     public Supplier<JsBigInt> apply(final Random seed) {
         return gen.map(JsBigInt::of)

@@ -14,7 +14,7 @@ final class OpMapObjElems {
                      BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn,
                      JsPath startingPath
     ) {
-        for (JsObjPair tuple : json) {
+        for (var tuple : json) {
             if (tuple.value().isObj()) {
                 json = json.set(tuple.key(),
                                 map(tuple.value().toJsObj(),
@@ -48,7 +48,7 @@ final class OpMapObjElems {
     static JsObj map(JsObj json,
                      Function<? super JsPrimitive, ? extends JsValue> fn) {
         if (json.isEmpty()) return json;
-        for (JsObjPair tuple : json) {
+        for (var tuple : json) {
             if (tuple.value().isObj()) {
                 json = json.set(tuple.key(),
                                 map(tuple.value().toJsObj(),

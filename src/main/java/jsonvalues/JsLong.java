@@ -9,10 +9,9 @@ import java.util.function.LongUnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json number of type long.
+ * Represents an immutable JSON number of type long.
  */
 public final class JsLong extends JsNumber implements Comparable<JsLong> {
-    public static final int TYPE_ID = 7;
 
     /**
      * prism between the sum type JsValue and JsLong
@@ -50,10 +49,6 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
         return new JsLong(n);
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isLong() {
@@ -73,7 +68,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     }
 
     /**
-     * Returns the hashcode of this json long.
+     * Returns the hashcode of this JSON long.
      *
      * @return hashcode of this JsLong
      */
@@ -84,7 +79,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this json long. Numbers of different types are
+     * Indicates whether some other object is "equal to" this JSON long. Numbers of different types are
      * equals if they have the same value.
      *
      * @param that the reference object with which to compare.
@@ -94,8 +89,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     public boolean equals(final Object that) {
         if (this == that) return true;
         if (that == null) return false;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isLong()) return value == number.toJsLong().value;
         if (number.isInt()) return intEquals(number.toJsInt());
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());
@@ -169,7 +163,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     }
 
     /**
-     * Maps this json long into another one.
+     * Maps this JSON long into another one.
      *
      * @param fn the mapping function
      * @return a new JsLong
@@ -179,7 +173,7 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
     }
 
     /**
-     * Tests the value of this json long on a predicate.
+     * Tests the value of this JSON long on a predicate.
      *
      * @param predicate the predicate
      * @return true if this long satisfies the predicate

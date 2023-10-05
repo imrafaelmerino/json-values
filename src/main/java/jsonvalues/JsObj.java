@@ -1,9 +1,9 @@
 package jsonvalues;
 
 
-import jsonvalues.spec.JsonIO;
 import fun.optic.Prism;
 import jsonvalues.JsArray.TYPE;
+import jsonvalues.spec.JsIO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -11,7 +11,9 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.*;
 import java.util.function.*;
+import java.util.stream.Collector;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.JsArray.streamOfArr;
@@ -20,24 +22,56 @@ import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
 
 /**
- * Represents an immutable JSON object. A JSON object is an unordered set of name/element pairs.
- * The underlying data structure is a persistent {@link HashMap} from the library vavr.
+ * Represents a JSON object in a lightweight, immutable, and functional manner. A `JsObj` consists of a collection
+ * of key-value pairs, where the keys are strings and the values can be various JSON data types such as strings,
+ * numbers, booleans, arrays, or nested objects.
+ *
+ * <p>Instances of this class are immutable and persistent, meaning that once created, the contents of a `JsObj` cannot
+ * be modified. Instead, operations on `JsObj` instances return new `JsObj` instances with the desired changes,
+ * leaving the original object unchanged. This immutability makes `JsObj` a persistent data structure.
+ *
+ * <p>This class provides methods to access and manipulate JSON data stored within it, including querying values by key,
+ * performing intersections with other `JsObj` instances, and converting the `JsObj` to a JSON string.
+ *
+ * <p>It also offers a convenient and functional way to work with JSON data in Java, making it easy to create and
+ * manipulate JSON objects programmatically.
+ *
+ * <p>Example usage:
+ * <pre>{@code
+ * // Create a JsObj with key-value pairs
+ * JsObj person = JsObj.of("name", "Alice", "age", 30, "city", "New York");
+ *
+ * // Access values by key
+ * String name = person.getStr("name"); // "Alice"
+ * int age = person.getInt("age");      // 30
+ *
+ * // Create a new JsObj with additional data
+ * JsObj updatedPerson = person.set("isStudent", true);
+ *
+ * // Perform an intersection with another JsObj
+ * JsObj otherPerson = JsObj.of("name", "Alice", "city", "London");
+ * JsObj commonData = person.intersection(otherPerson, JsObj.TYPE.SET);
+ * }</pre>
  */
-public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
+public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
-     * the empty Json Object
-     */
-    public static final JsObj EMPTY = new JsObj(HashMap.empty());
-    /**
-     * lenses defined for a Json object
+     * Using the {@code lens} field, you can apply various optical operations to {@code JsObj} instances
+     * in a functional and declarative manner, making it easier to modify or query the content of a
+     * {@code JsObj}
      */
     public static final JsOptics.JsObjLenses lens = JsOptics.obj.lens;
     /**
-     * optionals defined for a Json object
+     * <p>Using the {@code optional} field, you can apply optional optics to {@code JsObj} instances in a functional
+     * and declarative manner. These optics allow you to safely retrieve and modify fields that may or may not be present
+     * in the {@code JsObj}, helping you avoid null pointer exceptions and handle optional values gracefully.
      */
     public static final JsOptics.JsObjOptional optional = JsOptics.obj.optional;
     /**
-     * prism between the sum type JsValue and JsObj
+     * A Prism that allows you to view a {@code JsValue} as a {@code JsObj} if it represents an object, or as an empty optional if it's not an object.
+     *
+     * <p>Prisms are a functional optic that can be used to safely extract a specific type from a more general type, or to construct a more general type from a specific type. In this case, the {@code prism} field allows you to view a {@code JsValue} as a {@code JsObj} only if it represents an object, and returns an empty optional if the {@code JsValue} is not an object.
+     *
+     * <p>This Prism is useful for safely handling and processing JSON data, ensuring that you only work with objects when you expect them to be objects.
      */
     public static final Prism<JsValue, JsObj> prism =
             new Prism<>(s -> s.isObj() ?
@@ -45,8 +79,10 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                     Optional.empty(),
                         o -> o
             );
-    public static final int TYPE_ID = 3;
-
+    /**
+     * the empty Json Object
+     */
+    static final JsObj EMPTY = new JsObj(HashMap.empty());
     @SuppressWarnings("squid:S3008")
     private static final JsPath EMPTY_PATH = JsPath.empty();
     private final HashMap map;
@@ -54,18 +90,24 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     @SuppressWarnings("squid:S3077")
     private volatile String str;
 
-    public JsObj() {
-        this.map = HashMap.empty();
-    }
-
     JsObj(final HashMap myMap) {
         this.map = myMap;
     }
 
+    /**
+     * Returns the singleton empty JSON object
+     *
+     * @return the singleton empty JSON object
+     */
     public static JsObj empty() {
         return EMPTY;
     }
 
+    /**
+     * Static factory method to create one-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final String key,
                            final JsValue el
                           ) {
@@ -76,6 +118,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               );
     }
 
+    /**
+     * Static factory method to create one-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final JsPath path,
                            final JsValue el
                           ) {
@@ -85,6 +132,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               );
     }
 
+    /**
+     * Static factory method to create two-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
 
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -100,6 +152,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create two-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
                            final JsPath path2,
@@ -114,6 +171,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                     );
     }
 
+    /**
+     * Static factory method to create three-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -132,6 +194,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create three-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -148,6 +215,12 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                        requireNonNull(el3)
                       );
     }
+
+    /**
+     * Static factory method to create four-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
 
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
@@ -172,6 +245,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create four-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -193,6 +271,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create five-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -220,6 +303,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create five-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -245,6 +333,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create six-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -276,6 +369,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create six-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -305,6 +403,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seven-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -340,6 +443,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seven-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -373,6 +481,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eight-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -412,6 +525,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eight-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -449,6 +567,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create nine-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -492,6 +615,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create nine-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -533,7 +661,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create ten-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -581,6 +713,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create ten-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -627,6 +764,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create eleven-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -678,6 +820,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eleven-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -727,6 +874,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create twelve-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -782,6 +934,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create twelve-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -836,6 +993,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create thirteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -895,6 +1057,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create thirteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -952,7 +1119,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create fourteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1016,6 +1187,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create fourteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1077,6 +1253,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create fifteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1144,6 +1325,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create fifteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1210,6 +1396,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
+    /**
+     * Static factory method to create sixteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1281,6 +1472,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create sixteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1350,7 +1546,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create seventeen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1426,6 +1626,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create seventeen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1499,7 +1704,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create eighteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1579,6 +1788,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create eighteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1656,7 +1870,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
-
+    /**
+     * Static factory method to create nineteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1740,6 +1958,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create nineteen-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1821,6 +2044,11 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    /**
+     * Static factory method to create twenty-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final String key1,
                            final JsValue el1,
@@ -1908,6 +2136,528 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                       );
     }
 
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20).set(JsPath.empty().key(requireNonNull(key21)), el21);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21).set(JsPath.empty().key(requireNonNull(key22)), el22);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22).set(JsPath.empty().key(requireNonNull(key23)), el23);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23).set(JsPath.empty().key(requireNonNull(key24)), el24);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24,
+                           final String key25,
+                           final JsValue el25
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23, key24, el24).set(JsPath.empty().key(requireNonNull(key25)), el25);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24,
+                           final String key25,
+                           final JsValue el25,
+                           final String key26,
+                           final JsValue el26
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23, key24, el24, key25, el25).set(JsPath.empty().key(requireNonNull(key26)), el26);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24,
+                           final String key25,
+                           final JsValue el25,
+                           final String key26,
+                           final JsValue el26,
+                           final String key27,
+                           final JsValue el27
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23, key24, el24, key25, el25,
+                  key26, el26).set(JsPath.empty().key(requireNonNull(key27)), el27);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24,
+                           final String key25,
+                           final JsValue el25,
+                           final String key26,
+                           final JsValue el26,
+                           final String key27,
+                           final JsValue el27,
+                           final String key28,
+                           final JsValue el28
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23, key24, el24, key25, el25,
+                  key26, el26, key27, el27).set(JsPath.empty().key(requireNonNull(key28)), el28);
+    }
+    public static JsObj of(final String key1,
+                           final JsValue el1,
+                           final String key2,
+                           final JsValue el2,
+                           final String key3,
+                           final JsValue el3,
+                           final String key4,
+                           final JsValue el4,
+                           final String key5,
+                           final JsValue el5,
+                           final String key6,
+                           final JsValue el6,
+                           final String key7,
+                           final JsValue el7,
+                           final String key8,
+                           final JsValue el8,
+                           final String key9,
+                           final JsValue el9,
+                           final String key10,
+                           final JsValue el10,
+                           final String key11,
+                           final JsValue el11,
+                           final String key12,
+                           final JsValue el12,
+                           final String key13,
+                           final JsValue el13,
+                           final String key14,
+                           final JsValue el14,
+                           final String key15,
+                           final JsValue el15,
+                           final String key16,
+                           final JsValue el16,
+                           final String key17,
+                           final JsValue el17,
+                           final String key18,
+                           final JsValue el18,
+                           final String key19,
+                           final JsValue el19,
+                           final String key20,
+                           final JsValue el20,
+                           final String key21,
+                           final JsValue el21,
+                           final String key22,
+                           final JsValue el22,
+                           final String key23,
+                           final JsValue el23,
+                           final String key24,
+                           final JsValue el24,
+                           final String key25,
+                           final JsValue el25,
+                           final String key26,
+                           final JsValue el26,
+                           final String key27,
+                           final JsValue el27,
+                           final String key28,
+                           final JsValue el28,
+                           final String key29,
+                           final JsValue el29
+                          ) {
+        return of(key1, el1, key2, el2, key3, el3, key4, el4, key5, el5,
+                  key6, el6, key7, el7, key8, el8, key9, el9, key10, el10,
+                  key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
+                  key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
+                  key21, el21, key22, el22, key23, el23, key24, el24, key25, el25,
+                  key26, el26, key27, el27, key28, el28).set(JsPath.empty().key(requireNonNull(key29)), el29);
+    }
+
+
+    /**
+     * Static factory method to create twenty-element JSON object
+     *
+     * @return an immutable and persistent JSON object
+     */
     @SuppressWarnings("squid:S00107")
     public static JsObj of(final JsPath path1,
                            final JsValue el1,
@@ -1995,16 +2745,26 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
 
     /**
-     * Tries to parse the string into an immutable JSON object.
+     * Parses the given string into an immutable and persistent JSON object.
      *
      * @param str the string to be parsed
      * @return a JsOb object
      * @throws JsParserException if the string doesn't represent a json object
      */
-    public static JsObj parse(final String str) {
-       return JsonIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
+    public static JsObj parse(final String str) throws JsParserException {
+        return JsIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
     }
 
+    /**
+     * Parses the given array of bytes into an immutable and persistent JSON object.
+     *
+     * @param bytes the array of bytes
+     * @return a JsObj object
+     * @throws JsParserException if the string doesn't represent a json object
+     */
+    public static JsObj parse(final byte[] bytes) throws JsParserException {
+        return JsIO.INSTANCE.parseToJsObj(bytes);
+    }
 
     static Stream<JsPair> streamOfObj(final JsObj obj,
                                       final JsPath path
@@ -2045,11 +2805,12 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Inserts the element at the key in this json, replacing any existing element.
+     * Sets the specified key to the given JSON value. If the key already exists, its value will be updated.
+     * If the key doesn't exist, a new key-value pair will be added to the JSON object.
      *
-     * @param key   the key
-     * @param value the element
-     * @return a new json object
+     * @param key   The key to set.
+     * @param value The JSON value to associate with the key.
+     * @return A new `JsObj` with the updated or added key-value pair.
      */
     public JsObj set(final String key,
                      final JsValue value
@@ -2062,6 +2823,12 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                             ).apply(requireNonNull(value));
     }
 
+    /**
+     * Deletes the specified key from the JSON object. If the key doesn't exist, this method has no effect.
+     *
+     * @param key The key to delete.
+     * @return A new `JsObj` with the specified key removed.
+     */
     public JsObj delete(final String key) {
         if (!map.containsKey(requireNonNull(key))) return this;
         return new JsObj(map.remove(key));
@@ -2073,9 +2840,9 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns a set containing each key fo this object.
+     * Returns a `Set` of all keys present in the JSON object.
      *
-     * @return a Set containing each key of this JsObj
+     * @return A `Set` of all keys in the JSON object.
      */
     public Set<String> keySet() {
         Set<String> keys = new HashSet<>();
@@ -2221,16 +2988,14 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                                                       ) ?
                                               new JsObj(map.put(head,
                                                                 tail.head()
-                                                                    .match(key -> JsObj.EMPTY
-                                                                                   .set(tail,
-                                                                                        value,
-                                                                                        padElement
-                                                                                       ),
-                                                                           index -> JsArray.EMPTY
-                                                                                   .set(tail,
-                                                                                        value,
-                                                                                        padElement
-                                                                                       )
+                                                                    .match(key -> JsObj.EMPTY.set(tail,
+                                                                                                  value,
+                                                                                                  padElement
+                                                                                                 ),
+                                                                           index -> JsArray.EMPTY.set(tail,
+                                                                                                      value,
+                                                                                                      padElement
+                                                                                                     )
                                                                           )
                                                                )) :
                                               new JsObj(map.put(head,
@@ -2327,14 +3092,27 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * return true if this obj is equal to the given as a parameter. In the case of ARRAY_AS=LIST, this
-     * method is equivalent to JsObj.equals(Object).
+     * Returns a stream of `(key, value)` pairs representing the properties of the JSON object at the first level.
+     * This method operates on the top-level properties and does not traverse recursively into nested JSON objects.
      *
-     * @param that     the given array
-     * @param ARRAY_AS enum to specify if arrays are considered as lists or sets or multisets
-     * @return true if both objs are equals
+     * @return A stream of `(key, value)` pairs, where each pair consists of a top-level property key and its corresponding value.
      */
-    @SuppressWarnings("squid:S00117")
+    public Stream<JsObjPair> streamOfKeys() {
+        return StreamSupport.stream(Spliterators.spliterator(iterator(),
+                                                             size(),
+                                                             Collector.Characteristics.UNORDERED.ordinal()
+                                                            ),
+                                    false
+                                   );
+    }
+
+    /**
+     * Checks if this `JsObj` is equal to another `JsObj` considering how arrays are treated (as lists, sets, or multisets).
+     *
+     * @param that     The `JsObj` to compare with.
+     * @param ARRAY_AS Enum to specify how arrays are considered.
+     * @return `true` if both `JsObj` instances are equal; otherwise, `false`.
+     */
     public boolean equals(final JsObj that,
                           final TYPE ARRAY_AS
                          ) {
@@ -2359,15 +3137,21 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * return true if the key is present
+     * Checks if the specified key exists in the JSON object.
      *
-     * @param key the key
-     * @return true if the specified key exists
+     * @param key The key to check for existence.
+     * @return `true` if the key exists; otherwise, `false`.
      */
     public boolean containsKey(String key) {
         return map.containsKey(key);
     }
 
+    /**
+     * Retrieves the JSON value associated with the specified key.
+     *
+     * @param key The key to retrieve the JSON value for.
+     * @return The JSON value associated with the key or a default value if the key does not exist.
+     */
     public JsValue get(final String key) {
         return map.getOrElse(requireNonNull(key),
                              NOTHING
@@ -2388,7 +3172,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the array located at the given key or the default value provided if it
-     * doesn't exist or it's not an array.
+     * doesn't exist, or it's not an array.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2418,7 +3202,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the number located at the given key as a big decimal or the default value provided
-     * if it doesn't exist or it's not a decimal number.
+     * if it doesn't exist, or it's not a decimal number.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2434,7 +3218,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the bytes located at the given key  or null if it doesn't exist or it's
+     * Returns the bytes located at the given key or null if it doesn't exist, or it's
      * not an array of bytes.
      *
      * @param key the key
@@ -2448,7 +3232,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the bytes located at the given key  or the default value provided if it doesn't exist
+     * Returns the bytes located at the given key  or the default value provided if it doesn't exist,
      * or it's not an array of bytes.
      *
      * @param key    the key
@@ -2466,7 +3250,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the big integer located at the given key as a big integer or null if it doesn't
-     * exist or it's not an integral number.
+     * exist, or it's not an integral number.
      *
      * @param key the key
      * @return the BigInteger located at the given key or null
@@ -2479,7 +3263,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the big integer located at the given key as a big integer or the default value provided
-     * if it doesn't exist or it's not an integral number.
+     * if it doesn't exist, or it's not an integral number.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2494,7 +3278,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the instant located at the given key or null if it doesn't exist or it's
+     * Returns the instant located at the given key or null if it doesn't exist, or it's
      * not an instant.
      *
      * @param key the key
@@ -2509,7 +3293,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the instant located at the given key or the default value provided if it doesn't
-     * exist or it's not an instant.
+     * exist, or it's not an instant.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2553,7 +3337,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the number located at the given key as a double or null if it
-     * doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
+     * doesn't exist, or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
      * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
      * the precision of the BigDecimal
      *
@@ -2568,7 +3352,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the number located at the given key as a double or the default value provided if it
-     * doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
+     * doesn't exist, or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
      * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
      * the precision of the BigDecimal
      *
@@ -2586,7 +3370,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as an integer or null if it
-     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -2599,7 +3383,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as an integer or the default value provided if it
-     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2615,7 +3399,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as a long or null if it
-     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
+     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in a long.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -2628,7 +3412,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as a long or the default value provided
-     * if it doesn't exist or it's not an integral number or it's an integral number but doesn't fit
+     * if it doesn't exist, or it's not an integral number or it's an integral number but doesn't fit
      * in a long.
      *
      * @param key    the key
@@ -2657,7 +3441,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the json object located at the given key or the default value provided
-     * if it doesn't exist or it's not an object.
+     * if it doesn't exist, or it's not an object.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2684,7 +3468,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the string located at the given key or the default value provided if it doesn't
-     * exist or it's not an string.
+     * exist, or it's not an string.
      *
      * @param key    the key
      * @param orElse the default value
@@ -2697,18 +3481,12 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                                       .orElseGet(requireNonNull(orElse));
     }
 
-    /**
-     * Returns the hashcode of the persistent LinkedHashMap from vavr, which is the data structure
-     * that holds the information.
-     * This method caches the hashcode once calculated. Since this is immutable, the hashcode won't change.
-     * It uses the single-check idiom Item 83 from Effective Java
-     */
+
     @Override
-    @SuppressWarnings("squid:S1206")
     public int hashCode() {
         int result = hashcode;
         if (result == 0) {
-            for (HashArrayMappedTrieModule.LeafNode next : map) {
+            for (var next : map) {
                 result += next.key().hashCode() ^ next.value().hashCode();
             }
             hashcode = result;
@@ -2721,14 +3499,15 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         if (o == this)
             return true;
-        if (!(o instanceof JsObj)) return false;
-        JsObj m = ((JsObj) o);
-        if (m.size() != size()) return false;
+        if (!(o instanceof JsObj m))
+            return false;
+        if (m.size() != size())
+            return false;
 
         try {
             for (JsObjPair e : this) {
-                String key = e.key();
-                JsValue value = e.value();
+                var key = e.key();
+                var value = e.value();
                 if (value == null) {
                     if (!(m.get(key) == null && m.containsKey(key)))
                         return false;
@@ -2745,40 +3524,23 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
-
     @Override
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(JsonIO.INSTANCE.serialize(this),
+            str = result = new String(JsIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8
             );
         return result;
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isObj() {
         return true;
     }
 
-    /**
-     * {@code this.intersection(that, SET)} returns an array with the elements that exist in both {@code this} and {@code that}
-     * {@code this.intersection(that, MULTISET)} returns an array with the elements that exist in both {@code this} and {@code that},
-     * being duplicates allowed. For those elements
-     * that are containers of the same type and are located at the same position, the result is their
-     * intersection.  So this operation is kind of a 'recursive' intersection.
-     *
-     * @param that     the other object
-     * @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
-     * @return a new JsObj of the same type as the inputs
-     */
-    // squid:S00117 ARRAY_AS should be a valid name
-    @SuppressWarnings({"squid:S00117"})
+
     @Override
     public JsObj intersection(final JsObj that,
                               final TYPE ARRAY_AS
@@ -2790,7 +3552,6 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                            );
     }
 
-    @SuppressWarnings("squid:S1602")
     private BiPredicate<String, JsPath> isReplaceWithEmptyJson(final HashMap pmap) {
         return (head, tail) ->
                 (!pmap.containsKey(head) || pmap.get(head)
@@ -2815,7 +3576,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         Iterator<HashArrayMappedTrieModule.LeafNode> iterator = map.iterator();
 
-        return new Iterator<JsObjPair>() {
+        return new Iterator<>() {
             @Override
             public boolean hasNext() {
                 return iterator.hasNext();
@@ -2823,7 +3584,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
             @Override
             public JsObjPair next() {
-                HashArrayMappedTrieModule.LeafNode next = iterator.next();
+                var next = iterator.next();
                 return new JsObjPair(next.key(), next.value());
             }
         };
@@ -2831,19 +3592,6 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
-    /**
-     * returns {@code this} json object plus those pairs from the given json object {@code that} which
-     * keys don't exist in {@code this}. For those keys that exit in both {@code this}
-     * and {@code that} json objects,
-     * which associated elements are **containers of the same type**, the result is their union. In this
-     * case, we can specify if arrays are considered Sets, Lists, or MultiSets. So this operation is kind of a
-     * 'recursive' union.
-     *
-     * @param that     the given json object
-     * @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
-     * @return a new JsObj of the same type as the inputs
-     */
-    @SuppressWarnings("squid:S3008")//ARRAY_AS should be a valid name
     @Override
     public JsObj union(final JsObj that,
                        final TYPE ARRAY_AS
@@ -2862,7 +3610,6 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
-    @SuppressWarnings({"squid:S00117",}) // ARRAY_AS should be a valid name for an enum constant
     private JsObj intersection(final JsObj a,
                                final JsObj b,
                                final JsArray.TYPE ARRAY_AS
@@ -2870,7 +3617,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
         JsObj result = JsObj.empty();
-        for (JsObjPair aVal : a) {
+        for (var aVal : a) {
 
             if (b.containsKey(aVal.key())) {
                 JsValue bVal = b.get(aVal.key());
@@ -2895,7 +3642,6 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
 
-    //squid:S00117 ARRAY_AS should be a valid name
     private JsObj union(final JsObj a,
                         final JsObj b,
                         final JsArray.TYPE ARRAY_AS
@@ -2903,7 +3649,7 @@ public  class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
         if (b.isEmpty()) return a;
         JsObj result = a;
-        for (JsObjPair bVal : b) {
+        for (var bVal : b) {
             if (!a.containsKey(bVal.key()))
                 result = result.set(bVal.key(),
                                     bVal.value()

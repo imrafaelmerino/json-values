@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import jsonvalues.JsObj;
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.function.Predicate;
 
@@ -25,7 +24,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
     }
 
     @Override
-    JsObj value(final JsReader reader) throws IOException {
+    JsObj value(final JsReader reader) throws JsParserException {
         if (isEmptyObj(reader)) return EMPTY_OBJ;
         String key = reader.readKey();
         throwErrorIfStrictAndKeyMissing(reader,
@@ -39,8 +38,8 @@ class JsObjSpecReader extends AbstractJsObjReader {
                                           .parse(reader)
                                  );
         byte nextToken;
-        while ((nextToken = reader.getNextToken()) == ',') {
-            reader.getNextToken();
+        while ((nextToken = reader.readNextToken()) == ',') {
+            reader.readNextToken();
             key = reader.readKey();
             throwErrorIfStrictAndKeyMissing(reader,
                                             key

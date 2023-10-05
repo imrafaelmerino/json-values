@@ -1118,4 +1118,22 @@ public class TestJsObj {
                 a.getArray("b"));
 
     }
+
+    @Test
+    public void testStreamOfKeys() {
+
+        JsObj obj = JsObj.of("a", JsInt.of(1),
+                             "b", JsInt.of(2),
+                             "c", JsInt.of(3),
+                             "d", JsInt.of(4)
+                            );
+
+        Assertions.assertTrue(obj.streamOfKeys()
+                                 .allMatch(it -> it.value().isInt()));
+
+        Assertions.assertEquals("abcd",
+                                obj.streamOfKeys()
+                                        .map(it->it.key())
+                                   .reduce("", (a, b) -> a+b));
+    }
 }

@@ -1,6 +1,7 @@
 package jsonvalues;
-import java.io.UnsupportedEncodingException;
+
 import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Objects;
 import java.util.function.BiFunction;
 import java.util.function.Function;
@@ -11,51 +12,63 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * <pre>
- * Represents the full path location of an element in a json. It's a list of {@link Position}. Exists
- * two different ways to create a JsPath:
- * - From a path-like string using the static factory method {@link JsPath#path(String)}, where the path
- * follows the Json Pointer specification <a href="http://tools.ietf.org/html/rfc6901">RFC 6901</a>.
- * In order to be able to use paths to put data in a Json, keys which name are numbers have to
- * to be single-quoted:
- * {@code
+ * Represents the full path location of an element in a JSON. It's a list of {@link Position}.
+ * There are two different ways to create a JsPath:
+ * <p>
+ * 1. From a path-like string using the static factory method {@link JsPath#path(String)}. The path
+ * follows the JSON Pointer specification <a href="http://tools.ietf.org/html/rfc6901">RFC 6901</a>.
+ * To use paths for putting data in a JSON, keys with names that are numbers must be single-quoted.
+ * <p>
+ * For example:
  * a={"0": true}
  * b=[false]
- * }
- * According to the rfc 6901:
- * the pointer /0 points to true in a, and to false in b.
- * In json-values it's slightly different:
- * /0 points to false in b, and /'0' points to true in a.
+ * <p>
+ * According to RFC 6901, the pointer /0 points to true in 'a', and to false in 'b'.
+ * In json-values, it's slightly different:
+ * /0 points to false in 'b', and /'0' points to true in 'a'.
+ * <p>
  * It's necessary to make that distinction because otherwise, there are scenarios when there is no way
- * to know if the user wants to insert an array or an object:
- * {@code <script>}
- * JsObj obj = empty.put("/a/0/0",true)
- * obj = {"a":[[true]]}       //valid result according to the rfc and json-values
- * obj = {"a":{"0":{"0":true} //valid result according to the rfc
- * {@code <script>}
- * - By the API, using the methods {@link JsPath#fromKey(String)} and {@link JsPath#fromIndex(int)} to create
- * a JsPath and then the methods {@link JsPath#index(int)} and {@link JsPath#key(String)} to append keys or indexes:
- * {@code <script>}
- * JsPath a = JsPath.fromKey("a").index(0).key("b") =  /a/0/b
- * JsPath b = JsPath.fromIndex(0).key("a").index(0) =  /0/a/0
- * {@code <script>}
- * For example, given the following Json object:
+ * to know if the user wants to insert an array or an object.
+ * <p>
+ * 2. By using the API, you can use the methods {@link JsPath#fromKey(String)} and {@link JsPath#fromIndex(int)}
+ * to create a JsPath and then the methods {@link JsPath#index(int)} and {@link JsPath#key(String)} to
+ * append keys or indexes.
+ * <p>
+ * For example:
+ * JsPath a = JsPath.fromKey("a").index(0).key("b"); // Creates /a/0/b
+ * JsPath b = JsPath.fromIndex(0).key("a").index(0); // Creates /0/a/0
+ * <p>
+ * Example JSON object:
+ * <p>
  * {
- * "a": { "x":[ {"c": [1,2, { "": { "1" : true, " ": false, "'": 4} }]} ]}}
+ * "a": {
+ * "x": [
+ * {
+ * "c": [1, 2, {
+ * "": {
+ * "1": true,
+ * " ": false,
+ * "'": 4
+ * }
+ * }]
+ * }
+ * ]
+ * },
  * "1": null,
  * "": ""
  * }
- * / = ""                      //an empty string is a valid name for a key
- * /'1' = null                 //numeric keys have to be single-quoted
+ * <p>
+ * The paths are as follows:
+ * <p>
+ * / = ""                      // an empty string is a valid name for a key
+ * /'1' = null                 // numeric keys have to be single-quoted
  * /a/x/0/c/0 = 1
  * /a/x/0/c/1 = 2
  * /a/x/0/c/2//'1' = true      // single quotes are only mandatory when the key is a number
- * according to the rfc, # at the beginning indicates that the path is a fragment of an url and
- * therefore the keys have to be url-encoded:
- * #/a/x/0/c/2//+" = false     // + is url-decoded to the white-space
- * #/a/x/0/c/2//%27" = 4       // %27 is url-decoded to '
- * and using the API:
- * {@code <script>}
+ * #/a/x/0/c/2//+" = false     // + is URL-decoded to a white-space
+ * #/a/x/0/c/2//%27" = 4       // %27 is URL-decoded to '
+ * <p>
+ * According to the API:
  * fromKey("") = ""
  * fromKey("1") = null
  * fromKey("a").key("x").index(0).key("c").index(0) = 1
@@ -63,8 +76,10 @@ import static java.util.Objects.requireNonNull;
  * fromKey("a").key("x").index(0).key("c").index(2).key("").key("1") = true
  * fromKey("a").key("x").index(0).key("c").index(2).key("").key(" ") = false
  * fromKey("a").key("x").index(0).key("c").index(2).key("").key("'") = 4
- * {@code <script>}
- * </pre>
+ *
+ * @see Position
+ * @see Index
+ * @see Key
  */
 @SuppressWarnings("UnnecessaryLambda")
 public final class JsPath implements Comparable<JsPath> {
@@ -82,19 +97,13 @@ public final class JsPath implements Comparable<JsPath> {
     private static final UnaryOperator<String> escape =
             token -> token.replace("~1",
                                    "/"
-                          )
+                                  )
                           .replace("~0",
                                    "~");
     private static final UnaryOperator<String> decode = token ->
-    {
-        try {
-            return URLDecoder.decode(token,
-                                     "UTF-8"
-            );
-        } catch (UnsupportedEncodingException e) {
-            throw new RuntimeException(e);
-        }
-    };
+            URLDecoder.decode(token,
+                              StandardCharsets.UTF_8
+                             );
     private final Vector<Position> positions;
 
 
@@ -116,7 +125,7 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * returns a path from an index
+     * Creates a new path from an index.
      *
      * @param i the index
      * @return a new JsPath
@@ -125,6 +134,12 @@ public final class JsPath implements Comparable<JsPath> {
         return EMPTY.index(i);
     }
 
+    /**
+     * Parses a path from a string following RFC 6901.
+     *
+     * @param path the given path string
+     * @return a new JsPath
+     */
     public static JsPath path(final String path) {
         if (requireNonNull(path).equals("")) return EMPTY;
         if (path.equals("#")) return EMPTY;
@@ -137,7 +152,7 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * returns a path from a key
+     * Creates a new path from a key.
      *
      * @param key the name of the key
      * @return a new JsPath
@@ -151,7 +166,7 @@ public final class JsPath implements Comparable<JsPath> {
         {
             String[] tokens = requireNonNull(path).split("/",
                                                          -1
-            );
+                                                        );
             Vector<Position> vector = EMPTY_VECTOR;
             for (String token : tokens) vector = vector.append(mapFn.apply(token));
             return new JsPath(vector);
@@ -172,8 +187,8 @@ public final class JsPath implements Comparable<JsPath> {
             if (token.startsWith("'") && token.endsWith("'"))
                 return Key.of(mapKeyFn.apply(token.substring(1,
                                                              token.length() - 1
-                              ))
-                );
+                                                            ))
+                             );
             return Key.of(mapKeyFn.apply(token));
         };
     }
@@ -188,10 +203,10 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * creates a new JsPath appending the key to <code>this</code> JsPath.
+     * Appends a key to the path.
      *
-     * @param key the key name to be appended in raw, without encoding nor single-quoting like in {@link JsPath#path(String)} )}
-     * @return a JsPath with the key appended to the back
+     * @param key the key name to be appended
+     * @return a new JsPath with the key appended
      */
     public JsPath key(final String key) {
         return new JsPath(positions.append(Key.of(requireNonNull(key))));
@@ -217,9 +232,9 @@ public final class JsPath implements Comparable<JsPath> {
                     .compareTo(that.head());
 
         return (i != 0) ?
-               i :
-               this.tail()
-                   .compareTo(that.tail());
+                i :
+                this.tail()
+                    .compareTo(that.tail());
 
     }
 
@@ -259,7 +274,7 @@ public final class JsPath implements Comparable<JsPath> {
                             },
                             i -> this.init()
                                      .index(i + 1)
-        );
+                           );
 
 
     }
@@ -322,7 +337,7 @@ public final class JsPath implements Comparable<JsPath> {
                             },
                             i -> this.init()
                                      .index(i - 1)
-        );
+                           );
 
 
     }
@@ -361,7 +376,7 @@ public final class JsPath implements Comparable<JsPath> {
 
         JsPath headPath = new JsPath(mapKeyFn.apply(map,
                                                     head
-        ));
+                                                   ));
         if (tail.isEmpty()) return headPath;
 
         return headPath.append(tail.mapKeys(map));
@@ -472,25 +487,26 @@ public final class JsPath implements Comparable<JsPath> {
     public String toString() {
         if (positions.isEmpty()) return "";
         return positions
-                        .map(pos -> pos.match(key ->
-                                              {
-                                                  if (key.equals("")) return key;
-                                                  return isNumeric(key) ?
-                                                         String.format("'%s'",
-                                                                       key
-                                                         ) :
-                                                         key;
-                                              },
-                                              Integer::toString
-                             )
+                .map(pos -> pos.match(key ->
+                                      {
+                                          if (key.equals("")) return key;
+                                          return isNumeric(key) ?
+                                                  String.format("'%s'",
+                                                                key
+                                                               ) :
+                                                  key;
+                                      },
+                                      Integer::toString
+                                     )
 
-                        )
-                        .toJavaStream()
-                        .collect(Collectors.joining("/","/",""));
+                    )
+                .toJavaStream()
+                .collect(Collectors.joining("/", "/", ""));
     }
 
     /**
      * returns true if this path contains the given key
+     *
      * @param name the name of the key
      * @return true if this path contains the key
      */
@@ -500,12 +516,13 @@ public final class JsPath implements Comparable<JsPath> {
 
     /**
      * returns true if this path contains the given path
+     *
      * @param path the path
      * @return true if this path contains the given path
      */
     public boolean contains(JsPath path) {
         if (Objects.requireNonNull(path).isEmpty()) return true;
-        if(this.isEmpty()) return false;
+        if (this.isEmpty()) return false;
         return this.toString().contains(path.toString());
     }
 

@@ -21,11 +21,11 @@ import static java.util.Objects.requireNonNull;
  *
  *     Gen<BigDecimal> decGen = seed -> () -> {...};
  *     Gen<JsBigDec> jsDecGen = gen.map(JsBigDec::of)
- *     }
+ * }
  * </pre>
  * <p>
- * Arbitrary generators produces uniformed distributions of values.
- * Biased generators produces, with higher probability, potential problematic values that
+ * Arbitrary generators produce uniformly distributed values.
+ * Biased generators produce, with higher probability, potential problematic values that
  * usually cause more bugs.
  */
 public final class JsBigDecGen implements Gen<JsBigDec> {
@@ -34,17 +34,13 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     private static final Gen<JsBigDec> arbitrary = new JsBigDecGen(BigDecGen.arbitrary());
     private final Gen<BigDecimal> gen;
 
-    /**
-     * Creates a JsBigDec generator from a specified decimal generator
-     *
-     * @param gen the decimal generator
-     */
+
     private JsBigDecGen(final Gen<BigDecimal> gen) {
         this.gen = requireNonNull(gen);
     }
 
     /**
-     * returns a biased generators that produces, with higher probability, potential problematic values
+     * Returns a biased generator that produces, with higher probability, potential problematic values
      * that usually cause more bugs. These values are:
      *
      * <pre>
@@ -59,7 +55,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - {@link Byte#MAX_VALUE}
      * </pre>
      *
-     * @return a biased JsBigDec generator
+     * @return A biased JsBigDec generator.
      */
     public static Gen<JsBigDec> biased() {
         return biased;
@@ -67,20 +63,20 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
 
 
     /**
-     * Returns a generator that produces values uniformly distributed
+     * Returns a generator that produces values uniformly distributed.
      *
-     * @return a JsBigDec generator
+     * @return A JsBigDec generator.
      */
     public static Gen<JsBigDec> arbitrary() {
         return arbitrary;
     }
 
     /**
-     * Returns a generator that produces values uniformly distributed over a specified interval
+     * Returns a generator that produces values uniformly distributed over a specified interval.
      *
-     * @param min lower bound of the interval (inclusive)
-     * @param max upper bound of the interval (inclusive)
-     * @return a biased JsBigDec generator
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsBigDec generator.
      */
     public static Gen<JsBigDec> arbitrary(final BigDecimal min,
                                           final BigDecimal max) {
@@ -89,14 +85,27 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     }
 
     /**
-     * returns a biased generators that produces, with higher probability, potential problematic values
+     * Returns a generator that produces values uniformly distributed over a specified interval.
+     *
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsBigDec generator.
+     */
+    public static Gen<JsBigDec> arbitrary(final long min,
+                                          final long max) {
+         return arbitrary(BigDecimal.valueOf(min),
+                          BigDecimal.valueOf(max));
+    }
+
+    /**
+     * Returns a biased generator that produces, with higher probability, potential problematic values
      * that usually cause more bugs. These values are:
      *
      * <pre>
-     * - the lower bound of the interval
-     * - the upper bound of the interval
+     * - The lower bound of the interval
+     * - The upper bound of the interval
      * </pre>
-     * <p>
+     *
      * and the following numbers provided that they are between the specified interval:
      *
      * <pre>
@@ -111,9 +120,9 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - {@link Byte#MAX_VALUE}
      * </pre>
      *
-     * @param min lower bound of the interval (inclusive)
-     * @param max upper bound of the interval (inclusive)
-     * @return a biased JsBigDec generator
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsBigDec generator.
      */
     public static Gen<JsBigDec> biased(final BigDecimal min,
                                        final BigDecimal max) {
@@ -122,14 +131,14 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
     }
 
     /**
-     * returns a biased generators that produces, with higher probability, potential problematic values
+     * Returns a biased generator that produces, with higher probability, potential problematic values
      * that usually cause more bugs. These values are:
      *
      * <pre>
-     * - the lower bound of the interval
-     * - the upper bound of the interval
+     * - The lower bound of the interval
+     * - The upper bound of the interval
      * </pre>
-     * <p>
+     *
      * and the following numbers provided that they are between the specified interval:
      *
      * <pre>
@@ -144,9 +153,9 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
      * - {@link Byte#MAX_VALUE}
      * </pre>
      *
-     * @param min lower bound of the interval (inclusive)
-     * @param max upper bound of the interval (inclusive)
-     * @return a biased JsBigDec generator
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsBigDec generator.
      */
     public static Gen<JsBigDec> biased(final long min,
                                        final long max) {
@@ -154,12 +163,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
                       BigDecimal.valueOf(max));
     }
 
-    /**
-     * Returns a supplier from the specified seed that generates a new JsBigDec each time it's called
-     *
-     * @param seed the generator seed
-     * @return a JsBigDec supplier
-     */
+
     @Override
     public Supplier<JsBigDec> apply(final Random seed) {
         return gen.map(JsBigDec::of).apply(requireNonNull(seed));

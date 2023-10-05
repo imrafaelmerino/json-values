@@ -1,9 +1,9 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
+import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
-import java.io.IOException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.LongFunction;
@@ -20,7 +20,7 @@ final class JsArrayOfLongReader extends JsArrayReader {
                                     final LongFunction<Optional<JsError>> fn,
                                     final int min,
                                     final int max
-    ) throws IOException {
+    ) throws JsParserException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -33,7 +33,7 @@ final class JsArrayOfLongReader extends JsArrayReader {
                               final LongFunction<Optional<JsError>> fn,
                               final int min,
                               final int max
-    ) throws IOException {
+    ) throws JsParserException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

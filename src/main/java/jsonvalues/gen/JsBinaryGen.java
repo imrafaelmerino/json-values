@@ -44,10 +44,11 @@ public final class JsBinaryGen implements Gen<JsBinary> {
     }
 
     /**
-     * returns an arbitrary Json bytes generator
-     * @param minLength minimum number of bytes (inclusive)
-     * @param maxLength maximum number of bytes (inclusive)
-     * @return an arbitrary Json bytes generator
+     * Returns an arbitrary JSON binary generator with a specified range of byte lengths.
+     *
+     * @param minLength The minimum number of bytes (inclusive).
+     * @param maxLength The maximum number of bytes (inclusive).
+     * @return An arbitrary JSON binary generator.
      */
     public static Gen<JsBinary> arbitrary(int minLength,
                                           int maxLength) {
@@ -56,10 +57,11 @@ public final class JsBinaryGen implements Gen<JsBinary> {
     }
 
     /**
-     * returns a biased Json bytes generator
-     * @param minLength minimum number of bytes (inclusive)
-     * @param maxLength maximum number of bytes (inclusive)
-     * @return a biased Json bytes generator
+     * Returns a biased JSON binary generator with a specified range of byte lengths.
+     *
+     * @param minLength The minimum number of bytes (inclusive).
+     * @param maxLength The maximum number of bytes (inclusive).
+     * @return A biased JSON binary generator.
      */
     public static Gen<JsBinary> biased(int minLength,
                                        int maxLength) {
@@ -67,11 +69,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
                                                maxLength));
     }
 
-    /**
-     * Returns a supplier from the specified seed that generates a new JsBinary each time it's called
-     * @param seed the generator seed
-     * @return a JsBinary supplier
-     */
+
     @Override
     public Supplier<JsBinary> apply(Random seed) {
         return gen.map(JsBinary::of)

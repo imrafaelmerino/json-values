@@ -3,7 +3,6 @@ package jsonvalues.spec;
 
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
@@ -95,7 +94,7 @@ abstract class NumberConverter {
 
     private static NumberConverter.NumberInfo readLongNumber(JsReader reader,
                                                              int start
-                                                            ) throws  IOException {
+                                                            )  {
         int len = reader.length() - start;
         char[] result = reader.prepareBuffer(start,
                                              len
@@ -671,7 +670,7 @@ abstract class NumberConverter {
         sw.writeAscii(value.toString());
     }
 
-    public static BigDecimal deserializeDecimal(JsReader reader) throws IOException {
+    public static BigDecimal deserializeDecimal(JsReader reader) throws JsParserException {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {
@@ -1003,7 +1002,7 @@ abstract class NumberConverter {
         return num;
     }
 
-    public static Number deserializeNumber(JsReader reader) throws IOException {
+    public static Number deserializeNumber(JsReader reader) throws JsParserException {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         if (end == reader.length()) {

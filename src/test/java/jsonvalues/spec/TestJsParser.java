@@ -366,7 +366,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -422,7 +421,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -565,7 +563,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -622,7 +619,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -733,7 +729,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -790,7 +785,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));
@@ -850,7 +844,6 @@ public class TestJsParser {
                 parser.parse(obj.toPrettyString());
                 return false;
             } catch (JsParserException e) {
-                //System.out.println(e.getMessage());
                 return true;
             }
         }));

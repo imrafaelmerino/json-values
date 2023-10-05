@@ -19,8 +19,12 @@
 package jsonvalues;
 
 
-import java.util.*;
-import java.util.function.*;
+import java.util.Iterator;
+import java.util.Objects;
+import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.function.IntBinaryOperator;
+import java.util.function.Predicate;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -210,7 +214,7 @@ final class Vector<T> implements Iterable<T> {
     private int hash(Vector<T> iterable, IntBinaryOperator accumulator) {
 
         int hashCode = 1;
-        for (T o : iterable) {
+        for (var o : iterable) {
             hashCode = accumulator.applyAsInt(hashCode, Objects.hashCode(o));
         }
         return hashCode;

@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
 import static jsonvalues.spec.JsSpecs.*;
@@ -1154,12 +1155,12 @@ public class TestJsObjParser {
 
         Assertions.assertTrue(objGen.sample(10000)
                                     .allMatch(v -> objParser.parse(v.toString()
-                                                                    .getBytes())
+                                                                    .getBytes(StandardCharsets.UTF_8))
                                                             .equals(v)));
 
         Assertions.assertTrue(objGen.sample(10000)
                                     .allMatch(v -> objParser.parse(new ByteArrayInputStream(v.toString()
-                                                                                             .getBytes()))
+                                                                                             .getBytes(StandardCharsets.UTF_8)))
                                                             .equals(v)));
 
 

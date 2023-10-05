@@ -14,10 +14,9 @@ import java.util.function.UnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json number of type BigDecimal.
+ * Represents an immutable JSON number of type BigDecimal.
  */
 public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
-    public static final int TYPE_ID = 8;
     /**
      * prism between the sum type JsValue and JsBigDec
      */
@@ -52,10 +51,6 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     @Override
-    public int id() {
-        return TYPE_ID;
-    }
-    @Override
     public boolean isBigDec() {
         return true;
     }
@@ -71,7 +66,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     * Returns the hashcode of this json big decimal
+     * Returns the hashcode of this JSON big decimal
      *
      * @return the hashcode of this JsBigDec
      */
@@ -91,7 +86,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this json big decimal. Numbers of different
+     * Indicates whether some other object is "equal to" this JSON big decimal. Numbers of different
      * types are equals if they have the same value.
      *
      * @param that the reference object with which to compare.
@@ -100,8 +95,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isBigDec()) return value.compareTo(number.toJsBigDec().value) == 0;
         if (number.isBigInt()) return bigIntEquals(number.toJsBigInt());
         if (number.isInt()) return intEquals(number.toJsInt());
@@ -218,7 +212,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     }
 
     /**
-     * Tests the value of this json big-decimal on a predicate
+     * Tests the value of this JSON big-decimal on a predicate
      *
      * @param predicate the predicate
      * @return true if this big decimal satisfies the predicate

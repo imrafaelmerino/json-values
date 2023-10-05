@@ -13,10 +13,9 @@ import java.util.function.DoubleUnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json number of type double.
+ * Represents an immutable JSON number of type double.
  */
 public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
-    public static final int TYPE_ID = 5;
     /**
      * prism between the sum type JsValue and JsDouble
      */
@@ -50,10 +49,6 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
         return new JsDouble(n);
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isDouble() {
@@ -103,8 +98,7 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
     @Override
     public boolean equals(final Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isDouble()) return value == number.toJsDouble().value;
         if (number.isLong()) return longEquals(number.toJsLong());
         if (number.isInt()) return intEquals(number.toJsInt());

@@ -11,10 +11,9 @@ import java.util.function.UnaryOperator;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable json number of type BigInteger.
+ * Represents an immutable JSON number of type BigInteger.
  */
 public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
-    public static final int TYPE_ID = 6;
     public static final Prism<JsValue, BigInteger> prism =
             new Prism<>(s ->
                         {
@@ -47,10 +46,6 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
         return new JsBigInt(requireNonNull(n));
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public boolean isBigInt() {
@@ -68,7 +63,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     * Returns the hashcode of this json big integer.
+     * Returns the hashcode of this JSON big integer.
      *
      * @return the hashcode of this JsBigInt
      */
@@ -84,7 +79,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this json big integer. Numbers of different
+     * Indicates whether some other object is "equal to" this JSON big integer. Numbers of different
      * types are equals if they have the same value.
      *
      * @param that the reference object with which to compare.
@@ -93,8 +88,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     @Override
     public boolean equals(Object that) {
         if (this == that) return true;
-        if (!(that instanceof JsNumber)) return false;
-        JsNumber number = (JsNumber) that;
+        if (!(that instanceof JsNumber number)) return false;
         if (number.isBigInt()) return value.equals(number.toJsBigInt().value);
         if (number.isInt()) return intEquals(number.toJsInt());
         if (number.isLong()) return longEquals(number.toJsLong());
@@ -183,7 +177,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     * Maps this json bigint into another one.
+     * Maps this JSON bigint into another one.
      *
      * @param fn the mapping function
      * @return a new JsBigInt
@@ -193,7 +187,7 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
     }
 
     /**
-     * Tests the value of this json bigint on a predicate.
+     * Tests the value of this JSON bigint on a predicate.
      *
      * @param predicate the predicate
      * @return true if this big integer satisfies the predicate

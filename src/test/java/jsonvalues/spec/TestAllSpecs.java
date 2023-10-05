@@ -96,8 +96,6 @@ public class TestAllSpecs {
                                      parser.parse(it.toPrettyString());
                                      return false;
                                  } catch (Exception e) {
-                                     System.out.println(it);
-                                     System.out.println(e.getMessage());
                                      return true;
                                  }
                              }

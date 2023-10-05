@@ -15,7 +15,7 @@ final class OpMapReduce {
                                      Function<? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
                                      Optional<T> acc) {
-        for (JsObjPair head : obj) {
+        for (var head : obj) {
             if (head.value().isObj()) {
                 acc = reduceObj(head.value().toJsObj(),
                                 predicate,
@@ -123,7 +123,7 @@ final class OpMapReduce {
                                      BinaryOperator<T> op,
                                      Optional<T> acc) {
 
-        for (JsObjPair head : obj) {
+        for (var head : obj) {
             JsPath headPath = startingPath.key(head.key());
             if (head.value().isObj()) {
                 acc = reduceObj(head.value().toJsObj(),

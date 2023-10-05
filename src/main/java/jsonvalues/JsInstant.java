@@ -11,19 +11,20 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable instant. An instant is not part of the Json specification. It is serialized into
- * it's a string representation using ISO-8601 representation. A JsInstant and a JsStr are equals
+ * Represents an immutable instant. An instant is not part of the JSON specification. It is serialized into
+ * its string representation using the ISO-8601 format. A JsInstant and a JsStr are equal
  * if both represent the same date.
- * {@code
+ * <p>
+ * For example:
+ * <pre>{@code
  * Instant a = Instant.now();
  * JsStr.of(a.toString()).equals(JsInstant.of(a)) // true
- * }
+ * }</pre>
  */
 public final class JsInstant extends JsPrimitive implements Comparable<JsInstant> {
 
-    public static final int TYPE_ID = 11;
     /**
-     * prism between the sum type JsValue and JsInstant
+     * Prism between the sum type JsValue and JsInstant.
      */
     public static final Prism<JsValue, Instant> prism =
             new Prism<>(s -> {
@@ -39,22 +40,36 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
         this.value = value;
     }
 
+    /**
+     * Creates a JsInstant from an Instant.
+     *
+     * @param instant the Instant to create the JsInstant from.
+     * @return a JsInstant representing the given Instant.
+     */
     public static JsInstant of(final Instant instant) {
         return new JsInstant(requireNonNull(instant));
     }
 
+    /**
+     * Creates a JsInstant from a string representation of an Instant.
+     *
+     * @param instant the string representation of an Instant to create the JsInstant from.
+     * @return a JsInstant representing the parsed Instant.
+     */
     public static JsInstant of(final String instant) {
         return JsInstant.of(Instant.parse(requireNonNull(instant)));
     }
 
+    /**
+     * Applies a function to the value of this JsInstant.
+     *
+     * @param fn the function to apply.
+     * @return a new JsInstant with the result of applying the function to the value.
+     */
     public JsInstant map(Function<Instant, Instant> fn) {
         return JsInstant.of(requireNonNull(fn).apply(value));
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
     @Override
     public JsPrimitive toJsPrimitive() {
         return this;
@@ -75,10 +90,10 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
         if (this == o) return true;
         if (o == null) return false;
         return o instanceof JsValue ?
-               JsInstant.prism.getOptional.apply(((JsValue) o))
-                                          .map(instant -> instant.equals(value))
-                                          .orElse(false) :
-              false;
+                JsInstant.prism.getOptional.apply(((JsValue) o))
+                                           .map(instant -> instant.equals(value))
+                                           .orElse(false) :
+                false;
 
     }
 

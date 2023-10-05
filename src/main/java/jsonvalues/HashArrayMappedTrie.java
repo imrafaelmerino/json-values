@@ -33,7 +33,7 @@ interface HashArrayMappedTrie extends Iterable<HashArrayMappedTrieModule.LeafNod
 
      static  <T, U> Iterator<U> map(Iterator<T> iter,
                                     Function<? super T, ? extends U> mapper) {
-        return new Iterator<U>() {
+        return new Iterator<>() {
 
             @Override
             public boolean hasNext() {

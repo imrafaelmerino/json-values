@@ -106,7 +106,7 @@ public class TestLenses {
 
         JsObj a = JsObj.of("a",
                            JsBinary.of("hola".getBytes(StandardCharsets.UTF_8)));
-        JsObj newObj = binaryLens.modify.apply(it -> (new String(it) + "adios")
+        JsObj newObj = binaryLens.modify.apply(it -> (new String(it,StandardCharsets.UTF_8) + "adios")
                 .getBytes(StandardCharsets.UTF_8)).apply(a);
         Assertions.assertArrayEquals(binaryLens.get.apply(newObj),
                                      "holaadios".getBytes(StandardCharsets.UTF_8));

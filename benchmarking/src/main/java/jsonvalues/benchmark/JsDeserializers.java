@@ -12,7 +12,7 @@ import io.vertx.core.json.JsonObject;
 import io.vertx.json.schema.Draft;
 import io.vertx.json.schema.JsonSchemaOptions;
 import jsonvalues.JsObj;
-import jsonvalues.spec.JsObjParser;
+import jsonvalues.spec.JsObjSpecParser;
 import org.everit.json.schema.Schema;
 import org.everit.json.schema.loader.SchemaLoader;
 import org.json.JSONObject;
@@ -36,7 +36,7 @@ public class JsDeserializers {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     // json-values parser from spec
-    private static final JsObjParser jsonParser = new JsObjParser(PERSON_SPEC);
+    private static final JsObjSpecParser jsonParser = new JsObjSpecParser(PERSON_SPEC);
 
     private static final com.networknt.schema.JsonSchemaFactory NETWORKNT_FACTORY =
             com.networknt.schema.JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);

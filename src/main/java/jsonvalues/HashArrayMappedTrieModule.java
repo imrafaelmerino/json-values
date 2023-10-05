@@ -3,14 +3,14 @@ package jsonvalues;
 import java.io.Serializable;
 import java.util.*;
 
-import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
-import static jsonvalues.HashArrayMappedTrieModule.Action.REMOJsValueE;
 import static java.lang.Integer.bitCount;
+import static jsonvalues.HashArrayMappedTrieModule.Action.PUT;
+import static jsonvalues.HashArrayMappedTrieModule.Action.REMOVE;
 
  interface HashArrayMappedTrieModule {
 
     enum Action {
-        PUT, REMOJsValueE
+        PUT, REMOVE
     }
 
     class LeafNodeIterator implements Iterator<LeafNode> {
@@ -37,13 +37,15 @@ import static java.lang.Integer.bitCount;
 
         @Override
         public LeafNode next() {
+            if(!hasNext()){
+                throw new NoSuchElementException();
+            }
             Object node = nodes[level];
             while (!(node instanceof LeafNode)) {
                 node = findNextLeaf();
             }
             ptr++;
-            if (node instanceof LeafList) {
-                LeafList leaf = (LeafList) node;
+            if (node instanceof final LeafList leaf) {
                 nodes[level] = leaf.tail;
                 return leaf;
             } else {
@@ -81,12 +83,10 @@ import static java.lang.Integer.bitCount;
         }
 
         private static AbstractNode getChild(AbstractNode node, int index) {
-            if (node instanceof IndexedNode) {
-                IndexedNode indexedNode = (IndexedNode) node;
+            if (node instanceof IndexedNode indexedNode) {
                 final Object[] subNodes = indexedNode.subNodes;
                 return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
-            } else if (node instanceof ArrayNode) {
-                ArrayNode arrayNode = (ArrayNode) node;
+            } else if (node instanceof ArrayNode arrayNode) {
                 return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
             }
             return null;
@@ -185,7 +185,7 @@ import static java.lang.Integer.bitCount;
 
         @Override
         public HashArrayMappedTrie remove(String key) {
-            return modify(0, Objects.hashCode(key), key, null, REMOJsValueE);
+            return modify(0, Objects.hashCode(key), key, null, REMOVE);
         }
 
 
@@ -217,7 +217,7 @@ import static java.lang.Integer.bitCount;
 
         @Override
         AbstractNode modify(int shift, int keyHash, String key, JsValue value, Action action) {
-            return (action == REMOJsValueE) ? this : new LeafSingleton(keyHash, key, value);
+            return (action == REMOVE) ? this : new LeafSingleton(keyHash, key, value);
         }
 
         @Override
@@ -232,7 +232,7 @@ import static java.lang.Integer.bitCount;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<LeafNode>() {
+            return new Iterator<>() {
                 @Override
                 public boolean hasNext() {
                     return false;
@@ -316,9 +316,9 @@ import static java.lang.Integer.bitCount;
         @Override
         AbstractNode modify(int shift, int keyHash, String key, JsValue value, Action action) {
             if (keyHash == hash && Objects.equals(key, this.key)) {
-                return (action == REMOJsValueE) ? EmptyNode.instance() : new LeafSingleton(hash, key, value);
+                return (action == REMOVE) ? EmptyNode.instance() : new LeafSingleton(hash, key, value);
             } else {
-                return (action == REMOJsValueE) ? this : mergeLeaves(shift, this, new LeafSingleton(keyHash, key, value));
+                return (action == REMOVE) ? this : mergeLeaves(shift, this, new LeafSingleton(keyHash, key, value));
             }
         }
 
@@ -329,7 +329,7 @@ import static java.lang.Integer.bitCount;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<LeafNode>() {
+            return new Iterator<>() {
 
                 boolean hasNext = true;
 
@@ -386,7 +386,7 @@ import static java.lang.Integer.bitCount;
             if (hash != keyHash) {
                 return Optional.empty();
             }
-            Iterator<LeafNode> iter = nodes();
+            var iter = nodes();
             while (iter.hasNext()) {
                 LeafNode next = iter.next();
                 if (Objects.equals(next.key(), key)) return Optional.of(next.value());
@@ -415,13 +415,13 @@ import static java.lang.Integer.bitCount;
         AbstractNode modify(int shift, int keyHash, String key, JsValue value, Action action) {
             if (keyHash == hash) {
                 final AbstractNode filtered = removeElement(key);
-                if (action == REMOJsValueE) {
+                if (action == REMOVE) {
                     return filtered;
                 } else {
                     return new LeafList(hash, key, value, (LeafNode) filtered);
                 }
             } else {
-                return (action == REMOJsValueE) ? this : mergeLeaves(shift, this, new LeafSingleton(keyHash, key, value));
+                return (action == REMOVE) ? this : mergeLeaves(shift, this, new LeafSingleton(keyHash, key, value));
             }
         }
 
@@ -437,8 +437,7 @@ import static java.lang.Integer.bitCount;
             }
             LeafNode result = leaf1;
             LeafNode tail = leaf2;
-            while (tail instanceof LeafList) {
-                LeafList list = (LeafList) tail;
+            while (tail instanceof LeafList list) {
                 result = new LeafList(list.hash, list.key, list.value, result);
                 tail = list.tail;
             }
@@ -470,7 +469,7 @@ import static java.lang.Integer.bitCount;
 
         @Override
         public Iterator<LeafNode> nodes() {
-            return new Iterator<LeafNode>() {
+            return new Iterator<>() {
                 LeafNode node = LeafList.this;
 
                 @Override

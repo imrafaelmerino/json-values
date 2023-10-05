@@ -17,7 +17,7 @@ final class JsIntReader extends AbstractReader {
                        ) throws JsParserException {
         int value = NumberConverter.deserializeInt(reader);
         Optional<JsError> result = fn.apply(value);
-        if (!result.isPresent()) return JsInt.of(value);
+        if (result.isEmpty()) return JsInt.of(value);
         throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                          reader.getPositionInStream()
                                         );

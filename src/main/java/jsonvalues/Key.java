@@ -4,12 +4,12 @@ package jsonvalues;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represents the key of a value in a json object
+ * Represents the key of a value in a JSON object.
  */
 public final class Key implements Position {
 
     /**
-     * name of the key.
+     * The name of the key.
      */
     public final String name;
 
@@ -18,8 +18,8 @@ public final class Key implements Position {
     }
 
     /**
-     * Returns a new instance which represents a key with the given name in a json object. Any string,
-     * but null, can represent a key in a json object, even the empty string.
+     * Returns a new instance representing a key with the given name in a JSON object. Any string,
+     * except null, can represent a key in a JSON object, even the empty string.
      *
      * @param key the given name of the key
      * @return a new Key object
@@ -30,8 +30,8 @@ public final class Key implements Position {
 
 
     /**
-     * compares this key with another given position. If the given position is a key, both are compared
-     * lexicographically, if it's an index, both are compared numerically.
+     * Compares this key with another given position. If the given position is a key, both are compared
+     * lexicographically. If it's an index, both are compared numerically.
      *
      * @param o the given position
      * @return 0 if they are equal, +1 if this is greater, -1 otherwise
@@ -56,7 +56,7 @@ public final class Key implements Position {
     }
 
     /**
-     * throws an UserError exception.
+     * Throws a UserError exception.
      *
      * @throws UserError a Key can't be cast into an Index
      */
@@ -99,8 +99,8 @@ public final class Key implements Position {
     /**
      * Returns true if that is a key and both have the same name.
      *
-     * @param that other object
-     * @return true if both object are Keys with the same name
+     * @param that the other object
+     * @return true if both objects are Keys with the same name
      */
     @Override
     public boolean equals(final Object that) {

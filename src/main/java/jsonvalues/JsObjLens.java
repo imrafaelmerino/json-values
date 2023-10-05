@@ -6,7 +6,7 @@ import fun.optic.Lens;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represent a Lens which focus is a json object located at a path is a Json
+ * Represent a Lens which focus is a JSON object located at a path is a Json
  *
  * @param <S> the type of the whole part, an array or an object
  */

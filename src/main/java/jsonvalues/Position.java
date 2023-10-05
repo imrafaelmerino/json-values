@@ -7,15 +7,15 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 /**
- * Represents the location of a first-level element in a json, either a Key in a JsObj or an Index in
+ * Represents the location of a first-level element in a JSON, either a Key in a JsObj or an Index in
  * a JsArray.
  */
-public interface Position extends Comparable<Position> {
+public sealed interface Position extends Comparable<Position> permits Index, Key {
     /**
-     * Returns true if this position is a key and its name tested on a given predicate is true.
+     * Returns true if this position is a key, and its name tested on a given predicate is true.
      *
-     * @param predicate the give predicate
-     * @return true if this position is a key and its name tested on a given predicate is true
+     * @param predicate the given predicate
+     * @return true if this position is a key, and its name tested on a given predicate is true
      */
     default boolean isKey(final Predicate<String> predicate) {
         if (isIndex()) return false;
@@ -39,10 +39,10 @@ public interface Position extends Comparable<Position> {
     Key asKey();
 
     /**
-     * Returns true if this position is an index and its index tested on a given predicate is true.
+     * Returns true if this position is an index, and its index tested on a given predicate is true.
      *
-     * @param predicate the give predicate
-     * @return true if this position is an index and its index tested on a given predicate is true
+     * @param predicate the given predicate
+     * @return true if this position is an index, and its index tested on a given predicate is true
      */
     default boolean isIndex(final IntPredicate predicate) {
         if (isKey()) return false;
@@ -51,9 +51,9 @@ public interface Position extends Comparable<Position> {
     }
 
     /**
-     * Returns true if this position is an key.
+     * Returns true if this position is a key.
      *
-     * @return true if this position is an key
+     * @return true if this position is a key
      */
     boolean isKey();
 
@@ -61,7 +61,7 @@ public interface Position extends Comparable<Position> {
      * Casts this position into an Index, throwing an exception if it's a Key.
      *
      * @return this position as an Index
-     * @throws UserError if this position is an Key
+     * @throws UserError if this position is a Key
      */
     Index asIndex();
 

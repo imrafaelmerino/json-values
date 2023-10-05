@@ -30,7 +30,7 @@ public class DecimalConverterTest {
                     "-12.0E+1, -12.0E+12, -12.12e-0, -12.12e-1, -12.12e-12, -12.12e+0, -12.12e+1, -12.12e+12, -12.12E-0, -12.12E-1," +
                     "-12.12E-12, -12.12E+0, -12.12E+1, -12.12E+12 ";
 
-    private final JsonIO dslJson = JsonIO.INSTANCE;
+    private final JsIO dslJson = JsIO.INSTANCE;
 
     @Test
     public void testSerialization()  {
@@ -89,7 +89,7 @@ public class DecimalConverterTest {
     }
 
     @Test
-    public void testDeserialization() throws IOException {
+    public void testDeserialization()  {
         // setup
         final String[] values = VALUES.split(", *");
         final int count = values.length;
@@ -101,16 +101,16 @@ public class DecimalConverterTest {
 
         // first digit in values
         Assertions.assertEquals('0',
-                                jr.getNextToken());
+                                jr.readNextToken());
         Assertions.assertEquals('0',
-                                jsr.getNextToken());
+                                jsr.readNextToken());
 
         for (int i = 0; i < count - 1; i++) {
             if (i > 0) {
-                jr.getNextToken();//','
-                jsr.getNextToken();//','
-                jr.getNextToken();//' '
-                jsr.getNextToken();//' '
+                jr.readNextToken();//','
+                jsr.readNextToken();//','
+                jr.readNextToken();//' '
+                jsr.readNextToken();//' '
             }
 
             // setup
@@ -134,16 +134,16 @@ public class DecimalConverterTest {
 
         // first digit in values
         Assertions.assertEquals('0',
-                                jr.getNextToken());
+                                jr.readNextToken());
         Assertions.assertEquals('0',
-                                jsr.getNextToken());
+                                jsr.readNextToken());
 
         for (int i = 0; i < count - 1; i++) {
             if (i > 0) {
-                jr.getNextToken();//','
-                jsr.getNextToken();//','
-                jr.getNextToken();//' '
-                jsr.getNextToken();//' '
+                jr.readNextToken();//','
+                jsr.readNextToken();//','
+                jr.readNextToken();//' '
+                jsr.readNextToken();//' '
             }
 
             // setup
@@ -167,9 +167,9 @@ public class DecimalConverterTest {
 
         // first digit in values
         Assertions.assertEquals('0',
-                                jr.getNextToken());
+                                jr.readNextToken());
         Assertions.assertEquals('0',
-                                jsr.getNextToken());
+                                jsr.readNextToken());
 
 
     }
@@ -185,12 +185,12 @@ public class DecimalConverterTest {
             final byte[] body = plainForm.getBytes(StandardCharsets.ISO_8859_1);
 
             final JsReader jr = dslJson.newReader(body);
-            jr.getNextToken();
+            jr.readNextToken();
             final BigDecimal parsed1 = NumberConverter.deserializeDecimal(jr);
 
             final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(body),
                                                    new byte[64]);
-            jsr.getNextToken();
+            jsr.readNextToken();
             final BigDecimal parsed2 = NumberConverter.deserializeDecimal(jsr);
 
             if (parsed1.compareTo(check) != 0) {

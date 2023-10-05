@@ -11,24 +11,21 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- *
  * Represents a JsDouble generator. It can be created using the static factory methods
- * <code>biased</code> and <code>arbitrary</code> or, if none of the previous suit your
+ * {@link #biased()} and {@link #arbitrary()} or, if none of the previous suits your
  * needs, from a double generator and the function map:
  *
  * <pre>{@code
- *      import fun.gen.Gen;
- *      import jsonvalues.JsDouble;
+ * import fun.gen.Gen;
+ * import jsonvalues.JsDouble;
  *
- *      Gen<Double> doubleGen = seed -> () -> {...};
- *      Gen<JsDouble> jsDoubleGen = gen.map(JsDouble::of)
- *      }
- *  </pre>
- *  <p>
- * Arbitrary generators produces uniformed distributions of values.
- * Biased generators produces, with higher probability, potential problematic values that
- * usually cause more bugs.
- *
+ * Gen<Double> doubleGen = seed -> () -> {...};
+ * Gen<JsDouble> jsDoubleGen = gen.map(JsDouble::of);
+ * }</pre>
+ * <p>
+ * Arbitrary generators produce values with a uniform distribution.
+ * Biased generators produce potential problematic values with a higher probability, which can help
+ * identify and test edge cases.
  */
 public final class JsDoubleGen implements Gen<JsDouble> {
     private static final Gen<JsDouble> biased = new JsDoubleGen(DoubleGen.biased());
@@ -45,91 +42,61 @@ public final class JsDoubleGen implements Gen<JsDouble> {
     }
 
     /**
-     * returns a biased generators that produces, with higher probability, potential problematic values
-     * that usually cause more bugs. These values are:
+     * Returns a biased generator that produces potential problematic values with a higher probability.
+     * These values include:
+     * - The minimum double value
+     * - The maximum double value
+     * - 0.0
      *
-     * <pre>
-     * - {@link Long#MIN_VALUE}
-     * - {@link Integer#MIN_VALUE}
-     * - {@link Short#MIN_VALUE}
-     * - {@link Byte#MIN_VALUE}
-     * -  0
-     * - {@link Long#MAX_VALUE}
-     * - {@link Integer#MAX_VALUE}
-     * - {@link Short#MAX_VALUE}
-     * - {@link Byte#MAX_VALUE}
-     * </pre>
-     *
-     *
-     * @return a biased JsDouble generator
+     * @return A biased JsDouble generator.
      */
     public static Gen<JsDouble> biased() {
         return biased;
     }
 
     /**
-     * Returns a generator that produces values uniformly distributed
-     * @return a JsDouble generator
+     * Returns a generator that produces values with a uniform distribution.
+     *
+     * @return A JsDouble generator.
      */
     public static Gen<JsDouble> arbitrary() {
         return arbitrary;
     }
 
     /**
-     * returns a biased generators that produces, with higher probability, potential problematic values
-     * that usually cause more bugs. These values are:
+     * Returns a biased generator that produces potential problematic values with a higher probability.
+     * These values include:
+     * - The lower bound of the interval
+     * - The upper bound of the interval
+     * - 0.0
      *
-     * <pre>
-     * - the lower bound of the interval
-     * - the upper bound of the interval
-     * </pre>
-     *
-     * and the following numbers provided that they are between the specified interval:
-     *
-     * <pre>
-     * - {@link Long#MIN_VALUE}
-     * - {@link Integer#MIN_VALUE}
-     * - {@link Short#MIN_VALUE}
-     * - {@link Byte#MIN_VALUE}
-     * - 0
-     * - {@link Integer#MAX_VALUE}
-     * - {@link Short#MAX_VALUE}
-     * - {@link Byte#MAX_VALUE}
-     * - {@link Long#MAX_VALUE}
-     * </pre>
-     *
-     * @param min lower bound of the interval (inclusive)
-     * @param max upper bound of the interval (inclusive)
-     * <p>
-     *
-     * @return a biased JsDouble generator
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsDouble generator.
      */
     public static Gen<JsDouble> biased(double min,
-                                       double max) {
+                                       double max
+                                      ) {
         return new JsDoubleGen(DoubleGen.biased(min,
                                                 max));
     }
 
 
     /**
-     * Returns a generator that produces values uniformly distributed over a specified interval
+     * Returns a generator that produces values uniformly distributed over a specified interval.
      *
-     * @param min lower bound of the interval (inclusive)
-     * @param max upper bound of the interval (inclusive)
-     *
-     * @return a biased JsDouble generator
+     * @param min The lower bound of the interval (inclusive).
+     * @param max The upper bound of the interval (inclusive).
+     * @return A biased JsDouble generator.
      */
     public static Gen<JsDouble> arbitrary(double min,
-                                          double max) {
+                                          double max
+                                         ) {
         return new JsDoubleGen(DoubleGen.arbitrary(min,
                                                    max));
     }
 
-    /**
-     * Returns a supplier from the specified seed that generates a new JsDouble each time it's called
-     * @param seed the generator seed
-     * @return a JsDouble supplier
-     */
+
     @Override
     public Supplier<JsDouble> apply(final Random seed) {
         return gen.map(JsDouble::of)

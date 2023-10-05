@@ -1,18 +1,38 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
+import jsonvalues.JsParserException;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * The {@code JsArraySpecParser} class is responsible for creating JSON array parsers based on provided JSON specifications (specs). It allows you to define a schema for JSON arrays using a specification and then use that schema to parse JSON array data into structured Java objects. This class is part of the JSONValues library, which focuses on providing a type-safe and functional approach to JSON parsing and manipulation.
+ * <p>
+ * A parser, in the context of this class, refers to an instance of {@link JsSpecParser} that encapsulates the rules and constraints defined in a JSON specification. The parser ensures that the JSON array data being parsed conforms to the specified schema, enforcing rules such as element data types, array length, and user-defined conditions.
+ * <p>
+ * Usage of this class typically involves creating an instance with a JSON specification and then using that instance to parse JSON array data. If the JSON array data does not adhere to the specified schema, a {@link JsParserException} will be raised, providing detailed information about the parsing error.
+ * <p>
+ * This class provides three main methods for parsing JSON array data:
+ * <ul>
+ *     <li>{@link #parse(byte[]) parse(byte[] bytes)}: Parses a byte array representing JSON array data into a JSON array.</li>
+ *     <li>{@link #parse(String) parse(String str)}: Parses a JSON array string into a JSON array.</li>
+ *     <li>{@link #parse(InputStream) parse(InputStream inputStream)}: Parses JSON array data from an input stream into a JSON array. This method also handles potential I/O exceptions when reading from the stream.</li>
+ * </ul>
+ *
+ * <p>
+ * It's important to note that the provided JSON specification should match the structure and constraints of the JSON array data you expect to parse. The parser will enforce these constraints during parsing.
+ */
 public final class JsArraySpecParser {
 
     private final JsSpecParser parser;
 
     /**
-     * @param spec the Json spec what defines the schema that every element in the array has to conform
+     * Creates a JSON array parser based on the provided JSON array specification (spec). The parser will validate that every element in a JSON array adheres to the schema defined in the given specification.
+     *
+     * @param spec The JSON array specification that defines the expected schema for each element in the array.
      */
     public JsArraySpecParser(final JsArraySpec spec) {
 
@@ -21,51 +41,45 @@ public final class JsArraySpecParser {
     }
 
     /**
-     * parses an array of bytes into a Json array that must conform the spec of the parser. If the
-     * array of bytes doesn't represent a well-formed Json  or is a well-formed Json that doesn't
-     * conform the spec of the parser, a ParsingException failure wrapped in a Try computation is
-     * returned.
+     * Parses an array of bytes representing JSON array data into a structured JSON array. The parsed JSON array must conform to the schema defined in the associated JSON specification (spec). If the input bytes do not represent a well-formed JSON array or if the parsed array does not adhere to the specified schema, a {@link JsParserException} is thrown.
      *
-     * @param bytes a Json array serialized in an array of bytes
-     * @return a try computation with the result
+     * @param bytes An array of bytes containing JSON array data.
+     * @return The parsed JSON array if parsing is successful.
+     * @throws JsParserException If parsing fails due to JSON syntax errors or specification violations.
      */
     public JsArray parse(final byte[] bytes) {
 
-        return JsonIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
-                                                    this.parser
-                                                   );
+        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
+                                                  this.parser
+                                                 );
     }
 
 
     /**
-     * parses a string into a Json array that must conform the spec of the parser. If the
-     * string doesn't represent a well-formed Json array or is a well-formed Json that doesn't
-     * conform the spec of the parser, a ParsingException failure wrapped in a Try computation is
-     * returned.
+     * Parses a JSON array string into a structured JSON array. The parsed JSON array must conform to the schema defined in the associated JSON specification (spec). If the input string does not represent a well-formed JSON array or if the parsed array does not adhere to the specified schema, a {@link JsParserException} is thrown.
      *
-     * @param str a Json array serialized in a string
-     * @return a try computation with the result
+     * @param str A string containing JSON array data.
+     * @return The parsed JSON array if parsing is successful.
+     * @throws JsParserException If parsing fails due to JSON syntax errors or specification violations.
      */
     public JsArray parse(String str) {
-        return JsonIO.INSTANCE
+        return JsIO.INSTANCE
                 .deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
                                       this.parser
-                );
+                                     );
     }
 
     /**
-     * parses an input stream of bytes into a Json array that must conform the spec of the parser. If the
-     * the input stream of bytes doesn't represent a well-formed Json array or is a well-formed Json that doesn't
-     * conform the spec of the parser, a ParsingException failure wrapped in a Try computation is
-     * returned. Any I/O exception processing the input stream is wrapped in a Try computation as well
+     * Parses JSON array data from an input stream into a structured JSON array. The parsed JSON array must conform to the schema defined in the associated JSON specification (spec). If the input stream does not contain a well-formed JSON array or if the parsed array does not adhere to the specified schema, a {@link JsParserException} is thrown. Any I/O exceptions encountered while reading from the input stream are also captured and wrapped in the thrown exception.
      *
-     * @param inputstream the input stream of bytes
-     * @return a try computation with the result
+     * @param inputstream An input stream containing JSON array data.
+     * @return The parsed JSON array if parsing is successful.
+     * @throws JsParserException If parsing fails due to JSON syntax errors, specification violations, or I/O exceptions.
      */
     public JsArray parse(InputStream inputstream) {
-        return JsonIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
-                                                    this.parser
-                                                   );
+        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
+                                                  this.parser
+                                                 );
 
     }
 

@@ -47,8 +47,6 @@ public class TestArrayGen {
         Map<Integer, Long> count = TestFun.generate(TIMES,
                                                     gen.map(JsArray::size));
 
-        System.out.println(count);
-
         Assertions.assertTrue(TestFun.isInMargin(count.get(0),
                                                  0.1).test(count.get(3)));
         Assertions.assertTrue(TestFun.isInMargin(count.get(1),

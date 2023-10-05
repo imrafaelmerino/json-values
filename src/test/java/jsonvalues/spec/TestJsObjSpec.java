@@ -18,12 +18,11 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
-import static jsonvalues.spec.JsSpecs.*;
 import static jsonvalues.spec.FunTest.assertErrorIs;
+import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsObjSpec {
 
@@ -39,8 +38,6 @@ public class TestJsObjSpec {
         final Set<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsInt.of(1)
                                                         ));
-
-        errors.forEach(pair -> System.out.println(pair.value + " @ " + pair.path + " doesn't not conform spec: " + pair.errorCode));
 
         Assertions.assertFalse(errors.isEmpty());
 
@@ -1475,11 +1472,11 @@ public class TestJsObjSpec {
 
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.errorCode)
-                                          .collect(Collectors.toList())
+                                          .toList()
                                           .contains(CONSTANT_CONDITION));
 
         Assertions.assertTrue(errorPairSet.stream().map(it -> it.value)
-                                          .collect(Collectors.toList())
+                                          .toList()
                                           .contains(JsInt.of(1)));
 
 
@@ -1583,14 +1580,12 @@ public class TestJsObjSpec {
 
         Assertions.assertTrue(gen.sample(10000).allMatch(o -> {
             Set<SpecError> errors = spec.test(o);
-            if (!errors.isEmpty()) System.out.println(errors);
             return errors.isEmpty();
         }));
 
 
         Assertions.assertTrue(baseGen.suchThat(spec).sample(10000).allMatch(o -> {
             Set<SpecError> errors = spec.test(o);
-            if (!errors.isEmpty()) System.out.println(errors);
             return errors.isEmpty();
         }));
 
@@ -1598,7 +1593,6 @@ public class TestJsObjSpec {
         JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(o -> dependencies(o));
         Assertions.assertTrue(baseGen.withAllOptKeys().suchThat(spec1).sample(10000).allMatch(o -> {
             Set<SpecError> errors = spec1.test(o);
-            if (!errors.isEmpty()) System.out.println(errors);
             return errors.isEmpty();
         }));
 

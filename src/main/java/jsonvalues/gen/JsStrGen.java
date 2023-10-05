@@ -10,34 +10,35 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents a JsStr generator. There are different static factory methods to create all kind of generators:
- * - One character generators like <code>alphanumeric</code>, <code>digit</code>, <code>letter</code> and <code>alphabetic</code>.
- * - String generators like <code>digits</code>, <code>letters</code>, <code>alphanumeric</code>, <code>alphabetic</code>, <code>arbitrary</code> and <code>biased</code>.
+ * Represents a JsStr generator. There are different static factory methods to create all kinds of generators:
+ * - One character generators like {@code alphanumeric}, {@code digit}, {@code letter}, and {@code alphabetic}.
+ * - String generators like {@code digits}, {@code letters}, {@code alphanumeric}, {@code alphabetic}, {@code arbitrary}, and {@code biased}.
  * <p>
  * The length of the generated strings is distributed uniformly over a specified interval.
  * <p>
  * The biased generator produces, with higher probability, potential problematic values that usually cause more
- * bugs (empty and blank strings for example).
+ * bugs (empty and blank strings, for example).
  * <p>
  * If none of the previous factory methods suit your needs, you can still create a JsStr generator
  * from a string generator and the function map:
  *
  * <pre>{@code
- *      import fun.gen.Gen;
- *      import jsonvalues.JsStr;
+ * import fun.gen.Gen;
+ * import jsonvalues.JsStr;
  *
- *      Gen<String> strGen = seed -> () -> {...};
- *      Gen<JsStr> jsStrGen = gen.map(JsStr::of)
- *      }
- *  </pre>
+ * Gen<String> strGen = seed -> () -> {...};
+ * Gen<JsStr> jsStrGen = gen.map(JsStr::of);
+ * }
+ * </pre>
  */
 public final class JsStrGen implements Gen<JsStr> {
 
 
-    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric(1,1));
-    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digits(1,1));
-    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letters(1,1));
-    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic(1,1));
+    private static final Gen<JsStr> alphanumeric = new JsStrGen(StrGen.alphanumeric(1, 1));
+    private static final Gen<JsStr> digit = new JsStrGen(StrGen.digits(1, 1));
+    private static final Gen<JsStr> letter = new JsStrGen(StrGen.letters(1, 1));
+    private static final Gen<JsStr> alphabetic = new JsStrGen(StrGen.alphabetic(1, 1));
+    private static final Gen<JsStr> ascii = new JsStrGen(StrGen.ascii(1, 1));
     private final Gen<String> gen;
 
     /**
@@ -50,93 +51,124 @@ public final class JsStrGen implements Gen<JsStr> {
     }
 
     /**
-     * Generator tha produces a digit from 0 to 9
-     * @return a JsStr generator
+     * Returns a generator that produces a single digit from 0 to 9.
+     *
+     * @return A JsStr generator.
      */
     public static Gen<JsStr> digit() {
         return digit;
     }
 
     /**
-     * Generator tha produces a letter from a to z
-     * @return a JsStr generator
+     * Returns a generator that produces a single letter from 'a' to 'z'.
+     *
+     * @return A JsStr generator.
      */
     public static Gen<JsStr> letter() {
         return letter;
     }
 
     /**
-     * Generator tha produces an alphabetic character
-     * @return a JsStr generator
+     * Returns a generator that produces a single alphabetic character.
+     *
+     * @return A JsStr generator.
      */
     public static Gen<JsStr> alphabetic() {
         return alphabetic;
     }
 
     /**
-     * Generator tha produces an alphanumeric character
-     * @return a JsStr generator
+     * Returns a generator that produces a single ASCII character.
+     *
+     * @return A JsStr generator.
+     */
+    public static Gen<JsStr> ascii() {
+        return ascii;
+    }
+
+    /**
+     * Returns a generator that produces a single alphanumeric character.
+     *
+     * @return A JsStr generator.
      */
     public static Gen<JsStr> alphanumeric() {
         return alphanumeric;
     }
 
     /**
-     * Generates a string made up of digits
+     * Generates a string made up of digits with a length between {@code minLength} and {@code maxLength}.
      *
-     * @param minLength minimum length of the string
-     * @param maxLength maximum length of the string (inclusive)
-     * @return a string generator
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> digits(final int minLength,
-                                    final int maxLength) {
+                                    final int maxLength
+                                   ) {
         return new JsStrGen(StrGen.digits(minLength,
                                           maxLength));
     }
 
     /**
-     * Generates a string made up of digits
-     * @param length the length of the string
-     * @return a string generator
+     * Generates a string made up of digits with a length of {@code length}.
+     *
+     * @param length Length of the string.
+     * @return A string generator.
      */
     public static Gen<JsStr> digits(final int length) {
-        return digits(length,length);
+        return digits(length, length);
     }
 
     /**
-     * Generates a string made up of letters
+     * Generates a string made up of letters with a length between {@code minLength} and {@code maxLength}.
      *
-     * @param minLength minimum length of the string
-     * @param maxLength maximum length of the string (inclusive)
-     * @return a string generator
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> letters(final int minLength,
-                                     final int maxLength) {
+                                     final int maxLength
+                                    ) {
         return new JsStrGen(StrGen.letters(minLength,
                                            maxLength));
     }
 
     /**
-     * Generates a string made up of letters
+     * Generates a string made up of letters with a length of {@code length}.
      *
-     * @param length  length of the string
-     * @return a string generator
+     * @param length Length of the string.
+     * @return A string generator.
      */
     public static Gen<JsStr> letters(final int length) {
-        return letters(length,length);
+        return letters(length, length);
     }
 
     /**
-     * Generates a string made up of alphabetic characters
+     * Generates a string made up of alphabetic characters with a length between {@code minLength} and {@code maxLength}.
      *
-     * @param minLength minimum length of the string
-     * @param maxLength maximum length of the string (inclusive)
-     * @return a string generator
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> alphabetic(final int minLength,
-                                        final int maxLength) {
+                                        final int maxLength
+                                       ) {
         return new JsStrGen(StrGen.alphabetic(minLength,
                                               maxLength));
+    }
+
+    /**
+     * Generates a string made up of ASCII characters with a length between {@code minLength} and {@code maxLength}.
+     *
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
+     */
+    public static Gen<JsStr> ascii(final int minLength,
+                                   final int maxLength
+                                  ) {
+        return new JsStrGen(StrGen.ascii(minLength,
+                                         maxLength));
     }
 
     /**
@@ -146,102 +178,98 @@ public final class JsStrGen implements Gen<JsStr> {
      * @return a string generator
      */
     public static Gen<JsStr> alphabetic(final int length) {
-        return alphabetic(length,length);
+        return alphabetic(length, length);
     }
 
     /**
-     * Generates a string made up of alphanumeric characters
+     * Generates a string made up of alphabetic characters with a length of {@code length}.
      *
-     * @param minLength minimum length of the string
-     * @param maxLength maximum length of the string (inclusive)
-     * @return a string generator
+     * @param length Length of the string.
+     * @return A string generator.
+     */
+    public static Gen<JsStr> ascii(final int length) {
+        return ascii(length, length);
+    }
+
+    /**
+     * Generates a string made up of alphanumeric characters with a length between {@code minLength} and {@code maxLength}.
+     *
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> alphanumeric(final int minLength,
-                                          final int maxLength) {
+                                          final int maxLength
+                                         ) {
         return new JsStrGen(StrGen.alphanumeric(minLength,
                                                 maxLength));
     }
 
     /**
-     * Generates a string made up of alphanumeric characters
+     * Generates a string made up of alphanumeric characters with a length of {@code length}.
      *
-     * @param length  length of the string
-     * @return a string generator
+     * @param length Length of the string.
+     * @return A string generator.
      */
     public static Gen<JsStr> alphanumeric(final int length) {
-        return alphanumeric(length,length);
+        return alphanumeric(length, length);
     }
 
     /**
-     * returns a generator that produces arbitrary strings
+     * Returns a generator that produces arbitrary strings with a length between {@code minLength} and {@code maxLength}.
      *
-     * @param minLength minimum length of the string (inclusive)
-     * @param maxLength maximum length of the string (inclusive)
-     *
-     * @return a string generator
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> arbitrary(final int minLength,
-                                       final int maxLength) {
+                                       final int maxLength
+                                      ) {
         return new JsStrGen(StrGen.arbitrary(minLength,
                                              maxLength));
     }
 
 
     /**
-     * returns a generator that produces arbitrary strings
+     * Returns a generator that produces arbitrary strings with a length of {@code length}.
      *
-     * @param length of the string
-     *
-     * @return a string generator
+     * @param length Length of the string.
+     * @return A string generator.
      */
     public static Gen<JsStr> arbitrary(final int length) {
-        return arbitrary(length,length);
+        return arbitrary(length, length);
     }
 
 
     /**
+     * Returns a biased generator that produces, with higher probability, potential problematic values
+     * that usually cause more bugs. These values include empty strings (if {@code minLength} is equal to zero),
+     * blank strings of length {@code minLength}, blank strings of length {@code maxLength}, arbitrary strings of length
+     * {@code minLength}, and arbitrary strings of length {@code maxLength}.
      *
-     * returns a biased generators that produces, with higher probability, potential problematic values
-     * that usually cause more bugs. These values are:
-     * <pre>
-     * - empty string  (if minLength is equal to zero)
-     * - blank string of length minLength
-     * - blank string of length maxLength
-     * - arbitrary string of length minLength
-     * - arbitrary string of length maxLength
-     * </pre>
-     *
-     * @param minLength minimum length of the string (inclusive)
-     * @param maxLength maximum length of the string (inclusive)
-     * @return a string generator
+     * @param minLength Minimum length of the string (inclusive).
+     * @param maxLength Maximum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> biased(final int minLength,
-                                    final int maxLength) {
+                                    final int maxLength
+                                   ) {
         return new JsStrGen(StrGen.biased(minLength,
                                           maxLength));
     }
 
     /**
+     * Returns a biased generator that produces, with higher probability, potential problematic values
+     * that usually cause more bugs. These values include blank strings.
      *
-     * returns a biased generators that produces, with higher probability, potential problematic values
-     * that usually cause more bugs. These values are:
-     * <pre>
-     * - blank string
-     * </pre>
-     *
-     * @param length minimum length of the string (inclusive)
-     * @return a string generator
+     * @param length Minimum length of the string (inclusive).
+     * @return A string generator.
      */
     public static Gen<JsStr> biased(final int length) {
-        return biased(length,length);
+        return biased(length, length);
     }
 
-    /**
-     * Returns a supplier from the specified seed that generates a new JsStr each time it's called
-     *
-     * @param seed the generator seed
-     * @return a JsStr supplier
-     */
+
     @Override
     public Supplier<JsStr> apply(Random seed) {
         return gen.map(JsStr::of)

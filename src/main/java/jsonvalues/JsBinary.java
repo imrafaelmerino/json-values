@@ -10,17 +10,44 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an array of bytes. This type is not part of the Json specification. It is serialized into
- * a string using Base64 encoding scheme. A JsBinary and a JsStr are equals if the string is the array
- * of bytes encoded in base64.
- * {@code
+ * Represents an array of bytes in a JSON-like data structure. The purpose of the {@code JsBinary} class is
+ * to allow the inclusion of binary data within JSON-like objects, even though binary data is not part of
+ * the JSON specification. This class provides a means to serialize binary data into a string using the
+ * Base64 encoding scheme, making it compatible with JSON-like structures.
+ *
+ * <p>Binary data is often encountered in various data formats, and while JSON itself does not support binary
+ * data, the {@code JsBinary} class serves as a custom solution for embedding binary content within JSON-like
+ * objects.
+ *
+ * <p>When serialized to a JSON string, a {@code JsBinary} object is represented as a string containing the
+ * Base64-encoded binary data. Consequently, a {@code JsBinary} object and a {@code JsStr} object created from
+ * the Base64-encoded string are considered equal if the encoded content matches.
+ *
+ * <p>Here is an example of how to use {@code JsBinary}:
+ * <pre>{@code
+ * // Create a byte array containing binary data (e.g., image bytes)
  * byte[] bytes = "foo".getBytes();
+ *
+ * // Encode the binary data as a Base64 string
  * String base64 = Base64.getEncoder().encodeToString(bytes);
- * JsBinary.of(bytes).equals(JsStr.of(base64)); // true
- * }
+ *
+ * // Create a JsBinary object from the byte array
+ * JsBinary binary = JsBinary.of(bytes);
+ *
+ * // Create a JsStr object from the Base64-encoded string
+ * JsStr strFromBase64 = JsStr.of(base64);
+ *
+ * // Check if the JsBinary and JsStr objects are considered equal
+ * boolean areEqual = binary.equals(strFromBase64); // true
+ * }</pre>
+ *
+ * <p>It's important to note that while {@code JsBinary} is a useful tool for representing binary data in JSON-like
+ * structures, it is not part of the JSON standard. Its purpose is to provide a means of encoding binary data within
+ * a format that can coexist with JSON-like data structures.
+ *
+ * @see JsPrimitive
  */
 public final class JsBinary extends JsPrimitive {
-    public static final int TYPE_ID = 10;
     /**
      * prism between the sum type JsValue and JsBinary
      */
@@ -35,6 +62,9 @@ public final class JsBinary extends JsPrimitive {
             },
                         JsBinary::of
             );
+    /**
+     * the array of bytes
+     */
     public final byte[] value;
 
     private JsBinary(final byte[] value) {
@@ -62,10 +92,6 @@ public final class JsBinary extends JsPrimitive {
         return new JsBinary(requireNonNull(Base64.getDecoder().decode(base64)));
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
 
     @Override
     public JsPrimitive toJsPrimitive() {

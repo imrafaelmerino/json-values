@@ -4,7 +4,7 @@ package jsonvalues;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represents the index of a value in a json array.
+ * Represents the index of a value in a JSON array.
  */
 public final class Index implements Position {
 
@@ -18,9 +18,9 @@ public final class Index implements Position {
     }
 
     /**
-     * Returns a new instance witch represents the given index in an array.
+     * Creates a new instance of the Index class representing the given index.
      *
-     * @param index the given position
+     * @param index the index to represent
      * @return an Index object
      * @throws IndexOutOfBoundsException if the index is less than -1
      */
@@ -33,9 +33,9 @@ public final class Index implements Position {
 
     /**
      * Compares this index with another given position. If the given position is an index, both are
-     * compared numerically, if it's a key, both are compared lexicographically.
+     * compared numerically; if it's a key, both are compared lexicographically.
      *
-     * @param o the given position
+     * @param o the given position to compare with
      * @return 0 if they are equal, +1 if this is greater, -1 otherwise
      */
     @Override
@@ -48,9 +48,10 @@ public final class Index implements Position {
     }
 
     /**
-     * throws an UserError exception.
+     * Throws a UserError exception because an Index cannot be cast into a Key.
      *
-     * @throws UserError an Index can't be cast into a Key
+     * @return never returns, throws UserError
+     * @throws UserError always throws a UserError
      */
     @Override
     public Key asKey() {
@@ -60,7 +61,7 @@ public final class Index implements Position {
     /**
      * Returns this index.
      *
-     * @return this object
+     * @return this Index object
      */
     @Override
     public Index asIndex() {
@@ -120,4 +121,6 @@ public final class Index implements Position {
     public String toString() {
         return String.valueOf(n);
     }
+
+
 }

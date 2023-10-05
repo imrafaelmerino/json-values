@@ -30,7 +30,7 @@ abstract class AbstractMapSpec extends AbstractNullableSpec {
 
         JsObj obj = value.toJsObj();
 
-        for (jsonvalues.JsObjPair pair : obj) {
+        for (var pair : obj) {
             if (predicate.test(pair.value()))
                 errors.add(SpecError.of(path.key(pair.key()),
                                         new JsError(pair.value(),

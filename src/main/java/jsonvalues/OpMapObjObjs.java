@@ -13,7 +13,7 @@ final class OpMapObjObjs {
                      BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn,
                      JsPath startingPath
     ) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
             JsPath headPath = startingPath.key(next.key());
 
             if (next.value().isObj()) {
@@ -46,7 +46,7 @@ final class OpMapObjObjs {
 
     static JsObj map(JsObj json,
                      final Function<? super JsObj, ? extends JsValue> fn) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
 
             if (next.value().isObj()) {
                 JsValue mapped = fn.apply(

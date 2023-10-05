@@ -13,7 +13,7 @@ final class OpFilterObjObjs {
     static JsObj filter(JsObj json,
                         JsPath startingPath,
                         BiPredicate<? super JsPath, ? super JsObj> predicate) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
             if (next.value().isObj()) {
                 JsPath path = startingPath.key(next.key());
                 if (predicate.negate().test(path,
@@ -39,7 +39,7 @@ final class OpFilterObjObjs {
 
     static JsObj filter(JsObj json,
                         Predicate<? super JsObj> predicate) {
-        for (JsObjPair next : json) {
+        for (var next : json) {
             if (next.value().isObj()) {
                 if (predicate.negate().test(next.value().toJsObj())) {
                     json = json.delete(next.key());

@@ -8,10 +8,6 @@ import java.util.Map;
 
 public class TestStrGen {
 
-    public static void main(String[] args) {
-        JsStrGen.alphabetic(24,
-                            24).sample(10).forEach(System.out::println);
-    }
 
     @Test
     public void testArbitrary() {
@@ -58,7 +54,7 @@ public class TestStrGen {
                                               2)
                                       .sample(100000)
                                       .allMatch(it -> it.value.isEmpty() ||
-                                              (it.value.length() < 3) && it.value.chars().allMatch(Character::isDigit)));
+                                              ((it.value.length() < 3) && it.value.chars().allMatch(Character::isDigit))));
     }
 
     @Test
@@ -67,7 +63,7 @@ public class TestStrGen {
         Assertions.assertTrue(JsStrGen.digits(20)
                                       .sample(100000)
                                       .allMatch(it -> it.value.isEmpty() ||
-                                              (it.value.length() == 20) && it.value.chars().allMatch(Character::isDigit)));
+                                              ((it.value.length() == 20) && it.value.chars().allMatch(Character::isDigit))));
     }
 
     @Test

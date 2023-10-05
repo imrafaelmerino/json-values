@@ -16,7 +16,7 @@ final class OpMapObjKeys {
     ) {
         JsObj result = JsObj.empty();
 
-        for (JsObjPair next : json) {
+        for (var next : json) {
             JsPath headPath = startingPath.key(next.key());
             String keyMapped = fn.apply(headPath,
                                         next.value()
@@ -51,7 +51,7 @@ final class OpMapObjKeys {
                      Function<? super String, String> fn) {
         JsObj result = JsObj.empty();
 
-        for (JsObjPair next : json) {
+        for (var next : json) {
             String keyMapped = fn.apply(next.key());
             if (next.value().isObj()) {
                 result = result.set(keyMapped,

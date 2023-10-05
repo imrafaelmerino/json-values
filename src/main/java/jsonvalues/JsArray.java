@@ -1,9 +1,8 @@
 package jsonvalues;
 
 
-
 import fun.optic.Prism;
-import jsonvalues.spec.JsonIO;
+import jsonvalues.spec.JsIO;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -28,74 +27,72 @@ import static jsonvalues.MatchExp.ifNothingElse;
 
 
 /**
- * Represents a json array, which is an ordered list of elements.
+ * Represents a JSON array in a persistent data structure.
+ *
+ * <p>A {@code JsArray} is a collection of JSON values arranged in an ordered sequence. It allows for easy manipulation of JSON arrays, such as adding, updating, or removing elements, while preserving immutability. This class is designed to be used for creating and working with JSON arrays in a functional and safe manner.
+ *
+ * <p>{@code JsArray} implements the {@link Json} interface, which allows it to seamlessly integrate with other JSON-related classes and operations.
+ *
+ * <p>As a persistent data structure, modifications to a {@code JsArray} result in a new instance being created, leaving the original array unchanged. This immutability ensures safe concurrent access and simplifies handling of JSON data.
  */
 public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
-    public static final int TYPE_ID = 4;
     /**
-     * lenses defined for a Json array
+     * Provides a set of optics (lenses) for working with JSON arrays.
+     * <p>The {@code JsArrayLenses} class offers a collection of optics that allow you to focus on specific elements within a JSON array, making it easier to perform targeted modifications and transformations. These optics are designed to work seamlessly with the {@link JsArray} class, enabling precise handling of JSON array data.
      */
     public static final JsOptics.JsArrayLenses lens = JsOptics.array.lens;
     /**
-     * optionals defined for a Json array
+     * Provides a set of optional optics for working with JSON arrays.
+     * <p>The {@code JsArrayOptionals} class offers a collection of optional optics that allow you to work with JSON arrays more flexibly. These optics provide ways to safely access and manipulate elements within a JSON array, taking into account the possibility of absent or missing elements.
      */
     public static final JsOptics.JsArrayOptionals optional = JsOptics.array.optional;
-
-    public static final JsArray EMPTY = new JsArray(Vector.empty());
     /**
-     * prism between the sum type JsValue and JsArray
+     * A prism for safely converting a {@link JsValue} to a {@link JsArray}.
+     *
+     * <p>The {@code prism} field provides a way to safely attempt the conversion of a {@link JsValue} into a {@link JsArray}. It checks whether the given {@link JsValue} is actually an array and performs the conversion if it is. Otherwise, it returns an empty {@link Optional}.
      */
     public static final Prism<JsValue, JsArray> prism =
             new Prism<>(
                     s -> s.isArray() ?
-                         Optional.of(s.toJsArray()) :
-                         Optional.empty(),
+                            Optional.of(s.toJsArray()) :
+                            Optional.empty(),
                     a -> a
             );
+    static final JsArray EMPTY = new JsArray(Vector.empty());
     private final Vector<JsValue> seq;
     private volatile int hashcode;
     private volatile String str;
-
 
     JsArray(Vector<JsValue> seq) {
         this.seq = seq;
     }
 
-    public JsArray() {
-        this.seq = Vector.empty();
-    }
-
+    /**
+     * Returns the singleton empty JSON array
+     *
+     * @return the singleton empty JSON array
+     */
     public static JsArray empty() {
         return EMPTY;
     }
 
 
     /**
-     * Returns an immutable array.
+     * Creates a new {@link JsArray} containing the specified elements.
      *
-     * @param e    a JsValue
-     * @param e1   a JsValue
-     * @param e2   a JsValue
-     * @param e3   a JsValue
-     * @param e4   a JsValue
-     * @param rest more optional JsValue
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified elements in the order they
+     * appear in the method's argument list. You can provide one or more {@link JsValue} elements to include in the
+     * resulting array.
+     *
+     * @param e    The first {@link JsValue} element to include in the array.
+     * @param rest Additional {@link JsValue} elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified elements.
+     * @throws NullPointerException if any of the provided elements (including {@code e} and {@code rest}) are null.
      */
-    // squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
-    @SuppressWarnings("squid:S00107")
     public static JsArray of(final JsValue e,
-                             final JsValue e1,
-                             final JsValue e2,
-                             final JsValue e3,
-                             final JsValue e4,
                              final JsValue... rest
-    ) {
-        JsArray result = of(e,
-                            e1,
-                            e2,
-                            e3,
-                            e4
-        );
+                            ) {
+        JsArray result = JsArray.empty().append(e);
         for (JsValue other : requireNonNull(rest)) {
             result = result.append(other);
         }
@@ -104,98 +101,27 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     }
 
-    /**
-     * Returns an immutable five-element array.
-     *
-     * @param e  a JsValue
-     * @param e1 a JsValue
-     * @param e2 a JsValue
-     * @param e3 a JsValue
-     * @param e4 a JsValue
-     * @return an immutable five-element JsArray
-     */
-    //squid:S00107: static factory methods usually have more than 4 parameters, that's one their advantages precisely
-    @SuppressWarnings("squid:S00107")
-    public static JsArray of(final JsValue e,
-                             final JsValue e1,
-                             final JsValue e2,
-                             final JsValue e3,
-                             final JsValue e4
-    ) {
-
-        return of(e,
-                  e1,
-                  e2,
-                  e3
-        ).append(e4);
-    }
 
     /**
-     * Returns an immutable four-element array.
+     * Creates a new {@link JsArray} containing the specified string elements.
      *
-     * @param e  a JsValue
-     * @param e1 a JsValue
-     * @param e2 a JsValue
-     * @param e3 a JsValue
-     * @return an immutable four-element JsArray
-     */
-    public static JsArray of(final JsValue e,
-                             final JsValue e1,
-                             final JsValue e2,
-                             final JsValue e3
-    ) {
-        return of(e,
-                  e1,
-                  e2
-        ).append(e3);
-    }
-
-    /**
-     * Returns an immutable three-element array.
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified string elements in the order they
+     * appear in the method's argument list. You can provide one or more strings to include in the resulting array.
      *
-     * @param e  a JsValue
-     * @param e1 a JsValue
-     * @param e2 a JsValue
-     * @return an immutable three-element JsArray
-     */
-    public static JsArray of(final JsValue e,
-                             final JsValue e1,
-                             final JsValue e2
-    ) {
-
-        return of(e,
-                  e1
-        ).append(e2);
-    }
-
-    /**
-     * Returns an immutable two-element array.
+     * <p>Example usage:
+     * <pre>{@code
+     * // Creating a JsArray with specified string elements
+     * JsArray array = JsArray.of("Hello", "World");
+     * }</pre>
      *
-     * @param e  a JsValue
-     * @param e1 a JsValue
-     * @return an immutable two-element JsArray
-     */
-    public static JsArray of(final JsValue e,
-                             final JsValue e1
-    ) {
-        return of(e).append(e1);
-    }
-
-    public static JsArray of(JsValue e) {
-
-        return JsArray.EMPTY.append(e);
-    }
-
-    /**
-     * Returns an immutable array from one or more strings.
-     *
-     * @param str    a string
-     * @param others more optional strings
-     * @return an immutable JsArray
+     * @param str    The first string element to include in the array.
+     * @param others Additional string elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified string elements.
+     * @throws NullPointerException if any of the provided string elements (including {@code str} and {@code others}) are null.
      */
     public static JsArray of(String str,
                              String... others
-    ) {
+                            ) {
 
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsStr.of(str));
         for (String a : others) {
@@ -206,15 +132,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable array from one or more integers.
+     * Creates a new {@link JsArray} containing the specified integer elements.
      *
-     * @param number an integer
-     * @param others more optional integers
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified integer elements in the order they
+     * appear in the method's argument list. You can provide one or more integers to include in the resulting array.
+     *
+     * @param number The first integer element to include in the array.
+     * @param others Additional integer elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified integer elements.
      */
     public static JsArray of(int number,
                              int... others
-    ) {
+                            ) {
 
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsInt.of(number));
         for (int a : others) {
@@ -225,15 +154,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable array from one or more booleans.
+     * Creates a new {@link JsArray} containing the specified boolean elements.
      *
-     * @param bool   an boolean
-     * @param others more optional booleans
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified boolean elements in the order they
+     * appear in the method's argument list. You can provide one or more boolean values to include in the resulting array.
+     *
+     * @param bool   The first boolean element to include in the array.
+     * @param others Additional boolean elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified boolean elements.
      */
     public static JsArray of(final boolean bool,
                              final boolean... others
-    ) {
+                            ) {
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsBool.of(bool));
         for (boolean a : others) {
             vector = vector.append(JsBool.of(a));
@@ -243,15 +175,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable array from one or more longs.
+     * Creates a new {@link JsArray} containing the specified long elements.
      *
-     * @param number a long
-     * @param others more optional longs
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified long elements in the order they
+     * appear in the method's argument list. You can provide one or more long values to include in the resulting array.
+     *
+     * @param number The first long element to include in the array.
+     * @param others Additional long elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified long elements.
      */
     public static JsArray of(final long number,
                              final long... others
-    ) {
+                            ) {
 
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsLong.of(number));
         for (long a : others) {
@@ -263,15 +198,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable array from one or more big integers.
+     * Creates a new {@link JsArray} containing the specified {@link BigInteger} elements.
      *
-     * @param number a big integer
-     * @param others more optional big integers
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified {@link BigInteger} elements in the order they
+     * appear in the method's argument list. You can provide one or more {@link BigInteger} values to include in the resulting array.
+     *
+     * @param number The first {@link BigInteger} element to include in the array.
+     * @param others Additional {@link BigInteger} elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified {@link BigInteger} elements.
      */
     public static JsArray of(final BigInteger number,
                              final BigInteger... others
-    ) {
+                            ) {
 
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsBigInt.of(number));
         for (BigInteger a : others) {
@@ -281,15 +219,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns an immutable array from one or more doubles.
+     * Creates a new {@link JsArray} containing the specified {@code double} elements.
      *
-     * @param number a double
-     * @param others more optional doubles
-     * @return an immutable JsArray
+     * <p>The {@code of} method returns a new {@link JsArray} instance with the specified {@code double} elements in the order they
+     * appear in the method's argument list. You can provide one or more {@code double} values to include in the resulting array.
+     *
+     * @param number The first {@code double} element to include in the array.
+     * @param others Additional {@code double} elements to include in the array (optional).
+     * @return A new {@link JsArray} containing the specified {@code double} elements.
      */
     public static JsArray of(final double number,
                              final double... others
-    ) {
+                            ) {
 
         Vector<JsValue> vector = Vector.<JsValue>empty().append(JsDouble.of(number));
         for (double a : others) {
@@ -300,10 +241,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * returns an immutable json array from an iterable of json elements
+     * Creates a new {@link JsArray} from an {@link Iterable} of {@link JsValue} elements.
      *
-     * @param iterable the iterable of json elements
-     * @return an immutable json array
+     * <p>The {@code ofIterable} method returns a new {@link JsArray} instance containing the elements provided by the
+     * specified {@link Iterable}. This allows you to convert an existing collection of {@link JsValue} objects into a
+     * {@link JsArray}.
+     *
+     * @param iterable The {@link Iterable} containing {@link JsValue} elements to include in the array.
+     * @return A new {@link JsArray} containing the elements from the specified {@link Iterable}.
      */
     public static JsArray ofIterable(final Iterable<? extends JsValue> iterable) {
         Vector<JsValue> vector = Vector.empty();
@@ -316,80 +261,111 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Tries to parse the string into an immutable json array.
+     * Parses a JSON array represented as a string and returns a new {@link JsArray} instance.
      *
-     * @param str the string to be parsed
-     * @return a JsArray
-     * @throws JsParserException if the string doesnt represent a json array
+     * <p>The {@code parse} method takes a JSON array string as input, parses it, and returns a new {@link JsArray} containing
+     * the parsed JSON values. If the input string is not a valid JSON array representation, a {@link JsParserException} is
+     * thrown.
+     *
+     * @param str The JSON array string to parse.
+     * @return A new {@link JsArray} containing the parsed JSON values.
+     * @throws JsParserException If the input string is not a valid JSON array representation.
+     * @see JsParserException
      */
-    public static JsArray parse(final String str) {
+    public static JsArray parse(final String str) throws JsParserException {
 
-      return JsonIO.INSTANCE.parseToJsArray(str.getBytes(StandardCharsets.UTF_8));
+        return JsIO.INSTANCE.parseToJsArray(str.getBytes(StandardCharsets.UTF_8));
+
+    }
+
+    /**
+     * Parses a JSON array represented as a byte array and returns a new {@link JsArray} instance.
+     *
+     * <p>The {@code parse} method takes a JSON array represented as a byte array, parses it, and returns a new {@link JsArray}
+     * containing the parsed JSON values. If the input byte array does not represent a valid JSON array, a {@link JsParserException}
+     * is thrown.
+     *
+     * @param bytes The byte array representing the JSON array to parse.
+     * @return A new {@link JsArray} containing the parsed JSON values.
+     * @throws JsParserException If the input byte array does not represent a valid JSON array.
+     * @see JsParserException
+     */
+    public static JsArray parse(final byte[] bytes) throws JsParserException {
+
+        return JsIO.INSTANCE.parseToJsArray(bytes);
 
     }
 
 
     static Stream<JsPair> streamOfArr(final JsArray array,
-                                                     final JsPath path) {
+                                      final JsPath path
+                                     ) {
 
 
         requireNonNull(path);
         return requireNonNull(array).ifEmptyElse(() -> Stream.of(new JsPair(path,
-                                                                         array
+                                                                            array
                                                  )),
                                                  () -> range(0,
                                                              array.size()
-                                                 ).mapToObj(pair -> new JsPair(path.index(pair),
-                                                                            array.get(Index.of(pair))
-                                                  ))
-                                                  .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
-                                                                                                        pair.path()
-                                                                                       ),
-                                                                                       a -> streamOfArr(a,
-                                                                                                        pair.path()
-                                                                                       ),
-                                                                                       e -> Stream.of(pair)
-                                                                           )
-                                                                           .apply(pair.value())
-                                                  )
-        );
+                                                            ).mapToObj(pair -> new JsPair(path.index(pair),
+                                                                                          array.get(Index.of(pair))
+                                                             ))
+                                                             .flatMap(pair -> MatchExp.ifJsonElse(o -> streamOfObj(o,
+                                                                                                                   pair.path()
+                                                                                                                  ),
+                                                                                                  a -> streamOfArr(a,
+                                                                                                                   pair.path()
+                                                                                                                  ),
+                                                                                                  e -> Stream.of(pair)
+                                                                                                 )
+                                                                                      .apply(pair.value())
+                                                                     )
+                                                );
 
 
     }
 
 
     /**
-     * Adds one or more elements, starting from the first, to the back of this array.
+     * Appends one or more {@link JsValue} elements to the end of this JSON array.
      *
-     * @param e      the JsValue to be added to the back.
-     * @param others more optional JsValue to be added to the back
-     * @return a new JsArray
+     * <p>The {@code append} method allows you to add one or more {@link JsValue} elements to the end of this JSON array.
+     * The elements are added in the order they appear in the argument list.
+     *
+     * @param e      The first {@link JsValue} element to append.
+     * @param others Additional {@link JsValue} elements to append (optional).
+     * @return A new {@link JsArray} containing the elements of this array followed by the appended elements.
      */
     public JsArray append(final JsValue e,
                           final JsValue... others
-    ) {
+                         ) {
         Vector<JsValue> acc = this.seq.append(requireNonNull(e));
         for (JsValue other : requireNonNull(others)) acc = acc.append(requireNonNull(other));
         return new JsArray(acc);
     }
 
     /**
-     * Adds all the elements of the given array, starting from the head, to the back of this array.
+     * Appends all elements from another {@link JsArray} to the end of this JSON array.
      *
-     * @param array the JsArray of elements to be added to the back
-     * @return a new JsArray
+     * <p>The {@code appendAll} method allows you to add all elements from another {@link JsArray} to the end of this JSON array.
+     * The elements are added in the order they appear in the source array.
+     *
+     * @param array The {@link JsArray} containing elements to append to this array.
+     * @return A new {@link JsArray} containing the elements of this array followed by the elements from the source array.
+     * @see JsArray
      */
     public JsArray appendAll(final JsArray array) {
         return appendAllBack(this,
                              requireNonNull(array)
-        );
+                            );
 
 
     }
 
     private JsArray appendAllBack(JsArray arr1,
                                   final JsArray arr2
-    ) {
+                                 ) {
         assert arr1 != null;
         assert arr2 != null;
         if (arr2.isEmpty()) return arr1;
@@ -402,7 +378,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     private JsArray appendAllFront(JsArray arr1,
                                    JsArray arr2
-    ) {
+                                  ) {
         assert arr1 != null;
         assert arr2 != null;
         if (arr2.isEmpty()) return arr1;
@@ -414,23 +390,29 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns true if this array is equal to the given as a parameter. In the case of ARRAY_AS=LIST,
-     * this method is equivalent to JsArray.equals(Object).
+     * Checks if this JSON array is equal to another JSON array.
      *
-     * @param array    the given array
-     * @param ARRAY_AS option to define if arrays are considered SETS, LISTS OR MULTISET
-     * @return true if both arrays are equals according to ARRAY_AS parameter
+     * <p>The {@code equals} method compares this JSON array to another JSON array to determine if they are equal.
+     * Equality is defined based on the specified {@link TYPE} of array comparison.
+     * If {@code ARRAY_AS} is {@link TYPE#SET}, both arrays must contain the same elements (order doesn't matter, duplicates are ignored).
+     * If {@code ARRAY_AS} is {@link TYPE#LIST}, both arrays must have the same elements in the same order.
+     * If {@code ARRAY_AS} is {@link TYPE#MULTISET}, both arrays must contain the same elements (order doesn't matter, duplicates are counted).
+     *
+     * @param array    The {@link JsArray} to compare to this array.
+     * @param ARRAY_AS The {@link TYPE} specifying the type of array comparison (SET, LIST, or MULTISET).
+     * @return {@code true} if the arrays are equal according to the specified type, {@code false} otherwise.
+     * @see TYPE
      */
     @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
     public boolean equals(final JsArray array,
                           final TYPE ARRAY_AS
-    ) {
+                         ) {
         if (ARRAY_AS == LIST) return this.equals(array);
         if (isEmpty()) return array.isEmpty();
         if (array.isEmpty()) return false;
         return IntStream.range(0,
                                size()
-                        )
+                              )
                         .mapToObj(i -> get(Index.of(i)))
                         .allMatch(elem ->
                                   {
@@ -442,7 +424,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                   })
                 && IntStream.range(0,
                                    array.size()
-                            )
+                                  )
                             .mapToObj(i -> array.get(Index.of(i)))
                             .allMatch(this::containsValue);
     }
@@ -451,8 +433,19 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * Returns the integral number located at the given index as an integer or null if it
      * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
      *
-     * @param index the index
-     * @return the integral number located at the given index or null
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an integral number.
+     * If the value at the index is a valid integral number that can be represented as an integer, it is returned as an {@code Integer}.
+     * If the value is not an integral number or cannot fit in an integer, this method returns {@code null}.
+     *
+     * <p>Example usage:
+     * <pre>{@code
+     * // Create a JSON array and retrieve an integral number as an integer
+     * JsArray array = JsArray.of(1, 2, 3);
+     * Integer value = array.getInt(1); // Returns 2
+     * }</pre>
+     *
+     * @param index The index of the JSON value to retrieve as an integer.
+     * @return The integral number located at the given index as an {@code Integer}, or {@code null} if it doesn't exist or is not a valid integral number.
      */
     public Integer getInt(final int index) {
         return getInt(index,
@@ -461,28 +454,39 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the integral number located at the given index as an integer or the default value provided if it
+     * Returns the integral number located at the given index as an integer or a default value if it
      * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an integer.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the integral number located at the given index or null
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an integral number.
+     * If the value at the index is a valid integral number that can be represented as an integer, it is returned as an {@code Integer}.
+     * If the value is not an integral number or cannot fit in an integer, the default value provided by the {@code orElse} supplier
+     * is returned.
+     *
+     * @param index  The index of the JSON value to retrieve as an integer.
+     * @param orElse A supplier that provides a default integer value to return if the JSON value at the index is not a valid integral number or cannot fit in an integer.
+     * @return The integral number located at the given index as an {@code Integer}, or the default value provided by {@code orElse} if it doesn't exist or is not a valid integral number.
+     * @see JsArray
      */
     public Integer getInt(final int index,
-                          final Supplier<Integer> orElse) {
+                          final Supplier<Integer> orElse
+                         ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsInt.prism.getOptional.apply(seq.get(index))
-                                      .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsInt.prism.getOptional.apply(seq.get(index))
+                                       .orElseGet(requireNonNull(orElse));
 
     }
 
     /**
-     * Returns the long number located at the given index as an long or null if it
-     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an long.
+     * Returns the integral number located at the given index as a long or null if it
+     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
      *
-     * @param index the index
-     * @return the long number located at the given index or null
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an integral number.
+     * If the value at the index is a valid integral number that can be represented as a long, it is returned as a {@code Long}.
+     * If the value is not an integral number or cannot fit in a long, {@code null} is returned.
+     *
+     * @param index The index of the JSON value to retrieve as a long.
+     * @return The integral number located at the given index as a {@code Long}, or {@code null} if it doesn't exist or is not a valid integral number.
      */
     public Long getLong(final int index) {
         return getLong(index,
@@ -491,27 +495,36 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the long number located at the given index as an long or the default value provided if it
-     * doesn't exist or it's not an integral number or it's an integral number but doesn't fit in an long.
+     * Returns the integral number located at the given index as a long or a default value provided by the {@code orElse}
+     * supplier if it doesn't exist or it's not an integral number or it's an integral number but doesn't fit in a long.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the long number located at the given index or the default value provided
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an integral number.
+     * If the value at the index is a valid integral number that can be represented as a long, it is returned as a {@code Long}.
+     * If the value is not an integral number or cannot fit in a long, the {@code orElse} supplier is used to provide a default value.
+     *
+     * @param index  The index of the JSON value to retrieve as a long.
+     * @param orElse A {@code Supplier} that provides the default value to return if the value at the given index is not a valid integral number or cannot fit in a long.
+     * @return The integral number located at the given index as a {@code Long}, or the default value provided by {@code orElse} if it doesn't exist or is not a valid integral number.
      */
     public Long getLong(final int index,
-                        final Supplier<Long> orElse) {
+                        final Supplier<Long> orElse
+                       ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsLong.prism.getOptional.apply(seq.get(index))
-                                       .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsLong.prism.getOptional.apply(seq.get(index))
+                                        .orElseGet(requireNonNull(orElse));
 
     }
 
     /**
-     * Returns the string located at the given index  or null if it doesn't exist.
+     * Returns the string located at the given index or {@code null} if it doesn't exist or it's not a string.
      *
-     * @param index the index
-     * @return the string located at the given index or null
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to interpret it as a string.
+     * If the value at the index is a string, it is returned as a {@code String}. If the value is not a string,
+     * or if it doesn't exist at the specified index, {@code null} is returned.
+     *
+     * @param index The index of the JSON value to retrieve as a string.
+     * @return The string located at the given index, or {@code null} if it doesn't exist or is not a string.
      */
     public String getStr(final int index) {
         return getStr(index,
@@ -521,28 +534,39 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
 
     /**
-     * Returns the string located at the given index or the default value provided
-     * if it doesn't exist.
+     * Returns the string located at the given index or a default value supplied by the provided {@code orElse} function
+     * if it doesn't exist or is not a string.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the string located at the given index or the default value
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to interpret it as a string.
+     * If the value at the index is a string, it is returned as a {@code String}. If the value is not a string,
+     * or if it doesn't exist at the specified index, the {@code orElse} function is invoked to provide a default value.
+     *
+     * @param index  The index of the JSON value to retrieve as a string.
+     * @param orElse A {@code Supplier<String>} providing a default value if the value is not a string or doesn't exist.
+     * @return The string located at the given index, or the result of invoking {@code orElse} if it doesn't exist or is not a string.
      */
     public String getStr(final int index,
-                         final Supplier<String> orElse) {
+                         final Supplier<String> orElse
+                        ) {
         return (seq.isEmpty() || index < 0 || index > seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsStr.prism.getOptional.apply(seq.get(index))
-                                      .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsStr.prism.getOptional.apply(seq.get(index))
+                                       .orElseGet(requireNonNull(orElse));
 
     }
 
     /**
-     * Returns the instant located at the given index or null if it doesn't exist or it's not an instant.
-     * If the element is an instant formatted as a string, it's returned as an instant as well.
+     * Returns the instant located at the given index as an {@link Instant} or {@code null} if it doesn't exist or
+     * is not a valid instant representation.
      *
-     * @param index the given index
-     * @return an instant
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to interpret it as
+     * an instant. If the value at the index is a valid instant representation, it is returned as an {@link Instant}.
+     * If the value is not a valid instant representation, or if it doesn't exist at the specified index, {@code null}
+     * is returned.
+     *
+     * @param index The index of the JSON value to retrieve as an {@link Instant}.
+     * @return The instant located at the given index as an {@link Instant}, or {@code null} if it doesn't exist or
+     * is not a valid instant representation.
      */
     public Instant getInstant(final int index) {
         return getInstant(index,
@@ -551,29 +575,39 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the instant located at the given index or the default value provided if it doesn't exist
-     * or it's not an instant. If the element is an instant formatted as a string, it's returned as an
-     * instant as well.
+     * Returns the instant located at the given index as an {@link Instant} or a default {@link Instant} provided by
+     * the {@code orElse} supplier if it doesn't exist or is not a valid instant representation.
      *
-     * @param index  the given index
-     * @param orElse the default value
-     * @return an instant
+     * <p>This method retrieves the JSON value at the specified index in the array and attempts to interpret it as
+     * an instant. If the value at the index is a valid instant representation, it is returned as an {@link Instant}.
+     * If the value is not a valid instant representation, or if it doesn't exist at the specified index, the default
+     * {@link Instant} provided by the {@code orElse} supplier is returned.
+     *
+     * @param index  The index of the JSON value to retrieve as an {@link Instant}.
+     * @param orElse A {@link Supplier} providing the default {@link Instant} to return if the value at the specified
+     *               index is not a valid instant representation or doesn't exist.
+     * @return The instant located at the given index as an {@link Instant}, or the default {@link Instant} provided
+     * by the {@code orElse} supplier if it doesn't exist or is not a valid instant representation.
      */
     public Instant getInstant(final int index,
-                              final Supplier<Instant> orElse) {
+                              final Supplier<Instant> orElse
+                             ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsInstant.prism.getOptional.apply(seq.get(index))
-                                          .orElse(requireNonNull(orElse).get());
+                requireNonNull(orElse).get() :
+                JsInstant.prism.getOptional.apply(seq.get(index))
+                                           .orElse(requireNonNull(orElse).get());
 
     }
 
     /**
-     * Returns the array of bytes located at the given index or null if it doesn't exist or it's not an array of bytes.
-     * If the element is a string in base64, it's returned as an array of bytes as well.
+     * Retrieves the binary data located at the specified index within the JSON-like array and returns it as an array of bytes.
+     * If the element at the given index is either a binary array or a string encoded in Base64, it is converted into an array
+     * of bytes and returned. If the element does not exist at the specified index or is not a valid binary representation, this
+     * method returns null.
      *
-     * @param index the given index
-     * @return an array of bytes
+     * @param index The index at which to retrieve the binary data.
+     * @return An array of bytes representing the binary data at the specified index, or null if the data does not exist or is not
+     * a valid binary representation.
      */
     public byte[] getBinary(final int index) {
         return getBinary(index,
@@ -582,27 +616,35 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the array of bytes located at the given index or the default value provided if it doesn't exist or it's not an array of bytes.
-     * If the element is a string in base64, it's returned as an array of bytes as well.
+     * Retrieves the binary data located at the specified index within the JSON-like array and returns it as an array of bytes.
+     * If the element at the given index is either a binary array or a string encoded in Base64, it is converted into an array
+     * of bytes and returned. If the element does not exist at the specified index or is not a valid binary representation, this
+     * method returns the result obtained from the provided default value supplier.
      *
-     * @param index  the given index
-     * @param orElse the default value
-     * @return an array of bytes
+     * @param index  The index at which to retrieve the binary data.
+     * @param orElse A supplier function that provides a default value (an array of bytes) to be returned when the data does not
+     *               exist at the specified index or is not a valid binary representation.
+     * @return An array of bytes representing the binary data at the specified index, or the default value provided by the
+     * supplier if the data does not exist or is not a valid binary representation.
      */
     public byte[] getBinary(final int index,
-                            final Supplier<byte[]> orElse) {
+                            final Supplier<byte[]> orElse
+                           ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsBinary.prism.getOptional.apply(seq.get(index))
-                                         .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsBinary.prism.getOptional.apply(seq.get(index))
+                                          .orElseGet(requireNonNull(orElse));
 
     }
 
     /**
-     * Returns the boolean located at the given index  or null if it doesn't exist.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a boolean. If the value at the given index is a boolean, it returns the boolean
+     * value; otherwise, it returns null.
      *
-     * @param index the index
-     * @return the boolean located at the given index or null
+     * @param index The index at which to retrieve the value.
+     * @return The boolean value located at the given index, or null if it doesn't exist or the value
+     * at the index is not a boolean.
      */
     public Boolean getBool(final int index) {
         return getBool(index,
@@ -611,30 +653,42 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the boolean located at the given index  or the default value provided if it doesn't exist.
+     * Retrieves the boolean value located at the specified index within the JSON-like array and returns it. If the element at the
+     * given index is a valid boolean value, it is returned. If the element does not exist at the specified index or is not a valid
+     * boolean representation, this method returns the result obtained from the provided default value supplier.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the boolean located at the given index or the default value provided
+     * @param index  The index at which to retrieve the boolean value.
+     * @param orElse A supplier function that provides a default boolean value to be returned when the value does not exist at
+     *               the specified index or is not a valid boolean representation.
+     * @return The boolean value located at the given index, or the default value provided by the supplier if the value does not
+     * exist or is not a valid boolean representation.
      */
     public Boolean getBool(final int index,
-                           final Supplier<Boolean> orElse) {
+                           final Supplier<Boolean> orElse
+                          ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsBool.prism.getOptional.apply(seq.get(index))
-                                       .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsBool.prism.getOptional.apply(seq.get(index))
+                                        .orElseGet(requireNonNull(orElse));
 
     }
 
 
     /**
-     * Returns the number located at the given index as a double or null if it
-     * doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
-     * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
-     * the precision of the BigDecimal
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a decimal number, converting it to a double. If the value at the given index is
+     * a decimal number (either a double or a BigDecimal), it returns the corresponding double value.
+     * If the value is not a decimal number or the index doesn't exist, it returns null.
      *
-     * @param index the index
-     * @return the double number located at the given index or null
+     * <p>The conversion process is designed to handle decimal numbers, but it's important to note that
+     * if the value is a BigDecimal, the conversion to a double may result in a potential loss of precision.
+     * BigDecimal numbers can represent decimal values with high precision, whereas double has limited
+     * precision. Therefore, when converting a BigDecimal to a double, there may be a loss of information
+     * beyond the double's precision, potentially leading to rounding or truncation.
+     *
+     * @param index The index at which to retrieve the value.
+     * @return The double value located at the given index, or null if it doesn't exist, or the value
+     * at the index is not a decimal number.
      */
     public Double getDouble(final int index) {
         return getDouble(index,
@@ -643,30 +697,43 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the number located at the given index as a double or the default value provided if it
-     * doesn't exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
-     * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
-     * the precision of the BigDecimal
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a decimal number, converting it to a double. If the value at the given index is
+     * a decimal number (either a double or a BigDecimal), it returns the corresponding double value.
+     * If the value is not a decimal number or the index doesn't exist, it returns the default value
+     * provided by the {@code orElse} supplier.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the double number located at the given index or null
+     * <p>The conversion process is designed to handle decimal numbers, but it's important to note that
+     * if the value is a BigDecimal, the conversion to a double may result in a potential loss of precision.
+     * BigDecimal numbers can represent decimal values with high precision, whereas double has limited
+     * precision. Therefore, when converting a BigDecimal to a double, there may be a loss of information
+     * beyond the double's precision, potentially leading to rounding or truncation.
+     *
+     * @param index  The index at which to retrieve the value.
+     * @param orElse A supplier providing the default double value to return if the value is not a decimal
+     *               number or the index doesn't exist.
+     * @return The double value located at the given index, or the default value provided by {@code orElse}
+     * if it doesn't exist or the value at the index is not a decimal number.
      */
     public Double getDouble(final int index,
-                            final Supplier<Double> orElse) {
+                            final Supplier<Double> orElse
+                           ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsDouble.prism.getOptional.apply(seq.get(index))
-                                         .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsDouble.prism.getOptional.apply(seq.get(index))
+                                          .orElseGet(requireNonNull(orElse));
 
     }
 
     /**
-     * Returns the number located at the given index as a big decimal or null if
-     * it doesn't exist or it's not a decimal number.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a decimal number, returning it as a BigDecimal. If the value at the given index
+     * is a decimal number (either a BigDecimal or a double), it returns the corresponding BigDecimal value.
+     * If the value is not a decimal number or the index doesn't exist, it returns null.
      *
-     * @param index the index
-     * @return the decimal number located at the given index or null
+     * @param index The index at which to retrieve the value.
+     * @return The BigDecimal value located at the given index, or null if it doesn't exist or the value
+     * at the index is not a decimal number.
      */
     public BigDecimal getBigDec(final int index) {
         return getBigDec(index,
@@ -674,27 +741,36 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the number located at the given index as a big decimal or the default value provided if
-     * it doesn't exist or it's not a decimal number.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a decimal number, returning it as a BigDecimal. If the value at the given index
+     * is a decimal number (either a BigDecimal or a double), it returns the corresponding BigDecimal value.
+     * If the value is not a decimal number or the index doesn't exist, it returns the default BigDecimal
+     * value provided by the specified supplier.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the decimal number located at the given index or the default value provided
+     * @param index  The index at which to retrieve the value.
+     * @param orElse A supplier function that provides a default BigDecimal value if the value at the
+     *               index is not a decimal number or the index doesn't exist.
+     * @return The BigDecimal value located at the given index, or the default value provided by the
+     * supplier if it doesn't exist or the value at the index is not a decimal number.
      */
     public BigDecimal getBigDec(final int index,
-                                final Supplier<BigDecimal> orElse) {
+                                final Supplier<BigDecimal> orElse
+                               ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsBigDec.prism.getOptional.apply(seq.get(index))
-                                         .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsBigDec.prism.getOptional.apply(seq.get(index))
+                                          .orElseGet(requireNonNull(orElse));
     }
 
     /**
-     * Returns the number located at the given index as a big integer or null if
-     * it doesn't exist or it's not an integral number.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as an integral number, returning it as a BigInteger. If the value at the given index
+     * is an integral number (either a BigInteger, long, or int), it returns the corresponding BigInteger value.
+     * If the value is not an integral number or the index doesn't exist, it returns null.
      *
-     * @param index the index
-     * @return the integral number located at the given index or null
+     * @param index The index at which to retrieve the value.
+     * @return The BigInteger value located at the given index, or null if it doesn't exist or the value
+     * at the index is not an integral number.
      */
     public BigInteger getBigInt(final int index) {
         return getBigInt(index,
@@ -702,26 +778,34 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the number located at the given index as a big integer or the default value provided
-     * if  it doesn't exist or it's not an integral number.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as an integral number, returning it as a BigInteger. If the value at the given index
+     * is an integral number (either a BigInteger, long, or int), it returns the corresponding BigInteger value.
+     * If the value is not an integral number or the index doesn't exist, it returns the default value provided.
      *
-     * @param index  the index
-     * @param orElse the default value provided
-     * @return the integral number located at the given index or null
+     * @param index  The index at which to retrieve the value.
+     * @param orElse The default value to return if the value at the index is not an integral number
+     *               or if the index doesn't exist.
+     * @return The integral number located at the given index, or the default value if it doesn't exist or
+     * the value at the index is not an integral number.
      */
     public BigInteger getBigInt(final int index,
-                                final Supplier<BigInteger> orElse) {
+                                final Supplier<BigInteger> orElse
+                               ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsBigInt.prism.getOptional.apply(seq.get(index))
-                                         .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsBigInt.prism.getOptional.apply(seq.get(index))
+                                          .orElseGet(requireNonNull(orElse));
     }
 
     /**
-     * Returns the object located at the given index  or null if it doesn't exist or it's not a json object.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a JSON object (JsObj). If the value at the given index is a JSON object, it returns
+     * the corresponding JsObj. If the value is not a JSON object or the index doesn't exist, it returns null.
      *
-     * @param index the index
-     * @return the object located at the given index or null
+     * @param index The index at which to retrieve the value.
+     * @return The JsObj located at the given index, or null if it doesn't exist or the value at the index
+     * is not a JSON object.
      */
     public JsObj getObj(final int index) {
         return getObj(index,
@@ -729,26 +813,33 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the object located at the given index  or the default value provided if it doesn't exist or
-     * it's not a json object.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a JSON object (JsObj). If the value at the given index is a JSON object, it returns
+     * the corresponding JsObj. If the value is not a JSON object or the index doesn't exist, it returns
+     * the default JsObj provided by the `orElse` supplier.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the object located at the given index or the default value provided
+     * @param index  The index at which to retrieve the value.
+     * @param orElse A supplier that provides the default JsObj if the index is out of bounds or the value
+     *               at the index is not a JSON object.
+     * @return The JsObj located at the given index or the default JsObj provided by `orElse`.
      */
     public JsObj getObj(final int index,
-                        final Supplier<JsObj> orElse) {
+                        final Supplier<JsObj> orElse
+                       ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsObj.prism.getOptional.apply(seq.get(index))
-                                      .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsObj.prism.getOptional.apply(seq.get(index))
+                                       .orElseGet(requireNonNull(orElse));
     }
 
     /**
-     * Returns the array located at the given index or null if it doesn't exist or it's not a json array.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a JSON array (JsArray). If the value at the given index is a JSON array, it returns
+     * the corresponding JsArray. If the value is not a JSON array or the index doesn't exist, it returns
+     * null.
      *
-     * @param index the index
-     * @return the array located at the given index or null
+     * @param index The index at which to retrieve the value.
+     * @return The JsArray located at the given index or null if it doesn't exist or is not a JSON array.
      */
     public JsArray getArray(final int index) {
         return getArray(index,
@@ -756,28 +847,32 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the array located at the given index or the default value provided if it doesn't exist
-     * or it's not a json array.
+     * Retrieves the value located at the specified index within the JSON-like array and attempts to
+     * interpret it as a JSON array (JsArray). If the value at the given index is a JSON array, it returns
+     * the corresponding JsArray. If the value is not a JSON array or the index doesn't exist, it returns
+     * the default value provided by the specified Supplier.
      *
-     * @param index  the index
-     * @param orElse the default value
-     * @return the array located at the given index or the default value provided
+     * @param index  The index at which to retrieve the value.
+     * @param orElse A Supplier that provides the default JsArray value if the index doesn't exist or
+     *               the value is not a JSON array.
+     * @return The JsArray located at the given index or the default value provided by orElse.
      */
     public JsArray getArray(final int index,
-                            final Supplier<JsArray> orElse) {
+                            final Supplier<JsArray> orElse
+                           ) {
         return (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-               requireNonNull(orElse).get() :
-               JsArray.prism.getOptional.apply(seq.get(index))
-                                        .orElseGet(requireNonNull(orElse));
+                requireNonNull(orElse).get() :
+                JsArray.prism.getOptional.apply(seq.get(index))
+                                         .orElseGet(requireNonNull(orElse));
     }
 
     private JsValue get(final Position pos) {
         return requireNonNull(pos).match(key -> JsNothing.NOTHING,
                                          index ->
                                                  (this.seq.isEmpty() || index < 0 || index > this.seq.length() - 1) ?
-                                                 JsNothing.NOTHING :
-                                                 this.seq.get(index)
-        );
+                                                         JsNothing.NOTHING :
+                                                         this.seq.get(index)
+                                        );
     }
 
     @Override
@@ -802,14 +897,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return OpFilterArrElems.filter(this,
                                        JsPath.empty(),
                                        requireNonNull(filter)
-        );
+                                      );
     }
 
     @Override
     public JsArray filterValues(final Predicate<? super JsPrimitive> filter) {
         return OpFilterArrElems.filter(this,
                                        requireNonNull(filter)
-        );
+                                      );
     }
 
 
@@ -818,14 +913,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return OpFilterArrKeys.filter(this,
                                       JsPath.empty(),
                                       filter
-        );
+                                     );
     }
 
     @Override
     public JsArray filterKeys(final Predicate<? super String> filter) {
         return OpFilterArrKeys.filter(this,
                                       filter
-        );
+                                     );
     }
 
 
@@ -834,14 +929,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         return OpFilterArrObjs.filter(this,
                                       JsPath.empty(),
                                       requireNonNull(filter)
-        );
+                                     );
     }
 
     @Override
     public JsArray filterObjs(final Predicate<? super JsObj> filter) {
         return OpFilterArrObjs.filter(this,
                                       requireNonNull(filter)
-        );
+                                     );
     }
 
     @Override
@@ -856,14 +951,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                  requireNonNull(fn),
                                  JsPath.empty()
                                        .index(-1)
-        );
+                                );
     }
 
     @Override
     public JsArray mapValues(final Function<? super JsPrimitive, ? extends JsValue> fn) {
         return OpMapArrElems.map(this,
                                  requireNonNull(fn)
-        );
+                                );
     }
 
 
@@ -873,14 +968,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                 requireNonNull(fn),
                                 JsPath.empty()
                                       .index(-1)
-        );
+                               );
     }
 
     @Override
     public JsArray mapKeys(final Function<? super String, String> fn) {
         return OpMapArrKeys.map(this,
                                 requireNonNull(fn)
-        );
+                               );
     }
 
     @Override
@@ -889,37 +984,49 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                 requireNonNull(fn),
                                 JsPath.empty().index(-1)
 
-        );
+                               );
     }
 
     @Override
     public JsArray mapObjs(final Function<? super JsObj, ? extends JsValue> fn) {
         return OpMapArrObjs.map(this,
                                 requireNonNull(fn)
-        );
+                               );
     }
 
     @Override
     public JsArray set(final JsPath path,
-                       final JsValue element) {
+                       final JsValue element
+                      ) {
         return set(path,
                    element,
                    NULL
-        );
+                  );
     }
 
     public JsArray set(final int index,
-                       final JsValue element) {
+                       final JsValue element
+                      ) {
         return set(index,
                    element,
                    NULL
-        );
+                  );
     }
 
+    /**
+     * Sets the value at the specified index within the JSON-like array to the provided JsValue. If the
+     * array size is less than the specified index, it will be padded with the given padElement to
+     * accommodate the new value.
+     *
+     * @param index      The index at which to set the value.
+     * @param value      The JsValue to set at the specified index.
+     * @param padElement The JsValue to use for padding the array if necessary.
+     * @return The modified JsArray with the updated value at the specified index.
+     */
     public JsArray set(final int index,
                        final JsValue value,
                        final JsValue padElement
-    ) {
+                      ) {
 
         requireNonNull(value);
 
@@ -928,8 +1035,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                                              seq,
                                                              elem,
                                                              padElement
-                             ))
-        )
+                                                            ))
+                            )
                 .apply(value);
 
     }
@@ -938,7 +1045,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public JsArray set(final JsPath path,
                        final JsValue value,
                        final JsValue padElement
-    ) {
+                      ) {
 
         requireNonNull(value);
         if (requireNonNull(path).isEmpty()) return this;
@@ -949,47 +1056,47 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                               JsPath tail = path.tail();
 
                               return tail.isEmpty() ?
-                                     ifNothingElse(() -> this.delete(index),
-                                                   elem -> new JsArray(nullPadding(index,
-                                                                                   seq,
-                                                                                   elem,
-                                                                                   padElement
-                                                   ))
-                                     )
-                                             .apply(value) :
-                                     putEmptyJson(seq).test(index,
-                                                            tail
-                                     ) ?
-                                     new JsArray(nullPadding(index,
-                                                             seq,
-                                                             tail.head()
-                                                                 .match(key -> JsObj.EMPTY
-                                                                                .set(tail,
-                                                                                     value,
-                                                                                     padElement
+                                      ifNothingElse(() -> this.delete(index),
+                                                    elem -> new JsArray(nullPadding(index,
+                                                                                    seq,
+                                                                                    elem,
+                                                                                    padElement
+                                                                                   ))
+                                                   )
+                                              .apply(value) :
+                                      putEmptyJson(seq).test(index,
+                                                             tail
+                                                            ) ?
+                                              new JsArray(nullPadding(index,
+                                                                      seq,
+                                                                      tail.head()
+                                                                          .match(key -> JsObj.EMPTY
+                                                                                         .set(tail,
+                                                                                              value,
+                                                                                              padElement
 
+                                                                                             ),
+                                                                                 i -> JsArray.EMPTY
+                                                                                         .set(tail,
+                                                                                              value,
+                                                                                              padElement
+                                                                                             )
                                                                                 ),
-                                                                        i -> JsArray.EMPTY
-                                                                                .set(tail,
-                                                                                     value,
-                                                                                     padElement
-                                                                                )
-                                                                 ),
-                                                             padElement
-                                     )) :
+                                                                      padElement
+                                                                     )) :
 
-                                     new JsArray(seq.update(index,
-                                                            seq.get(index)
-                                                               .toJson()
-                                                               .set(tail,
-                                                                    value,
-                                                                    padElement
-                                                               )
-                                     ));
+                                              new JsArray(seq.update(index,
+                                                                     seq.get(index)
+                                                                        .toJson()
+                                                                        .set(tail,
+                                                                             value,
+                                                                             padElement
+                                                                            )
+                                                                    ));
 
                           }
 
-                   );
+                         );
 
     }
 
@@ -998,27 +1105,28 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                   final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
                                   final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-    ) {
+                                 ) {
         return OpMapReduce.reduceArr(this,
                                      JsPath.fromIndex(-1),
                                      requireNonNull(predicate),
                                      map,
                                      op,
                                      Optional.empty()
-        );
+                                    );
 
     }
 
     @Override
     public <R> Optional<R> reduce(final BinaryOperator<R> op,
                                   final Function<? super JsPrimitive, R> map,
-                                  final Predicate<? super JsPrimitive> predicate) {
+                                  final Predicate<? super JsPrimitive> predicate
+                                 ) {
         return OpMapReduce.reduceArr(this,
                                      requireNonNull(predicate),
                                      map,
                                      op,
                                      Optional.empty()
-        );
+                                    );
     }
 
     @Override
@@ -1032,16 +1140,16 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                               if (index < 0 || index > maxIndex) return this;
                               JsPath tail = path.tail();
                               return tail.isEmpty() ?
-                                     new JsArray(seq.removeAt(index)) :
-                                     ifJsonElse(json -> new JsArray(seq.update(index,
-                                                                               json.delete(tail)
-                                                )),
-                                                e -> this
-                                     )
-                                             .apply(seq.get(index));
+                                      new JsArray(seq.removeAt(index)) :
+                                      ifJsonElse(json -> new JsArray(seq.update(index,
+                                                                                json.delete(tail)
+                                                                               )),
+                                                 e -> this
+                                                )
+                                              .apply(seq.get(index));
                           }
 
-                   );
+                         );
 
 
     }
@@ -1055,17 +1163,28 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public Stream<JsPair> stream() {
         return streamOfArr(this,
                            JsPath.empty()
-        );
+                          );
+    }
+
+    /**
+     * Returns a non-recursive stream of values contained within the JSON-like array. This stream allows for
+     * sequential processing of the immediate values in the array without recursively traversing nested objects or arrays.
+     *
+     * @return A stream of JsValue objects representing the immediate values in the array.
+     * @see #stream() for traversing recursively
+     */
+    public Stream<JsValue> streamOfValues() {
+        return seq.toJavaStream();
     }
 
 
     private boolean yContainsX(final Vector<JsValue> x,
                                final Vector<JsValue> y
-    ) {
+                              ) {
         for (int i = 0; i < x.length(); i++) {
             if (!Objects.equals(x.get(i),
                                 y.get(i)
-            ))
+                               ))
                 return false;
 
         }
@@ -1074,11 +1193,11 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * returns the element located at the specified index or JsNothing if it doesn't exist. It never throws
-     * an exception, it's a total function.
+     * Returns the element located at the specified index or {@link JsNothing} if it doesn't exist.
+     * This method is a total function and never throws exceptions.
      *
-     * @param i the index
-     * @return a JsValue
+     * @param i The index of the element to retrieve.
+     * @return A {@link JsValue} representing the element at the specified index, or {@link JsNothing} if it doesn't exist.
      */
     public JsValue get(final int i) {
         try {
@@ -1113,9 +1232,9 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
         if (this.size() != thatSeq.length()) return false;
         return yContainsX(seq,
                           thatSeq
-        ) && yContainsX(thatSeq,
-                        seq
-        );
+                         ) && yContainsX(thatSeq,
+                                         seq
+                                        );
 
     }
 
@@ -1126,7 +1245,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     public String toString() {
         String result = str;
         if (result == null)
-            str = result = new String(JsonIO.INSTANCE.serialize(this),
+            str = result = new String(JsIO.INSTANCE.serialize(this),
                                       StandardCharsets.UTF_8);
 
         return result;
@@ -1135,18 +1254,18 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Returns the first element of this array.
      *
-     * @return the first JsValue of this JsArray
-     * @throws UserError if this JsArray is empty
+     * @return The first {@link JsValue} of this {@link JsArray}.
+     * @throws UserError If this {@link JsArray} is empty.
      */
     public JsValue head() {
         return seq.head();
     }
 
     /**
-     * Returns a json array consisting of all elements of this array except the first one.
+     * Returns a JSON array consisting of all elements of this array except the first one.
      *
-     * @return a JsArray consisting of all the elements of this JsArray except the head
-     * @throws UserError if this JsArray is empty.
+     * @return A {@link JsArray} consisting of all the elements of this {@link JsArray} except the head.
+     * @throws UserError If this {@link JsArray} is empty.
      */
     public JsArray tail() {
         return new JsArray(seq.tail());
@@ -1155,8 +1274,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Returns all the elements of this array except the last one.
      *
-     * @return JsArray with all the JsValue except the last one
-     * @throws UserError if this JsArray is empty
+     * @return A {@link JsArray} containing all the {@link JsValue} elements except the last one.
+     * @throws UserError If this {@link JsArray} is empty.
      */
     public JsArray init() {
         return new JsArray(seq.init());
@@ -1178,17 +1297,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      */
     @Override
     public JsArray intersection(final JsArray that,
-                                final JsArray.TYPE ARRAY_AS) {
+                                final JsArray.TYPE ARRAY_AS
+                               ) {
         return intersection(this,
                             requireNonNull(that),
                             ARRAY_AS
-        );
+                           );
     }
 
-    @Override
-    public int id() {
-        return TYPE_ID;
-    }
     @Override
     public boolean isArray() {
         return true;
@@ -1202,8 +1318,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Returns the last element of this array.
      *
-     * @return the last JsValue of this JsArray
-     * @throws UserError if this JsArray is empty
+     * @return The last {@link JsValue} of this {@link JsArray}.
+     * @throws UserError If this {@link JsArray} is empty.
      */
     public JsValue last() {
         return seq.last();
@@ -1212,13 +1328,13 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Adds one or more elements, starting from the last, to the front of this array.
      *
-     * @param e      the JsValue to be added to the front.
-     * @param others more optional JsValue to be added to the front
-     * @return a new JsArray
+     * @param e      The {@link JsValue} to be added to the front.
+     * @param others More optional {@link JsValue} elements to be added to the front.
+     * @return A new {@link JsArray} containing the elements added to the front.
      */
     public JsArray prepend(final JsValue e,
                            final JsValue... others
-    ) {
+                          ) {
         Vector<JsValue> acc = seq;
         for (int i = 0, othersLength = requireNonNull(others).length; i < othersLength; i++) {
             JsValue other = others[othersLength - 1 - i];
@@ -1228,24 +1344,23 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Adds all the elements of the array, starting from the last, to the front of this array.
+     * Adds all the elements of the {@link JsArray}, starting from the last, to the front of this array.
      *
-     * @param array the JsArray of elements to be added to the front
-     * @return a new JsArray
+     * @param array The {@link JsArray} of elements to be added to the front.
+     * @return A new {@link JsArray} containing all the elements added to the front.
      */
     public JsArray prependAll(final JsArray array) {
         return appendAllFront(this,
                               requireNonNull(array)
-        );
+                             );
 
     }
 
-    @SuppressWarnings("squid:S1602")
-    // curly braces makes IntelliJ to format the code in a more legible way
+
     private BiPredicate<Integer, JsPath> putEmptyJson(final Vector<JsValue> pseq) {
         return (index, tail) ->
                 index > pseq.length() - 1 || pseq.isEmpty() || pseq.get(index)
-                                                                 .isPrimitive()
+                                                                   .isPrimitive()
                         ||
                         (tail.head()
                              .isKey() && pseq.get(index)
@@ -1258,37 +1373,35 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                         );
     }
 
+    /**
+     * Deletes the element at the specified index from this {@link JsArray}.
+     *
+     * @param index The index of the element to be deleted.
+     * @return A new {@link JsArray} with the element at the specified index removed.
+     * @throws IllegalArgumentException if the index is negative.
+     */
     public JsArray delete(final int index) {
-        if (index < -0) throw new IllegalArgumentException("index must be >= 0");
+        if (index < 0) throw new IllegalArgumentException("index must be >= 0");
         int maxIndex = seq.length() - 1;
         if (index > maxIndex) return this;
         return new JsArray(seq.removeAt(index));
     }
 
 
-    /**
-     * returns {@code this} plus those elements from {@code that} which position is  {@code >= this.size()},
-     * and, at the positions where a container of the same type exists in both {@code this} and {@code that},
-     * the result is their union. This operations doesn't make any sense if arrays are not considered lists,
-     * because there is no notion of order.
-     *
-     * @param that the other array
-     * @return a new JsArray of the same type as the inputs
-     */
-    @SuppressWarnings("squid:S00100")
     @Override
     public JsArray union(final JsArray that,
-                         final TYPE ARRAY_AS) {
+                         final TYPE ARRAY_AS
+                        ) {
         return union(this,
                      requireNonNull(that),
                      ARRAY_AS
-        );
+                    );
     }
 
     private JsArray intersection(final JsArray a,
                                  final JsArray b,
                                  final JsArray.TYPE ARRAY_AS
-    ) {
+                                ) {
         if (a.isEmpty()) return a;
         if (b.isEmpty()) return b;
 
@@ -1304,14 +1417,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                     OpIntersectionJsons.intersectionAll(obj,
                                                                         obj1,
                                                                         ARRAY_AS
-                                    )
-                );
+                                                                       )
+                                   );
 
 
             } else if (head.equals(otherHead))
                 result = result.set(i,
                                     head
-                );
+                                   );
 
         }
 
@@ -1322,7 +1435,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                         Vector<JsValue> arr,
                                         final JsValue e,
                                         final JsValue pad
-    ) {
+                                       ) {
         assert arr != null;
         assert e != null;
 
@@ -1330,7 +1443,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
 
         if (index < arr.length()) return arr.update(index,
-                                                  e);
+                                                    e);
         for (int j = arr.length(); j < index; j++) {
             arr = arr.append(pad);
         }
@@ -1344,7 +1457,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     private JsArray union(final JsArray a,
                           final JsArray b,
                           final TYPE ARRAY_AS
-    ) {
+                         ) {
         if (b.isEmpty()) return a;
         if (a.isEmpty()) return b;
         JsArray result = a;
@@ -1358,8 +1471,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                                     OpUnionJsons.unionAll(obj,
                                                           obj1,
                                                           ARRAY_AS
-                                    )
-                );
+                                                         )
+                                   );
 
             } else if (!otherHead.isNothing() && head.isNothing()) result = result.append(otherHead);
         }
@@ -1371,22 +1484,36 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
 
     /**
-     * Type of arrays: SET, MULTISET or LIST.
+     * Enumeration representing different types of arrays: SET, LIST, or MULTISET.
+     * <p>
+     * Arrays can be categorized into these types based on their behavior and characteristics.
+     * Understanding the type of array is important when dealing with data structures and their usage.
+     * </p>
+     * <ul>
+     *   <li>
+     *     <b>SET:</b> This type of array does not consider the order of data items (or the order is undefined),
+     *     and it does not allow duplicate data items. Each element in a SET is unique.
+     *   </li>
+     *   <li>
+     *     <b>LIST:</b> In a LIST, the order of data items matters, and it allows duplicate data items.
+     *     Elements are stored in the order they are added, and duplicates are allowed.
+     *   </li>
+     *   <li>
+     *     <b>MULTISET:</b> Similar to a SET, the order of data items does not matter, but in this case, duplicate
+     *     data items are permitted. This means that elements can be repeated in a MULTISET.
+     *   </li>
+     * </ul>
+     * <p>
+     * Choosing the appropriate type of array for your use case can help ensure that your data is organized and
+     * behaves as expected in your application.
+     * </p>
      */
     public enum TYPE {
-        /**
-         * The order of data items does not matter (or is undefined) but duplicate data items are not
-         * permitted.
-         */
+
         SET,
-        /**
-         * The order of data matters and duplicate data items are permitted.
-         */
+
         LIST,
-        /**
-         * The order of data items does not matter, but in this
-         * case duplicate data items are permitted.
-         */
+
         MULTISET
     }
 

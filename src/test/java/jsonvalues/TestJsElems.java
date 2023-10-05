@@ -233,8 +233,6 @@ public class TestJsElems {
                                JsBinary.of(hi)
         );
 
-        System.out.println(json.toPrettyString());
-
 
         Assertions.assertEquals(json,
                                 json1);

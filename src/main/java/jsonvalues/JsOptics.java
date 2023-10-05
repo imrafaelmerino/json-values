@@ -10,7 +10,7 @@ import java.time.Instant;
 import static java.util.Objects.requireNonNull;
 
 /**
- * represents optics defined for json objects and arrays
+ * Contains the optics defined for JSON objects and arrays
  */
 public final class JsOptics {
 
@@ -20,7 +20,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the optics defined for a Json array
+     * Contains all the optics defined for a Json array
      */
     public static class JsArrayOptics {
         public final JsArrayOptionals optional = new JsArrayOptionals();
@@ -28,7 +28,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the lenses defined for a Json array
+     * Contains all the lenses defined for a Json array
      */
     public static class JsArrayLenses {
 
@@ -209,9 +209,9 @@ public final class JsOptics {
         }
 
         /**
-         * lens that focus on the json object located at a path in an array
+         * lens that focus on the JSON object located at a path in an array
          *
-         * @param path the path where the json object is located at
+         * @param path the path where the JSON object is located at
          * @return a lens
          */
         public Lens<JsArray, JsObj> obj(final JsPath path) {
@@ -300,7 +300,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the optics defined for a Json object
+     * Contains all the optics defined for a Json object
      */
     public static class JsObjOptics {
         public final JsObjOptional optional = new JsObjOptional();
@@ -308,7 +308,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the S defined for a Json array
+     * Contains all the optionals defined for a Json array
      */
     public static class JsArrayOptionals {
 
@@ -562,7 +562,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the S defined for a Json object
+     * Contains all the optionals defined for a Json object
      */
     public static class JsObjOptional {
 
@@ -842,7 +842,7 @@ public final class JsOptics {
     }
 
     /**
-     * represents all the lenses defined for a Json object
+     * Represents all the lenses defined for a Json object
      */
     public static class JsObjLenses {
 

@@ -1,18 +1,35 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsParserException;
+
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.*;
+import java.util.Arrays;
 
 /**
- * Object for processing JSON from byte[] and InputStream.
- * DSL-JSON works on byte level (instead of char level).
- * Deserialized instances can obtain TContext information provided with this reader.
+ * Object for processing JSON from byte[] and InputStream. The only public methods are
+ * {@link #readNextToken()} and {@link #reset()}. Most of the time you don't need to
+ * parse a JSON token by token since there are a lot of high-level and efficient alternatives
+ * implemented in json-values. Just in case, find below an example:
+ *
+ * <pre>
+ *     {@code
+            String json = "[1,2,3]";
+            var reader = JsonIO.INSTANCE.createReader(json.getBytes(StandardCharsets.UTF_8));
+            byte token;
+            while ((token = reader.readNextToken()) != ']'){
+                if(Character.isDigit(token)) System.out.println(Character.toString(token));
+            }
+ *
+ *
+ *     }
+ *
+ * </pre>
+ *
  * <p>
- * JsonReader can be reused by calling process methods.
+ * You can also  read tokens as JsValue and validate them using the method {@link jsonvalues.spec.JsSpec#readNextValue(JsReader)}
  */
-class JsReader {
+public final class JsReader {
 
     private static final boolean[] WHITESPACE = new boolean[256];
 
@@ -49,7 +66,8 @@ class JsReader {
     private final byte[] originalBuffer;
     private final int originalBufferLenWithExtraSpace;
 
-     enum DoublePrecision {
+
+    enum DoublePrecision {
         EXACT(0),
         HIGH(1),
         DEFAULT(3),
@@ -115,7 +133,7 @@ class JsReader {
      * Reset reader after processing input
      * It will release reference to provided byte[] or InputStream input
      */
-    void reset() {
+    public void reset() {
         this.buffer = this.originalBuffer;
         this.bufferLenWithExtraSpace = this.originalBufferLenWithExtraSpace;
         this.currentIndex = 0;
@@ -131,14 +149,19 @@ class JsReader {
      *
      * @param stream set input stream
      * @return itself
-     * @throws IOException unable to read from stream
+     * @throws JsParserException unable to read from stream
      */
-     JsReader process(InputStream stream) throws IOException {
+    JsReader process(InputStream stream) throws JsParserException {
         this.currentPosition = 0;
         this.currentIndex = 0;
         this.stream = stream;
         this.readLimit = Math.min(this.length, bufferLenWithExtraSpace);
-        int available = readFully(buffer, stream, 0);
+        int available;
+        try {
+            available = readFully(buffer, stream, 0);
+        } catch (IOException e) {
+            throw newParseError(e.getMessage());
+        }
         readLimit = Math.min(available, bufferLenWithExtraSpace);
         this.length = available;
         return this;
@@ -153,7 +176,7 @@ class JsReader {
      * @param newLength length of buffer which can be used
      * @return itself
      */
-     JsReader process(byte[] newBuffer, int newLength) {
+    JsReader process(byte[] newBuffer, int newLength) {
         if (newBuffer != null) {
             this.buffer = newBuffer;
             this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -173,7 +196,7 @@ class JsReader {
      *
      * @return size of JSON input
      */
-     int length() {
+    int length() {
         return length;
     }
 
@@ -188,16 +211,14 @@ class JsReader {
     }
 
 
-
-
     /**
      * Read next byte from the JSON input.
      * If buffer has been read in full IOException will be thrown
      *
      * @return next byte
-     * @throws IOException when end of JSON input
+     * @throws JsParserException when end of JSON input
      */
-     byte read() throws IOException {
+    byte read() throws JsParserException {
         if (stream != null && currentIndex > readLimit) {
             prepareNextBlock();
         }
@@ -207,10 +228,15 @@ class JsReader {
         return last = buffer[currentIndex++];
     }
 
-    private int prepareNextBlock() throws IOException {
+    private int prepareNextBlock() throws JsParserException {
         int len = length - currentIndex;
         System.arraycopy(buffer, currentIndex, buffer, 0, len);
-        int available = readFully(buffer, stream, len);
+        int available;
+        try {
+            available = readFully(buffer, stream, len);
+        } catch (IOException e) {
+            throw newParseError(e.getMessage());
+        }
         currentPosition += currentIndex;
         if (available == len) {
             readLimit = length - currentIndex;
@@ -223,7 +249,7 @@ class JsReader {
         return available;
     }
 
-    boolean isEndOfStream() throws IOException {
+    boolean isEndOfStream() throws JsParserException {
         if (stream == null) {
             return length == currentIndex;
         }
@@ -239,32 +265,33 @@ class JsReader {
      *
      * @return which was the last byte read
      */
-     byte last() {
+    byte last() {
         return last;
     }
+
     private long getPositionInStream(int offset) {
         return currentPosition + currentIndex - offset;
     }
 
-    public long getPositionInStream() {
+    long getPositionInStream() {
         return getPositionInStream(0);
     }
 
 
-     JsParserException newParseError(String description) {
+    JsParserException newParseError(String description) {
         return JsParserException.reasonAt(description, getPositionInStream(0));
     }
 
-     JsParserException newParseError(String description,int offset) {
+    JsParserException newParseError(String description, int offset) {
         return JsParserException.reasonAt(description, getPositionInStream(offset));
     }
-    
-     int getCurrentIndex() {
+
+    int getCurrentIndex() {
         return currentIndex;
     }
 
 
-     int scanNumber() {
+    int scanNumber() {
         int tokenStart = currentIndex - 1;
         int i = 1;
         int ci = currentIndex;
@@ -281,7 +308,7 @@ class JsReader {
 
     char[] prepareBuffer(int start, int len) throws JsParserException {
         if (len > maxNumberDigits) {
-            throw newParseError("Too many digits detected in number ("+ len+")",len);
+            throw newParseError("Too many digits detected in number (" + len + ")", len);
         }
         while (chars.length < len) {
             chars = Arrays.copyOf(chars, chars.length * 2);
@@ -310,15 +337,15 @@ class JsReader {
      * String value must start and end with a double quote (").
      *
      * @return parsed string
-     * @throws IOException error reading string input
+     * @throws JsParserException error reading string input
      */
-     String readString() throws IOException {
+    String readString() throws JsParserException {
         int len = parseString();
         return valuesCache == null ? new String(chars, 0, len) : valuesCache.get(chars, len);
     }
 
 
-    int parseString() throws IOException {
+    int parseString() throws JsParserException {
         int startIndex = currentIndex;
         if (last != '"') throw newParseError("Expecting '\"' for string start");
         else if (currentIndex == length) throw newParseError("Premature end of JSON string");
@@ -345,7 +372,7 @@ class JsReader {
         if (i == _tmp.length) {
             int newSize = chars.length * 2;
             if (newSize > maxStringBuffer) {
-                throw newParseError("Maximum string buffer limit exceeded ("+maxStringBuffer+")");
+                throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
             }
             _tmp = chars = Arrays.copyOf(chars, newSize);
         }
@@ -363,7 +390,7 @@ class JsReader {
                 if (soFar >= _tmpLen - 6) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseError("Maximum string buffer limit exceeded (" +maxStringBuffer+")");
+                        throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -398,13 +425,13 @@ class JsReader {
                         break;
 
                     default:
-                        throw newParseError("Invalid escape combination detected (" +bc+")");
+                        throw newParseError("Invalid escape combination detected (" + bc + ")");
                 }
             } else if ((bc & 0x80) != 0) {
                 if (soFar >= _tmpLen - 4) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseError("Maximum string buffer limit exceeded ("+ maxStringBuffer+")");
+                        throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -442,7 +469,7 @@ class JsReader {
             } else if (soFar >= _tmpLen) {
                 int newSize = chars.length * 2;
                 if (newSize > maxStringBuffer) {
-                    throw newParseError("Maximum string buffer limit exceeded (" +maxStringBuffer+")");
+                    throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
                 }
                 _tmp = chars = Arrays.copyOf(chars, newSize);
                 _tmpLen = _tmp.length;
@@ -528,9 +555,9 @@ class JsReader {
      * Whitespace will be skipped and next non-whitespace byte will be returned.
      *
      * @return next non-whitespace byte in the JSON input
-     * @throws IOException unable to get next byte (end of stream, ...)
+     * @throws JsParserException unable to get next byte (end of stream, ...)
      */
-     byte getNextToken() throws IOException {
+    public byte readNextToken() throws JsParserException {
         read();
         if (WHITESPACE[last + 128]) {
             while (wasWhiteSpace()) {
@@ -546,13 +573,12 @@ class JsReader {
      * If key cache is used, it will be looked up from there.
      *
      * @return parsed key value
-     * @throws IOException unable to parse string input
      */
-     String readKey() throws IOException {
+    String readKey() {
         int len = parseString();
         String key = keyCache != null ? keyCache.get(chars, len) : new String(chars, 0, len);
-        if (getNextToken() != ':') throw newParseError("Expecting ':' after attribute name");
-        getNextToken();
+        if (readNextToken() != ':') throw newParseError("Expecting ':' after attribute name");
+        readNextToken();
         return key;
     }
 
@@ -565,7 +591,7 @@ class JsReader {
      * @return true if 'null' value is at current position
      * @throws JsParserException invalid 'null' value detected
      */
-     boolean wasNull() throws JsParserException {
+    boolean wasNull() throws JsParserException {
         if (last == 'n') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'u'
                     && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 'l') {
@@ -586,7 +612,7 @@ class JsReader {
      * @return true if 'true' value is at current position
      * @throws JsParserException invalid 'true' value detected
      */
-     boolean wasTrue() throws JsParserException {
+    boolean wasTrue() throws JsParserException {
         if (last == 't') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'r'
                     && buffer[currentIndex + 1] == 'u' && buffer[currentIndex + 2] == 'e') {
@@ -607,7 +633,7 @@ class JsReader {
      * @return true if 'false' value is at current position
      * @throws JsParserException invalid 'false' value detected
      */
-     boolean wasFalse() throws JsParserException {
+    boolean wasFalse() throws JsParserException {
         if (last == 'f') {
             if (currentIndex + 3 < length && buffer[currentIndex] == 'a'
                     && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 's'
@@ -624,12 +650,11 @@ class JsReader {
     /**
      * Check if the last read token is an array end
      */
-     void checkArrayEnd() {
+    void checkArrayEnd() {
         if (last != ']') {
             if (currentIndex >= length) throw newParseError("Unexpected end of JSON in collection");
             throw newParseError("Expecting ']' as array end");
         }
     }
-
 
 }

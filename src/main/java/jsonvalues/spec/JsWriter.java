@@ -4,7 +4,7 @@ import jsonvalues.JsSerializerException;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.*;
+import java.util.Arrays;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 
@@ -14,7 +14,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * * targeting specific output stream
  * * buffering the entire response in memory
  * <p>
- * In both cases JsonWriter writes into a byte[] buffer.
+ * In both cases JsonWriter writes into an byte[] buffer.
  * If stream is used as target, it will copy buffer into the stream whenever there is no more room in buffer for new data.
  * If stream is not used as target, it will grow the buffer to hold the encoded result.
  * To use stream as target reset(OutputStream) must be called before processing.
@@ -191,139 +191,112 @@ class JsWriter {
                     _result[cur + 1] = 'u';
                     _result[cur + 2] = '0';
                     _result[cur + 3] = '0';
-
                     switch (c) {
-                        case 0: {
+                        case 0 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '0';
-                            break;
                         }
-                        case 1 : {
+                        case 1 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '1';
-                            break;
                         }
-                        case 2: {
+                        case 2 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '2';
-                            break;
                         }
-                        case 3 : {
+                        case 3 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '3';
-                            break;
                         }
-                        case 4: {
+                        case 4 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '4';
-                            break;
                         }
-                        case 5: {
+                        case 5 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '5';
-                            break;
                         }
-                        case 6: {
+                        case 6 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '6';
-                            break;
                         }
-                        case 7: {
+                        case 7 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = '7';
-                            break;
                         }
-                        case 11: {
+                        case 11 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = 'B';
-                            break;
                         }
-                        case 14: {
+                        case 14 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = 'E';
-                            break;
                         }
-                        case 15: {
+                        case 15 -> {
                             _result[cur + 4] = '0';
                             _result[cur + 5] = 'F';
-                            break;
                         }
-                        case 16: {
+                        case 16 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '0';
-                            break;
                         }
-                        case 17: {
+                        case 17 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '1';
-                            break;
                         }
-                        case 18: {
+                        case 18 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '2';
-                            break;
                         }
-                        case 19 : {
+                        case 19 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '3';
-                            break;
                         }
-                        case 20 : {
+                        case 20 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '4';
-                            break;
                         }
-                        case 21 : {
+                        case 21 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '5';
-                            break;
                         }
-                        case 22 : {
+                        case 22 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '6';
-                            break;
                         }
-                        case 23 : {
+                        case 23 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '7';
-                            break;
                         }
-                        case 24 : {
+                        case 24 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '8';
-                            break;
                         }
-                        case 25 : {
+                        case 25 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = '9';
-                            break;
                         }
-                        case 26 : {
+                        case 26 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'A';
-                            break;
                         }
-                        case 27 : {
+                        case 27 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'B';
-                            break;
                         }
-                        case 28 : {
+                        case 28 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'C';
-                            break;
                         }
-                        case 29 : {
+                        case 29 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'D';
-                            break;
                         }
-                        case 30 : {
+                        case 30 -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'E';
-                            break;
                         }
-                        default : {
+                        default -> {
                             _result[cur + 4] = '1';
                             _result[cur + 5] = 'F';
                         }
