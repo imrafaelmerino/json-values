@@ -1,6 +1,5 @@
 <img src="./logo/package_twitter_if9bsyj4/color1/full/coverphoto/color1-white_logo_dark_background.png" alt="logo"/>
 
-[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=imrafaelmerino_json-values&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=imrafaelmerino_json-values)
 [![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/12.7.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/12.7.0/jar)
 
 “_Simplicity is a great virtue, but it requires hard work to achieve it and education to appreciate it.
