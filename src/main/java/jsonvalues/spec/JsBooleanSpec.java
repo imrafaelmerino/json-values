@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-class JsBooleanSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate {
     JsBooleanSpec(final boolean nullable) {
         super(nullable);
     }
@@ -29,8 +31,15 @@ class JsBooleanSpec extends AbstractNullableSpec implements JsValuePredicate {
         return Functions.testElem(JsValue::isBool,
                                   BOOLEAN_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
     }
+
+    @Override
+    public JsValue toAvro() {
+        return nullable ? JsArray.of("null", "boolean") : JsStr.of("boolean");
+    }
+
+
 }

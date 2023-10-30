@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-class JsBinarySpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsBinarySpec extends AbstractNullable implements JsValuePredicate {
     JsBinarySpec(final boolean nullable) {
         super(nullable);
     }
@@ -27,9 +29,15 @@ class JsBinarySpec extends AbstractNullableSpec implements JsValuePredicate {
         return Functions.testElem(JsValue::isBinary,
                                   BINARY_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
+    }
+
+
+    @Override
+    public JsValue toAvro() {
+        return nullable ? JsArray.of("null", "bytes") : JsStr.of("bytes");
     }
 
 

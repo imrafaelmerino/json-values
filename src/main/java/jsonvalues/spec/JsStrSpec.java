@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-class JsStrSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsStrSpec extends AbstractNullable implements JsValuePredicate {
     JsStrSpec(final boolean nullable) {
         super(nullable);
     }
@@ -24,11 +26,19 @@ class JsStrSpec extends AbstractNullableSpec implements JsValuePredicate {
     }
 
     @Override
+    public JsValue toAvro() {
+
+        return nullable ?
+                JsArray.of("null", "string") :
+                JsStr.of("string");
+    }
+
+    @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testElem(JsValue::isStr,
                                   STRING_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
     }
 }

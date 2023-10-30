@@ -18,25 +18,25 @@ public class JsArrayParserTest {
     @Test
     public void test_array_of_different_elements() {
 
-        final JsTupleSpec spec = JsSpecs.tuple(str(),
-                                               integer(),
-                                               longInteger(),
-                                               decimal(),
-                                               bool(),
-                                               bigInteger(),
-                                               obj(),
-                                               array(),
-                                               integer(i -> i > 0),
-                                               any(v -> v.isStr() || v.isInt()),
-                                               str(s -> s.startsWith("1")),
-                                               arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
-                                               arrayOfNumberSuchThat(a -> a.size() == 2),
-                                               number(JsValue::isDecimal),
-                                               arrayOfBigInt(a -> a.longValueExact() > 0),
-                                               arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
-                                               arrayOfObj(),
-                                               arrayOfObj().nullable()
-                                              );
+        final JsTuple spec = JsSpecs.tuple(str(),
+                                           integer(),
+                                           longInteger(),
+                                           decimal(),
+                                           bool(),
+                                           bigInteger(),
+                                           obj(),
+                                           array(),
+                                           integer(i -> i > 0),
+                                           any(v -> v.isStr() || v.isInt()),
+                                           str(s -> s.startsWith("1")),
+                                           arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
+                                           arrayOfNumberSuchThat(a -> a.size() == 2),
+                                           number(JsValue::isDecimal),
+                                           arrayOfBigInt(a -> a.longValueExact() > 0),
+                                           arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
+                                           arrayOfObj(),
+                                           arrayOfObj().nullable()
+                                          );
 
 
         JsArray array = JsArray.of(JsStr.of("a"),

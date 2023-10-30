@@ -34,7 +34,7 @@ import java.util.Set;
  * @see JsPath
  * @see JsReader
  */
-public interface JsSpec {
+public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, JsMapOfArraySpec, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfObjSpec, JsMapOfStr, JsObjSpec, JsOneOf, JsValuePredicate {
 
     /**
      * Returns the same spec with the nullable flag enabled.
@@ -83,6 +83,8 @@ public interface JsSpec {
     default Set<SpecError> test(final JsValue value) {
         return test(JsPath.empty(), value);
     }
+
+    JsValue toAvro();
 }
 
 

@@ -4,7 +4,7 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 
-class AnySpec implements JsValuePredicate {
+final class AnySpec implements JsValuePredicate {
 
     @Override
     public JsSpec nullable() {
@@ -14,6 +14,11 @@ class AnySpec implements JsValuePredicate {
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofValue();
+    }
+
+    @Override
+    public JsValue toAvro() {
+        throw new AvroNotSupported(AnySpec.class);
     }
 
     @Override

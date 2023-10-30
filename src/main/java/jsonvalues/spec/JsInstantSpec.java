@@ -1,22 +1,24 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
-class JsInstantSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsInstantSpec extends AbstractNullable implements JsValuePredicate {
+    JsObj mapSchema = JsObj.of("type", JsStr.of("long"), "logicalType",
+                               JsStr.of("timestamp-millis"));
+
+
     JsInstantSpec(final boolean nullable) {
         super(nullable);
     }
-
 
     @Override
     public JsSpec nullable() {
         return new JsInstantSpec(true);
     }
-
 
     @Override
     public JsSpecParser parser() {
@@ -28,9 +30,19 @@ class JsInstantSpec extends AbstractNullableSpec implements JsValuePredicate {
         return Functions.testElem(JsValue::isInstant,
                                   INSTANT_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
+    }
+
+    @Override
+    public JsValue toAvro() {
+        JsObj mapSchema = JsObj.of("type",
+                                   JsStr.of("long"),
+                                   "logicalType",
+                                   JsStr.of("timestamp-millis")
+                                  );
+        return nullable ? JsArray.of(JsNull.NULL, mapSchema) : mapSchema;
     }
 
 

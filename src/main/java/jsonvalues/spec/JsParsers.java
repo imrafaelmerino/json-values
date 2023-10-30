@@ -34,9 +34,6 @@ class JsParsers {
 
     public final JsObjReader mapOfStringParser;
 
-    public final JsObjReader mapOfObjParser;
-
-    public final JsObjReader mapOfArrayParser;
 
     public final JsObjReader mapOfInstantParser;
 
@@ -76,9 +73,7 @@ class JsParsers {
         mapOfBigIntegerParser = new JsObjReader(integralParser);
         mapOfStringParser = new JsObjReader(strParser);
         mapOfInstantParser = new JsObjReader(instantParser);
-        mapOfObjParser = new JsObjReader(objParser);
         mapOfBinaryParser = new JsObjReader(binaryParser);
-        mapOfArrayParser = new JsObjReader(arrayOfValueParser);
     }
 
 

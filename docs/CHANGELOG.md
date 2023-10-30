@@ -40,3 +40,11 @@ JsObjGen::concat method
 JsObj new methods: 
     set(key,primitive)
     set(path,primitive)
+
+13.0.0
+ - added avro support for some specs 
+ - other specs don't have an equivalente avro type and a AvroNotSupported exception is thrown,
+   not a problem since avro schemas must be created during init of app
+ - add onSymbolOf (does support avro (enum of string only) while oneOf doesnt)
+ - map of object spec (now you have to specify the shema)
+ - map o array spec (now you have to specify the shema)

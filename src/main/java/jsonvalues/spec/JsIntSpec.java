@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-class JsIntSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsIntSpec extends AbstractNullable implements JsValuePredicate {
     JsIntSpec(final boolean nullable) {
         super(nullable);
     }
@@ -28,9 +30,14 @@ class JsIntSpec extends AbstractNullableSpec implements JsValuePredicate {
         return Functions.testElem(JsValue::isInt,
                                   INT_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
+    }
+
+    @Override
+    public JsValue toAvro() {
+        return nullable ? JsArray.of("null", "int") : JsStr.of("int");
     }
 
 

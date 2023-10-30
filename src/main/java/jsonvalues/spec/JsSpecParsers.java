@@ -14,10 +14,10 @@ import java.util.function.*;
 import static jsonvalues.spec.JsParsers.PARSERS;
 
 /**
- * set of factory methods to create parsers from specs. Internal class that will be hidden when migrating
- * json-values to java 9 and modules
+ * set of factory methods to create parsers from specs. Internal class that will be hidden when migrating json-values to
+ * java 9 and modules
  */
- final class JsSpecParsers {
+final class JsSpecParsers {
 
     public static final JsSpecParsers INSTANCE = new JsSpecParsers();
     private final BiFunction<JsReader, JsError, JsParserException> newParseException;
@@ -68,6 +68,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
                                                                      max
                                                                     );
     }
+
 
     public JsSpecParser ofArrayOfObjSpec(List<String> required,
                                          Map<String, JsSpecParser> parsers,
@@ -163,6 +164,20 @@ import static jsonvalues.spec.JsParsers.PARSERS;
         return nullable ?
                 reader -> new JsArraySpecReader(keyDeserializers).nullOrArray(reader) :
                 reader -> new JsArraySpecReader(keyDeserializers).array(reader);
+    }
+
+    public JsSpecParser ofMapOfSpec(JsSpecParser parser,
+                                    boolean nullable
+                                   ) {
+        return reader ->
+        {
+
+            JsMapOfSpecReader r = new JsMapOfSpecReader(parser);
+            return nullable ?
+                    r.nullOrValue(reader) :
+                    r.value(reader);
+
+        };
     }
 
     public JsSpecParser ofObjSpec(List<String> required,
@@ -688,11 +703,6 @@ import static jsonvalues.spec.JsParsers.PARSERS;
                         );
     }
 
-    public JsSpecParser ofMapOfObj(boolean nullable) {
-        return getParser(PARSERS.mapOfObjParser,
-                         nullable
-                        );
-    }
 
     public JsSpecParser ofMapOfBigInt(boolean nullable) {
         return getParser(PARSERS.mapOfBigIntegerParser,
@@ -700,11 +710,6 @@ import static jsonvalues.spec.JsParsers.PARSERS;
                         );
     }
 
-    public JsSpecParser ofMapOfArray(boolean nullable) {
-        return getParser(PARSERS.mapOfArrayParser,
-                         nullable
-                        );
-    }
 
     public JsSpecParser ofLong(boolean nullable) {
         return getParser(PARSERS.longParser,

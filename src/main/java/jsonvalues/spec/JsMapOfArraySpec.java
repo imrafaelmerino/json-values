@@ -1,32 +1,51 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsPath;
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
 
-class JsMapOfArraySpec extends AbstractMapSpec implements JsSpec {
-    protected JsMapOfArraySpec(boolean nullable) {
+
+final class JsMapOfArraySpec extends AbstractMap implements JsSpec {
+
+    final JsArraySpec spec;
+
+    JsMapOfArraySpec(final boolean nullable,
+                     final JsArraySpec spec
+                    ) {
         super(nullable);
+        this.spec = spec;
+    }
+
+    JsMapOfArraySpec(final JsArraySpec spec) {
+        this(false, requireNonNull(spec));
     }
 
     @Override
     public JsSpec nullable() {
-        return new JsMapOfArraySpec(true);
+        return new JsMapOfArraySpec(true, spec);
     }
 
     @Override
     public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfArray(nullable);
+        return JsSpecParsers.INSTANCE.ofMapOfSpec(spec.parser(),
+                                                  nullable);
     }
 
     @Override
     public Set<SpecError> test(JsPath path,
-                               JsValue value) {
-       return test(path,value,it -> !it.isArray(),ERROR_CODE.ARRAY_EXPECTED);
+                               JsValue value
+                              ) {
+        return test(path, value, it -> !it.isArray(), ERROR_CODE.ARRAY_EXPECTED);
     }
 
+    @Override
+    public JsValue toAvro() {
+        JsObj schema = JsObj.of("type", JsStr.of("map"),
+                                "vales", spec.toAvro());
+        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
 
+    }
 
 }

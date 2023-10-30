@@ -1,12 +1,12 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-class JsBigIntSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate {
 
     JsBigIntSpec(final boolean nullable) {
         super(nullable);
@@ -24,12 +24,21 @@ class JsBigIntSpec extends AbstractNullableSpec implements JsValuePredicate {
         return JsSpecParsers.INSTANCE.ofIntegral(nullable);
     }
 
+
+    @Override
+    public JsValue toAvro() {
+        JsObj schema = JsObj.of("type", JsStr.of("string"),
+                                "logicalType", JsStr.of("biginteger"));
+        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+    }
+
+
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testElem(JsValue::isIntegral,
                                   INTEGRAL_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
     }

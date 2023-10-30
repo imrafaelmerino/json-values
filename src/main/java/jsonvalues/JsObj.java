@@ -53,7 +53,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * JsObj commonData = person.intersection(otherPerson, JsObj.TYPE.SET);
  * }</pre>
  */
-public non-sealed class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
+public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
      * Using the {@code lens} field, you can apply various optical operations to {@code JsObj} instances
      * in a functional and declarative manner, making it easier to modify or query the content of a

@@ -487,9 +487,9 @@ public class TestJsObjSpec {
                                                          arraySuchThat(a -> a.head() == JsNull.NULL)
                                                         ),
                                             "g",
-                                            JsSpecs.oneOf(Arrays.asList(JsStr.of("A"),
-                                                                        JsStr.of("B")
-                                                                       )),
+                                            JsSpecs.oneStringOf(Arrays.asList("A",
+                                                                              "B"
+                                                                             )),
                                             "h",
                                             JsSpecs.binary(it -> it.length <= 100).nullable()
                                            );
@@ -1669,7 +1669,7 @@ public class TestJsObjSpec {
                                    )
                           ),
                   JsObjSpec.of("a",
-                               mapOfArray()
+                               mapOfArray(JsSpecs.arrayOfBool())
                               )
                  );
 
@@ -1741,7 +1741,7 @@ public class TestJsObjSpec {
                                    )
                           ),
                   JsObjSpec.of("a",
-                               mapOfObj()
+                               mapOfObj(JsObjSpec.of("a",JsSpecs.integer()))
                               )
                  );
 

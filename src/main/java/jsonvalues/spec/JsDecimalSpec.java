@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-class JsDecimalSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsDecimalSpec extends AbstractNullable implements JsValuePredicate {
 
     JsDecimalSpec(final boolean nullable) {
         super(nullable);
@@ -29,8 +31,14 @@ class JsDecimalSpec extends AbstractNullableSpec implements JsValuePredicate {
         return Functions.testElem(JsValue::isDecimal,
                                   DECIMAL_EXPECTED,
                                   nullable
-                        )
+                                 )
                         .apply(value);
 
     }
+
+    @Override
+    public JsValue toAvro() {
+        return nullable ? JsArray.of("null", "double") : JsStr.of("double") ;    }
+
+
 }

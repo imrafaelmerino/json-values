@@ -1,9 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsNothing;
-import jsonvalues.JsObj;
-import jsonvalues.JsPath;
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -13,15 +10,15 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.*;
 
 /**
- * Represents a specification of a JSON object, allowing you to define rules and constraints for validating JSON objects.
- * This class is part of the js-values library and is designed to facilitate the validation of JSON data structures.
- * You can create an instance of JsObjSpec to specify the expected structure and constraints of a JSON object.
+ * Represents a specification of a JSON object, allowing you to define rules and constraints for validating JSON
+ * objects. This class is part of the js-values library and is designed to facilitate the validation of JSON data
+ * structures. You can create an instance of JsObjSpec to specify the expected structure and constraints of a JSON
+ * object.
  * <p>
- * Usage:
- * - Create an instance of JsObjSpec using the builder methods provided.
- * - Define required and optional keys using {@code withReqKeys} and {@code withOptKeys}.
- * - Specify conditions that the JSON object must meet using {@code suchThat}.
- * - Perform validation using {@code test} to check if a given JSON object conforms to the defined specification.
+ * Usage: - Create an instance of JsObjSpec using the builder methods provided. - Define required and optional keys
+ * using {@code withReqKeys} and {@code withOptKeys}. - Specify conditions that the JSON object must meet using
+ * {@code suchThat}. - Perform validation using {@code test} to check if a given JSON object conforms to the defined
+ * specification.
  * <p>
  * Example:
  * <pre>{@code
@@ -38,8 +35,8 @@ import static jsonvalues.spec.ERROR_CODE.*;
  * }
  * </pre>
  * <p>
- * The JsObjSpec class provides methods for defining required and optional keys, specifying predicates, and performing validation.
- * Additionally, it supports nullable objects and strict mode to enforce key presence.
+ * The JsObjSpec class provides methods for defining required and optional keys, specifying predicates, and performing
+ * validation. Additionally, it supports nullable objects and strict mode to enforce key presence.
  *
  * @see JsSpec
  * @see JsSpecParser
@@ -53,6 +50,7 @@ public final class JsObjSpec implements JsSpec {
     Map<String, JsSpecParser> parsers;
     Map<String, JsSpec> bindings;
     Predicate<JsObj> predicate;
+    private AvroAttBuilder avroAttBuilder;
 
     private JsObjSpec(Map<String, JsSpec> bindings,
                       boolean nullable,
@@ -76,6 +74,7 @@ public final class JsObjSpec implements JsSpec {
                         entry.getValue().parser()
                        );
     }
+
 
     public static JsObjSpec of(String key,
                                JsSpec spec
@@ -5496,8 +5495,8 @@ public final class JsObjSpec implements JsSpec {
     }
 
     /**
-     * Adds a condition that the JSON object must meet. The predicate is applied to the entire JSON object.
-     * If the predicate returns false, a validation error will be generated.
+     * Adds a condition that the JSON object must meet. The predicate is applied to the entire JSON object. If the
+     * predicate returns false, a validation error will be generated.
      *
      * @param predicate The predicate to apply to the JSON object.
      * @return A new JsObjSpec instance with the specified condition.
@@ -5722,8 +5721,8 @@ public final class JsObjSpec implements JsSpec {
     }
 
     /**
-     * Adds or replaces a field specification in this JsObjSpec. This method allows you to specify or modify
-     * the validation rules for a specific field in the JSON object.
+     * Adds or replaces a field specification in this JsObjSpec. This method allows you to specify or modify the
+     * validation rules for a specific field in the JSON object.
      *
      * @param key  The name of the field for which to set or replace the specification.
      * @param spec The JsSpec instance that defines the validation rules for the specified field.
@@ -5745,4 +5744,30 @@ public final class JsObjSpec implements JsSpec {
         );
 
     }
+
+
+    public JsObjSpec withAvroAtt(final AvroAttBuilder builder) {
+        this.avroAttBuilder = requireNonNull(builder);
+        return this;
+    }
+
+
+    @Override
+    public Json toAvro() {
+        if (avroAttBuilder == null)
+            throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
+        AvroAtt avroAtt = avroAttBuilder.build();
+        JsObj schema = JsObj.of("name", JsStr.of(avroAtt.name));
+        if (avroAtt.namespace != null) schema = schema.set("namespace", JsStr.of(avroAtt.namespace));
+        if (avroAtt.doc != null) schema = schema.set("doc", JsStr.of(avroAtt.doc));
+        if (avroAtt.aliases != null) schema = schema.set("aliases", avroAtt.aliases);
+        for (Map.Entry<String, JsSpec> entry : bindings.entrySet()) {
+            schema = schema.set(entry.getKey(),
+                                entry.getValue().toAvro()
+                               );
+        }
+
+        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+    }
+
 }

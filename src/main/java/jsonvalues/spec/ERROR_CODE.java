@@ -164,5 +164,7 @@ public enum ERROR_CODE {
     /**
      * Indicates that an array size is greater than the specified maximum length.
      */
-    ARR_SIZE_GREATER_THAN_MAX
+    ARR_SIZE_GREATER_THAN_MAX,
+
+    ENUM_SYMBOL_EXPECTED
 }

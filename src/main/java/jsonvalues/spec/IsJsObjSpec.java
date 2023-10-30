@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-class IsJsObjSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class IsJsObjSpec extends AbstractNullable implements JsValuePredicate {
     IsJsObjSpec(final boolean nullable) {
         super(nullable);
     }
@@ -20,6 +20,11 @@ class IsJsObjSpec extends AbstractNullableSpec implements JsValuePredicate {
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofObj(nullable);
+    }
+
+    @Override
+    public JsValue toAvro() {
+        return null;
     }
 
     @Override

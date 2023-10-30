@@ -1,12 +1,14 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-class JsLongSpec extends AbstractNullableSpec implements JsValuePredicate {
+final class JsLongSpec extends AbstractNullable implements JsValuePredicate {
     JsLongSpec(final boolean nullable) {
         super(nullable);
     }
@@ -30,4 +32,9 @@ class JsLongSpec extends AbstractNullableSpec implements JsValuePredicate {
                         )
                         .apply(value);
     }
+
+    @Override
+    public JsValue toAvro() {
+        return
+                nullable ? JsArray.of("null", "long") : JsStr.of("long") ;    }
 }
