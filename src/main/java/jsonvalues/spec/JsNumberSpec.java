@@ -1,14 +1,13 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
-final class JsNumberSpec extends AbstractNullable implements JsValuePredicate {
+final class JsNumberSpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsNumberSpec(final boolean nullable) {
         super(nullable);
     }
@@ -26,9 +25,9 @@ final class JsNumberSpec extends AbstractNullable implements JsValuePredicate {
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return
-                nullable ? JsArray.of("null", "double") : JsStr.of("double") ;
+                nullable ? JsArray.of("null", "double","int","long") : JsArray.of("double","int","long") ;
     }
 
     @Override

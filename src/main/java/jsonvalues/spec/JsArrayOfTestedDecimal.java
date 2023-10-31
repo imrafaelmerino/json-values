@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsArrayOfTestedDecimal(final Function<BigDecimal, Optional<JsError>> predicate,
@@ -64,10 +64,10 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsValue
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("double"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

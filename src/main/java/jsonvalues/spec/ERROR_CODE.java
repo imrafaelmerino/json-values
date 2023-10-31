@@ -25,6 +25,7 @@ public enum ERROR_CODE {
      * Indicates that a binary (byte array) value was expected but a different type of value was encountered.
      */
     BINARY_EXPECTED,
+    BINARY_FIXED_LENGTH_EXPECTED,
 
     /**
      * Indicates that an instant (date/time) value was expected but a different type of value was encountered.

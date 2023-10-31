@@ -896,7 +896,7 @@ JsObjSpec personSpec =
                                                 )
                      );
 
-Set<SpecError> errors=personSepc.test(person);
+List<SpecError> errors=personSepc.test(person);
 
 Function<SpecError, String> toStr =
         error -> error.value+" @ " + error.path + " doesn't conform spec: " + error.codeCode;
@@ -992,7 +992,7 @@ JsObjSpec a = JsObjSpec.of("name", str(),
                            "grades", mapOfInteger()
                           );
 
-Set<SpecError> errors = 
+List<SpecError> errors = 
         spec.test(JsObj.of("name", JsStr.of("Rafael"),
                            "grades", JsObj.of("Maths", JsInt.of(10),
                                               "Science", JsInt.of(8),

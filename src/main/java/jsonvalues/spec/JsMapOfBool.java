@@ -2,10 +2,10 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.Set;
+import java.util.List;
 
 
-final class JsMapOfBool extends AbstractMap implements JsSpec {
+final class JsMapOfBool extends AbstractMap implements JsSpec, AvroSpec {
      JsMapOfBool(boolean nullable) {
         super(nullable);
     }
@@ -21,13 +21,13 @@ final class JsMapOfBool extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value) {
+    public List<SpecError> test(JsPath path,
+                                JsValue value) {
        return test(path,value,it -> !it.isBool(),ERROR_CODE.BOOLEAN_EXPECTED);
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("boolean"));
         return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
 

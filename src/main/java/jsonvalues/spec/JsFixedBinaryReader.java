@@ -1,0 +1,34 @@
+package jsonvalues.spec;
+
+import jsonvalues.JsBinary;
+import jsonvalues.JsParserException;
+
+import java.util.Base64;
+
+
+final class JsFixedBinaryReader extends AbstractReader {
+
+    final int size;
+
+     JsFixedBinaryReader(int size) {
+        this.size = size;
+    }
+
+    @Override
+    JsBinary value(final JsReader reader) throws JsParserException {
+        try {
+            byte[] bytes = Base64.getDecoder().decode(reader.readString());
+            if (bytes.length != size) {
+                throw  JsParserException.reasonAt("Invalid binary size (fixed type). Expected " + size + " bytes.",
+                                                  reader.getPositionInStream());
+            }
+            return JsBinary.of(bytes);
+        } catch (IllegalArgumentException e) {
+            throw JsParserException.reasonAt(e.getMessage(),
+                                             reader.getPositionInStream()
+                                            );
+        }
+    }
+
+
+}

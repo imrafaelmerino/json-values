@@ -6,6 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
@@ -21,7 +22,7 @@ public class TestJsArraySpec {
                                          JsStr.of("a")
         );
         final JsTuple spec = JsSpecs.tuple(integer());
-        final Set<SpecError> error = spec.test(array);
+        final List<SpecError> error = spec.test(array);
         assertErrorIs(error,
                       SPEC_MISSING,
                       JsStr.of("a"),

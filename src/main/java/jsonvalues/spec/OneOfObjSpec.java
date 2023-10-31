@@ -1,14 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsNull;
-import jsonvalues.JsPath;
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.util.List;
-import java.util.Set;
 
-public final class OneOfObjSpec extends AbstractNullable implements JsSpec {
+public final class OneOfObjSpec extends AbstractNullable implements JsSpec, AvroSpec {
 
     final List<JsObjSpec> specs;
     final OneOf oneOf;
@@ -36,15 +32,15 @@ public final class OneOfObjSpec extends AbstractNullable implements JsSpec {
 
 
     @Override
-    public Set<SpecError> test(JsPath parentPath, JsValue value) {
+    public List<SpecError> test(JsPath parentPath, JsValue value) {
         return oneOf.test(parentPath, value);
     }
 
 
     @Override
-    public JsValue toAvro() {
-        JsArray schema = JsArray.ofIterable(specs.stream().map(JsSpec::toAvro).toList());
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+    public JsValue toAvroSchema() {
+        JsArray schema = JsArray.ofIterable(specs.stream().map(JsObjSpec::toAvroSchema).toList());
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
 
     }
 }

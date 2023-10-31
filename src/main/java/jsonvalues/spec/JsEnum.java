@@ -2,14 +2,13 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-public final class JsEnum extends AbstractNullable implements JsSpec {
+public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
 
     final JsArray symbols;
     private String avroName;
@@ -44,8 +43,8 @@ public final class JsEnum extends AbstractNullable implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath parentPath, JsValue value) {
-        Set<SpecError> errors = new HashSet<>();
+    public List<SpecError> test(JsPath parentPath, JsValue value) {
+        List<SpecError> errors = new ArrayList<>();
         if (nullable && value.isNull()) return errors;
         if (!symbols.containsValue(value))
             errors.add(SpecError.of(parentPath, new JsError(value, ERROR_CODE.ENUM_SYMBOL_EXPECTED)));
@@ -59,7 +58,7 @@ public final class JsEnum extends AbstractNullable implements JsSpec {
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         if (avroAttBuilder == null)
             throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
         AvroAtt avroAtt = avroAttBuilder.build();
@@ -67,6 +66,6 @@ public final class JsEnum extends AbstractNullable implements JsSpec {
         if (avroAtt.doc != null) schema = schema.set("doc", JsStr.of(avroAtt.doc));
         if (avroAtt.aliases != null) schema = schema.set("aliases", avroAtt.aliases);
         schema = schema.set("symbols",symbols);
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

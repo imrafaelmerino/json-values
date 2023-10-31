@@ -32,10 +32,6 @@ final class JsArrayOfObjSuchThat extends AbstractNullable implements JsValuePred
                                                            nullable);
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsArrayOfObjSuchThat.class);
-    }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

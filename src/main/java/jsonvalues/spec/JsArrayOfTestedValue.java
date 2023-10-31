@@ -45,10 +45,7 @@ final class JsArrayOfTestedValue extends AbstractSizableArr implements JsValuePr
                                                                  max);
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsArrayOfTestedValue.class);
-    }
+
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(predicate,

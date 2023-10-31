@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-final class JsStrSpec extends AbstractNullable implements JsValuePredicate {
+final class JsStrSpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsStrSpec(final boolean nullable) {
         super(nullable);
     }
@@ -26,7 +26,7 @@ final class JsStrSpec extends AbstractNullable implements JsValuePredicate {
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
 
         return nullable ?
                 JsArray.of("null", "string") :

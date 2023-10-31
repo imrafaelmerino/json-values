@@ -2,12 +2,12 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArraySpec {
+final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArraySpec, AvroSpec {
 
     private final JsObjSpec spec;
 
@@ -57,10 +57,10 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
     }
 
     @Override
-    public Set<SpecError> test(final JsPath parentPath,
-                               final JsValue value
-                              ) {
-        Set<SpecError> errors = new HashSet<>();
+    public List<SpecError> test(final JsPath parentPath,
+                                final JsValue value
+                               ) {
+        List<SpecError> errors = new ArrayList<>();
         if (value.isNull() && nullable) return errors;
         if (!value.isArray()) {
             errors.add(SpecError.of(parentPath,
@@ -74,20 +74,20 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
     }
 
     @Override
-    public JsValue toAvro() {
-        Json items = spec.toAvro();
+    public JsValue toAvroSchema() {
+        Json<?> items = spec.toAvroSchema();
 
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", items);
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
 
-    private Set<SpecError> apply(final JsPath path,
+    private List<SpecError> apply(final JsPath path,
                                  final JsArray array
                                 ) {
-        Set<SpecError> result = new HashSet<>();
+        List<SpecError> result = new ArrayList<>();
         for (JsValue value : array) {
             result.addAll(spec.test(path.inc(),
                                     value));

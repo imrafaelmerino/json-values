@@ -21,24 +21,25 @@ final class AnySuchThat implements JsValuePredicate {
         return this;
     }
 
+    @Override
+    public boolean isNullable() {
+        return false;
+    }
+
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofValueSuchThat(predicate);
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(AnySuchThat.class);
-    }
 
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return value.isNothing() ?
-               Optional.of(new JsError(value,
-                                   REQUIRED)) :
-               predicate.apply(value);
+                Optional.of(new JsError(value,
+                                        REQUIRED)) :
+                predicate.apply(value);
 
     }
 }

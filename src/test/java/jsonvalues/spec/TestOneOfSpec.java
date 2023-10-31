@@ -27,7 +27,7 @@ public class TestOneOfSpec {
                                           )
                                   );
 
-        System.out.println(spec.toAvro());
+        System.out.println(spec.toAvroSchema());
 
         JsObj obj = JsObj.of("a", JsInt.of(1),
                              "b", JsStr.of("hi"),

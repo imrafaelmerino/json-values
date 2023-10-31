@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-final class JsArrayOfBool extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfBool extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
     JsArrayOfBool(final boolean nullable) {
         super(nullable);
     }
@@ -35,12 +35,12 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsValuePredicate
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
 
         JsObj schema = JsObj.of("type",JsStr.of("array"),
                                 "items",JsStr.of("boolean"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
     @Override

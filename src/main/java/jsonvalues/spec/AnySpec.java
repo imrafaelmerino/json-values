@@ -16,9 +16,11 @@ final class AnySpec implements JsValuePredicate {
         return JsSpecParsers.INSTANCE.ofValue();
     }
 
+
+
     @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(AnySpec.class);
+    public boolean isNullable() {
+        return true;
     }
 
     @Override

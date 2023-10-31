@@ -7,7 +7,7 @@ import java.util.function.IntFunction;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
     final IntFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedInt(final IntFunction<Optional<JsError>> predicate,
@@ -66,10 +66,10 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePred
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("int"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-final class JsArrayOfStr extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfStr extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
     JsArrayOfStr(final boolean nullable) {
         super(nullable);
     }
@@ -47,10 +47,10 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsValuePredicate,
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("string"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

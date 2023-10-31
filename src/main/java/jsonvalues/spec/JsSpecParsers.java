@@ -19,7 +19,7 @@ import static jsonvalues.spec.JsParsers.PARSERS;
  */
 final class JsSpecParsers {
 
-    public static final JsSpecParsers INSTANCE = new JsSpecParsers();
+     static final JsSpecParsers INSTANCE = new JsSpecParsers();
     private final BiFunction<JsReader, JsError, JsParserException> newParseException;
 
     private JsSpecParsers() {
@@ -29,7 +29,7 @@ final class JsSpecParsers {
                                           );
     }
 
-    public JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfObjSuchThat(Function<JsArray, Optional<JsError>> p,
                                              boolean nullable
                                             ) {
         return getParser(PARSERS.arrayOfObjParser,
@@ -51,7 +51,7 @@ final class JsSpecParsers {
                                               );
     }
 
-    public JsSpecParser ofArrayOfObjEachSuchThat(Function<JsObj, Optional<JsError>> p,
+     JsSpecParser ofArrayOfObjEachSuchThat(Function<JsObj, Optional<JsError>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -70,7 +70,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfObjSpec(List<String> required,
+     JsSpecParser ofArrayOfObjSpec(List<String> required,
                                          Map<String, JsSpecParser> parsers,
                                          Predicate<JsObj> predicate,
                                          boolean strict,
@@ -101,7 +101,7 @@ final class JsSpecParsers {
 
     }
 
-    public JsSpecParser ofArrayOfObj(boolean nullable,
+     JsSpecParser ofArrayOfObj(boolean nullable,
                                      int min,
                                      int max
                                     ) {
@@ -129,7 +129,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofObjSuchThat(final Function<JsObj, Optional<JsError>> predicate,
+     JsSpecParser ofObjSuchThat(final Function<JsObj, Optional<JsError>> predicate,
                                       final boolean nullable
                                      ) {
 
@@ -158,7 +158,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArraySpec(List<JsSpecParser> keyDeserializers,
+     JsSpecParser ofArraySpec(List<JsSpecParser> keyDeserializers,
                                     boolean nullable
                                    ) {
         return nullable ?
@@ -166,7 +166,7 @@ final class JsSpecParsers {
                 reader -> new JsArraySpecReader(keyDeserializers).array(reader);
     }
 
-    public JsSpecParser ofMapOfSpec(JsSpecParser parser,
+     JsSpecParser ofMapOfSpec(JsSpecParser parser,
                                     boolean nullable
                                    ) {
         return reader ->
@@ -180,7 +180,7 @@ final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofObjSpec(List<String> required,
+     JsSpecParser ofObjSpec(List<String> required,
                                   Map<String, JsSpecParser> keyDeserializers,
                                   Predicate<JsObj> predicate,
                                   boolean nullable,
@@ -211,7 +211,7 @@ final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofArrayOfValueSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfValueSuchThat(Function<JsArray, Optional<JsError>> p,
                                                boolean nullable
                                               ) {
         return getParser(PARSERS.arrayOfValueParser,
@@ -220,7 +220,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofObj(boolean nullable) {
+     JsSpecParser ofObj(boolean nullable) {
         return getParser(PARSERS.objParser,
                          nullable
                         );
@@ -234,7 +234,7 @@ final class JsSpecParsers {
                 parser::value;
     }
 
-    public JsSpecParser ofArrayOfValue(boolean nullable,
+     JsSpecParser ofArrayOfValue(boolean nullable,
                                        int min,
                                        int max
                                       ) {
@@ -245,7 +245,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfValueEachSuchThat(Function<JsValue, Optional<JsError>> p,
+     JsSpecParser ofArrayOfValueEachSuchThat(Function<JsValue, Optional<JsError>> p,
                                                    boolean nullable,
                                                    int min,
                                                    int max
@@ -263,13 +263,13 @@ final class JsSpecParsers {
                                                                       );
     }
 
-    public JsSpecParser ofValue() {
+     JsSpecParser ofValue() {
         return getParser(PARSERS.valueParser,
                          true
                         );
     }
 
-    public JsSpecParser ofValueSuchThat(Function<JsValue, Optional<JsError>> predicate) {
+     JsSpecParser ofValueSuchThat(Function<JsValue, Optional<JsError>> predicate) {
         return reader ->
         {
             JsValue value = PARSERS.valueParser.nullOrValue(reader);
@@ -283,25 +283,25 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofBool(boolean nullable) {
+     JsSpecParser ofBool(boolean nullable) {
         return getParser(PARSERS.boolParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofTrue(boolean nullable) {
+     JsSpecParser ofTrue(boolean nullable) {
         return nullable ?
                 PARSERS.boolParser::nullOrTrue :
                 PARSERS.boolParser::True;
     }
 
-    public JsSpecParser ofFalse(boolean nullable) {
+     JsSpecParser ofFalse(boolean nullable) {
         return nullable ?
                 PARSERS.boolParser::nullOrFalse :
                 PARSERS.boolParser::False;
     }
 
-    public JsSpecParser ofArrayOfBool(boolean nullable,
+     JsSpecParser ofArrayOfBool(boolean nullable,
                                       int min,
                                       int max
                                      ) {
@@ -317,7 +317,7 @@ final class JsSpecParsers {
                                                          );
     }
 
-    public JsSpecParser ofArrayOfBoolSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfBoolSuchThat(Function<JsArray, Optional<JsError>> p,
                                               boolean nullable
                                              ) {
         return getParser(PARSERS.arrayOfBoolParser,
@@ -327,7 +327,7 @@ final class JsSpecParsers {
 
     }
 
-    public JsSpecParser ofArrayOfStrEachSuchThat(Function<String, Optional<JsError>> p,
+     JsSpecParser ofArrayOfStrEachSuchThat(Function<String, Optional<JsError>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -347,7 +347,7 @@ final class JsSpecParsers {
                                                                   );
     }
 
-    public JsSpecParser ofArrayOfStrSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfStrSuchThat(Function<JsArray, Optional<JsError>> p,
                                              boolean nullable
                                             ) {
         return getParser(PARSERS.arrayOfStrParser,
@@ -356,7 +356,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfStr(boolean nullable,
+     JsSpecParser ofArrayOfStr(boolean nullable,
                                      int min,
                                      int max
                                     ) {
@@ -368,13 +368,13 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofStr(boolean nullable) {
+     JsSpecParser ofStr(boolean nullable) {
         return getParser(PARSERS.strParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofStrSuchThat(Function<String, Optional<JsError>> predicate,
+     JsSpecParser ofStrSuchThat(Function<String, Optional<JsError>> predicate,
                                       boolean nullable
                                      ) {
 
@@ -400,7 +400,7 @@ final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofArrayOfNumber(boolean nullable,
+     JsSpecParser ofArrayOfNumber(boolean nullable,
                                         int min,
                                         int max
                                        ) {
@@ -411,7 +411,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfNumberEachSuchThat(Function<JsNumber, Optional<JsError>> p,
+     JsSpecParser ofArrayOfNumberEachSuchThat(Function<JsNumber, Optional<JsError>> p,
                                                     boolean nullable,
                                                     int min,
                                                     int max
@@ -429,7 +429,7 @@ final class JsSpecParsers {
                                                                        );
     }
 
-    public JsSpecParser ofArrayOfNumberSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfNumberSuchThat(Function<JsArray, Optional<JsError>> p,
                                                 boolean nullable
                                                ) {
         return getParser(PARSERS.arrayOfNumberParser,
@@ -438,7 +438,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<JsError>> p,
                                                   boolean nullable
                                                  ) {
         return getParser(PARSERS.arrayOfIntegralParser,
@@ -447,13 +447,13 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofNumber(boolean nullable) {
+     JsSpecParser ofNumber(boolean nullable) {
         return getParser(PARSERS.numberParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofNumberSuchThat(Function<JsNumber, Optional<JsError>> predicate,
+     JsSpecParser ofNumberSuchThat(Function<JsNumber, Optional<JsError>> predicate,
                                          boolean nullable
                                         ) {
 
@@ -481,7 +481,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfIntegral(boolean nullable,
+     JsSpecParser ofArrayOfIntegral(boolean nullable,
                                           int min,
                                           int max
                                          ) {
@@ -492,7 +492,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, Optional<JsError>> p,
+     JsSpecParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, Optional<JsError>> p,
                                                       boolean nullable,
                                                       int min,
                                                       int max
@@ -512,13 +512,13 @@ final class JsSpecParsers {
                                                                        );
     }
 
-    public JsSpecParser ofIntegral(boolean nullable) {
+     JsSpecParser ofIntegral(boolean nullable) {
         return getParser(PARSERS.integralParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofIntegralSuchThat(Function<BigInteger, Optional<JsError>> predicate,
+     JsSpecParser ofIntegralSuchThat(Function<BigInteger, Optional<JsError>> predicate,
                                            boolean nullable
                                           ) {
 
@@ -544,7 +544,7 @@ final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofArrayOfDecimal(boolean nullable,
+     JsSpecParser ofArrayOfDecimal(boolean nullable,
                                          int min,
                                          int max
                                         ) {
@@ -555,7 +555,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, Optional<JsError>> p,
+     JsSpecParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, Optional<JsError>> p,
                                                      boolean nullable,
                                                      int min,
                                                      int max
@@ -575,7 +575,7 @@ final class JsSpecParsers {
                                                                       );
     }
 
-    public JsSpecParser ofArrayOfDecimalSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfDecimalSuchThat(Function<JsArray, Optional<JsError>> p,
                                                  boolean nullable
                                                 ) {
         return getParser(PARSERS.arrayOfDecimalParser,
@@ -586,7 +586,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfLong(boolean nullable,
+     JsSpecParser ofArrayOfLong(boolean nullable,
                                       int min,
                                       int max
                                      ) {
@@ -597,7 +597,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfLongEachSuchThat(LongFunction<Optional<JsError>> p,
+     JsSpecParser ofArrayOfLongEachSuchThat(LongFunction<Optional<JsError>> p,
                                                   boolean nullable,
                                                   int min,
                                                   int max
@@ -616,7 +616,7 @@ final class JsSpecParsers {
                                                                      );
     }
 
-    public JsSpecParser ofArrayOfLongSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfLongSuchThat(Function<JsArray, Optional<JsError>> p,
                                               boolean nullable
                                              ) {
         return getParser(PARSERS.arrayOfLongParser,
@@ -626,13 +626,13 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofDecimal(boolean nullable) {
+     JsSpecParser ofDecimal(boolean nullable) {
         return getParser(PARSERS.decimalParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofDecimalSuchThat(Function<BigDecimal, Optional<JsError>> predicate,
+     JsSpecParser ofDecimalSuchThat(Function<BigDecimal, Optional<JsError>> predicate,
                                           boolean nullable
                                          ) {
 
@@ -661,63 +661,63 @@ final class JsSpecParsers {
             };
     }
 
-    public JsSpecParser ofMapOfLong(boolean nullable) {
+     JsSpecParser ofMapOfLong(boolean nullable) {
         return getParser(PARSERS.mapOfLongParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfString(boolean nullable) {
+     JsSpecParser ofMapOfString(boolean nullable) {
         return getParser(PARSERS.mapOfStringParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfBool(boolean nullable) {
+     JsSpecParser ofMapOfBool(boolean nullable) {
         return getParser(PARSERS.mapOfBoolParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfInt(boolean nullable) {
+     JsSpecParser ofMapOfInt(boolean nullable) {
         return getParser(PARSERS.mapOfIntegerParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfInstant(boolean nullable) {
+     JsSpecParser ofMapOfInstant(boolean nullable) {
         return getParser(PARSERS.mapOfInstantParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfDecimal(boolean nullable) {
+     JsSpecParser ofMapOfDecimal(boolean nullable) {
         return getParser(PARSERS.mapOfDecimalParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofMapOfBinary(boolean nullable) {
+     JsSpecParser ofMapOfBinary(boolean nullable) {
         return getParser(PARSERS.mapOfBinaryParser,
                          nullable
                         );
     }
 
 
-    public JsSpecParser ofMapOfBigInt(boolean nullable) {
+     JsSpecParser ofMapOfBigInt(boolean nullable) {
         return getParser(PARSERS.mapOfBigIntegerParser,
                          nullable
                         );
     }
 
 
-    public JsSpecParser ofLong(boolean nullable) {
+     JsSpecParser ofLong(boolean nullable) {
         return getParser(PARSERS.longParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofLongSuchThat(LongFunction<Optional<JsError>> predicate,
+     JsSpecParser ofLongSuchThat(LongFunction<Optional<JsError>> predicate,
                                        boolean nullable
                                       ) {
 
@@ -747,7 +747,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfInt(boolean nullable,
+     JsSpecParser ofArrayOfInt(boolean nullable,
                                      int min,
                                      int max
                                     ) {
@@ -759,7 +759,7 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofArrayOfIntSuchThat(Function<JsArray, Optional<JsError>> p,
+     JsSpecParser ofArrayOfIntSuchThat(Function<JsArray, Optional<JsError>> p,
                                              boolean nullable
                                             ) {
         return getParser(PARSERS.arrayOfIntParser,
@@ -768,7 +768,7 @@ final class JsSpecParsers {
                         );
     }
 
-    public JsSpecParser ofArrayOfIntEachSuchThat(IntFunction<Optional<JsError>> p,
+     JsSpecParser ofArrayOfIntEachSuchThat(IntFunction<Optional<JsError>> p,
                                                  boolean nullable,
                                                  int min,
                                                  int max
@@ -787,13 +787,19 @@ final class JsSpecParsers {
                                                                     );
     }
 
-    public JsSpecParser ofBinary(boolean nullable) {
+     JsSpecParser ofBinary(boolean nullable) {
         return getParser(PARSERS.binaryParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofBinarySuchThat(Function<byte[], Optional<JsError>> predicate,
+     JsSpecParser ofFixedBinary(int size,boolean nullable) {
+        return getParser(new JsFixedBinaryReader(size),
+                         nullable
+                        );
+    }
+
+     JsSpecParser ofBinarySuchThat(Function<byte[], Optional<JsError>> predicate,
                                          boolean nullable
                                         ) {
 
@@ -820,13 +826,13 @@ final class JsSpecParsers {
         };
     }
 
-    public JsSpecParser ofInt(boolean nullable) {
+     JsSpecParser ofInt(boolean nullable) {
         return getParser(PARSERS.intParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofIntSuchThat(IntFunction<Optional<JsError>> predicate,
+     JsSpecParser ofIntSuchThat(IntFunction<Optional<JsError>> predicate,
                                       boolean nullable
                                      ) {
 
@@ -854,13 +860,13 @@ final class JsSpecParsers {
     }
 
 
-    public JsSpecParser ofInstant(boolean nullable) {
+     JsSpecParser ofInstant(boolean nullable) {
         return getParser(PARSERS.instantParser,
                          nullable
                         );
     }
 
-    public JsSpecParser ofInstantSuchThat(Function<Instant, Optional<JsError>> predicate,
+     JsSpecParser ofInstantSuchThat(Function<Instant, Optional<JsError>> predicate,
                                           boolean nullable
                                          ) {
         if (nullable) return reader ->

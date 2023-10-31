@@ -5,8 +5,8 @@ import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Predicate;
 
 abstract class AbstractMap extends AbstractNullable {
@@ -16,12 +16,12 @@ abstract class AbstractMap extends AbstractNullable {
     }
 
 
-    protected Set<SpecError> test(JsPath path,
-                                  JsValue value,
-                                  Predicate<JsValue> predicate,
-                                  ERROR_CODE code
-                                 ) {
-        Set<SpecError> errors = new HashSet<>();
+    protected List<SpecError> test(JsPath path,
+                                   JsValue value,
+                                   Predicate<JsValue> predicate,
+                                   ERROR_CODE code
+                                  ) {
+        List<SpecError> errors = new ArrayList<>();
         if (!value.isObj()) {
             errors.add(SpecError.of(path,
                                     new JsError(value,

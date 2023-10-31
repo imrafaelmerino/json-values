@@ -47,10 +47,7 @@ final class JsArrayOfTestedObj extends AbstractSizableArr implements JsValuePred
         );
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsArrayOfTestedObj.class);
-    }
+
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

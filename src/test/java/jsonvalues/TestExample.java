@@ -10,6 +10,7 @@ import jsonvalues.spec.SpecError;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
@@ -74,7 +75,7 @@ public class TestExample {
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
-        Set<SpecError> test = spec.test(person);
+        List<SpecError> test = spec.test(person);
 
         Assertions.assertTrue(test.isEmpty());
 

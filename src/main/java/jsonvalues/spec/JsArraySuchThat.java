@@ -20,10 +20,7 @@ final class JsArraySuchThat extends AbstractNullable implements JsValuePredicate
         this.predicate = predicate;
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsArraySuchThat.class);
-    }
+
 
 
     @Override

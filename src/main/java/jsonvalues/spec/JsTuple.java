@@ -11,10 +11,9 @@ import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
  * Represents a specification of every element of a Json array. It allows to define tuples and the schema of every of
  * its elements.
  */
-final class JsTuple implements JsArraySpec {
+final class JsTuple extends AbstractNullable implements JsArraySpec {
 
     private final boolean required;
-    private final boolean nullable;
     private final List<JsSpec> specs;
     private final boolean strict = true;
 
@@ -29,9 +28,9 @@ final class JsTuple implements JsArraySpec {
                     boolean required,
                     boolean nullable
                    ) {
+        super(nullable);
         this.specs = specs;
         this.required = required;
-        this.nullable = nullable;
     }
 
     static JsTuple of(JsSpec spec,
@@ -65,20 +64,16 @@ final class JsTuple implements JsArraySpec {
                                                  );
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsTuple.class);
-    }
 
 
     @Override
-    public Set<SpecError> test(final JsPath parentPath,
-                               final JsValue value
-                              ) {
+    public List<SpecError> test(final JsPath parentPath,
+                                final JsValue value
+                               ) {
         return test(JsPath.empty()
                           .append(JsPath.fromIndex(-1)),
                     this,
-                    new HashSet<>(),
+                    new ArrayList<>(),
                     value
                    );
     }
@@ -86,9 +81,9 @@ final class JsTuple implements JsArraySpec {
 
 
 
-    private Set<SpecError> test(final JsPath parent,
+    private List<SpecError> test(final JsPath parent,
                                 final JsTuple tupleSpec,
-                                final Set<SpecError> errors,
+                                final List<SpecError> errors,
                                 final JsValue value
                                ) {
         if (value.isNull() && nullable) return errors;

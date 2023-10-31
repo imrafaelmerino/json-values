@@ -17,6 +17,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Set;
 
 import static jsonvalues.JsBool.TRUE;
@@ -35,7 +36,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> errors = spec.test(JsObj.of("a",
+        final List<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsInt.of(1)
                                                         ));
 
@@ -67,9 +68,9 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
-                                                        JsStr.of("bye")
-                                                       ));
+        final List<SpecError> error = spec.test(JsObj.of("a",
+                                                         JsStr.of("bye")
+                                                        ));
 
         Assertions.assertFalse(error.isEmpty());
 
@@ -90,7 +91,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -115,7 +116,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> errors = spec.test(JsObj.of("a",
+        final List<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsInt.of(5),
                                                          "b",
                                                          JsInstant.of(Instant.now())
@@ -167,7 +168,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -190,7 +191,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsLong.of(4)
                                                        ));
 
@@ -223,7 +224,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -247,7 +248,7 @@ public class TestJsObjSpec {
 
 
         final JsBigDec bd = JsBigDec.of(new BigDecimal(Long.MAX_VALUE - 1));
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         bd
                                                        ));
 
@@ -280,7 +281,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        )
                                               );
@@ -304,7 +305,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsBool.FALSE
                                                        ));
 
@@ -337,7 +338,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         TRUE
                                                        ));
 
@@ -376,7 +377,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsInt.of(1),
                                                         "b",
                                                         JsLong.of(2),
@@ -400,7 +401,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -423,7 +424,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -446,7 +447,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsStr.of("a")
                                                        ));
 
@@ -495,7 +496,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsInt.of(1),
                                                         "b",
                                                         JsStr.of("hi"),
@@ -556,7 +557,7 @@ public class TestJsObjSpec {
                                            );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsArray.of(1,
                                                                    2,
                                                                    3
@@ -642,7 +643,7 @@ public class TestJsObjSpec {
                                                         );
 
 
-        final Set<SpecError> error = spec.test(JsObj.of("a",
+        final List<SpecError> error = spec.test(JsObj.of("a",
                                                         JsArray.of(1,
                                                                    2,
                                                                    3
@@ -715,7 +716,7 @@ public class TestJsObjSpec {
         final JsObjSpec spec = JsObjSpec.of("a",
                                             integer()
                                            );
-        final Set<SpecError> error = spec.test(obj);
+        final List<SpecError> error = spec.test(obj);
 
         assertErrorIs(error,
                       SPEC_MISSING,
@@ -963,7 +964,7 @@ public class TestJsObjSpec {
                                                     ).nullable()
                                      );
 
-        final Set<SpecError> result = spec.test(JsObj.of("a",
+        final List<SpecError> result = spec.test(JsObj.of("a",
                                                          JsNull.NULL,
                                                          "c",
                                                          JsNull.NULL,
@@ -1063,7 +1064,7 @@ public class TestJsObjSpec {
                                                    "k"
                                                   ).lenient();
 
-        final Set<SpecError> result = spec.test(JsObj.of("a",
+        final List<SpecError> result = spec.test(JsObj.of("a",
                                                          JsNull.NULL,
                                                          "c",
                                                          JsNull.NULL,
@@ -1095,7 +1096,7 @@ public class TestJsObjSpec {
                                   .isEmpty());
 
 
-        final Set<SpecError> result1 = spec.test(JsObj.of("a",
+        final List<SpecError> result1 = spec.test(JsObj.of("a",
                                                           JsNull.NULL,
                                                           "b",
                                                           JsNull.NULL,
@@ -1236,7 +1237,7 @@ public class TestJsObjSpec {
                                                    "d"
                                                   );
 
-        final Set<SpecError> set = spec.test(JsObj.of("a",
+        final List<SpecError> set = spec.test(JsObj.of("a",
                                                       JsObj.of("a",
                                                                JsStr.of("a"),
                                                                "b",
@@ -1278,7 +1279,7 @@ public class TestJsObjSpec {
                                                             "d"
                                                            );
 
-        final Set<SpecError> errors = objspec.test(JsObj.of("a",
+        final List<SpecError> errors = objspec.test(JsObj.of("a",
                                                             JsArray.of(JsObj.of("a",
                                                                                 JsInt.of(1)
                                                                                )),
@@ -1347,7 +1348,7 @@ public class TestJsObjSpec {
                                                         )
                                            ).withOptKeys("a");
 
-        final Set<SpecError> errors = spec.test(JsObj.of("b",
+        final List<SpecError> errors = spec.test(JsObj.of("b",
                                                          JsObj.empty()
                                                         ));
 
@@ -1377,7 +1378,7 @@ public class TestJsObjSpec {
                                                           )
                                            );
 
-        final Set<SpecError> errors = spec.test(JsObj.of("a",
+        final List<SpecError> errors = spec.test(JsObj.of("a",
                                                          JsStr.of("a"),
                                                          "b",
                                                          JsInt.of(1),
@@ -1405,7 +1406,7 @@ public class TestJsObjSpec {
                                                 ))
                                   .isEmpty());
 
-        Set<SpecError> result = spec.test(JsObj.of("a",
+        List<SpecError> result = spec.test(JsObj.of("a",
                                                    JsStr.of("ñññ"),
                                                    "b",
                                                    JsInt.of(1)
@@ -1432,7 +1433,7 @@ public class TestJsObjSpec {
                                       instant()
                                      );
 
-        Set<SpecError> errorPairs = spec.test(JsObj.of("a",
+        List<SpecError> errorPairs = spec.test(JsObj.of("a",
                                                        JsInstant.of(Instant.now()),
                                                        "b",
                                                        JsStr.of(Instant.now()
@@ -1441,7 +1442,7 @@ public class TestJsObjSpec {
         Assertions.assertTrue(errorPairs
                                       .isEmpty());
 
-        Set<SpecError> errorPairs1 = spec.test(JsObj.of("a",
+        List<SpecError> errorPairs1 = spec.test(JsObj.of("a",
                                                         JsStr.of("hola"),
                                                         "b",
                                                         JsStr.of(LocalDateTime.now(ZoneId.systemDefault()).toString()
@@ -1466,7 +1467,7 @@ public class TestJsObjSpec {
     @Test
     public void testConstantSpec() {
 
-        Set<SpecError> errorPairSet = cons(JsStr.of("hi")).test(JsPath.empty(),
+        List<SpecError> errorPairSet = cons(JsStr.of("hi")).test(JsPath.empty(),
                                                                 JsInt.of(1)
                                                                );
 
@@ -1498,7 +1499,7 @@ public class TestJsObjSpec {
                                       integer()
                                      );
 
-        Set<SpecError> errors = spec.test(JsObj.of("a",
+        List<SpecError> errors = spec.test(JsObj.of("a",
                                                    JsStr.of("123"),
                                                    "b",
                                                    JsStr.of("234")
@@ -1579,20 +1580,20 @@ public class TestJsObjSpec {
                         .suchThat(o -> dependencies(o));
 
         Assertions.assertTrue(gen.sample(10000).allMatch(o -> {
-            Set<SpecError> errors = spec.test(o);
+            List<SpecError> errors = spec.test(o);
             return errors.isEmpty();
         }));
 
 
         Assertions.assertTrue(baseGen.suchThat(spec).sample(10000).allMatch(o -> {
-            Set<SpecError> errors = spec.test(o);
+            List<SpecError> errors = spec.test(o);
             return errors.isEmpty();
         }));
 
 
         JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(o -> dependencies(o));
         Assertions.assertTrue(baseGen.withAllOptKeys().suchThat(spec1).sample(10000).allMatch(o -> {
-            Set<SpecError> errors = spec1.test(o);
+            List<SpecError> errors = spec1.test(o);
             return errors.isEmpty();
         }));
 
@@ -1838,7 +1839,7 @@ public class TestJsObjSpec {
 
         Assertions.assertTrue(spec.test(valid).isEmpty());
 
-        Set<SpecError> errors = spec.test(invalid);
+        List<SpecError> errors = spec.test(invalid);
 
         Assertions.assertFalse(errors.isEmpty());
 

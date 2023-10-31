@@ -2,11 +2,10 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
-public final class OneOf extends AbstractNullable implements JsSpec {
+public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
     final List<? extends JsSpec> specs;
 
@@ -35,33 +34,33 @@ public final class OneOf extends AbstractNullable implements JsSpec {
                                              reader.getPositionInStream()
                                             );
         JsSpec spec = specs.get(i);
-        if(i < specs.size() -1)reader.setMark();
+        if (i < specs.size() - 1) reader.setMark();
         try {
             JsValue parsed = spec.parser()
                                  .parse(reader);
             return parsed;
         } catch (JsParserException e) {
-            if(i < specs.size() -1)reader.rollbackToMark();
+            if (i < specs.size() - 1) reader.rollbackToMark();
             return parse(reader, i + 1);
         }
     }
 
     @Override
-    public Set<SpecError> test(JsPath parentPath, JsValue value) {
-        return test(parentPath, value, 0, new HashSet<>());
+    public List<SpecError> test(JsPath parentPath, JsValue value) {
+        return test(parentPath, value, 0, new ArrayList<>());
     }
 
-    private Set<SpecError> test(JsPath parentPath,
-                                JsValue value,
-                                int i,
-                                Set<SpecError> accumulated
-                               ) {
+    private List<SpecError> test(JsPath parentPath,
+                                 JsValue value,
+                                 int i,
+                                 List<SpecError> accumulated
+                                ) {
 
         if (i >= specs.size()) return accumulated;
 
         JsSpec spec = specs.get(i);
-        Set<SpecError> iErrors = spec.test(parentPath,
-                                           value);
+        List<SpecError> iErrors = spec.test(parentPath,
+                                            value);
         if (iErrors.isEmpty()) return iErrors;
 
         iErrors.forEach(e -> e.setSpec(i + ""));
@@ -71,9 +70,14 @@ public final class OneOf extends AbstractNullable implements JsSpec {
     }
 
     @Override
-    public JsValue toAvro() {
-        JsArray schema = JsArray.ofIterable(specs.stream().map(JsSpec::toAvro).toList());
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+    public JsValue toAvroSchema() {
+        JsArray schema =
+                JsArray.ofIterable(specs.stream()
+                                        .map(spec -> {
+                                            if (spec instanceof AvroSpec avroSpec) return avroSpec.toAvroSchema();
+                                            else throw new SpecNotSupportedInAvro(spec);
+                                        }).toList());
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
 
     }
 }

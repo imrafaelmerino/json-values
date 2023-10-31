@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.FALSE_EXPECTED;
 
-final class JsFalseConstant extends AbstractNullable implements JsValuePredicate {
+final class JsFalseConstant extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsFalseConstant(final boolean nullable) {
         super(nullable);
     }
@@ -25,7 +25,7 @@ final class JsFalseConstant extends AbstractNullable implements JsValuePredicate
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ?
                 JsArray.of("null", "boolean") :
                 JsStr.of("boolean");

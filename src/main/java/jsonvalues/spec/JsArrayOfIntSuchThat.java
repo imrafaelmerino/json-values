@@ -5,7 +5,7 @@ import jsonvalues.*;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec, AvroSpec {
     private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfInt isArrayOfInt;
 
@@ -34,11 +34,11 @@ final class JsArrayOfIntSuchThat extends AbstractNullable implements JsValuePred
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("int"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
     @Override

@@ -5,6 +5,7 @@ import jsonvalues.JsObj;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.Set;
 
 public class TestJsObjStrictSpecConstructors {
@@ -98,7 +99,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -192,7 +193,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -282,7 +283,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -368,7 +369,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -451,7 +452,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -529,7 +530,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
 
         Assertions.assertTrue(test.isEmpty());
 
@@ -604,7 +605,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -673,7 +674,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -739,7 +740,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -801,7 +802,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -856,7 +857,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -903,7 +904,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
@@ -947,7 +948,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -987,7 +988,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1023,7 +1024,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 
@@ -1055,7 +1056,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1085,7 +1086,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
 
@@ -1109,7 +1110,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
 
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
@@ -1129,7 +1130,7 @@ public class TestJsObjStrictSpecConstructors {
                              ONE
         );
 
-        Set<SpecError> test = spec.test(obj);
+        List<SpecError> test = spec.test(obj);
         Assertions.assertTrue(test.isEmpty());
         Assertions.assertFalse(spec.test(obj.set("z",ONE)).isEmpty());
 

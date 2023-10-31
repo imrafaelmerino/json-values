@@ -7,7 +7,7 @@ import java.util.function.LongFunction;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
     private final LongFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedLong(final LongFunction<Optional<JsError>> predicate,
@@ -64,10 +64,10 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePre
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("long"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

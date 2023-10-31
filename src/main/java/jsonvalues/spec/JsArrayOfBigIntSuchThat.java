@@ -5,7 +5,7 @@ import jsonvalues.*;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec, AvroSpec {
     private final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfBigInt isArrayOfIntegral;
 
@@ -31,14 +31,14 @@ final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValueP
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj items = JsObj.of("type", JsStr.of("string"),
                                "logicalType", JsStr.of("biginteger"));
 
         JsObj schema = JsObj.of("type",JsStr.of("array"),
                                 "items",items);
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
     @Override

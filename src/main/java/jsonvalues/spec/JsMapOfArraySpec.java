@@ -2,12 +2,12 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.Set;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
 
-final class JsMapOfArraySpec extends AbstractMap implements JsSpec {
+final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
 
     final JsArraySpec spec;
 
@@ -34,18 +34,21 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value
-                              ) {
+    public List<SpecError> test(JsPath path,
+                                JsValue value
+                               ) {
 
-        ???
+        return null;
     }
 
     @Override
-    public JsValue toAvro() {
-        JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                "vales", spec.toAvro());
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+    public JsValue toAvroSchema() {
+        if (spec instanceof AvroSpec avroSpec) {
+            JsObj schema = JsObj.of("type", JsStr.of("map"),
+                                    "vales", avroSpec.toAvroSchema());
+            return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
+        }
+        throw new SpecNotSupportedInAvro(spec);
 
     }
 

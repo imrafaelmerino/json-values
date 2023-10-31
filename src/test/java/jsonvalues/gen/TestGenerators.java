@@ -16,6 +16,7 @@ import java.time.Duration;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -266,7 +267,7 @@ public class TestGenerators {
         Assertions.assertTrue(
                 gen.sample(1000)
                    .allMatch(it -> {
-                       Set<SpecError> errors = spec.test(it);
+                       List<SpecError> errors = spec.test(it);
                        return errors
                                .isEmpty();
                    })

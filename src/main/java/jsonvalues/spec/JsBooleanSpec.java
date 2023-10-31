@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate {
+final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsBooleanSpec(final boolean nullable) {
         super(nullable);
     }
@@ -37,7 +37,7 @@ final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate {
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ? JsArray.of("null", "boolean") : JsStr.of("boolean");
     }
 

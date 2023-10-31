@@ -184,6 +184,10 @@ public final class JsSpecs {
         return binary;
     }
 
+    public static JsSpec fixedBinary(int size) {
+        return new JsFixedBinarySpec(size);
+    }
+
     /**
      * non-nullable integral number
      *

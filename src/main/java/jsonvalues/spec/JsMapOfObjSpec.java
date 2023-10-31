@@ -2,11 +2,11 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
+import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 
-final class JsMapOfObjSpec extends AbstractMap implements JsSpec {
+final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
 
     private final JsObjSpec spec;
 
@@ -32,17 +32,17 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value
-                              ) {
-       ???
+    public List<SpecError> test(JsPath path,
+                                JsValue value
+                               ) {
+       return null;
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type",JsStr.of("map"),
-                                "vales",spec.toAvro());
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+                                "vales",spec.toAvroSchema());
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
 
     }
 

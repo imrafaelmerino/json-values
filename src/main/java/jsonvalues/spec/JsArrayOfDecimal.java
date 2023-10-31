@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsArrayOfDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
 
     JsArrayOfDecimal(final boolean nullable) {
         super(nullable);
@@ -36,11 +36,11 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsValuePredic
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", JsStr.of("double"));
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
     @Override

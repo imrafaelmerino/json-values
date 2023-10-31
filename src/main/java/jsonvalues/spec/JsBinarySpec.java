@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-final class JsBinarySpec extends AbstractNullable implements JsValuePredicate {
+final class JsBinarySpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsBinarySpec(final boolean nullable) {
         super(nullable);
     }
@@ -36,7 +36,7 @@ final class JsBinarySpec extends AbstractNullable implements JsValuePredicate {
 
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ? JsArray.of("null", "bytes") : JsStr.of("bytes");
     }
 

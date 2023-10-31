@@ -4,7 +4,9 @@ import jsonvalues.JsParserException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
 import java.util.Stack;
 
 /**
@@ -57,7 +59,7 @@ public final class JsReader {
     DoublePrecision doublePrecision;
     int doubleLengthLimit;
     int maxNumberDigits;
-    private Stack<Integer> markPositions = new Stack<>();
+    private Deque<Integer> markPositions = new ArrayDeque<>();
     private int currentIndex = 0;
     private long currentPosition = 0;
     private byte last = ' ';
@@ -625,7 +627,6 @@ public final class JsReader {
      * {@link #rollbackToMark()}.
      */
     void setMark() {
-        System.out.println("set mark at " + currentIndex);
         markPositions.push(currentIndex);
     }
 
@@ -637,9 +638,7 @@ public final class JsReader {
      */
     void rollbackToMark() {
         if (!markPositions.isEmpty()) {
-            int a = markPositions.pop();
-            System.out.println("rollback from " + currentIndex + " to " + a);
-            currentIndex = a;
+            currentIndex = markPositions.pop();
             last = (currentIndex > 0) ? buffer[currentIndex - 1] : (byte) ' ';
 
         } else {

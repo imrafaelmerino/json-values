@@ -1,8 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
-import jsonvalues.JsValue;
+import jsonvalues.*;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -10,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsDecimalSuchThat extends AbstractNullable implements JsValuePredicate {
+final class JsDecimalSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsDecimalSuchThat(final Function<BigDecimal, Optional<JsError>> predicate,
@@ -27,18 +25,18 @@ final class JsDecimalSuchThat extends AbstractNullable implements JsValuePredica
                                      true
         );
     }
-
+    @Override
+    public JsValue toAvroSchema() {
+        JsObj schema = JsObj.of("type", JsStr.of("string"),
+                                "logicalType", JsStr.of("bigdecimal"));
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
+    }
 
     @Override
     public JsSpecParser parser() {
         return JsSpecParsers.INSTANCE.ofDecimalSuchThat(predicate,
                                                         nullable
                                                        );
-    }
-
-    @Override
-    public JsValue toAvro() {
-        return nullable ? JsArray.of("null", "double") : JsStr.of("double");
     }
 
 

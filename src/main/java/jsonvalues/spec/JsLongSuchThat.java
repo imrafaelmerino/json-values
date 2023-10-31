@@ -9,7 +9,7 @@ import java.util.function.LongFunction;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-final class JsLongSuchThat extends AbstractNullable implements JsValuePredicate {
+final class JsLongSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
     final LongFunction<Optional<JsError>> predicate;
 
     JsLongSuchThat(final LongFunction<Optional<JsError>> predicate,
@@ -37,7 +37,7 @@ final class JsLongSuchThat extends AbstractNullable implements JsValuePredicate 
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ? JsArray.of("null", "long") : JsStr.of("long");
     }
 

@@ -2,10 +2,10 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.Set;
+import java.util.List;
 
 
-final class JsMapOfInt extends AbstractMap implements JsSpec {
+final class JsMapOfInt extends AbstractMap implements JsSpec, AvroSpec {
      JsMapOfInt(boolean nullable) {
         super(nullable);
     }
@@ -21,13 +21,13 @@ final class JsMapOfInt extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value) {
+    public List<SpecError> test(JsPath path,
+                                JsValue value) {
        return test(path,value,it -> !it.isInt(),ERROR_CODE.INT_EXPECTED);
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("int"));
         return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
 

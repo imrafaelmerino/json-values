@@ -34,10 +34,7 @@ final class JsArrayOfObj extends AbstractSizableArr implements JsValuePredicate,
                                                    max);
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsArrayOfObj.class);
-    }
+
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

@@ -27,11 +27,6 @@ final class JsObjSuchThat extends AbstractNullable implements JsValuePredicate {
         );
     }
 
-    @Override
-    public JsValue toAvro() {
-        throw new AvroNotSupported(JsObjSuchThat.class);
-    }
-
 
 
     @Override

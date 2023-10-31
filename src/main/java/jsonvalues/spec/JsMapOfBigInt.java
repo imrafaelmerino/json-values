@@ -2,10 +2,10 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.Set;
+import java.util.List;
 
 
-final class JsMapOfBigInt extends AbstractMap implements JsSpec {
+final class JsMapOfBigInt extends AbstractMap implements JsSpec,AvroSpec {
     JsMapOfBigInt(boolean nullable) {
         super(nullable);
     }
@@ -21,20 +21,20 @@ final class JsMapOfBigInt extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value
-                              ) {
+    public List<SpecError> test(JsPath path,
+                                JsValue value
+                               ) {
         return test(path, value, it -> !it.isIntegral(), ERROR_CODE.INTEGRAL_EXPECTED);
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("string"),
                                 "logicalType", JsStr.of("biginteger"));
         JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", schema);
         return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-
     }
+
 
 
 }

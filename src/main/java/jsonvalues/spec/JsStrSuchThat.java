@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-final class JsStrSuchThat extends AbstractNullable implements JsValuePredicate {
+final class JsStrSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
 
     final Function<String, Optional<JsError>> predicate;
 
@@ -37,7 +37,7 @@ final class JsStrSuchThat extends AbstractNullable implements JsValuePredicate {
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ?
                 JsArray.of("null", "string") :
                 JsStr.of("string");

@@ -4,27 +4,27 @@ import jsonvalues.JsParserException;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.Set;
+import java.util.List;
 
 /**
- * The `JsSpec` interface represents a specification for validating JSON data structures. It provides methods
- * and contracts for defining validation rules and constraints on JSON values to ensure they conform to
- * expected formats and patterns.
+ * The `JsSpec` interface represents a specification for validating JSON data structures. It provides methods and
+ * contracts for defining validation rules and constraints on JSON values to ensure they conform to expected formats and
+ * patterns.
  * <p>
  * JSON specifications are essential for parsing and validating JSON data in applications, ensuring that the data
  * adheres to predefined rules before processing or storing it.
  * <p>
- * Implementations of this interface define custom validation rules and provide methods for testing JSON values
- * against these rules. The primary goal is to verify whether a given JSON value satisfies the specification.
+ * Implementations of this interface define custom validation rules and provide methods for testing JSON values against
+ * these rules. The primary goal is to verify whether a given JSON value satisfies the specification.
  * <p>
- * The `JsSpec` interface offers the following key functionality:
- * - Enabling the nullable flag, indicating whether the JSON value can be null.
- * - Retrieving the deserializer used during the parsing process for parsing arrays of bytes or strings into JSON values.
- * - Reading and parsing JSON values token by token from a reader while verifying if they conform to the specification.
- * - Testing JSON values against the specification and returning a set of path/error pairs for validation errors.
+ * The `JsSpec` interface offers the following key functionality: - Enabling the nullable flag, indicating whether the
+ * JSON value can be null. - Retrieving the deserializer used during the parsing process for parsing arrays of bytes or
+ * strings into JSON values. - Reading and parsing JSON values token by token from a reader while verifying if they
+ * conform to the specification. - Testing JSON values against the specification and returning a set of path/error pairs
+ * for validation errors.
  * <p>
- * This interface serves as a foundation for building a JSON validation framework and allows for the creation of
- * custom JSON specifications for various data types, including numbers, strings, arrays, objects, and more.
+ * This interface serves as a foundation for building a JSON validation framework and allows for the creation of custom
+ * JSON specifications for various data types, including numbers, strings, arrays, objects, and more.
  * <p>
  * Implementations of this interface should be immutable and thread-safe to support concurrent usage.
  *
@@ -44,17 +44,16 @@ public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, Js
     JsSpec nullable();
 
     /**
-     * Returns the deserializer used during the parsing process to parse an array of bytes or strings
-     * into a JSON value.
+     * Returns the deserializer used during the parsing process to parse an array of bytes or strings into a JSON
+     * value.
      *
      * @return The deserializer used during parsing.
      */
     JsSpecParser parser();
 
     /**
-     * Low-level method to parse a JSON value token by token from a reader. Returns the next value
-     * according to the current state of the reader if it conforms to this spec, otherwise throws
-     * a `JsParserException`.
+     * Low-level method to parse a JSON value token by token from a reader. Returns the next value according to the
+     * current state of the reader if it conforms to this spec, otherwise throws a `JsParserException`.
      *
      * @param reader The reader to parse JSON values from.
      * @return The next token as a `JsValue`.
@@ -72,7 +71,7 @@ public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, Js
      * @param value      The JSON value to be tested.
      * @return A set of path/error pairs representing validation errors.
      */
-    Set<SpecError> test(final JsPath parentPath, final JsValue value);
+    List<SpecError> test(final JsPath parentPath, final JsValue value);
 
     /**
      * Verify if the given JSON value satisfies this spec, starting from the root path.
@@ -80,11 +79,12 @@ public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, Js
      * @param value The JSON value to be tested.
      * @return A set of path/error pairs representing validation errors.
      */
-    default Set<SpecError> test(final JsValue value) {
+    default List<SpecError> test(final JsValue value) {
         return test(JsPath.empty(), value);
     }
 
-    JsValue toAvro();
+
+    boolean isNullable();
 }
 
 

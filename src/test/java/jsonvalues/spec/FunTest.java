@@ -5,6 +5,7 @@ import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 import org.junit.jupiter.api.Assertions;
 
+import java.util.List;
 import java.util.Set;
 
 
@@ -13,7 +14,7 @@ class FunTest {
     private FunTest() {
     }
 
-    public static void assertErrorIs(final Set<SpecError> error,
+    public static void assertErrorIs(final List<SpecError> error,
                                      final ERROR_CODE code,
                                      final JsValue value,
                                      final JsPath path

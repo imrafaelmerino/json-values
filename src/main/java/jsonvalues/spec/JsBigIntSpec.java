@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate {
+final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate,AvroSpec {
 
     JsBigIntSpec(final boolean nullable) {
         super(nullable);
@@ -26,10 +26,10 @@ final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate {
 
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj schema = JsObj.of("type", JsStr.of("string"),
                                 "logicalType", JsStr.of("biginteger"));
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
 

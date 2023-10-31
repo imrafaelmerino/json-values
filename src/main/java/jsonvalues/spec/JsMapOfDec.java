@@ -2,10 +2,10 @@ package jsonvalues.spec;
 
 import jsonvalues.*;
 
-import java.util.Set;
+import java.util.List;
 
 
-final class JsMapOfDec extends AbstractMap implements JsSpec {
+final class JsMapOfDec extends AbstractMap implements JsSpec, AvroSpec {
      JsMapOfDec(boolean nullable) {
         super(nullable);
     }
@@ -21,16 +21,17 @@ final class JsMapOfDec extends AbstractMap implements JsSpec {
     }
 
     @Override
-    public Set<SpecError> test(JsPath path,
-                               JsValue value) {
+    public List<SpecError> test(JsPath path,
+                                JsValue value) {
        return test(path,value,it -> !it.isDecimal(),ERROR_CODE.DECIMAL_EXPECTED);
     }
 
     @Override
-    public JsValue toAvro() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("double"));
+    public JsValue toAvroSchema() {
+        JsObj schema = JsObj.of("type", JsStr.of("string"),
+                                "logicalType", JsStr.of("bigdecimal"));
+        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", schema);
         return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-
     }
 
 }

@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec , AvroSpec {
     private final Function<BigInteger, Optional<JsError>> predicate;
 
     JsArrayOfTestedBigInt(final Function<BigInteger, Optional<JsError>> predicate,
@@ -63,13 +63,13 @@ final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValueP
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         JsObj items = JsObj.of("type", JsStr.of("string"),
                                "logicalType", JsStr.of("biginteger"));
 
         JsObj schema = JsObj.of("type",JsStr.of("array"),
                                 "items",items);
 
-        return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
+        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 }

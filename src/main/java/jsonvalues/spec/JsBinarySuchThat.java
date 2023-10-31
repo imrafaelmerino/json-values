@@ -9,7 +9,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-final class JsBinarySuchThat extends AbstractNullable implements JsValuePredicate {
+final class JsBinarySuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
 
     final Function<byte[], Optional<JsError>> predicate;
 
@@ -36,7 +36,7 @@ final class JsBinarySuchThat extends AbstractNullable implements JsValuePredicat
     }
 
     @Override
-    public JsValue toAvro() {
+    public JsValue toAvroSchema() {
         return nullable ? JsArray.of("null", "bytes") : JsStr.of("bytes");
 
     }

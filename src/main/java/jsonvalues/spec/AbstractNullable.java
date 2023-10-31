@@ -9,4 +9,8 @@ abstract class AbstractNullable {
     }
 
 
+
+    public boolean isNullable(){
+        return nullable;
+    }
 }
