@@ -129,7 +129,7 @@ public enum ERROR_CODE {
     /**
      * Indicates that a `null` value was encountered.
      */
-    NULL,
+    NULL_NOT_EXPECTED,
 
     /**
      * Indicates that a `null` value was expected but a non-null value was encountered.
@@ -166,5 +166,9 @@ public enum ERROR_CODE {
      */
     ARR_SIZE_GREATER_THAN_MAX,
 
-    ENUM_SYMBOL_EXPECTED
+    ENUM_SYMBOL_EXPECTED,
+
+    ONE_OF_SPEC_EXHAUSTED
+
+
 }

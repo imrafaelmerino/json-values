@@ -12,6 +12,7 @@ class ParserErrors {
     private ParserErrors(){}
     static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end";
+    static final String ONEOF_EXHAUSTED = "OneOf spec exhausted";
 
     static final IntFunction<String> EMPTY_ARRAY = min -> "Empty array. Min size: " + min;
 

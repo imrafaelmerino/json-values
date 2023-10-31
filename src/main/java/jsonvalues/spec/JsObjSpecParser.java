@@ -36,9 +36,14 @@ public final class JsObjSpecParser {
      * @param spec The JSON specification that defines the schema the JSON object must conform to.
      * @throws NullPointerException if the provided spec is null.
      */
-    public JsObjSpecParser(final JsSpec spec) {
+    public JsObjSpecParser(final JsObjSpec spec) {
         parser = requireNonNull(spec).parser();
     }
+    public JsObjSpecParser(final OneOfObjSpec spec) {
+        parser = requireNonNull(spec).parser();
+    }
+
+
 
 
     /**

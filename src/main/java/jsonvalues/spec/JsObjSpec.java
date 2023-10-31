@@ -5757,15 +5757,27 @@ public final class JsObjSpec implements JsSpec {
         if (avroAttBuilder == null)
             throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
         AvroAtt avroAtt = avroAttBuilder.build();
-        JsObj schema = JsObj.of("name", JsStr.of(avroAtt.name));
-        if (avroAtt.namespace != null) schema = schema.set("namespace", JsStr.of(avroAtt.namespace));
-        if (avroAtt.doc != null) schema = schema.set("doc", JsStr.of(avroAtt.doc));
-        if (avroAtt.aliases != null) schema = schema.set("aliases", avroAtt.aliases);
+        JsObj schema = JsObj.of("name",
+                                JsStr.of(avroAtt.name));
+        if (avroAtt.namespace != null)
+            schema = schema.set("namespace",
+                                JsStr.of(avroAtt.namespace));
+        if (avroAtt.doc != null)
+            schema = schema.set("doc",
+                                JsStr.of(avroAtt.doc));
+        if (avroAtt.aliases != null)
+            schema = schema.set("aliases",
+                                avroAtt.aliases);
+        JsArray fields = JsArray.empty();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet()) {
-            schema = schema.set(entry.getKey(),
-                                entry.getValue().toAvro()
-                               );
+            JsSpec spec = entry.getValue();
+            fields = fields.append(JsObj.of("name", JsStr.of(entry.getKey()),
+                                            "type", spec.toAvro()
+                                           )
+                                  );
         }
+
+        schema = schema.set("fields", fields);
 
         return nullable ? JsArray.of(JsNull.NULL, schema) : schema;
     }

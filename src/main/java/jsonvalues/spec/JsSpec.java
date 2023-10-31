@@ -34,7 +34,7 @@ import java.util.Set;
  * @see JsPath
  * @see JsReader
  */
-public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, JsMapOfArraySpec, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfObjSpec, JsMapOfStr, JsObjSpec, JsOneOf, JsValuePredicate {
+public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, JsMapOfArraySpec, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfObjSpec, JsMapOfStr, JsObjSpec, JsValuePredicate, OneOf, OneOfObjSpec {
 
     /**
      * Returns the same spec with the nullable flag enabled.

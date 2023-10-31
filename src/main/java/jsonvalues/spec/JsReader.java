@@ -5,21 +5,21 @@ import jsonvalues.JsParserException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Stack;
 
 /**
- * Object for processing JSON from byte[] and InputStream. The only public methods are
- * {@link #readNextToken()} and {@link #reset()}. Most of the time you don't need to
- * parse a JSON token by token since there are a lot of high-level and efficient alternatives
- * implemented in json-values. Just in case, find below an example:
+ * Object for processing JSON from byte[] and InputStream. The only public methods are {@link #readNextToken()} and
+ * {@link #reset()}. Most of the time you don't need to parse a JSON token by token since there are a lot of high-level
+ * and efficient alternatives implemented in json-values. Just in case, find below an example:
  *
  * <pre>
  *     {@code
-            String json = "[1,2,3]";
-            var reader = JsonIO.INSTANCE.createReader(json.getBytes(StandardCharsets.UTF_8));
-            byte token;
-            while ((token = reader.readNextToken()) != ']'){
-                if(Character.isDigit(token)) System.out.println(Character.toString(token));
-            }
+ * String json = "[1,2,3]";
+ * var reader = JsonIO.INSTANCE.createReader(json.getBytes(StandardCharsets.UTF_8));
+ * byte token;
+ * while ((token = reader.readNextToken()) != ']'){
+ * if(Character.isDigit(token)) System.out.println(Character.toString(token));
+ * }
  *
  *
  *     }
@@ -27,7 +27,8 @@ import java.util.Arrays;
  * </pre>
  *
  * <p>
- * You can also  read tokens as JsValue and validate them using the method {@link jsonvalues.spec.JsSpec#readNextValue(JsReader)}
+ * You can also  read tokens as JsValue and validate them using the method
+ * {@link jsonvalues.spec.JsSpec#readNextValue(JsReader)}
  */
 public final class JsReader {
 
@@ -46,54 +47,34 @@ public final class JsReader {
         WHITESPACE[-29 + 128] = true;
     }
 
+    private final StringCache keyCache;
+    private final StringCache valuesCache;
+    private final byte[] originalBuffer;
+    private final int originalBufferLenWithExtraSpace;
+    private final int maxStringBuffer;
+    byte[] buffer;
+    char[] chars;
+    DoublePrecision doublePrecision;
+    int doubleLengthLimit;
+    int maxNumberDigits;
+    private Stack<Integer> markPositions = new Stack<>();
     private int currentIndex = 0;
     private long currentPosition = 0;
     private byte last = ' ';
-
     private int length;
-
-    byte[] buffer;
-    char[] chars;
-
     private InputStream stream;
     private int readLimit;
     //always leave some room for reading special stuff, so that buffer contains enough padding for such optimizations
     private int bufferLenWithExtraSpace;
 
-    private final StringCache keyCache;
-    private final StringCache valuesCache;
-
-    private final byte[] originalBuffer;
-    private final int originalBufferLenWithExtraSpace;
-
-
-    enum DoublePrecision {
-        EXACT(0),
-        HIGH(1),
-        DEFAULT(3),
-        LOW(4);
-
-        final int level;
-
-        DoublePrecision(int level) {
-            this.level = level;
-        }
-    }
-
-    DoublePrecision doublePrecision;
-    int doubleLengthLimit;
-    int maxNumberDigits;
-    private final int maxStringBuffer;
-
-    private JsReader(
-            char[] tmp,
-            byte[] buffer,
-            int length,
-            StringCache keyCache,
-            StringCache valuesCache,
-            DoublePrecision doublePrecision,
-            int maxNumberDigits,
-            int maxStringBuffer
+    private JsReader(char[] tmp,
+                     byte[] buffer,
+                     int length,
+                     StringCache keyCache,
+                     StringCache valuesCache,
+                     DoublePrecision doublePrecision,
+                     int maxNumberDigits,
+                     int maxStringBuffer
                     ) {
         this.buffer = buffer;
         this.length = length;
@@ -109,16 +90,14 @@ public final class JsReader {
         this.originalBufferLenWithExtraSpace = bufferLenWithExtraSpace;
     }
 
-
-    JsReader(
-            byte[] buffer,
-            int length,
-            char[] tmp,
-            StringCache keyCache,
-            StringCache valuesCache,
-            DoublePrecision doublePrecision,
-            int maxNumberDigits,
-            int maxStringBuffer
+    JsReader(byte[] buffer,
+             int length,
+             char[] tmp,
+             StringCache keyCache,
+             StringCache valuesCache,
+             DoublePrecision doublePrecision,
+             int maxNumberDigits,
+             int maxStringBuffer
             ) {
         this(tmp, buffer, length, keyCache, valuesCache, doublePrecision, maxNumberDigits, maxStringBuffer);
         if (length > buffer.length) {
@@ -128,10 +107,18 @@ public final class JsReader {
         }
     }
 
+    private static int readFully(byte[] buffer, InputStream stream, int offset) throws IOException {
+        int read;
+        int position = offset;
+        while (position < buffer.length
+               && (read = stream.read(buffer, position, buffer.length - position)) != -1) {
+            position += read;
+        }
+        return position;
+    }
 
     /**
-     * Reset reader after processing input
-     * It will release reference to provided byte[] or InputStream input
+     * Reset reader after processing input It will release reference to provided byte[] or InputStream input
      */
     public void reset() {
         this.buffer = this.originalBuffer;
@@ -143,9 +130,8 @@ public final class JsReader {
     }
 
     /**
-     * Bind input stream for processing.
-     * Stream will be processed in byte[] chunks.
-     * If stream is null, reference to stream will be released.
+     * Bind input stream for processing. Stream will be processed in byte[] chunks. If stream is null, reference to
+     * stream will be released.
      *
      * @param stream set input stream
      * @return itself
@@ -168,9 +154,9 @@ public final class JsReader {
     }
 
     /**
-     * Bind byte[] buffer for processing.
-     * If this method is used in combination with process(InputStream) this buffer will be used for processing chunks of stream.
-     * If null is sent for byte[] buffer, new length for valid input will be set for existing buffer.
+     * Bind byte[] buffer for processing. If this method is used in combination with process(InputStream) this buffer
+     * will be used for processing chunks of stream. If null is sent for byte[] buffer, new length for valid input will
+     * be set for existing buffer.
      *
      * @param newBuffer new buffer to use for processing
      * @param newLength length of buffer which can be used
@@ -200,20 +186,8 @@ public final class JsReader {
         return length;
     }
 
-    private static int readFully(byte[] buffer, InputStream stream, int offset) throws IOException {
-        int read;
-        int position = offset;
-        while (position < buffer.length
-                && (read = stream.read(buffer, position, buffer.length - position)) != -1) {
-            position += read;
-        }
-        return position;
-    }
-
-
     /**
-     * Read next byte from the JSON input.
-     * If buffer has been read in full IOException will be thrown
+     * Read next byte from the JSON input. If buffer has been read in full IOException will be thrown
      *
      * @return next byte
      * @throws JsParserException when end of JSON input
@@ -260,8 +234,8 @@ public final class JsReader {
     }
 
     /**
-     * Which was last byte read from the JSON input.
-     * JsonReader doesn't allow to go back, but it remembers previously read byte
+     * Which was last byte read from the JSON input. JsonReader doesn't allow to go back, but it remembers previously
+     * read byte
      *
      * @return which was the last byte read
      */
@@ -277,7 +251,6 @@ public final class JsReader {
         return getPositionInStream(0);
     }
 
-
     JsParserException newParseError(String description) {
         return JsParserException.reasonAt(description, getPositionInStream(0));
     }
@@ -289,7 +262,6 @@ public final class JsReader {
     int getCurrentIndex() {
         return currentIndex;
     }
-
 
     int scanNumber() {
         int tokenStart = currentIndex - 1;
@@ -329,10 +301,8 @@ public final class JsReader {
         return true;
     }
 
-
     /**
-     * Read string from JSON input.
-     * If values cache is used, string will be looked up from the cache.
+     * Read string from JSON input. If values cache is used, string will be looked up from the cache.
      * <p>
      * String value must start and end with a double quote (").
      *
@@ -343,7 +313,6 @@ public final class JsReader {
         int len = parseString();
         return valuesCache == null ? new String(chars, 0, len) : valuesCache.get(chars, len);
     }
-
 
     int parseString() throws JsParserException {
         int startIndex = currentIndex;
@@ -419,9 +388,9 @@ public final class JsReader {
                         break;
                     case 'u':
                         bc = (hexToInt(buffer[currentIndex++]) << 12) +
-                                (hexToInt(buffer[currentIndex++]) << 8) +
-                                (hexToInt(buffer[currentIndex++]) << 4) +
-                                hexToInt(buffer[currentIndex++]);
+                             (hexToInt(buffer[currentIndex++]) << 8) +
+                             (hexToInt(buffer[currentIndex++]) << 4) +
+                             hexToInt(buffer[currentIndex++]);
                         break;
 
                     default:
@@ -551,8 +520,8 @@ public final class JsReader {
     }
 
     /**
-     * Read next token (byte) from input JSON.
-     * Whitespace will be skipped and next non-whitespace byte will be returned.
+     * Read next token (byte) from input JSON. Whitespace will be skipped and next non-whitespace byte will be
+     * returned.
      *
      * @return next non-whitespace byte in the JSON input
      * @throws JsParserException unable to get next byte (end of stream, ...)
@@ -567,10 +536,8 @@ public final class JsReader {
         return last;
     }
 
-
     /**
-     * Read key value of JSON input.
-     * If key cache is used, it will be looked up from there.
+     * Read key value of JSON input. If key cache is used, it will be looked up from there.
      *
      * @return parsed key value
      */
@@ -582,10 +549,8 @@ public final class JsReader {
         return key;
     }
 
-
     /**
-     * Checks if 'null' value is at current position.
-     * This means last read byte was 'n' and 'ull' are next three bytes.
+     * Checks if 'null' value is at current position. This means last read byte was 'n' and 'ull' are next three bytes.
      * If last byte was n but next three are not 'ull' it will throw since that is not a valid JSON construct.
      *
      * @return true if 'null' value is at current position
@@ -594,7 +559,7 @@ public final class JsReader {
     boolean wasNull() throws JsParserException {
         if (last == 'n') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'u'
-                    && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 'l') {
+                && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 'l') {
                 currentIndex += 3;
                 last = 'l';
                 return true;
@@ -605,8 +570,7 @@ public final class JsReader {
     }
 
     /**
-     * Checks if 'true' value is at current position.
-     * This means last read byte was 't' and 'rue' are next three bytes.
+     * Checks if 'true' value is at current position. This means last read byte was 't' and 'rue' are next three bytes.
      * If last byte was t but next three are not 'rue' it will throw since that is not a valid JSON construct.
      *
      * @return true if 'true' value is at current position
@@ -615,7 +579,7 @@ public final class JsReader {
     boolean wasTrue() throws JsParserException {
         if (last == 't') {
             if (currentIndex + 2 < length && buffer[currentIndex] == 'r'
-                    && buffer[currentIndex + 1] == 'u' && buffer[currentIndex + 2] == 'e') {
+                && buffer[currentIndex + 1] == 'u' && buffer[currentIndex + 2] == 'e') {
                 currentIndex += 3;
                 last = 'e';
                 return true;
@@ -626,8 +590,7 @@ public final class JsReader {
     }
 
     /**
-     * Checks if 'false' value is at current position.
-     * This means last read byte was 'f' and 'alse' are next four bytes.
+     * Checks if 'false' value is at current position. This means last read byte was 'f' and 'alse' are next four bytes.
      * If last byte was f but next four are not 'alse' it will throw since that is not a valid JSON construct.
      *
      * @return true if 'false' value is at current position
@@ -636,8 +599,8 @@ public final class JsReader {
     boolean wasFalse() throws JsParserException {
         if (last == 'f') {
             if (currentIndex + 3 < length && buffer[currentIndex] == 'a'
-                    && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 's'
-                    && buffer[currentIndex + 3] == 'e') {
+                && buffer[currentIndex + 1] == 'l' && buffer[currentIndex + 2] == 's'
+                && buffer[currentIndex + 3] == 'e') {
                 currentIndex += 4;
                 last = 'e';
                 return true;
@@ -656,5 +619,47 @@ public final class JsReader {
             throw newParseError("Expecting ']' as array end");
         }
     }
+
+    /**
+     * Sets a mark at the current parsing position. This allows you to later roll back to this marked position using
+     * {@link #rollbackToMark()}.
+     */
+    void setMark() {
+        System.out.println("set mark at " + currentIndex);
+        markPositions.push(currentIndex);
+    }
+
+    /**
+     * Rolls back the parsing position to the last marked position set using {@link #setMark()}. This is useful for
+     * reverting to a previous parsing state within the JSON document.
+     *
+     * @throws IllegalArgumentException if the stack of marks is empty and no mark is available to roll back to.
+     */
+    void rollbackToMark() {
+        if (!markPositions.isEmpty()) {
+            int a = markPositions.pop();
+            System.out.println("rollback from " + currentIndex + " to " + a);
+            currentIndex = a;
+            last = (currentIndex > 0) ? buffer[currentIndex - 1] : (byte) ' ';
+
+        } else {
+            throw new IllegalArgumentException("Stack of marks is empty. No mark available to roll back to.");
+        }
+    }
+
+
+    enum DoublePrecision {
+        EXACT(0),
+        HIGH(1),
+        DEFAULT(3),
+        LOW(4);
+
+        final int level;
+
+        DoublePrecision(int level) {
+            this.level = level;
+        }
+    }
+
 
 }

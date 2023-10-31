@@ -19,8 +19,7 @@ class JsMapOfSpecReader extends AbstractJsObjReader {
         String key = reader.readKey();
 
         JsObj obj = EMPTY_OBJ.set(key,
-                                  parser
-                                          .parse(reader)
+                                  parser.parse(reader)
                                  );
         byte nextToken;
         while ((nextToken = reader.readNextToken()) == ',') {

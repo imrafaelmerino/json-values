@@ -8,8 +8,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
-import static jsonvalues.spec.ERROR_CODE.NULL;
+import static jsonvalues.spec.ERROR_CODE.*;
 
 class Functions {
 
@@ -35,7 +34,7 @@ class Functions {
     private static Function<JsValue, Optional<JsError>> testNullable(boolean nullable) {
         return value -> value.isNull() && !nullable ?
                 Optional.of(new JsError(value,
-                                        NULL
+                                        NULL_NOT_EXPECTED
                 )) :
                 Optional.empty();
     }

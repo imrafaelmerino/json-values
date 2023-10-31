@@ -37,7 +37,8 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec {
     public Set<SpecError> test(JsPath path,
                                JsValue value
                               ) {
-        return test(path, value, it -> !it.isArray(), ERROR_CODE.ARRAY_EXPECTED);
+
+        ???
     }
 
     @Override

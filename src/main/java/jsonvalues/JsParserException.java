@@ -17,10 +17,7 @@ public class JsParserException extends RuntimeException {
 
 	}
 
-	@Override
-	public synchronized Throwable fillInStackTrace() {
-		return this;
-	}
+
 
 
 

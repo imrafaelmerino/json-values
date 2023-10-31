@@ -35,7 +35,7 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec {
     public Set<SpecError> test(JsPath path,
                                JsValue value
                               ) {
-        return test(path, value, it -> !it.isObj(), ERROR_CODE.OBJ_EXPECTED);
+       ???
     }
 
     @Override

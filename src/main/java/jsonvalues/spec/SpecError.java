@@ -1,6 +1,8 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsObj;
 import jsonvalues.JsPath;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Objects;
@@ -8,18 +10,18 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The `SpecError` class represents an error that occurs during the validation of a JSON value against a
- * specification. It encapsulates information about the error, including the path where the error occurred,
- * the error code, and the value that triggered the error.
+ * The `SpecError` class represents an error that occurs during the validation of a JSON value against a specification.
+ * It encapsulates information about the error, including the path where the error occurred, the error code, and the
+ * value that triggered the error.
  * <p>
- * json-values and json-specs in particular, uses `SpecError` instances to report validation errors when a JSON value does not
- * conform to the specified rules and constraints.
+ * json-values and json-specs in particular, uses `SpecError` instances to report validation errors when a JSON value
+ * does not conform to the specified rules and constraints.
  * <p>
  * Instances of this class are immutable and provide methods for creating and working with validation errors.
  * <p>
- * The `SpecError` class offers the following key functionality:
- * - Generating a human-readable string representation of the error for debugging and logging purposes.
- * - Implementing equality and hash code methods to compare error instances.
+ * The `SpecError` class offers the following key functionality: - Generating a human-readable string representation of
+ * the error for debugging and logging purposes. - Implementing equality and hash code methods to compare error
+ * instances.
  *
  * @see ERROR_CODE
  * @see JsPath
@@ -31,16 +33,15 @@ public final class SpecError {
      * The path where the error occurred within the JSON structure.
      */
     public final JsPath path;
-
     /**
      * The error code indicating the type of validation error.
      */
     public final ERROR_CODE errorCode;
-
     /**
      * The JSON value that triggered the error.
      */
     public final JsValue value;
+    public String spec;
 
     private SpecError(final JsPath path, final JsError pair) {
         this.path = path;
@@ -59,6 +60,10 @@ public final class SpecError {
         return new SpecError(requireNonNull(path), requireNonNull(error));
     }
 
+    public void setSpec(String spec) {
+        this.spec = spec;
+    }
+
     /**
      * Returns a human-readable string representation of the `SpecError` instance.
      *
@@ -66,11 +71,11 @@ public final class SpecError {
      */
     @Override
     public String toString() {
-        return "SpecError{" +
-                "path=" + (path.isEmpty() ? "root" : path) +
-                ", error=" + errorCode +
-                ", value=" + value +
-                '}';
+        JsObj error = JsObj.of("path", JsStr.of(path.toString()),
+                               "value", value,
+                               "code", JsStr.of(errorCode.name()));
+        if (spec != null && !spec.isEmpty()) error = error.set("spec", JsStr.of(spec));
+        return error.toString();
     }
 
     /**
@@ -85,8 +90,9 @@ public final class SpecError {
         if (o == null || getClass() != o.getClass()) return false;
         SpecError specError = (SpecError) o;
         return Objects.equals(path, specError.path) &&
-                errorCode == specError.errorCode &&
-                Objects.equals(value, specError.value);
+               Objects.equals(spec, specError.spec) &&
+               errorCode == specError.errorCode &&
+               Objects.equals(value, specError.value);
     }
 
     /**
@@ -96,6 +102,6 @@ public final class SpecError {
      */
     @Override
     public int hashCode() {
-        return Objects.hash(path, errorCode, value);
+        return Objects.hash(path, errorCode, value, spec);
     }
 }

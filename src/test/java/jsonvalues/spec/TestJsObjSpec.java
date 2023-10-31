@@ -1616,6 +1616,13 @@ public class TestJsObjSpec {
                                     JsLong.of(2)
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfLong()
                               )
@@ -1633,6 +1640,13 @@ public class TestJsObjSpec {
                                     JsBigDec.of(BigDecimal.TEN)
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfDecimal()
                               )
@@ -1648,6 +1662,13 @@ public class TestJsObjSpec {
                                     JsStr.of("1"),
                                     "2",
                                     JsStr.of("2")
+                                   )
+                          ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
                                    )
                           ),
                   JsObjSpec.of("a",
@@ -1668,6 +1689,13 @@ public class TestJsObjSpec {
                                     JsArray.of("2")
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfArray(JsSpecs.arrayOfBool())
                               )
@@ -1684,6 +1712,13 @@ public class TestJsObjSpec {
                                     TRUE,
                                     "2",
                                     JsBool.FALSE
+                                   )
+                          ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
                                    )
                           ),
                   JsObjSpec.of("a",
@@ -1704,6 +1739,13 @@ public class TestJsObjSpec {
                                     JsInt.of(2)
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfInteger()
                               )
@@ -1722,6 +1764,13 @@ public class TestJsObjSpec {
                                     JsBigInt.of(BigInteger.TEN)
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfBigInteger()
                               )
@@ -1732,16 +1781,23 @@ public class TestJsObjSpec {
     @Test
     public void testMapOfObj() {
 
-        testOfMap(OBJ_EXPECTED,
-                  JsObj.of("a",
-                           JsObj.of("1",
-                                    JsObj.empty(),
-                                    "2",
-                                    JsObj.empty()
+        testOfMap(INT_EXPECTED,
+                  JsObj.of("ages",
+                           JsObj.of("Rafa",
+                                    JsObj.of("age", JsInt.of(1)),
+                                    "Pedro",
+                                    JsObj.of("age", JsInt.of(1))
                                    )
                           ),
-                  JsObjSpec.of("a",
-                               mapOfObj(JsObjSpec.of("a",JsSpecs.integer()))
+                  JsObj.of("ages",
+                           JsObj.of("1",
+                                    JsObj.of("age", JsStr.of("1")),
+                                    "2",
+                                    JsObj.of("age", JsStr.of("2"))
+                                   )
+                          ),
+                  JsObjSpec.of("ages",
+                               mapOfObj(JsObjSpec.of("age", JsSpecs.integer()))
                               )
                  );
 
@@ -1759,6 +1815,13 @@ public class TestJsObjSpec {
                                     JsInstant.of(Instant.MAX)
                                    )
                           ),
+                  JsObj.of("a",
+                           JsObj.of("1",
+                                    JsNull.NULL,
+                                    "2",
+                                    JsNull.NULL
+                                   )
+                          ),
                   JsObjSpec.of("a",
                                mapOfInstant()
                               )
@@ -1769,16 +1832,9 @@ public class TestJsObjSpec {
 
     private void testOfMap(ERROR_CODE expectedCode,
                            JsObj valid,
+                           JsObj invalid,
                            JsObjSpec spec
                           ) {
-
-        JsObj invalid = JsObj.of("a",
-                                 JsObj.of("1",
-                                          JsNull.NULL,
-                                          "2",
-                                          JsNull.NULL
-                                         )
-                                );
 
         Assertions.assertTrue(spec.test(valid).isEmpty());
 

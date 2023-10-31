@@ -64,7 +64,7 @@ public final class JsSpecs {
     private static final JsSpec bool = new JsBooleanSpec(false);
     private static final JsSpec decimal = new JsDecimalSpec(false);
     private static final JsSpec integer = new JsIntSpec(false);
-    private static final JsSpec obj = new IsJsObjSpec(false);
+    private static final JsSpec obj = new IsJsObj(false);
     private static final JsSpec any = new AnySpec();
     private static final JsSpec number = new JsNumberSpec(false);
     private static final JsSpec str = new JsStrSpec(false);
@@ -1086,10 +1086,17 @@ public final class JsSpecs {
      * @param <O>  The type of the possible JSON values (subtype of JsValue).
      * @return A specification that checks if a JSON value matches one of the provided values.
      */
-    public static <O extends JsValue> JsSpec oneOf(final List<O> cons) {
+    public static <O extends JsValue> JsSpec oneValueOf(final List<O> cons) {
         return any(o -> requireNonNull(cons).contains(o));
     }
 
+    public static JsSpec oneSpecOf(List<JsSpec> specs){
+        return OneOf.of(requireNonNull(specs));
+    }
+
+    public static JsSpec oneObjSpecOf(List<JsObjSpec> specs){
+        return OneOfObjSpec.of(requireNonNull(specs));
+    }
     /**
      * Returns a specification that validates if a JSON value is one of the given possible symbols.
      *

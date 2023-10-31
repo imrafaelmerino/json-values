@@ -9,8 +9,6 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Predicate;
 
-import static java.util.Objects.requireNonNull;
-
 abstract class AbstractMap extends AbstractNullable {
 
     AbstractMap(boolean nullable) {
@@ -19,14 +17,15 @@ abstract class AbstractMap extends AbstractNullable {
 
 
     protected Set<SpecError> test(JsPath path,
-                        JsValue value,
-                        Predicate<JsValue> predicate,
-                        ERROR_CODE code) {
+                                  JsValue value,
+                                  Predicate<JsValue> predicate,
+                                  ERROR_CODE code
+                                 ) {
         Set<SpecError> errors = new HashSet<>();
         if (!value.isObj()) {
             errors.add(SpecError.of(path,
                                     new JsError(value,
-                                            ERROR_CODE.OBJ_EXPECTED)));
+                                                ERROR_CODE.OBJ_EXPECTED)));
             return errors;
         }
 
@@ -37,7 +36,7 @@ abstract class AbstractMap extends AbstractNullable {
             if (predicate.test(pair.value()))
                 errors.add(SpecError.of(path.key(pair.key()),
                                         new JsError(pair.value(),
-                                                code)));
+                                                    code)));
         }
 
 
