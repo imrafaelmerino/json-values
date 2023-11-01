@@ -40,11 +40,4 @@ final class JsArrayOfStrSuchThat extends AbstractNullable implements JsValuePred
                predicate.apply(value.toJsArray());
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("string"));
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

@@ -14,7 +14,7 @@ public class TestOneOfSpec {
     @Test
     public void testOneOfPrimitive() {
 
-        var spec = OneOfObjSpec.of(List.of(JsObjSpec.of("a", JsSpecs.integer(),
+        var spec = JsSpecs.oneSpecOf(List.of(JsObjSpec.of("a", JsSpecs.integer(),
                                                         "b", JsSpecs.str(),
                                                         "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.str()))
                                                        )
@@ -27,7 +27,7 @@ public class TestOneOfSpec {
                                           )
                                   );
 
-        System.out.println(spec.toAvroSchema());
+        System.out.println(spec());
 
         JsObj obj = JsObj.of("a", JsInt.of(1),
                              "b", JsStr.of("hi"),

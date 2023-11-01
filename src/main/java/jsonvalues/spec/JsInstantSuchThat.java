@@ -35,12 +35,7 @@ final class JsInstantSuchThat extends AbstractNullable implements JsValuePredica
                                                        );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("iso-8601"));
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
+
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

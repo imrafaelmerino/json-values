@@ -36,10 +36,7 @@ final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate, 
 
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ? JsArray.of("null", "boolean") : JsStr.of("boolean");
-    }
+
 
 
 }

@@ -43,6 +43,13 @@ import static jsonvalues.spec.ERROR_CODE.*;
  * @see SpecError
  */
 public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpec {
+    public Map<String, JsSpec> getBindings() {
+        return bindings;
+    }
+
+    public AvroAttBuilder getAvroAttBuilder() {
+        return avroAttBuilder;
+    }
 
     private final List<String> requiredFields;
     boolean strict;
@@ -5748,47 +5755,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     public JsObjSpec withAvroAtt(final AvroAttBuilder builder) {
         this.avroAttBuilder = requireNonNull(builder);
         return this;
-    }
-
-
-    @Override
-    public Json<?> toAvroSchema() {
-        if (avroAttBuilder == null)
-            throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
-        AvroAtt avroAtt = avroAttBuilder.build();
-        JsObj schema = JsObj.of("name",
-                                JsStr.of(avroAtt.name),
-                                "type",JsStr.of("record"));
-        if (avroAtt.namespace != null)
-            schema = schema.set("namespace",
-                                JsStr.of(avroAtt.namespace));
-        if (avroAtt.doc != null)
-            schema = schema.set("doc",
-                                JsStr.of(avroAtt.doc));
-        if (avroAtt.aliases != null)
-            schema = schema.set("aliases",
-                                avroAtt.aliases);
-        JsArray fields = JsArray.empty();
-        for (Map.Entry<String, JsSpec> entry : bindings.entrySet()) {
-            JsSpec spec = entry.getValue();
-            if (spec instanceof AvroSpec avroSpec)
-                fields = fields.append(JsObj.of("name", JsStr.of(entry.getKey()),
-                                                "type", toAvro(entry.getKey(),
-                                                               avroSpec,
-                                                               spec.isNullable())
-                                               )
-                                      );
-            else throw new SpecNotSupportedInAvro(spec,avroAtt);
-        }
-
-        schema = schema.set("fields", fields);
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
-
-    private JsValue toAvro(String key, AvroSpec spec, boolean isNullabe) {
-        return (isNullabe || requiredFields.contains(key)) ?
-                spec.toAvroSchema() : JsArray.of(JsStr.of("null"), spec.toAvroSchema());
     }
 
 }

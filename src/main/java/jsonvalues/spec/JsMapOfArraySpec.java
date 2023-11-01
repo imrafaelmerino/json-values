@@ -11,6 +11,10 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
 
     final JsArraySpec spec;
 
+    public JsArraySpec getSpec() {
+        return spec;
+    }
+
     JsMapOfArraySpec(final boolean nullable,
                      final JsArraySpec spec
                     ) {
@@ -41,15 +45,6 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
         return null;
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        if (spec instanceof AvroSpec avroSpec) {
-            JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                    "vales", avroSpec.toAvroSchema());
-            return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-        }
-        throw new SpecNotSupportedInAvro(spec);
 
-    }
 
 }

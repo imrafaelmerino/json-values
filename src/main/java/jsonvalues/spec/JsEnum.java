@@ -57,15 +57,12 @@ public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
         return this;
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        if (avroAttBuilder == null)
-            throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
-        AvroAtt avroAtt = avroAttBuilder.build();
-        JsObj schema = JsObj.of("name", JsStr.of(avroAtt.name));
-        if (avroAtt.doc != null) schema = schema.set("doc", JsStr.of(avroAtt.doc));
-        if (avroAtt.aliases != null) schema = schema.set("aliases", avroAtt.aliases);
-        schema = schema.set("symbols",symbols);
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
+
+    public AvroAttBuilder getAvroAttBuilder() {
+        return avroAttBuilder;
+    }
+
+    public JsArray getSymbols() {
+        return symbols;
     }
 }

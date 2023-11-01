@@ -35,11 +35,7 @@ final class JsNumberSuchThat extends AbstractNullable implements JsValuePredicat
                                                       );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return
-                nullable ? JsArray.of("null", "double","int","long") : JsArray.of("double","int","long") ;
-    }
+
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

@@ -26,12 +26,5 @@ final class JsMapOfInt extends AbstractMap implements JsSpec, AvroSpec {
        return test(path,value,it -> !it.isInt(),ERROR_CODE.INT_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("int"));
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-
-    }
-
 
 }

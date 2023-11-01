@@ -35,10 +35,6 @@ final class JsIntSpec extends AbstractNullable implements JsValuePredicate, Avro
 
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ? JsArray.of("null", "int") : JsStr.of("int");
-    }
 
 
 }

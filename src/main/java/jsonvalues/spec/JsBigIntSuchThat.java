@@ -36,12 +36,6 @@ final class JsBigIntSuchThat extends AbstractNullable implements JsValuePredicat
                                                         );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("biginteger"));
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

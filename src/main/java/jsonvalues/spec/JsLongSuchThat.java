@@ -36,11 +36,6 @@ final class JsLongSuchThat extends AbstractNullable implements JsValuePredicate,
                                                     );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ? JsArray.of("null", "long") : JsStr.of("long");
-    }
-
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

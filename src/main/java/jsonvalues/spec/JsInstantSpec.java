@@ -7,9 +7,6 @@ import java.util.Optional;
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
 final class JsInstantSpec extends AbstractNullable implements JsValuePredicate , AvroSpec {
-    JsObj mapSchema = JsObj.of("type", JsStr.of("long"), "logicalType",
-                               JsStr.of("timestamp-millis"));
-
 
     JsInstantSpec(final boolean nullable) {
         super(nullable);
@@ -33,13 +30,6 @@ final class JsInstantSpec extends AbstractNullable implements JsValuePredicate ,
                                  )
                         .apply(value);
 
-    }
-
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("iso-8601"));
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
 

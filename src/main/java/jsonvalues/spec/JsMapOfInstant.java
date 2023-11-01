@@ -30,15 +30,5 @@ final class JsMapOfInstant extends AbstractMap implements JsSpec, AvroSpec {
                     ERROR_CODE.INSTANT_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"),
-                                   "values", JsStr.of("string"),
-                                  "logicalType",JsStr.of("iso-8601")
-                                  );
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-
-    }
-
 
 }

@@ -62,14 +62,5 @@ final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValueP
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj items = JsObj.of("type", JsStr.of("string"),
-                               "logicalType", JsStr.of("biginteger"));
 
-        JsObj schema = JsObj.of("type",JsStr.of("array"),
-                                "items",items);
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

@@ -26,11 +26,4 @@ final class JsMapOfLong extends AbstractMap implements JsSpec, AvroSpec {
        return test(path,value,it -> !it.isLong() && !it.isInt(),ERROR_CODE.LONG_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("long"));
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-    }
-
-
 }

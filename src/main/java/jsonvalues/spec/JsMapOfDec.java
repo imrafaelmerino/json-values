@@ -26,12 +26,6 @@ final class JsMapOfDec extends AbstractMap implements JsSpec, AvroSpec {
        return test(path,value,it -> !it.isDecimal(),ERROR_CODE.DECIMAL_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("bigdecimal"));
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", schema);
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-    }
+
 
 }

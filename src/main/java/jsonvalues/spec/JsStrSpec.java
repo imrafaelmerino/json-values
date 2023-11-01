@@ -25,13 +25,7 @@ final class JsStrSpec extends AbstractNullable implements JsValuePredicate, Avro
         return JsSpecParsers.INSTANCE.ofStr(nullable);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
 
-        return nullable ?
-                JsArray.of("null", "string") :
-                JsStr.of("string");
-    }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

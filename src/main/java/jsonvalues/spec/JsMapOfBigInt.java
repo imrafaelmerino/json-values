@@ -27,14 +27,5 @@ final class JsMapOfBigInt extends AbstractMap implements JsSpec,AvroSpec {
         return test(path, value, it -> !it.isIntegral(), ERROR_CODE.INTEGRAL_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("biginteger"));
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", schema);
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-    }
-
-
 
 }

@@ -7,10 +7,18 @@ import java.util.Optional;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.BINARY_FIXED_LENGTH_EXPECTED;
 
-final class JsFixedBinarySpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
+public final class JsFixedBinarySpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
 
     private final int size;
-    AvroAttBuilder avroAttBuilder;
+    private AvroAttBuilder avroAttBuilder;
+
+    public int getSize() {
+        return size;
+    }
+
+    public AvroAttBuilder getAvroAttBuilder() {
+        return avroAttBuilder;
+    }
 
     public JsFixedBinarySpec withAvroAtt(final AvroAttBuilder builder) {
         this.avroAttBuilder = requireNonNull(builder);
@@ -49,27 +57,6 @@ final class JsFixedBinarySpec extends AbstractNullable implements JsValuePredica
 
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-
-        if (avroAttBuilder == null)
-            throw new IllegalArgumentException("avroAttBuilder is null. Set one with `withAvroAtt(builder)`");
-        AvroAtt avroAtt = avroAttBuilder.build();
-        JsObj schema = JsObj.of("name",
-                                JsStr.of(avroAtt.name),
-                                "type", JsStr.of("fixed"),
-                                "size", JsInt.of(size));
-        if (avroAtt.namespace != null)
-            schema = schema.set("namespace",
-                                JsStr.of(avroAtt.namespace));
-
-        if (avroAtt.aliases != null)
-            schema = schema.set("aliases",
-                                avroAtt.aliases);
-
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 
 
 }

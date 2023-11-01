@@ -36,12 +36,7 @@ final class JsStrSuchThat extends AbstractNullable implements JsValuePredicate, 
                                                    );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ?
-                JsArray.of("null", "string") :
-                JsStr.of("string");
-    }
+
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

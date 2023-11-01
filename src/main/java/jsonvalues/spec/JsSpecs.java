@@ -18,36 +18,27 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.*;
 
 /**
- * The `JsSpecs` class provides a collection of static factory methods for creating JSON specifications (JsSpec).
- * These specifications are used to define validation rules and constraints for JSON data structures to ensure
- * that they conform to expected formats and patterns.
+ * The `JsSpecs` class provides a collection of static factory methods for creating JSON specifications (JsSpec). These
+ * specifications are used to define validation rules and constraints for JSON data structures to ensure that they
+ * conform to expected formats and patterns.
  * <p>
  * JSON specifications are essential for parsing and validating JSON data in applications, ensuring that the data
  * adheres to predefined rules before processing or storing it.
  * <p>
- * This class simplifies the creation of these specifications for various JSON data types, including numbers,
- * strings, arrays, objects, and more.
+ * This class simplifies the creation of these specifications for various JSON data types, including numbers, strings,
+ * arrays, objects, and more.
  * <p>
- * It provides factory methods for creating specifications for different JSON types, including numbers, strings,
- * arrays, and objects. Additionally, custom validation predicates can be specified to enforce specific
- * constraints on JSON data.
+ * It provides factory methods for creating specifications for different JSON types, including numbers, strings, arrays,
+ * and objects. Additionally, custom validation predicates can be specified to enforce specific constraints on JSON
+ * data.
  * <p>
- * JSON specifications created with this class are immutable and can be reused for validating multiple JSON data instances.
+ * JSON specifications created with this class are immutable and can be reused for validating multiple JSON data
+ * instances.
  *
  * @see JsSpec
  * @see JsError
  */
 public final class JsSpecs {
-
-
-    /**
-     * true constant spec
-     */
-    public static final JsSpec TRUE = new JsTrueConstant(false);
-    /**
-     * false constant spec
-     */
-    public static final JsSpec FALSE = new JsFalseConstant(false);
 
     private static final JsArraySpec arrayOfNumber = new JsArrayOfNumber(false);
     private static final JsArraySpec arrayOfDec = new JsArrayOfDecimal(false);
@@ -84,7 +75,6 @@ public final class JsSpecs {
     private static final JsSpec mapOfBigIntegerSpec = new JsMapOfBigInt(false);
 
     private static final JsSpec mapOfInstantSpec = new JsMapOfInstant(false);
-
 
 
     private static final String MAX_LOWER_THAN_MIN_ERROR = "max < min";
@@ -271,12 +261,14 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a non-nullable string specification that validates strings based on their length within the specified range.
+     * Returns a non-nullable string specification that validates strings based on their length within the specified
+     * range.
      *
      * @param min The minimum allowed length for strings (inclusive).
      * @param max The maximum allowed length for strings (inclusive).
      * @return A specification for strings that have a length within the specified range.
-     * @throws IllegalArgumentException If the provided min is negative, max is non-positive, or min is greater than max.
+     * @throws IllegalArgumentException If the provided min is negative, max is non-positive, or min is greater than
+     *                                  max.
      */
     public static JsSpec str(int min,
                              int max
@@ -447,7 +439,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a required and non-nullable specification for an array of objects that conform to the given object specification.
+     * Returns a required and non-nullable specification for an array of objects that conform to the given object
+     * specification.
      *
      * @param spec The object specification that every object in the array must conform to.
      * @return A specification that enforces an array of objects conforming to the provided object specification.
@@ -458,7 +451,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a required and non-nullable specification for an array of objects that conform to the given object specification.
+     * Returns a required and non-nullable specification for an array of objects that conform to the given object
+     * specification.
      *
      * @param spec      The object specification that every object in the array must conform to.
      * @param minLength The minimum length of the array (inclusive).
@@ -649,8 +643,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies
-     * the given predicate.
+     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each number in the array must satisfy.
      * @return An array specification for numbers based on the specified predicate.
@@ -664,8 +658,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies
-     * the given predicate.
+     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each number in the array must satisfy.
      * @param minLength The minimum size of the array (inclusive).
@@ -689,8 +683,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies
-     * the given predicate.
+     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each number in the array must satisfy.
      * @return An array specification for numbers based on the specified predicate.
@@ -704,8 +698,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of objects, where each element of the array satisfies
-     * the given predicate.
+     * Returns a specification for a non-nullable array of objects, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each object in the array must satisfy.
      * @return An array specification for objects based on the specified predicate.
@@ -720,8 +714,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of objects, where each element of the array satisfies
-     * the given predicate.
+     * Returns a specification for a non-nullable array of objects, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each object in the array must satisfy.
      * @param minLength The minimum size of the array (inclusive).
@@ -776,7 +770,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of strings, where each element of the array satisfies the given predicate.
+     * Returns a specification for a non-nullable array of strings, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that the array must satisfy.
      * @return An array specification for strings based on the specified predicate.
@@ -805,7 +800,8 @@ public final class JsSpecs {
 
 
     /**
-     * Returns a specification for a non-nullable array of long numbers, where each element of the array satisfies the given predicate.
+     * Returns a specification for a non-nullable array of long numbers, where each element of the array satisfies the
+     * given predicate.
      *
      * @param predicate The predicate that each long number in the array must satisfy.
      * @return An array specification for long numbers based on the specified predicate.
@@ -819,7 +815,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of long numbers, where each element of the array satisfies the given predicate.
+     * Returns a specification for a non-nullable array of long numbers, where each element of the array satisfies the
+     * given predicate.
      *
      * @param predicate The predicate that each long number in the array must satisfy.
      * @param minLength The minimum size of the array (inclusive).
@@ -899,8 +896,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of strings, where each element of the array
-     * satisfies the given predicate.
+     * Returns a specification for a non-nullable array of strings, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each string in the array must satisfy.
      * @return An array specification for strings based on the specified predicate.
@@ -918,8 +915,8 @@ public final class JsSpecs {
 
 
     /**
-     * Returns a specification for a non-nullable array of strings, where each element of the array
-     * satisfies the given predicate.
+     * Returns a specification for a non-nullable array of strings, where each element of the array satisfies the given
+     * predicate.
      *
      * @param predicate The predicate that each string in the array must satisfy.
      * @param minLength The minimum size of the array (inclusive).
@@ -943,9 +940,9 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification that accepts any JSON value for which the given predicate evaluates to true.
-     * When the type is not specified by the spec, positive numbers are parsed as Long by default,
-     * which has to be taken into account when defining the condition.
+     * Returns a specification that accepts any JSON value for which the given predicate evaluates to true. When the
+     * type is not specified by the spec, positive numbers are parsed as Long by default, which has to be taken into
+     * account when defining the condition.
      *
      * @param predicate The predicate that determines whether a JSON value is accepted.
      * @return A specification that validates JSON values based on the specified predicate.
@@ -1030,7 +1027,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies the given predicate.
+     * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies
+     * the given predicate.
      *
      * @param predicate The predicate each integer number of the array is tested on.
      * @return An array specification that enforces the specified condition for integer elements.
@@ -1045,7 +1043,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies the given predicate.
+     * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies
+     * the given predicate.
      *
      * @param predicate The predicate each integer number of the array is tested on.
      * @param minLength The minimum size of the array (inclusive).
@@ -1094,13 +1093,10 @@ public final class JsSpecs {
         return any(o -> requireNonNull(cons).contains(o));
     }
 
-    public static JsSpec oneSpecOf(List<JsSpec> specs){
+    public static JsSpec oneSpecOf(List<? extends JsSpec> specs) {
         return OneOf.of(requireNonNull(specs));
     }
 
-    public static JsSpec oneObjSpecOf(List<JsObjSpec> specs){
-        return OneOfObjSpec.of(requireNonNull(specs));
-    }
     /**
      * Returns a specification that validates if a JSON value is one of the given possible symbols.
      *
@@ -1139,7 +1135,8 @@ public final class JsSpecs {
     }
 
     /**
-     * Returns a specification that validates that the JSON is an object, and the value of each key is a decimal number.
+     * Returns a specification that validates that the JSON is an object, and the value of each key is a decimal
+     * number.
      *
      * @return A JSON specification for objects with decimal number values.
      */
@@ -1189,7 +1186,7 @@ public final class JsSpecs {
      * @return A JSON specification for objects with array values.
      */
     public static JsSpec mapOfArray(JsArraySpec spec) {
-        return new JsMapOfArraySpec(false,spec);
+        return new JsMapOfArraySpec(false, spec);
     }
 
 

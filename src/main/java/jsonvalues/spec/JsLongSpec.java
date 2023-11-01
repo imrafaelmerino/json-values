@@ -33,8 +33,5 @@ final class JsLongSpec extends AbstractNullable implements JsValuePredicate, Avr
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return
-                nullable ? JsArray.of("null", "long") : JsStr.of("long") ;    }
+
 }

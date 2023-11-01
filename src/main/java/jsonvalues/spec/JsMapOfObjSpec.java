@@ -10,6 +10,10 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
 
     private final JsObjSpec spec;
 
+    public JsObjSpec getSpec() {
+        return spec;
+    }
+
     JsMapOfObjSpec(JsObjSpec spec) {
         this(false, spec);
     }
@@ -38,13 +42,7 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
        return null;
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type",JsStr.of("map"),
-                                "vales",spec.toAvroSchema());
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
 
-    }
 
 
 }

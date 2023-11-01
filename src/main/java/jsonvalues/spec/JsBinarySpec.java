@@ -35,10 +35,7 @@ final class JsBinarySpec extends AbstractNullable implements JsValuePredicate, A
     }
 
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ? JsArray.of("null", "bytes") : JsStr.of("bytes");
-    }
+
 
 
 }

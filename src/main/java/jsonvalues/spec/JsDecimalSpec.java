@@ -34,11 +34,6 @@ final class JsDecimalSpec extends AbstractNullable implements JsValuePredicate, 
 
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("bigdecimal"));
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
+
 
 }

@@ -46,11 +46,5 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsValuePredicate,
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("string"));
 
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

@@ -26,11 +26,6 @@ final class JsMapOfBool extends AbstractMap implements JsSpec, AvroSpec {
        return test(path,value,it -> !it.isBool(),ERROR_CODE.BOOLEAN_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("boolean"));
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
 
-    }
 
 }

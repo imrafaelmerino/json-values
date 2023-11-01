@@ -63,11 +63,4 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePre
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("long"));
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

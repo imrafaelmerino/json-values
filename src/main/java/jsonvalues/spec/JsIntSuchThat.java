@@ -34,11 +34,6 @@ final class JsIntSuchThat extends AbstractNullable implements JsValuePredicate, 
                                                    );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        return nullable ? JsArray.of("null", "int") : JsStr.of("int");
-    }
-
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

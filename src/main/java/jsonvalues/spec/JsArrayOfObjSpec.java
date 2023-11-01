@@ -73,15 +73,6 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
                     );
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        Json<?> items = spec.toAvroSchema();
-
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", items);
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 
 
     private List<SpecError> apply(final JsPath path,

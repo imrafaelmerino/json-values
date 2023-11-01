@@ -62,11 +62,5 @@ final class JsArrayOfTestedNumber extends AbstractSizableArr implements JsValueP
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsArray.of("int", "long", "double"));
 
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

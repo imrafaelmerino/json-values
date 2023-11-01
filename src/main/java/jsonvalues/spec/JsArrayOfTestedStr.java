@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -11,7 +11,8 @@ final class JsArrayOfTestedStr extends AbstractSizableArr implements JsValuePred
     final Function<String, Optional<JsError>> predicate;
 
     JsArrayOfTestedStr(final Function<String, Optional<JsError>> predicate,
-                       final boolean nullable) {
+                       final boolean nullable
+                      ) {
         super(nullable);
         this.predicate = predicate;
     }
@@ -43,30 +44,23 @@ final class JsArrayOfTestedStr extends AbstractSizableArr implements JsValuePred
                                                                nullable,
                                                                min,
                                                                max
-        );
+                                                              );
     }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isStr() ?
-                                                        predicate.apply(v.toJsStr().value) :
-                                                        Optional.of(new JsError(v,
-                                                                               STRING_EXPECTED
-                                                                    )
-                                                        ),
+                                                                predicate.apply(v.toJsStr().value) :
+                                                                Optional.of(new JsError(v,
+                                                                                        STRING_EXPECTED
+                                                                            )
+                                                                           ),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("string"));
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }

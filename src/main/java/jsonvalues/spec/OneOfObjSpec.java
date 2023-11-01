@@ -4,6 +4,7 @@ import jsonvalues.*;
 
 import java.util.List;
 
+
 public final class OneOfObjSpec extends AbstractNullable implements JsSpec, AvroSpec {
 
     final List<JsObjSpec> specs;
@@ -37,10 +38,7 @@ public final class OneOfObjSpec extends AbstractNullable implements JsSpec, Avro
     }
 
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsArray schema = JsArray.ofIterable(specs.stream().map(JsObjSpec::toAvroSchema).toList());
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-
+    public List<JsObjSpec> getSpecs() {
+        return specs;
     }
 }

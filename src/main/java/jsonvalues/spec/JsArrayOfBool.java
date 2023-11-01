@@ -34,14 +34,7 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsValuePredicate
                                                     max);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
 
-        JsObj schema = JsObj.of("type",JsStr.of("array"),
-                                "items",JsStr.of("boolean"));
-
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {

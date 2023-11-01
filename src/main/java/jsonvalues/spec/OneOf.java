@@ -14,7 +14,7 @@ public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
         this.specs = specs;
     }
 
-    public static OneOf of(List<JsSpec> specs) {
+    public static OneOf of(List<? extends JsSpec> specs) {
         return new OneOf(false, specs);
     }
 
@@ -69,15 +69,8 @@ public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
         return test(parentPath, value, i + 1, accumulated);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsArray schema =
-                JsArray.ofIterable(specs.stream()
-                                        .map(spec -> {
-                                            if (spec instanceof AvroSpec avroSpec) return avroSpec.toAvroSchema();
-                                            else throw new SpecNotSupportedInAvro(spec);
-                                        }).toList());
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
 
+    public List<? extends JsSpec> getSpecs() {
+        return specs;
     }
 }

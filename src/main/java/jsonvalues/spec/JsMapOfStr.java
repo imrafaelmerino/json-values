@@ -26,11 +26,6 @@ final class JsMapOfStr extends AbstractMap implements JsSpec , AvroSpec {
        return test(path,value,it -> !it.isStr(),ERROR_CODE.STRING_EXPECTED);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"), "values", JsStr.of("string"));
-        return nullable ? JsArray.of(JsStr.of("null"), mapSchema) : mapSchema;
-    }
 
 
 }

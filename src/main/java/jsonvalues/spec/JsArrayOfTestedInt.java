@@ -65,11 +65,5 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePred
                         .apply(value);
     }
 
-    @Override
-    public JsValue toAvroSchema() {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("int"));
 
-        return nullable ? JsArray.of(JsStr.of("null"), schema) : schema;
-    }
 }
