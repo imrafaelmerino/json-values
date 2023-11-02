@@ -15,7 +15,10 @@ import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
+import java.util.List;
 
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsParser {
@@ -33,7 +36,7 @@ public class TestJsParser {
                                    "f",
                                    JsArray.of(1.5,
                                               1.5
-                                   ),
+                                             ),
                                    "g",
                                    JsBigInt.of(BigInteger.TEN),
                                    "h",
@@ -43,33 +46,33 @@ public class TestJsParser {
                                    "j",
                                    JsArray.of(JsObj.of("a",
                                                        JsStr.of("hi")
-                                   ))
-    );
+                                                      ))
+                                  );
     JsObjSpec objSpec = JsObjSpec.of("a",
-                                         str(),
-                                         "b",
-                                         integer(),
-                                         "c",
-                                         bool(),
-                                         "d",
-                                         longInteger(),
-                                         "e",
-                                         decimal(),
-                                         "f",
-                                         tuple(decimal(),
-                                               decimal()
-                                         ),
-                                         "g",
-                                         bigInteger(),
-                                         "h",
-                                         obj(),
-                                         "i",
-                                         array(),
-                                         "j",
-                                         arrayOfObjSpec(JsObjSpec.of("a",
-                                                                          str()
-                                         ).lenient())
-    );
+                                     str(),
+                                     "b",
+                                     integer(),
+                                     "c",
+                                     bool(),
+                                     "d",
+                                     longInteger(),
+                                     "e",
+                                     decimal(),
+                                     "f",
+                                     tuple(decimal(),
+                                           decimal()
+                                          ),
+                                     "g",
+                                     bigInteger(),
+                                     "h",
+                                     obj(),
+                                     "i",
+                                     array(),
+                                     "j",
+                                     arrayOfObjSpec(JsObjSpec.of("a",
+                                                                 str()
+                                                                ).lenient())
+                                    );
 
     @Test
     public void test_parse_string_into_obj() throws IOException {
@@ -79,18 +82,18 @@ public class TestJsParser {
 
         Assertions.assertEquals(parser.parse(example.toString()),
                                 example
-        );
+                               );
 
         byte[] bytes = example.toString().getBytes(StandardCharsets.UTF_8);
         Assertions.assertEquals(parser.parse(bytes),
                                 example
-        );
+                               );
 
         InputStream stream = new ByteArrayInputStream(bytes);
 
         Assertions.assertEquals(parser.parse(stream),
                                 example
-        );
+                               );
 
         stream.close();
 
@@ -109,19 +112,19 @@ public class TestJsParser {
 
         Assertions.assertEquals(parser.parse(array.toString()),
                                 array
-        );
+                               );
 
         byte[] bytes = array.toString().getBytes(StandardCharsets.UTF_8);
 
         Assertions.assertEquals(parser.parse(bytes),
                                 array
-        );
+                               );
 
         InputStream stream = new ByteArrayInputStream(bytes);
 
         Assertions.assertEquals(parser.parse(stream),
                                 array
-        );
+                               );
 
         stream.close();
 
@@ -138,24 +141,24 @@ public class TestJsParser {
                                                  "b",
                                                  instant(i -> i.isAfter(Instant.now()
                                                                                .minus(Duration.ofDays(1))
-                                                         )
-                                                 )));
+                                                                       )
+                                                        )));
 
         JsObj obj = JsObj.of("a",
                              JsInstant.of(Instant.now()),
                              "b",
                              JsInstant.of(Instant.now())
-        );
+                            );
         JsObj parse = parser.parse(obj.toString());
 
         Assertions.assertEquals(JsInstant.class,
                                 parse.get("a")
                                      .getClass()
-        );
+                               );
         Assertions.assertEquals(JsInstant.class,
                                 parse.get("b")
                                      .getClass()
-        );
+                               );
 
         Assertions.assertEquals(obj,
                                 parse);
@@ -176,17 +179,17 @@ public class TestJsParser {
                              JsStr.of("hola"),
                              "b",
                              JsBinary.of("foo".getBytes(StandardCharsets.UTF_8))
-        );
+                            );
         JsObj parse = parser.parse(obj.toString());
 
         Assertions.assertEquals(JsBinary.class,
                                 parse.get("a")
                                      .getClass()
-        );
+                               );
         Assertions.assertEquals(JsBinary.class,
                                 parse.get("b")
                                      .getClass()
-        );
+                               );
 
         Assertions.assertEquals(obj,
                                 parse);
@@ -204,7 +207,7 @@ public class TestJsParser {
                 JsSpecs.str(s -> s.startsWith("h")).nullable(),
                 "d",
                 JsSpecs.array(JsValue::isNumber).nullable()
-        );
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -238,14 +241,14 @@ public class TestJsParser {
     public void test_parsing_nullable_arrays() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          JsSpecs.arrayOfDec(0,
-                                                             1).nullable(),
-                                          "b",
-                                          JsSpecs.arrayOfInt(0,
-                                                             1).nullable(),
-                                          "c",
-                                          JsSpecs.array().nullable()
-        );
+                                      JsSpecs.arrayOfDec(0,
+                                                         1).nullable(),
+                                      "b",
+                                      JsSpecs.arrayOfInt(0,
+                                                         1).nullable(),
+                                      "c",
+                                      JsSpecs.array().nullable()
+                                     );
 
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
@@ -263,9 +266,9 @@ public class TestJsParser {
                                    JsArrayGen.arbitrary(JsLongGen.arbitrary(),
                                                         0,
                                                         1)
-        ).withNullValues("a",
-                         "b",
-                         "c");
+                                  ).withNullValues("a",
+                                                   "b",
+                                                   "c");
 
 
         Assertions.assertTrue(gen.sample(10000)
@@ -277,17 +280,17 @@ public class TestJsParser {
     @Test
     public void parsingString() {
         JsObjSpec spec = JsObjSpec.of("a",
-                                          str(s -> s.length() < 10).nullable(),
-                                          "b",
-                                          arrayOfStr(s -> s.length() < 10,
-                                                     1,
-                                                     10).nullable(),
-                                          "c",
-                                          arrayOfStr(1,
-                                                     10).nullable(),
-                                          "d",
-                                          arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).withAllOptKeys();
+                                      str(s -> s.length() < 10).nullable(),
+                                      "b",
+                                      arrayOfStr(s -> s.length() < 10,
+                                                 1,
+                                                 10).nullable(),
+                                      "c",
+                                      arrayOfStr(1,
+                                                 10).nullable(),
+                                      "d",
+                                      arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                     ).withAllOptKeys();
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -306,7 +309,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -316,24 +319,24 @@ public class TestJsParser {
                                       .allMatch(obj ->
                                                         parser.parse(obj.toPrettyString()).equals(obj)
 
-                                      ));
+                                               ));
     }
 
     @Test
     public void parseStringErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          str(s -> s.length() < 10),
-                                          "b",
-                                          arrayOfStr(s -> s.length() < 10,
-                                                     1,
-                                                     10),
-                                          "c",
-                                          arrayOfStr(1,
-                                                     10),
-                                          "d",
-                                          arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
-        ).withAllOptKeys();
+                                      str(s -> s.length() < 10),
+                                      "b",
+                                      arrayOfStr(s -> s.length() < 10,
+                                                 1,
+                                                 10),
+                                      "c",
+                                      arrayOfStr(1,
+                                                 10),
+                                      "d",
+                                      arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     ).withAllOptKeys();
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -355,7 +358,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -375,17 +378,17 @@ public class TestJsParser {
     public void parseIntErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          integer(s -> s < 10),
-                                          "b",
-                                          arrayOfInt(s -> s < 10,
-                                                     1,
-                                                     10),
-                                          "c",
-                                          arrayOfInt(1,
-                                                     10),
-                                          "d",
-                                          arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0)
-        );
+                                      integer(s -> s < 10),
+                                      "b",
+                                      arrayOfInt(s -> s < 10,
+                                                 1,
+                                                 10),
+                                      "c",
+                                      arrayOfInt(1,
+                                                 10),
+                                      "d",
+                                      arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -410,7 +413,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -429,17 +432,17 @@ public class TestJsParser {
     @Test
     public void parsingInt() {
         JsObjSpec spec = JsObjSpec.of("a",
-                                          JsSpecs.integer(s -> s < 10).nullable(),
-                                          "b",
-                                          arrayOfInt(s -> s < 10,
-                                                     1,
-                                                     10).nullable(),
-                                          "c",
-                                          arrayOfInt(1,
-                                                     10).nullable(),
-                                          "d",
-                                          arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).withAllOptKeys();
+                                      JsSpecs.integer(s -> s < 10).nullable(),
+                                      "b",
+                                      arrayOfInt(s -> s < 10,
+                                                 1,
+                                                 10).nullable(),
+                                      "c",
+                                      arrayOfInt(1,
+                                                 10).nullable(),
+                                      "d",
+                                      arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                     ).withAllOptKeys();
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -458,7 +461,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -468,21 +471,21 @@ public class TestJsParser {
                                       .allMatch(obj ->
                                                         parser.parse(obj.toPrettyString()).equals(obj)
 
-                                      ));
+                                               ));
     }
 
     @Test
     public void parsingBool() {
         JsObjSpec spec = JsObjSpec.of("a",
-                                          TRUE.nullable(),
-                                          "b",
-                                          FALSE.nullable(),
-                                          "c",
-                                          arrayOfBool(1,
-                                                      10).nullable(),
-                                          "d",
-                                          arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
-        ).withAllOptKeys();
+                                      JsSpecs.oneValueOf(List.of(TRUE)).nullable(),
+                                      "b",
+                                      JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
+                                      "c",
+                                      arrayOfBool(1,
+                                                  10).nullable(),
+                                      "d",
+                                      arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                     ).withAllOptKeys();
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -500,7 +503,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -510,24 +513,24 @@ public class TestJsParser {
                                       .allMatch(obj ->
                                                         parser.parse(obj.toPrettyString()).equals(obj)
 
-                                      ));
+                                               ));
     }
 
     @Test
     public void parseBoolErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          bool(),
-                                          "b",
-                                          arrayOfBool(1,
-                                                      10),
-                                          "c",
-                                          arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0),
-                                          "d",
-                                          TRUE,
-                                          "e",
-                                          FALSE
-        );
+                                      bool(),
+                                      "b",
+                                      arrayOfBool(1,
+                                                  10),
+                                      "c",
+                                      arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0),
+                                      "d",
+                                      JsSpecs.oneValueOf(List.of(TRUE)),
+                                      "e",
+                                      JsSpecs.oneValueOf(List.of(FALSE))
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -552,7 +555,7 @@ public class TestJsParser {
                                    JsBoolGen.arbitrary(),
                                    "e",
                                    JsBoolGen.arbitrary()
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -573,17 +576,17 @@ public class TestJsParser {
     public void parseLongErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          longInteger(s -> s < 10),
-                                          "b",
-                                          arrayOfLong(s -> s < 10,
-                                                      1,
-                                                      10),
-                                          "c",
-                                          arrayOfLong(1,
-                                                      10),
-                                          "d",
-                                          arrayOfLongSuchThat(a -> a.size() < 11 && a.size() > 0)
-        );
+                                      longInteger(s -> s < 10),
+                                      "b",
+                                      arrayOfLong(s -> s < 10,
+                                                  1,
+                                                  10),
+                                      "c",
+                                      arrayOfLong(1,
+                                                  10),
+                                      "d",
+                                      arrayOfLongSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -607,7 +610,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -628,14 +631,14 @@ public class TestJsParser {
     public void parseInstantAndBinaryErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          instant(s -> s.isAfter(Instant.EPOCH)),
-                                          "b",
-                                          instant(),
-                                          "c",
-                                          binary(),
-                                          "d",
-                                          binary(b -> b.length <= 1024)
-        );
+                                      instant(s -> s.isAfter(Instant.EPOCH)),
+                                      "b",
+                                      instant(),
+                                      "c",
+                                      binary(),
+                                      "d",
+                                      binary(b -> b.length <= 1024)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -658,7 +661,7 @@ public class TestJsParser {
                                    valueGen,
                                    "d",
                                    valueGen
-                               )
+                                  )
                                .withAllNullValues()
                                .withAllOptKeys();
 
@@ -683,17 +686,17 @@ public class TestJsParser {
     public void parseDecErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          decimal(s -> s.compareTo(BigDecimal.TEN) < 0),
-                                          "b",
-                                          arrayOfDec(s -> s.compareTo(BigDecimal.TEN) < 0,
-                                                     1,
-                                                     10),
-                                          "c",
-                                          arrayOfDec(1,
-                                                     10),
-                                          "d",
-                                          arrayOfDecSuchThat(a -> a.size() < 11 && a.size() > 0)
-        );
+                                      decimal(s -> s.compareTo(BigDecimal.TEN) < 0),
+                                      "b",
+                                      arrayOfDec(s -> s.compareTo(BigDecimal.TEN) < 0,
+                                                 1,
+                                                 10),
+                                      "c",
+                                      arrayOfDec(1,
+                                                 10),
+                                      "d",
+                                      arrayOfDecSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -705,7 +708,7 @@ public class TestJsParser {
                                                       Gen.cons(JsBool.TRUE),
                                                       Gen.cons(JsStr.of("10.5")),
                                                       Gen.cons(JsBool.TRUE)
-        );
+                                                     );
         Gen<JsArray> arrayGen = JsArrayGen.arbitrary(valueGen,
                                                      0,
                                                      20);
@@ -717,7 +720,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -739,17 +742,17 @@ public class TestJsParser {
     public void parseBigIntErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          bigInteger(s -> s.compareTo(BigInteger.TEN) < 0),
-                                          "b",
-                                          arrayOfBigInt(s -> s.compareTo(BigInteger.TEN) < 0,
-                                                        1,
-                                                        10),
-                                          "c",
-                                          arrayOfBigInt(1,
-                                                        10),
-                                          "d",
-                                          arrayOfBigIntSuchThat(a -> a.size() < 11 && a.size() > 0)
-        );
+                                      bigInteger(s -> s.compareTo(BigInteger.TEN) < 0),
+                                      "b",
+                                      arrayOfBigInt(s -> s.compareTo(BigInteger.TEN) < 0,
+                                                    1,
+                                                    10),
+                                      "c",
+                                      arrayOfBigInt(1,
+                                                    10),
+                                      "d",
+                                      arrayOfBigIntSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -761,7 +764,7 @@ public class TestJsParser {
                                                       Gen.cons(JsDouble.of(1.5)),
                                                       Gen.cons(JsStr.of("10.5")),
                                                       Gen.cons(JsBool.TRUE)
-        );
+                                                     );
         Gen<JsArray> arrayGen = JsArrayGen.arbitrary(valueGen,
                                                      0,
                                                      20);
@@ -773,7 +776,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 
@@ -794,17 +797,17 @@ public class TestJsParser {
     public void parseJsObErrors() {
 
         JsObjSpec spec = JsObjSpec.of("a",
-                                          obj(s -> s.containsKey("a")),
-                                          "b",
-                                          arrayOfObj(s -> s.containsKey("a"),
-                                                     1,
-                                                     10),
-                                          "c",
-                                          arrayOfObj(1,
-                                                     10),
-                                          "d",
-                                          arrayOfObjSuchThat(a -> a.size() < 11 && a.size() > 0)
-        );
+                                      obj(s -> s.containsKey("a")),
+                                      "b",
+                                      arrayOfObj(s -> s.containsKey("a"),
+                                                 1,
+                                                 10),
+                                      "c",
+                                      arrayOfObj(1,
+                                                 10),
+                                      "d",
+                                      arrayOfObjSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                     );
 
         JsObjSpecParser parser = new JsObjSpecParser(spec);
 
@@ -820,7 +823,7 @@ public class TestJsParser {
                                                   Gen.cons(JsDouble.of(1.5)),
                                                   Gen.cons(JsStr.of("10.5")),
                                                   Gen.cons(JsBool.TRUE)
-        );
+                                                 );
         Gen<JsArray> arrayGen = JsArrayGen.arbitrary(valueGen,
                                                      0,
                                                      20);
@@ -832,7 +835,7 @@ public class TestJsParser {
                                    arrayGen,
                                    "d",
                                    arrayGen
-                               )
+                                  )
                                .withAllOptKeys()
                                .withAllNullValues();
 

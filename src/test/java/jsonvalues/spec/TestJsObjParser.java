@@ -12,7 +12,10 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
+import static jsonvalues.JsBool.FALSE;
+import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsObjParser {
@@ -162,9 +165,9 @@ public class TestJsObjParser {
                                             "d",
                                             bool(),
                                             "e",
-                                            TRUE,
+                                            JsSpecs.oneValueOf(List.of(TRUE)),
                                             "f",
-                                            FALSE.nullable(),
+                                            JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
                                             "g",
                                             decimal(),
                                             "h",
@@ -370,9 +373,9 @@ public class TestJsObjParser {
                              "d",
                              bool(),
                              "e",
-                             TRUE.nullable(),
+                             JsSpecs.oneValueOf(List.of(TRUE)).nullable(),
                              "f",
-                             FALSE.nullable(),
+                             JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
                              "g",
                              decimal(d -> d.doubleValue() > 0.0),
                              "h",
@@ -1169,7 +1172,7 @@ public class TestJsObjParser {
     @Test
     public void test_numbers() {
 
-        String obj = "{\n"
+        String obj = "{ \n"
                 + "  \"a\": 10E-5,\n"
                 + "  \"b\": -10E+3,\n"
                 + "  \"c\":  10E-3,\n"

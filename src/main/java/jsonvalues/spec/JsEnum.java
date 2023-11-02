@@ -1,6 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsArray;
+import jsonvalues.JsPath;
+import jsonvalues.JsStr;
+import jsonvalues.JsValue;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,24 +14,23 @@ import static java.util.Objects.requireNonNull;
 public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
 
     final JsArray symbols;
-    private String avroName;
-    private String avroDoc;
-    private JsArray aliases;
-    private AvroAttBuilder avroAttBuilder;
+
+    final EnumMetaData metaData;
 
     JsEnum(List<String> symbols) {
-        this(false, JsArray.ofIterable(symbols.stream().map(JsStr::of).toList()));
+        this(false, JsArray.ofStrs(symbols), null);
     }
 
-    private JsEnum(boolean nullable, JsArray symbols) {
+    JsEnum(boolean nullable, JsArray symbols, EnumMetaData metaData) {
         super(nullable);
         this.symbols = symbols;
+        this.metaData = metaData;
     }
 
 
     @Override
     public JsSpec nullable() {
-        return new JsEnum(true, symbols);
+        return new JsEnum(true, symbols, metaData);
     }
 
     @Override
@@ -52,17 +54,11 @@ public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
 
     }
 
-    public JsEnum withAvroAtt(final AvroAttBuilder builder) {
-        this.avroAttBuilder = requireNonNull(builder);
-        return this;
-    }
-
-
-    public AvroAttBuilder getAvroAttBuilder() {
-        return avroAttBuilder;
-    }
-
     public JsArray getSymbols() {
         return symbols;
+    }
+
+    public EnumMetaData getMetaData() {
+        return metaData;
     }
 }

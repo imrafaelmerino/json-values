@@ -1,6 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsNothing;
+import jsonvalues.JsObj;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 import java.util.*;
 import java.util.function.Predicate;
@@ -24,10 +27,9 @@ import static jsonvalues.spec.ERROR_CODE.*;
  * <pre>{@code
  *
  * JsObjSpec personSpec = JsObjSpec
- *     .of()
+ *     .of("age",JsSpecs.integer(),"name",JsSpecs.str())
  *     .withReqKeys("name", "age")
- *     .withOptKeys("address")
- *     .suchThat(person -> person.getInt("age").orElse(0) >= 18);
+ *     .suchThat(person -> person.getInt("age") >= 18);
  *
  * // Validation
  * JsValue json = // JSON data to validate
@@ -43,33 +45,26 @@ import static jsonvalues.spec.ERROR_CODE.*;
  * @see SpecError
  */
 public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpec {
-    public Map<String, JsSpec> getBindings() {
-        return bindings;
-    }
+    final boolean strict;
+    final Map<String, JsSpecParser> parsers;
+    final Map<String, JsSpec> bindings;
+    final MetaData metaData;
+    final List<String> requiredFields;
+    final Predicate<JsObj> predicate;
 
-    public AvroAttBuilder getAvroAttBuilder() {
-        return avroAttBuilder;
-    }
-
-    private final List<String> requiredFields;
-    boolean strict;
-    Map<String, JsSpecParser> parsers;
-    Map<String, JsSpec> bindings;
-    Predicate<JsObj> predicate;
-    private AvroAttBuilder avroAttBuilder;
-
-    private JsObjSpec(Map<String, JsSpec> bindings,
-                      boolean nullable,
-                      boolean strict,
-                      Predicate<JsObj> predicate,
-                      List<String> requiredFields
-                     ) {
+    JsObjSpec(Map<String, JsSpec> bindings,
+              boolean nullable,
+              boolean strict,
+              Predicate<JsObj> predicate,
+              List<String> requiredFields,
+              MetaData metaData
+             ) {
         super(nullable);
         for (String key : requiredFields) {
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("required '" + key + "' not defined in spec");
         }
-
+        this.metaData = metaData;
         this.bindings = bindings;
         this.strict = strict;
         this.predicate = predicate;
@@ -81,9 +76,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                        );
     }
 
-
-    public static JsObjSpec of(String key,
-                               JsSpec spec
+    public static JsObjSpec of(final String key,
+                               final JsSpec spec
                               ) {
         Map<String, JsSpec> bindings = new LinkedHashMap<>();
         bindings.put(requireNonNull(key),
@@ -93,14 +87,15 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              false,
                              true,
                              null,
-                             new ArrayList<>(bindings.keySet())
+                             new ArrayList<>(bindings.keySet()),
+                             null
         );
     }
 
-    public static JsObjSpec of(String key1,
-                               JsSpec spec1,
-                               String key2,
-                               JsSpec spec2
+    public static JsObjSpec of(final String key1,
+                               final JsSpec spec1,
+                               final String key2,
+                               final JsSpec spec2
                               ) {
 
         return of(key1,
@@ -112,12 +107,12 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     @SuppressWarnings("squid:S00107")
-    public static JsObjSpec of(String key1,
-                               JsSpec spec1,
-                               String key2,
-                               JsSpec spec2,
-                               String key3,
-                               JsSpec spec3
+    public static JsObjSpec of(final String key1,
+                               final JsSpec spec1,
+                               final String key2,
+                               final JsSpec spec2,
+                               final String key3,
+                               final JsSpec spec3
                               ) {
         return of(key1,
                   spec1,
@@ -130,15 +125,14 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     @SuppressWarnings("squid:S00107")
-    public static JsObjSpec of(
-            String key1,
-            JsSpec spec1,
-            String key2,
-            JsSpec spec2,
-            String key3,
-            JsSpec spec3,
-            String key4,
-            JsSpec spec4
+    public static JsObjSpec of(final String key1,
+                               final JsSpec spec1,
+                               final String key2,
+                               final JsSpec spec2,
+                               final String key3,
+                               final JsSpec spec3,
+                               final String key4,
+                               final JsSpec spec4
                               ) {
         return of(key1,
                   spec1,
@@ -152,17 +146,16 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     @SuppressWarnings("squid:S00107")
-    public static JsObjSpec of(
-            String key1,
-            JsSpec spec1,
-            String key2,
-            JsSpec spec2,
-            String key3,
-            JsSpec spec3,
-            String key4,
-            JsSpec spec4,
-            String key5,
-            JsSpec spec5
+    public static JsObjSpec of(final String key1,
+                               final JsSpec spec1,
+                               final String key2,
+                               final JsSpec spec2,
+                               final String key3,
+                               final JsSpec spec3,
+                               final String key4,
+                               final JsSpec spec4,
+                               final String key5,
+                               final JsSpec spec5
                               ) {
         return of(key1,
                   spec1,
@@ -178,19 +171,18 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     @SuppressWarnings("squid:S00107")
-    public static JsObjSpec of(
-            String key1,
-            JsSpec spec1,
-            String key2,
-            JsSpec spec2,
-            String key3,
-            JsSpec spec3,
-            String key4,
-            JsSpec spec4,
-            String key5,
-            JsSpec spec5,
-            String key6,
-            JsSpec spec6
+    public static JsObjSpec of(String key1,
+                               JsSpec spec1,
+                               String key2,
+                               JsSpec spec2,
+                               String key3,
+                               JsSpec spec3,
+                               String key4,
+                               JsSpec spec4,
+                               String key5,
+                               JsSpec spec5,
+                               String key6,
+                               JsSpec spec6
                               ) {
         return of(key1,
                   spec1,
@@ -5491,13 +5483,21 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                       );
     }
 
+    public MetaData getMetaData() {
+        return metaData;
+    }
+
+    public Map<String, JsSpec> getBindings() {
+        return bindings;
+    }
+
     /**
      * Returns a lenient version of this JsObjSpec. Lenient mode allows additional keys in the JSON object.
      *
      * @return A new JsObjSpec instance with lenient mode enabled.
      */
     public JsObjSpec lenient() {
-        return new JsObjSpec(bindings, nullable, false, predicate, requiredFields);
+        return new JsObjSpec(bindings, nullable, false, predicate, requiredFields, metaData);
     }
 
     /**
@@ -5512,7 +5512,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              nullable,
                              strict,
                              predicate,
-                             requiredFields
+                             requiredFields,
+                             metaData
         );
     }
 
@@ -5535,7 +5536,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              nullable,
                              strict,
                              predicate,
-                             new ArrayList<>()
+                             new ArrayList<>(),
+                             metaData
         );
     }
 
@@ -5583,14 +5585,15 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
         optionalFields.add(field);
         optionalFields
                 .addAll(Arrays.stream(requireNonNull(fields))
-                              .collect(Collectors.toList()));
+                              .toList());
         return new JsObjSpec(bindings,
                              nullable,
                              strict,
                              predicate,
                              getRequiredFields(bindings.keySet(),
                                                optionalFields
-                                              )
+                                              ),
+                             metaData
         );
     }
 
@@ -5615,7 +5618,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              predicate,
                              getRequiredFields(bindings.keySet(),
                                                optionals
-                                              )
+                                              ),
+                             metaData
         );
 
     }
@@ -5631,7 +5635,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              true,
                              strict,
                              predicate,
-                             requiredFields
+                             requiredFields,
+                             metaData
         );
     }
 
@@ -5735,8 +5740,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
      * @return A new JsObjSpec instance with the updated or added field specification.
      * @throws NullPointerException if either the key or spec is null.
      */
-    public JsObjSpec set(String key,
-                         JsSpec spec
+    public JsObjSpec set(final String key,
+                         final JsSpec spec
                         ) {
         LinkedHashMap<String, JsSpec> newBindings = new LinkedHashMap<>(this.bindings);
         newBindings.put(requireNonNull(key),
@@ -5746,15 +5751,11 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                              this.nullable,
                              this.strict,
                              this.predicate,
-                             new ArrayList<>(newBindings.keySet())
+                             new ArrayList<>(newBindings.keySet()),
+                             metaData
         );
 
     }
 
-
-    public JsObjSpec withAvroAtt(final AvroAttBuilder builder) {
-        this.avroAttBuilder = requireNonNull(builder);
-        return this;
-    }
 
 }

@@ -85,6 +85,7 @@ public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, Js
 
 
     boolean isNullable();
+
 }
 
 

@@ -14,20 +14,17 @@ public class TestOneOfSpec {
     @Test
     public void testOneOfPrimitive() {
 
-        var spec = JsSpecs.oneSpecOf(List.of(JsObjSpec.of("a", JsSpecs.integer(),
-                                                        "b", JsSpecs.str(),
-                                                        "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.str()))
-                                                       )
-                                                    .withAvroAtt(AvroAttBuilder.of("one")),
-                                           JsObjSpec.of("a", JsSpecs.integer(),
-                                                        "b", JsSpecs.str(),
-                                                        "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.integer()))
-                                                       )
-                                                    .withAvroAtt(AvroAttBuilder.of("two"))
-                                          )
-                                  );
+        var spec = JsSpecs.oneObjSpecOf(List.of(JsObjSpec.of("a", JsSpecs.integer(),
+                                                             "b", JsSpecs.str(),
+                                                             "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.str()))
+                                                            ),
+                                                JsObjSpec.of("a", JsSpecs.integer(),
+                                                             "b", JsSpecs.str(),
+                                                             "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.integer()))
+                                                            )
+                                               )
+                                       );
 
-        System.out.println(spec());
 
         JsObj obj = JsObj.of("a", JsInt.of(1),
                              "b", JsStr.of("hi"),

@@ -297,71 +297,8 @@ public class TestJsObjSpec {
 
     }
 
-    @Test
-    public void testIsTrueSpec() {
-
-        final JsObjSpec spec = JsObjSpec.of("a",
-                                            JsSpecs.TRUE
-                                           );
 
 
-        final List<SpecError> error = spec.test(JsObj.of("a",
-                                                        JsBool.FALSE
-                                                       ));
-
-        Assertions.assertFalse(error.isEmpty());
-
-        final SpecError pair = error.stream()
-                                    .findFirst()
-                                    .get();
-
-        Assertions.assertEquals(pair.errorCode,
-                                TRUE_EXPECTED
-                               );
-
-        Assertions.assertEquals(pair.value,
-                                JsBool.FALSE
-                               );
-
-        Assertions.assertEquals(pair.path,
-                                JsPath.fromKey("a")
-                               );
-
-
-    }
-
-    @Test
-    public void testIsFalseSpec() {
-
-        final JsObjSpec spec = JsObjSpec.of("a",
-                                            FALSE
-                                           );
-
-
-        final List<SpecError> error = spec.test(JsObj.of("a",
-                                                        TRUE
-                                                       ));
-
-        Assertions.assertFalse(error.isEmpty());
-
-        final SpecError pair = error.stream()
-                                    .findFirst()
-                                    .get();
-
-        Assertions.assertEquals(pair.errorCode,
-                                FALSE_EXPECTED
-                               );
-
-        Assertions.assertEquals(pair.value,
-                                TRUE
-                               );
-
-        Assertions.assertEquals(pair.path,
-                                JsPath.fromKey("a")
-                               );
-
-
-    }
 
     @Test
     public void testIsNumberSpec() {
@@ -474,7 +411,7 @@ public class TestJsObjSpec {
                                             "d",
                                             bool(),
                                             "e",
-                                            JsSpecs.TRUE,
+                                            JsSpecs.oneValueOf(List.of(TRUE)),
                                             "f",
                                             JsObjSpec.of("a",
                                                          str(),

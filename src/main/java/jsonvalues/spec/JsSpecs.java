@@ -175,7 +175,7 @@ public final class JsSpecs {
     }
 
     public static JsSpec fixedBinary(int size) {
-        return new JsFixedBinarySpec(size);
+        return new JsFixedBinary(size);
     }
 
     /**
@@ -1095,6 +1095,10 @@ public final class JsSpecs {
 
     public static JsSpec oneSpecOf(List<? extends JsSpec> specs) {
         return OneOf.of(requireNonNull(specs));
+    }
+
+    public static OneOfObjSpec oneObjSpecOf(List<JsObjSpec> specs) {
+        return OneOfObjSpec.of(requireNonNull(specs));
     }
 
     /**

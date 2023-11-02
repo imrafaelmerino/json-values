@@ -647,6 +647,7 @@ public final class JsReader {
     }
 
 
+
     enum DoublePrecision {
         EXACT(0),
         HIGH(1),
