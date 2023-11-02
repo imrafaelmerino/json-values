@@ -1,15 +1,13 @@
 package jsonvalues.avro;
 
-import jsonvalues.JsInt;
-import jsonvalues.JsObj;
-import jsonvalues.JsStr;
+import jsonvalues.*;
 import jsonvalues.spec.*;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
-import org.apache.avro.generic.GenericRecord;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 public class SerializerTest {
@@ -18,12 +16,19 @@ public class SerializerTest {
     @Test
     public void test() {
         var spec = JsObjSpecBuilder.name("Rafa")
-                                   .build(JsObjSpec.of("a", JsSpecs.str(),
-                                                       "b", JsSpecs.integer(),
-                                                       "c", JsEnumBuilder.name("enum").build(List.of("A", "B"))
-                                                      )
-                                                   .withReqKeys("a")
-                                         );
+                                   .spec(JsObjSpec.of("a", JsSpecs.str().nullable(),
+                                                      "b", JsSpecs.integer().nullable(),
+                                                      "c", JsEnumBuilder.name("enum")
+                                                                        .symbols(List.of("A", "B")).nullable(),
+                                                      "d", JsFixedBuilder.name("fixed").build(1).nullable(),
+                                                      "e", JsSpecs.arrayOfStr().nullable(),
+                                                      "f", JsSpecs.arrayOfInt().nullable(),
+                                                      "g", JsObjSpecBuilder.name("Merino")
+                                                                           .spec(JsObjSpec.of("z", JsSpecs.bool().nullable()).withAllOptKeys())
+                                                     )
+                                                  .withAllOptKeys()
+
+                                        );
 
 
         Schema.Parser parser = new Schema.Parser();
@@ -33,15 +38,30 @@ public class SerializerTest {
         System.out.println(strSchema);
         Schema avroSchema = parser.parse(strSchema);
 
-        JsObj obj1 = JsObj.of("a", JsStr.of("a"),
+        JsObj obj3 = JsObj.of("a", JsStr.of("a"),
                               "b", JsInt.of(1),
-                              "c", JsStr.of("D")
+                              "c", JsStr.of("A"),
+                              "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
+                              "e", JsArray.ofStrs("a", "b", "c"),
+                              "f", JsArray.ofInts(1, 2, 3),
+                              "g", JsObj.of("z", JsBool.FALSE)
+                             );
+
+        JsObj obj1 = JsObj.of("a", JsNull.NULL,
+                              "b", JsNull.NULL,
+                              "c", JsNull.NULL,
+                              "d", JsNull.NULL,
+                              "e", JsNull.NULL,
+                              "f", JsNull.NULL,
+                              "g", JsObj.of("z", JsNull.NULL)
                              );
 
         Assertions.assertTrue(spec.test(obj1).isEmpty());
 
-        GenericRecord record = AvroRecordFromJsValue.toAvro(obj1,
-                                                            avroSchema);
+        GenericData.Record record = AvroRecordFromJsValue.toAvro(obj1,
+                                                                 avroSchema);
+
+        Assertions.assertTrue(GenericData.get().validate(avroSchema, record));
 
         System.out.println(record);
 
@@ -53,25 +73,5 @@ public class SerializerTest {
 
     }
 
-
-
-    public class AvroSchemaValidation {
-
-        public static void main(String[] args) {
-            // Create a schema
-            Schema schema = new Schema.Parser().parse("{\"type\":\"record\",\"name\":\"example\",\"fields\":[{\"name\":\"field1\",\"type\":\"int\"}]}");
-
-            // Create a GenericRecord
-            GenericRecord record = new GenericData.Record(schema);
-            record.put("field1", 42);
-
-            // Create AvroData with the schema
-            AvroData avroData = new AvroData(schema);
-
-            // Validate the GenericRecord against the schema
-            boolean isValid = avroData.validate(schema, record);
-            System.out.println("Is valid? " + isValid);
-        }
-    }
 
 }

@@ -56,6 +56,7 @@ public final class JsReader {
     private final int maxStringBuffer;
     byte[] buffer;
     char[] chars;
+
     DoublePrecision doublePrecision;
     int doubleLengthLimit;
     int maxNumberDigits;
@@ -64,10 +65,12 @@ public final class JsReader {
     private long currentPosition = 0;
     private byte last = ' ';
     private int length;
+
     private InputStream stream;
     private int readLimit;
     //always leave some room for reading special stuff, so that buffer contains enough padding for such optimizations
     private int bufferLenWithExtraSpace;
+    private char[] tmp;
 
     private JsReader(char[] tmp,
                      byte[] buffer,
@@ -82,6 +85,7 @@ public final class JsReader {
         this.length = length;
         this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
         this.chars = tmp;
+        this.tmp = tmp;
         this.keyCache = keyCache;
         this.valuesCache = valuesCache;
         this.doublePrecision = doublePrecision;
@@ -644,6 +648,30 @@ public final class JsReader {
         } else {
             throw new IllegalArgumentException("Stack of marks is empty. No mark available to roll back to.");
         }
+    }
+
+    /**
+     * Read simple "ascii string" into temporary buffer.
+     * String length must be obtained through getTokenStart and getCurrentToken
+     *
+     * @return temporary buffer
+     * @throws JsParserException unable to parse string
+     */
+      char[] readSimpleQuote() throws JsParserException {
+        if (last != '"') throw newParseError("Expecting '\"' for string start");
+        int ci  = currentIndex;
+        try {
+            for (int i = 0; i < tmp.length; i++) {
+                final byte bb = buffer[ci++];
+                if (bb == '"') break;
+                tmp[i] = (char) bb;
+            }
+        } catch (ArrayIndexOutOfBoundsException ignore) {
+            throw JsParserException.reasonAt("JSON string was not closed with a double quote", 0);
+        }
+        if (ci > length)  JsParserException.reasonAt("JSON string was not closed with a double quote", 0);
+        currentIndex = ci;
+        return tmp;
     }
 
 

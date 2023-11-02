@@ -3,7 +3,6 @@ package jsonvalues.spec;
 
 import jsonvalues.JsParserException;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
@@ -1334,6 +1333,7 @@ abstract class NumberConverter {
     private final static int[] DIFF = {111, 222, 444, 888, 1776};
     private final static int[] ERROR = {50, 100, 200, 400, 800};
     private final static int[] SCALE_10 = {10000, 1000, 100, 10, 1};
+    @SuppressWarnings("FloatingPointLiteralPrecision")
     private final static double[] POW_10 = {
             1e1,  1e2,  1e3,  1e4,  1e5, 1e6, 1e7, 1e8,  1e9,
             1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
@@ -1344,11 +1344,11 @@ abstract class NumberConverter {
             1e60, 1e61, 1e62, 1e63, 1e64, 1e65
     };
 
-    public static double deserializeDouble(final JsReader reader) throws IOException {
+    public static double deserializeDouble(final JsReader reader)  {
         if (reader.last() == '"') {
             final int position = reader.getCurrentIndex();
             final char[] buf = reader.readSimpleQuote();
-            return parseDoubleGeneric(buf, reader.getCurrentIndex() - position - 1, reader, true);
+            return parseDoubleGeneric(buf, reader.getCurrentIndex() - position - 1, reader);
         }
         final int start = reader.scanNumber();
         final int end = reader.getCurrentIndex();
@@ -1360,13 +1360,13 @@ abstract class NumberConverter {
         return parseDouble(buf, reader, start, end, 0);
     }
 
-    private static double parseDouble(final byte[] buf, final JsReader reader, final int start, final int end, final int offset) throws IOException {
+    private static double parseDouble(final byte[] buf, final JsReader reader, final int start, final int end, final int offset)  {
         if (end - start - offset > reader.doubleLengthLimit) {
             if (end == reader.length()) {
                 final NumberInfo tmp = readLongNumber(reader, start + offset);
-                return parseDoubleGeneric(tmp.buffer, tmp.length, reader, false);
+                return parseDoubleGeneric(tmp.buffer, tmp.length, reader);
             }
-            return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader, false);
+            return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
         }
         long value = 0;
         byte ch = ' ';
@@ -1381,7 +1381,7 @@ abstract class NumberConverter {
                     numberException(reader, start, end, "Leading zero is not allowed");
                 }
                 if (i > start + offset && reader.allWhitespace(i, end)) return value;
-                numberException(reader, start, end, "Unknown digit", (char)ch);
+                numberException(reader, start, end, "Unknown digit: "+ (char)ch);
             }
             value = (value << 3) + (value << 1) + ind;
         }
@@ -1400,7 +1400,7 @@ abstract class NumberConverter {
                 maxLen = i + 15;
                 ch = buf[i];
                 if (ch == '0' && end > maxLen) {
-                    return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader, false);
+                    return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
                 } else if (ch < '8') {
                     preciseDividor = 1e14;
                     expDiff = -1;
@@ -1430,7 +1430,7 @@ abstract class NumberConverter {
                 final int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i, end)) return value / POW_10[i - decPos - 1];
-                    numberException(reader, start, end, "Unknown digit", (char)buf[i]);
+                    numberException(reader, start, end, "Unknown digit: "+ (char)buf[i]);
                 }
                 value = (value << 3) + (value << 1) + ind;
             }
@@ -1439,7 +1439,7 @@ abstract class NumberConverter {
                 return doubleExponent(reader, value, i - decPos,0, buf, start, end, offset, i);
             }
             if (reader.doublePrecision == JsReader.DoublePrecision.HIGH) {
-                return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader, false);
+                return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
             }
             int decimals = 0;
             final int decLimit = start + offset + 18 < end ? start + offset + 18 : end;
@@ -1452,7 +1452,7 @@ abstract class NumberConverter {
                     if (reader.allWhitespace(i, end)) {
                         return approximateDouble(decimals, value / preciseDividor, i - remPos - decOffset);
                     }
-                    numberException(reader, start, end, "Unknown digit", (char)buf[i]);
+                    numberException(reader, start, end, ParserErrors.UNKNOWN_DIGIT);
                 }
                 decimals = (decimals << 3) + (decimals << 1) + ind;
             }
@@ -1482,9 +1482,9 @@ abstract class NumberConverter {
         return Double.longBitsToDouble(bits + missing);
     }
 
-    private static double doubleExponent(JsReader reader, final long whole, final int decimals, double fraction, byte[] buf, int start, int end, int offset, int i) throws IOException {
+    private static double doubleExponent(JsReader reader, final long whole, final int decimals, double fraction, byte[] buf, int start, int end, int offset, int i)  {
         if (reader.doublePrecision == JsReader.DoublePrecision.EXACT) {
-            return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader, false);
+            return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
         }
         byte ch;
         ch = buf[++i];
@@ -1513,25 +1513,31 @@ abstract class NumberConverter {
                 else if (exp > -300 && exp < 0) return whole / Math.pow(10, exp);
             }
         }
-        return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader, false);
+        return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
     }
 
-    private static double parseDoubleGeneric(final char[] buf, final int len, final JsReader reader, final boolean withQuotes) throws IOException {
+    private static double parseDoubleGeneric(final char[] buf, final int len, final JsReader reader)  {
         int end = len;
         while (end > 0 && Character.isWhitespace(buf[end - 1])) {
             end--;
         }
         if (end > reader.maxNumberDigits) {
-            throw reader.newParseError("Too many digits detected in number", len, "", "Too many digits detected in number", end, "");
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+                                             reader.getCurrentIndex()
+                                            );
         }
         final int offset = buf[0] == '-' ? 1 : 0;
         if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
-            throw reader.newParseError("Leading zero is not allowed. Error parsing number", len + (withQuotes ? 2 : 0));
+            throw JsParserException.reasonAt(ParserErrors.LEADING_ZERO,
+                                             reader.getCurrentIndex()
+                                            );
         }
         try {
             return Double.parseDouble(new String(buf, 0, end));
         } catch (NumberFormatException nfe) {
-            throw reader.newParseError("Error parsing number", len + (withQuotes ? 2 : 0), nfe);
+            throw JsParserException.reasonAt(nfe.getMessage(),
+                                             reader.getCurrentIndex()
+                                            );
         }
     }
 

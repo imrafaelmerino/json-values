@@ -4,6 +4,7 @@ import jsonvalues.*;
 import org.apache.avro.LogicalType;
 import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericArray;
+import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecord;
 
 import java.math.BigDecimal;
@@ -53,6 +54,11 @@ public final class AvroRecordToJsValue {
     static JsValue toJsValue(Object value, Schema schema) {
         var type = schema.getType();
 
+        //important to check at the very first if it's an union
+        if (type == Schema.Type.UNION) {
+            return fromUnionToJsValue(value, schema.getTypes());
+        }
+
         if (value == null) {
             if (type == Schema.Type.NULL) {
                 return JsNull.NULL;
@@ -88,8 +94,8 @@ public final class AvroRecordToJsValue {
             }
         }
         if (type == Schema.Type.ENUM) {
-            if (value instanceof CharSequence) {
-                return JsStr.of(value.toString());
+            if (value instanceof GenericData.EnumSymbol symbol) {
+                return JsStr.of(symbol.toString());
             } else {
                 throw new IllegalArgumentException("Expected a CharSequence value for ENUM schema type");
             }
@@ -127,7 +133,15 @@ public final class AvroRecordToJsValue {
             }
         }
 
-        if (type == Schema.Type.BYTES || type == Schema.Type.FIXED) {
+        if (type == Schema.Type.FIXED) {
+            if (value instanceof GenericData.Fixed fixed) {
+                return JsBinary.of(fixed.bytes());
+            } else {
+                throw new IllegalArgumentException("Expected a byte array value for BYTES or FIXED schema type");
+            }
+        }
+
+        if (type == Schema.Type.BYTES) {
             if (value instanceof byte[]) {
                 return JsBinary.of((byte[]) value);
             } else {
@@ -157,10 +171,6 @@ public final class AvroRecordToJsValue {
             } else {
                 throw new IllegalArgumentException("Expected a Map value for MAP schema type");
             }
-        }
-
-        if (type == Schema.Type.UNION) {
-            return fromUnionToJsValue(value, schema.getTypes());
         }
 
         throw new IllegalArgumentException("Type %s not supported".formatted(type.getName()));

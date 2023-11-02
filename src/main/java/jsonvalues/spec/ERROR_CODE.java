@@ -41,11 +41,17 @@ public enum ERROR_CODE {
      * Indicates that a long integer value was expected but a different type of value was encountered.
      */
     LONG_EXPECTED,
+    DOUBLE_EXPECTED,
 
     /**
      * Represents a failed condition for a long integer value.
      */
     LONG_CONDITION,
+
+    /**
+     * Represents a failed condition for a double value.
+     */
+    DOUBLE_CONDITION,
 
     /**
      * Indicates that a boolean value was expected but a different type of value was encountered.

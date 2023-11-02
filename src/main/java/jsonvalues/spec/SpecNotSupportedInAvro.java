@@ -1,5 +1,6 @@
 package jsonvalues.spec;
 
+@SuppressWarnings("serial")
 class SpecNotSupportedInAvro extends RuntimeException {
 
     private static final String MESSAGE_1 = """

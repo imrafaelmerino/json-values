@@ -6,6 +6,7 @@ class JsParsers {
     public final JsIntReader intParser;
     public final JsBinaryReader binaryParser;
     public final JsLongReader longParser;
+    public final JsDoubleReader doubleParser;
     public final JsBigIntReader integralParser;
     public final JsBoolReader boolParser;
     public final JsDecimalReader decimalParser;
@@ -15,6 +16,7 @@ class JsParsers {
     public final JsObjReader objParser;
     public final JsArrayOfValueReader arrayOfValueParser;
     public final JsArrayOfIntReader arrayOfIntParser;
+    public final JsArrayOfDoubleReader arrayOfDoubleParser;
     public final JsArrayOfLongReader arrayOfLongParser;
     public final JsArrayOfDecimalReader arrayOfDecimalParser;
     public final JsArrayOfBigIntReader arrayOfIntegralParser;
@@ -41,12 +43,14 @@ class JsParsers {
 
 
     public final JsObjReader mapOfLongParser;
+    public final JsObjReader mapOfDoubleParser;
 
     private JsParsers() {
         instantParser = new JsInstantReader();
         intParser = new JsIntReader();
         binaryParser = new JsBinaryReader();
         longParser = new JsLongReader();
+        doubleParser = new JsDoubleReader();
         integralParser = new JsBigIntReader();
         boolParser = new JsBoolReader();
         decimalParser = new JsDecimalReader();
@@ -59,6 +63,7 @@ class JsParsers {
         valueParser.setObjDeserializer(objParser);
         valueParser.setNumberDeserializer(numberParser);
         arrayOfIntParser = new JsArrayOfIntReader(intParser);
+        arrayOfDoubleParser = new JsArrayOfDoubleReader(doubleParser);
         arrayOfLongParser = new JsArrayOfLongReader(longParser);
         arrayOfDecimalParser = new JsArrayOfDecimalReader(decimalParser);
         arrayOfIntegralParser = new JsArrayOfBigIntReader(integralParser);
@@ -74,6 +79,7 @@ class JsParsers {
         mapOfStringParser = new JsObjReader(strParser);
         mapOfInstantParser = new JsObjReader(instantParser);
         mapOfBinaryParser = new JsObjReader(binaryParser);
+        mapOfDoubleParser = new JsObjReader(doubleParser);
     }
 
 

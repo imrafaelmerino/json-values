@@ -86,7 +86,7 @@ public final class JsObjSpecBuilder {
         return this;
     }
 
-    public JsObjSpec build(JsObjSpec spec) {
+    public JsObjSpec spec(JsObjSpec spec) {
         if(fieldsDefaults!=null)validateDefaults(spec, fieldsDefaults);
         if(fieldsDoc!=null)validateDocs(spec, fieldsDoc);
         if(fieldsOrder!=null)validateOrders(spec, fieldsOrder);

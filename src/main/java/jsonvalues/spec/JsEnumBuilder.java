@@ -59,9 +59,9 @@ public final class JsEnumBuilder {
     }
 
 
-    public JsEnum build(final List<String> symbols) {
+    public JsEnum symbols(final List<String> symbols) {
         if (defaultSymbol != null && !symbols.contains(defaultSymbol))
-            throw new IllegalArgumentException("Default symbol %s must be contained in the list of possible symbols of the enum.");
+            throw new IllegalArgumentException("Default symbol %s must be contained in the list of possible symbols of the enum.".formatted(defaultSymbol));
         var metadata = new EnumMetaData(name, nameSpace, aliases, doc, defaultSymbol);
         return new JsEnum(false, JsArray.ofStrs(symbols), metadata);
 

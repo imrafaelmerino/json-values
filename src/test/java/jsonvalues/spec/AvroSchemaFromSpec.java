@@ -27,6 +27,8 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsNumberSpec js) return numberSchema(js);
         if (spec instanceof JsNumberSuchThat js) return numberSchema(js);
 
+        if (spec instanceof JsDoubleSpec js) return doubleSchema(js);
+        if (spec instanceof JsDoubleSuchThat js) return doubleSchema(js);
 
         if (spec instanceof JsDecimalSpec js) return stringSchema("bigdecimal",
                                                                   js.isNullable());
@@ -56,6 +58,11 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsArrayOfInt js) return arrayOfIntSchema(js);
         if (spec instanceof JsArrayOfTestedInt js) return arrayOfIntSchema(js);
 
+
+        if (spec instanceof JsArrayOfDoubleSuchThat js) return arrayOfDoubleSchema(js);
+        if (spec instanceof JsArrayOfDouble js) return arrayOfDoubleSchema(js);
+        if (spec instanceof JsArrayOfTestedDouble js) return arrayOfDoubleSchema(js);
+
         if (spec instanceof JsArrayOfLongSuchThat js) return arrayOfLongSchema(js);
         if (spec instanceof JsArrayOfLong js) return arrayOfLongSchema(js);
         if (spec instanceof JsArrayOfTestedLong js) return arrayOfLongSchema(js);
@@ -78,6 +85,7 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsObjSpec js) return objSpecSchema(js);
 
         if (spec instanceof JsMapOfInt js) return mapOfIntSchema(js);
+        if (spec instanceof JsMapOfDouble js) return mapOfDoubleSchema(js);
         if (spec instanceof JsMapOfLong js) return mapOfLongSchema(js);
         if (spec instanceof JsMapOfBool js) return mapOfBoolSchema(js);
         if (spec instanceof JsMapOfBigInt js) return mapOfBigIntegerSchema(js);
@@ -172,9 +180,12 @@ public final class AvroSchemaFromSpec {
                                                           spec.isNullable())
                                           );
                 if (fieldsDoc != null && fieldsDoc.containsKey(key)) fieldSchema.set("doc", fieldsDoc.get(key));
-                if (fieldsOrder != null && fieldsOrder.containsKey(key)) fieldSchema.set("order", fieldsOrder.get(key).name());
-                if (fieldsDefault != null && fieldsDefault.containsKey(key)) fieldSchema.set("default", fieldsDefault.get(key));
-                if (fieldsAliases != null && fieldsAliases.containsKey(key)) fieldSchema.set("aliases", JsArray.ofStrs(fieldsAliases.get(key)));
+                if (fieldsOrder != null && fieldsOrder.containsKey(key))
+                    fieldSchema.set("order", fieldsOrder.get(key).name());
+                if (fieldsDefault != null && fieldsDefault.containsKey(key))
+                    fieldSchema.set("default", fieldsDefault.get(key));
+                if (fieldsAliases != null && fieldsAliases.containsKey(key))
+                    fieldSchema.set("aliases", JsArray.ofStrs(fieldsAliases.get(key)));
 
                 fields = fields.append(fieldSchema);
             } else throw SpecNotSupportedInAvro.errorConvertingObjSpecIntoSchema(key, spec, metadata);
@@ -285,6 +296,12 @@ public final class AvroSchemaFromSpec {
                 JsStr.of("int");
     }
 
+    private static JsValue doubleSchema(JsSpec js) {
+        return js.isNullable() ?
+                JsArray.of("null", "double") :
+                JsStr.of("double");
+    }
+
     private static JsValue fixedSchema(JsFixedBinary js) {
         var metadata = js.getMetaData();
         if (metadata == null) throw MetadataNotFound.errorParsingFixedToSchema();
@@ -307,6 +324,13 @@ public final class AvroSchemaFromSpec {
     private static JsValue arrayOfIntSchema(JsSpec js) {
         var schema = JsObj.of("type", JsStr.of("array"),
                               "items", JsStr.of("int"));
+
+        return js.isNullable() ? JsArray.of(JsStr.of("null"), schema) : schema;
+    }
+
+    private static JsValue arrayOfDoubleSchema(JsSpec js) {
+        var schema = JsObj.of("type", JsStr.of("array"),
+                              "items", JsStr.of("double"));
 
         return js.isNullable() ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
@@ -385,10 +409,19 @@ public final class AvroSchemaFromSpec {
                 mapSchema;
     }
 
+    private static JsValue mapOfDoubleSchema(JsMapOfDouble js) {
+        JsObj mapSchema = JsObj.of("type", JsStr.of("map"),
+                                   "values", JsStr.of("double")
+                                  );
+        return js.isNullable() ?
+                JsArray.of(JsStr.of("null"), mapSchema) :
+                mapSchema;
+    }
+
     private static JsValue enumSchema(JsEnum jsEnum) {
         var metaData = jsEnum.getMetaData();
         if (metaData == null) throw MetadataNotFound.errorParsingEnumToSchema();
-        var schema = JsObj.of("type",JsStr.of("enum"),"name", JsStr.of(metaData.name()));
+        var schema = JsObj.of("type", JsStr.of("enum"), "name", JsStr.of(metaData.name()));
         if (metaData.doc() != null) schema = schema.set("doc", JsStr.of(metaData.doc()));
         if (metaData.namespace() != null) schema = schema.set("namespace", JsStr.of(metaData.namespace()));
         if (metaData.aliases() != null) schema = schema.set("aliases", JsArray.ofStrs(metaData.aliases()));

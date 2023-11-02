@@ -9,6 +9,7 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
@@ -42,6 +43,7 @@ public final class JsSpecs {
 
     private static final JsArraySpec arrayOfNumber = new JsArrayOfNumber(false);
     private static final JsArraySpec arrayOfDec = new JsArrayOfDecimal(false);
+    private static final JsArraySpec arrayOfDouble = new JsArrayOfDouble(false);
     private static final JsArraySpec arrayOfBigInt = new JsArrayOfBigInt(false);
     private static final JsArraySpec arrayOfObj = new JsArrayOfObj(false);
     private static final JsArraySpec arrayOfBool = new JsArrayOfBool(false);
@@ -52,6 +54,7 @@ public final class JsSpecs {
     private static final JsSpec binary = new JsBinarySpec(false);
     private static final JsSpec bigInteger = new JsBigIntSpec(false);
     private static final JsSpec longInteger = new JsLongSpec(false);
+    private static final JsSpec doubleNumber = new JsDoubleSpec(false);
     private static final JsSpec bool = new JsBooleanSpec(false);
     private static final JsSpec decimal = new JsDecimalSpec(false);
     private static final JsSpec integer = new JsIntSpec(false);
@@ -71,6 +74,7 @@ public final class JsSpecs {
     private static final JsSpec mapOfBoolSpec = new JsMapOfBool(false);
 
     private static final JsSpec mapOfDecimalSpec = new JsMapOfDec(false);
+    private static final JsSpec mapOfDoubleSpec = new JsMapOfDec(false);
 
     private static final JsSpec mapOfBigIntegerSpec = new JsMapOfBigInt(false);
 
@@ -107,6 +111,16 @@ public final class JsSpecs {
      */
     public static JsArraySpec arrayOfBigInt() {
         return arrayOfBigInt;
+    }
+
+
+    /**
+     * non-nullable array of double numbers spec
+     *
+     * @return a spec
+     */
+    public static JsArraySpec arrayOfDouble() {
+        return arrayOfDouble;
     }
 
 
@@ -195,6 +209,15 @@ public final class JsSpecs {
      */
     public static JsSpec longInteger() {
         return longInteger;
+    }
+
+    /**
+     * non-nullable long number
+     *
+     * @return a spec
+     */
+    public static JsSpec doubleNumber() {
+        return doubleNumber;
     }
 
     /**
@@ -318,6 +341,23 @@ public final class JsSpecs {
                                 maxLength);
     }
 
+
+    /**
+     * Returns a specification for an array of double with a specified minimum and maximum length.
+     *
+     * @param minLength The minimum length of the array (inclusive).
+     * @param maxLength The maximum length of the array (inclusive).
+     * @return A specification for an array of double with the specified length constraints.
+     * @throws IllegalArgumentException If the maximum length is less than the minimum length.
+     */
+    public static JsArraySpec arrayOfDouble(int minLength,
+                                            int maxLength
+                                           ) {
+        if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+        return new JsArrayOfDouble(false,
+                                   minLength,
+                                   maxLength);
+    }
 
     /**
      * Returns a specification for an array of big integers with a specified minimum and maximum length.
@@ -545,6 +585,22 @@ public final class JsSpecs {
                 Optional.of(new JsError(JsBigDec.of(s),
                                         DECIMAL_CONDITION)),
                                           false);
+    }
+
+    /**
+     * Returns a specification for a non-nullable array of decimal numbers, where each element of the array satisfies
+     * the given predicate.
+     *
+     * @param predicate The predicate that each decimal number in the array must satisfy.
+     * @return An array specification for decimal numbers based on the specified predicate.
+     */
+    public static JsArraySpec arrayOfDouble(final Predicate<Double> predicate) {
+
+        return new JsArrayOfTestedDouble(s -> requireNonNull(predicate).test(s) ?
+                Optional.empty() :
+                Optional.of(new JsError(JsDouble.of(s),
+                                        DOUBLE_CONDITION)),
+                                         false);
     }
 
     /**
@@ -854,6 +910,20 @@ public final class JsSpecs {
     }
 
     /**
+     * Returns a specification for a non-nullable array of double that satisfies the given predicate.
+     *
+     * @param predicate The predicate that the array must satisfy.
+     * @return An array specification for double based on the specified predicate.
+     */
+    public static JsArraySpec arrayOfDoubleSuchThat(final Predicate<JsArray> predicate) {
+        return new JsArrayOfDoubleSuchThat(s -> requireNonNull(predicate).test(s) ?
+                Optional.empty() :
+                Optional.of(new JsError(s,
+                                        ARRAY_CONDITION)),
+                                           false);
+    }
+
+    /**
      * Returns a specification for a non-nullable long number that satisfies the given predicate.
      *
      * @param predicate The predicate that the long number must satisfy.
@@ -865,6 +935,20 @@ public final class JsSpecs {
                 Optional.of(new JsError(JsLong.of(s),
                                         LONG_CONDITION)),
                                   false);
+    }
+
+    /**
+     * Returns a specification for a non-nullable double number that satisfies the given predicate.
+     *
+     * @param predicate The predicate that the double number must satisfy.
+     * @return A specification for long numbers based on the specified predicate.
+     */
+    public static JsSpec doubleNumber(final DoublePredicate predicate) {
+        return new JsDoubleSuchThat(s -> requireNonNull(predicate).test(s) ?
+                Optional.empty() :
+                Optional.of(new JsError(JsDouble.of(s),
+                                        LONG_CONDITION)),
+                                    false);
     }
 
     /**
@@ -1137,6 +1221,16 @@ public final class JsSpecs {
     public static JsSpec mapOfBigInteger() {
         return mapOfBigIntegerSpec;
     }
+
+    /**
+     * Returns a specification that validates that the JSON is an object, and the value of each key is a double.
+     *
+     * @return A JSON specification for objects with double values.
+     */
+    public static JsSpec mapOfDouble() {
+        return mapOfDoubleSpec;
+    }
+
 
     /**
      * Returns a specification that validates that the JSON is an object, and the value of each key is a decimal
