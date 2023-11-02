@@ -1345,11 +1345,6 @@ abstract class NumberConverter {
     };
 
     public static double deserializeDouble(final JsReader reader)  {
-        if (reader.last() == '"') {
-            final int position = reader.getCurrentIndex();
-            final char[] buf = reader.readSimpleQuote();
-            return parseDoubleGeneric(buf, reader.getCurrentIndex() - position - 1, reader);
-        }
         final int start = reader.scanNumber();
         final int end = reader.getCurrentIndex();
         final byte[] buf = reader.buffer;

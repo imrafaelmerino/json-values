@@ -1743,6 +1743,31 @@ public class TestJsObjSpec {
 
 
     @Test
+    public void testMapOfDouble() {
+
+        testOfMap(DOUBLE_EXPECTED,
+                  JsObj.of("ages",
+                           JsObj.of("Rafa",
+                                    JsDouble.of(1/2d),
+                                    "Pedro",
+                                    JsDouble.of(1/4d)
+                                   )
+                          ),
+                  JsObj.of("ages",
+                           JsObj.of("1",
+                                    JsStr.of("1"),
+                                    "2",
+                                    JsStr.of("1")
+                                   )
+                          ),
+                  JsObjSpec.of("ages",
+                               mapOfDouble()
+                              )
+                 );
+
+    }
+
+    @Test
     public void testMapOfInstant() {
 
         testOfMap(INSTANT_EXPECTED,

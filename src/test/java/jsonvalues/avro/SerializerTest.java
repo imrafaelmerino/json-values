@@ -16,15 +16,19 @@ public class SerializerTest {
     @Test
     public void test() {
         var spec = JsObjSpecBuilder.name("Rafa")
-                                   .spec(JsObjSpec.of("a", JsSpecs.str().nullable(),
-                                                      "b", JsSpecs.integer().nullable(),
+                                   .spec(JsObjSpec.of("a", JsSpecs.str(),
+                                                      "b", JsSpecs.integer(),
                                                       "c", JsEnumBuilder.name("enum")
-                                                                        .symbols(List.of("A", "B")).nullable(),
-                                                      "d", JsFixedBuilder.name("fixed").build(1).nullable(),
-                                                      "e", JsSpecs.arrayOfStr().nullable(),
-                                                      "f", JsSpecs.arrayOfInt().nullable(),
-                                                      "g", JsObjSpecBuilder.name("Merino")
-                                                                           .spec(JsObjSpec.of("z", JsSpecs.bool().nullable()).withAllOptKeys())
+                                                                        .symbols(List.of("A", "B")),
+                                                      "d", JsFixedBuilder.name("fixed").build(1),
+                                                      "e", JsSpecs.arrayOfStr(),
+                                                      "f", JsSpecs.arrayOfInt(),
+                                                      "g", OneOfObjSpec.of(List.of(JsObjSpecBuilder.name("Merino")
+                                                                                                   .spec(JsObjSpec.of("x", JsSpecs.bool()).withAllOptKeys()),
+                                                                                   JsObjSpecBuilder.name("Garcia")
+                                                                                                   .spec(JsObjSpec.of("z", JsSpecs.bool()).withAllOptKeys())
+                                                                                  )
+                                                                          )
                                                      )
                                                   .withAllOptKeys()
 
@@ -38,7 +42,7 @@ public class SerializerTest {
         System.out.println(strSchema);
         Schema avroSchema = parser.parse(strSchema);
 
-        JsObj obj3 = JsObj.of("a", JsStr.of("a"),
+        JsObj obj1 = JsObj.of("a", JsStr.of("a"),
                               "b", JsInt.of(1),
                               "c", JsStr.of("A"),
                               "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
@@ -47,14 +51,14 @@ public class SerializerTest {
                               "g", JsObj.of("z", JsBool.FALSE)
                              );
 
-        JsObj obj1 = JsObj.of("a", JsNull.NULL,
-                              "b", JsNull.NULL,
-                              "c", JsNull.NULL,
-                              "d", JsNull.NULL,
-                              "e", JsNull.NULL,
-                              "f", JsNull.NULL,
-                              "g", JsObj.of("z", JsNull.NULL)
-                             );
+//        JsObj obj1 = JsObj.of("a", JsNull.NULL,
+//                              "b", JsNull.NULL,
+//                              "c", JsNull.NULL,
+//                              "d", JsNull.NULL,
+//                              "e", JsNull.NULL,
+//                              "f", JsNull.NULL,
+//                              "g", JsObj.of("z", JsNull.NULL)
+//                             );
 
         Assertions.assertTrue(spec.test(obj1).isEmpty());
 
@@ -62,6 +66,7 @@ public class SerializerTest {
                                                                  avroSchema);
 
         Assertions.assertTrue(GenericData.get().validate(avroSchema, record));
+
 
         System.out.println(record);
 

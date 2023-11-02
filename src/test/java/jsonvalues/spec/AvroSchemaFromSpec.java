@@ -106,7 +106,7 @@ public final class AvroSchemaFromSpec {
     private static JsArray oneOfObjSpecSchema(OneOfObjSpec js) {
         var specs = js.getSpecs();
         JsArray schema = JsArray.ofIterable(specs.stream().map(AvroSchemaFromSpec::toSchema).toList());
-        return js.isNullable() ? JsArray.of(JsStr.of("null"), schema) : schema;
+        return js.isNullable() ? schema.prepend(JsStr.of("null")) : schema;
     }
 
     private static JsArray oneOfSchema(OneOf js) {
@@ -122,9 +122,16 @@ public final class AvroSchemaFromSpec {
             }
         }
         JsArray schema = JsArray.ofIterable(avroSchemas);
+        validateNotDuplicatedTypes(schema);
 
-        return js.isNullable() ?
-                JsArray.of(JsStr.of("null"), schema) : schema;
+        if (js.isNullable())
+            if(schema.containsValue(JsStr.of("null"))) return schema;
+            else return schema.prepend(JsStr.of("null"));
+        else return schema;
+    }
+
+    private static void validateNotDuplicatedTypes(JsArray schema) {
+
     }
 
     private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js) {
@@ -196,14 +203,18 @@ public final class AvroSchemaFromSpec {
         return objSpec.isNullable() ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
-    private static JsValue toAvro(String key, List<String> requiredFields,
+    private static JsValue toAvro(String key,
+                                  List<String> requiredFields,
                                   AvroSpec spec,
                                   boolean isNullable
                                  ) {
         JsValue schema = toSchema(spec);
-        return (isNullable || requiredFields.contains(key)) ?
-                schema :
-                JsArray.of(JsStr.of("null"), schema);
+        if(isNullable || !requiredFields.contains(key)){
+            if(schema instanceof JsArray arrSchema) return arrSchema.prepend(JsStr.of("null"));
+            else return JsArray.of(JsStr.of("null"),schema);
+        }
+        return schema;
+
     }
 
     private static JsValue arrayOfObjSpecSchema(JsArrayOfObjSpec spec) {

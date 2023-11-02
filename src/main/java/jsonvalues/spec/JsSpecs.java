@@ -74,7 +74,7 @@ public final class JsSpecs {
     private static final JsSpec mapOfBoolSpec = new JsMapOfBool(false);
 
     private static final JsSpec mapOfDecimalSpec = new JsMapOfDec(false);
-    private static final JsSpec mapOfDoubleSpec = new JsMapOfDec(false);
+    private static final JsSpec mapOfDoubleSpec = new JsMapOfDouble(false);
 
     private static final JsSpec mapOfBigIntegerSpec = new JsMapOfBigInt(false);
 

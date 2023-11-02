@@ -698,7 +698,7 @@ final class JsSpecParsers {
     }
 
     JsSpecParser ofMapOfDouble(boolean nullable) {
-        return getParser(PARSERS.mapOfLongParser,
+        return getParser(PARSERS.mapOfDoubleParser,
                          nullable
                         );
     }

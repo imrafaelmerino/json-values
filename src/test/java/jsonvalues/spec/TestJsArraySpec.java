@@ -295,4 +295,23 @@ public class TestJsArraySpec {
 
 
     }
+
+    @Test
+    public void testArrayOfDouble(){
+
+        JsObjSpec spec = JsObjSpec.of("a", arrayOfDouble());
+
+        JsObjSpecParser parser = new JsObjSpecParser(spec);
+
+        JsObj obj = JsObj.of("a",JsArray.ofDoubles(1 / 2d, 1 / 4d));
+        System.out.println(obj);
+
+        Assertions.assertTrue(spec.test(obj).isEmpty());
+
+        JsObj obj2 = parser.parse(obj.toString());
+
+        System.out.println(obj2);
+
+        Assertions.assertEquals(obj,obj2);
+    }
 }

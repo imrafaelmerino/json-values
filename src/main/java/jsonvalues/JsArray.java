@@ -35,8 +35,8 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * JSON-related classes and operations.
  *
  * <p>As a persistent data structure, modifications to a {@code JsArray} result in a new instance being created,
- * leaving
- * the original array unchanged. This immutability ensures safe concurrent access and simplifies handling of JSON data.
+ * leaving the original array unchanged. This immutability ensures safe concurrent access and simplifies handling of
+ * JSON data.
  */
 public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
@@ -212,8 +212,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * Creates a new {@link JsArray} containing the specified {@link BigInteger} elements.
      *
      * <p>The {@code of} method returns a new {@link JsArray} instance with the specified {@link BigInteger} elements
-     * in
-     * the order they appear in the method's argument list. You can provide one or more {@link BigInteger} values to
+     * in the order they appear in the method's argument list. You can provide one or more {@link BigInteger} values to
      * include in the resulting array.
      *
      * @param number The first {@link BigInteger} element to include in the array.
@@ -235,9 +234,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * Creates a new {@link JsArray} containing the specified {@code double} elements.
      *
      * <p>The {@code of} method returns a new {@link JsArray} instance with the specified {@code double} elements in
-     * the
-     * order they appear in the method's argument list. You can provide one or more {@code double} values to include in
-     * the resulting array.
+     * the order they appear in the method's argument list. You can provide one or more {@code double} values to include
+     * in the resulting array.
      *
      * @param number The first {@code double} element to include in the array.
      * @param others Additional {@code double} elements to include in the array (optional).
@@ -280,7 +278,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * specified {@link Collection} of strings. Each string element is converted into a {@link JsStr} value.
      *
      * @param list The {@link Collection} of strings to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsStr} elements from the specified {@link Collection}.
+     * @return A new {@link JsArray} containing the converted {@link JsStr} elements from the specified
+     * {@link Collection}.
      */
     public static JsArray ofStrs(final Collection<String> list) {
         return ofIterable(list.stream().map(JsStr::of).toList());
@@ -293,7 +292,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * specified {@link Collection} of integers. Each integer element is converted into a {@link JsInt} value.
      *
      * @param list The {@link Collection} of integers to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsInt} elements from the specified {@link Collection}.
+     * @return A new {@link JsArray} containing the converted {@link JsInt} elements from the specified
+     * {@link Collection}.
      */
     public static JsArray ofInts(final Collection<Integer> list) {
         return ofIterable(list.stream().map(JsInt::of).toList());
@@ -306,7 +306,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * specified {@link Collection} of longs. Each long element is converted into a {@link JsLong} value.
      *
      * @param list The {@link Collection} of longs to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsLong} elements from the specified {@link Collection}.
+     * @return A new {@link JsArray} containing the converted {@link JsLong} elements from the specified
+     * {@link Collection}.
      */
     public static JsArray ofLongs(final Collection<Long> list) {
         return ofIterable(list.stream().map(JsLong::of).toList());
@@ -320,7 +321,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * {@link JsBigDec} value.
      *
      * @param list The {@link Collection} of {@link BigDecimal} values to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsBigDec} elements from the specified {@link Collection}.
+     * @return A new {@link JsArray} containing the converted {@link JsBigDec} elements from the specified
+     * {@link Collection}.
      */
     public static JsArray ofDecs(final Collection<BigDecimal> list) {
         return ofIterable(list.stream().map(JsBigDec::of).toList());
@@ -333,7 +335,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * specified {@link Collection} of boolean values. Each boolean element is converted into a {@link JsBool} value.
      *
      * @param list The {@link Collection} of boolean values to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsBool} elements from the specified {@link Collection}.
+     * @return A new {@link JsArray} containing the converted {@link JsBool} elements from the specified
+     * {@link Collection}.
      */
     public static JsArray ofBools(final Collection<Boolean> list) {
         return ofIterable(list.stream().map(JsBool::of).toList());
@@ -346,20 +349,19 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
      * specified {@link List} of strings. Each string element is converted into a {@link JsInstant} value.
      *
      * @param list The {@link List} of strings representing instant values to include in the array.
-     * @return A new {@link JsArray} containing the converted {@link JsInstant} elements from the specified {@link List}.
+     * @return A new {@link JsArray} containing the converted {@link JsInstant} elements from the specified
+     * {@link List}.
      */
     public static JsArray ofInstants(final List<String> list) {
         return ofIterable(list.stream().map(JsInstant::of).toList());
     }
 
 
-
-
     /**
      * Creates a new {@link JsArray} from an array of {@link String} elements.
      *
-     * <p>The {@code ofStrs} method returns a new {@link JsArray} instance containing {@link JsStr} elements created from
-     * the specified string values provided as varargs.
+     * <p>The {@code ofStrs} method returns a new {@link JsArray} instance containing {@link JsStr} elements created
+     * from the specified string values provided as varargs.
      *
      * @param elements The string values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsStr} elements.
@@ -371,65 +373,86 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     /**
      * Creates a new {@link JsArray} from an array of {@link Integer} elements.
      *
-     * <p>The {@code ofInts} method returns a new {@link JsArray} instance containing {@link JsInt} elements created from
-     * the specified integer values provided as varargs.
+     * <p>The {@code ofInts} method returns a new {@link JsArray} instance containing {@link JsInt} elements created
+     * from the specified integer values provided as varargs.
      *
      * @param elements The integer values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsInt} elements.
      */
-    public static JsArray ofInts(Integer... elements) {
-        return of(Arrays.stream(elements).map(JsInt::of).toArray(JsValue[]::new));
+    public static JsArray ofInts(int... elements) {
+        return of(Arrays.stream(elements).mapToObj(JsInt::of).toArray(JsValue[]::new));
     }
 
     /**
      * Creates a new {@link JsArray} from an array of {@link Long} elements.
      *
-     * <p>The {@code ofLongs} method returns a new {@link JsArray} instance containing {@link JsLong} elements created from
-     * the specified long values provided as varargs.
+     * <p>The {@code ofLongs} method returns a new {@link JsArray} instance containing {@link JsLong} elements created
+     * from the specified long values provided as varargs.
      *
      * @param elements The long values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsLong} elements.
      */
-    public static JsArray ofLongs(Long... elements) {
-        return of(Arrays.stream(elements).map(JsLong::of).toArray(JsValue[]::new));
+    public static JsArray ofLongs(long... elements) {
+        return of(Arrays.stream(elements).mapToObj(JsLong::of).toArray(JsValue[]::new));
     }
 
     /**
      * Creates a new {@link JsArray} from an array of {@link BigDecimal} elements.
      *
-     * <p>The {@code ofDecs} method returns a new {@link JsArray} instance containing {@link JsBigDec} elements created from
-     * the specified {@link BigDecimal} values provided as varargs.
+     * <p>The {@code ofDecs} method returns a new {@link JsArray} instance containing {@link JsBigDec} elements created
+     * from the specified {@link BigDecimal} values provided as varargs.
      *
      * @param elements The {@link BigDecimal} values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsBigDec} elements.
      */
     public static JsArray ofDecs(BigDecimal... elements) {
-        return of(Arrays.stream(elements).map(JsBigDec::of).toArray(JsValue[]::new));
+        return of(Arrays.stream(elements)
+                        .map(JsBigDec::of)
+                        .toArray(JsValue[]::new));
+    }
+
+    /**
+     * Creates a new {@link JsArray} from an array of {@link BigDecimal} elements.
+     *
+     * <p>The {@code ofDecs} method returns a new {@link JsArray} instance containing {@link JsBigDec} elements created
+     * from the specified {@link BigDecimal} values provided as varargs.
+     *
+     * @param elements The {@link BigDecimal} values to include in the array.
+     * @return A new {@link JsArray} containing the converted {@link JsBigDec} elements.
+     */
+    public static JsArray ofDoubles(double... elements) {
+        return of(Arrays.stream(elements)
+                        .mapToObj(JsDouble::of)
+                        .toArray(JsValue[]::new));
     }
 
     /**
      * Creates a new {@link JsArray} from an array of {@link Boolean} elements.
      *
-     * <p>The {@code ofBools} method returns a new {@link JsArray} instance containing {@link JsBool} elements created from
-     * the specified boolean values provided as varargs.
+     * <p>The {@code ofBools} method returns a new {@link JsArray} instance containing {@link JsBool} elements created
+     * from the specified boolean values provided as varargs.
      *
      * @param elements The boolean values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsBool} elements.
      */
-    public static JsArray ofBools(Boolean... elements) {
-        return of(Arrays.stream(elements).map(JsBool::of).toArray(JsValue[]::new));
+    public static JsArray ofBools(boolean... elements) {
+        JsArray arr = JsArray.empty();
+        for (boolean element : elements) {
+            arr = arr.append(JsBool.of(element));
+        }
+        return arr;
     }
 
     /**
      * Creates a new {@link JsArray} from an array of {@link String} elements representing instant values.
      *
-     * <p>The {@code ofInstants} method returns a new {@link JsArray} instance containing {@link JsInstant} elements created from
-     * the specified string values provided as varargs.
+     * <p>The {@code ofInstants} method returns a new {@link JsArray} instance containing {@link JsInstant} elements
+     * created from the specified string values provided as varargs.
      *
      * @param elements The string values representing instant values to include in the array.
      * @return A new {@link JsArray} containing the converted {@link JsInstant} elements.
      */
-    public static JsArray ofInstants(String... elements) {
+    public static JsArray ofInstants(Instant... elements) {
         return of(Arrays.stream(elements).map(JsInstant::of).toArray(JsValue[]::new));
     }
 
