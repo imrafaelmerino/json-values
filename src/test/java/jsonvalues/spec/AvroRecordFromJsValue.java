@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.*;
-import org.apache.avro.AvroRuntimeException;
 import org.apache.avro.Schema;
 import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericData;
@@ -28,7 +27,11 @@ public class AvroRecordFromJsValue {
         if (value instanceof JsStr js) {
             if (fieldSchema.getType() == Type.ENUM || (fieldSchema.getType() == Type.UNION
                                                        && unionContain(fieldSchema, Type.ENUM)))
-                builder.set(field, new GenericData.EnumSymbol(getType(fieldSchema, Type.ENUM), js.value));
+                builder.set(field,
+                            new GenericData.EnumSymbol(getEnumType(fieldSchema,
+                                                                   js.value),
+                                                       js.value)
+                           );
             else builder.set(field, js.value);
         } else if (value instanceof JsInt js) builder.set(field, js.value);
         else if (value instanceof JsLong js) builder.set(field, js.value);
@@ -41,13 +44,25 @@ public class AvroRecordFromJsValue {
         else if (value instanceof JsBinary js) {
             if (fieldSchema.getType() == Type.FIXED || (fieldSchema.getType() == Type.UNION
                                                         && unionContain(fieldSchema, Type.FIXED)))
-                builder.set(field, new GenericData.Fixed(getType(fieldSchema, Type.FIXED), js.value));
-            else builder.set(field, js.value);
+                builder.set(field,
+                            new GenericData.Fixed(getFixedType(fieldSchema,
+                                                               js.value.length),
+                                                  js.value));
+            else builder.set(field,
+                             js.value);
 
         } else if (value instanceof JsObj js) builder.set(field, toAvro(js, fieldSchema));
         else if (value instanceof JsArray js) builder.set(field, toAvro(js, fieldSchema));
         else throw new IllegalArgumentException("%s not supported".formatted(value.getClass().getName()));
         return builder;
+    }
+
+    private static Schema getEnumType(Schema schema, String symbol) {
+        return getAllType(schema, Type.ENUM).stream().filter(it -> it.getEnumSymbols().contains(symbol)).findFirst().get();
+    }
+
+    private static Schema getFixedType(Schema schema, int size) {
+        return getAllType(schema, Type.FIXED).stream().filter(it -> it.getFixedSize() == size).findFirst().get();
     }
 
 
@@ -127,11 +142,12 @@ public class AvroRecordFromJsValue {
             try {
                 for (var key : obj.keySet()) {
                     Schema.Field field = recordSchema.getField(key);
-                    if(field == null) throw new IllegalArgumentException("JsObj doesn't conform the schema "+recordSchema.getName());
+                    if (field == null)
+                        throw new IllegalArgumentException("JsObj doesn't conform the schema " + recordSchema.getName());
                     toAvro(key, obj.get(key), builder, field.schema());
                 }
                 return builder.build();
-            } catch (IllegalArgumentException e) {
+            } catch (Exception e) {
                 //try the next schema
             }
 

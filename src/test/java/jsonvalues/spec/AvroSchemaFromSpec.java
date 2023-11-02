@@ -3,6 +3,7 @@ package jsonvalues.spec;
 import jsonvalues.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -125,14 +126,59 @@ public final class AvroSchemaFromSpec {
         validateNotDuplicatedTypes(schema);
 
         if (js.isNullable())
-            if(schema.containsValue(JsStr.of("null"))) return schema;
+            if (schema.containsValue(JsStr.of("null"))) return schema;
             else return schema.prepend(JsStr.of("null"));
         else return schema;
     }
 
     private static void validateNotDuplicatedTypes(JsArray schema) {
+        Map<String, Integer> typeCounter = new HashMap<>();
+
+        for (JsValue type : schema) {
+            if (type instanceof JsStr name) {
+                typeCounter.compute(name.value,
+                                    (n, i) -> i == null ? 1 : i + 1);
+            } else if (type instanceof JsObj objType) {
+                if (objType.getStr("name") != null) {
+                    var nameSpace = objType.getStr("namespace");
+                    if (nameSpace != null) {
+                        String fullName = "%s.%s (%s)".formatted(nameSpace,
+                                                                 objType.getStr("name"),
+                                                                 objType.getStr("type")
+                                                                );
+                        typeCounter.compute(fullName,
+                                            (n, i) -> i == null ? 1 : i + 1);
+                    } else {
+                        String fullName = "%s (%s)".formatted(
+                                objType.getStr("name"),
+                                objType.getStr("type")
+                                                             );
+                        typeCounter.compute(fullName,
+                                            (n, i) -> i == null ? 1 : i + 1);
+                    }
+
+                } else {
+                    var name = objType.getStr("type");
+                    typeCounter.compute(name,
+                                        (n, i) -> i == null ? 1 : i + 1);
+                }
+
+            } else
+                throw new IllegalArgumentException("invalid type: either a string or a Json object (nested types are not allowed in Avro)");
+        }
+
+        typeCounter.entrySet()
+                   .stream()
+                   .filter(e -> e.getValue() > 1)
+                   .findFirst()
+                   .ifPresent(e -> {
+                       throw new IllegalArgumentException("type duplicated: " + e.getKey());
+                   });
+
+        System.out.println(typeCounter);
 
     }
+
 
     private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js) {
         var valueSpec = js.getSpec();
@@ -209,9 +255,9 @@ public final class AvroSchemaFromSpec {
                                   boolean isNullable
                                  ) {
         JsValue schema = toSchema(spec);
-        if(isNullable || !requiredFields.contains(key)){
-            if(schema instanceof JsArray arrSchema) return arrSchema.prepend(JsStr.of("null"));
-            else return JsArray.of(JsStr.of("null"),schema);
+        if (isNullable || !requiredFields.contains(key)) {
+            if (schema instanceof JsArray arrSchema) return arrSchema.prepend(JsStr.of("null"));
+            else return JsArray.of(JsStr.of("null"), schema);
         }
         return schema;
 

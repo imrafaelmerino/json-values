@@ -13,8 +13,32 @@ import java.util.List;
 public class SerializerTest {
 
 
+    private static void testSpec(JsObjSpec spec, JsObj obj) {
+        Schema.Parser parser = new Schema.Parser();
+
+        String strSchema = AvroSchemaFromSpec.toSchema(spec)
+                                             .toString();
+        Schema avroSchema = parser.parse(strSchema);
+
+        Assertions.assertTrue(spec.test(obj).isEmpty(),
+                              "Obj doesn't conform the spec");
+
+        GenericData.Record record = AvroRecordFromJsValue.toAvro(obj,
+                                                                 avroSchema);
+
+        Assertions.assertTrue(GenericData.get().validate(avroSchema, record),
+                              "The generated record doesn't conform the avro schema");
+
+
+        JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
+
+        System.out.println(obj2);
+
+        Assertions.assertEquals(obj, obj2, "The obj was transformed into a Record and then into an JsObj again, and they aren't equals.");
+    }
+
     @Test
-    public void test() {
+    public void testJsObjSpec() {
         var spec = JsObjSpecBuilder.name("Rafa")
                                    .spec(JsObjSpec.of("a", JsSpecs.str(),
                                                       "b", JsSpecs.integer(),
@@ -35,13 +59,6 @@ public class SerializerTest {
                                         );
 
 
-        Schema.Parser parser = new Schema.Parser();
-
-        String strSchema = AvroSchemaFromSpec.toSchema(spec)
-                                             .toString();
-        System.out.println(strSchema);
-        Schema avroSchema = parser.parse(strSchema);
-
         JsObj obj1 = JsObj.of("a", JsStr.of("a"),
                               "b", JsInt.of(1),
                               "c", JsStr.of("A"),
@@ -60,23 +77,79 @@ public class SerializerTest {
 //                              "g", JsObj.of("z", JsNull.NULL)
 //                             );
 
-        Assertions.assertTrue(spec.test(obj1).isEmpty());
-
-        GenericData.Record record = AvroRecordFromJsValue.toAvro(obj1,
-                                                                 avroSchema);
-
-        Assertions.assertTrue(GenericData.get().validate(avroSchema, record));
-
-
-        System.out.println(record);
-
-        JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
-
-        System.out.println(obj2);
-
-        Assertions.assertEquals(obj1, obj2);
+        testSpec(spec, obj1);
 
     }
 
+    @Test
+    public void testValidateNotDuplicatedArrays() {
+
+        var spec = JsObjSpecBuilder.name("orange")
+                                   .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.arrayOfDouble(),
+                                                                                     JsSpecs.arrayOfInt())))
+                                        );
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                                () -> AvroSchemaFromSpec.toSchema(spec));
+
+    }
+
+    @Test
+    public void testValidateNotDuplicatedMaps() {
+
+        var spec = JsObjSpecBuilder.name("orange")
+                                   .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.mapOfDouble(),
+                                                                                     JsSpecs.mapOfBool())))
+                                        );
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                                () -> AvroSchemaFromSpec.toSchema(spec));
+
+    }
+
+
+    @Test
+    public void testValidateNotDuplicatedStr() {
+
+        var spec = JsObjSpecBuilder.name("orange")
+                                   .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.str(),
+                                                                                     JsSpecs.str(s -> !s.isBlank()))))
+                                        );
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                                () -> AvroSchemaFromSpec.toSchema(spec));
+
+    }
+
+
+    @Test
+    public void testValidateNotDuplicatedRecord() {
+
+        var spec = JsObjSpecBuilder.name("duplicated")
+                                   .namespace("org")
+                                   .spec(JsObjSpec.of("a", JsSpecs.integer()));
+
+        var invalid = JsObjSpecBuilder.name("orange")
+                                      .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(spec,
+                                                                                        spec)))
+                                           );
+
+        Assertions.assertThrows(IllegalArgumentException.class,
+                                () -> AvroSchemaFromSpec.toSchema(invalid));
+
+    }
+
+    @Test
+    public void oneOfEnum() {
+
+        JsEnum enum1 = JsEnumBuilder.name("uppercase").symbols(List.of("A", "B", "C"));
+        JsEnum enum2 = JsEnumBuilder.name("lowercas").symbols(List.of("a", "b", "c"));
+        JsSpec oneEnum = JsSpecs.oneSpecOf(List.of(enum1, enum2));
+
+        JsObjSpec spec = JsObjSpecBuilder.name("a").spec(JsObjSpec.of("key", oneEnum));
+
+
+        testSpec(spec, JsObj.of("key", JsStr.of("a")));
+    }
 
 }
