@@ -6,11 +6,8 @@ import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecordBuilder;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class AvroRecordFromJsValue {
 
@@ -36,24 +33,15 @@ public class AvroRecordFromJsValue {
                 "The JsObj doesn't conform the spec.Errors: %s".formatted(spec.test(obj));
 
         var schema = AvroSchemaFromSpec.toAvroSchema(spec);
+
         assert Utils.debugNonNull(schema);
 
-        // there is a gap in spec and avro with optional fields. If they dont
-        // have a default value in the schema, we must set their value as null
-        JsObj result = obj;
-        if(!spec.getOptionalsWithoutDefault().isEmpty()){
-            for (var x : spec.getOptionalsWithoutDefault()){
-                if(!obj.containsKey(x)) result = result.set(x,JsNull.NULL);
-            }
-        }
-
-        GenericData.Record record = toAvro(result, schema);
+        GenericData.Record record = toAvro(obj, schema);
 
         assert GenericData.get().validate(schema, record) : "Avro validate methods fails validating the record %s against the schema %s".formatted(record, schema);
 
         return record;
     }
-
 
 
     public static GenericData.Array<Object> toAvro(final JsArray jsArray,
@@ -95,18 +83,28 @@ public class AvroRecordFromJsValue {
                     //en ese caso leer el valor pero asociado al field
                     JsValue value = obj.get(field.name());
                     if (value.isNothing()) {
-                        if (!field.hasDefaultValue())
-                            throw new IllegalArgumentException("Field `%s`without default value not found in the JsObj".formatted(field.name()));
+                        value = tryWithAliases(field.aliases(), obj);
+                        if (value.isNotNothing()) toAvro(field, value, builder);
+                        else if (!field.hasDefaultValue())
+                            throw new IllegalArgumentException("Field `%s` without default value not found in the JsObj".formatted(field.name()));
                     } else toAvro(field, value, builder);
                 }
                 return builder.build();
             } catch (Exception e) {
-               assert  Utils.debugNonNull(e);
+                assert Utils.debugNonNull(e);
             }
 
         }
         throw new IllegalArgumentException("No schema is valid");
 
+    }
+
+    private static JsValue tryWithAliases(Set<String> aliases, JsObj obj) {
+        for (String alias : aliases) {
+            JsValue value = obj.get(alias);
+            if (value.isNotNothing()) return value;
+        }
+        return JsNothing.NOTHING;
     }
 
     static GenericData.Array<Object> toAvro(int index,

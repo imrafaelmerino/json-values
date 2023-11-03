@@ -1,5 +1,6 @@
 package jsonvalues.avro;
 
+import fun.gen.StrGen;
 import jsonvalues.*;
 import jsonvalues.spec.*;
 import org.apache.avro.generic.GenericData;
@@ -9,14 +10,19 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
+import java.util.function.Supplier;
 
 public class SerializerTest {
 
+    Supplier<String> nameGen = StrGen.alphabetic(10, 20).sample();
+
 
     private static void testSpec(JsObjSpec spec, JsObj input) {
-        testSpec(spec,input,input);
+        testSpec(spec, input, input);
     }
-    private static void testSpec(JsObjSpec spec, JsObj input,JsObj expected) {
+
+    private static void testSpec(JsObjSpec spec, JsObj input, JsObj expected) {
 
 
         GenericData.Record record = AvroRecordFromJsValue.toAvro(input,
@@ -77,7 +83,7 @@ public class SerializerTest {
     @Test
     public void testValidateNotDuplicatedArrays() {
 
-        var spec = JsObjSpecBuilder.name("orange")
+        var spec = JsObjSpecBuilder.name(nameGen.get())
                                    .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.arrayOfDouble(),
                                                                                      JsSpecs.arrayOfInt())))
                                         );
@@ -90,7 +96,7 @@ public class SerializerTest {
     @Test
     public void testValidateNotDuplicatedMaps() {
 
-        var spec = JsObjSpecBuilder.name("orange")
+        var spec = JsObjSpecBuilder.name(nameGen.get())
                                    .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.mapOfDouble(),
                                                                                      JsSpecs.mapOfBool())))
                                         );
@@ -104,7 +110,7 @@ public class SerializerTest {
     @Test
     public void testValidateNotDuplicatedStr() {
 
-        var spec = JsObjSpecBuilder.name("orange")
+        var spec = JsObjSpecBuilder.name(nameGen.get())
                                    .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(JsSpecs.str(),
                                                                                      JsSpecs.str(s -> !s.isBlank()))))
                                         );
@@ -118,11 +124,11 @@ public class SerializerTest {
     @Test
     public void testValidateNotDuplicatedRecord() {
 
-        var spec = JsObjSpecBuilder.name("duplicated")
+        var spec = JsObjSpecBuilder.name(nameGen.get())
                                    .namespace("org")
                                    .spec(JsObjSpec.of("a", JsSpecs.integer()));
 
-        var invalid = JsObjSpecBuilder.name("orange")
+        var invalid = JsObjSpecBuilder.name(nameGen.get())
                                       .spec(JsObjSpec.of("a", JsSpecs.oneSpecOf(List.of(spec,
                                                                                         spec)))
                                            );
@@ -148,7 +154,7 @@ public class SerializerTest {
     @Test
     public void testOptionalFields() {
 
-        JsObjSpec spec = JsObjSpecBuilder.name("spec")
+        JsObjSpec spec = JsObjSpecBuilder.name(nameGen.get())
                                          .fieldsDefault(Map.of("a", JsInt.of(1),
                                                                "b", JsStr.of("a")))
                                          .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),
@@ -157,20 +163,34 @@ public class SerializerTest {
 
                                               );
 
-        testSpec(spec, JsObj.empty(),JsObj.of("a",JsInt.of(1),"b",JsStr.of("a")));
+        testSpec(spec, JsObj.empty(), JsObj.of("a", JsInt.of(1), "b", JsStr.of("a")));
 
 
     }
 
     @Test
-    public void testNullableWithoutDefaultAreSetAndNotSpecified(){
+    public void testAliasesFields() {
+
         JsObjSpec spec = JsObjSpecBuilder.name("spec")
+                                         .fieldsAliases(Map.of("a", List.of("a1", "a2"),
+                                                               "b", List.of("b1", "b2"))
+                                                       )
                                          .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),
                                                             "b", JsSpecs.str().nullable())
                                                         .withAllOptKeys()
 
                                               );
 
-        testSpec(spec, JsObj.empty(),JsObj.of("a",JsNull.NULL,"b",JsNull.NULL));
+        testSpec(spec,
+                 JsObj.of("a1", JsInt.of(1), "b1", JsStr.of("a")),
+                 JsObj.of("a", JsInt.of(1), "b", JsStr.of("a")));
+
+        testSpec(spec,
+                 JsObj.of("a2", JsInt.of(1), "b2", JsStr.of("a")),
+                 JsObj.of("a", JsInt.of(1), "b", JsStr.of("a")));
+
+
     }
+
+
 }

@@ -7,8 +7,11 @@ import java.util.*;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
 
+
+//todo get from full name e implementar tipos recursivos
 public final class JsObjSpecBuilder {
 
+    private static final List<String> namesCreated = new ArrayList<>();
 
     private final String name;
     private String doc;
@@ -27,6 +30,17 @@ public final class JsObjSpecBuilder {
 
     public static JsObjSpecBuilder name(final String name) {
         return new JsObjSpecBuilder(name);
+    }
+
+    private static boolean containsDuplicates(List<String> list) {
+        Set<String> uniqueSet = new HashSet<>();
+
+        for (String element : list) {
+            if (!uniqueSet.add(element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public JsObjSpecBuilder namespace(String nameSpace) {
@@ -56,12 +70,8 @@ public final class JsObjSpecBuilder {
         this.fieldsAliases = requireNonNull(fieldsAliases);
         for (Map.Entry<String, List<String>> entry : fieldsAliases.entrySet()) {
             for (String alias : entry.getValue()) {
-                if (!isValidName.test(alias)) {
-                    throw new IllegalArgumentException("The alias %s associated to key %s of the JsObjSpec with name %s doesn't follow the pattern %s".formatted(alias,
-                                                                                                                                                                 entry.getKey(),
-                                                                                                                                                                 name,
-                                                                                                                                                                 AVRO_NAME_PATTERN));
-                }
+                if (requireNonNull(alias).isEmpty() || alias.isBlank())
+                    throw new IllegalArgumentException("Alias empty of blank");
             }
         }
         return this;
@@ -91,6 +101,7 @@ public final class JsObjSpecBuilder {
         if (fieldsOrder != null) validateOrders(spec, fieldsOrder);
         if (fieldsAliases != null) validateAliases(spec, fieldsAliases);
         var metadata = new MetaData(name, nameSpace, aliases, doc, fieldsDoc, fieldsOrder, fieldsAliases, fieldsDefaults);
+        validateSpecWithSameNameNotCreatedSoFar(metadata.getFullName());
         return new JsObjSpec(spec.bindings,
                              spec.nullable,
                              spec.strict,
@@ -100,33 +111,31 @@ public final class JsObjSpecBuilder {
 
     }
 
+    private void validateSpecWithSameNameNotCreatedSoFar(String fullName) {
+
+        synchronized (JsObjSpecBuilder.class){
+            if(namesCreated.contains(fullName))
+                throw new IllegalArgumentException("The spec %s has already been created.Choose another namespace/name".formatted(fullName));
+            else namesCreated.add(fullName);
+        }
+    }
+
     private void validateAliases(JsObjSpec spec, Map<String, List<String>> fieldsAlias) {
         Map<String, JsSpec> bindings = spec.getBindings();
         List<String> allAliases = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : fieldsAlias.entrySet()) {
             var key = entry.getKey();
-            if(entry.getValue().contains(key))
+            if (entry.getValue().contains(key))
                 throw new IllegalArgumentException("The field `%s` can to be contained in the aliases".formatted(key));
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("The field `%s` of the aliases map is not defined in the JsObjSpec with name %s".formatted(key, name));
-            if(containsDuplicates(entry.getValue()))
+            if (containsDuplicates(entry.getValue()))
                 throw new IllegalArgumentException("The field `%s` has duplicated aliases".formatted(key));
             allAliases.addAll(entry.getValue());
         }
-        if(containsDuplicates(allAliases))
+        if (containsDuplicates(allAliases))
             throw new IllegalArgumentException("Found duplicate in aliases for spec `%s`.".formatted(name));
 
-    }
-
-    private static boolean containsDuplicates(List<String> list) {
-        Set<String> uniqueSet = new HashSet<>();
-
-        for (String element : list) {
-            if (!uniqueSet.add(element)) {
-                return true;
-            }
-        }
-        return false;
     }
 
     private void validateOrders(JsObjSpec spec, Map<String, MetaData.ORDERS> fieldsOrder) {
@@ -158,7 +167,6 @@ public final class JsObjSpecBuilder {
             var value = entry.getValue();
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("The key %s of the defaults map is not defined in the JsObjSpec with name %s".formatted(key, name));
-            if (value.isNull()) throw new IllegalArgumentException("The default value can't be null");
             JsSpec keySpec = bindings.get(key);
             if (keySpec instanceof OneOf oneOf) {
                 var errors = oneOf.getSpecs().get(0).test(value);

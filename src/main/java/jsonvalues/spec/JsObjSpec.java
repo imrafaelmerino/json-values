@@ -52,7 +52,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     final List<String> requiredFields;
     final List<String> optionalFields;
 
-    final List<String> optionalsWithoutDefault;
     final Predicate<JsObj> predicate;
 
 
@@ -80,7 +79,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
         assert requiredFields.stream().noneMatch(optionalFields::contains);
         assert optionalFields.stream()
                              .noneMatch(requiredFields::contains);
-        this.optionalsWithoutDefault = geOptionalsWithoutDefault();
         this.parsers = new LinkedHashMap<>();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet())
             parsers.put(entry.getKey(),
@@ -5495,16 +5493,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                       );
     }
 
-    List<String> getOptionalsWithoutDefault() {
-        return optionalsWithoutDefault;
-    }
-
-    private List<String> geOptionalsWithoutDefault() {
-        if (optionalFields.isEmpty() || metaData == null) return Collections.emptyList();
-        if (metaData.fieldsDefault() == null) return optionalFields;
-        return optionalFields.stream().filter(it -> !metaData.fieldsDefault().containsKey(it))
-                             .toList();
-    }
 
     public MetaData getMetaData() {
         return metaData;
@@ -5730,13 +5718,20 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
             JsPath currentPath = parent.append(keyPath);
             JsSpec spec = parentObjSpec.bindings.get(key);
             if (spec == null) {
-                if (parentObjSpec.strict) {
+                if (metaData != null && metaData.getAliasField(key) != null) {
+                    spec = parentObjSpec.bindings.get(metaData.getAliasField(key));
+                }
+                if (spec == null && parentObjSpec.strict) {
+
                     errors.add(SpecError.of(currentPath,
                                             new JsError(value,
                                                         SPEC_MISSING
-                                            )
+                                            )));
+                } else if (spec != null)
+                    errors.addAll(spec.test(currentPath,
+                                            value
                                            ));
-                }
+
             } else errors.addAll(spec.test(currentPath,
                                            value
                                           ));
@@ -5744,7 +5739,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
         }
 
         for (String requiredField : requiredFields) {
-            if (!json.containsKey(requiredField))
+            if (!json.containsKey(requiredField) && !containAnAlias(json, requiredField, metaData))
                 errors.add(SpecError.of(parent.key(requiredField),
                                         new JsError(JsNothing.NOTHING,
                                                     REQUIRED
@@ -5762,6 +5757,16 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
 
 
         return errors;
+    }
+
+    private boolean containAnAlias(JsObj json, String key, MetaData metaData) {
+        if(metaData==null) return false;
+        if(metaData.fieldsAliases () == null) return false;
+        if(!metaData.fieldsAliases().containsKey(key)) return false;
+        return metaData.fieldsAliases()
+                       .get(key)
+                       .stream()
+                       .anyMatch(json::containsKey);
     }
 
     /**

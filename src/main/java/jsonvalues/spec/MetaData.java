@@ -38,6 +38,24 @@ record MetaData(String name, String namespace,
         }
     }
 
+    /**
+     * given an alias, returns the main field
+     *
+     * @param alias the alias
+     * @return the field that has as one possible alias the given one
+     */
+    public String getAliasField(String alias) {
+        if (fieldsAliases == null) return null;
+        for (String key : fieldsAliases.keySet()) {
+            if (fieldsAliases.get(key).contains(alias)) return key;
+        }
+        return null;
+    }
+
+    public String getFullName() {
+        return namespace != null ? "%s.%s".formatted(name, namespace) : name;
+    }
+
     enum ORDERS {ascending, descending, ignore}
 
 }

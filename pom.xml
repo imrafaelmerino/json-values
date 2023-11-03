@@ -74,6 +74,15 @@
             <version>1.11.0</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/ch.qos.logback/logback-core -->
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.2.6</version> <!-- Use the latest version -->
+            <scope>test</scope> <!-- Use the latest version -->
+        </dependency>
+
+
 
     </dependencies>
     <build>
