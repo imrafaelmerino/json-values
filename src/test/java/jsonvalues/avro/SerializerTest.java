@@ -9,15 +9,26 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
 public class SerializerTest {
 
 
     private static void testSpec(JsObjSpec spec, JsObj obj) {
+        Schema.Parser parser = new Schema.Parser();
 
+        String strSchema = AvroSchemaFromSpec.toAvroSchema(spec)
+                                             .toString();
+        Schema avroSchema = parser.parse(strSchema);
+
+        Assertions.assertTrue(spec.test(obj).isEmpty(),
+                              "Obj doesn't conform the spec");
 
         GenericData.Record record = AvroRecordFromJsValue.toAvro(obj,
-                                                                 spec);
+                                                                 avroSchema);
+
+        Assertions.assertTrue(GenericData.get().validate(avroSchema, record),
+                              "The generated record doesn't conform the avro schema");
 
 
         JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
@@ -143,15 +154,17 @@ public class SerializerTest {
     }
 
     @Test
-    public void testOptionalFields(){
+    public void testOptionalFields() {
 
         JsObjSpec spec = JsObjSpecBuilder.name("spec")
+                                         .fieldsDefault(Map.of("a",JsInt.of(1),
+                                                               "b",JsStr.of("a")))
                                          .spec(JsObjSpec.of("a", JsSpecs.integer(),
                                                             "b", JsSpecs.str())
-                                                       .withAllOptKeys()
+                                                        .withAllOptKeys()
                                               );
 
-        testSpec(spec,JsObj.empty());
+        testSpec(spec, JsObj.empty());
 
 
     }

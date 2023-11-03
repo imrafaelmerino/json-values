@@ -50,7 +50,11 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     final Map<String, JsSpec> bindings;
     final MetaData metaData;
     final List<String> requiredFields;
+    final List<String> optionalFields;
     final Predicate<JsObj> predicate;
+
+
+
 
     JsObjSpec(Map<String, JsSpec> bindings,
               boolean nullable,
@@ -69,6 +73,11 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
         this.strict = strict;
         this.predicate = predicate;
         this.requiredFields = requiredFields;
+        this.optionalFields = bindings.keySet().stream().filter(it->!requiredFields.contains(it))
+                                      .toList();
+        assert requiredFields.size() + optionalFields.size() == bindings.size();
+        assert requiredFields.stream().noneMatch(optionalFields::contains);
+        assert optionalFields.stream().noneMatch(requiredFields::contains);
         this.parsers = new LinkedHashMap<>();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet())
             parsers.put(entry.getKey(),
@@ -5525,6 +5534,16 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     public List<String> getRequiredFields() {
         return requiredFields;
     }
+
+    /**
+     * Returns a list of optional field names specified in this JsObjSpec.
+     *
+     * @return A list of optional field names.
+     */
+    public List<String> getOptionalFields() {
+        return optionalFields;
+    }
+
 
     /**
      * Returns a new JsObjSpec that allows all keys in the JSON object to be optional.
