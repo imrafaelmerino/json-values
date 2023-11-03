@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 import java.util.List;
 import java.util.Objects;
@@ -9,10 +10,6 @@ import java.util.Objects;
 final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
 
     private final JsObjSpec spec;
-
-    public JsObjSpec getSpec() {
-        return spec;
-    }
 
     JsMapOfObjSpec(JsObjSpec spec) {
         this(false, spec);
@@ -23,6 +20,9 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
         this.spec = Objects.requireNonNull(spec);
     }
 
+    public JsObjSpec getSpec() {
+        return spec;
+    }
 
     @Override
     public JsSpec nullable() {
@@ -39,10 +39,11 @@ final class JsMapOfObjSpec extends AbstractMap implements JsSpec, AvroSpec {
     public List<SpecError> test(JsPath path,
                                 JsValue value
                                ) {
-       return null;
+        return test(path,
+                    value,
+                    it -> !spec.test(it).isEmpty(),
+                    ERROR_CODE.OBJ_CONDITION);
     }
-
-
 
 
 }

@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 import java.util.List;
 
@@ -11,10 +12,6 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
 
     final JsArraySpec spec;
 
-    public JsArraySpec getSpec() {
-        return spec;
-    }
-
     JsMapOfArraySpec(final boolean nullable,
                      final JsArraySpec spec
                     ) {
@@ -24,6 +21,10 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
 
     JsMapOfArraySpec(final JsArraySpec spec) {
         this(false, requireNonNull(spec));
+    }
+
+    public JsArraySpec getSpec() {
+        return spec;
     }
 
     @Override
@@ -42,9 +43,10 @@ final class JsMapOfArraySpec extends AbstractMap implements JsSpec, AvroSpec {
                                 JsValue value
                                ) {
 
-        return null;
+        return test(path,
+                    value, it -> !spec.test(it).isEmpty(),
+                    ERROR_CODE.ARRAY_CONDITION);
     }
-
 
 
 }

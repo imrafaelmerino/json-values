@@ -5717,16 +5717,18 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
             JsPath currentPath = parent.append(keyPath);
             JsSpec spec = getSpec(key);
 
-            if (spec != null) {
-                errors.addAll(spec.test(currentPath, value));
-            } else if (strict) {
-                errors.add(SpecError.of(currentPath, new JsError(value, SPEC_MISSING)));
-            }
+            if (spec != null) errors.addAll(spec.test(currentPath,
+                                                      value));
+            else if (strict) errors.add(SpecError.of(currentPath,
+                                                     new JsError(value,
+                                                                 SPEC_MISSING)));
 
         }
 
         for (String requiredField : requiredFields) {
-            if (!json.containsKey(requiredField) && !containAnAlias(json, requiredField, metaData))
+            if (!json.containsKey(requiredField) && !containAnAlias(json,
+                                                                    requiredField,
+                                                                    metaData))
                 errors.add(SpecError.of(parent.key(requiredField),
                                         new JsError(JsNothing.NOTHING,
                                                     REQUIRED
@@ -5740,7 +5742,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                                     new JsError(json,
                                                 OBJ_CONDITION
                                     )
-                                   ));
+                                   )
+                      );
 
 
         return errors;
