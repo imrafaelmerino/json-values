@@ -6,7 +6,11 @@ import org.apache.avro.Schema.Type;
 import org.apache.avro.generic.GenericData;
 import org.apache.avro.generic.GenericRecordBuilder;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 public class AvroRecordFromJsValue {
 
@@ -19,6 +23,8 @@ public class AvroRecordFromJsValue {
 
         var schema = AvroSchemaFromSpec.toAvroSchema(spec);
 
+        assert Utils.debugNonNull(schema);
+
         return toAvro(arr, schema);
 
     }
@@ -30,22 +36,25 @@ public class AvroRecordFromJsValue {
                 "The JsObj doesn't conform the spec.Errors: %s".formatted(spec.test(obj));
 
         var schema = AvroSchemaFromSpec.toAvroSchema(spec);
+        assert Utils.debugNonNull(schema);
 
-        var optionalFields = spec.getOptionalFields();
-
-        //optional fields sin default que no estén en el JsObj  los ponemos a null ya que
-        // avro lo exige y liberamos al cliente del api de hacerlo
-        for (String optionalField : optionalFields) {
-             //TODO
+        // there is a gap in spec and avro with optional fields. If they dont
+        // have a default value in the schema, we must set their value as null
+        JsObj result = obj;
+        if(!spec.getOptionalsWithoutDefault().isEmpty()){
+            for (var x : spec.getOptionalsWithoutDefault()){
+                if(!obj.containsKey(x)) result = result.set(x,JsNull.NULL);
+            }
         }
 
-
-        GenericData.Record record = toAvro(obj, schema);
+        GenericData.Record record = toAvro(result, schema);
 
         assert GenericData.get().validate(schema, record) : "Avro validate methods fails validating the record %s against the schema %s".formatted(record, schema);
 
         return record;
     }
+
+
 
     public static GenericData.Array<Object> toAvro(final JsArray jsArray,
                                                    final Schema schema
@@ -75,25 +84,22 @@ public class AvroRecordFromJsValue {
                     && unionContain(schema, Type.RECORD))
         );
 
-        List<Schema> recordSchemas = getAllRecords(schema,
-                                                   obj.size());
-
-        if (recordSchemas.isEmpty())
-            throw new IllegalArgumentException("The size of the JsObj is %s and there is no schema with that number of fields. Make sure you set optional fields to null".formatted(obj.size()));
+        List<Schema> recordSchemas = getAllType(schema,
+                                                Type.RECORD);
 
         for (Schema recordSchema : recordSchemas) {
             GenericRecordBuilder builder = new GenericRecordBuilder(recordSchema);
             try {
-                for (var key : obj.keySet()) {
-                    Schema.Field field = recordSchema.getField(key);
-                    if (field == null)
-                        throw new IllegalArgumentException("JsObj doesn't conform the schema " + recordSchema.getName() + " because the key " + key + " has not been defined in the avro schema");
-                    toAvro(key, obj.get(key), builder, field.schema());
+                for (var field : recordSchema.getFields()) {
+                    JsValue value = obj.get(field.name());
+                    if (value.isNothing()) {
+                        if (!field.hasDefaultValue())
+                            throw new IllegalArgumentException("Field `%s`without default value not found in the JsObj".formatted(field.name()));
+                    } else toAvro(field, value, builder);
                 }
-
                 return builder.build();
             } catch (Exception e) {
-                System.out.println(e);
+               assert  Utils.debugNonNull(e);
             }
 
         }
@@ -130,11 +136,11 @@ public class AvroRecordFromJsValue {
     }
 
 
-    static GenericRecordBuilder toAvro(String field,
+    static GenericRecordBuilder toAvro(Schema.Field field,
                                        JsValue value,
-                                       GenericRecordBuilder builder,
-                                       Schema fieldSchema
+                                       GenericRecordBuilder builder
                                       ) {
+        Schema fieldSchema = field.schema();
         if (value instanceof JsStr js) {
             if (fieldSchema.getType() == Type.ENUM ||
                 (fieldSchema.getType() == Type.UNION && unionContain(fieldSchema, Type.ENUM)))

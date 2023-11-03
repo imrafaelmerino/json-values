@@ -7,10 +7,8 @@ import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
 /**
- * Modified class from dsl-json library.
- * deserializeInt, deserializeLong and so long, convert string numbers into numbers:
- * "123" -> 123
- * which I consider it's a mistake. The change consists of throwing an error
+ * Modified class from dsl-json library. deserializeInt, deserializeLong and so long, convert string numbers into
+ * numbers: "123" -> 123 which I consider it's a mistake. The change consists of throwing an error
  */
 
 abstract class NumberConverter {
@@ -22,6 +20,19 @@ abstract class NumberConverter {
     private static final byte[] MIN_LONG = "-9223372036854775808".getBytes(StandardCharsets.UTF_8);
     private static final BigDecimal BD_MAX_LONG = BigDecimal.valueOf(Long.MAX_VALUE);
     private static final BigDecimal BD_MIN_LONG = BigDecimal.valueOf(Long.MIN_VALUE);
+    private final static int[] DIFF = {111, 222, 444, 888, 1776};
+    private final static int[] ERROR = {50, 100, 200, 400, 800};
+    private final static int[] SCALE_10 = {10000, 1000, 100, 10, 1};
+    @SuppressWarnings("FloatingPointLiteralPrecision")
+    private final static double[] POW_10 = {
+            1e1, 1e2, 1e3, 1e4, 1e5, 1e6, 1e7, 1e8, 1e9,
+            1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
+            1e20, 1e21, 1e22, 1e23, 1e24, 1e25, 1e26, 1e27, 1e28, 1e29,
+            1e30, 1e31, 1e32, 1e33, 1e34, 1e35, 1e36, 1e37, 1e38, 1e39,
+            1e40, 1e41, 1e42, 1e43, 1e44, 1e45, 1e46, 1e47, 1e48, 1e49,
+            1e50, 1e51, 1e52, 1e53, 1e54, 1e55, 1e56, 1e57, 1e58, 1e59,
+            1e60, 1e61, 1e62, 1e63, 1e64, 1e65
+    };
 
     static {
         for (int i = 0; i < DIGITS.length; i++) {
@@ -30,11 +41,12 @@ abstract class NumberConverter {
                     i < 100 ?
                             (1 << 24) :
                             0)
-                    + (((i / 100) + '0') << 16)
-                    + ((((i / 10) % 10) + '0') << 8)
-                    + i % 10 + '0';
+                        + (((i / 100) + '0') << 16)
+                        + ((((i / 10) % 10) + '0') << 8)
+                        + i % 10 + '0';
         }
     }
+
 
     private NumberConverter() {
     }
@@ -43,7 +55,7 @@ abstract class NumberConverter {
                                 int start,
                                 int end,
                                 String message
-                               )  {
+                               ) {
         int len = end - start;
         if (len > reader.maxNumberDigits) {
             throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
@@ -55,7 +67,6 @@ abstract class NumberConverter {
                                         );
 
     }
-
 
     private static BigDecimal parseNumberGeneric(char[] buf,
                                                  int len,
@@ -85,8 +96,8 @@ abstract class NumberConverter {
             );
         } catch (NumberFormatException nfe) {
             throw JsParserException.reasonAt(nfe.getMessage() != null ?
-                                                  nfe.getMessage() :
-                                                  ParserErrors.NOT_VALID_NUMBER,
+                                                     nfe.getMessage() :
+                                                     ParserErrors.NOT_VALID_NUMBER,
                                              reader.getCurrentIndex()
                                             );
         }
@@ -94,7 +105,7 @@ abstract class NumberConverter {
 
     private static NumberConverter.NumberInfo readLongNumber(JsReader reader,
                                                              int start
-                                                            )  {
+                                                            ) {
         int len = reader.length() - start;
         char[] result = reader.prepareBuffer(start,
                                              len
@@ -132,7 +143,6 @@ abstract class NumberConverter {
         );
     }
 
-
     public static void serialize(int value,
                                  JsWriter sw
                                 ) {
@@ -152,9 +162,7 @@ abstract class NumberConverter {
         int i;
         if (value < 0) {
             if (value == Integer.MIN_VALUE) {
-                for (int x = 0; x < MIN_INT.length; x++) {
-                    buf[pos + x] = MIN_INT[x];
-                }
+                System.arraycopy(MIN_INT, 0, buf, pos, MIN_INT.length);
                 return pos + MIN_INT.length;
             }
             i = -value;
@@ -390,9 +398,7 @@ abstract class NumberConverter {
         long i;
         if (value < 0) {
             if (value == Long.MIN_VALUE) {
-                for (int x = 0; x < MIN_LONG.length; x++) {
-                    buf[pos + x] = MIN_LONG[x];
-                }
+                System.arraycopy(MIN_LONG, 0, buf, pos, MIN_LONG.length);
                 return pos + MIN_LONG.length;
             }
             i = -value;
@@ -542,7 +548,7 @@ abstract class NumberConverter {
         return pos + 15;
     }
 
-    public static long deserializeLong(JsReader reader)  {
+    public static long deserializeLong(JsReader reader) {
         int start = reader.scanNumber();
         int end = reader.getCurrentIndex();
         byte[] buf = reader.buffer;
@@ -642,7 +648,7 @@ abstract class NumberConverter {
     private static long parseLongGeneric(JsReader reader,
                                          int start,
                                          int end
-                                        )  {
+                                        ) {
         int len = end - start;
         char[] buf = reader.prepareBuffer(start,
                                           len
@@ -848,7 +854,7 @@ abstract class NumberConverter {
                                                    JsReader reader,
                                                    int start,
                                                    int end
-                                                  )  {
+                                                  ) {
         long value = 0;
         byte ch = ' ';
         int i = start + 1;
@@ -981,11 +987,10 @@ abstract class NumberConverter {
         return BigDecimal.valueOf(value);
     }
 
-
     private static Number tryLongFromBigDecimal(char[] buf,
                                                 int len,
                                                 JsReader reader
-                                               )  {
+                                               ) {
         BigDecimal num = parseNumberGeneric(buf,
                                             len,
                                             reader
@@ -1043,7 +1048,7 @@ abstract class NumberConverter {
                                               JsReader reader,
                                               int start,
                                               int end
-                                             )  {
+                                             ) {
         long value = 0;
         byte ch = ' ';
         int i = start;
@@ -1183,7 +1188,7 @@ abstract class NumberConverter {
                                               JsReader reader,
                                               int start,
                                               int end
-                                             )  {
+                                             ) {
         long value = 0;
         byte ch = ' ';
         int i = start + 1;
@@ -1318,33 +1323,7 @@ abstract class NumberConverter {
         return BigDecimal.valueOf(value);
     }
 
-    private static class NumberInfo {
-        char[] buffer;
-        int length;
-
-        NumberInfo(char[] buffer,
-                   int length
-                  ) {
-            this.buffer = buffer;
-            this.length = length;
-        }
-    }
-
-    private final static int[] DIFF = {111, 222, 444, 888, 1776};
-    private final static int[] ERROR = {50, 100, 200, 400, 800};
-    private final static int[] SCALE_10 = {10000, 1000, 100, 10, 1};
-    @SuppressWarnings("FloatingPointLiteralPrecision")
-    private final static double[] POW_10 = {
-            1e1,  1e2,  1e3,  1e4,  1e5, 1e6, 1e7, 1e8,  1e9,
-            1e10, 1e11, 1e12, 1e13, 1e14, 1e15, 1e16, 1e17, 1e18, 1e19,
-            1e20, 1e21, 1e22, 1e23, 1e24, 1e25, 1e26, 1e27, 1e28, 1e29,
-            1e30, 1e31, 1e32, 1e33, 1e34, 1e35, 1e36, 1e37, 1e38, 1e39,
-            1e40, 1e41, 1e42, 1e43, 1e44, 1e45, 1e46, 1e47, 1e48, 1e49,
-            1e50, 1e51, 1e52, 1e53, 1e54, 1e55, 1e56, 1e57, 1e58, 1e59,
-            1e60, 1e61, 1e62, 1e63, 1e64, 1e65
-    };
-
-    public static double deserializeDouble(final JsReader reader)  {
+    public static double deserializeDouble(final JsReader reader) {
         final int start = reader.scanNumber();
         final int end = reader.getCurrentIndex();
         final byte[] buf = reader.buffer;
@@ -1355,7 +1334,7 @@ abstract class NumberConverter {
         return parseDouble(buf, reader, start, end, 0);
     }
 
-    private static double parseDouble(final byte[] buf, final JsReader reader, final int start, final int end, final int offset)  {
+    private static double parseDouble(final byte[] buf, final JsReader reader, final int start, final int end, final int offset) {
         if (end - start - offset > reader.doubleLengthLimit) {
             if (end == reader.length()) {
                 final NumberInfo tmp = readLongNumber(reader, start + offset);
@@ -1376,18 +1355,19 @@ abstract class NumberConverter {
                     numberException(reader, start, end, "Leading zero is not allowed");
                 }
                 if (i > start + offset && reader.allWhitespace(i, end)) return value;
-                numberException(reader, start, end, "Unknown digit: "+ (char)ch);
+                numberException(reader, start, end, "Unknown digit: " + (char) ch);
             }
             value = (value << 3) + (value << 1) + ind;
         }
         if (i == start + offset) numberException(reader, start, end, "Digit not found");
-        else if (leadingZero && ch != '.' && i > start + offset + 1) numberException(reader, start, end, "Leading zero is not allowed");
+        else if (leadingZero && ch != '.' && i > start + offset + 1)
+            numberException(reader, start, end, "Leading zero is not allowed");
         else if (i == end) return value;
         else if (ch == '.') {
             i++;
             if (i == end) numberException(reader, start, end, "Number ends with a dot");
             final int maxLen;
-            final double preciseDividor;
+            final double preciseDivider;
             final int expDiff;
             final int decPos = i;
             final int decOffset;
@@ -1397,61 +1377,60 @@ abstract class NumberConverter {
                 if (ch == '0' && end > maxLen) {
                     return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
                 } else if (ch < '8') {
-                    preciseDividor = 1e14;
+                    preciseDivider = 1e14;
                     expDiff = -1;
                     decOffset = 1;
                 } else {
-                    preciseDividor = 1e15;
+                    preciseDivider = 1e15;
                     expDiff = 0;
                     decOffset = 0;
                 }
             } else {
                 maxLen = start + offset + 16;
                 if (buf[start + offset] < '8') {
-                    preciseDividor = 1e14;
+                    preciseDivider = 1e14;
                     expDiff = i - maxLen + 14;
                     decOffset = 1;
                 } else {
-                    preciseDividor = 1e15;
+                    preciseDivider = 1e15;
                     expDiff = i - maxLen + 15;
                     decOffset = 0;
                 }
             }
-            final int numLimit = maxLen < end ? maxLen : end;
-            //TODO zeros
+            final int numLimit = Math.min(maxLen, end);
             for (; i < numLimit; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
                 final int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i, end)) return value / POW_10[i - decPos - 1];
-                    numberException(reader, start, end, "Unknown digit: "+ (char)buf[i]);
+                    numberException(reader, start, end, "Unknown digit: " + (char) buf[i]);
                 }
                 value = (value << 3) + (value << 1) + ind;
             }
             if (i == end) return value / POW_10[i - decPos - 1];
             else if (ch == 'e' || ch == 'E') {
-                return doubleExponent(reader, value, i - decPos,0, buf, start, end, offset, i);
+                return doubleExponent(reader, value, i - decPos, 0, buf, start, end, offset, i);
             }
             if (reader.doublePrecision == JsReader.DoublePrecision.HIGH) {
                 return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
             }
             int decimals = 0;
-            final int decLimit = start + offset + 18 < end ? start + offset + 18 : end;
+            final int decLimit = Math.min(start + offset + 18, end);
             final int remPos = i;
-            for(;i < decLimit; i++) {
+            for (; i < decLimit; i++) {
                 ch = buf[i];
                 if (ch == 'e' || ch == 'E') break;
                 final int ind = ch - 48;
                 if (ind < 0 || ind > 9) {
                     if (reader.allWhitespace(i, end)) {
-                        return approximateDouble(decimals, value / preciseDividor, i - remPos - decOffset);
+                        return approximateDouble(decimals, value / preciseDivider, i - remPos - decOffset);
                     }
                     numberException(reader, start, end, ParserErrors.UNKNOWN_DIGIT);
                 }
                 decimals = (decimals << 3) + (decimals << 1) + ind;
             }
-            final double number = approximateDouble(decimals, value / preciseDividor, i - remPos - decOffset);
+            final double number = approximateDouble(decimals, value / preciseDivider, i - remPos - decOffset);
             while (i < end && ch >= '0' && ch <= '9') {
                 ch = buf[i++];
             }
@@ -1472,12 +1451,12 @@ abstract class NumberConverter {
 
     private static double approximateDouble(final int decimals, final double precise, final int digits) {
         final long bits = Double.doubleToRawLongBits(precise);
-        final int exp = (int)(bits >> 52) - 1022;
+        final int exp = (int) (bits >> 52) - 1022;
         final int missing = (decimals * SCALE_10[digits + 1] + ERROR[exp]) / DIFF[exp];
         return Double.longBitsToDouble(bits + missing);
     }
 
-    private static double doubleExponent(JsReader reader, final long whole, final int decimals, double fraction, byte[] buf, int start, int end, int offset, int i)  {
+    private static double doubleExponent(JsReader reader, final long whole, final int decimals, double fraction, byte[] buf, int start, int end, int offset, int i) {
         if (reader.doublePrecision == JsReader.DoublePrecision.EXACT) {
             return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
         }
@@ -1511,7 +1490,7 @@ abstract class NumberConverter {
         return parseDoubleGeneric(reader.prepareBuffer(start + offset, end - start - offset), end - start - offset, reader);
     }
 
-    private static double parseDoubleGeneric(final char[] buf, final int len, final JsReader reader)  {
+    private static double parseDoubleGeneric(final char[] buf, final int len, final JsReader reader) {
         int end = len;
         while (end > 0 && Character.isWhitespace(buf[end - 1])) {
             end--;
@@ -1533,6 +1512,18 @@ abstract class NumberConverter {
             throw JsParserException.reasonAt(nfe.getMessage(),
                                              reader.getCurrentIndex()
                                             );
+        }
+    }
+
+    private static class NumberInfo {
+        char[] buffer;
+        int length;
+
+        NumberInfo(char[] buffer,
+                   int length
+                  ) {
+            this.buffer = buffer;
+            this.length = length;
         }
     }
 

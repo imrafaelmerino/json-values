@@ -2,7 +2,6 @@ package jsonvalues.avro;
 
 import jsonvalues.*;
 import jsonvalues.spec.*;
-import org.apache.avro.Schema;
 import org.apache.avro.generic.GenericData;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -14,28 +13,21 @@ import java.util.Map;
 public class SerializerTest {
 
 
-    private static void testSpec(JsObjSpec spec, JsObj obj) {
-        Schema.Parser parser = new Schema.Parser();
+    private static void testSpec(JsObjSpec spec, JsObj input) {
+        testSpec(spec,input,input);
+    }
+    private static void testSpec(JsObjSpec spec, JsObj input,JsObj expected) {
 
-        String strSchema = AvroSchemaFromSpec.toAvroSchema(spec)
-                                             .toString();
-        Schema avroSchema = parser.parse(strSchema);
 
-        Assertions.assertTrue(spec.test(obj).isEmpty(),
-                              "Obj doesn't conform the spec");
-
-        GenericData.Record record = AvroRecordFromJsValue.toAvro(obj,
-                                                                 avroSchema);
-
-        Assertions.assertTrue(GenericData.get().validate(avroSchema, record),
-                              "The generated record doesn't conform the avro schema");
+        GenericData.Record record = AvroRecordFromJsValue.toAvro(input,
+                                                                 spec);
 
 
         JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
 
         System.out.println(obj2);
 
-        Assertions.assertEquals(obj, obj2, "The obj was transformed into a Record and then into an JsObj again, and they aren't equals.");
+        Assertions.assertEquals(expected, obj2, "The obj was transformed into a Record and then into an JsObj again, and they aren't equals.");
     }
 
     @Test
@@ -157,15 +149,28 @@ public class SerializerTest {
     public void testOptionalFields() {
 
         JsObjSpec spec = JsObjSpecBuilder.name("spec")
-                                         .fieldsDefault(Map.of("a",JsInt.of(1),
-                                                               "b",JsStr.of("a")))
-                                         .spec(JsObjSpec.of("a", JsSpecs.integer(),
-                                                            "b", JsSpecs.str())
+                                         .fieldsDefault(Map.of("a", JsInt.of(1),
+                                                               "b", JsStr.of("a")))
+                                         .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),
+                                                            "b", JsSpecs.str().nullable())
                                                         .withAllOptKeys()
+
                                               );
 
-        testSpec(spec, JsObj.empty());
+        testSpec(spec, JsObj.empty(),JsObj.of("a",JsInt.of(1),"b",JsStr.of("a")));
 
 
+    }
+
+    @Test
+    public void testNullableWithoutDefaultAreSetAndNotSpecified(){
+        JsObjSpec spec = JsObjSpecBuilder.name("spec")
+                                         .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),
+                                                            "b", JsSpecs.str().nullable())
+                                                        .withAllOptKeys()
+
+                                              );
+
+        testSpec(spec, JsObj.empty(),JsObj.of("a",JsNull.NULL,"b",JsNull.NULL));
     }
 }

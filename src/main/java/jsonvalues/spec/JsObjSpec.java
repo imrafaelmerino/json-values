@@ -51,9 +51,9 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     final MetaData metaData;
     final List<String> requiredFields;
     final List<String> optionalFields;
+
+    final List<String> optionalsWithoutDefault;
     final Predicate<JsObj> predicate;
-
-
 
 
     JsObjSpec(Map<String, JsSpec> bindings,
@@ -69,15 +69,18 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                 throw new IllegalArgumentException("required '" + key + "' not defined in spec");
         }
         this.metaData = metaData;
-        this.bindings = bindings;
+        this.bindings = Collections.unmodifiableMap(bindings);
         this.strict = strict;
         this.predicate = predicate;
-        this.requiredFields = requiredFields;
-        this.optionalFields = bindings.keySet().stream().filter(it->!requiredFields.contains(it))
+        this.requiredFields = Collections.unmodifiableList(requiredFields);
+        this.optionalFields = bindings.keySet().stream()
+                                      .filter(it -> !requiredFields.contains(it))
                                       .toList();
         assert requiredFields.size() + optionalFields.size() == bindings.size();
         assert requiredFields.stream().noneMatch(optionalFields::contains);
-        assert optionalFields.stream().noneMatch(requiredFields::contains);
+        assert optionalFields.stream()
+                             .noneMatch(requiredFields::contains);
+        this.optionalsWithoutDefault = geOptionalsWithoutDefault();
         this.parsers = new LinkedHashMap<>();
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet())
             parsers.put(entry.getKey(),
@@ -5490,6 +5493,17 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                  ).set(requireNonNull(key13),
                        requireNonNull(spec13)
                       );
+    }
+
+    List<String> getOptionalsWithoutDefault() {
+        return optionalsWithoutDefault;
+    }
+
+    private List<String> geOptionalsWithoutDefault() {
+        if (optionalFields.isEmpty() || metaData == null) return Collections.emptyList();
+        if (metaData.fieldsDefault() == null) return optionalFields;
+        return optionalFields.stream().filter(it -> !metaData.fieldsDefault().containsKey(it))
+                             .toList();
     }
 
     public MetaData getMetaData() {

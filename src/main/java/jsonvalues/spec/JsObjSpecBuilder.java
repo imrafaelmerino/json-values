@@ -11,7 +11,7 @@ import static jsonvalues.spec.AvroUtils.*;
 public final class JsObjSpecBuilder {
 
 
-    private String name;
+    private final String name;
     private String doc;
     private Map<String, String> fieldsDoc;
     private Map<String, MetaData.ORDERS> fieldsOrder;
@@ -87,10 +87,10 @@ public final class JsObjSpecBuilder {
     }
 
     public JsObjSpec spec(JsObjSpec spec) {
-        if(fieldsDefaults!=null)validateDefaults(spec, fieldsDefaults);
-        if(fieldsDoc!=null)validateDocs(spec, fieldsDoc);
-        if(fieldsOrder!=null)validateOrders(spec, fieldsOrder);
-        if(fieldsAliases!=null)validateAliases(spec, fieldsAliases);
+        if (fieldsDefaults != null) validateDefaults(spec, fieldsDefaults);
+        if (fieldsDoc != null) validateDocs(spec, fieldsDoc);
+        if (fieldsOrder != null) validateOrders(spec, fieldsOrder);
+        if (fieldsAliases != null) validateAliases(spec, fieldsAliases);
         var metadata = new MetaData(name, nameSpace, aliases, doc, fieldsDoc, fieldsOrder, fieldsAliases, fieldsDefaults);
         return new JsObjSpec(spec.bindings,
                              spec.nullable,
@@ -140,11 +140,24 @@ public final class JsObjSpecBuilder {
             var value = entry.getValue();
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("The key %s of the defaults map is not defined in the JsObjSpec with name %s".formatted(key, name));
-            List<SpecError> errors = bindings.get(key).test(value);
-            if (!errors.isEmpty())
-                throw new IllegalArgumentException("The default value `%s` doesn't conform the spec associated to the key %s of the JsObjSpec with name %s".formatted(value,
-                                                                                                                                                                      key,
-                                                                                                                                                                      name));
+            if (value.isNull()) throw new IllegalArgumentException("The default value can't be null");
+            JsSpec keySpec = bindings.get(key);
+            if (keySpec instanceof OneOf oneOf) {
+                var errors = oneOf.getSpecs().get(0).test(value);
+                if (!errors.isEmpty())
+                    throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key %s of the JsObjSpec with name %s".formatted(value,
+                                                                                                                                                                                key,
+                                                                                                                                                                                name));
+            } else if (keySpec instanceof OneOfObjSpec oneOf) {
+                var errors = oneOf.getSpecs().get(0).test(value);
+                if (!errors.isEmpty())
+                    throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key %s of the JsObjSpec with name %s".formatted(value,
+                                                                                                                                                                                key, name));
+            } else {
+                var errors = keySpec.test(value);
+                if (!errors.isEmpty())
+                    throw new IllegalArgumentException("The default value `%s` doesn't conform the spec associated to the key %s of the JsObjSpec with name %s".formatted(value, key, name));
+            }
         }
     }
 }
