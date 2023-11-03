@@ -43,6 +43,7 @@ public class TestAliasSpec {
         Assertions.assertTrue(spec.withAllOptKeys().lenient().test(JsObj.of("a3",JsInt.of(1))).isEmpty());
 
         JsObj x = JsObj.of("a1", JsInt.of(1));
-        Assertions.assertEquals(x,parser.parse(x.toString()));
+        Assertions.assertEquals(JsObj.of("a", JsInt.of(1)),
+                                parser.parse(x.toString()));
     }
 }

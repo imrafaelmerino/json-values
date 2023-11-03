@@ -5672,7 +5672,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                                                 parsers,
                                                 predicate,
                                                 nullable,
-                                                strict
+                                                strict,
+                                                metaData
                                                );
     }
 
@@ -5688,7 +5689,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                                 JsValue value
                                ) {
         return test(parentPath,
-                    this,
                     new ArrayList<>(),
                     value
                    );
@@ -5696,7 +5696,6 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
 
 
     private List<SpecError> test(JsPath parent,
-                                 JsObjSpec parentObjSpec,
                                  List<SpecError> errors,
                                  JsValue parentValue
                                 ) {
@@ -5716,25 +5715,13 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
             JsValue value = next.value();
             JsPath keyPath = JsPath.fromKey(key);
             JsPath currentPath = parent.append(keyPath);
-            JsSpec spec = parentObjSpec.bindings.get(key);
-            if (spec == null) {
-                if (metaData != null && metaData.getAliasField(key) != null) {
-                    spec = parentObjSpec.bindings.get(metaData.getAliasField(key));
-                }
-                if (spec == null && parentObjSpec.strict) {
+            JsSpec spec = getSpec(key);
 
-                    errors.add(SpecError.of(currentPath,
-                                            new JsError(value,
-                                                        SPEC_MISSING
-                                            )));
-                } else if (spec != null)
-                    errors.addAll(spec.test(currentPath,
-                                            value
-                                           ));
-
-            } else errors.addAll(spec.test(currentPath,
-                                           value
-                                          ));
+            if (spec != null) {
+                errors.addAll(spec.test(currentPath, value));
+            } else if (strict) {
+                errors.add(SpecError.of(currentPath, new JsError(value, SPEC_MISSING)));
+            }
 
         }
 
@@ -5759,10 +5746,20 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
         return errors;
     }
 
+    JsSpec getSpec(String key) {
+        JsSpec spec = bindings.get(key);
+        if (spec != null) return spec;
+        String aliasField = metaData != null ? metaData.getAliasField(key) : null;
+        if (aliasField != null) {
+            return bindings.get(aliasField);
+        }
+        return null;
+    }
+
     private boolean containAnAlias(JsObj json, String key, MetaData metaData) {
-        if(metaData==null) return false;
-        if(metaData.fieldsAliases () == null) return false;
-        if(!metaData.fieldsAliases().containsKey(key)) return false;
+        if (metaData == null) return false;
+        if (metaData.fieldsAliases() == null) return false;
+        if (!metaData.fieldsAliases().containsKey(key)) return false;
         return metaData.fieldsAliases()
                        .get(key)
                        .stream()

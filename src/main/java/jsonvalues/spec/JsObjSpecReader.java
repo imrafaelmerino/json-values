@@ -11,44 +11,69 @@ class JsObjSpecReader extends AbstractJsObjReader {
     private static final JsSpecParser defaultParser = valueParser::nullOrValue;
     protected final boolean strict;
     private final Map<String, JsSpecParser> parsers;
+    private final MetaData metadata;
 
     protected Predicate<JsObj> predicate;
 
     JsObjSpecReader(boolean strict,
                     Map<String, JsSpecParser> parsers,
-                    Predicate<JsObj> predicate
+                    Predicate<JsObj> predicate,
+                    MetaData metadata
                    ) {
         this.strict = strict;
         this.parsers = parsers;
         this.predicate = predicate;
+        this.metadata = metadata;
+    }
+
+    JsSpecParser getParser(final String key) {
+        var parser = parsers.get(key);
+        if (parser != null) return parser;
+        var aliasField = metadata != null ? metadata.getAliasField(key) : null;
+        if (aliasField != null) return parsers.get(aliasField);
+        return null;
     }
 
     @Override
     JsObj value(final JsReader reader) throws JsParserException {
         if (isEmptyObj(reader)) return EMPTY_OBJ;
-        String key = reader.readKey();
+        var key = reader.readKey();
+        var parser = parsers.get(key);
+        if (parser == null) {
+            var aliasField = metadata != null ? metadata.getAliasField(key) : null;
+            if (aliasField != null) {
+                parser = parsers.get(aliasField);
+                key = aliasField;
+            }
+        }
         throwErrorIfStrictAndKeyMissing(reader,
+                                        parser,
                                         key
                                        );
-        JsSpecParser parser = parsers.getOrDefault(key,
-                                                   defaultParser
-                                                  );
-        JsObj obj = EMPTY_OBJ.set(key,
-                                  parser
-                                          .parse(reader)
-                                 );
+        parser = parser != null ? parser : defaultParser;
+        var obj = EMPTY_OBJ.set(key,
+                                parser
+                                        .parse(reader)
+                               );
         byte nextToken;
         while ((nextToken = reader.readNextToken()) == ',') {
             reader.readNextToken();
             key = reader.readKey();
+            parser = parsers.get(key);
+            if (parser == null) {
+                var aliasField = metadata != null ? metadata.getAliasField(key) : null;
+                if (aliasField != null) {
+                    parser = parsers.get(aliasField);
+                    key = aliasField;
+                }
+            }
             throwErrorIfStrictAndKeyMissing(reader,
+                                            parser,
                                             key
                                            );
-            JsSpecParser keyparser = parsers.getOrDefault(key,
-                                                          defaultParser
-                                                         );
+            parser = parser != null ? parser : defaultParser;
             obj = obj.set(key,
-                          keyparser.parse(reader)
+                          parser.parse(reader)
                          );
 
         }
@@ -66,9 +91,10 @@ class JsObjSpecReader extends AbstractJsObjReader {
     }
 
     private void throwErrorIfStrictAndKeyMissing(final JsReader reader,
+                                                 final JsSpecParser keyParser,
                                                  final String key
                                                 ) {
-        if (strict && !parsers.containsKey(key)) {
+        if (strict && keyParser == null) {
             throw JsParserException.reasonAt(ParserErrors.SPEC_NOT_FOUND.apply(key),
                                              reader.getPositionInStream()
                                             );

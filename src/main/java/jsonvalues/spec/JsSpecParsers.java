@@ -74,6 +74,7 @@ final class JsSpecParsers {
                                   Map<String, JsSpecParser> parsers,
                                   Predicate<JsObj> predicate,
                                   boolean strict,
+                                  MetaData metaData,
                                   boolean nullable,
                                   int min,
                                   int max
@@ -81,12 +82,14 @@ final class JsSpecParsers {
         JsObjSpecReader f = required.isEmpty() ?
                 new JsObjSpecReader(strict,
                                     parsers,
-                                    predicate
+                                    predicate,
+                                    metaData
                 ) :
                 new JsObjSpecWithRequiredKeysReader(required,
                                                     parsers,
                                                     strict,
-                                                    predicate
+                                                    predicate,
+                                                    metaData
                 );
         JsArrayOfObjSpecReader parser = new JsArrayOfObjSpecReader(f);
         return nullable ?
@@ -184,7 +187,8 @@ final class JsSpecParsers {
                            Map<String, JsSpecParser> keyDeserializers,
                            Predicate<JsObj> predicate,
                            boolean nullable,
-                           boolean strict
+                           boolean strict,
+                           MetaData metaData
                           ) {
         return reader ->
         {
@@ -192,7 +196,8 @@ final class JsSpecParsers {
                 JsObjSpecReader parser =
                         new JsObjSpecReader(strict,
                                             keyDeserializers,
-                                            predicate
+                                            predicate,
+                                            metaData
                         );
                 return nullable ?
                         parser.nullOrValue(reader) :
@@ -202,7 +207,8 @@ final class JsSpecParsers {
                     new JsObjSpecWithRequiredKeysReader(required,
                                                         keyDeserializers,
                                                         strict,
-                                                        predicate
+                                                        predicate,
+                                                        metaData
                     );
             return nullable ?
                     parser.nullOrValue(reader) :

@@ -49,6 +49,7 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
                                                        spec.parsers,
                                                        spec.predicate,
                                                        spec.strict,
+                                                       spec.metaData,
                                                        nullable,
                                                        min,
                                                        max
