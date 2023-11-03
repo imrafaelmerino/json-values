@@ -91,6 +91,8 @@ public class AvroRecordFromJsValue {
             GenericRecordBuilder builder = new GenericRecordBuilder(recordSchema);
             try {
                 for (var field : recordSchema.getFields()) {
+                    //iterar otra vez con los aliases, puede que exista en un alias,
+                    //en ese caso leer el valor pero asociado al field
                     JsValue value = obj.get(field.name());
                     if (value.isNothing()) {
                         if (!field.hasDefaultValue())

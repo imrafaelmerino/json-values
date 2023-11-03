@@ -2,8 +2,7 @@ package jsonvalues.spec;
 
 import jsonvalues.JsValue;
 
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
@@ -103,12 +102,31 @@ public final class JsObjSpecBuilder {
 
     private void validateAliases(JsObjSpec spec, Map<String, List<String>> fieldsAlias) {
         Map<String, JsSpec> bindings = spec.getBindings();
-
+        List<String> allAliases = new ArrayList<>();
         for (Map.Entry<String, List<String>> entry : fieldsAlias.entrySet()) {
             var key = entry.getKey();
+            if(entry.getValue().contains(key))
+                throw new IllegalArgumentException("The field `%s` can to be contained in the aliases".formatted(key));
             if (!bindings.containsKey(key))
-                throw new IllegalArgumentException("The key %s of the aliases map is not defined in the JsObjSpec with name %s".formatted(key, name));
+                throw new IllegalArgumentException("The field `%s` of the aliases map is not defined in the JsObjSpec with name %s".formatted(key, name));
+            if(containsDuplicates(entry.getValue()))
+                throw new IllegalArgumentException("The field `%s` has duplicated aliases".formatted(key));
+            allAliases.addAll(entry.getValue());
         }
+        if(containsDuplicates(allAliases))
+            throw new IllegalArgumentException("Found duplicate in aliases for spec `%s`.".formatted(name));
+
+    }
+
+    private static boolean containsDuplicates(List<String> list) {
+        Set<String> uniqueSet = new HashSet<>();
+
+        for (String element : list) {
+            if (!uniqueSet.add(element)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void validateOrders(JsObjSpec spec, Map<String, MetaData.ORDERS> fieldsOrder) {
