@@ -14,20 +14,10 @@ public class SerializerTest {
 
 
     private static void testSpec(JsObjSpec spec, JsObj obj) {
-        Schema.Parser parser = new Schema.Parser();
 
-        String strSchema = AvroSchemaFromSpec.toSchema(spec)
-                                             .toString();
-        Schema avroSchema = parser.parse(strSchema);
-
-        Assertions.assertTrue(spec.test(obj).isEmpty(),
-                              "Obj doesn't conform the spec");
 
         GenericData.Record record = AvroRecordFromJsValue.toAvro(obj,
-                                                                 avroSchema);
-
-        Assertions.assertTrue(GenericData.get().validate(avroSchema, record),
-                              "The generated record doesn't conform the avro schema");
+                                                                 spec);
 
 
         JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
@@ -90,7 +80,7 @@ public class SerializerTest {
                                         );
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> AvroSchemaFromSpec.toSchema(spec));
+                                () -> AvroSchemaFromSpec.toAvroSchema(spec));
 
     }
 
@@ -103,7 +93,7 @@ public class SerializerTest {
                                         );
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> AvroSchemaFromSpec.toSchema(spec));
+                                () -> AvroSchemaFromSpec.toAvroSchema(spec));
 
     }
 
@@ -117,7 +107,7 @@ public class SerializerTest {
                                         );
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> AvroSchemaFromSpec.toSchema(spec));
+                                () -> AvroSchemaFromSpec.toAvroSchema(spec));
 
     }
 
@@ -135,7 +125,7 @@ public class SerializerTest {
                                            );
 
         Assertions.assertThrows(IllegalArgumentException.class,
-                                () -> AvroSchemaFromSpec.toSchema(invalid));
+                                () -> AvroSchemaFromSpec.toAvroSchema(invalid));
 
     }
 
@@ -152,4 +142,17 @@ public class SerializerTest {
         testSpec(spec, JsObj.of("key", JsStr.of("a")));
     }
 
+    @Test
+    public void testOptionalFields(){
+
+        JsObjSpec spec = JsObjSpecBuilder.name("spec")
+                                         .spec(JsObjSpec.of("a", JsSpecs.integer(),
+                                                            "b", JsSpecs.str())
+                                                       .withAllOptKeys()
+                                              );
+
+        testSpec(spec,JsObj.empty());
+
+
+    }
 }

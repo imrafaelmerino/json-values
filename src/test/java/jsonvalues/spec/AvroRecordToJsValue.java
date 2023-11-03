@@ -13,14 +13,36 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 public final class AvroRecordToJsValue {
 
     private AvroRecordToJsValue() {
     }
 
-    public static JsArray toJsArray(GenericArray<?> genericArray) {
+    //toJsBinary from fixed
+    //toString from enum
+
+    public static JsObj toJsObj(final GenericRecord record) {
+        Schema schema = requireNonNull(record).getSchema();
+        JsObj result = JsObj.empty();
+        assert schema.getType() == Schema.Type.RECORD;
+        for (Schema.Field field : schema.getFields()) {
+            // si no existe en record el fields, puede que este un alias y hay que leerlo
+            // pero setearlo en jsobj con el nombre del schema (no el alias)
+            result = result.set(field.name(), toJsValue(record.get(field.name()),
+                                                        field.schema()));
+        }
+
+        return result;
+
+    }
+
+    public static JsArray toJsArray(final GenericArray<?> genericArray) {
         JsArray jsArray = JsArray.empty();
-        Schema elementType = genericArray.getSchema().getElementType();
+        Schema elementType = requireNonNull(genericArray)
+                .getSchema()
+                .getElementType();
         for (Object item : genericArray) {
             jsArray = jsArray.append(toJsValue(item, elementType));
         }
@@ -174,22 +196,6 @@ public final class AvroRecordToJsValue {
         }
 
         throw new IllegalArgumentException("Type %s not supported".formatted(type.getName()));
-    }
-
-
-    public static JsObj toJsObj(GenericRecord record) {
-        Schema schema = record.getSchema();
-        JsObj result = JsObj.empty();
-        assert schema.getType() == Schema.Type.RECORD;
-        for (Schema.Field field : schema.getFields()) {
-            // si no existe en record el fields, puede que este un alias y hay que leerlo
-            // pero setearlo en jsobj con el nombre del schema (no el alias)
-            result = result.set(field.name(), toJsValue(record.get(field.name()),
-                                                        field.schema()));
-        }
-
-        return result;
-
     }
 
 

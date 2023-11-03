@@ -1,21 +1,36 @@
 package jsonvalues.spec;
 
 import jsonvalues.*;
+import org.apache.avro.Schema;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public final class AvroSchemaFromSpec {
+
+    static Schema.Parser parser = new Schema.Parser();
+    static ConcurrentHashMap<JsSpec, Schema> cache = new ConcurrentHashMap<>();
 
     private AvroSchemaFromSpec() {
     }
 
-    //ver si se puede hacer tambien al objeto Schema directamente
 
-    public static JsValue toSchema(final AvroSpec spec) {
+    public static Schema toAvroSchema(final JsSpec spec) throws SpecNotSupportedInAvro{
+        if (cache.containsKey(spec)) return cache.get(spec);
 
+        var jsSchema = toJsSchema(spec);
+
+        var schema = parser.parse(jsSchema.toString());
+
+        cache.put(spec, schema);
+
+        return schema;
+    }
+
+    public static JsValue toJsSchema(final JsSpec spec) throws SpecNotSupportedInAvro{
         if (spec instanceof JsStrSpec js) return strSchema(js);
         if (spec instanceof JsStrSuchThat js) return strSchema(js);
 
@@ -106,7 +121,7 @@ public final class AvroSchemaFromSpec {
 
     private static JsArray oneOfObjSpecSchema(OneOfObjSpec js) {
         var specs = js.getSpecs();
-        JsArray schema = JsArray.ofIterable(specs.stream().map(AvroSchemaFromSpec::toSchema).toList());
+        JsArray schema = JsArray.ofIterable(specs.stream().map(AvroSchemaFromSpec::toJsSchema).toList());
         return js.isNullable() ? schema.prepend(JsStr.of("null")) : schema;
     }
 
@@ -116,11 +131,8 @@ public final class AvroSchemaFromSpec {
 
         for (int i = 0; i < specs.size(); i++) {
             JsSpec spec = specs.get(i);
-            if (spec instanceof AvroSpec avroSpec) {
-                avroSchemas.add(toSchema(avroSpec));
-            } else {
-                throw SpecNotSupportedInAvro.errorConvertingOneOfIntoSchema(spec, i);
-            }
+            if (spec instanceof AvroSpec) avroSchemas.add(toJsSchema(spec));
+            else throw SpecNotSupportedInAvro.errorConvertingOneOfIntoSchema(spec, i);
         }
         JsArray schema = JsArray.ofIterable(avroSchemas);
         validateNotDuplicatedTypes(schema);
@@ -182,9 +194,9 @@ public final class AvroSchemaFromSpec {
 
     private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js) {
         var valueSpec = js.getSpec();
-        if (valueSpec instanceof AvroSpec avroSpec) {
+        if (valueSpec instanceof AvroSpec) {
             JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                    "vales", toSchema(avroSpec));
+                                    "vales", toJsSchema(valueSpec));
             return js.isNullable() ?
                     JsArray.of(JsStr.of("null"), schema) :
                     schema;
@@ -194,7 +206,7 @@ public final class AvroSchemaFromSpec {
 
     private static JsValue mapOfObjSpecSchema(JsMapOfObjSpec js) {
         JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                "vales", toSchema(js.getSpec()));
+                                "vales", toJsSchema(js.getSpec()));
         return js.isNullable() ? JsArray.of(JsStr.of("null"), schema) : schema;
     }
 
@@ -225,11 +237,11 @@ public final class AvroSchemaFromSpec {
         for (Map.Entry<String, JsSpec> entry : bindings.entrySet()) {
             var spec = entry.getValue();
             var key = entry.getKey();
-            if (spec instanceof AvroSpec avroSpec) {
+            if (spec instanceof AvroSpec) {
                 var fieldSchema = JsObj.of("name", JsStr.of(key),
                                            "type", toAvro(key,
                                                           objSpec.getRequiredFields(),
-                                                          avroSpec,
+                                                          spec,
                                                           spec.isNullable())
                                           );
                 if (fieldsDoc != null && fieldsDoc.containsKey(key)) fieldSchema.set("doc", fieldsDoc.get(key));
@@ -251,10 +263,10 @@ public final class AvroSchemaFromSpec {
 
     private static JsValue toAvro(String key,
                                   List<String> requiredFields,
-                                  AvroSpec spec,
+                                  JsSpec spec,
                                   boolean isNullable
                                  ) {
-        JsValue schema = toSchema(spec);
+        JsValue schema = toJsSchema(spec);
         if (isNullable || !requiredFields.contains(key)) {
             if (schema instanceof JsArray arrSchema) return arrSchema.prepend(JsStr.of("null"));
             else return JsArray.of(JsStr.of("null"), schema);
@@ -264,7 +276,7 @@ public final class AvroSchemaFromSpec {
     }
 
     private static JsValue arrayOfObjSpecSchema(JsArrayOfObjSpec spec) {
-        JsValue items = toSchema(spec);
+        JsValue items = toJsSchema(spec);
 
         JsObj schema = JsObj.of("type", JsStr.of("array"),
                                 "items", items);

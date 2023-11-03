@@ -1,7 +1,7 @@
 package jsonvalues.spec;
 
 @SuppressWarnings("serial")
-class SpecNotSupportedInAvro extends RuntimeException {
+public  final class SpecNotSupportedInAvro extends RuntimeException {
 
     private static final String MESSAGE_1 = """
             Converting the JsObjSpec with name %s into an Avro Schema is not posible
