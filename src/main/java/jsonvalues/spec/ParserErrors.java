@@ -30,7 +30,7 @@ class ParserErrors {
 
     static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "BigInteger with fractional part";
 
-    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key '" + key + "' has no spec associated to it. Strict specs don't allow this" +
+    static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key '" + key + "' has no spec associated to it. Strict specs don't allow this." +
             "Either declare de spec lenient or add a new spec for the missing key";
 
     static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The JSON doesn't conform the spec because the required key '" + key + "' doesn't exist";

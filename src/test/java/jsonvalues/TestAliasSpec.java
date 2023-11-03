@@ -3,6 +3,7 @@ package jsonvalues;
 import fun.gen.StrGen;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsObjSpecBuilder;
+import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -13,12 +14,14 @@ import java.util.function.Supplier;
 
 public class TestAliasSpec {
 
-    Supplier<String> nameGen = StrGen.alphabetic(10, 10).sample();
+   static Supplier<String> nameGen = StrGen.alphabetic(10, 10).sample();
 
-    JsObjSpec spec =
+    static JsObjSpec spec =
             JsObjSpecBuilder.name(nameGen.get())
                             .fieldsAliases(Map.of("a", List.of("a1", "a2")))
                             .spec(JsObjSpec.of("a", JsSpecs.integer().nullable()));
+
+    static JsObjSpecParser parser = new JsObjSpecParser(spec);
 
     @Test
     public void testNotErrorBecauseAliasIsFound() {
@@ -28,12 +31,18 @@ public class TestAliasSpec {
 
         Assertions.assertTrue(spec.test(JsObj.of("a1",JsInt.of(1))).isEmpty());
         Assertions.assertTrue(spec.test(JsObj.of("a1",JsNull.NULL)).isEmpty());
-        Assertions.assertFalse(spec.test(JsObj.of("1",JsBool.FALSE)).isEmpty());
+        Assertions.assertFalse(spec.test(JsObj.of("a1",JsBool.FALSE)).isEmpty());
+        Assertions.assertFalse(spec.lenient().test(JsObj.of("a1",JsBool.FALSE)).isEmpty());
 
         Assertions.assertTrue(spec.test(JsObj.of("a2",JsInt.of(1))).isEmpty());
         Assertions.assertTrue(spec.test(JsObj.of("a2",JsNull.NULL)).isEmpty());
         Assertions.assertFalse(spec.test(JsObj.of("a2",JsBool.FALSE)).isEmpty());
+        Assertions.assertFalse(spec.lenient().test(JsObj.of("a2",JsBool.FALSE)).isEmpty());
 
         Assertions.assertFalse(spec.test(JsObj.of("a3",JsInt.of(1))).isEmpty());
+        Assertions.assertTrue(spec.withAllOptKeys().lenient().test(JsObj.of("a3",JsInt.of(1))).isEmpty());
+
+        JsObj x = JsObj.of("a1", JsInt.of(1));
+        Assertions.assertEquals(x,parser.parse(x.toString()));
     }
 }
