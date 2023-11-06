@@ -9,8 +9,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-public final class AvroSchemaFromSpec {
+import static jsonvalues.spec.Constants.*;
 
+public final class AvroSchemaFromSpec {
 
     static Schema.Parser parser = new Schema.Parser();
     static ConcurrentHashMap<String, Schema> cache = new ConcurrentHashMap<>();
@@ -33,134 +34,143 @@ public final class AvroSchemaFromSpec {
 
         if (cache.containsKey(fullName)) return cache.get(fullName);
 
-        var jsSchema = toJsSchema(spec);
+        var jsSchema = objSpecSchema(spec, JsNothing.NOTHING);
 
         var schema = parser.parse(jsSchema.toString());
 
-        cache.put(fullName, schema);
+        cache.put(fullName,
+                  schema
+                 );
 
         return schema;
     }
 
     public static Schema toAvroSchema(final JsArraySpec spec) throws SpecNotSupportedInAvro {
 
-        var jsSchema = toJsSchema(spec);
+        var jsSchema = toJsSchema(spec, JsNothing.NOTHING);
 
         return parser.parse(jsSchema.toString());
 
 
     }
 
-    public static JsValue toJsSchema(final JsSpec spec) throws SpecNotSupportedInAvro {
-        if (spec instanceof JsStrSpec js) return strSchema(js);
-        if (spec instanceof JsStrSuchThat js) return strSchema(js);
+    public static JsValue toJsSchema(final JsSpec spec, JsValue defaultValue) throws SpecNotSupportedInAvro {
+        if (spec instanceof JsStrSpec) return strSchema(spec, defaultValue);
+        if (spec instanceof JsStrSuchThat) return strSchema(spec, defaultValue);
 
-        if (spec instanceof JsIntSpec js) return intSchema(js);
-        if (spec instanceof JsIntSuchThat js) return intSchema(js);
+        if (spec instanceof JsIntSpec) return intSchema(spec, defaultValue);
+        if (spec instanceof JsIntSuchThat) return intSchema(spec, defaultValue);
 
-        if (spec instanceof JsLongSpec js) return longSchema(js);
-        if (spec instanceof JsLongSuchThat js) return longSchema(js);
+        if (spec instanceof JsLongSpec) return longSchema(spec, defaultValue);
+        if (spec instanceof JsLongSuchThat) return longSchema(spec, defaultValue);
 
-        if (spec instanceof JsNumberSpec js) return numberSchema(js);
-        if (spec instanceof JsNumberSuchThat js) return numberSchema(js);
+        if (spec instanceof JsNumberSpec) return numberSchema(spec, defaultValue);
+        if (spec instanceof JsNumberSuchThat) return numberSchema(spec, defaultValue);
 
-        if (spec instanceof JsDoubleSpec js) return doubleSchema(js);
-        if (spec instanceof JsDoubleSuchThat js) return doubleSchema(js);
+        if (spec instanceof JsDoubleSpec) return doubleSchema(spec, defaultValue);
+        if (spec instanceof JsDoubleSuchThat) return doubleSchema(spec, defaultValue);
 
-        if (spec instanceof JsDecimalSpec js) return stringSchema("bigdecimal",
-                                                                  js.isNullable());
-        if (spec instanceof JsDecimalSuchThat js) return stringSchema("bigdecimal",
-                                                                      js.isNullable());
+        if (spec instanceof JsDecimalSpec) return stringSchema(BIG_DECIMAL_TYPE,
+                                                               spec.isNullable(),
+                                                               defaultValue);
+        if (spec instanceof JsDecimalSuchThat) return stringSchema(BIG_DECIMAL_TYPE,
+                                                                   spec.isNullable(),
+                                                                   defaultValue);
 
-        if (spec instanceof JsBigIntSpec js) return stringSchema("biginteger",
-                                                                 js.isNullable());
-        if (spec instanceof JsBigIntSuchThat js) return stringSchema("biginteger",
-                                                                     js.isNullable());
+        if (spec instanceof JsBigIntSpec) return stringSchema(BIG_INTEGER_TYPE,
+                                                              spec.isNullable(),
+                                                              defaultValue
+                                                             );
+        if (spec instanceof JsBigIntSuchThat) return stringSchema(BIG_INTEGER_TYPE,
+                                                                  spec.isNullable(),
+                                                                  defaultValue);
 
-        if (spec instanceof JsBooleanSpec js) return boolSchema(js);
-        if (spec instanceof JsBinarySpec js) return binarySchema(js);
-        if (spec instanceof JsBinarySuchThat js) return binarySchema(js);
+        if (spec instanceof JsBooleanSpec) return boolSchema(spec, defaultValue);
+        if (spec instanceof JsBinarySpec) return binarySchema(spec, defaultValue);
+        if (spec instanceof JsBinarySuchThat) return binarySchema(spec, defaultValue);
 
-        if (spec instanceof JsFixedBinary js) return fixedSchema(js);
+        if (spec instanceof JsFixedBinary fixedBinary) return fixedSchema(fixedBinary, defaultValue);
 
-        if (spec instanceof JsArrayOfStrSuchThat js) return arrayOfStringSchema(js);
-        if (spec instanceof JsArrayOfStr js) return arrayOfStringSchema(js);
-        if (spec instanceof JsArrayOfTestedStr js) return arrayOfStringSchema(js);
+        if (spec instanceof JsArrayOfStrSuchThat)
+            return arrayOfStringSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfStr)
+            return arrayOfStringSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedStr)
+            return arrayOfStringSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfBigIntSuchThat js) return arrayOfBigIntSchema(js);
-        if (spec instanceof JsArrayOfBigInt js) return arrayOfBigIntSchema(js);
-        if (spec instanceof JsArrayOfTestedBigInt js) return arrayOfBigIntSchema(js);
+        if (spec instanceof JsArrayOfBigIntSuchThat) return arrayOfBigIntSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfBigInt) return arrayOfBigIntSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedBigInt) return arrayOfBigIntSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfIntSuchThat js) return arrayOfIntSchema(js);
-        if (spec instanceof JsArrayOfInt js) return arrayOfIntSchema(js);
-        if (spec instanceof JsArrayOfTestedInt js) return arrayOfIntSchema(js);
+        if (spec instanceof JsArrayOfIntSuchThat) return arrayOfIntSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfInt) return arrayOfIntSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedInt) return arrayOfIntSchema(spec, defaultValue);
 
 
-        if (spec instanceof JsArrayOfDoubleSuchThat js) return arrayOfDoubleSchema(js);
-        if (spec instanceof JsArrayOfDouble js) return arrayOfDoubleSchema(js);
-        if (spec instanceof JsArrayOfTestedDouble js) return arrayOfDoubleSchema(js);
+        if (spec instanceof JsArrayOfDoubleSuchThat) return arrayOfDoubleSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfDouble) return arrayOfDoubleSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedDouble) return arrayOfDoubleSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfLongSuchThat js) return arrayOfLongSchema(js);
-        if (spec instanceof JsArrayOfLong js) return arrayOfLongSchema(js);
-        if (spec instanceof JsArrayOfTestedLong js) return arrayOfLongSchema(js);
+        if (spec instanceof JsArrayOfLongSuchThat) return arrayOfLongSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfLong) return arrayOfLongSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedLong) return arrayOfLongSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfNumberSuchThat js) return arrayOfNumberSchema(js);
-        if (spec instanceof JsArrayOfNumber js) return arrayOfNumberSchema(js);
-        if (spec instanceof JsArrayOfTestedNumber js) return arrayOfNumberSchema(js);
+        if (spec instanceof JsArrayOfDecimal) return arrayOfDecimalSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfTestedDecimal) return arrayOfDecimalSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfDecimalSuchThat) return arrayOfDecimalSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfDecimal js) return arrayOfDecimalSchema(js);
-        if (spec instanceof JsArrayOfTestedDecimal js) return arrayOfDecimalSchema(js);
-        if (spec instanceof JsArrayOfDecimalSuchThat js) return arrayOfDecimalSchema(js);
+        if (spec instanceof JsArrayOfBool) return arrayOfBooleanSchema(spec, defaultValue);
+        if (spec instanceof JsArrayOfBoolSuchThat) return arrayOfBooleanSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfBool js) return arrayOfBooleanSchema(js);
-        if (spec instanceof JsArrayOfBoolSuchThat js) return arrayOfBooleanSchema(js);
+        if (spec instanceof JsInstantSpec) return instantSchema(spec, defaultValue);
+        if (spec instanceof JsInstantSuchThat) return instantSchema(spec, defaultValue);
 
-        if (spec instanceof JsInstantSpec js) return instantSchema(js);
-        if (spec instanceof JsInstantSuchThat js) return instantSchema(js);
+        if (spec instanceof JsArrayOfObjSpec arrayOfObjSpec) return arrayOfObjSpecSchema(arrayOfObjSpec, defaultValue);
+        if (spec instanceof JsObjSpec objSpec) return objSpecSchema(objSpec, defaultValue);
 
-        if (spec instanceof JsArrayOfObjSpec js) return arrayOfObjSpecSchema(js);
-        if (spec instanceof JsObjSpec js) return objSpecSchema(js);
+        if (spec instanceof JsMapOfInt) return mapOfIntSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfDouble) return mapOfDoubleSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfLong) return mapOfLongSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfBool) return mapOfBoolSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfBigInt) return mapOfBigIntegerSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfObjSpec mapOfObjSpec) return mapOfObjSpecSchema(mapOfObjSpec, defaultValue);
+        if (spec instanceof JsMapOfStr) return mapOfStrSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfDec) return mapOfDecSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfInstant) return mapOfInstantSchema(spec, defaultValue);
+        if (spec instanceof JsMapOfArraySpec mapOfArraySpec) return mapOfArraySpecSchema(mapOfArraySpec, defaultValue);
 
-        if (spec instanceof JsMapOfInt js) return mapOfIntSchema(js);
-        if (spec instanceof JsMapOfDouble js) return mapOfDoubleSchema(js);
-        if (spec instanceof JsMapOfLong js) return mapOfLongSchema(js);
-        if (spec instanceof JsMapOfBool js) return mapOfBoolSchema(js);
-        if (spec instanceof JsMapOfBigInt js) return mapOfBigIntegerSchema(js);
-        if (spec instanceof JsMapOfObjSpec js) return mapOfObjSpecSchema(js);
-        if (spec instanceof JsMapOfStr js) return mapOfStrSchema(js);
-        if (spec instanceof JsMapOfDec js) return mapOfDecSchema(js);
-        if (spec instanceof JsMapOfInstant js) return mapOfInstantSchema(js);
-        if (spec instanceof JsMapOfArraySpec js) return mapOfArraySpecSchema(js);
-
-        if (spec instanceof JsEnum js) return enumSchema(js);
-        if (spec instanceof OneOf js) return oneOfSchema(js);
-        if (spec instanceof OneOfObjSpec js) return oneOfObjSpecSchema(js);
+        if (spec instanceof JsEnum jsEnum) return enumSchema(jsEnum, defaultValue);
+        if (spec instanceof OneOf oneOf) return oneOfSchema(oneOf, defaultValue);
+        if (spec instanceof OneOfObjSpec oneOfObjSpec) return oneOfObjSpecSchema(oneOfObjSpec, defaultValue);
 
         throw new IllegalArgumentException("Spec " + spec.getClass().getName() + " not supported yet!");
 
     }
 
-    private static JsArray oneOfObjSpecSchema(OneOfObjSpec js) {
+    private static JsArray oneOfObjSpecSchema(OneOfObjSpec js, JsValue defaultValue) {
         var specs = js.getSpecs();
-        JsArray schema = JsArray.ofIterable(specs.stream().map(AvroSchemaFromSpec::toJsSchema).toList());
-        return js.isNullable() ? schema.append(JsStr.of("null")) : schema;
+        JsArray schema = JsArray.ofIterable(specs.stream()
+                                                 .map(it -> toJsSchema(it, JsNothing.NOTHING))
+                                                 .toList());
+        return getTypeSorted(js.isNullable(), defaultValue, schema);
+
     }
 
-    private static JsArray oneOfSchema(OneOf js) {
+    private static JsArray oneOfSchema(OneOf js, JsValue keyDefault) {
         var specs = js.getSpecs();
         List<JsValue> avroSchemas = new ArrayList<>();
 
         for (int i = 0; i < specs.size(); i++) {
             JsSpec spec = specs.get(i);
-            if (spec instanceof AvroSpec) avroSchemas.add(toJsSchema(spec));
+            if (spec instanceof AvroSpec) avroSchemas.add(toJsSchema(spec,JsNothing.NOTHING));
             else throw SpecNotSupportedInAvro.errorConvertingOneOfIntoSchema(spec, i);
         }
         JsArray schema = JsArray.ofIterable(avroSchemas);
         validateNotDuplicatedTypes(schema);
 
         if (js.isNullable())
-            if (schema.containsValue(JsStr.of("null"))) return schema;
-            else return schema.append(JsStr.of("null"));
+            if (schema.containsValue(NULL_TYPE)) return schema;
+            else return keyDefault.isNull()? schema.prepend(NULL_TYPE) : schema.append(NULL_TYPE);
         else return schema;
     }
 
@@ -172,26 +182,26 @@ public final class AvroSchemaFromSpec {
                 typeCounter.compute(name.value,
                                     (n, i) -> i == null ? 1 : i + 1);
             } else if (type instanceof JsObj objType) {
-                if (objType.getStr("name") != null) {
-                    var nameSpace = objType.getStr("namespace");
+                if (objType.getStr(NAME_FIELD) != null) {
+                    var nameSpace = objType.getStr(Constants.NAMESPACE_FIELD);
                     if (nameSpace != null) {
                         String fullName = "%s.%s (%s)".formatted(nameSpace,
-                                                                 objType.getStr("name"),
-                                                                 objType.getStr("type")
+                                                                 objType.getStr(NAME_FIELD),
+                                                                 objType.getStr(TYPE_FIELD)
                                                                 );
                         typeCounter.compute(fullName,
                                             (n, i) -> i == null ? 1 : i + 1);
                     } else {
                         String fullName = "%s (%s)".formatted(
-                                objType.getStr("name"),
-                                objType.getStr("type")
+                                objType.getStr(NAME_FIELD),
+                                objType.getStr(TYPE_FIELD)
                                                              );
                         typeCounter.compute(fullName,
                                             (n, i) -> i == null ? 1 : i + 1);
                     }
 
                 } else {
-                    var name = objType.getStr("type");
+                    var name = objType.getStr(TYPE_FIELD);
                     typeCounter.compute(name,
                                         (n, i) -> i == null ? 1 : i + 1);
                 }
@@ -212,41 +222,42 @@ public final class AvroSchemaFromSpec {
 
     }
 
-
-    private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js) {
+    private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js, JsValue keyDefault) {
         var valueSpec = js.getSpec();
         if (valueSpec instanceof AvroSpec) {
-            JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                    "vales", toJsSchema(valueSpec));
-            return js.isNullable() ?
-                    JsArray.of(schema, JsStr.of("null")) :
-                    schema;
+            JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                                    VALUES_FIELD, toJsSchema(valueSpec,
+                                                             JsNothing.NOTHING));
+            return getTypeSorted(js.isNullable(), keyDefault, schema);
+
         }
         throw SpecNotSupportedInAvro.errorConvertingMapOfArraySpecIntoSchema(valueSpec);
     }
 
-    private static JsValue mapOfObjSpecSchema(JsMapOfObjSpec js) {
-        JsObj schema = JsObj.of("type", JsStr.of("map"),
-                                "vales", toJsSchema(js.getSpec()));
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+    private static JsValue mapOfObjSpecSchema(JsMapOfObjSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                                VALUES_FIELD, objSpecSchema(js.getSpec(),
+                                                            JsNothing.NOTHING));
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
     }
 
-    private static JsValue objSpecSchema(JsObjSpec objSpec) {
+    private static JsValue objSpecSchema(JsObjSpec objSpec, JsValue defaultValue) {
         var metadata = objSpec.getMetaData();
 
         if (metadata == null) throw MetadataNotFound.errorParsingJsObSpecToSchema();
         var bindings = objSpec.getBindings();
-        var schema = JsObj.of("name",
+        var schema = JsObj.of(NAME_FIELD,
                               JsStr.of(metadata.name()),
-                              "type", JsStr.of("record"));
+                              TYPE_FIELD, Constants.RECORD_TYPE);
         if (metadata.namespace() != null)
-            schema = schema.set("namespace",
+            schema = schema.set(Constants.NAMESPACE_FIELD,
                                 JsStr.of(metadata.namespace()));
         if (metadata.doc() != null)
-            schema = schema.set("doc",
+            schema = schema.set(DOC_FIELD,
                                 JsStr.of(metadata.doc()));
         if (metadata.aliases() != null)
-            schema = schema.set("aliases",
+            schema = schema.set(ALIASES_FIELD,
                                 JsArray.ofStrs(metadata.aliases()));
         var fields = JsArray.empty();
 
@@ -259,263 +270,327 @@ public final class AvroSchemaFromSpec {
             var spec = entry.getValue();
             var key = entry.getKey();
             if (spec instanceof AvroSpec) {
-                var fieldSchema = JsObj.of("name", JsStr.of(key),
-                                           "type", toAvro(key,
-                                                          objSpec.getRequiredFields(),
-                                                          spec)
+                var keyDefault = fieldsDefault != null && fieldsDefault.get(key)!=null ?
+                        fieldsDefault.get(key) :
+                        JsNothing.NOTHING;
+
+                var fieldSchema = JsObj.of(NAME_FIELD, JsStr.of(key),
+                                           TYPE_FIELD, toAvro(key,
+                                                              keyDefault,
+                                                              objSpec.getRequiredFields(),
+                                                              spec)
                                           );
-                if (fieldsDoc != null && fieldsDoc.containsKey(key))
-                    fieldSchema = fieldSchema.set("doc", fieldsDoc.get(key));
-                if (fieldsOrder != null && fieldsOrder.containsKey(key))
-                    fieldSchema = fieldSchema.set("order", fieldsOrder.get(key).name());
-                if (fieldsDefault != null && fieldsDefault.containsKey(key))
-                    fieldSchema = fieldSchema.set("default", fieldsDefault.get(key));
-                if (fieldsAliases != null && fieldsAliases.containsKey(key))
-                    fieldSchema = fieldSchema.set("aliases", JsArray.ofStrs(fieldsAliases.get(key)));
+                var doc = fieldsDoc != null ? fieldsDoc.get(key) : null;
+                var order = fieldsOrder != null ? fieldsOrder.get(key) : null;
+                var aliases = fieldsAliases != null ? fieldsAliases.get(key) : null;
+
+                if (doc != null)
+                    fieldSchema = fieldSchema.set(DOC_FIELD,
+                                                  doc);
+                if (order != null)
+                    fieldSchema = fieldSchema.set(ORDER_FIELD,
+                                                  order.name());
+                if (keyDefault.isNotNothing())
+                    fieldSchema = fieldSchema.set(DEFAULT_FIELD,
+                                                  keyDefault);
+                if (aliases != null)
+                    fieldSchema = fieldSchema.set(ALIASES_FIELD,
+                                                  JsArray.ofStrs(aliases));
 
                 fields = fields.append(fieldSchema);
             } else throw SpecNotSupportedInAvro.errorConvertingObjSpecIntoSchema(key, spec, metadata);
         }
 
-        schema = schema.set("fields", fields);
+        schema = schema.set(FIELDS_FIELD, fields);
 
-        return objSpec.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+        return getTypeSorted(objSpec.isNullable(), defaultValue, schema);
     }
 
     private static JsValue toAvro(String key,
+                                  JsValue keyDefault,
                                   List<String> requiredFields,
                                   JsSpec spec
                                  ) {
-        JsValue schema = toJsSchema(spec);
+        assert keyDefault != null;
+        JsValue schema = toJsSchema(spec, keyDefault);
         //if it were nullable, the above method toJsSchema would've added null to the type...
         if (!spec.isNullable() && !requiredFields.contains(key)) {
-            if (schema instanceof JsArray arrSchema) return arrSchema.append(JsStr.of("null"));
-            else return JsArray.of(schema, JsStr.of("null"));
+            return schema instanceof JsArray arrSchema ?
+                    (keyDefault.isNull() ?
+                            arrSchema.prepend(NULL_TYPE) :
+                            arrSchema.append(NULL_TYPE)) :
+                    (keyDefault.isNull() ?
+                            JsArray.of(NULL_TYPE, schema) :
+                            JsArray.of(schema, NULL_TYPE));
         }
         return schema;
 
     }
 
-    private static JsValue arrayOfObjSpecSchema(JsArrayOfObjSpec spec) {
-        JsValue items = toJsSchema(spec);
+    private static JsValue arrayOfObjSpecSchema(JsArrayOfObjSpec spec,
+                                                JsValue keyDefault
+                                               ) {
+        JsValue items = toJsSchema(spec, JsNothing.NOTHING);
 
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", items);
+        JsObj schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                                ITEMS_FIELD, items);
 
-        return spec.isNullable() ?
-                JsArray.of(schema, JsStr.of("null")) :
-                schema;
-    }
-
-    private static JsValue arrayOfStringSchema(JsSpec js) {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("string"));
-
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
-    }
-
-    private static JsValue arrayOfBooleanSchema(JsSpec js) {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("boolean"));
-
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
-    }
-
-    private static JsValue arrayOfDecimalSchema(JsSpec js) {
-        return containerOfLogicalType("bigdecimal", "array", "items", js.isNullable());
-    }
-
-    //TODO incluir yo creo bigdecimal con el tipo string y logical type
-    private static JsValue arrayOfNumberSchema(JsSpec js) {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsArray.of("int", "long", "double"));
-
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
-    }
-
-    private static JsValue arrayOfLongSchema(JsSpec js) {
-        JsObj schema = JsObj.of("type", JsStr.of("array"),
-                                "items", JsStr.of("long"));
-
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
-    }
-
-    private static JsValue binarySchema(JsSpec spec) {
-        return spec.isNullable() ? JsArray.of("bytes", "null") : JsStr.of("bytes");
+        return getTypeSorted(spec.isNullable(), keyDefault, schema);
 
     }
 
-    private static JsValue instantSchema(JsSpec spec) {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of("iso-8601"));
-        return spec.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+    private static JsValue arrayOfStringSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                                ITEMS_FIELD, STRING_TYPE);
+
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+    }
+
+    private static JsValue arrayOfBooleanSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                                ITEMS_FIELD, BOOLEAN_TYPE);
+
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+    }
+
+    private static JsValue arrayOfDecimalSchema(JsSpec js, JsValue defaultValue) {
+        return containerOfLogicalType(BIG_DECIMAL_TYPE,
+                                      ARRAY_TYPE,
+                                      ITEMS_FIELD,
+                                      js.isNullable(), defaultValue);
     }
 
 
-    private static JsValue strSchema(JsSpec js) {
+    private static JsValue arrayOfLongSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                                ITEMS_FIELD, LONG_TYPE);
+
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
+    }
+
+    private static JsValue binarySchema(JsSpec js, JsValue keyDefault) {
         return js.isNullable() ?
-                JsArray.of("string", "null") :
-                JsStr.of("string");
+                (keyDefault.isNull() ?
+                        Constants.NULL_BINARY_TYPE :
+                        Constants.BINARY_NULL_TYPE
+                ) : Constants.BINARY_TYPE;
+
     }
 
-    private static JsValue boolSchema(JsSpec js) {
+    private static JsValue instantSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, STRING_TYPE,
+                                LOGICAL_TYPE_FIELD, ISO_TYPE);
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+    }
+
+    private static JsValue strSchema(JsSpec js, JsValue keyDefault) {
         return js.isNullable() ?
-                JsArray.of("boolean", "null") :
-                JsStr.of("boolean");
+                (keyDefault.isNull() ?
+                        NULL_STR_TYPE :
+                        STR_NULL_TYPE
+                ) : STR_TYPE;
     }
 
-    private static JsValue stringSchema(String logicalType, boolean nullable) {
-        JsObj schema = JsObj.of("type", JsStr.of("string"),
-                                "logicalType", JsStr.of(logicalType)
+    private static JsValue boolSchema(JsSpec js, JsValue keyDefault) {
+        return js.isNullable() ?
+                (keyDefault.isNull() ?
+                        NULL_BOOL_TYPE :
+                        BOOL_NULL_TYPE
+                ) : Constants.BOOL_TYPE;
+    }
+
+    private static JsValue stringSchema(JsStr logicalType, boolean nullable, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, STRING_TYPE,
+                                LOGICAL_TYPE_FIELD, logicalType
                                );
+        return getTypeSorted(nullable, keyDefault, schema);
+
+    }
+
+    private static JsValue getTypeSorted(boolean nullable,
+                                         JsValue defaultValue,
+                                         JsValue schema
+                                        ) {
         return nullable ?
-                JsArray.of(schema, JsStr.of("null")) :
-                schema;
+                (defaultValue.isNull() ?
+                        JsArray.of(NULL_TYPE, schema) :
+                        JsArray.of(schema, NULL_TYPE)
+                ) : schema;
     }
 
-    private static JsValue longSchema(JsSpec js) {
+    private static JsArray getTypeSorted(boolean nullable,
+                                         JsValue defaultValue,
+                                         JsArray schema
+                                        ) {
+        return nullable ?
+                (defaultValue.isNull() ?
+                        schema.prepend(NULL_TYPE) :
+                        schema.append(NULL_TYPE)
+                ) : schema;
+    }
+
+
+    private static JsValue longSchema(JsSpec js, JsValue keyDefault) {
         return js.isNullable() ?
-                JsArray.of("long", "null") :
-                JsStr.of("long");
+                (keyDefault.isNull() ?
+                        NULL_LONG_TYPE :
+                        LONG_NULL_TYPE
+                ) : LONG_TYPE;
     }
 
-    private static JsValue intSchema(JsSpec js) {
+    private static JsValue intSchema(JsSpec js, JsValue keyDefault) {
         return js.isNullable() ?
-                JsArray.of("int", "null") :
-                JsStr.of("int");
+                (keyDefault.isNull() ?
+                        NULL_INT_TYPE :
+                        INT_NULL_TYPE
+                ) : Constants.INT_TYPE;
     }
 
-    private static JsValue doubleSchema(JsSpec js) {
+    private static JsValue doubleSchema(JsSpec js, JsValue keyDefault) {
         return js.isNullable() ?
-                JsArray.of("double", "null") :
-                JsStr.of("double");
+                (keyDefault.isNull() ?
+                        NULL_DOUBLE_TYPE :
+                        DOUBLE_NULL_TYPE
+                ) : DOUBLE_TYPE;
     }
 
-    private static JsValue fixedSchema(JsFixedBinary js) {
+    private static JsValue fixedSchema(JsFixedBinary js, JsValue keyDefault) {
         var metadata = js.getMetaData();
         if (metadata == null) throw MetadataNotFound.errorParsingFixedToSchema();
-        var schema = JsObj.of("name",
+        var schema = JsObj.of(NAME_FIELD,
                               JsStr.of(metadata.name()),
-                              "type", JsStr.of("fixed"),
-                              "size", JsInt.of(js.getSize()));
+                              TYPE_FIELD, FIXED_TYPE,
+                              SIZE_FIELD, JsInt.of(js.getSize()));
         if (metadata.namespace() != null)
-            schema = schema.set("namespace",
+            schema = schema.set(Constants.NAMESPACE_FIELD,
                                 JsStr.of(metadata.namespace()));
 
         if (metadata.aliases() != null)
-            schema = schema.set("aliases",
+            schema = schema.set(ALIASES_FIELD,
                                 JsArray.ofStrs(metadata.aliases()));
 
 
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
     }
 
-    private static JsValue arrayOfIntSchema(JsSpec js) {
-        var schema = JsObj.of("type", JsStr.of("array"),
-                              "items", JsStr.of("int"));
+    private static JsValue arrayOfIntSchema(JsSpec js, JsValue keyDefault) {
+        var schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                              ITEMS_FIELD, INT_TYPE);
 
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
     }
 
-    private static JsValue arrayOfDoubleSchema(JsSpec js) {
-        var schema = JsObj.of("type", JsStr.of("array"),
-                              "items", JsStr.of("double"));
+    private static JsValue arrayOfDoubleSchema(JsSpec js, JsValue keyDefault) {
+        var schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,
+                              ITEMS_FIELD, DOUBLE_TYPE);
 
-        return js.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
     }
 
-    private static JsValue arrayOfBigIntSchema(JsSpec js) {
-        return containerOfLogicalType("biginteger", "array", "items", js.isNullable());
+    private static JsValue arrayOfBigIntSchema(JsSpec js,
+                                               JsValue defaultValue
+                                              ) {
+        return containerOfLogicalType(BIG_INTEGER_TYPE,
+                                      ARRAY_TYPE,
+                                      ITEMS_FIELD,
+                                      js.isNullable(),
+                                      defaultValue);
     }
 
-    private static JsArray numberSchema(JsSpec js) {
-        var decSchema = JsObj.of("type", JsStr.of("string"),
-                                 "logicalType", JsStr.of("bigdecimal"));
-        return js.isNullable() ?
-                JsArray.of("double", "int", "long", "null").append(decSchema) :
-                JsArray.of("double", "int", "long").append(decSchema);
+    private static JsArray numberSchema(JsSpec js, JsValue keyDefault) {
+
+        return getTypeSorted(js.isNullable(), keyDefault, NUMBER_TYPE);
     }
 
-    private static JsValue mapOfInstantSchema(JsMapOfInstant js) {
-        return containerOfLogicalType("iso-8601", "map", "values", js.isNullable());
+    private static JsValue mapOfInstantSchema(JsSpec js, JsValue defaultValue) {
+        return containerOfLogicalType(ISO_TYPE,
+                                      MAP_TYPE,
+                                      VALUES_FIELD,
+                                      js.isNullable(),
+                                      defaultValue);
     }
 
-    private static JsValue mapOfDecSchema(JsMapOfDec js) {
-        return containerOfLogicalType("bigdecimal", "map", "values", js.isNullable());
+    private static JsValue mapOfDecSchema(JsSpec js,
+                                          JsValue defaultValue
+                                         ) {
+        return containerOfLogicalType(BIG_DECIMAL_TYPE,
+                                      MAP_TYPE,
+                                      VALUES_FIELD,
+                                      js.isNullable(),
+                                      defaultValue);
     }
 
-    private static JsValue containerOfLogicalType(String logicalType,
-                                                  String containerType,
+    private static JsValue containerOfLogicalType(JsStr logicalType,
+                                                  JsStr containerType,
                                                   String elementsKey,
-                                                  boolean isNullable
+                                                  boolean isNullable,
+                                                  JsValue defaultValue
                                                  ) {
-        var schema = JsObj.of("type", JsStr.of("string"),
-                              "logicalType", JsStr.of(logicalType));
-        var mapSchema = JsObj.of("type", JsStr.of(containerType),
+        var schema = JsObj.of(TYPE_FIELD, STRING_TYPE,
+                              LOGICAL_TYPE_FIELD, logicalType);
+        var mapSchema = JsObj.of(TYPE_FIELD, containerType,
                                  elementsKey, schema
                                 );
-        return isNullable ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+        return getTypeSorted(isNullable, defaultValue, mapSchema);
+
     }
 
-    private static JsValue mapOfStrSchema(JsMapOfStr js) {
-        var mapSchema = JsObj.of("type", JsStr.of("map"),
-                                 "values", JsStr.of("string"));
-        return js.isNullable() ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+    private static JsValue mapOfStrSchema(JsSpec js, JsValue defaultValue) {
+        var schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                              VALUES_FIELD, STRING_TYPE);
+        return getTypeSorted(js.isNullable(), defaultValue, schema);
+
     }
 
-    private static JsValue mapOfBigIntegerSchema(JsMapOfBigInt js) {
-        return containerOfLogicalType("biginteger", "map", "values", js.isNullable());
+    private static JsValue mapOfBigIntegerSchema(JsSpec js, JsValue defaultValue) {
+        return containerOfLogicalType(BIG_INTEGER_TYPE, MAP_TYPE, VALUES_FIELD, js.isNullable(), defaultValue);
     }
 
-    private static JsValue mapOfBoolSchema(JsMapOfBool js) {
-        var mapSchema = JsObj.of("type", JsStr.of("map"),
-                                 "values", JsStr.of("boolean")
-                                );
-        return js.isNullable() ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+    private static JsValue mapOfBoolSchema(JsSpec js, JsValue keyDefault) {
+        var schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                              VALUES_FIELD, BOOLEAN_TYPE
+                             );
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
     }
 
-    private static JsValue mapOfLongSchema(JsMapOfLong js) {
-        var mapSchema = JsObj.of("type", JsStr.of("map"),
-                                 "values", JsStr.of("long")
-                                );
-        return js.isNullable() ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+    private static JsValue mapOfLongSchema(JsSpec js, JsValue keyDefault) {
+        var schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                              VALUES_FIELD, LONG_TYPE
+                             );
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
     }
 
-    private static JsValue mapOfIntSchema(JsMapOfInt js) {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"),
-                                   "values", JsStr.of("int")
-                                  );
-        return js.isNullable() ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+    private static JsValue mapOfIntSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                                VALUES_FIELD, INT_TYPE
+                               );
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
     }
 
-    private static JsValue mapOfDoubleSchema(JsMapOfDouble js) {
-        JsObj mapSchema = JsObj.of("type", JsStr.of("map"),
-                                   "values", JsStr.of("double")
-                                  );
-        return js.isNullable() ?
-                JsArray.of(mapSchema, JsStr.of("null")) :
-                mapSchema;
+    private static JsValue mapOfDoubleSchema(JsSpec js, JsValue keyDefault) {
+        JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
+                                VALUES_FIELD, DOUBLE_TYPE
+                               );
+        return getTypeSorted(js.isNullable(), keyDefault, schema);
+
     }
 
-    private static JsValue enumSchema(JsEnum jsEnum) {
+    private static JsValue enumSchema(JsEnum jsEnum, JsValue keyDefault) {
         var metaData = jsEnum.getMetaData();
         if (metaData == null) throw MetadataNotFound.errorParsingEnumToSchema();
-        var schema = JsObj.of("type", JsStr.of("enum"), "name", JsStr.of(metaData.name()));
-        if (metaData.doc() != null) schema = schema.set("doc", JsStr.of(metaData.doc()));
-        if (metaData.namespace() != null) schema = schema.set("namespace", JsStr.of(metaData.namespace()));
-        if (metaData.aliases() != null) schema = schema.set("aliases", JsArray.ofStrs(metaData.aliases()));
-        if (metaData.defaultSymbol() != null) schema = schema.set("default", JsArray.ofStrs(metaData.defaultSymbol()));
-        schema = schema.set("symbols", jsEnum.getSymbols());
-        return jsEnum.isNullable() ? JsArray.of(schema, JsStr.of("null")) : schema;
+        var schema = JsObj.of(TYPE_FIELD, ENUM_TYPE, NAME_FIELD, JsStr.of(metaData.name()));
+        if (metaData.doc() != null) schema = schema.set(DOC_FIELD, JsStr.of(metaData.doc()));
+        if (metaData.namespace() != null)
+            schema = schema.set(Constants.NAMESPACE_FIELD, JsStr.of(metaData.namespace()));
+        if (metaData.aliases() != null)
+            schema = schema.set(ALIASES_FIELD, JsArray.ofStrs(metaData.aliases()));
+        if (metaData.defaultSymbol() != null)
+            schema = schema.set(DEFAULT_FIELD, JsArray.ofStrs(metaData.defaultSymbol()));
+        schema = schema.set(SYMBOLS_FIELD, jsEnum.getSymbols());
+        return getTypeSorted(jsEnum.isNullable(), keyDefault, schema);
     }
 }

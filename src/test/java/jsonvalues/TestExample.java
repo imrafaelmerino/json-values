@@ -12,7 +12,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.function.IntFunction;
 import java.util.regex.Pattern;
@@ -73,7 +72,7 @@ public class TestExample {
                                 )
         );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         List<SpecError> test = spec.test(person);
 

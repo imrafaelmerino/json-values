@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.Map;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 public class SerializerTest {
@@ -29,17 +28,19 @@ public class SerializerTest {
                                                                  spec);
 
 
-        JsObj obj2 = AvroRecordToJsValue.toJsObj(record);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
-        System.out.println(obj2);
+        Assertions.assertEquals(expected, parser.parse(input.toString()), "input != parser.parse(input.toString())");
 
-        Assertions.assertEquals(expected, obj2, "The obj was transformed into a Record and then into an JsObj again, and they aren't equals.");
+
+        Assertions.assertEquals(expected, AvroRecordToJsValue.toJsObj(record), "input -> record -> !input");
     }
 
     @Test
     public void testJsObjSpec() {
         var spec = JsObjSpecBuilder.name("Rafa")
-                                   .spec(JsObjSpec.of("a", JsSpecs.str(),
+                                   .defaultFields(Map.of("a", JsNull.NULL))
+                                   .spec(JsObjSpec.of("a", JsSpecs.str().nullable(),
                                                       "b", JsSpecs.integer(),
                                                       "c", JsEnumBuilder.name("enum")
                                                                         .symbols(List.of("A", "B")),
@@ -58,25 +59,33 @@ public class SerializerTest {
                                         );
 
 
-        JsObj obj1 = JsObj.of("a", JsStr.of("a"),
-                              "b", JsInt.of(1),
-                              "c", JsStr.of("A"),
-                              "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
-                              "e", JsArray.ofStrs("a", "b", "c"),
-                              "f", JsArray.ofInts(1, 2, 3),
-                              "g", JsObj.of("z", JsBool.FALSE)
-                             );
 
-//        JsObj obj1 = JsObj.of("a", JsNull.NULL,
-//                              "b", JsNull.NULL,
-//                              "c", JsNull.NULL,
-//                              "d", JsNull.NULL,
-//                              "e", JsNull.NULL,
-//                              "f", JsNull.NULL,
-//                              "g", JsObj.of("z", JsNull.NULL)
-//                             );
 
-        testSpec(spec, obj1);
+
+        testSpec(spec, JsObj.of("a", JsStr.of("a"),
+                                "b", JsInt.of(1),
+                                "c", JsStr.of("A"),
+                                "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
+                                "e", JsArray.ofStrs("a", "b", "c"),
+                                "f", JsArray.ofInts(1, 2, 3),
+                                "g", JsObj.of("z", JsBool.FALSE)
+                               ));
+        testSpec(spec, JsObj.of(
+                         "b", JsInt.of(1),
+                         "c", JsStr.of("A"),
+                         "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
+                         "e", JsArray.ofStrs("a", "b", "c"),
+                         "f", JsArray.ofInts(1, 2, 3),
+                         "g", JsObj.of("z", JsBool.FALSE)
+                               ),
+                 JsObj.of("a", JsNull.NULL,
+                          "b", JsInt.of(1),
+                          "c", JsStr.of("A"),
+                          "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
+                          "e", JsArray.ofStrs("a", "b", "c"),
+                          "f", JsArray.ofInts(1, 2, 3),
+                          "g", JsObj.of("z", JsBool.FALSE)
+                         ));
 
     }
 
@@ -155,7 +164,7 @@ public class SerializerTest {
     public void testOptionalFields() {
 
         JsObjSpec spec = JsObjSpecBuilder.name(nameGen.get())
-                                         .fieldsDefault(Map.of("a", JsInt.of(1),
+                                         .defaultFields(Map.of("a", JsInt.of(1),
                                                                "b", JsStr.of("a")))
                                          .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),
                                                             "b", JsSpecs.str().nullable())
@@ -172,7 +181,7 @@ public class SerializerTest {
     public void testAliasesFields() {
 
         JsObjSpec spec = JsObjSpecBuilder.name("spec")
-                                         .fieldsAliases(Map.of("a", List.of("a1", "a2"),
+                                         .aliasesFields(Map.of("a", List.of("a1", "a2"),
                                                                "b", List.of("b1", "b2"))
                                                        )
                                          .spec(JsObjSpec.of("a", JsSpecs.integer().nullable(),

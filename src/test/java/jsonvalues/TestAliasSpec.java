@@ -18,10 +18,10 @@ public class TestAliasSpec {
 
     static JsObjSpec spec =
             JsObjSpecBuilder.name(nameGen.get())
-                            .fieldsAliases(Map.of("a", List.of("a1", "a2")))
+                            .aliasesFields(Map.of("a", List.of("a1", "a2")))
                             .spec(JsObjSpec.of("a", JsSpecs.integer().nullable()));
 
-    static JsObjSpecParser parser = new JsObjSpecParser(spec);
+    static JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
     @Test
     public void testNotErrorBecauseAliasIsFound() {

@@ -77,7 +77,7 @@ public class TestJsParser {
     @Test
     public void test_parse_string_into_obj() throws IOException {
 
-        final JsObjSpecParser parser = new JsObjSpecParser(objSpec);
+        final JsObjSpecParser parser = JsObjSpecParser.of(objSpec);
 
 
         Assertions.assertEquals(parser.parse(example.toString()),
@@ -136,10 +136,10 @@ public class TestJsParser {
     public void testParseInstant() {
 
         JsObjSpecParser parser =
-                new JsObjSpecParser(JsObjSpec.of("a",
-                                                 instant(),
-                                                 "b",
-                                                 instant(i -> i.isAfter(Instant.now()
+                JsObjSpecParser.of(JsObjSpec.of("a",
+                                                instant(),
+                                                "b",
+                                                instant(i -> i.isAfter(Instant.now()
                                                                                .minus(Duration.ofDays(1))
                                                                        )
                                                         )));
@@ -169,11 +169,11 @@ public class TestJsParser {
     public void testParseBinary() {
 
         JsObjSpecParser parser =
-                new JsObjSpecParser(JsObjSpec.of("a",
-                                                 binary(),
-                                                 "b",
-                                                 binary(i -> i.length <= 1024)
-                                                ));
+                JsObjSpecParser.of(JsObjSpec.of("a",
+                                                binary(),
+                                                "b",
+                                                binary(i -> i.length <= 1024)
+                                               ));
 
         JsObj obj = JsObj.of("a",
                              JsStr.of("hola"),
@@ -209,7 +209,7 @@ public class TestJsParser {
                 JsSpecs.array(JsValue::isNumber).nullable()
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         JsObj a = JsObj.of("a",
                            JsNull.NULL,
@@ -251,7 +251,7 @@ public class TestJsParser {
                                      );
 
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         JsObjGen gen = JsObjGen.of("a",
@@ -292,7 +292,7 @@ public class TestJsParser {
                                       arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
                                      ).withAllOptKeys();
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsStr> strGen = JsStrGen.arbitrary(0,
@@ -338,7 +338,7 @@ public class TestJsParser {
                                       arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      ).withAllOptKeys();
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsStr> strGen = JsStrGen.arbitrary(0,
@@ -390,7 +390,7 @@ public class TestJsParser {
                                       arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsInt> intGen = JsIntGen.arbitrary(0,
@@ -444,7 +444,7 @@ public class TestJsParser {
                                       arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
                                      ).withAllOptKeys();
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsInt> intGen = JsIntGen.arbitrary(0,
@@ -487,7 +487,7 @@ public class TestJsParser {
                                       arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
                                      ).withAllOptKeys();
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsBool> boolGen = JsBoolGen.arbitrary();
@@ -532,7 +532,7 @@ public class TestJsParser {
                                       JsSpecs.oneValueOf(List.of(FALSE))
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsPrimitive> valueGen = Combinators.oneOf(JsBoolGen.arbitrary(),
@@ -588,7 +588,7 @@ public class TestJsParser {
                                       arrayOfLongSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsLong> longGen = JsLongGen.arbitrary(0,
@@ -640,7 +640,7 @@ public class TestJsParser {
                                       binary(b -> b.length <= 1024)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsInstant> instantGen = JsInstantGen.biased(0,
@@ -698,7 +698,7 @@ public class TestJsParser {
                                       arrayOfDecSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsBigDec> decGen = JsBigDecGen.arbitrary(BigDecimal.ZERO,
@@ -754,7 +754,7 @@ public class TestJsParser {
                                       arrayOfBigIntSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsBigInt> bigIntGen = JsBigIntGen.arbitrary(4);
@@ -809,7 +809,7 @@ public class TestJsParser {
                                       arrayOfObjSuchThat(a -> a.size() < 11 && a.size() > 0)
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Gen<JsObj> objGen = JsObjGen.of("a",

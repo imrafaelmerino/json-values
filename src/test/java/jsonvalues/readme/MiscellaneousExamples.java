@@ -1,7 +1,6 @@
 package jsonvalues.readme;
 
 import fun.gen.Gen;
-import fun.optic.Lens;
 import jsonvalues.JsArray;
 import jsonvalues.JsObj;
 import jsonvalues.gen.*;
@@ -46,7 +45,7 @@ public class MiscellaneousExamples {
                                       "age");
 
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Assertions.assertTrue(gen.sample(100000)
@@ -114,7 +113,7 @@ public class MiscellaneousExamples {
                                                       longMax)
         );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         Assertions.assertTrue(gen.sample(100000)
                                  .allMatch(obj -> parser.parse(obj.toString())
@@ -155,7 +154,7 @@ public class MiscellaneousExamples {
                                               10)
                 );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Assertions.assertTrue(gen.sample(100000)

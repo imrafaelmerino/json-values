@@ -9,7 +9,7 @@ import java.util.function.Predicate;
 class JsObjSpecReader extends AbstractJsObjReader {
     private static final JsValueReader valueParser = JsParsers.PARSERS.valueParser;
     private static final JsSpecParser defaultParser = valueParser::nullOrValue;
-    protected final boolean strict;
+    final boolean strict;
     private final Map<String, JsSpecParser> parsers;
     private final MetaData metadata;
 
@@ -81,6 +81,14 @@ class JsObjSpecReader extends AbstractJsObjReader {
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
                                              reader.getPositionInStream()
                                             );
+        if (metadata.fieldsDefault() != null) {
+            for (String defaultKey : metadata.fieldsDefault().keySet()) {
+                if (obj.get(defaultKey).isNothing())
+                    obj = obj.set(defaultKey,
+                                  metadata.fieldsDefault()
+                                          .get(defaultKey));
+            }
+        }
 
         if (predicate != null && !predicate.test(obj))
             throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,

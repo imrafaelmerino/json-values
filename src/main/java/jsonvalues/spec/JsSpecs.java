@@ -41,7 +41,6 @@ import static jsonvalues.spec.ERROR_CODE.*;
  */
 public final class JsSpecs {
 
-    private static final JsArraySpec arrayOfNumber = new JsArrayOfNumber(false);
     private static final JsArraySpec arrayOfDec = new JsArrayOfDecimal(false);
     private static final JsArraySpec arrayOfDouble = new JsArrayOfDouble(false);
     private static final JsArraySpec arrayOfBigInt = new JsArrayOfBigInt(false);
@@ -86,14 +85,6 @@ public final class JsSpecs {
     private JsSpecs() {
     }
 
-    /**
-     * non-nullable array of numbers spec
-     *
-     * @return a spec
-     */
-    public static JsArraySpec arrayOfNumber() {
-        return arrayOfNumber;
-    }
 
     /**
      * non-nullable array of decimal numbers spec
@@ -376,22 +367,7 @@ public final class JsSpecs {
                                    maxLength);
     }
 
-    /**
-     * Returns a specification for an array of numbers with a specified minimum and maximum length.
-     *
-     * @param minLength The minimum length of the array (inclusive).
-     * @param maxLength The maximum length of the array (inclusive).
-     * @return A specification for an array of numbers with the specified length constraints.
-     * @throws IllegalArgumentException If the maximum length is less than the minimum length.
-     */
-    public static JsArraySpec arrayOfNumber(int minLength,
-                                            int maxLength
-                                           ) {
-        if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-        return new JsArrayOfNumber(false,
-                                   minLength,
-                                   maxLength);
-    }
+
 
     /**
      * Returns a specification for an array of objects with a specified minimum and maximum length.
@@ -738,20 +714,6 @@ public final class JsSpecs {
                                          maxLength);
     }
 
-    /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
-     * predicate.
-     *
-     * @param predicate The predicate that each number in the array must satisfy.
-     * @return An array specification for numbers based on the specified predicate.
-     */
-    public static JsArraySpec arrayOfNumberSuchThat(final Predicate<JsArray> predicate) {
-        return new JsArrayOfNumberSuchThat(s -> requireNonNull(predicate).test(s) ?
-                Optional.empty() :
-                Optional.of(new JsError(s,
-                                        ARRAY_CONDITION)),
-                                           false);
-    }
 
     /**
      * Returns a specification for a non-nullable array of objects, where each element of the array satisfies the given

@@ -406,43 +406,6 @@ final class JsSpecParsers {
         };
     }
 
-    JsSpecParser ofArrayOfNumber(boolean nullable,
-                                 int min,
-                                 int max
-                                ) {
-        return getParser(PARSERS.arrayOfNumberParser,
-                         nullable,
-                         min,
-                         max
-                        );
-    }
-
-    JsSpecParser ofArrayOfNumberEachSuchThat(Function<JsNumber, Optional<JsError>> p,
-                                             boolean nullable,
-                                             int min,
-                                             int max
-                                            ) {
-        return nullable ?
-                reader -> PARSERS.arrayOfNumberParser.nullOrArrayEachSuchThat(reader,
-                                                                              p,
-                                                                              min,
-                                                                              max
-                                                                             ) :
-                reader -> PARSERS.arrayOfNumberParser.arrayEachSuchThat(reader,
-                                                                        p,
-                                                                        min,
-                                                                        max
-                                                                       );
-    }
-
-    JsSpecParser ofArrayOfNumberSuchThat(Function<JsArray, Optional<JsError>> p,
-                                         boolean nullable
-                                        ) {
-        return getParser(PARSERS.arrayOfNumberParser,
-                         p,
-                         nullable
-                        );
-    }
 
     JsSpecParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<JsError>> p,
                                            boolean nullable

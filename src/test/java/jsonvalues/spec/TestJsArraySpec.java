@@ -7,7 +7,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.List;
-import java.util.Set;
 
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
 import static jsonvalues.spec.FunTest.assertErrorIs;
@@ -301,7 +300,7 @@ public class TestJsArraySpec {
 
         JsObjSpec spec = JsObjSpec.of("a", arrayOfDouble());
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         JsObj obj = JsObj.of("a",JsArray.ofDoubles(1 / 2d, 1 / 4d));
         System.out.println(obj);

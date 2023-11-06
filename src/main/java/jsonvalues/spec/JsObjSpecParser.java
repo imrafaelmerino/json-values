@@ -36,14 +36,17 @@ public final class JsObjSpecParser {
      * @param spec The JSON specification that defines the schema the JSON object must conform to.
      * @throws NullPointerException if the provided spec is null.
      */
-    public JsObjSpecParser(final JsObjSpec spec) {
+    private JsObjSpecParser(final JsObjSpec spec) {
         parser = requireNonNull(spec).parser();
     }
+
     public JsObjSpecParser(final OneOfObjSpec spec) {
         parser = requireNonNull(spec).parser();
     }
 
-
+    public static JsObjSpecParser of(final JsObjSpec spec) {
+        return new JsObjSpecParser(spec);
+    }
 
 
     /**
@@ -57,7 +60,7 @@ public final class JsObjSpecParser {
      * @throws NullPointerException if the provided byte array is null.
      * @throws JsParserException    If parsing fails due to JSON syntax errors or specification violations.
      */
-    public JsObj parse(byte[] bytes) {
+    public JsObj parse(final byte[] bytes) {
         return JsIO.INSTANCE.parseToJsObj(requireNonNull(bytes),
                                           parser
                                          );
@@ -75,7 +78,7 @@ public final class JsObjSpecParser {
      * @throws NullPointerException if the provided string is null.
      * @throws JsParserException    If parsing fails due to JSON syntax errors or specification violations.
      */
-    public JsObj parse(String str) {
+    public JsObj parse(final String str) {
 
         return JsIO.INSTANCE.parseToJsObj(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
                                           parser
@@ -94,7 +97,7 @@ public final class JsObjSpecParser {
      * @throws NullPointerException if the provided input stream is null.
      * @throws JsParserException    If parsing fails due to JSON syntax errors or specification violations.
      */
-    public JsObj parse(InputStream inputstream) {
+    public JsObj parse(final InputStream inputstream) {
         return JsIO.INSTANCE.parseToJsObj(requireNonNull(inputstream),
                                           parser
                                          );

@@ -75,7 +75,7 @@ public class TestAllSpecs {
                                .withAllNullValues()
                                .withAllOptKeys();
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Assertions.assertTrue(

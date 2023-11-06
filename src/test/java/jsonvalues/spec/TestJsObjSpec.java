@@ -1454,7 +1454,7 @@ public class TestJsObjSpec {
                                       integer()
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         JsObj jsObj = JsObj.of("a",
                                JsStr.of("123"),
@@ -1803,7 +1803,7 @@ public class TestJsObjSpec {
 
         Assertions.assertFalse(errors.isEmpty());
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
         Assertions.assertEquals(valid,
                                 parser.parse(valid.toPrettyString())

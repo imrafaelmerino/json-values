@@ -20,7 +20,6 @@ class JsParsers {
     public final JsArrayOfLongReader arrayOfLongParser;
     public final JsArrayOfDecimalReader arrayOfDecimalParser;
     public final JsArrayOfBigIntReader arrayOfIntegralParser;
-    public final JsArrayOfNumberReader arrayOfNumberParser;
     public final JsArrayOfObjReader arrayOfObjParser;
     public final JsArrayOfStringReader arrayOfStrParser;
     public final JsArrayOfBoolReader arrayOfBoolParser;
@@ -67,7 +66,6 @@ class JsParsers {
         arrayOfLongParser = new JsArrayOfLongReader(longParser);
         arrayOfDecimalParser = new JsArrayOfDecimalReader(decimalParser);
         arrayOfIntegralParser = new JsArrayOfBigIntReader(integralParser);
-        arrayOfNumberParser = new JsArrayOfNumberReader(numberParser);
         arrayOfObjParser = new JsArrayOfObjReader(objParser);
         arrayOfStrParser = new JsArrayOfStringReader(strParser);
         arrayOfBoolParser = new JsArrayOfBoolReader(boolParser);

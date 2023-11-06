@@ -30,5 +30,6 @@ public abstract sealed class JsNumber extends JsPrimitive
         return true;
     }
 
+
 }
 

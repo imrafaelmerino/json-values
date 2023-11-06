@@ -76,7 +76,7 @@ public class JsArrayParserTest {
                                       arrayOfStr().nullable()
                                      );
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
         final JsObj a = JsObj.of("a",
                                  JsArray.of("a",
                                             "b"
@@ -100,7 +100,7 @@ public class JsArrayParserTest {
         JsObjSpec specST = JsObjSpec.of("a",
                                         arrayOfStrSuchThat(it -> it.size() % 2 == 0).nullable()
                                        );
-        JsObjSpecParser parserST = new JsObjSpecParser(specST);
+        JsObjSpecParser parserST = JsObjSpecParser.of(specST);
 
         Assertions.assertTrue(specST.test(a)
                                     .isEmpty());
@@ -134,7 +134,7 @@ public class JsArrayParserTest {
 
 
         Assertions.assertEquals(a,
-                                new JsObjSpecParser(spec).parse(a.toString())
+                                JsObjSpecParser.of(spec).parse(a.toString())
                                );
 
         JsObjSpec specNullable = JsObjSpec.of("a",
@@ -150,7 +150,7 @@ public class JsArrayParserTest {
                                  JsNull.NULL
                                 );
         Assertions.assertEquals(b,
-                                new JsObjSpecParser(specNullable).parse(b.toString())
+                                JsObjSpecParser.of(specNullable).parse(b.toString())
                                );
 
         JsObjSpec specTested = JsObjSpec.of("a",
@@ -169,7 +169,7 @@ public class JsArrayParserTest {
                                            )
                                 );
         Assertions.assertEquals(c,
-                                new JsObjSpecParser(specTested).parse(c.toString())
+                                JsObjSpecParser.of(specTested).parse(c.toString())
                                );
 
         JsObjSpec specSuchThat = JsObjSpec.of("a",
@@ -244,7 +244,7 @@ public class JsArrayParserTest {
 
 
         Assertions.assertTrue(gen.sample(100000)
-                                 .allMatch(d -> new JsObjSpecParser(specSuchThat).parse(d.toString()).equals(d)
+                                 .allMatch(d -> JsObjSpecParser.of(specSuchThat).parse(d.toString()).equals(d)
                                           ));
 
 
@@ -292,7 +292,7 @@ public class JsArrayParserTest {
                                                              "d",
                                                              "f");
 
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
 
         Assertions.assertTrue(gen.suchThat(spec).sample(10000)

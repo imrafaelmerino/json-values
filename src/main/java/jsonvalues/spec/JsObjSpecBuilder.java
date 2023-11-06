@@ -1,8 +1,10 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
@@ -56,18 +58,18 @@ public final class JsObjSpecBuilder {
         return this;
     }
 
-    public JsObjSpecBuilder fieldsDoc(Map<String, String> fieldsDoc) {
-        this.fieldsDoc = requireNonNull(fieldsDoc);
+    public JsObjSpecBuilder docFields(Map<String, String> fieldsDoc) {
+        this.fieldsDoc = Collections.unmodifiableMap(requireNonNull(fieldsDoc));
         return this;
     }
 
-    public JsObjSpecBuilder fieldsOrder(Map<String, MetaData.ORDERS> fieldsOrder) {
-        this.fieldsOrder = requireNonNull(fieldsOrder);
+    public JsObjSpecBuilder orderFields(Map<String, MetaData.ORDERS> fieldsOrder) {
+        this.fieldsOrder = Collections.unmodifiableMap(requireNonNull(fieldsOrder));
         return this;
     }
 
-    public JsObjSpecBuilder fieldsAliases(Map<String, List<String>> fieldsAliases) {
-        this.fieldsAliases = requireNonNull(fieldsAliases);
+    public JsObjSpecBuilder aliasesFields(Map<String, List<String>> fieldsAliases) {
+        this.fieldsAliases = Collections.unmodifiableMap(requireNonNull(fieldsAliases));
         for (Map.Entry<String, List<String>> entry : fieldsAliases.entrySet()) {
             for (String alias : entry.getValue()) {
                 if (requireNonNull(alias).isEmpty() || alias.isBlank())
@@ -78,7 +80,7 @@ public final class JsObjSpecBuilder {
     }
 
     public JsObjSpecBuilder aliases(List<String> aliases) {
-        this.aliases = requireNonNull(aliases);
+        this.aliases = Collections.unmodifiableList(requireNonNull(aliases));
         for (String alias : aliases) {
             if (!isValidName.test(alias)) {
                 throw new IllegalArgumentException("The alias %s of the JsObjSpec with name %s doesn't follow the pattern %s".formatted(alias,
@@ -90,8 +92,9 @@ public final class JsObjSpecBuilder {
         return this;
     }
 
-    public JsObjSpecBuilder fieldsDefault(Map<String, JsValue> fieldsDefaults) {
-        this.fieldsDefaults = requireNonNull(fieldsDefaults);
+
+    public JsObjSpecBuilder defaultFields(Map<String, JsValue> fieldsDefaults) {
+        this.fieldsDefaults = Collections.unmodifiableMap(requireNonNull(fieldsDefaults));
         return this;
     }
 
@@ -100,6 +103,7 @@ public final class JsObjSpecBuilder {
         if (fieldsDoc != null) validateDocs(spec, fieldsDoc);
         if (fieldsOrder != null) validateOrders(spec, fieldsOrder);
         if (fieldsAliases != null) validateAliases(spec, fieldsAliases);
+
         var metadata = new MetaData(name, nameSpace, aliases, doc, fieldsDoc, fieldsOrder, fieldsAliases, fieldsDefaults);
         validateSpecWithSameNameNotCreatedSoFar(metadata.getFullName());
         return new JsObjSpec(spec.bindings,
@@ -113,8 +117,8 @@ public final class JsObjSpecBuilder {
 
     private void validateSpecWithSameNameNotCreatedSoFar(String fullName) {
 
-        synchronized (JsObjSpecBuilder.class){
-            if(namesCreated.contains(fullName))
+        synchronized (JsObjSpecBuilder.class) {
+            if (namesCreated.contains(fullName))
                 throw new IllegalArgumentException("The spec %s has already been created.Choose another namespace/name".formatted(fullName));
             else namesCreated.add(fullName);
         }
@@ -165,6 +169,7 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, JsValue> entry : fieldsDefaults.entrySet()) {
             var key = entry.getKey();
             var value = entry.getValue();
+            if(value==null)throw new IllegalArgumentException("key `%s` of `fieldsDefaults` can not be null");
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("The key %s of the defaults map is not defined in the JsObjSpec with name %s".formatted(key, name));
             JsSpec keySpec = bindings.get(key);
@@ -177,12 +182,12 @@ public final class JsObjSpecBuilder {
             } else if (keySpec instanceof OneOfObjSpec oneOf) {
                 var errors = oneOf.getSpecs().get(0).test(value);
                 if (!errors.isEmpty())
-                    throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key %s of the JsObjSpec with name %s".formatted(value,
+                    throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key `%s` of the JsObjSpec with name `%s`".formatted(value,
                                                                                                                                                                                 key, name));
             } else {
                 var errors = keySpec.test(value);
                 if (!errors.isEmpty())
-                    throw new IllegalArgumentException("The default value `%s` doesn't conform the spec associated to the key %s of the JsObjSpec with name %s".formatted(value, key, name));
+                    throw new IllegalArgumentException("The default value `%s` doesn't conform the spec associated to the key `%s` of the JsObjSpec with name `%s`".formatted(value, key, name));
             }
         }
     }
