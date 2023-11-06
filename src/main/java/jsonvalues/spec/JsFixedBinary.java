@@ -30,7 +30,7 @@ public final class JsFixedBinary extends AbstractNullable implements JsOneErrorS
 
     @Override
     public JsSpec nullable() {
-        return new JsFixedBinary(true, size,metaData);
+        return new JsFixedBinary(true, size, metaData);
     }
 
     @Override
@@ -48,7 +48,7 @@ public final class JsFixedBinary extends AbstractNullable implements JsOneErrorS
 
     }
 
-    public FixedMetaData getMetaData() {
+    FixedMetaData getMetaData() {
         return metaData;
     }
 }

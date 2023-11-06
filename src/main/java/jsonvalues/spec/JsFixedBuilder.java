@@ -6,7 +6,7 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
 
 public final class JsFixedBuilder {
-    private String name;
+    private final String name;
 
     private String nameSpace;
     private List<String> aliases;

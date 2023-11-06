@@ -8,7 +8,7 @@ import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
 
 public final class JsEnumBuilder {
-    private String name;
+    private final String name;
     private String doc;
 
     private String defaultSymbol;

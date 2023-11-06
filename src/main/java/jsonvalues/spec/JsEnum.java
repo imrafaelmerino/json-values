@@ -44,17 +44,17 @@ public final class JsEnum extends AbstractNullable implements JsOneErrorSpec, Av
 
     @Override
     public Optional<JsError> testValue(JsValue value) {
-        if(isNullable() && value.isNull()) return Optional.empty();
+        if (isNullable() && value.isNull()) return Optional.empty();
         return !symbols.containsValue(value) ?
                 Optional.of(new JsError(value, ERROR_CODE.ENUM_SYMBOL_EXPECTED)) :
                 Optional.empty();
     }
 
-    public JsArray getSymbols() {
+    JsArray getSymbols() {
         return symbols;
     }
 
-    public EnumMetaData getMetaData() {
+    EnumMetaData getMetaData() {
         return metaData;
     }
 }

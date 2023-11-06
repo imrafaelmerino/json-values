@@ -1,10 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsNull;
 import jsonvalues.JsValue;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.AvroUtils.*;
@@ -169,7 +167,7 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, JsValue> entry : fieldsDefaults.entrySet()) {
             var key = entry.getKey();
             var value = entry.getValue();
-            if(value==null)throw new IllegalArgumentException("key `%s` of `fieldsDefaults` can not be null");
+            if (value == null) throw new IllegalArgumentException("key `%s` of `fieldsDefaults` can not be null");
             if (!bindings.containsKey(key))
                 throw new IllegalArgumentException("The key %s of the defaults map is not defined in the JsObjSpec with name %s".formatted(key, name));
             JsSpec keySpec = bindings.get(key);
@@ -183,7 +181,7 @@ public final class JsObjSpecBuilder {
                 var errors = oneOf.getSpecs().get(0).test(value);
                 if (!errors.isEmpty())
                     throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key `%s` of the JsObjSpec with name `%s`".formatted(value,
-                                                                                                                                                                                key, name));
+                                                                                                                                                                                    key, name));
             } else {
                 var errors = keySpec.test(value);
                 if (!errors.isEmpty())

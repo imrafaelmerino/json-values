@@ -5494,11 +5494,11 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
 
-    public MetaData getMetaData() {
+    MetaData getMetaData() {
         return metaData;
     }
 
-    public Map<String, JsSpec> getBindings() {
+    Map<String, JsSpec> getBindings() {
         return bindings;
     }
 
@@ -5533,7 +5533,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
      *
      * @return A list of required field names.
      */
-    public List<String> getRequiredFields() {
+     List<String> getRequiredFields() {
         return requiredFields;
     }
 
@@ -5542,7 +5542,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
      *
      * @return A list of optional field names.
      */
-    public List<String> getOptionalFields() {
+    List<String> getOptionalFields() {
         return optionalFields;
     }
 

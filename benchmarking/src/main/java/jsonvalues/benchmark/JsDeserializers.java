@@ -36,7 +36,7 @@ public class JsDeserializers {
     private static final ObjectMapper objectMapper = new ObjectMapper();
 
     // json-values parser from spec
-    private static final JsObjSpecParser jsonParser = new JsObjSpecParser(PERSON_SPEC);
+    private static final JsObjSpecParser jsonParser =  JsObjSpecParser.of(PERSON_SPEC);
 
     private static final com.networknt.schema.JsonSchemaFactory NETWORKNT_FACTORY =
             com.networknt.schema.JsonSchemaFactory.getInstance(SpecVersion.VersionFlag.V7);

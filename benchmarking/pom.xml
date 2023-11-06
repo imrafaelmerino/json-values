@@ -3,14 +3,16 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values-benchmark</artifactId>
-    <version>12.0.0</version>
+    <version>12.9.0</version>
     <packaging>jar</packaging>
     <name>json-values-benchmark-${version}</name>
     <properties>
-        <JSON-VALUES.VERSION>12.3.2</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>12.9.0</JSON-VALUES.VERSION>
+        <JSON-VALUES.VERSION>12.9.0</JSON-VALUES.VERSION>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <JMH-VERSION>1.35</JMH-VERSION>
         <JAVAX-ANNOTATION-VERSION>1.3.2</JAVAX-ANNOTATION-VERSION>
+        <COMPILER_SOURCE_VERSION>17</COMPILER_SOURCE_VERSION>
         <COMPILER_SOURCE_VERSION>17</COMPILER_SOURCE_VERSION>
         <COMPILER_TARGET_VERSION>17</COMPILER_TARGET_VERSION>
         <PLUGIN_COMPILER_VERSION>3.8.0</PLUGIN_COMPILER_VERSION>

@@ -31,7 +31,7 @@ public class JsArrayParserTest {
                                            str(s -> s.startsWith("1")),
                                            arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
                                            arrayOfDecSuchThat(a -> a.size() == 2),
-                                           number(JsValue::isDecimal),
+                                           decimal(),
                                            arrayOfBigInt(a -> a.longValueExact() > 0),
                                            arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
                                            arrayOfObj(),

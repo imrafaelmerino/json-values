@@ -1,6 +1,5 @@
 package jsonvalues.benchmark;
 
-import jsonvalues.JsParserException;
 import jsonvalues.spec.JsObjSpec;
 
 import java.io.BufferedReader;

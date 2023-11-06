@@ -59,7 +59,6 @@ public final class JsSpecs {
     private static final JsSpec integer = new JsIntSpec(false);
     private static final JsSpec obj = new IsJsObj(false);
     private static final JsSpec any = new AnySpec();
-    private static final JsSpec number = new JsNumberSpec(false);
     private static final JsSpec str = new JsStrSpec(false);
     private static final JsArraySpec array = new JsArrayOfValue(false);
 
@@ -306,14 +305,7 @@ public final class JsSpecs {
         return str(s -> pattern.matcher(s).matches());
     }
 
-    /**
-     * Returns a non-nullable number specification.
-     *
-     * @return A specification for numbers.
-     */
-    public static JsSpec number() {
-        return number;
-    }
+
 
     /**
      * Returns a specification for an array of integers with a specified minimum and maximum length.
@@ -453,39 +445,7 @@ public final class JsSpecs {
                                  maxLength);
     }
 
-    /**
-     * Returns a required and non-nullable specification for an array of objects that conform to the given object
-     * specification.
-     *
-     * @param spec The object specification that every object in the array must conform to.
-     * @return A specification that enforces an array of objects conforming to the provided object specification.
-     */
-    public static JsArraySpec arrayOfObjSpec(final JsObjSpec spec) {
-        return new JsArrayOfSpec(false,
-                                 requireNonNull(spec));
-    }
 
-    /**
-     * Returns a required and non-nullable specification for an array of objects that conform to the given object
-     * specification.
-     *
-     * @param spec      The object specification that every object in the array must conform to.
-     * @param minLength The minimum length of the array (inclusive).
-     * @param maxLength The maximum length of the array (inclusive).
-     * @return A specification that enforces an array of objects conforming to the provided object specification.
-     * @throws IllegalArgumentException If the maximum length is less than the minimum length.
-     * @see JsObjSpec
-     */
-    public static JsArraySpec arrayOfObjSpec(final JsObjSpec spec,
-                                             int minLength,
-                                             int maxLength
-                                            ) {
-        if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-        return new JsArrayOfSpec(false,
-                                 requireNonNull(spec),
-                                 minLength,
-                                 maxLength);
-    }
 
     /**
      * Returns a required and non-nullable specification that specifies a constant value.
@@ -516,18 +476,7 @@ public final class JsSpecs {
         );
     }
 
-    /**
-     * Returns a specification for a non-nullable number, where the number satisfies the given predicate.
-     *
-     * @param predicate The predicate that the number must satisfy.
-     * @return A specification for numbers based on the specified predicate.
-     */
-    public static JsSpec number(final Predicate<JsNumber> predicate) {
-        return new JsNumberSuchThat(s -> requireNonNull(predicate).test(s) ?
-                Optional.empty() :
-                Optional.of(new JsError(s, ERROR_CODE.NUMBER_CONDITION)),
-                                    false);
-    }
+
 
     /**
      * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies
@@ -1207,6 +1156,7 @@ public final class JsSpecs {
      * @return A JSON specification for maps.
      */
     public static JsSpec mapOfSpec(JsSpec spec) {
+
         return new JsMapOfSpec(false, requireNonNull(spec));
     }
 

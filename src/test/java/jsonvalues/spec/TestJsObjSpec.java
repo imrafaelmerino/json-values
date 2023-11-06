@@ -308,7 +308,7 @@ public class TestJsObjSpec {
                                             "c",
                                             bigInteger(),
                                             "d",
-                                            number()
+                                            decimal()
                                            );
 
 
@@ -557,7 +557,7 @@ public class TestJsObjSpec {
                                             arrayOfBigInt(i -> i.longValue() < 100),
                                             "f",
                                             JsObjSpec.of("a",
-                                                         arrayOfNumber(JsValue::isInt),
+                                                         arrayOfNumber(),
                                                          "b",
                                                          arrayOfObj(JsObj::isEmpty).nullable(),
                                                          "c",
@@ -569,7 +569,7 @@ public class TestJsObjSpec {
                                                          "d",
                                                          bigInteger(i -> i.longValue() > 10),
                                                          "e",
-                                                         number(JsValue::isDouble),
+                                                         doubleNumber(),
                                                          "f",
                                                          obj(JsObj::isEmpty)
                                                         ).withOptKeys("b")
@@ -784,7 +784,7 @@ public class TestJsObjSpec {
                                                                "h",
                                                                decimal(),
                                                                "i",
-                                                               number()
+                                                               decimal()
                                                               ).lenient()
                                                  )
                                      ).withOptKeys("h");
@@ -894,7 +894,7 @@ public class TestJsObjSpec {
                                                                "h",
                                                                decimal().nullable(),
                                                                "i",
-                                                               number().nullable()
+                                                               decimal().nullable()
                                                               ).lenient()
                                                  ).nullable()
                                      );
@@ -937,14 +937,7 @@ public class TestJsObjSpec {
                           );
     }
 
-    private JsSpec arrayOfNumber(Predicate<JsNumber> number) {
-        return arrayOfSpec(OneOf.of(JsSpecs.integer(),
-                                    JsSpecs.longInteger(),
-                                    JsSpecs.bigInteger(),
-                                    JsSpecs.doubleNumber(),
-                                    JsSpecs.decimal())
-                          );
-    }
+
 
     @Test
     public void testOptionalNullableJsSpec() {
@@ -993,7 +986,7 @@ public class TestJsObjSpec {
                                                                "h",
                                                                decimal().nullable(),
                                                                "i",
-                                                               number().nullable()
+                                                               decimal().nullable()
                                                               ).lenient().withOptKeys("a",
                                                                                       "b",
                                                                                       "c",
@@ -1135,7 +1128,7 @@ public class TestJsObjSpec {
                                                                "h",
                                                                decimal(),
                                                                "i",
-                                                               number()
+                                                               decimal()
                                                               ).lenient().withOptKeys("a",
                                                                                       "b",
                                                                                       "c",

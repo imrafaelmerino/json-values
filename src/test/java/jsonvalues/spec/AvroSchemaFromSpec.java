@@ -64,8 +64,6 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsLongSpec) return longSchema(spec, defaultValue);
         if (spec instanceof JsLongSuchThat) return longSchema(spec, defaultValue);
 
-        if (spec instanceof JsNumberSpec) return numberSchema(spec, defaultValue);
-        if (spec instanceof JsNumberSuchThat) return numberSchema(spec, defaultValue);
 
         if (spec instanceof JsDoubleSpec) return doubleSchema(spec, defaultValue);
         if (spec instanceof JsDoubleSuchThat) return doubleSchema(spec, defaultValue);
