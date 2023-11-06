@@ -1,15 +1,14 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-final class JsArrayOfSpec extends AbstractSizableArr implements JsSpec, JsArraySpec, AvroSpec {
+final class JsArrayOfSpec extends AbstractSizableArr implements  JsOneErrorSpec, JsArraySpec,AvroSpec {
 
     private final JsSpec spec;
 
@@ -55,41 +54,37 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsSpec, JsArrayS
 
     }
 
+
     @Override
-    public List<SpecError> test(final JsPath parentPath,
-                                final JsValue value
-                               ) {
-        List<SpecError> errors = new ArrayList<>();
-        if (value.isNull() && nullable) return errors;
+    public Optional<JsError> testValue(JsValue value) {
+        if (isNullable() && value.isNull()) return Optional.empty();
+
+
         if (!value.isArray()) {
-            errors.add(SpecError.of(parentPath,
-                                    new JsError(value,
-                                                ARRAY_EXPECTED)));
-            return errors;
+            return Optional.of(new JsError(value,
+                                           ARRAY_EXPECTED));
+
         }
-        return apply(parentPath.index(-1),
-                     value.toJsArray()
+        return apply(value.toJsArray()
                     );
     }
 
 
-    private List<SpecError> apply(final JsPath path,
-                                  final JsArray array
-                                 ) {
-        List<SpecError> result = new ArrayList<>();
-        for (JsValue value : array) {
-            result.addAll(spec.test(path.inc(),
-                                    value));
-        }
+    private Optional<JsError> apply(final JsArray array
+                                   ) {
+
         if (array.size() < min)
-            result.add(SpecError.of(path,
-                                    new JsError(array,
-                                                ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN)));
+            return Optional.of(new JsError(array,
+                                           ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN));
         if (array.size() > max)
-            result.add(SpecError.of(path,
-                                    new JsError(array,
-                                                ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX)));
-        return result;
+            return Optional.of(new JsError(array,
+                                           ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX));
+
+        for (JsValue value : array) {
+            List<SpecError> errors = spec.test(value);
+            if (!errors.isEmpty()) return Optional.of(errors.get(0).error);
+        }
+        return Optional.empty();
     }
 
 

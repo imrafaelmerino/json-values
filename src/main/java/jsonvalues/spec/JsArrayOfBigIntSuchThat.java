@@ -5,15 +5,15 @@ import jsonvalues.*;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     private final Function<JsArray, Optional<JsError>> predicate;
-    private final JsArrayOfBigInt isArrayOfIntegral;
+    private final JsArrayOfBigInt arrayOfIntegralSpec;
 
     JsArrayOfBigIntSuchThat(final Function<JsArray, Optional<JsError>> predicate,
                             final boolean nullable
                            ) {
         super(nullable);
-        this.isArrayOfIntegral = new JsArrayOfBigInt(nullable);
+        this.arrayOfIntegralSpec = new JsArrayOfBigInt(nullable);
         this.predicate = predicate;
     }
 
@@ -34,7 +34,7 @@ final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValueP
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        final Optional<JsError> result = isArrayOfIntegral.testValue(value);
+        final Optional<JsError> result = arrayOfIntegralSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

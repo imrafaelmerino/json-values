@@ -4,7 +4,7 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 
-final class AnySpec implements JsValuePredicate {
+final class AnySpec implements JsOneErrorSpec {
 
     @Override
     public JsSpec nullable() {

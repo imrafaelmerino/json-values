@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsArrayOfDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
     JsArrayOfDecimal(final boolean nullable) {
         super(nullable);

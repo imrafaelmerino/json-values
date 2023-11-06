@@ -6,15 +6,15 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfObjSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfObjSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec {
     private final Function<JsArray, Optional<JsError>> predicate;
-    private final JsArrayOfObj isArrayOfObj;
+    private final JsArrayOfObj arrayOfObjSpec;
 
     JsArrayOfObjSuchThat(final Function<JsArray, Optional<JsError>> predicate,
                          final boolean nullable
                         ) {
         super(nullable);
-        this.isArrayOfObj = new JsArrayOfObj(nullable);
+        this.arrayOfObjSpec = new JsArrayOfObj(nullable);
         this.predicate = predicate;
     }
 
@@ -35,7 +35,7 @@ final class JsArrayOfObjSuchThat extends AbstractNullable implements JsValuePred
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        Optional<JsError> result = isArrayOfObj.testValue(value);
+        Optional<JsError> result = arrayOfObjSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

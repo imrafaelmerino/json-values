@@ -1,11 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
-import java.util.List;
+import java.util.Optional;
 
 
-final class JsMapOfInstant extends AbstractMap implements JsSpec, AvroSpec {
+final class JsMapOfInstant extends AbstractMap implements JsOneErrorSpec, AvroSpec {
     JsMapOfInstant(boolean nullable) {
         super(nullable);
     }
@@ -20,12 +20,10 @@ final class JsMapOfInstant extends AbstractMap implements JsSpec, AvroSpec {
         return JsParsers.INSTANCE.ofMapOfInstant(nullable);
     }
 
+
     @Override
-    public List<SpecError> test(JsPath path,
-                                JsValue value
-                               ) {
-        return test(path,
-                    value,
+    public Optional<JsError> testValue(JsValue value) {
+        return test(value,
                     it -> !it.isInstant(),
                     ERROR_CODE.INSTANT_EXPECTED);
     }

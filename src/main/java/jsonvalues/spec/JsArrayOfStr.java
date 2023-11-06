@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-final class JsArrayOfStr extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     JsArrayOfStr(final boolean nullable) {
         super(nullable);
     }

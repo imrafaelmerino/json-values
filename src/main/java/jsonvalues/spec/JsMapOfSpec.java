@@ -1,13 +1,12 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
-final class JsMapOfSpec extends AbstractMap implements JsSpec, AvroSpec {
+final class JsMapOfSpec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
     private final JsSpec valueSpec;
 
@@ -35,12 +34,10 @@ final class JsMapOfSpec extends AbstractMap implements JsSpec, AvroSpec {
                                               nullable);
     }
 
+
     @Override
-    public List<SpecError> test(JsPath path,
-                                JsValue value
-                               ) {
-        return test(path,
-                    value,
+    public Optional<JsError> testValue(JsValue value) {
+        return test(value,
                     valueSpec);
     }
 

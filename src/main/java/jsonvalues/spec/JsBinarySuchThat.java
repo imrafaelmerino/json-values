@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-final class JsBinarySuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
+final class JsBinarySuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     final Function<byte[], Optional<JsError>> predicate;
 

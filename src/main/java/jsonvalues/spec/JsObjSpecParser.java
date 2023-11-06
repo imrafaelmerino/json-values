@@ -13,7 +13,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * A parser, in the context of this class, refers to an instance of {@link JsParser} that encapsulates the rules and constraints defined in a JSON specification. The parser ensures that the JSON data being parsed conforms to the specified schema, enforcing rules such as data types, required fields, and user-defined conditions.
  * <p>
- * Usage of this class typically involves creating an instance with a JSON specification and then using that instance to parse JSON data. If the JSON data does not adhere to the specified schema, a {@link JsParserException} will be raised, providing detailed information about the parsing error.
+ * Usage of this class typically involves creating an instance with a JSON specification and then using that instance to parse JSON data. If the JSON data does not adhere to the specified schema, a {@link JsParserException} will be raised, providing detailed information about the parsing code.
  * <p>
  * This class provides three main methods for parsing JSON data:
  * <ul>

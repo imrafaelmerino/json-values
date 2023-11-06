@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-final class JsArrayOfInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
 
     JsArrayOfInt(final boolean nullable) {

@@ -311,7 +311,7 @@ public final class JsReader {
      * String value must start and end with a double quote (").
      *
      * @return parsed string
-     * @throws JsParserException error reading string input
+     * @throws JsParserException code reading string input
      */
     String readString() throws JsParserException {
         int len = parseString();

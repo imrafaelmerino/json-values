@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-final class JsArraySuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec {
+final class JsArraySuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec {
 
     final Function<JsArray, Optional<JsError>> predicate;
     private final JsArrayOfValue isArray;

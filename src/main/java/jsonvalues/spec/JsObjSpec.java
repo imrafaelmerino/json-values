@@ -5513,7 +5513,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
 
     /**
      * Adds a condition that the JSON object must meet. The predicate is applied to the entire JSON object. If the
-     * predicate returns false, a validation error will be generated.
+     * predicate returns false, a validation code will be generated.
      *
      * @param predicate The predicate to apply to the JSON object.
      * @return A new JsObjSpec instance with the specified condition.
@@ -5680,7 +5680,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     /**
      * Validates a given JSON object against this JsObjSpec and returns a set of validation errors, if any.
      *
-     * @param parentPath The path of the parent JSON object, used for error reporting.
+     * @param parentPath The path of the parent JSON object, used for code reporting.
      * @param value      The JSON object to validate.
      * @return A set of validation errors, or an empty set if validation passes.
      */

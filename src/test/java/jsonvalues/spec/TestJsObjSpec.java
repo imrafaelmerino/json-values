@@ -46,11 +46,11 @@ public class TestJsObjSpec {
                                      .findFirst()
                                      .get();
 
-        Assertions.assertEquals(pair.errorCode,
+        Assertions.assertEquals(pair.error.code(),
                                 STRING_EXPECTED
                                );
 
-        Assertions.assertEquals(pair.value,
+        Assertions.assertEquals(pair.error.value(),
                                 JsInt.of(1)
                                );
 
@@ -127,15 +127,15 @@ public class TestJsObjSpec {
                                );
 
         final SpecError intError = errors.stream()
-                                         .filter(it -> it.value.equals(JsInt.of(5)))
+                                         .filter(it -> it.error.value().equals(JsInt.of(5)))
                                          .findFirst().
                                          get();
 
-        Assertions.assertEquals(intError.errorCode,
+        Assertions.assertEquals(intError.error.code(),
                                 INT_CONDITION
                                );
 
-        Assertions.assertEquals(intError.value,
+        Assertions.assertEquals(intError.error.value(),
                                 JsInt.of(5)
                                );
 
@@ -148,7 +148,7 @@ public class TestJsObjSpec {
                                              .findFirst().
                                              get();
 
-        Assertions.assertEquals(instantError.errorCode,
+        Assertions.assertEquals(instantError.error.code(),
                                 INSTANT_CONDITION
                                );
 
@@ -201,11 +201,11 @@ public class TestJsObjSpec {
                                     .findFirst()
                                     .get();
 
-        Assertions.assertEquals(pair.errorCode,
+        Assertions.assertEquals(pair.error.code(),
                                 LONG_CONDITION
                                );
 
-        Assertions.assertEquals(pair.value,
+        Assertions.assertEquals(pair.error.value(),
                                 JsLong.of(4)
                                );
 
@@ -258,11 +258,11 @@ public class TestJsObjSpec {
                                     .findFirst()
                                     .get();
 
-        Assertions.assertEquals(pair.errorCode,
+        Assertions.assertEquals(pair.error.code(),
                                 DECIMAL_CONDITION
                                );
 
-        Assertions.assertEquals(pair.value,
+        Assertions.assertEquals(pair.error.value(),
                                 bd
                                );
 
@@ -1369,10 +1369,10 @@ public class TestJsObjSpec {
                                );
 
         Assertions.assertTrue(result.stream()
-                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.errorCode.equals(BINARY_EXPECTED)));
+                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.error.code().equals(BINARY_EXPECTED)));
 
         Assertions.assertTrue(result.stream()
-                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.errorCode.equals(BINARY_EXPECTED)));
+                                    .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.error.code().equals(BINARY_EXPECTED)));
 
 
     }
@@ -1409,10 +1409,10 @@ public class TestJsObjSpec {
 
 
         Assertions.assertTrue(errorPairs1.stream()
-                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.errorCode.equals(INSTANT_EXPECTED)));
+                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("b")) && e.error.code().equals(INSTANT_EXPECTED)));
 
         Assertions.assertTrue(errorPairs1.stream()
-                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.errorCode.equals(INSTANT_EXPECTED)));
+                                         .anyMatch(e -> e.path.equals(JsPath.fromKey("a")) && e.error.code().equals(INSTANT_EXPECTED)));
 
 
     }
@@ -1425,11 +1425,11 @@ public class TestJsObjSpec {
                                                                 );
 
 
-        Assertions.assertTrue(errorPairSet.stream().map(it -> it.errorCode)
+        Assertions.assertTrue(errorPairSet.stream().map(it -> it.error.code())
                                           .toList()
                                           .contains(CONSTANT_CONDITION));
 
-        Assertions.assertTrue(errorPairSet.stream().map(it -> it.value)
+        Assertions.assertTrue(errorPairSet.stream().map(it -> it.error.value())
                                           .toList()
                                           .contains(JsInt.of(1)));
 
@@ -1833,6 +1833,6 @@ public class TestJsObjSpec {
                                );
 
         Assertions.assertTrue(errors.stream()
-                                    .allMatch(it -> it.errorCode == expectedCode));
+                                    .allMatch(it -> it.error.code() == expectedCode));
     }
 }

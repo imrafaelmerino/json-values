@@ -7,7 +7,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.REQUIRED;
 
-final class AnySuchThat implements JsValuePredicate {
+final class AnySuchThat implements JsOneErrorSpec {
 
     private final Function<JsValue, Optional<JsError>> predicate;
 

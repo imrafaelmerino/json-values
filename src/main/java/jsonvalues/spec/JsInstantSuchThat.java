@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
-final class JsInstantSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
+final class JsInstantSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     final Function<Instant, Optional<JsError>> predicate;
 

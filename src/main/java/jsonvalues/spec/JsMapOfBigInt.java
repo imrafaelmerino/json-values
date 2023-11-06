@@ -1,11 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
-import java.util.List;
+import java.util.Optional;
 
 
-final class JsMapOfBigInt extends AbstractMap implements JsSpec,AvroSpec {
+final class JsMapOfBigInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
     JsMapOfBigInt(boolean nullable) {
         super(nullable);
     }
@@ -20,11 +20,10 @@ final class JsMapOfBigInt extends AbstractMap implements JsSpec,AvroSpec {
         return JsParsers.INSTANCE.ofMapOfBigInt(nullable);
     }
 
+
     @Override
-    public List<SpecError> test(JsPath path,
-                                JsValue value
-                               ) {
-        return test(path, value, it -> !it.isIntegral(), ERROR_CODE.INTEGRAL_EXPECTED);
+    public Optional<JsError> testValue(JsValue value) {
+        return test(value, it -> !it.isIntegral(), ERROR_CODE.INTEGRAL_EXPECTED);
     }
 
 

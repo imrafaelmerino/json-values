@@ -7,7 +7,7 @@ import java.util.function.DoubleFunction;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
-final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     private final DoubleFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedDouble(final DoubleFunction<Optional<JsError>> predicate,

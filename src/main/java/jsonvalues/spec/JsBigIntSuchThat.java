@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-final class JsBigIntSuchThat extends AbstractNullable implements JsValuePredicate,AvroSpec {
+final class JsBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec,AvroSpec {
 
     final Function<BigInteger, Optional<JsError>> predicate;
 

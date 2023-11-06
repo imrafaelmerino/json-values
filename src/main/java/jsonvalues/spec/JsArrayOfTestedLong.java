@@ -7,7 +7,7 @@ import java.util.function.LongFunction;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     private final LongFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedLong(final LongFunction<Optional<JsError>> predicate,

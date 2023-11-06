@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-final class IsJsObj extends AbstractNullable implements JsValuePredicate {
+final class IsJsObj extends AbstractNullable implements JsOneErrorSpec {
     IsJsObj(final boolean nullable) {
         super(nullable);
     }

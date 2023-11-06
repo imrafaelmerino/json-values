@@ -20,7 +20,7 @@ import static java.util.Objects.requireNonNull;
  * <p>
  * Usage of this class typically involves creating an instance with a JSON specification and then using that instance to
  * parse JSON array data. If the JSON array data does not adhere to the specified schema, a {@link JsParserException}
- * will be raised, providing detailed information about the parsing error.
+ * will be raised, providing detailed information about the parsing code.
  * <p>
  * This class provides three main methods for parsing JSON array data:
  * <ul>

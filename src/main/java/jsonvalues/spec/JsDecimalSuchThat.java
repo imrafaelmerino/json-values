@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsDecimalSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
+final class JsDecimalSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsDecimalSuchThat(final Function<BigDecimal, Optional<JsError>> predicate,

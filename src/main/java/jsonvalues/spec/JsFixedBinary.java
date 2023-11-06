@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_FIXED_LENGTH_EXPECTED;
 
-public final class JsFixedBinary extends AbstractNullable implements JsValuePredicate, AvroSpec {
+public final class JsFixedBinary extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     private final int size;
 

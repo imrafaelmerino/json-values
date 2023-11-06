@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-final class JsObjSuchThat extends AbstractNullable implements JsValuePredicate {
+final class JsObjSuchThat extends AbstractNullable implements JsOneErrorSpec {
 
     final Function<JsObj, Optional<JsError>> predicate;
 

@@ -1,17 +1,14 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsPath;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
 
-public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
+public final class JsEnum extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     final JsArray symbols;
 
@@ -44,14 +41,13 @@ public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
         }, nullable);
     }
 
-    @Override
-    public List<SpecError> test(JsPath parentPath, JsValue value) {
-        List<SpecError> errors = new ArrayList<>();
-        if (nullable && value.isNull()) return errors;
-        if (!symbols.containsValue(value))
-            errors.add(SpecError.of(parentPath, new JsError(value, ERROR_CODE.ENUM_SYMBOL_EXPECTED)));
-        return errors;
 
+    @Override
+    public Optional<JsError> testValue(JsValue value) {
+        if(isNullable() && value.isNull()) return Optional.empty();
+        return !symbols.containsValue(value) ?
+                Optional.of(new JsError(value, ERROR_CODE.ENUM_SYMBOL_EXPECTED)) :
+                Optional.empty();
     }
 
     public JsArray getSymbols() {

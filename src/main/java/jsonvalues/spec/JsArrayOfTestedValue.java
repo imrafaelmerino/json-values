@@ -5,7 +5,7 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfTestedValue extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedValue extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
     private final Function<JsValue, Optional<JsError>> predicate;
 
     JsArrayOfTestedValue(final Function<JsValue, Optional<JsError>> predicate,

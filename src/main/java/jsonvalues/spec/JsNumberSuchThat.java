@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
-final class JsNumberSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
+final class JsNumberSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
     final Function<JsNumber, Optional<JsError>> predicate;
 
     JsNumberSuchThat(final Function<JsNumber, Optional<JsError>> predicate,

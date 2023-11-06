@@ -7,7 +7,7 @@ import java.util.function.IntFunction;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     final IntFunction<Optional<JsError>> predicate;
 
     JsArrayOfTestedInt(final IntFunction<Optional<JsError>> predicate,

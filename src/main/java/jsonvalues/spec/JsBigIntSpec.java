@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate,AvroSpec {
+final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec,AvroSpec {
 
     JsBigIntSpec(final boolean nullable) {
         super(nullable);

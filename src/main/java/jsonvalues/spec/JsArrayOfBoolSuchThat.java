@@ -6,16 +6,16 @@ import java.util.Optional;
 import java.util.function.Function;
 
 
-final class JsArrayOfBoolSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfBoolSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
     private final Function<JsArray, Optional<JsError>> predicate;
-    private final JsArrayOfBool isArrayOfBool;
+    private final JsArrayOfBool arrayOfBoolSpec;
 
     JsArrayOfBoolSuchThat(final Function<JsArray, Optional<JsError>> predicate,
                           final boolean nullable
                          ) {
         super(nullable);
-        this.isArrayOfBool = new JsArrayOfBool(nullable);
+        this.arrayOfBoolSpec = new JsArrayOfBool(nullable);
         this.predicate = predicate;
     }
 
@@ -37,7 +37,7 @@ final class JsArrayOfBoolSuchThat extends AbstractNullable implements JsValuePre
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        final Optional<JsError> result = isArrayOfBool.testValue(value);
+        final Optional<JsError> result = arrayOfBoolSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

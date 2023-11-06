@@ -20,7 +20,7 @@ import java.util.List;
  * The `JsSpec` interface offers the following key functionality: - Enabling the nullable flag, indicating whether the
  * JSON value can be null. - Retrieving the deserializer used during the parsing process for parsing arrays of bytes or
  * strings into JSON values. - Reading and parsing JSON values token by token from a reader while verifying if they
- * conform to the specification. - Testing JSON values against the specification and returning a set of path/error pairs
+ * conform to the specification. - Testing JSON values against the specification and returning a set of path/code pairs
  * for validation errors.
  * <p>
  * This interface serves as a foundation for building a JSON validation framework and allows for the creation of custom
@@ -34,7 +34,7 @@ import java.util.List;
  * @see JsPath
  * @see JsReader
  */
-public sealed interface JsSpec permits JsArrayOfSpec, JsArraySpec, JsEnum, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfDouble, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfSpec, JsMapOfStr, JsObjSpec, JsValuePredicate, OneOf, OneOfObjSpec {
+public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, OneOf, OneOfObjSpec {
 
     /**
      * Returns the same spec with the nullable flag enabled.
@@ -69,7 +69,7 @@ public sealed interface JsSpec permits JsArrayOfSpec, JsArraySpec, JsEnum, JsMap
      *
      * @param parentPath The path where the tested value is located within the JSON structure.
      * @param value      The JSON value to be tested.
-     * @return A set of path/error pairs representing validation errors.
+     * @return A set of path/code pairs representing validation errors.
      */
     List<SpecError> test(final JsPath parentPath, final JsValue value);
 
@@ -77,7 +77,7 @@ public sealed interface JsSpec permits JsArrayOfSpec, JsArraySpec, JsEnum, JsMap
      * Verify if the given JSON value satisfies this spec, starting from the root path.
      *
      * @param value The JSON value to be tested.
-     * @return A set of path/error pairs representing validation errors.
+     * @return A set of path/code pairs representing validation errors.
      */
     default List<SpecError> test(final JsValue value) {
         return test(JsPath.empty(), value);

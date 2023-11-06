@@ -23,11 +23,11 @@ class FunTest {
                                     .findFirst()
                                     .get();
 
-        Assertions.assertEquals(pair.errorCode,
+        Assertions.assertEquals(pair.error.code(),
                                 code
         );
 
-        Assertions.assertEquals(pair.value,
+        Assertions.assertEquals(pair.error.value(),
                                 value
         );
 

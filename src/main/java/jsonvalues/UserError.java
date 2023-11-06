@@ -2,7 +2,7 @@ package jsonvalues;
 
 
 /**
- Exception that models a programming error made by the user. The user has a bug in their code and something
+ Exception that models a programming code made by the user. The user has a bug in their code and something
  has to be fixed. Part of the exception message is a suggestion to fix the bug.
  */
 @SuppressWarnings("serial")

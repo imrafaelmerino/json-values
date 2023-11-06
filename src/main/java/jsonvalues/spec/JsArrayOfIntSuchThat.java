@@ -5,15 +5,15 @@ import jsonvalues.*;
 import java.util.Optional;
 import java.util.function.Function;
 
-final class JsArrayOfIntSuchThat extends AbstractNullable implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfIntSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     private final Function<JsArray, Optional<JsError>> predicate;
-    private final JsArrayOfInt isArrayOfInt;
+    private final JsArrayOfInt arrayOfIntSpec;
 
     JsArrayOfIntSuchThat(final Function<JsArray, Optional<JsError>> predicate,
                          final boolean nullable
                         ) {
         super(nullable);
-        this.isArrayOfInt = new JsArrayOfInt(nullable);
+        this.arrayOfIntSpec = new JsArrayOfInt(nullable);
         this.predicate = predicate;
     }
 
@@ -37,7 +37,7 @@ final class JsArrayOfIntSuchThat extends AbstractNullable implements JsValuePred
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        final Optional<JsError> result = isArrayOfInt.testValue(value);
+        final Optional<JsError> result = arrayOfIntSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
                result :
                predicate.apply(value.toJsArray());

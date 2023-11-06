@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.NUMBER_EXPECTED;
 
-final class JsNumberSpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
+final class JsNumberSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
     JsNumberSpec(final boolean nullable) {
         super(nullable);
     }

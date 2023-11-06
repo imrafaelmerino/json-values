@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-import java.util.List;
+import java.util.Optional;
 
 
-final class JsMapOfDouble extends AbstractMap implements JsSpec, AvroSpec {
+final class JsMapOfDouble extends AbstractMap implements JsOneErrorSpec, AvroSpec {
     JsMapOfDouble(boolean nullable) {
         super(nullable);
     }
@@ -21,12 +20,10 @@ final class JsMapOfDouble extends AbstractMap implements JsSpec, AvroSpec {
         return JsParsers.INSTANCE.ofMapOfDouble(nullable);
     }
 
+
     @Override
-    public List<SpecError> test(JsPath path,
-                                JsValue value
-                               ) {
-        return test(path,
-                    value,
+    public Optional<JsError> testValue(JsValue value) {
+        return test(value,
                     it -> !it.isDouble(),
                     ERROR_CODE.DOUBLE_EXPECTED);
     }

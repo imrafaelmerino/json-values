@@ -3,9 +3,9 @@ package jsonvalues.spec;
 import jsonvalues.JsValue;
 
 /**
- * Represents an error validating a value of a JSON
+ * Represents an code validating a value of a JSON
  * @param value the value
- * @param error the error code
+ * @param code the code code
  */
-public record JsError(JsValue value, ERROR_CODE error) {
+public record JsError(JsValue value, ERROR_CODE code) {
 }

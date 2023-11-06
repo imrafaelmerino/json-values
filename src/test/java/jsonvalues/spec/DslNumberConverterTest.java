@@ -26,7 +26,7 @@ public class DslNumberConverterTest {
                 return r;
         };
 
-        //my implementation returns an error
+        //my implementation returns an code
         Assertions.assertThrows(JsParserException.class,
                                 () -> NumberConverter.deserializeInt(reader.get()));
 

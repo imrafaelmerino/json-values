@@ -35,7 +35,7 @@ class ParserErrors {
 
     static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key -> "The JSON doesn't conform the spec because the required key '" + key + "' doesn't exist";
 
-    static final Function<JsError, String> JS_ERROR_2_STR = e -> e.error().name();
+    static final Function<JsError, String> JS_ERROR_2_STR = e -> e.code().name();
 
     static final String TOO_MANY_DIGITS = "Too many digits detected in number";
 

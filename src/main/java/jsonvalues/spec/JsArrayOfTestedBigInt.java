@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValuePredicate, JsArraySpec , AvroSpec {
+final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec , AvroSpec {
     private final Function<BigInteger, Optional<JsError>> predicate;
 
     JsArrayOfTestedBigInt(final Function<BigInteger, Optional<JsError>> predicate,

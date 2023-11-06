@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-final class JsArrayOfTestedObj extends AbstractSizableArr implements JsValuePredicate, JsArraySpec {
+final class JsArrayOfTestedObj extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
     final Function<JsObj, Optional<JsError>> predicate;
 
     JsArrayOfTestedObj(final Function<JsObj, Optional<JsError>> predicate,

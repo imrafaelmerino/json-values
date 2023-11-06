@@ -8,7 +8,7 @@ import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsValuePredicate, JsArraySpec, AvroSpec {
+final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
     final Function<BigDecimal, Optional<JsError>> predicate;
 
     JsArrayOfTestedDecimal(final Function<BigDecimal, Optional<JsError>> predicate,
