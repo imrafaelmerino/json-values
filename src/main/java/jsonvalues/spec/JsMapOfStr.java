@@ -16,8 +16,8 @@ final class JsMapOfStr extends AbstractMap implements JsSpec , AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfString(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfString(nullable);
     }
 
     @Override

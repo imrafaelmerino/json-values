@@ -16,8 +16,8 @@ final class JsMapOfLong extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfLong(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfLong(nullable);
     }
 
     @Override

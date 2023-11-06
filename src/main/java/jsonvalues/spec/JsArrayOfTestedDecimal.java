@@ -39,12 +39,12 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsValue
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDecimalEachSuchThat(predicate,
-                                                                   nullable,
-                                                                   min,
-                                                                   max
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDecimalEachSuchThat(predicate,
+                                                               nullable,
+                                                               min,
+                                                               max
+                                                              );
     }
 
     @Override

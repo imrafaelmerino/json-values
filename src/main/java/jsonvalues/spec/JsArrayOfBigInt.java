@@ -29,8 +29,8 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsValuePredica
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE
+    public JsParser parser() {
+        return JsParsers.INSTANCE
                 .ofArrayOfIntegral(nullable,
                                    min,
                                    max);

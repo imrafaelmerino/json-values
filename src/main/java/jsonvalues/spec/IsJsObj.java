@@ -18,8 +18,8 @@ final class IsJsObj extends AbstractNullable implements JsValuePredicate {
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofObj(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofObj(nullable);
     }
 
 

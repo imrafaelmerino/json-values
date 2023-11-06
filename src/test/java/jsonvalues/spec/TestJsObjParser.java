@@ -267,7 +267,7 @@ public class TestJsObjParser {
                                             "d",
                                             arrayOfDec(),
                                             "e",
-                                            arrayOfNumber(),
+                                            arrayOfDec(),
                                             "f",
                                             arrayOfBigInt(),
                                             "g",
@@ -977,38 +977,7 @@ public class TestJsObjParser {
 
     }
 
-    @Test
-    public void array_of_number() {
-        JsObjSpec spec = JsObjSpec.of("a",
-                                      arrayOfNumber(JsValue::isDecimal),
-                                      "b",
-                                      arrayOfNumber(JsValue::isDecimal).nullable(),
-                                      "c",
-                                      arrayOfNumber(JsValue::isIntegral),
-                                      "e",
-                                      arrayOfNumber(JsValue::isDecimal)
-                                     ).withOptKeys("c",
-                                                   "e"
-                                                  );
 
-        JsObjSpecParser parser = JsObjSpecParser.of(spec);
-
-        final JsObj a = JsObj.of("a",
-                                 JsArray.of(1.5,
-                                            1.7
-                                           ),
-                                 "b",
-                                 JsNull.NULL,
-                                 "c",
-                                 JsArray.of(1,
-                                            2,
-                                            3
-                                           )
-                                );
-        Assertions.assertEquals(a,
-                                parser.parse(a.toString())
-                               );
-    }
 
     @Test
     public void array_of_number_with_predicate() {
@@ -1173,16 +1142,16 @@ public class TestJsObjParser {
     public void test_numbers() {
 
         String obj = "{ \n"
-                + "  \"a\": 10E-5,\n"
-                + "  \"b\": -10E+3,\n"
-                + "  \"c\":  10E-3,\n"
-                + "  \"d\": 15.5E-3,\n"
-                + "  \"e\": -1000.50,\n"
-                + "  \"f\": 100000000000000000000000000.0E5,\n"
-                + "  \"i\": 100000000000000000000000000.0E+5,\n"
-                + "  \"g\": -1245600.25E-2\n"
-                +
-                "}";
+                     + "  \"a\": 10E-5,\n"
+                     + "  \"b\": -10E+3,\n"
+                     + "  \"c\":  10E-3,\n"
+                     + "  \"d\": 15.5E-3,\n"
+                     + "  \"e\": -1000.50,\n"
+                     + "  \"f\": 100000000000000000000000000.0E5,\n"
+                     + "  \"i\": 100000000000000000000000000.0E+5,\n"
+                     + "  \"g\": -1245600.25E-2\n"
+                     +
+                     "}";
 
         final JsObj parsed = JsObjSpecParser.of(JsObjSpec.of("a",
                                                              decimal(),
@@ -1322,7 +1291,7 @@ public class TestJsObjParser {
                                      ).withOptKeys("a").lenient();
 
 
-        JsArraySpec arraySpec = JsSpecs.arrayOfObjSpec(spec.nullable());
+        JsArraySpec arraySpec = JsSpecs.arrayOfSpec(spec.nullable());
 
         JsArraySpecParser parser = new JsArraySpecParser(arraySpec);
 

@@ -34,8 +34,8 @@ public final class JsFixedBinary extends AbstractNullable implements JsValuePred
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofFixedBinary(size, nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofFixedBinary(size, nullable);
     }
 
     @Override

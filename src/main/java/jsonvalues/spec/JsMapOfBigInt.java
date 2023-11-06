@@ -16,8 +16,8 @@ final class JsMapOfBigInt extends AbstractMap implements JsSpec,AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfBigInt(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfBigInt(nullable);
     }
 
     @Override

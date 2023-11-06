@@ -368,7 +368,6 @@ public final class JsSpecs {
     }
 
 
-
     /**
      * Returns a specification for an array of objects with a specified minimum and maximum length.
      *
@@ -462,8 +461,8 @@ public final class JsSpecs {
      * @return A specification that enforces an array of objects conforming to the provided object specification.
      */
     public static JsArraySpec arrayOfObjSpec(final JsObjSpec spec) {
-        return new JsArrayOfObjSpec(false,
-                                    requireNonNull(spec));
+        return new JsArrayOfSpec(false,
+                                 requireNonNull(spec));
     }
 
     /**
@@ -482,10 +481,10 @@ public final class JsSpecs {
                                              int maxLength
                                             ) {
         if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-        return new JsArrayOfObjSpec(false,
-                                    requireNonNull(spec),
-                                    minLength,
-                                    maxLength);
+        return new JsArrayOfSpec(false,
+                                 requireNonNull(spec),
+                                 minLength,
+                                 maxLength);
     }
 
     /**
@@ -672,46 +671,6 @@ public final class JsSpecs {
                 Optional.of(new JsError(s,
                                         ARRAY_CONDITION)),
                                            false);
-    }
-
-    /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
-     * predicate.
-     *
-     * @param predicate The predicate that each number in the array must satisfy.
-     * @return An array specification for numbers based on the specified predicate.
-     */
-    public static JsArraySpec arrayOfNumber(final Predicate<JsNumber> predicate) {
-        return new JsArrayOfTestedNumber(s -> requireNonNull(predicate).test(s) ?
-                Optional.empty() :
-                Optional.of(new JsError(s,
-                                        ERROR_CODE.NUMBER_CONDITION)),
-                                         false);
-    }
-
-    /**
-     * Returns a specification for a non-nullable array of numbers, where each element of the array satisfies the given
-     * predicate.
-     *
-     * @param predicate The predicate that each number in the array must satisfy.
-     * @param minLength The minimum size of the array (inclusive).
-     * @param maxLength The maximum size of the array (inclusive).
-     * @return An array specification for numbers based on the specified predicate.
-     * @throws IllegalArgumentException If maxLength is less than minLength.
-     */
-    public static JsArraySpec arrayOfNumber(final Predicate<JsNumber> predicate,
-                                            final int minLength,
-                                            final int maxLength
-                                           ) {
-        if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-
-        return new JsArrayOfTestedNumber(s -> requireNonNull(predicate).test(s) ?
-                Optional.empty() :
-                Optional.of(new JsError(s,
-                                        ERROR_CODE.NUMBER_CONDITION)),
-                                         false,
-                                         minLength,
-                                         maxLength);
     }
 
 
@@ -1228,7 +1187,7 @@ public final class JsSpecs {
      * @return A JSON specification for objects with object values.
      */
     public static JsSpec mapOfObj(JsObjSpec spec) {
-        return new JsMapOfObjSpec(spec);
+        return new JsMapOfSpec(spec);
     }
 
     /**
@@ -1240,13 +1199,23 @@ public final class JsSpecs {
         return mapOfStrSpec;
     }
 
+
     /**
-     * Returns a specification that validates that the JSON is an object, and the value of each key is an array.
+     * Returns a specification that validates that the JSON is an object, and the value of each key is a value that
+     * conforms the given spec.
      *
-     * @return A JSON specification for objects with array values.
+     * @return A JSON specification for maps.
      */
-    public static JsSpec mapOfArray(JsArraySpec spec) {
-        return new JsMapOfArraySpec(false, spec);
+    public static JsSpec mapOfSpec(JsSpec spec) {
+        return new JsMapOfSpec(false, requireNonNull(spec));
+    }
+
+    public static JsArraySpec arrayOfSpec(JsSpec spec) {
+        return new JsArrayOfSpec(false, requireNonNull(spec));
+    }
+
+    public static JsArraySpec arrayOfSpec(JsSpec spec, int min, int max) {
+        return new JsArrayOfSpec(false, requireNonNull(spec), min, max);
     }
 
 

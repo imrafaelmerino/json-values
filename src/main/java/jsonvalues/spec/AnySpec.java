@@ -12,8 +12,8 @@ final class AnySpec implements JsValuePredicate {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofValue();
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofValue();
     }
 
 

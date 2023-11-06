@@ -7,16 +7,16 @@ import java.util.Map;
 import java.util.function.Predicate;
 
 class JsObjSpecReader extends AbstractJsObjReader {
-    private static final JsValueReader valueParser = JsParsers.PARSERS.valueParser;
-    private static final JsSpecParser defaultParser = valueParser::nullOrValue;
+    private static final JsValueReader valueParser = JsReaders.READERS.valueReader;
+    private static final JsParser defaultParser = valueParser::nullOrValue;
     final boolean strict;
-    private final Map<String, JsSpecParser> parsers;
+    private final Map<String, JsParser> parsers;
     private final MetaData metadata;
 
     protected Predicate<JsObj> predicate;
 
     JsObjSpecReader(boolean strict,
-                    Map<String, JsSpecParser> parsers,
+                    Map<String, JsParser> parsers,
                     Predicate<JsObj> predicate,
                     MetaData metadata
                    ) {
@@ -26,17 +26,10 @@ class JsObjSpecReader extends AbstractJsObjReader {
         this.metadata = metadata;
     }
 
-    JsSpecParser getParser(final String key) {
-        var parser = parsers.get(key);
-        if (parser != null) return parser;
-        var aliasField = metadata != null ? metadata.getAliasField(key) : null;
-        if (aliasField != null) return parsers.get(aliasField);
-        return null;
-    }
 
     @Override
     JsObj value(final JsReader reader) throws JsParserException {
-        if (isEmptyObj(reader)) return EMPTY_OBJ;
+        if (isEmptyObj(reader)) return addDefaultFieldsIfSpecified(EMPTY_OBJ);
         var key = reader.readKey();
         var parser = parsers.get(key);
         if (parser == null) {
@@ -81,14 +74,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
             throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
                                              reader.getPositionInStream()
                                             );
-        if (metadata.fieldsDefault() != null) {
-            for (String defaultKey : metadata.fieldsDefault().keySet()) {
-                if (obj.get(defaultKey).isNothing())
-                    obj = obj.set(defaultKey,
-                                  metadata.fieldsDefault()
-                                          .get(defaultKey));
-            }
-        }
+        obj = addDefaultFieldsIfSpecified(obj);
 
         if (predicate != null && !predicate.test(obj))
             throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
@@ -98,8 +84,20 @@ class JsObjSpecReader extends AbstractJsObjReader {
 
     }
 
+    private JsObj addDefaultFieldsIfSpecified(JsObj obj) {
+        if (metadata != null && metadata.fieldsDefault() != null) {
+            for (String defaultKey : metadata.fieldsDefault().keySet()) {
+                if (obj.get(defaultKey).isNothing())
+                    obj = obj.set(defaultKey,
+                                  metadata.fieldsDefault()
+                                          .get(defaultKey));
+            }
+        }
+        return obj;
+    }
+
     private void throwErrorIfStrictAndKeyMissing(final JsReader reader,
-                                                 final JsSpecParser keyParser,
+                                                 final JsParser keyParser,
                                                  final String key
                                                 ) {
         if (strict && keyParser == null) {

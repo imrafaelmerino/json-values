@@ -30,7 +30,7 @@ public class JsArrayParserTest {
                                            any(v -> v.isStr() || v.isInt()),
                                            str(s -> s.startsWith("1")),
                                            arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
-                                           arrayOfNumberSuchThat(a -> a.size() == 2),
+                                           arrayOfDecSuchThat(a -> a.size() == 2),
                                            number(JsValue::isDecimal),
                                            arrayOfBigInt(a -> a.longValueExact() > 0),
                                            arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
@@ -117,11 +117,11 @@ public class JsArrayParserTest {
     @Test
     public void testArrayOfObject() {
         JsObjSpec spec = JsObjSpec.of("a",
-                                      JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
-                                                                          str(),
-                                                                          "b",
-                                                                          integer()
-                                                                         ))
+                                      JsSpecs.arrayOfSpec(JsObjSpec.of("a",
+                                                                       str(),
+                                                                       "b",
+                                                                       integer()
+                                                                      ))
                                      );
 
         final JsObj a = JsObj.of("a",
@@ -138,11 +138,11 @@ public class JsArrayParserTest {
                                );
 
         JsObjSpec specNullable = JsObjSpec.of("a",
-                                              JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
-                                                                                  str(),
-                                                                                  "b",
-                                                                                  integer()
-                                                                                 ))
+                                              JsSpecs.arrayOfSpec(JsObjSpec.of("a",
+                                                                               str(),
+                                                                               "b",
+                                                                               integer()
+                                                                              ))
                                                      .nullable()
                                              );
 
@@ -178,8 +178,8 @@ public class JsArrayParserTest {
                                               arrayOfBoolSuchThat(arr -> arr.size() > 2)
                                                       .nullable(),
                                               "c",
-                                              arrayOfNumberSuchThat(arr -> arr.head()
-                                                                              .equals(JsInt.of(1)))
+                                              arrayOfDecSuchThat(arr -> arr.head()
+                                                                           .equals(JsInt.of(1)))
                                                       .nullable(),
                                               "d",
                                               arrayOfDecSuchThat(arr -> arr.head()
@@ -195,7 +195,7 @@ public class JsArrayParserTest {
                                               "i",
                                               arrayOfStr(i -> i.length() > 2).nullable(),
                                               "j",
-                                              arrayOfNumber(JsValue::isDecimal).nullable()
+                                              arrayOfDec().nullable()
 
                                              ).withAllOptKeys();
 

@@ -53,15 +53,15 @@ final class JsTuple extends AbstractNullable implements JsArraySpec {
     }
 
     @Override
-    public JsSpecParser parser() {
+    public JsParser parser() {
 
-        List<JsSpecParser> parsers = new ArrayList<>();
+        List<JsParser> parsers = new ArrayList<>();
         for (JsSpec spec : specs)
             parsers.add(spec.parser());
 
-        return JsSpecParsers.INSTANCE.ofArraySpec(parsers,
-                                                  nullable
-                                                 );
+        return JsParsers.INSTANCE.ofTuple(parsers,
+                                          nullable
+                                         );
     }
 
 

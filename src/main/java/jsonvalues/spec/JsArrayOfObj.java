@@ -28,10 +28,10 @@ final class JsArrayOfObj extends AbstractSizableArr implements JsValuePredicate,
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfObj(nullable,
-                                                   min,
-                                                   max);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfObj(nullable,
+                                               min,
+                                               max);
     }
 
 

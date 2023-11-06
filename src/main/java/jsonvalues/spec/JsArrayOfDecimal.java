@@ -29,16 +29,16 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsValuePredic
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDecimal(nullable,
-                                                       min,
-                                                       max);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDecimal(nullable,
+                                                   min,
+                                                   max);
     }
 
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        return Functions.testArrayOfTestedValue(v -> v.isDecimal() ?
+        return Functions.testArrayOfTestedValue(v -> v.isNumber() ?
                                                      Optional.empty() :
                                                      Optional.of(new JsError(v,
                                                                             DECIMAL_EXPECTED)),

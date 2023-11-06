@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * The {@code JsObjSpecParser} class is responsible for creating JSON object parsers based on provided JSON specifications (specs). It allows you to define a JSON schema using a specification and then use that schema to parse JSON data into structured Java objects. This class is part of the JSONValues library, which focuses on providing a type-safe and functional approach to JSON parsing and manipulation.
  * <p>
- * A parser, in the context of this class, refers to an instance of {@link JsSpecParser} that encapsulates the rules and constraints defined in a JSON specification. The parser ensures that the JSON data being parsed conforms to the specified schema, enforcing rules such as data types, required fields, and user-defined conditions.
+ * A parser, in the context of this class, refers to an instance of {@link JsParser} that encapsulates the rules and constraints defined in a JSON specification. The parser ensures that the JSON data being parsed conforms to the specified schema, enforcing rules such as data types, required fields, and user-defined conditions.
  * <p>
  * Usage of this class typically involves creating an instance with a JSON specification and then using that instance to parse JSON data. If the JSON data does not adhere to the specified schema, a {@link JsParserException} will be raised, providing detailed information about the parsing error.
  * <p>
@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public final class JsObjSpecParser {
 
 
-    private final JsSpecParser parser;
+    private final JsParser parser;
 
     /**
      * Constructs a new instance of JsObjSpecParser with the specified JSON specification.

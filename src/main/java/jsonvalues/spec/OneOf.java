@@ -3,7 +3,9 @@ package jsonvalues.spec;
 import jsonvalues.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
@@ -18,13 +20,17 @@ public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
         return new OneOf(false, specs);
     }
 
+    public static OneOf of(JsSpec... specs) {
+        return new OneOf(false, Arrays.stream(Objects.requireNonNull(specs)).toList());
+    }
+
     @Override
     public JsSpec nullable() {
         return new OneOf(true, specs);
     }
 
     @Override
-    public JsSpecParser parser() {
+    public JsParser parser() {
         return reader -> parse(reader, 0);
     }
 

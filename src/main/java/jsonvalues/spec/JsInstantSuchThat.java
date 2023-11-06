@@ -29,10 +29,10 @@ final class JsInstantSuchThat extends AbstractNullable implements JsValuePredica
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofInstantSuchThat(predicate,
-                                                        nullable
-                                                       );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofInstantSuchThat(predicate,
+                                                    nullable
+                                                   );
     }
 
 

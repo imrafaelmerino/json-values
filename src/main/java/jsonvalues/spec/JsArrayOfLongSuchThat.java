@@ -27,10 +27,10 @@ final class JsArrayOfLongSuchThat extends AbstractNullable implements JsValuePre
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfLongSuchThat(predicate,
-                                                            nullable
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfLongSuchThat(predicate,
+                                                        nullable
+                                                       );
     }
 
 

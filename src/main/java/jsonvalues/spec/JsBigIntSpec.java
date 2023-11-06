@@ -20,8 +20,8 @@ final class JsBigIntSpec extends AbstractNullable implements JsValuePredicate,Av
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofIntegral(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofIntegral(nullable);
     }
 
 

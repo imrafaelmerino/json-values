@@ -45,7 +45,7 @@ public class Fun {
                                        "numbers",
                                        arrayOfInt(1,100),
                                        "vegetables",
-                                       arrayOfObjSpec(JsObjSpec.of("veggieName",
+                                       arrayOfSpec(JsObjSpec.of("veggieName",
                                                                 str(length(1,
                                                                            255)),
                                                                 "veggieLike",

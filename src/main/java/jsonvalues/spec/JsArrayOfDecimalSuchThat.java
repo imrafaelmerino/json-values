@@ -26,9 +26,9 @@ final class JsArrayOfDecimalSuchThat extends AbstractNullable implements JsValue
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDecimalSuchThat(predicate,
-                                                               nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDecimalSuchThat(predicate,
+                                                           nullable);
     }
 
 

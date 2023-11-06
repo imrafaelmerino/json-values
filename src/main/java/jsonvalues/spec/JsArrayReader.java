@@ -12,13 +12,13 @@ import java.util.function.Supplier;
 abstract class JsArrayReader extends AbstractReader {
 
     static final JsArray EMPTY = JsArray.empty();
-    private final AbstractReader parser;
+    private final AbstractReader elementReader;
 
-    JsArrayReader(final AbstractReader parser) {
-        this.parser = parser;
+    JsArrayReader(final AbstractReader reader) {
+        this.elementReader = reader;
     }
 
-    JsValue nullOrArray(final JsReader reader,
+    JsValue nullOrArray(JsReader reader,
                         int min,
                         int max
                        ) throws JsParserException {
@@ -39,10 +39,10 @@ abstract class JsArrayReader extends AbstractReader {
                          min,
                          reader.getPositionInStream()
                         )) return EMPTY;
-        JsArray buffer = EMPTY.append(parser.value(reader));
+        JsArray buffer = EMPTY.append(elementReader.value(reader));
         while (reader.readNextToken() == ',') {
             reader.readNextToken();
-            buffer = buffer.append(parser.value(reader));
+            buffer = buffer.append(elementReader.value(reader));
             checkSize(buffer.size() > max,
                       ParserErrors.TOO_LONG_ARRAY.apply(max),
                       reader.getPositionInStream()
@@ -75,17 +75,15 @@ abstract class JsArrayReader extends AbstractReader {
     @Override
     public JsArray value(final JsReader reader) throws JsParserException {
         if (isEmptyArray(reader)) return EMPTY;
-        JsArray buffer = EMPTY.append(parser.value(reader));
+        JsArray buffer = EMPTY.append(elementReader.value(reader));
         while (reader.readNextToken() == ',') {
             reader.readNextToken();
-            buffer = buffer.append(parser.value(reader));
+            buffer = buffer.append(elementReader.value(reader));
         }
         reader.checkArrayEnd();
         return buffer;
 
     }
-
-
 
 
     private boolean isEmptyArray(final JsReader reader) throws JsParserException {

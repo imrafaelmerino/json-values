@@ -18,8 +18,8 @@ final class JsInstantSpec extends AbstractNullable implements JsValuePredicate ,
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofInstant(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofInstant(nullable);
     }
 
     @Override

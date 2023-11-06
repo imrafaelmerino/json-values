@@ -6,7 +6,6 @@ import java.util.Optional;
 import java.util.function.DoubleFunction;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
-import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 final class JsDoubleSuchThat extends AbstractNullable implements JsValuePredicate, AvroSpec {
     final DoubleFunction<Optional<JsError>> predicate;
@@ -28,10 +27,10 @@ final class JsDoubleSuchThat extends AbstractNullable implements JsValuePredicat
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofDoubleSuchThat(predicate,
-                                                       nullable
-                                                      );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofDoubleSuchThat(predicate,
+                                                   nullable
+                                                  );
     }
 
 

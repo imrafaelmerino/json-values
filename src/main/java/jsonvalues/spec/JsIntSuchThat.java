@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -28,10 +26,10 @@ final class JsIntSuchThat extends AbstractNullable implements JsValuePredicate, 
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofIntSuchThat(predicate,
-                                                    nullable
-                                                   );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofIntSuchThat(predicate,
+                                                nullable
+                                               );
     }
 
 

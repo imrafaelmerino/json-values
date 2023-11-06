@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -21,8 +19,8 @@ final class JsBooleanSpec extends AbstractNullable implements JsValuePredicate, 
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofBool(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofBool(nullable);
     }
 
     @Override

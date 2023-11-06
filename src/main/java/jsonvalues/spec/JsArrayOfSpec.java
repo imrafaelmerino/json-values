@@ -1,31 +1,33 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsArray;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArraySpec, AvroSpec {
+final class JsArrayOfSpec extends AbstractSizableArr implements JsSpec, JsArraySpec, AvroSpec {
 
-    private final JsObjSpec spec;
+    private final JsSpec spec;
 
 
-    JsArrayOfObjSpec(final boolean nullable,
-                     final JsObjSpec spec
-                    ) {
+    JsArrayOfSpec(final boolean nullable,
+                  final JsSpec spec
+                 ) {
         this(nullable,
              spec,
              0,
              Integer.MAX_VALUE);
     }
 
-    JsArrayOfObjSpec(final boolean nullable,
-                     final JsObjSpec spec,
-                     int min,
-                     int max
-                    ) {
+    JsArrayOfSpec(final boolean nullable,
+                  final JsSpec spec,
+                  int min,
+                  int max
+                 ) {
         super(nullable,
               min,
               max);
@@ -35,25 +37,21 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
 
     @Override
     public JsSpec nullable() {
-        return new JsArrayOfObjSpec(true,
-                                    spec,
-                                    min,
-                                    max
+        return new JsArrayOfSpec(true,
+                                 spec,
+                                 min,
+                                 max
         );
     }
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfObjSpec(spec.getRequiredFields(),
-                                                       spec.parsers,
-                                                       spec.predicate,
-                                                       spec.strict,
-                                                       spec.metaData,
-                                                       nullable,
-                                                       min,
-                                                       max
-                                                      );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfSpec(spec.parser(),
+                                                nullable,
+                                                min,
+                                                max
+                                               );
 
     }
 
@@ -75,10 +73,9 @@ final class JsArrayOfObjSpec extends AbstractSizableArr implements JsSpec, JsArr
     }
 
 
-
     private List<SpecError> apply(final JsPath path,
-                                 final JsArray array
-                                ) {
+                                  final JsArray array
+                                 ) {
         List<SpecError> result = new ArrayList<>();
         for (JsValue value : array) {
             result.addAll(spec.test(path.inc(),

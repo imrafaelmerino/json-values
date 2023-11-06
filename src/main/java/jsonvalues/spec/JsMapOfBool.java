@@ -16,8 +16,8 @@ final class JsMapOfBool extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfBool(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfBool(nullable);
     }
 
     @Override

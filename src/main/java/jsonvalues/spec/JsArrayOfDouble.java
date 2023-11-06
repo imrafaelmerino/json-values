@@ -30,10 +30,10 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsValuePredica
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDouble(nullable,
-                                                      min,
-                                                      max);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDouble(nullable,
+                                                  min,
+                                                  max);
     }
 
 

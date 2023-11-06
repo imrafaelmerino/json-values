@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -20,8 +18,8 @@ final class JsBinarySpec extends AbstractNullable implements JsValuePredicate, A
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofBinary(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofBinary(nullable);
     }
 
     @Override

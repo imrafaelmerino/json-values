@@ -16,8 +16,8 @@ final class JsMapOfDec extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfDecimal(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfDecimal(nullable);
     }
 
     @Override

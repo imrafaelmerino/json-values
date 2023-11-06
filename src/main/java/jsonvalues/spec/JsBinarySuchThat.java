@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -29,10 +27,10 @@ final class JsBinarySuchThat extends AbstractNullable implements JsValuePredicat
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofBinarySuchThat(predicate,
-                                                       nullable
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofBinarySuchThat(predicate,
+                                                   nullable
+                                                  );
     }
 
 

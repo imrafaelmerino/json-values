@@ -27,9 +27,9 @@ final class JsArrayOfObjSuchThat extends AbstractNullable implements JsValuePred
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfObjSuchThat(predicate,
-                                                           nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfObjSuchThat(predicate,
+                                                       nullable);
     }
 
 

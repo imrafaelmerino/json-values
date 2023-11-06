@@ -125,7 +125,7 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsInstantSpec) return instantSchema(spec, defaultValue);
         if (spec instanceof JsInstantSuchThat) return instantSchema(spec, defaultValue);
 
-        if (spec instanceof JsArrayOfObjSpec arrayOfObjSpec) return arrayOfObjSpecSchema(arrayOfObjSpec, defaultValue);
+        if (spec instanceof JsArrayOfSpec arrayOfSpec) return arrayOfSpecSchema(arrayOfSpec, defaultValue);
         if (spec instanceof JsObjSpec objSpec) return objSpecSchema(objSpec, defaultValue);
 
         if (spec instanceof JsMapOfInt) return mapOfIntSchema(spec, defaultValue);
@@ -133,12 +133,10 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsMapOfLong) return mapOfLongSchema(spec, defaultValue);
         if (spec instanceof JsMapOfBool) return mapOfBoolSchema(spec, defaultValue);
         if (spec instanceof JsMapOfBigInt) return mapOfBigIntegerSchema(spec, defaultValue);
-        if (spec instanceof JsMapOfObjSpec mapOfObjSpec) return mapOfObjSpecSchema(mapOfObjSpec, defaultValue);
+        if (spec instanceof JsMapOfSpec mapOfSpec) return mapOfSpecSchema(mapOfSpec, defaultValue);
         if (spec instanceof JsMapOfStr) return mapOfStrSchema(spec, defaultValue);
         if (spec instanceof JsMapOfDec) return mapOfDecSchema(spec, defaultValue);
         if (spec instanceof JsMapOfInstant) return mapOfInstantSchema(spec, defaultValue);
-        if (spec instanceof JsMapOfArraySpec mapOfArraySpec) return mapOfArraySpecSchema(mapOfArraySpec, defaultValue);
-
         if (spec instanceof JsEnum jsEnum) return enumSchema(jsEnum, defaultValue);
         if (spec instanceof OneOf oneOf) return oneOfSchema(oneOf, defaultValue);
         if (spec instanceof OneOfObjSpec oneOfObjSpec) return oneOfObjSpecSchema(oneOfObjSpec, defaultValue);
@@ -162,7 +160,7 @@ public final class AvroSchemaFromSpec {
 
         for (int i = 0; i < specs.size(); i++) {
             JsSpec spec = specs.get(i);
-            if (spec instanceof AvroSpec) avroSchemas.add(toJsSchema(spec,JsNothing.NOTHING));
+            if (spec instanceof AvroSpec) avroSchemas.add(toJsSchema(spec, JsNothing.NOTHING));
             else throw SpecNotSupportedInAvro.errorConvertingOneOfIntoSchema(spec, i);
         }
         JsArray schema = JsArray.ofIterable(avroSchemas);
@@ -170,7 +168,7 @@ public final class AvroSchemaFromSpec {
 
         if (js.isNullable())
             if (schema.containsValue(NULL_TYPE)) return schema;
-            else return keyDefault.isNull()? schema.prepend(NULL_TYPE) : schema.append(NULL_TYPE);
+            else return keyDefault.isNull() ? schema.prepend(NULL_TYPE) : schema.append(NULL_TYPE);
         else return schema;
     }
 
@@ -222,22 +220,11 @@ public final class AvroSchemaFromSpec {
 
     }
 
-    private static JsValue mapOfArraySpecSchema(JsMapOfArraySpec js, JsValue keyDefault) {
-        var valueSpec = js.getSpec();
-        if (valueSpec instanceof AvroSpec) {
-            JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
-                                    VALUES_FIELD, toJsSchema(valueSpec,
-                                                             JsNothing.NOTHING));
-            return getTypeSorted(js.isNullable(), keyDefault, schema);
 
-        }
-        throw SpecNotSupportedInAvro.errorConvertingMapOfArraySpecIntoSchema(valueSpec);
-    }
-
-    private static JsValue mapOfObjSpecSchema(JsMapOfObjSpec js, JsValue keyDefault) {
+    private static JsValue mapOfSpecSchema(JsMapOfSpec js, JsValue keyDefault) {
         JsObj schema = JsObj.of(TYPE_FIELD, MAP_TYPE,
-                                VALUES_FIELD, objSpecSchema(js.getSpec(),
-                                                            JsNothing.NOTHING));
+                                VALUES_FIELD, toJsSchema(js.getValueSpec(),
+                                                         JsNothing.NOTHING));
         return getTypeSorted(js.isNullable(), keyDefault, schema);
 
     }
@@ -270,7 +257,7 @@ public final class AvroSchemaFromSpec {
             var spec = entry.getValue();
             var key = entry.getKey();
             if (spec instanceof AvroSpec) {
-                var keyDefault = fieldsDefault != null && fieldsDefault.get(key)!=null ?
+                var keyDefault = fieldsDefault != null && fieldsDefault.get(key) != null ?
                         fieldsDefault.get(key) :
                         JsNothing.NOTHING;
 
@@ -327,9 +314,9 @@ public final class AvroSchemaFromSpec {
 
     }
 
-    private static JsValue arrayOfObjSpecSchema(JsArrayOfObjSpec spec,
-                                                JsValue keyDefault
-                                               ) {
+    private static JsValue arrayOfSpecSchema(JsArrayOfSpec spec,
+                                             JsValue keyDefault
+                                            ) {
         JsValue items = toJsSchema(spec, JsNothing.NOTHING);
 
         JsObj schema = JsObj.of(TYPE_FIELD, ARRAY_TYPE,

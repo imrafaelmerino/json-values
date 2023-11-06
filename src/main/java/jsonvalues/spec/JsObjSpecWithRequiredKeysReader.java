@@ -12,7 +12,7 @@ final class JsObjSpecWithRequiredKeysReader extends JsObjSpecReader {
 
 
     JsObjSpecWithRequiredKeysReader(List<String> required,
-                                    Map<String, JsSpecParser> parsers,
+                                    Map<String, JsParser> parsers,
                                     boolean strict,
                                     Predicate<JsObj> predicate,
                                     MetaData metaData

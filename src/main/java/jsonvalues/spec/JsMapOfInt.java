@@ -16,8 +16,8 @@ final class JsMapOfInt extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfInt(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfInt(nullable);
     }
 
     @Override

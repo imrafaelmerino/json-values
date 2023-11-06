@@ -26,10 +26,10 @@ final class JsArrayOfStrSuchThat extends AbstractNullable implements JsValuePred
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfStrSuchThat(predicate,
-                                                           nullable
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfStrSuchThat(predicate,
+                                                       nullable
+                                                      );
     }
 
     @Override

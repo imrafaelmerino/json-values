@@ -4,7 +4,6 @@ import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-import java.util.function.Function;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
@@ -38,12 +37,12 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsValueP
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDoubleEachSuchThat(predicate,
-                                                                  nullable,
-                                                                  min,
-                                                                  max
-                                                                 );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDoubleEachSuchThat(predicate,
+                                                              nullable,
+                                                              min,
+                                                              max
+                                                             );
     }
 
     @Override

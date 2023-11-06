@@ -885,7 +885,7 @@ JsObjSpec personSpec =
                      "surname",str(),
                      "phoneNumber",str(),
                      "registrationDate",instant(),
-                     "addresses",arrayOfObjSpec(JsObjSpec.of("coordinates",tuple(decimal(),
+                     "addresses",arrayOfSpec(JsObjSpec.of("coordinates",tuple(decimal(),
                                                                                  decimal()
                                                                                 ),
                                                              "city",str(),
@@ -961,7 +961,7 @@ JsObjSpec personSpec =
                  "surname",str(surnameSpec),
                  "phoneNumber",str(phoneSpec).nullable(),
                  "registrationDate",instant(registrationDateSpec),
-                 "addresses", arrayOfObjSpec(JsObjSpec.of("coordinates",
+                 "addresses", arrayOfSpec(JsObjSpec.of("coordinates",
                                                           tuple(decimal(latitudeSpec),
                                                                 decimal(longitudeSpec)
                                                                 ),

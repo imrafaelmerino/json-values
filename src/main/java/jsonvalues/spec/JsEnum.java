@@ -34,8 +34,8 @@ public final class JsEnum extends AbstractNullable implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofStrSuchThat(value -> {
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofStrSuchThat(value -> {
             JsStr str = JsStr.of(value);
             boolean valid = symbols.containsValue(str);
             return valid ?

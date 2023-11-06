@@ -94,8 +94,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     @Test
     public void testArrayOfNumber() {
 
-        JsInt ONE = JsInt.of(1);
-        JsArraySpec spec = JsSpecs.arrayOfNumber(1,
+        JsDouble ONE = JsDouble.of(1.0);
+        JsArraySpec spec = JsSpecs.arrayOfDouble(1,
                                                  2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
@@ -204,7 +204,7 @@ public class TestMinAndMaxOfJsArraySpecs {
 
         JsBigInt A = JsBigInt.of(new BigInteger("111111111111111111111111111111111111111111111111"));
         JsArraySpec spec = JsSpecs.arrayOfBigInt(1,
-                                                   2);
+                                                 2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
 
@@ -231,10 +231,10 @@ public class TestMinAndMaxOfJsArraySpecs {
 
         JsObj A = JsObj.of("a",
                            JsInt.of(1));
-        JsArraySpec spec = JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
-                                                                   JsSpecs.integer()),
-                                                  1,
-                                                  2);
+        JsArraySpec spec = JsSpecs.arrayOfSpec(JsObjSpec.of("a",
+                                                            JsSpecs.integer()),
+                                               1,
+                                               2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
 

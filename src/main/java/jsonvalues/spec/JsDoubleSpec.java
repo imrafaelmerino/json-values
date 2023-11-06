@@ -5,7 +5,6 @@ import jsonvalues.JsValue;
 import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
-import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 final class JsDoubleSpec extends AbstractNullable implements JsValuePredicate, AvroSpec {
     JsDoubleSpec(final boolean nullable) {
@@ -19,8 +18,8 @@ final class JsDoubleSpec extends AbstractNullable implements JsValuePredicate, A
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofDouble(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofDouble(nullable);
     }
 
     @Override

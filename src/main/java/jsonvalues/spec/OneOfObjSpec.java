@@ -27,7 +27,7 @@ public final class OneOfObjSpec extends AbstractNullable implements JsSpec, Avro
     }
 
     @Override
-    public JsSpecParser parser() {
+    public JsParser parser() {
         return oneOf.parser();
     }
 

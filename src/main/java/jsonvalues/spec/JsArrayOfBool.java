@@ -28,10 +28,10 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsValuePredicate
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfBool(nullable,
-                                                    min,
-                                                    max);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfBool(nullable,
+                                                min,
+                                                max);
     }
 
 

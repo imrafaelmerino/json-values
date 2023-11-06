@@ -40,12 +40,12 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsValuePred
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfIntEachSuchThat(predicate,
-                                                               nullable,
-                                                               min,
-                                                               max
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfIntEachSuchThat(predicate,
+                                                           nullable,
+                                                           min,
+                                                           max
+                                                          );
     }
 
     @Override

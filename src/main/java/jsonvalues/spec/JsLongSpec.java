@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -20,8 +18,8 @@ final class JsLongSpec extends AbstractNullable implements JsValuePredicate, Avr
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofLong(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofLong(nullable);
     }
 
     @Override

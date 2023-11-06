@@ -25,9 +25,9 @@ final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsValueP
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfIntegralSuchThat(predicate,
-                                                                nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfIntegralSuchThat(predicate,
+                                                            nullable);
     }
 
 

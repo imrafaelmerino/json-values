@@ -17,8 +17,8 @@ final class JsMapOfDouble extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfDouble(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfDouble(nullable);
     }
 
     @Override

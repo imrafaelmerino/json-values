@@ -76,7 +76,7 @@ public final class JsIO {
         JsReader reader = createReader(bytes);
         try {
             reader.readNextToken();
-            return JsParsers.PARSERS.objParser.value(reader);
+            return JsReaders.READERS.objReader.value(reader);
         } finally {
             reader.reset();
         }
@@ -93,14 +93,14 @@ public final class JsIO {
         JsReader reader = createReader(bytes);
         try {
             reader.readNextToken();
-            return JsParsers.PARSERS.arrayOfValueParser.value(reader);
+            return JsReaders.READERS.arrayOfValueReader.value(reader);
         } finally {
             reader.reset();
         }
     }
 
     JsObj parseToJsObj(final byte[] bytes,
-                       final JsSpecParser parser
+                       final JsParser parser
                       ) {
         JsReader reader = createReader(bytes);
         try {
@@ -141,7 +141,7 @@ public final class JsIO {
     }
 
     JsArray deserializeToJsArray(final byte[] bytes,
-                                 final JsSpecParser parser
+                                 final JsParser parser
                                 ) {
         JsReader reader = createReader(bytes);
         try {
@@ -154,7 +154,7 @@ public final class JsIO {
     }
 
     JsObj parseToJsObj(final InputStream is,
-                       final JsSpecParser parser
+                       final JsParser parser
                       ) {
         JsReader reader = null;
         try {
@@ -169,7 +169,7 @@ public final class JsIO {
 
 
     JsArray deserializeToJsArray(final InputStream is,
-                                 final JsSpecParser parser
+                                 final JsParser parser
                                 ) {
         JsReader reader = null;
         try {

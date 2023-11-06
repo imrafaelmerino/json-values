@@ -13,9 +13,9 @@
  * <p>
  * JSON Parsers:
  * <p>
- * JSON parsers, represented by classes like {@link jsonvalues.spec.JsSpecParser}, are used to validate and parse JSON data based on the provided JSON specifications. Parsers ensure that the input JSON data conforms to the specified schema.
+ * JSON parsers, represented by classes like {@link jsonvalues.spec.JsParser}, are used to validate and parse JSON data based on the provided JSON specifications. Parsers ensure that the input JSON data conforms to the specified schema.
  * <p>
- * - {@link jsonvalues.spec.JsSpecParser}: A class used to create JSON data parsers from JSON specifications. These parsers validate input JSON data against the specified schema and return the parsed JSON data if it conforms.
+ * - {@link jsonvalues.spec.JsParser}: A class used to create JSON data parsers from JSON specifications. These parsers validate input JSON data against the specified schema and return the parsed JSON data if it conforms.
  * <p>
  * - {@link jsonvalues.spec.JsArraySpecParser}: A class for creating JSON array parsers from array specifications. These parsers validate and parse JSON arrays against the defined schema.
  * <p>
@@ -35,7 +35,7 @@
  * @see jsonvalues.spec.JsSpec
  * @see jsonvalues.spec.JsArraySpec
  * @see jsonvalues.spec.JsObjSpec
- * @see jsonvalues.spec.JsSpecParser
+ * @see jsonvalues.spec.JsParser
  * @see jsonvalues.spec.JsArraySpecParser
  * @see jsonvalues.spec.JsObjSpecParser
  */

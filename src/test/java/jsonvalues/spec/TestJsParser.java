@@ -69,7 +69,7 @@ public class TestJsParser {
                                      "i",
                                      array(),
                                      "j",
-                                     arrayOfObjSpec(JsObjSpec.of("a",
+                                     arrayOfSpec(JsObjSpec.of("a",
                                                                  str()
                                                                 ).lenient())
                                     );
@@ -104,7 +104,7 @@ public class TestJsParser {
         JsArray array = JsArray.of(example,
                                    example);
 
-        JsArraySpec spec = JsSpecs.arrayOfObjSpec(objSpec,
+        JsArraySpec spec = JsSpecs.arrayOfSpec(objSpec,
                                                   1,
                                                   5);
 

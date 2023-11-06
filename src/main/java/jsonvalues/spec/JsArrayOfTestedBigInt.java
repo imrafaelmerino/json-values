@@ -38,12 +38,12 @@ final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsValueP
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfIntegralEachSuchThat(predicate,
-                                                                    nullable,
-                                                                    min,
-                                                                    max
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfIntegralEachSuchThat(predicate,
+                                                                nullable,
+                                                                min,
+                                                                max
+                                                               );
     }
 
     @Override

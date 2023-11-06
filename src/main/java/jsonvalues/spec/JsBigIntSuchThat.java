@@ -30,10 +30,10 @@ final class JsBigIntSuchThat extends AbstractNullable implements JsValuePredicat
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofIntegralSuchThat(predicate,
-                                                         nullable
-                                                        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofIntegralSuchThat(predicate,
+                                                     nullable
+                                                    );
     }
 
 

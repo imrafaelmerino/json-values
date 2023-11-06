@@ -126,9 +126,8 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
     @Test
     public void testArrayOfNumber() {
 
-        JsInt ONE = JsInt.of(1);
-        JsArraySpec spec = JsSpecs.arrayOfNumber(JsValue::isInt,
-                                                 1,
+        JsDouble ONE = JsDouble.of(1.0);
+        JsArraySpec spec = JsSpecs.arrayOfDouble(1,
                                                  2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
@@ -155,7 +154,7 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
     public void testArrayOfDec() {
 
         JsBigDec TEN = JsBigDec.of(BigDecimal.TEN);
-        JsArraySpec spec = JsSpecs.arrayOfDec(d -> d.compareTo(BigDecimal.TEN)==0,
+        JsArraySpec spec = JsSpecs.arrayOfDec(d -> d.compareTo(BigDecimal.TEN) == 0,
                                               1,
                                               2);
 
@@ -184,8 +183,8 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
 
         JsBigInt A = JsBigInt.of(new BigInteger("111111111111111111111111111111111111111111111111"));
         JsArraySpec spec = JsSpecs.arrayOfBigInt(i -> i.compareTo(BigInteger.ZERO) > 0,
-                                                   1,
-                                                   2);
+                                                 1,
+                                                 2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
 
@@ -212,10 +211,10 @@ public class TestMinAndMaxOfJsArrayTestedSpecs {
 
         JsObj A = JsObj.of("a",
                            JsInt.of(1));
-        JsArraySpec spec = JsSpecs.arrayOfObjSpec(JsObjSpec.of("a",
-                                                                   JsSpecs.integer()),
-                                                  1,
-                                                  2);
+        JsArraySpec spec = JsSpecs.arrayOfSpec(JsObjSpec.of("a",
+                                                            JsSpecs.integer()),
+                                               1,
+                                               2);
 
         JsArraySpecParser parser = new JsArraySpecParser(spec);
 

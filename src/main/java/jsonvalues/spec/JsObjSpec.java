@@ -41,12 +41,12 @@ import static jsonvalues.spec.ERROR_CODE.*;
  * validation. Additionally, it supports nullable objects and strict mode to enforce key presence.
  *
  * @see JsSpec
- * @see JsSpecParser
+ * @see JsParser
  * @see SpecError
  */
 public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpec {
     final boolean strict;
-    final Map<String, JsSpecParser> parsers;
+    final Map<String, JsParser> parsers;
     final Map<String, JsSpec> bindings;
     final MetaData metaData;
     final List<String> requiredFields;
@@ -5667,14 +5667,14 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
      * @return A JsSpecParser for parsing JSON objects.
      */
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofObjSpec(requiredFields,
-                                                parsers,
-                                                predicate,
-                                                nullable,
-                                                strict,
-                                                metaData
-                                               );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofObjSpec(requiredFields,
+                                            parsers,
+                                            predicate,
+                                            nullable,
+                                            strict,
+                                            metaData
+                                           );
     }
 
     /**

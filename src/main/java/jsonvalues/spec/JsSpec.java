@@ -29,12 +29,12 @@ import java.util.List;
  * Implementations of this interface should be immutable and thread-safe to support concurrent usage.
  *
  * @see JsValue
- * @see JsSpecParser
+ * @see JsParser
  * @see SpecError
  * @see JsPath
  * @see JsReader
  */
-public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, JsMapOfArraySpec, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfDouble, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfObjSpec, JsMapOfStr, JsObjSpec, JsValuePredicate, OneOf, OneOfObjSpec {
+public sealed interface JsSpec permits JsArrayOfSpec, JsArraySpec, JsEnum, JsMapOfBigInt, JsMapOfBool, JsMapOfDec, JsMapOfDouble, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfSpec, JsMapOfStr, JsObjSpec, JsValuePredicate, OneOf, OneOfObjSpec {
 
     /**
      * Returns the same spec with the nullable flag enabled.
@@ -49,7 +49,7 @@ public sealed interface JsSpec permits JsArrayOfObjSpec, JsArraySpec, JsEnum, Js
      *
      * @return The deserializer used during parsing.
      */
-    JsSpecParser parser();
+    JsParser parser();
 
     /**
      * Low-level method to parse a JSON value token by token from a reader. Returns the next value according to the

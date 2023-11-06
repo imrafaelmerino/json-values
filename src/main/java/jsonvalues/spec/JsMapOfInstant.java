@@ -16,8 +16,8 @@ final class JsMapOfInstant extends AbstractMap implements JsSpec, AvroSpec {
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofMapOfInstant(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofMapOfInstant(nullable);
     }
 
     @Override

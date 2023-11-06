@@ -39,12 +39,12 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsValuePre
     }
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfLongEachSuchThat(predicate,
-                                                                nullable,
-                                                                min,
-                                                                max
-        );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfLongEachSuchThat(predicate,
+                                                            nullable,
+                                                            min,
+                                                            max
+                                                           );
     }
 
     @Override

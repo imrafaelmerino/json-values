@@ -20,13 +20,13 @@ final class JsDecimalSpec extends AbstractNullable implements JsValuePredicate, 
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofDecimal(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofDecimal(nullable);
     }
 
     @Override
     public Optional<JsError> testValue(final JsValue value) {
-        return Functions.testElem(JsValue::isDecimal,
+        return Functions.testElem(JsValue::isNumber,
                                   DECIMAL_EXPECTED,
                                   nullable
                                  )

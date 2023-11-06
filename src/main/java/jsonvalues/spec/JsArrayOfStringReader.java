@@ -11,9 +11,9 @@ import java.util.function.Function;
 final class JsArrayOfStringReader extends JsArrayReader {
     private final JsStrReader parser;
 
-    JsArrayOfStringReader(final JsStrReader parser) {
-        super(Objects.requireNonNull(parser));
-        this.parser = parser;
+    JsArrayOfStringReader(final JsStrReader reader) {
+        super(Objects.requireNonNull(reader));
+        this.parser = reader;
     }
 
     JsValue nullOrArrayEachSuchThat(final JsReader reader,

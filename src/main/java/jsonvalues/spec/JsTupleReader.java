@@ -7,10 +7,10 @@ import jsonvalues.JsValue;
 
 import java.util.List;
 
-final class JsArraySpecReader {
-    private final List<JsSpecParser> parsers;
+final class JsTupleReader {
+    private final List<JsParser> parsers;
 
-    JsArraySpecReader(final List<JsSpecParser> parsers) {
+    JsTupleReader(final List<JsParser> parsers) {
         this.parsers = parsers;
     }
 

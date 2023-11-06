@@ -28,9 +28,9 @@ final class JsArrayOfBoolSuchThat extends AbstractNullable implements JsValuePre
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfBoolSuchThat(predicate,
-                                                            nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfBoolSuchThat(predicate,
+                                                        nullable);
     }
 
 

@@ -134,7 +134,7 @@ public class MiscellaneousExamples {
                 JsObjSpec.of("fruits",
                                  arrayOfStr(),
                                  "vegetables",
-                                 arrayOfObjSpec(veggieSpec));
+                                 arrayOfSpec(veggieSpec));
 
         JsObjGen veggieGen =
                 JsObjGen.of("veggieName",

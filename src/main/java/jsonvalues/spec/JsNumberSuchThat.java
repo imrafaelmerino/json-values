@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
 import jsonvalues.JsNumber;
 import jsonvalues.JsValue;
 
@@ -29,10 +28,10 @@ final class JsNumberSuchThat extends AbstractNullable implements JsValuePredicat
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofNumberSuchThat(predicate,
-                                                       nullable
-                                                      );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofNumberSuchThat(predicate,
+                                                   nullable
+                                                  );
     }
 
 

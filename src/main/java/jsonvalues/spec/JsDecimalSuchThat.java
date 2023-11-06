@@ -28,10 +28,10 @@ final class JsDecimalSuchThat extends AbstractNullable implements JsValuePredica
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofDecimalSuchThat(predicate,
-                                                        nullable
-                                                       );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofDecimalSuchThat(predicate,
+                                                    nullable
+                                                   );
     }
 
 

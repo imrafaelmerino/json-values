@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
 import java.util.Optional;
@@ -20,8 +19,8 @@ final class JsNumberSpec extends AbstractNullable implements JsValuePredicate, A
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofNumber(nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofNumber(nullable);
     }
 
 

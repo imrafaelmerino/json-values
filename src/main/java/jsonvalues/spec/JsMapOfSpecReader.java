@@ -6,10 +6,10 @@ import jsonvalues.JsParserException;
 import java.util.Objects;
 
 class JsMapOfSpecReader extends AbstractJsObjReader {
-    private final JsSpecParser parser;
+    private final JsParser parser;
 
 
-    JsMapOfSpecReader(JsSpecParser parser) {
+    JsMapOfSpecReader(JsParser parser) {
         this.parser = Objects.requireNonNull(parser);
     }
 

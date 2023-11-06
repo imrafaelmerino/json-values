@@ -30,10 +30,10 @@ final class JsObjSuchThat extends AbstractNullable implements JsValuePredicate {
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofObjSuchThat(predicate,
-                                                    nullable
-                                                   );
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofObjSuchThat(predicate,
+                                                nullable
+                                               );
     }
 
     @Override

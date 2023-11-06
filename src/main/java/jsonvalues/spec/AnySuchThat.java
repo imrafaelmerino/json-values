@@ -28,8 +28,8 @@ final class AnySuchThat implements JsValuePredicate {
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofValueSuchThat(predicate);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofValueSuchThat(predicate);
     }
 
 

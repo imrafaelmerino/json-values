@@ -29,9 +29,9 @@ final class JsArrayOfDoubleSuchThat extends AbstractNullable implements JsValueP
 
 
     @Override
-    public JsSpecParser parser() {
-        return JsSpecParsers.INSTANCE.ofArrayOfDoubleSuchThat(predicate,
-                                                              nullable);
+    public JsParser parser() {
+        return JsParsers.INSTANCE.ofArrayOfDoubleSuchThat(predicate,
+                                                          nullable);
     }
 
 
