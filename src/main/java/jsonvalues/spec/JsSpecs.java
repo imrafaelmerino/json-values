@@ -1065,7 +1065,7 @@ public final class JsSpecs {
      * @return A specification that checks if a JSON value matches one of the provided specifications.
      */
     public static JsSpec oneSpecOf(List<? extends JsSpec> specs) {
-        return OneOf.of(requireNonNull(specs));
+        return new OneOf(false, requireNonNull(specs));
     }
 
     /**
@@ -1081,7 +1081,6 @@ public final class JsSpecs {
         Collections.addAll(list, requireNonNull(others));
         return oneSpecOf(list);
     }
-
 
 
     /**

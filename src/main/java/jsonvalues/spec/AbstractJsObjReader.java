@@ -8,7 +8,7 @@ abstract class AbstractJsObjReader extends AbstractReader {
 
         byte last = reader.last();
         if (last != '{')
-            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_START.formatted(((char) last)),
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_OBJ_START.formatted(((char) last)),
                                              reader.getPositionInStream()
                                             );
         return reader.readNextToken() == '}';

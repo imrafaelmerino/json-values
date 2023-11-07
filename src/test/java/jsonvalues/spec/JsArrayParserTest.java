@@ -253,8 +253,8 @@ public class JsArrayParserTest {
     @Test
     public void testArrayOfDouble() {
 
-        JsArraySpec spec = JsSpecs.arrayOfDouble();
-        JsArraySpec spec1 = JsSpecs.arrayOfDoubleSuchThat(a -> a.size() == 3);
+        JsSpec spec = JsSpecs.arrayOfDouble();
+        JsSpec spec1 = JsSpecs.arrayOfDoubleSuchThat(a -> a.size() == 3);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
         JsArraySpecParser parser1 = JsArraySpecParser.of(spec1);

@@ -87,7 +87,7 @@ abstract class JsArrayReader extends AbstractReader {
 
     private boolean isEmptyArray(final JsReader reader) throws JsParserException {
         checkSize(reader.last() != '[',
-                  ParserErrors.EXPECTING_FOR_LIST_START,
+                  ParserErrors.EXPECTING_FOR_ARRAY_START,
                   reader.getPositionInStream()
                  );
         reader.readNextToken();

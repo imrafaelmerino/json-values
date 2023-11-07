@@ -45,10 +45,10 @@ public final class JsArraySpecParser {
      */
     private JsArraySpecParser(final JsSpec spec) {
         if (!isValid(requireNonNull(spec))) {
-            throw new IllegalArgumentException("`%s` requires a `%s` or `OneSpecOf(%s)`".formatted(JsArraySpecParser.class.getName(),
-                                                                                                   JsArraySpec.class.getName(),
-                                                                                                   JsArraySpec.class.getName()
-                                                                                                  ));
+            throw new IllegalArgumentException("`%s` constructor requires a `%s` or `OneSpecOf(%s)`".formatted(JsArraySpecParser.class.getName(),
+                                                                                                               JsArraySpec.class.getName(),
+                                                                                                               JsArraySpec.class.getName()
+                                                                                                              ));
         }
         this.spec = spec;
         parser = spec.parser();
@@ -78,9 +78,9 @@ public final class JsArraySpecParser {
      */
     public JsArray parse(final byte[] bytes) {
 
-        JsArray arr = JsIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
-                                                         parser
-                                                        );
+        JsArray arr = JsIO.INSTANCE.parseToJsArray(requireNonNull(bytes),
+                                                   parser
+                                                  );
 
         assert spec.test(arr).isEmpty();
 
@@ -99,9 +99,9 @@ public final class JsArraySpecParser {
      */
     public JsArray parse(String str) {
         JsArray arr = JsIO.INSTANCE
-                .deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
-                                      parser
-                                     );
+                .parseToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
+                                parser
+                               );
 
         assert spec.test(arr).isEmpty();
 
@@ -121,9 +121,9 @@ public final class JsArraySpecParser {
      *                           exceptions.
      */
     public JsArray parse(InputStream inputstream) {
-        JsArray arr = JsIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
-                                                         parser
-                                                        );
+        JsArray arr = JsIO.INSTANCE.parseToJsArray(requireNonNull(inputstream),
+                                                   parser
+                                                  );
 
         assert spec.test(arr).isEmpty();
 

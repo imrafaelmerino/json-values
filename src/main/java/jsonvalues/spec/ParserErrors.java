@@ -8,7 +8,7 @@ import java.util.function.UnaryOperator;
 class ParserErrors {
 
     public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with the spec method 'suchThat'";
-    static final String EXPECTING_FOR_MAP_START = "Expecting '{' for Json object start but get %s";
+    static final String EXPECTING_FOR_OBJ_START = "Expecting '{' for Json object start but get %s";
     static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end but get %s";
     static final String ONEOF_EXHAUSTED = "OneOf spec exhausted";
 
@@ -18,7 +18,7 @@ class ParserErrors {
     static final IntFunction<String> TOO_LONG_ARRAY = max -> "Too long array. Max size: " + max;
     static final IntFunction<String> TOO_SHORT_ARRAY = min -> "Too short array. Min size: " + min;
     static final String INTEGRAL_NUMBER_EXPECTED = "Integral number expected";
-    static final String EXPECTING_FOR_LIST_START = "Expecting '[' for Json array start";
+    static final String EXPECTING_FOR_ARRAY_START = "Expecting '[' for Json array start";
     static final String BOOL_EXPECTED = "Boolean expected";
     static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "BigInteger with fractional part";
     static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key '" + key + "' has no spec associated to it. Strict specs don't allow this." +

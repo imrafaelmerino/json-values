@@ -70,8 +70,8 @@ public class TestJsParser {
                                      array(),
                                      "j",
                                      arrayOfSpec(JsObjSpec.of("a",
-                                                                 str()
-                                                                ).lenient())
+                                                              str()
+                                                             ).lenient())
                                     );
 
     @Test
@@ -104,9 +104,9 @@ public class TestJsParser {
         JsArray array = JsArray.of(example,
                                    example);
 
-        JsArraySpec spec = JsSpecs.arrayOfSpec(objSpec,
-                                                  1,
-                                                  5);
+        JsSpec spec = JsSpecs.arrayOfSpec(objSpec,
+                                          1,
+                                          5);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -140,9 +140,9 @@ public class TestJsParser {
                                                 instant(),
                                                 "b",
                                                 instant(i -> i.isAfter(Instant.now()
-                                                                               .minus(Duration.ofDays(1))
-                                                                       )
-                                                        )));
+                                                                              .minus(Duration.ofDays(1))
+                                                                      )
+                                                       )));
 
         JsObj obj = JsObj.of("a",
                              JsInstant.of(Instant.now()),

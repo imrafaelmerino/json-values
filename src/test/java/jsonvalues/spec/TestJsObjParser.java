@@ -797,7 +797,6 @@ public class TestJsObjParser {
     }
 
 
-
     @Test
     public void test_string_spec() {
 
@@ -919,7 +918,6 @@ public class TestJsObjParser {
                                );
 
     }
-
 
 
     @Test
@@ -1233,7 +1231,7 @@ public class TestJsObjParser {
                                      ).withOptKeys("a").lenient();
 
 
-        JsArraySpec arraySpec = JsSpecs.arrayOfSpec(spec.nullable());
+        JsSpec arraySpec = JsSpecs.arrayOfSpec(spec.nullable());
 
         JsArraySpecParser parser = JsArraySpecParser.of(arraySpec);
 

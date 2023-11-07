@@ -41,10 +41,10 @@ public final class JsObjSpecParser {
 
     private JsObjSpecParser(final JsSpec spec) {
         if (!isValid(requireNonNull(spec)))
-            throw new IllegalArgumentException("`%s` requires a `%s` or `OneSpecOf(%s)`".formatted(JsObjSpecParser.class.getName(),
-                                                                                                   JsObjSpec.class.getName(),
-                                                                                                   JsObjSpec.class.getName()
-                                                                                                  ));
+            throw new IllegalArgumentException("`%s` constructor requires a `%s` or `OneSpecOf(%s)`".formatted(JsObjSpecParser.class.getName(),
+                                                                                                               JsObjSpec.class.getName(),
+                                                                                                               JsObjSpec.class.getName()
+                                                                                                              ));
         this.spec = spec;
         parser = spec.parser();
     }

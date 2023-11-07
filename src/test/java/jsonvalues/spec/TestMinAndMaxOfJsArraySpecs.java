@@ -14,8 +14,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfBool() {
 
 
-        JsArraySpec spec = JsSpecs.arrayOfBool(1,
-                                               2);
+        JsSpec spec = JsSpecs.arrayOfBool(1,
+                                          2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -40,8 +40,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfString() {
 
         JsStr A = JsStr.of("a");
-        JsArraySpec spec = JsSpecs.arrayOfStr(1,
-                                              2);
+        JsSpec spec = JsSpecs.arrayOfStr(1,
+                                         2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -68,8 +68,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfInt() {
 
         JsInt ONE = JsInt.of(1);
-        JsArraySpec spec = JsSpecs.arrayOfInt(1,
-                                              2);
+        JsSpec spec = JsSpecs.arrayOfInt(1,
+                                         2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -95,8 +95,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfNumber() {
 
         JsDouble ONE = JsDouble.of(1.0);
-        JsArraySpec spec = JsSpecs.arrayOfDouble(1,
-                                                 2);
+        JsSpec spec = JsSpecs.arrayOfDouble(1,
+                                            2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -122,8 +122,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfLong() {
 
         JsLong MAX = JsLong.of(Long.MAX_VALUE);
-        JsArraySpec spec = JsSpecs.arrayOfLong(1,
-                                               2);
+        JsSpec spec = JsSpecs.arrayOfLong(1,
+                                          2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -149,8 +149,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfObj() {
 
         JsObj EMPTY = JsObj.empty();
-        JsArraySpec spec = JsSpecs.arrayOfObj(1,
-                                              2);
+        JsSpec spec = JsSpecs.arrayOfObj(1,
+                                         2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -176,8 +176,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfDec() {
 
         JsBigDec TEN = JsBigDec.of(BigDecimal.TEN);
-        JsArraySpec spec = JsSpecs.arrayOfDec(1,
-                                              2);
+        JsSpec spec = JsSpecs.arrayOfDec(1,
+                                         2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -203,8 +203,8 @@ public class TestMinAndMaxOfJsArraySpecs {
     public void testArrayOfIntegral() {
 
         JsBigInt A = JsBigInt.of(new BigInteger("111111111111111111111111111111111111111111111111"));
-        JsArraySpec spec = JsSpecs.arrayOfBigInt(1,
-                                                 2);
+        JsSpec spec = JsSpecs.arrayOfBigInt(1,
+                                            2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -231,10 +231,10 @@ public class TestMinAndMaxOfJsArraySpecs {
 
         JsObj A = JsObj.of("a",
                            JsInt.of(1));
-        JsArraySpec spec = JsSpecs.arrayOfSpec(JsObjSpec.of("a",
-                                                            JsSpecs.integer()),
-                                               1,
-                                               2);
+        JsSpec spec = JsSpecs.arrayOfSpec(JsObjSpec.of("a",
+                                                       JsSpecs.integer()),
+                                          1,
+                                          2);
 
         JsArraySpecParser parser = JsArraySpecParser.of(spec);
 

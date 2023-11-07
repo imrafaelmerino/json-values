@@ -24,7 +24,7 @@ final class JsTupleReader {
 
     JsArray array(final JsReader reader) throws JsParserException {
         if (reader.last() != '[')
-            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_LIST_START,
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_ARRAY_START,
                                              reader.getPositionInStream()
                                             );
         reader.readNextToken();

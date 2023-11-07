@@ -4,11 +4,9 @@ import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Objects;
 
-public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
+final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
     final List<? extends JsSpec> specs;
 
@@ -17,13 +15,6 @@ public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
         this.specs = specs;
     }
 
-    public static OneOf of(List<? extends JsSpec> specs) {
-        return new OneOf(false, specs);
-    }
-
-    public static OneOf of(JsSpec... specs) {
-        return new OneOf(false, Arrays.stream(Objects.requireNonNull(specs)).toList());
-    }
 
     @Override
     public JsSpec nullable() {

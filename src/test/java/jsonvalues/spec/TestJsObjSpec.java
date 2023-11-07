@@ -928,14 +928,13 @@ public class TestJsObjSpec {
     }
 
     private JsSpec arrayOfNumber() {
-        return arrayOfSpec(OneOf.of(JsSpecs.integer(),
-                                    JsSpecs.longInteger(),
-                                    JsSpecs.bigInteger(),
-                                    JsSpecs.doubleNumber(),
-                                    JsSpecs.decimal())
+        return arrayOfSpec(JsSpecs.oneSpecOf(JsSpecs.integer(),
+                                             JsSpecs.longInteger(),
+                                             JsSpecs.bigInteger(),
+                                             JsSpecs.doubleNumber(),
+                                             JsSpecs.decimal())
                           );
     }
-
 
 
     @Test
