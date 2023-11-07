@@ -1025,6 +1025,7 @@ public final class JsSpecs {
      * @param others The specifications for the rest of the elements.
      * @return A specification for a tuple that enforces the specified structure.
      */
+    @SuppressWarnings("varargs")
     public static JsArraySpec tuple(JsSpec spec,
                                     JsSpec... others
                                    ) {
@@ -1051,6 +1052,8 @@ public final class JsSpecs {
      * @param <O>    The type of the possible JSON values (subtype of JsValue).
      * @return A specification that checks if a JSON value matches one of the provided values.
      */
+    @SafeVarargs
+    @SuppressWarnings("varargs")
     public static <O extends JsValue> JsSpec oneValOf(O elem, O... others) {
         List<O> list = new ArrayList<>();
         list.add(requireNonNull(elem));
@@ -1075,6 +1078,7 @@ public final class JsSpecs {
      * @param others Additional possible JSON specifications.
      * @return A specification that checks if a JSON value matches one of the provided specifications.
      */
+    @SuppressWarnings("varargs")
     public static JsSpec oneSpecOf(JsSpec elem, JsSpec... others) {
         List<JsSpec> list = new ArrayList<>();
         list.add(requireNonNull(elem));
@@ -1100,6 +1104,7 @@ public final class JsSpecs {
      * @param others Additional possible symbol values.
      * @return A specification that checks if a JSON value matches one of the provided symbol values.
      */
+    @SuppressWarnings("varargs")
     public static JsSpec oneStringOf(String elem, String... others) {
         List<String> list = new ArrayList<>();
         list.add(requireNonNull(elem));

@@ -1,10 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsPath;
 import jsonvalues.JsValue;
-import jsonvalues.Json;
 
-import java.util.List;
 import java.util.Optional;
 
 
@@ -22,7 +19,6 @@ final class JsMapOfInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
     public JsParser parser() {
         return JsParsers.INSTANCE.ofMapOfInt(nullable);
     }
-
 
 
     @Override

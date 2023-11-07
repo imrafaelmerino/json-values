@@ -183,7 +183,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     T filterObjs(final Predicate<? super JsObj> filter);
 
     /**
-     * Returns the array located at the given path or null if it doesn't exist or it's not an array.
+     * Returns the array located at the given path or null if it doesn't exist, or it's not an array.
      *
      * @param path the path
      * @return the JsArray located at the given JsPath or null
@@ -195,7 +195,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the array located at the given path or the default value provided if it doesn't exist or it's not an
+     * Returns the array located at the given path or the default value provided if it doesn't exist, or it's not an
      * array.
      *
      * @param path   the path
@@ -211,7 +211,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big decimal or null if it doesn't exist or it's not a decimal
+     * Returns the number located at the given path as a big decimal or null if it doesn't exist, or it's not a decimal
      * number.
      *
      * @param path the path
@@ -224,7 +224,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big decimal or the default value provided if it doesn't exist
+     * Returns the number located at the given path as a big decimal or the default value provided if it doesn't exist,
      * or it's not a decimal number.
      *
      * @param path   the path
@@ -245,7 +245,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big integer or null if it doesn't exist or it's not an integral
+     * Returns the number located at the given path as a big integer or null if it doesn't exist, or it's not an integral
      * number.
      *
      * @param path the path
@@ -258,7 +258,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big integer or the default value provided if it doesn't exist
+     * Returns the number located at the given path as a big integer or the default value provided if it doesn't exist,
      * or it's not an integral number.
      *
      * @param path   the path
@@ -355,7 +355,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the decimal number located at the given path as a double or null if it doesn't exist or it's not a
+     * Returns the decimal number located at the given path as a double or null if it doesn't exist, or it's not a
      * decimal number. If the number is a BigDecimal, the conversion is identical to that specified in
      * {@link BigDecimal#doubleValue()}.
      *
@@ -370,7 +370,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
 
     /**
      * Returns the decimal number located at the given path as a double or the default value provided if it doesn't
-     * exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical to that specified
+     * exist, or it's not a decimal number. If the number is a BigDecimal, the conversion is identical to that specified
      * in {@link BigDecimal#doubleValue()}.
      *
      * @param path   the path
@@ -386,7 +386,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as an integer or null if it doesn't exist or it's not an
+     * Returns the integral number located at the given path as an integer or null if it doesn't exist, or it's not an
      * integral number.
      *
      * @param path the path
@@ -400,7 +400,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
 
     /**
      * Returns the integral number located at the given path as an integer or the default value provided if it doesn't
-     * exist or it's not an integral number.
+     * exist, or it's not an integral number.
      *
      * @param path   the path
      * @param orElse the default value
@@ -415,7 +415,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as a long or null if it doesn't exist or it's not an
+     * Returns the integral number located at the given path as a long or null if it doesn't exist, or it's not an
      * integral number.
      *
      * @param path the path
@@ -428,7 +428,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as a long or the default value provided if it doesn't exist
+     * Returns the integral number located at the given path as a long or the default value provided if it doesn't exist,
      * or it's not an integral number.
      *
      * @param path   the path
@@ -444,7 +444,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the object located at the given path or the default value provided if it doesn't exist or it's not an
+     * Returns the object located at the given path or the default value provided if it doesn't exist, or it's not an
      * object.
      *
      * @param path   the path
@@ -459,7 +459,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the object located at the given path or null if it doesn't exist or it's not an object.
+     * Returns the object located at the given path or null if it doesn't exist, or it's not an object.
      *
      * @param path the path
      * @return the JsObj located at the given JsPath or null
@@ -470,7 +470,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the string located at the given path or null if it doesn't exist or it's not a string.
+     * Returns the string located at the given path or null if it doesn't exist, or it's not a string.
      *
      * @param path the path
      * @return the string located at the given path or null
@@ -481,7 +481,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the string located at the given path or the default value provided if it doesn't exist or it's not a
+     * Returns the string located at the given path or the default value provided if it doesn't exist, or it's not a
      * string.
      *
      * @param path   the path
@@ -627,10 +627,10 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @param <R>       the type of the reduction result
      * @return an {@link Optional} describing the result of the reduction, or empty if no values satisfy the predicate
      */
-    <R> Optional<R> reduce(final BinaryOperator<R> op,
-                           final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                           final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                          );
+    <R> R reduce(final BinaryOperator<R> op,
+                 final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                 final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+                );
 
 
     /**
@@ -643,10 +643,10 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * @param <R>       the type of the reduction result
      * @return an {@link Optional} describing the result of the reduction, or empty if no values satisfy the predicate
      */
-    <R> Optional<R> reduce(final BinaryOperator<R> op,
-                           final Function<? super JsPrimitive, R> map,
-                           final Predicate<? super JsPrimitive> predicate
-                          );
+    <R> R reduce(final BinaryOperator<R> op,
+                 final Function<? super JsPrimitive, R> map,
+                 final Predicate<? super JsPrimitive> predicate
+                );
 
     /**
      * Removes the element at the specified path within this immutable JSON object, if it exists. Returns a new JSON

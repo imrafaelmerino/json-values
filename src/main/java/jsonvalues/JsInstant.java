@@ -36,7 +36,7 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
     public final Instant value;
 
     private JsInstant(final Instant value) {
-        this.value = value;
+        this.value = requireNonNull(value);
     }
 
     /**
@@ -46,7 +46,7 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
      * @return a JsInstant representing the given Instant.
      */
     public static JsInstant of(final Instant instant) {
-        return new JsInstant(requireNonNull(instant));
+        return new JsInstant(instant);
     }
 
     /**

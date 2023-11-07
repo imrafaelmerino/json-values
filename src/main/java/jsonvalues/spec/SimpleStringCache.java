@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 /**
  * Simplistic string cache implementation.
- * It uses a fixed String[] structure in which it caches string value based on it's hash.
+ * It uses a fixed String[] structure in which it caches string value based on its hash.
  * Eg, hash &amp; mask provide index into the structure. Different string with same hash will overwrite the previous one.
  */
 class SimpleStringCache implements StringCache {
@@ -27,8 +27,8 @@ class SimpleStringCache implements StringCache {
     }
 
     /**
-     * Calculates hash of the provided "string" and looks it up from the String[]
-     * It it doesn't exists of a different string is already there a new String instance is created
+     * Calculates hash of the provided "string" and looks it up from the String[].
+     * If it doesn't exist of a different string is already there a new String instance is created
      * and saved into the String[]
      *
      * @param chars buffer into which string was parsed

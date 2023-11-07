@@ -12,7 +12,7 @@ import java.util.Objects;
  * only to parse bytes or strings token by token.
  *
  * @see JsReader
- * @see JsSpec#readNextValue(JsReader)
+ * @see JsSpec#parse(String)
  */
 public final class JsIO {
     /**
@@ -107,7 +107,7 @@ public final class JsIO {
         try {
             reader.readNextToken();
             JsValue parsed = parser.parse(reader);
-            if(parsed == JsNull.NULL) throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
+            if (parsed == JsNull.NULL) throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
             return parsed.toJsObj();
         } finally {
             reader.reset();
@@ -120,7 +120,7 @@ public final class JsIO {
      * @param bytes the array of bytes
      * @return a JSON reader
      */
-    public JsReader createReader(final byte[] bytes) {
+    JsReader createReader(final byte[] bytes) {
         return localReader.get()
                           .process(Objects.requireNonNull(bytes),
                                    bytes.length
@@ -135,7 +135,7 @@ public final class JsIO {
      * @param is the input stream
      * @return a JSON reader
      */
-    public JsReader createReader(final InputStream is) throws JsParserException {
+    JsReader createReader(final InputStream is) throws JsParserException {
 
         return localReader.get()
                           .process(Objects.requireNonNull(is));
@@ -180,9 +180,9 @@ public final class JsIO {
             reader = createReader(is);
             reader.readNextToken();
             JsValue parsed = parser.parse(reader);
-            if(parsed == JsNull.NULL) throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
+            if (parsed == JsNull.NULL) throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
             return parsed
-                         .toJsArray();
+                    .toJsArray();
         } finally {
             if (reader != null) reader.reset();
         }
@@ -256,7 +256,7 @@ public final class JsIO {
 
     /**
      * Creates a writer. Ideally it should be reused. Bound writer can use lookups to find custom writers. This can be
-     * used to serialize unknown types such as Object.class
+     * used to serialize unknown types such as Object class
      *
      * @param size initial buffer size
      * @return bound writer

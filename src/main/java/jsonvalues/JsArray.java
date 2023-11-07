@@ -74,7 +74,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     private volatile String str;
 
     JsArray(Vector<JsValue> seq) {
-        this.seq = seq;
+        this.seq = requireNonNull(seq);
     }
 
     /**
@@ -551,8 +551,8 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the integral number located at the given index as an integer or null if it doesn't exist or it's not an
-     * integral number or it's an integral number but doesn't fit in an integer.
+     * Returns the integral number located at the given index as an integer or null if it doesn't exist, or it's not an
+     * integral number, or it's an integral number but doesn't fit in an integer.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an
      * integral number. If the value at the index is a valid integral number that can be represented as an integer, it
@@ -578,7 +578,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     /**
      * Returns the integral number located at the given index as an integer or a default value if it doesn't exist or
-     * it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * it's not an integral number, or it's an integral number but doesn't fit in an integer.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an
      * integral number. If the value at the index is a valid integral number that can be represented as an integer, it
@@ -604,7 +604,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     /**
      * Returns the integral number located at the given index as a long or null if it doesn't exist or it's not an
-     * integral number or it's an integral number but doesn't fit in a long.
+     * integral number, or it's an integral number but doesn't fit in a long.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an
      * integral number. If the value at the index is a valid integral number that can be represented as a long, it is
@@ -623,7 +623,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     /**
      * Returns the integral number located at the given index as a long or a default value provided by the
-     * {@code orElse} supplier if it doesn't exist or it's not an integral number or it's an integral number but doesn't
+     * {@code orElse} supplier if it doesn't exist, or it's not an integral number, or it's an integral number but doesn't
      * fit in a long.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an
@@ -648,7 +648,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the string located at the given index or {@code null} if it doesn't exist or it's not a string.
+     * Returns the string located at the given index or {@code null} if it doesn't exist, or it's not a string.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to interpret it as a
      * string. If the value at the index is a string, it is returned as a {@code String}. If the value is not a string,
@@ -1135,6 +1135,14 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                   );
     }
 
+    /**
+     * Sets the value at the specified index within the JSON-like array to the provided JsValue using a default null
+     * value for padding.
+     *
+     * @param index   The index at which to set the value.
+     * @param element The JsValue to set at the specified index.
+     * @return The modified JsArray with the updated value at the specified index.
+     */
     public JsArray set(final int index,
                        final JsValue element
                       ) {
@@ -1170,6 +1178,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
                 .apply(value);
 
     }
+
 
     @Override
     public JsArray set(final JsPath path,
@@ -1232,30 +1241,30 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
 
     @Override
-    public <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                  final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                                  final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                                 ) {
+    public <R> R reduce(final BinaryOperator<R> op,
+                        final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+                       ) {
         return OpMapReduce.reduceArr(this,
                                      JsPath.fromIndex(-1),
                                      requireNonNull(predicate),
                                      map,
                                      op,
-                                     Optional.empty()
+                                     null
                                     );
 
     }
 
     @Override
-    public <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                  final Function<? super JsPrimitive, R> map,
-                                  final Predicate<? super JsPrimitive> predicate
-                                 ) {
+    public <R> R reduce(final BinaryOperator<R> op,
+                        final Function<? super JsPrimitive, R> map,
+                        final Predicate<? super JsPrimitive> predicate
+                       ) {
         return OpMapReduce.reduceArr(this,
                                      requireNonNull(predicate),
                                      map,
                                      op,
-                                     Optional.empty()
+                                     null
                                     );
     }
 
@@ -1340,7 +1349,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
 
     /**
      * equals method is inherited, so it's implemented. The purpose of this method is to cache the hashcode once
-     * calculated. the object is immutable and it won't change Single-check idiom  Item 83 from Effective Java
+     * calculated. the object is immutable, and it won't change Single-check idiom  Item 83 from Effective Java
      */
     @Override
     @SuppressWarnings("squid:S1206")

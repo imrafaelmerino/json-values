@@ -157,7 +157,6 @@ public final class JsPath implements Comparable<JsPath> {
                 if (token.length() > 1 && token.startsWith("0")) throw UserError.indexWithLeadingZeros(token);
                 return Index.of(Integer.parseInt(token));
             }
-            //token="'" case is covered before
             if (token.startsWith("'") && token.endsWith("'"))
                 return Key.of(mapKeyFn.apply(token.substring(1,
                                                              token.length() - 1

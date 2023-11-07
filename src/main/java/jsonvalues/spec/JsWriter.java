@@ -14,7 +14,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * * targeting specific output stream
  * * buffering the entire response in memory
  * <p>
- * In both cases JsonWriter writes into an byte[] buffer.
+ * In both cases JsonWriter writes into a byte[] buffer.
  * If stream is used as target, it will copy buffer into the stream whenever there is no more room in buffer for new data.
  * If stream is not used as target, it will grow the buffer to hold the encoded result.
  * To use stream as target reset(OutputStream) must be called before processing.
@@ -54,39 +54,21 @@ class JsWriter {
         this.buffer = new byte[size];
     }
 
+    static final byte OBJECT_START = '{';
 
-    /**
-     * Helper for writing JSON object start: {
-     */
-    static byte OBJECT_START = '{';
-    /**
-     * Helper for writing JSON object end: }
-     */
-    static byte OBJECT_END = '}';
-    /**
-     * Helper for writing JSON array start: [
-     */
-    static byte ARRAY_START = '[';
-    /**
-     * Helper for writing JSON array end: ]
-     */
-    static byte ARRAY_END = ']';
-    /**
-     * Helper for writing comma separator: ,
-     */
-    static byte COMMA = ',';
-    /**
-     * Helper for writing semicolon: :
-     */
-    static byte SEMI = ':';
-    /**
-     * Helper for writing JSON quote: "
-     */
-    static byte QUOTE = '"';
-    /**
-     * Helper for writing JSON escape: \\
-     */
-    static byte ESCAPE = '\\';
+    static final byte OBJECT_END = '}';
+
+    static final byte ARRAY_START = '[';
+
+    static final byte ARRAY_END = ']';
+
+    static final byte COMMA = ',';
+
+    static final byte SEMI = ':';
+
+    static final byte QUOTE = '"';
+
+    static final byte ESCAPE = '\\';
 
     private void enlargeOrFlush(int size, int padding) {
         if (target != null) {

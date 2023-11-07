@@ -37,7 +37,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
     public final BigDecimal value;
 
     private JsBigDec(final BigDecimal value) {
-        this.value = value;
+        this.value = requireNonNull(value);
     }
 
     /**
@@ -47,7 +47,7 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
      * @return a new JsBigDec
      */
     public static JsBigDec of(BigDecimal n) {
-        return new JsBigDec(requireNonNull(n));
+        return new JsBigDec(n);
     }
 
     @Override

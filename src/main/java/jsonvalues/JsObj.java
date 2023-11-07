@@ -32,8 +32,7 @@ import static jsonvalues.MatchExp.ifNothingElse;
  * the original object unchanged. This immutability makes `JsObj` a persistent data structure.
  *
  * <p>This class provides methods to access and manipulate JSON data stored within it, including querying values by
- * key,
- * performing intersections with other `JsObj` instances, and converting the `JsObj` to a JSON string.
+ * key, performing intersections with other `JsObj` instances, and converting the `JsObj` to a JSON string.
  *
  * <p>It also offers a convenient and functional way to work with JSON data in Java, making it easy to create and
  * manipulate JSON objects programmatically.
@@ -3211,30 +3210,30 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
 
     @Override
-    public <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                  final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
-                                  final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
-                                 ) {
+    public <R> R reduce(final BinaryOperator<R> op,
+                        final BiFunction<? super JsPath, ? super JsPrimitive, R> map,
+                        final BiPredicate<? super JsPath, ? super JsPrimitive> predicate
+                       ) {
         return OpMapReduce.reduceObj(this,
                                      JsPath.empty(),
                                      requireNonNull(predicate),
                                      map,
                                      op,
-                                     Optional.empty()
+                                     null
                                     );
 
     }
 
     @Override
-    public <R> Optional<R> reduce(final BinaryOperator<R> op,
-                                  final Function<? super JsPrimitive, R> map,
-                                  final Predicate<? super JsPrimitive> predicate
-                                 ) {
+    public <R> R reduce(final BinaryOperator<R> op,
+                        final Function<? super JsPrimitive, R> map,
+                        final Predicate<? super JsPrimitive> predicate
+                       ) {
         return OpMapReduce.reduceObj(this,
                                      requireNonNull(predicate),
                                      map,
                                      op,
-                                     Optional.empty()
+                                     null
                                     );
     }
 
@@ -3372,7 +3371,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the number located at the given key as a big decimal or null if it doesn't exist or it's not a decimal
+     * Returns the number located at the given key as a big decimal or null if it doesn't exist, or it's not a decimal
      * number.
      *
      * @param key the key
@@ -3551,7 +3550,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as an integer or null if it doesn't exist, or it's not an
-     * integral number or it's an integral number but doesn't fit in an integer.
+     * integral number, or it's an integral number but doesn't fit in an integer.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -3564,7 +3563,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as an integer or the default value provided if it doesn't
-     * exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * exist, or it's not an integral number, or it's an integral number but doesn't fit in an integer.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3580,7 +3579,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as a long or null if it doesn't exist, or it's not an
-     * integral number or it's an integral number but doesn't fit in a long.
+     * integral number, or it's an integral number but doesn't fit in a long.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -3593,7 +3592,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
     /**
      * Returns the integral number located at the given key as a long or the default value provided if it doesn't exist,
-     * or it's not an integral number or it's an integral number but doesn't fit in a long.
+     * or it's not an integral number, or it's an integral number but doesn't fit in a long.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3608,7 +3607,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the json object located at the given key or null if it doesn't exist or it's not an object.
+     * Returns the json object located at the given key or null if it doesn't exist, or it's not an object.
      *
      * @param key the key
      * @return the json object located at the given key or null
@@ -3636,7 +3635,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the string located at the given key or null if it doesn't exist or it's not an string.
+     * Returns the string located at the given key or null if it doesn't exist, or it's not a string.
      *
      * @param key the key
      * @return the string located at the given key or null
@@ -3647,7 +3646,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the string located at the given key or the default value provided if it doesn't exist, or it's not an
+     * Returns the string located at the given key or the default value provided if it doesn't exist, or it's not a
      * string.
      *
      * @param key    the key

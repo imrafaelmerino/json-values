@@ -16,35 +16,47 @@ refactor some tests
 Improved javadoc
 
 12.5.0
-upgrade java-fun library
-better optionals and nullable distribution in JsObjGen
-New methods:
-JsIntGen.biased(min)
-JsLongGen.biased(min)
-JsLongGen.arbitrary(min)
-JsIntGen.arbitrary(min)
+- upgrade java-fun library
+- better optionals and nullable distribution in JsObjGen
+- New methods:
+  `JsIntGen.biased(min)`
+  `JsLongGen.biased(min)`
+  `JsLongGen.arbitrary(min)`
+  `JsIntGen.arbitrary(min)`
 
 12.6.0
-upgrade java-fun to 1.3.2
+- upgrade java-fun to 1.3.2
 
 12.7.0
-Bug: Previous versions compiled without enabling preview features. All preview features have been eliminated as they are
-no longer necessary and were exclusively used for internal purposes.
-
-Eliminate compilation warnings in both source and test code."
+- Bug: Previous versions compiled without enabling preview features. All preview features have been eliminated as they are
+  no longer necessary and were exclusively used for internal purposes.
+- Eliminate compilation warnings in both source and test code.
 
 12.8.0
-JsObjGen::concat method
+- JsObjGen new method:
+   `concat(JsObjGen)`
 
 12.9.0
-JsObj new methods: 
-    set(key,primitive)
-    set(path,primitive)
+- JsObj new methods: 
+   `set(key,primitive)`
+   `set(path,primitive)`
 
 13.0.0
- - added avro support for some specs 
- - other specs don't have an equivalente avro type and a AvroNotSupported exception is thrown,
-   not a problem since avro schemas must be created during init of app
- - add onSymbolOf (does support avro (enum of string only) while oneOf doesnt)
- - map of object spec (now you have to specify the shema)
- - map o array spec (now you have to specify the shema)
+- added avro support for some specs with the interfaz AvroSpec (not public is used by avro-values proyect)
+- `JsObjSpecBuilder`, `JsFixedBuilder` and `JsEnumBuilder` to facilitate integration with avro
+- If spec builder is used to create specs and parsers, the metadata of the spec
+  can be used for parsing, for example aliases and default values.
+- added oneOf specs and parsers (JsReader now support set marks and rollback to that marks!)
+- added `JsArray.of(varargs)` and `JsArray.ofXXX(list)`  methods to create arrays from primitives and list of primitives
+- added map of spec: `JsSpecs.mapOfSpec(JsSpec spec)`
+- added array of spec: `JsSpecs.arrayOfSpec(JsSpec spec)`
+- Refactor public classes: 
+    - `JsObjSpecParser.of` and `JsArraySpecParser.of` instead of constructors
+    - `JsReader` visibility change (is not public)
+    -  `JsSpec.readNextValue(JsReader)` -> `JsSpec.parse(String)`. Method used by jio-console and was changed
+        since it not necessary to create a JsReader
+    - `reduce` methods doesn't return Optional (implementation inefficient since create a lot of Optional objects)
+- Refactor internal classes and tests (clients not affected)
+- decimal specs like `JsSpecs.decimal` can parse any kind of numeric values (integers as well)
+- Removed `JsSpecs.number` and related specs like `arrayOfNumbers`  (use decimal instead)
+- Added `JsDouble` and related specs (`JsSpecs.doubleNumber` and others related)

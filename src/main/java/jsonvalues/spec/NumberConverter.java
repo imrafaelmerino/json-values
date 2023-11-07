@@ -6,7 +6,7 @@ import java.nio.charset.StandardCharsets;
 
 /**
  * Modified class from dsl-json library. deserializeInt, deserializeLong and so long, convert string numbers into
- * numbers: "123" -> 123 which I consider it's a mistake. The change consists of throwing an code
+ * numbers: "123" -> 123 which I consider it's a mistake. The change consists of throwing a code
  */
 
 abstract class NumberConverter {
@@ -1514,8 +1514,8 @@ abstract class NumberConverter {
     }
 
     private static class NumberInfo {
-        char[] buffer;
-        int length;
+        final char[] buffer;
+        final int length;
 
         NumberInfo(char[] buffer,
                    int length

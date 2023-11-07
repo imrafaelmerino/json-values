@@ -940,7 +940,7 @@ public final class JsOptics {
         }
 
         /**
-         * lens that focus on a integer number located at a path in an object.
+         * lens that focus on an integer number located at a path in an object.
          *
          * @param path the path where the integer number is located at
          * @return an optional
@@ -953,7 +953,7 @@ public final class JsOptics {
         }
 
         /**
-         * lens that focus on a integer number located at a key in an object.
+         * lens that focus on an integer number located at a key in an object.
          *
          * @param key the key where the integer number is located at
          * @return an optional
@@ -1009,7 +1009,7 @@ public final class JsOptics {
         }
 
         /**
-         * lens that focus on a integral number located at a path in an object.
+         * lens that focus on an integral number located at a path in an object.
          *
          * @param path the path where the integral number is located at
          * @return an optional
@@ -1022,7 +1022,7 @@ public final class JsOptics {
         }
 
         /**
-         * lens that focus on a integral number located at a key in an object.
+         * lens that focus on an integral number located at a key in an object.
          *
          * @param key the key where the integral number is located at
          * @return an optional

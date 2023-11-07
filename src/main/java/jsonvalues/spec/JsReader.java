@@ -29,9 +29,9 @@ import static jsonvalues.spec.ParserErrors.UNEXPECTED_END_OF_JSON;
  *
  * <p>
  * You can also  read tokens as JsValue and validate them using the method
- * {@link jsonvalues.spec.JsSpec#readNextValue(JsReader)}
+ * {@link jsonvalues.spec.JsSpec#parse(String)}
  */
-public final class JsReader {
+ final class JsReader {
 
     private static final boolean[] WHITESPACE = new boolean[256];
 
@@ -573,7 +573,7 @@ public final class JsReader {
     }
 
     /**
-     * Checks if 'true' value is at current position. This means last read byte was 't' and 'rue' are next three bytes.
+     * Checks if 'true' value is at current position. This means last read byte wasn't' and 'rue' are next three bytes.
      * If last byte was t but next three are not 'rue' it will throw since that is not a valid JSON construct.
      *
      * @return true if 'true' value is at current position

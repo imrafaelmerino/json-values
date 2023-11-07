@@ -1,13 +1,12 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
-import java.util.List;
 import java.util.Optional;
 
 
 final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
-     JsMapOfDec(boolean nullable) {
+    JsMapOfDec(boolean nullable) {
         super(nullable);
     }
 
@@ -24,7 +23,7 @@ final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
     @Override
     public Optional<JsError> testValue(JsValue value) {
-        return test(value,it -> !it.isNumber(),ERROR_CODE.DECIMAL_EXPECTED);
+        return test(value, it -> !it.isNumber(), ERROR_CODE.DECIMAL_EXPECTED);
     }
 
 

@@ -9,8 +9,8 @@ import java.util.Objects;
 import static java.util.Objects.requireNonNull;
 
 /**
- * The `SpecError` class represents an code that occurs during the validation of a JSON value against a specification.
- * It encapsulates information about the code, including the path where the code occurred, the code code, and the
+ * The `SpecError` class represents a code that occurs during the validation of a JSON value against a specification.
+ * It encapsulates information about the code, including the path where the code occurred, the code, and the
  * value that triggered the code.
  * <p>
  * json-values and json-specs in particular, uses `SpecError` instances to report validation errors when a JSON value
@@ -33,7 +33,7 @@ public final class SpecError {
      */
     public final JsPath path;
     /**
-     * The code code indicating the type of validation code.
+     * The code indicating the type of validation code.
      */
     public final JsError error;
     /**
@@ -50,7 +50,7 @@ public final class SpecError {
      * Creates a new `SpecError` instance with the specified path and code.
      *
      * @param path  The path where the code occurred within the JSON structure.
-     * @param error The code object containing code code and value information.
+     * @param error The code object containing code and value information.
      * @return A new `SpecError` instance representing the validation code.
      */
     static SpecError of(final JsPath path, final JsError error) {
@@ -64,7 +64,7 @@ public final class SpecError {
     /**
      * Returns a human-readable string representation of the `SpecError` instance.
      *
-     * @return A string representation of the code, including path, code code, and value.
+     * @return A string representation of the code, including path, code, and value.
      */
     @Override
     public String toString() {

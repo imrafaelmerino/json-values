@@ -2,6 +2,7 @@ package jsonvalues.spec;
 
 
 import jsonvalues.JsObj;
+import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 

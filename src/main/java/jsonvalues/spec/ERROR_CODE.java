@@ -2,7 +2,7 @@ package jsonvalues.spec;
 
 /**
  * The `ERROR_CODE` enum represents various code codes that can be associated with validation errors when using JSON
- * value specifications (`JsSpecs`). Each code code corresponds to a specific type of validation failure.
+ * value specifications (`JsSpecs`). Each code corresponds to a specific type of validation failure.
  */
 public enum ERROR_CODE {
     /**
@@ -24,6 +24,10 @@ public enum ERROR_CODE {
      * Indicates that a binary (byte array) value was expected but a different type of value was encountered.
      */
     BINARY_EXPECTED,
+
+    /**
+     * Indicates that a binary (byte array) value of a specified size was expected.
+     */
     BINARY_FIXED_LENGTH_EXPECTED,
 
     /**
@@ -40,6 +44,10 @@ public enum ERROR_CODE {
      * Indicates that a long integer value was expected but a different type of value was encountered.
      */
     LONG_EXPECTED,
+
+    /**
+     * Indicates that a double number value was expected but a different type of value was encountered.
+     */
     DOUBLE_EXPECTED,
 
     /**
@@ -172,9 +180,16 @@ public enum ERROR_CODE {
      */
     ARR_SIZE_GREATER_THAN_MAX,
 
+    /**
+     * A value from an enumeration is expected
+     */
     ENUM_SYMBOL_EXPECTED,
 
+    /**
+     * All the specs from the `OneOf` spec was tried but the value doesn't confirm none of them
+     */
     ONE_OF_SPEC_EXHAUSTED
 
 
 }
+

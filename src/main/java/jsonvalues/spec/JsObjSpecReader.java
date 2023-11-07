@@ -12,7 +12,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
     private final Map<String, JsParser> parsers;
     private final MetaData metadata;
 
-    protected Predicate<JsObj> predicate;
+    protected final Predicate<JsObj> predicate;
 
     JsObjSpecReader(boolean strict,
                     Map<String, JsParser> parsers,

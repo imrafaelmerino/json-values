@@ -20,6 +20,7 @@ package jsonvalues;
 
 
 import java.util.Iterator;
+import java.util.Objects;
 import java.util.Optional;
 
 
@@ -27,46 +28,44 @@ import java.util.Optional;
  * An immutable {@code HashMap} implementation based on a
  * <a href="https://en.wikipedia.org/wiki/Hash_array_mapped_trie">Hash array mapped trie (HAMT)</a>.
  */
- final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode>  {
+final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode> {
 
     private static final HashMap EMPTY = new HashMap(HashArrayMappedTrie.empty());
 
     private final HashArrayMappedTrie trie;
 
     private HashMap(HashArrayMappedTrie trie) {
-        this.trie = trie;
+        this.trie = Objects.requireNonNull(trie);
     }
 
-    public static  HashMap empty() {
-        return  EMPTY;
+    public static HashMap empty() {
+        return EMPTY;
     }
-  
+
+    private static HashMap wrap(HashArrayMappedTrie trie) {
+        return trie.isEmpty() ? empty() : new HashMap(trie);
+    }
+
     public boolean containsKey(String key) {
         return trie.containsKey(key);
     }
 
-
-  
     public Optional<JsValue> get(String key) {
         return trie.get(key);
     }
 
-  
     public JsValue getOrElse(String key, JsValue defaultValue) {
         return trie.getOrElse(key, defaultValue);
     }
 
-  
     public boolean isEmpty() {
         return trie.isEmpty();
     }
 
-  
     public HashMap put(String key, JsValue value) {
         return new HashMap(trie.put(key, value));
     }
 
-  
     public HashMap remove(String key) {
         final HashArrayMappedTrie result = trie.remove(key);
         return result.size() == trie.size() ? this : wrap(result);
@@ -76,20 +75,15 @@ import java.util.Optional;
         return trie.size();
     }
 
-    
-    private static HashMap wrap(HashArrayMappedTrie trie) {
-        return trie.isEmpty() ? empty() : new HashMap(trie);
-    }
-
     public Iterator<String> keySet() {
         return trie.keysIterator();
     }
 
 
-    public boolean containsValue(JsValue value){
+    public boolean containsValue(JsValue value) {
         for (Iterator<JsValue> it = trie.valuesIterator(); it.hasNext(); ) {
             JsValue v = it.next();
-            if(v.equals(value)) return true;
+            if (v.equals(value)) return true;
         }
 
         return false;

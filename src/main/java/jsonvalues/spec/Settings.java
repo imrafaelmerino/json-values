@@ -2,11 +2,11 @@ package jsonvalues.spec;
 
 /**
  * Configuration for DslJson options.
- * By default key cache is enabled. Everything else is not configured.
+ * By default, key cache is enabled. Everything else is not configured.
  * To load `META-INF/services` call `includeServiceLoader()`
  */
 class Settings {
-    StringCache keyCache = new SimpleStringCache();
+    final StringCache keyCache = new SimpleStringCache();
     StringCache valuesCache;
     JsReader.DoublePrecision doublePrecision = JsReader.DoublePrecision.DEFAULT;
     int maxNumberDigits = 512;
@@ -15,7 +15,7 @@ class Settings {
 
     /**
      * Use specific string values cache implementation.
-     * By default string values cache is disabled.
+     * By default, string values cache is disabled.
      * <p>
      * To support memory restricted scenarios where there is limited number of string values,
      * values cache can be used.

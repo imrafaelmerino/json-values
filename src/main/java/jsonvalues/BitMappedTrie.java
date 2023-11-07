@@ -30,7 +30,7 @@ import static jsonvalues.NodeModifier.IDENTITY;
 /**
  * A `bit-mapped trie` is a very wide and shallow tree (for integer indices the depth will be `≤6`).
  * Each node has a maximum of `32` children (configurable).
- * Access to a given position is done by converting the index to a base 32 number and using each digit to descend down the tree.
+ * Access to a given position is done by converting the index to a base 32 number and using each digit to descend the tree.
  * Modifying the tree is done similarly, but along the way the path is copied, returning a new root every time.
  * `Append` inserts in the last leaf, or if the tree is full from the right, it adds another layer on top of it (the old root will be the first of the new one).
  * `Prepend` is done similarly, but an offset is needed, because adding a new top node (where the current root would be the last node of the new root)
@@ -41,7 +41,7 @@ final class BitMappedTrie<T> {
 
     static final int BRANCHING_BASE = 5;
     static final int BRANCHING_FACTOR = 1 << BRANCHING_BASE;
-    static final int BRANCHING_MASK = -1 >>> -BRANCHING_BASE;
+    static final int BRANCHING_MASK = -1 >>> 27;
 
     static int firstDigit(int num, int depthShift) {
         return num >> depthShift;

@@ -45,7 +45,7 @@ interface ArrayType<T> {
         return copy(array, length, from, 0, length);
     }
 
-    /** Repeatedly group an array into equal sized sub-trees */
+    /** Repeatedly group an array into equal sized subtrees */
     default Object grouped(Object array, int groupSize) {
         final int arrayLength = lengthOf(array);
         final Object results = obj().newInstance(1 + ((arrayLength - 1) / groupSize));

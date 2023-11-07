@@ -3,7 +3,9 @@ package jsonvalues.spec;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * The `JsSpec` interface represents a specification for validating JSON data structures. It provides methods and
@@ -51,14 +53,15 @@ public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, O
     JsParser parser();
 
     /**
-     * Low-level method to parse a JSON value token by token from a reader. Returns the next value according to the
-     * current state of the reader if it conforms to this spec, otherwise throws a `JsParserException`.
+     * Low-level method to parse a JSON value from their string representation. Returns the JsValue if it conforms to
+     * this spec, otherwise throws a `JsParserException`.
      *
-     * @param reader The reader to parse JSON values from.
+     * @param json The reader to parse JSON values from.
      * @return The next token as a `JsValue`.
      * @throws JsParserException If the parsed value does not conform to this spec.
      */
-    default JsValue readNextValue(JsReader reader) throws JsParserException {
+    default JsValue parse(final String json) throws JsParserException {
+        var reader = JsIO.INSTANCE.createReader(Objects.requireNonNull(json).getBytes(StandardCharsets.UTF_8));
         reader.readNextToken();
         return parser().parse(reader);
     }

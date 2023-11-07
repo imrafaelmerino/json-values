@@ -8,10 +8,10 @@ class AvroUtils {
     static final String NAMESPACE_REGEX = "[A-Za-z_][A-Za-z0-9_.]+";
     static final String NAME_REGEX = "[A-Za-z_]+";
     static final Pattern AVRO_NAME_PATTERN = Pattern.compile(NAME_REGEX);
-    static Predicate<String> isValidName =
+    static final Predicate<String> isValidName =
             name -> AVRO_NAME_PATTERN.matcher(name).matches();
     static final Pattern AVRO_NAMESPACE_PATTERN = Pattern.compile(NAMESPACE_REGEX);
-    static Predicate<String> isValidNamespace =
+    static final Predicate<String> isValidNamespace =
             name -> AVRO_NAMESPACE_PATTERN.matcher(name).matches();
 
     private AvroUtils() {

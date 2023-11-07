@@ -45,11 +45,11 @@ final class Vector<T> implements Iterable<T> {
     final BitMappedTrie<T> trie;
 
     private Vector(BitMappedTrie<T> trie) {
-        this.trie = trie;
+        this.trie = Objects.requireNonNull(trie);
     }
 
     private static <T> Vector<T> ofAll(BitMappedTrie<T> trie) {
-        return (trie.length() == 0)
+        return (Objects.requireNonNull(trie).length() == 0)
                 ? empty()
                 : new Vector<>(trie);
     }

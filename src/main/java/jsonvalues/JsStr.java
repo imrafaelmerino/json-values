@@ -62,7 +62,7 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
     public final String value;
 
     private JsStr(String value) {
-        this.value = value;
+        this.value = requireNonNull(value);
     }
 
     /**
@@ -72,7 +72,7 @@ public final class JsStr extends JsPrimitive implements Comparable<JsStr> {
      * @return a new JsStr
      */
     public static JsStr of(String str) {
-        return new JsStr(requireNonNull(str));
+        return new JsStr(str);
     }
 
     @Override

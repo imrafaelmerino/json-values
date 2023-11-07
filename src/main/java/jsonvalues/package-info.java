@@ -44,7 +44,6 @@
  * <p>
  * The classes and interfaces in the `jsonvalues` package provide a powerful and flexible way to work with JSON data,
  * making it easier to handle JSON-related tasks in your applications.
- * <p>
  *
  * @see jsonvalues.JsValue
  * @see jsonvalues.JsObj
