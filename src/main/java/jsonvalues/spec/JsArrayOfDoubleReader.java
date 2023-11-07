@@ -1,13 +1,11 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-import java.util.function.LongFunction;
 
 final class JsArrayOfDoubleReader extends JsArrayReader {
     private final JsDoubleReader parser;
@@ -21,7 +19,7 @@ final class JsArrayOfDoubleReader extends JsArrayReader {
                                     final DoubleFunction<Optional<JsError>> fn,
                                     final int min,
                                     final int max
-    ) throws JsParserException {
+                                   ) throws JsParserException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -34,7 +32,7 @@ final class JsArrayOfDoubleReader extends JsArrayReader {
                               final DoubleFunction<Optional<JsError>> fn,
                               final int min,
                               final int max
-    ) throws JsParserException {
+                             ) throws JsParserException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

@@ -14,16 +14,16 @@ public class TestOneOfSpec {
     @Test
     public void testOneOfPrimitive() {
 
-        var spec = JsSpecs.oneObjSpecOf(List.of(JsObjSpec.of("a", JsSpecs.integer(),
-                                                             "b", JsSpecs.str(),
-                                                             "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.str()))
-                                                            ),
-                                                JsObjSpec.of("a", JsSpecs.integer(),
-                                                             "b", JsSpecs.str(),
-                                                             "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.integer()))
-                                                            )
-                                               )
-                                       );
+        var spec = JsSpecs.oneSpecOf(List.of(JsObjSpec.of("a", JsSpecs.integer(),
+                                                          "b", JsSpecs.str(),
+                                                          "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.str()))
+                                                         ),
+                                             JsObjSpec.of("a", JsSpecs.integer(),
+                                                          "b", JsSpecs.str(),
+                                                          "c", JsSpecs.oneSpecOf(List.of(JsSpecs.bool(), JsSpecs.integer()))
+                                                         )
+                                            )
+                                    );
 
 
         JsObj obj = JsObj.of("a", JsInt.of(1),
@@ -31,7 +31,7 @@ public class TestOneOfSpec {
                              "c", JsInt.of(3)
                             );
         System.out.println(spec.test(obj));
-        JsObjSpecParser parser = new JsObjSpecParser(spec);
+        JsObjSpecParser parser =  JsObjSpecParser.of(spec);
         var obj1 = parser.parse(obj.toString());
 
         Assertions.assertEquals(obj, obj1);

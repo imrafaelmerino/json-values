@@ -13,7 +13,8 @@ final class JsArrayOfValue extends AbstractSizableArr implements JsOneErrorSpec,
 
     JsArrayOfValue(final boolean nullable,
                    int min,
-                   int max) {
+                   int max
+                  ) {
         super(nullable,
               min,
               max);
@@ -33,7 +34,6 @@ final class JsArrayOfValue extends AbstractSizableArr implements JsOneErrorSpec,
                                                  min,
                                                  max);
     }
-
 
 
     @Override

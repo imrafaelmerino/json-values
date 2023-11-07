@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -42,9 +43,8 @@ public final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
         JsSpec spec = specs.get(i);
         if (i < specs.size() - 1) reader.setMark();
         try {
-            JsValue parsed = spec.parser()
-                                 .parse(reader);
-            return parsed;
+            return spec.parser()
+                       .parse(reader);
         } catch (JsParserException e) {
             if (i < specs.size() - 1) reader.rollbackToMark();
             return parse(reader, i + 1);

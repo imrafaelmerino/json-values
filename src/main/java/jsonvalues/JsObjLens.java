@@ -15,7 +15,7 @@ class JsObjLens<S extends Json<S>> extends Lens<S, JsObj> {
         super(json -> requireNonNull(json).getObj(path),
               o -> json -> requireNonNull(json).set(path,
                                                     o)
-        );
+             );
     }
 
     @Override
@@ -25,8 +25,8 @@ class JsObjLens<S extends Json<S>> extends Lens<S, JsObj> {
                               JsObj o = this.get.apply(requireNonNull(s));
                               JsObj newO = other.set.apply(requireNonNull(b))
                                                     .apply(o == null ?
-                                                           JsObj.empty() :
-                                                           o);
+                                                                   JsObj.empty() :
+                                                                   o);
                               return this.set.apply(newO)
                                              .apply(s);
                           }

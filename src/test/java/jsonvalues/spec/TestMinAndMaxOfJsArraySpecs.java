@@ -17,7 +17,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfBool(1,
                                                2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -43,7 +43,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfStr(1,
                                               2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -71,7 +71,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfInt(1,
                                               2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -98,7 +98,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfDouble(1,
                                                  2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -125,7 +125,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfLong(1,
                                                2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -152,7 +152,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfObj(1,
                                               2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -179,7 +179,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfDec(1,
                                               2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -206,7 +206,7 @@ public class TestMinAndMaxOfJsArraySpecs {
         JsArraySpec spec = JsSpecs.arrayOfBigInt(1,
                                                  2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));
@@ -236,7 +236,7 @@ public class TestMinAndMaxOfJsArraySpecs {
                                                1,
                                                2);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertThrows(JsParserException.class,
                                 () -> parser.parse(JsArray.empty().toString()));

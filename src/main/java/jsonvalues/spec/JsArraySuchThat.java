@@ -21,8 +21,6 @@ final class JsArraySuchThat extends AbstractNullable implements JsOneErrorSpec, 
     }
 
 
-
-
     @Override
     public JsSpec nullable() {
         return new JsArraySuchThat(predicate,
@@ -41,7 +39,7 @@ final class JsArraySuchThat extends AbstractNullable implements JsOneErrorSpec, 
     public Optional<JsError> testValue(final JsValue value) {
         final Optional<JsError> result = isArray.testValue(value);
         return result.isPresent() || value.isNull() ?
-               result :
-               predicate.apply(value.toJsArray());
+                result :
+                predicate.apply(value.toJsArray());
     }
 }

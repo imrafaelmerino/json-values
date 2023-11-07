@@ -33,7 +33,4 @@ final class JsBinarySpec extends AbstractNullable implements JsOneErrorSpec, Avr
     }
 
 
-
-
-
 }

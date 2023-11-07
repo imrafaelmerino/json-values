@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsParserException;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -36,16 +35,35 @@ public final class JsArraySpecParser {
 
     private final JsParser parser;
 
+    private final JsSpec spec;
+
     /**
      * Creates a JSON array parser based on the provided JSON array specification (spec). The parser will validate that
      * every element in a JSON array adheres to the schema defined in the given specification.
      *
      * @param spec The JSON array specification that defines the expected schema for each element in the array.
      */
-    public JsArraySpecParser(final JsArraySpec spec) {
+    private JsArraySpecParser(final JsSpec spec) {
+        if (!isValid(requireNonNull(spec))) {
+            throw new IllegalArgumentException("`%s` requires a `%s` or `OneSpecOf(%s)`".formatted(JsArraySpecParser.class.getName(),
+                                                                                                   JsArraySpec.class.getName(),
+                                                                                                   JsArraySpec.class.getName()
+                                                                                                  ));
+        }
+        this.spec = spec;
+        parser = spec.parser();
 
-        parser = requireNonNull(spec).parser();
+    }
 
+    public static JsArraySpecParser of(final JsSpec spec) {
+        return new JsArraySpecParser(spec);
+    }
+
+    private boolean isValid(JsSpec spec) {
+        if (spec instanceof JsArraySpec) return true;
+        if (spec instanceof OneOf oneOf)
+            return oneOf.specs.stream().allMatch(it -> it instanceof JsArraySpec || it instanceof OneOf);
+        return false;
     }
 
     /**
@@ -60,9 +78,13 @@ public final class JsArraySpecParser {
      */
     public JsArray parse(final byte[] bytes) {
 
-        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
-                                                  this.parser
-                                                 );
+        JsArray arr = JsIO.INSTANCE.deserializeToJsArray(requireNonNull(bytes),
+                                                         parser
+                                                        );
+
+        assert spec.test(arr).isEmpty();
+
+        return arr;
     }
 
 
@@ -76,10 +98,14 @@ public final class JsArraySpecParser {
      * @throws JsParserException If parsing fails due to JSON syntax errors or specification violations.
      */
     public JsArray parse(String str) {
-        return JsIO.INSTANCE
+        JsArray arr = JsIO.INSTANCE
                 .deserializeToJsArray(requireNonNull(str).getBytes(StandardCharsets.UTF_8),
-                                      this.parser
+                                      parser
                                      );
+
+        assert spec.test(arr).isEmpty();
+
+        return arr;
     }
 
     /**
@@ -95,9 +121,13 @@ public final class JsArraySpecParser {
      *                           exceptions.
      */
     public JsArray parse(InputStream inputstream) {
-        return JsIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
-                                                  this.parser
-                                                 );
+        JsArray arr = JsIO.INSTANCE.deserializeToJsArray(requireNonNull(inputstream),
+                                                         parser
+                                                        );
+
+        assert spec.test(arr).isEmpty();
+
+        return arr;
 
     }
 

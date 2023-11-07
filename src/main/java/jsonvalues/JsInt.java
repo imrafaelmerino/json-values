@@ -64,7 +64,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     public int compareTo(final JsInt o) {
         return Integer.compare(value,
                                requireNonNull(o).value
-        );
+                              );
     }
 
     /**
@@ -78,8 +78,8 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     }
 
     /**
-     * Indicates whether some other object is "equal to" this JSON integer. Numbers of different types
-     * are equals if they have the same value.
+     * Indicates whether some other object is "equal to" this JSON integer. Numbers of different types are equals if
+     * they have the same value.
      *
      * @param that the reference object with which to compare.
      * @return true if that is a JsNumber with the same value as this JsInt.
@@ -157,8 +157,7 @@ public final class JsInt extends JsNumber implements Comparable<JsInt> {
     }
 
     /**
-     * /**
-     * Tests the value of this JSON integer on a predicate.
+     * /** Tests the value of this JSON integer on a predicate.
      *
      * @param predicate the predicate
      * @return true if this integer satisfies the predicate

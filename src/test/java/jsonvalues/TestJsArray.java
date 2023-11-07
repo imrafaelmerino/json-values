@@ -1,6 +1,7 @@
 package jsonvalues;
 
 
+import jsonvalues.spec.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -10,6 +11,7 @@ import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
@@ -20,6 +22,42 @@ import static jsonvalues.JsPath.path;
 
 public class TestJsArray {
 
+
+    @Test
+    public void testConstructors() {
+
+        Assertions.assertEquals(JsArray.of(1, 2),
+                                JsArray.ofInts(List.of(1, 2))
+                               );
+
+        Assertions.assertEquals(JsArray.of(1L, 2L),
+                                JsArray.ofLongs(List.of(1L, 2L))
+                               );
+
+        Assertions.assertEquals(JsArray.of(true, false),
+                                JsArray.ofBools(List.of(true, false))
+                               );
+
+        Assertions.assertEquals(JsArray.of("a", "b"),
+                                JsArray.ofStrs(List.of("a", "b"))
+                               );
+
+        Assertions.assertEquals(JsArray.of(1 / 2d, 1 / 4d),
+                                JsArray.ofDoubles(List.of(1 / 2d, 1 / 4d))
+                               );
+
+        Assertions.assertEquals(JsArray.of(BigDecimal.ONE,
+                                           BigDecimal.TEN),
+                                JsArray.ofDecs(List.of(BigDecimal.ONE,
+                                                       BigDecimal.TEN))
+                               );
+
+        Assertions.assertEquals(JsArray.of(Instant.MAX,
+                                           Instant.MAX),
+                                JsArray.ofInstants(List.of(Instant.MAX,
+                                                           Instant.MAX))
+                               );
+    }
 
     @Test
     public void test_set_and_get_with_padding() {
@@ -615,23 +653,23 @@ public class TestJsArray {
 
 
         Assertions.assertEquals(JsArray.parse("[\n"
-                                                      + "  {\n"
-                                                      + "    \"size\": 3,\n"
-                                                      + "    \"a\": 1,\n"
-                                                      + "    \"b\": 2,\n"
-                                                      + "    \"c\": {}\n"
-                                                      + "  },\n"
-                                                      + "  {},\n"
-                                                      + "  \"c\",\n"
-                                                      + "  true,\n"
-                                                      + "  false,\n"
-                                                      + "  {\n"
-                                                      + "    \"size\": 3,\n"
-                                                      + "    \"a\": 1,\n"
-                                                      + "    \"b\": 2,\n"
-                                                      + "    \"c\": 3\n"
-                                                      + "  }\n"
-                                                      + "]\n")
+                                              + "  {\n"
+                                              + "    \"size\": 3,\n"
+                                              + "    \"a\": 1,\n"
+                                              + "    \"b\": 2,\n"
+                                              + "    \"c\": {}\n"
+                                              + "  },\n"
+                                              + "  {},\n"
+                                              + "  \"c\",\n"
+                                              + "  true,\n"
+                                              + "  false,\n"
+                                              + "  {\n"
+                                              + "    \"size\": 3,\n"
+                                              + "    \"a\": 1,\n"
+                                              + "    \"b\": 2,\n"
+                                              + "    \"c\": 3\n"
+                                              + "  }\n"
+                                              + "]\n")
                 ,
                                 a
                                );

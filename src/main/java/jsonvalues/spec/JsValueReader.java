@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 
 import jsonvalues.JsBool;
-import jsonvalues.JsParserException;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
@@ -42,22 +41,20 @@ class JsValueReader extends AbstractReader {
     @Override
     @SuppressWarnings("FallThrough")
     JsValue value(JsReader reader) throws JsParserException {
-        switch (reader.last()) {
-            case 't':
-                if (reader.wasTrue()) return JsBool.TRUE;
-                throw JsParserException.reasonAt("true was expected",reader.getCurrentIndex());
-            case 'f':
-                if (reader.wasFalse()) return JsBool.FALSE;
-                throw JsParserException.reasonAt("false was expected",reader.getCurrentIndex());
-            case '"':
-                return JsStr.of(reader.readString());
-            case '{':
-                return objDeserializer.value(reader);
-            case '[':
-                return arrayDeserializer.nullOrValue(reader);
-            default:
-                return numberDeserializer.nullOrValue(reader);
-        }
+        return switch (reader.last()) {
+            case 't' -> {
+                if (reader.wasTrue()) yield JsBool.TRUE;
+                throw JsParserException.reasonAt("true was expected", reader.getCurrentIndex());
+            }
+            case 'f' -> {
+                if (reader.wasFalse()) yield JsBool.FALSE;
+                throw JsParserException.reasonAt("false was expected", reader.getCurrentIndex());
+            }
+            case '"' -> JsStr.of(reader.readString());
+            case '{' -> objDeserializer.value(reader);
+            case '[' -> arrayDeserializer.nullOrValue(reader);
+            default -> numberDeserializer.nullOrValue(reader);
+        };
     }
 
 

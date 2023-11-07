@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 
@@ -14,7 +14,8 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
 
     JsArrayOfDecimal(final boolean nullable,
                      int min,
-                     int max) {
+                     int max
+                    ) {
         super(nullable,
               min,
               max);
@@ -39,13 +40,13 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isNumber() ?
-                                                     Optional.empty() :
-                                                     Optional.of(new JsError(v,
-                                                                            DECIMAL_EXPECTED)),
+                                                        Optional.empty() :
+                                                        Optional.of(new JsError(v,
+                                                                                DECIMAL_EXPECTED)),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 }

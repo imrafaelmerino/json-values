@@ -7,8 +7,7 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Java doesn't support Pattern Matching, but we can implement some matching expressions using high
- * order functions.
+ * Java doesn't support Pattern Matching, but we can implement some matching expressions using high order functions.
  */
 final class MatchExp {
 
@@ -28,7 +27,7 @@ final class MatchExp {
     public static <T> Function<JsValue, T> ifJsonElse(final Function<? super JsObj, T> ifObj,
                                                       final Function<? super JsArray, T> ifArr,
                                                       final Function<? super JsValue, T> ifValue
-    ) {
+                                                     ) {
 
         return elem ->
         {
@@ -48,10 +47,10 @@ final class MatchExp {
      */
     public static <T> Function<JsValue, T> ifJsonElse(final Function<Json<?>, T> ifJson,
                                                       final Function<JsValue, T> ifNotJson
-    ) {
+                                                     ) {
         return elem -> requireNonNull(elem).isJson() ?
-                       requireNonNull(ifJson).apply(elem.toJson()) :
-                       requireNonNull(ifNotJson).apply(elem);
+                requireNonNull(ifJson).apply(elem.toJson()) :
+                requireNonNull(ifNotJson).apply(elem);
     }
 
     /**
@@ -64,10 +63,10 @@ final class MatchExp {
      */
     public static <T> Function<JsValue, T> ifNothingElse(final Supplier<T> nothingSupplier,
                                                          final Function<JsValue, T> elseFn
-    ) {
+                                                        ) {
         return elem -> elem.isNothing() ?
-                       requireNonNull(nothingSupplier).get() :
-                       requireNonNull(elseFn).apply(elem);
+                requireNonNull(nothingSupplier).get() :
+                requireNonNull(elseFn).apply(elem);
     }
 
 }

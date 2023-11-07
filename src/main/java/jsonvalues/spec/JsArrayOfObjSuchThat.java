@@ -37,7 +37,7 @@ final class JsArrayOfObjSuchThat extends AbstractNullable implements JsOneErrorS
     public Optional<JsError> testValue(final JsValue value) {
         Optional<JsError> result = arrayOfObjSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
-               result :
-               predicate.apply(value.toJsArray());
+                result :
+                predicate.apply(value.toJsArray());
     }
 }

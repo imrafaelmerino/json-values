@@ -5,23 +5,28 @@ import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 
-public final class JsEnum extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
+final class JsEnum extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     final JsArray symbols;
 
     final EnumMetaData metaData;
 
-    JsEnum(List<String> symbols) {
-        this(false, JsArray.ofStrs(symbols), null);
+    private JsEnum(List<String> symbols) {
+        this(false, JsArray.ofStrs(Objects.requireNonNull(symbols)), null);
     }
 
     JsEnum(boolean nullable, JsArray symbols, EnumMetaData metaData) {
         super(nullable);
         this.symbols = symbols;
         this.metaData = metaData;
+    }
+
+    static JsEnum of(List<String> symbols) {
+        return new JsEnum(symbols);
     }
 
 

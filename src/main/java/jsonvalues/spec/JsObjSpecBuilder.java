@@ -81,9 +81,9 @@ public final class JsObjSpecBuilder {
         this.aliases = Collections.unmodifiableList(requireNonNull(aliases));
         for (String alias : aliases) {
             if (!isValidName.test(alias)) {
-                throw new IllegalArgumentException("The alias %s of the JsObjSpec with name %s doesn't follow the pattern %s".formatted(alias,
-                                                                                                                                        name,
-                                                                                                                                        AVRO_NAME_PATTERN));
+                throw new IllegalArgumentException("The alias `%s` of the JsObjSpec with name `%s` doesn't follow the pattern `%s`".formatted(alias,
+                                                                                                                                              name,
+                                                                                                                                              AVRO_NAME_PATTERN));
             }
 
         }
@@ -117,7 +117,7 @@ public final class JsObjSpecBuilder {
 
         synchronized (JsObjSpecBuilder.class) {
             if (namesCreated.contains(fullName))
-                throw new IllegalArgumentException("The spec %s has already been created.Choose another namespace/name".formatted(fullName));
+                throw new IllegalArgumentException("The spec `%s` has already been created. Choose another namespace and/or name".formatted(fullName));
             else namesCreated.add(fullName);
         }
     }
@@ -128,9 +128,9 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, List<String>> entry : fieldsAlias.entrySet()) {
             var key = entry.getKey();
             if (entry.getValue().contains(key))
-                throw new IllegalArgumentException("The field `%s` can to be contained in the aliases".formatted(key));
+                throw new IllegalArgumentException("The field `%s` can not be contained in the aliases".formatted(key));
             if (!bindings.containsKey(key))
-                throw new IllegalArgumentException("The field `%s` of the aliases map is not defined in the JsObjSpec with name %s".formatted(key, name));
+                throw new IllegalArgumentException("The field `%s`is not defined in the JsObjSpec with name `%s`".formatted(key, name));
             if (containsDuplicates(entry.getValue()))
                 throw new IllegalArgumentException("The field `%s` has duplicated aliases".formatted(key));
             allAliases.addAll(entry.getValue());
@@ -146,7 +146,7 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, MetaData.ORDERS> entry : fieldsOrder.entrySet()) {
             var key = entry.getKey();
             if (!bindings.containsKey(key))
-                throw new IllegalArgumentException("The key %s of the orders map is not defined in the JsObjSpec with name %s".formatted(key, name));
+                throw new IllegalArgumentException("The key `%s`is not defined in the JsObjSpec with name %s".formatted(key, name));
         }
     }
 
@@ -156,7 +156,7 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, String> entry : fieldsDoc.entrySet()) {
             var key = entry.getKey();
             if (!bindings.containsKey(key))
-                throw new IllegalArgumentException("The key %s of the docs map is not defined in the JsObjSpec with name %s".formatted(key, name));
+                throw new IllegalArgumentException("The key `%s` is not defined in the JsObjSpec with name %s".formatted(key, name));
         }
     }
 
@@ -167,21 +167,17 @@ public final class JsObjSpecBuilder {
         for (Map.Entry<String, JsValue> entry : fieldsDefaults.entrySet()) {
             var key = entry.getKey();
             var value = entry.getValue();
-            if (value == null) throw new IllegalArgumentException("key `%s` of `fieldsDefaults` can not be null");
+            if (value == null)
+                throw new IllegalArgumentException("The value of the key `%s` of `fieldsDefaults` can not be null".formatted(key));
             if (!bindings.containsKey(key))
-                throw new IllegalArgumentException("The key %s of the defaults map is not defined in the JsObjSpec with name %s".formatted(key, name));
+                throw new IllegalArgumentException("The key `%s` is not defined in the JsObjSpec with name %s".formatted(key, name));
             JsSpec keySpec = bindings.get(key);
             if (keySpec instanceof OneOf oneOf) {
                 var errors = oneOf.getSpecs().get(0).test(value);
                 if (!errors.isEmpty())
-                    throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key %s of the JsObjSpec with name %s".formatted(value,
-                                                                                                                                                                                key,
-                                                                                                                                                                                name));
-            } else if (keySpec instanceof OneOfObjSpec oneOf) {
-                var errors = oneOf.getSpecs().get(0).test(value);
-                if (!errors.isEmpty())
                     throw new IllegalArgumentException("The default value `%s` doesn't conform the FIRST spec associated to the key `%s` of the JsObjSpec with name `%s`".formatted(value,
-                                                                                                                                                                                    key, name));
+                                                                                                                                                                                    key,
+                                                                                                                                                                                    name));
             } else {
                 var errors = keySpec.test(value);
                 if (!errors.isEmpty())

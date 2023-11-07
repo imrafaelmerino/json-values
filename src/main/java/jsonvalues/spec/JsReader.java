@@ -1,13 +1,12 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsParserException;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-import java.util.Stack;
+
+import static jsonvalues.spec.ParserErrors.UNEXPECTED_END_OF_JSON;
 
 /**
  * Object for processing JSON from byte[] and InputStream. The only public methods are {@link #readNextToken()} and
@@ -60,7 +59,7 @@ public final class JsReader {
     DoublePrecision doublePrecision;
     int doubleLengthLimit;
     int maxNumberDigits;
-    private Deque<Integer> markPositions = new ArrayDeque<>();
+    private final Deque<Integer> markPositions = new ArrayDeque<>();
     private int currentIndex = 0;
     private long currentPosition = 0;
     private byte last = ' ';
@@ -201,7 +200,7 @@ public final class JsReader {
             prepareNextBlock();
         }
         if (currentIndex >= length) {
-            throw JsParserException.reasonAt("Unexpected end of JSON input", currentIndex);
+            throw JsParserException.reasonAt(UNEXPECTED_END_OF_JSON, currentIndex);
         }
         return last = buffer[currentIndex++];
     }
@@ -284,7 +283,7 @@ public final class JsReader {
 
     char[] prepareBuffer(int start, int len) throws JsParserException {
         if (len > maxNumberDigits) {
-            throw newParseError("Too many digits detected in number (" + len + ")", len);
+            throw newParseError(ParserErrors.TOO_MANY_DIGITS.formatted(len), len);
         }
         while (chars.length < len) {
             chars = Arrays.copyOf(chars, chars.length * 2);
@@ -320,8 +319,8 @@ public final class JsReader {
 
     int parseString() throws JsParserException {
         int startIndex = currentIndex;
-        if (last != '"') throw newParseError("Expecting '\"' for string start");
-        else if (currentIndex == length) throw newParseError("Premature end of JSON string");
+        if (last != '"') throw newParseError(ParserErrors.EXPECTING_STRING_START);
+        else if (currentIndex == length) throw newParseError(ParserErrors.PREMATURE_END_OF_JSONSTRING);
 
         byte bb;
         int ci = currentIndex;
@@ -345,7 +344,7 @@ public final class JsReader {
         if (i == _tmp.length) {
             int newSize = chars.length * 2;
             if (newSize > maxStringBuffer) {
-                throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
+                throw newParseError(ParserErrors.MAXIMUM_STRING_BUFFER_REACHED.formatted(maxStringBuffer));
             }
             _tmp = chars = Arrays.copyOf(chars, newSize);
         }
@@ -363,7 +362,7 @@ public final class JsReader {
                 if (soFar >= _tmpLen - 6) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
+                        throw newParseError(ParserErrors.MAXIMUM_STRING_BUFFER_REACHED.formatted(maxStringBuffer));
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -398,13 +397,13 @@ public final class JsReader {
                         break;
 
                     default:
-                        throw newParseError("Invalid escape combination detected (" + bc + ")");
+                        throw newParseError(ParserErrors.INVALID_ESCAPE_CHARACTER.formatted(bc));
                 }
             } else if ((bc & 0x80) != 0) {
                 if (soFar >= _tmpLen - 4) {
                     int newSize = chars.length * 2;
                     if (newSize > maxStringBuffer) {
-                        throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
+                        throw newParseError(ParserErrors.MAXIMUM_STRING_BUFFER_REACHED.formatted(maxStringBuffer));
                     }
                     _tmp = chars = Arrays.copyOf(chars, newSize);
                     _tmpLen = _tmp.length;
@@ -422,13 +421,13 @@ public final class JsReader {
                             bc = ((bc & 0x07) << 18) + ((u2 & 0x3F) << 12) + ((u3 & 0x3F) << 6) + (u4 & 0x3F);
                         } else {
                             // there are legal 5 & 6 byte combinations, but none are _valid_
-                            throw newParseError("Invalid unicode character detected");
+                            throw newParseError(ParserErrors.INVALID_UNICODE_CHARACTER);
                         }
 
                         if (bc >= 0x10000) {
                             // check if valid unicode
                             if (bc >= 0x110000) {
-                                throw newParseError("Invalid unicode character detected");
+                                throw newParseError(ParserErrors.INVALID_UNICODE_CHARACTER);
                             }
 
                             // split surrogates
@@ -442,7 +441,7 @@ public final class JsReader {
             } else if (soFar >= _tmpLen) {
                 int newSize = chars.length * 2;
                 if (newSize > maxStringBuffer) {
-                    throw newParseError("Maximum string buffer limit exceeded (" + maxStringBuffer + ")");
+                    throw newParseError(ParserErrors.MAXIMUM_STRING_BUFFER_REACHED.formatted(maxStringBuffer));
                 }
                 _tmp = chars = Arrays.copyOf(chars, newSize);
                 _tmpLen = _tmp.length;
@@ -450,14 +449,14 @@ public final class JsReader {
 
             _tmp[soFar++] = (char) bc;
         }
-        throw newParseError("JSON string was not closed with a double quote");
+        throw newParseError(ParserErrors.STRING_NOT_CLOSED);
     }
 
     private int hexToInt(byte value) throws JsParserException {
         if (value >= '0' && value <= '9') return value - 0x30;
         if (value >= 'A' && value <= 'F') return value - 0x37;
         if (value >= 'a' && value <= 'f') return value - 0x57;
-        throw newParseError("Could not parse unicode escape, expected a hexadecimal digit");
+        throw newParseError(ParserErrors.INVALID_HEX);
     }
 
     private boolean wasWhiteSpace() {
@@ -548,7 +547,7 @@ public final class JsReader {
     String readKey() {
         int len = parseString();
         String key = keyCache != null ? keyCache.get(chars, len) : new String(chars, 0, len);
-        if (readNextToken() != ':') throw newParseError("Expecting ':' after attribute name");
+        if (readNextToken() != ':') throw newParseError(ParserErrors.EXPECTING_COLON);
         readNextToken();
         return key;
     }
@@ -568,7 +567,7 @@ public final class JsReader {
                 last = 'l';
                 return true;
             }
-            throw newParseError("Invalid null constant found");
+            throw newParseError(ParserErrors.INVALID_NULL_CONSTANT);
         }
         return false;
     }
@@ -588,7 +587,7 @@ public final class JsReader {
                 last = 'e';
                 return true;
             }
-            throw newParseError("Invalid true constant found");
+            throw newParseError(ParserErrors.INVALID_TRUE_CONSTANT);
         }
         return false;
     }
@@ -609,7 +608,7 @@ public final class JsReader {
                 last = 'e';
                 return true;
             }
-            throw newParseError("Invalid false constant found");
+            throw newParseError(ParserErrors.INVALID_FALSE_CONSTANT);
         }
         return false;
     }
@@ -619,8 +618,8 @@ public final class JsReader {
      */
     void checkArrayEnd() {
         if (last != ']') {
-            if (currentIndex >= length) throw newParseError("Unexpected end of JSON in collection");
-            throw newParseError("Expecting ']' as array end");
+            if (currentIndex >= length) throw newParseError(ParserErrors.UNEXPECTED_END_OF_ARRAY);
+            throw newParseError(ParserErrors.EXPECTING_END_OF_ARRAY);
         }
     }
 

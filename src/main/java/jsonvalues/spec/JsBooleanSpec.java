@@ -35,6 +35,4 @@ final class JsBooleanSpec extends AbstractNullable implements JsOneErrorSpec, Av
     }
 
 
-
-
 }

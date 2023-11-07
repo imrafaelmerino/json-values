@@ -33,7 +33,6 @@ final class AnySuchThat implements JsOneErrorSpec {
     }
 
 
-
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return value.isNothing() ?

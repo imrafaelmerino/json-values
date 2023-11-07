@@ -17,6 +17,6 @@ final class JsInstantLens<S extends Json<S>> extends Lens<S, Instant> {
         super(json -> requireNonNull(json).getInstant(path),
               o -> json -> requireNonNull(json).set(path,
                                                     JsInstant.of(o))
-        );
+             );
     }
 }

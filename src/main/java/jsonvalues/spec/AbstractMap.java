@@ -1,10 +1,8 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Predicate;
 
@@ -19,6 +17,7 @@ abstract class AbstractMap extends AbstractNullable {
                                      Predicate<JsValue> isError,
                                      ERROR_CODE code
                                     ) {
+        if (value.isNull() && nullable) return Optional.empty();
         if (!value.isObj()) {
             return Optional.of(new JsError(value,
                                            ERROR_CODE.OBJ_EXPECTED));

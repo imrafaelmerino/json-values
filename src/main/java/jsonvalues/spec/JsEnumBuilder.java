@@ -17,7 +17,7 @@ public final class JsEnumBuilder {
 
     private JsEnumBuilder(final String name) {
         if (!isValidName.test(name))
-            throw new IllegalArgumentException("The name of the Enum with name %s doesn't follow the pattern %s ".formatted(name, AVRO_NAME_PATTERN));
+            throw new IllegalArgumentException("The name `%s` doesn't follow the pattern %s ".formatted(name, AVRO_NAME_PATTERN));
 
         this.name = name;
     }
@@ -30,9 +30,9 @@ public final class JsEnumBuilder {
         this.aliases = requireNonNull(aliases);
         for (String alias : aliases) {
             if (!isValidName.test(alias)) {
-                throw new IllegalArgumentException("The alias %s of the Enum with name %s doesn't follow the pattern %s".formatted(alias,
-                                                                                                                                   name,
-                                                                                                                                   AVRO_NAME_PATTERN));
+                throw new IllegalArgumentException("The alias `%s` of the Enum with name `%s` doesn't follow the pattern %s".formatted(alias,
+                                                                                                                                       name,
+                                                                                                                                       AVRO_NAME_PATTERN));
             }
 
         }
@@ -42,8 +42,9 @@ public final class JsEnumBuilder {
     public JsEnumBuilder namespace(final String nameSpace) {
         this.nameSpace = requireNonNull(nameSpace);
         if (!isValidNamespace.test(nameSpace))
-            throw new IllegalArgumentException("The namespace of the Enum with name %s doesn't follow the pattern %s".formatted(name,
-                                                                                                                                AVRO_NAMESPACE_PATTERN));
+            throw new IllegalArgumentException("The namespace `%s` of the Enum with name `%s` doesn't follow the pattern `%s`".formatted(nameSpace,
+                                                                                                                                         name,
+                                                                                                                                         AVRO_NAMESPACE_PATTERN));
 
         return this;
     }
@@ -59,9 +60,9 @@ public final class JsEnumBuilder {
     }
 
 
-    public JsEnum symbols(final List<String> symbols) {
+    public JsSpec symbols(final List<String> symbols) {
         if (defaultSymbol != null && !symbols.contains(defaultSymbol))
-            throw new IllegalArgumentException("Default symbol %s must be contained in the list of possible symbols of the enum.".formatted(defaultSymbol));
+            throw new IllegalArgumentException("Default symbol `%s` must be contained in the list of possible symbols of the enum.".formatted(defaultSymbol));
         var metadata = new EnumMetaData(name, nameSpace, aliases, doc, defaultSymbol);
         return new JsEnum(false, JsArray.ofStrs(symbols), metadata);
 

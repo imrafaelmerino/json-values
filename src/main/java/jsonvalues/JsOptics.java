@@ -16,6 +16,7 @@ public final class JsOptics {
 
     public static final JsObjOptics obj = new JsObjOptics();
     public static final JsArrayOptics array = new JsArrayOptics();
+
     private JsOptics() {
     }
 

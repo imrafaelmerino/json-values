@@ -8,7 +8,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
-final class JsArrayOfSpec extends AbstractSizableArr implements  JsOneErrorSpec, JsArraySpec,AvroSpec {
+final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
     private final JsSpec spec;
 

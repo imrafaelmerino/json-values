@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsInt;
-import jsonvalues.JsParserException;
 
 import java.util.Optional;
 import java.util.function.IntFunction;

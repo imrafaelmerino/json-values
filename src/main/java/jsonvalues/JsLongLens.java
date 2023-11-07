@@ -14,6 +14,6 @@ class JsLongLens<S extends Json<S>> extends Lens<S, Long> {
         super(json -> requireNonNull(json).getLong(path),
               n -> json -> requireNonNull(json).set(path,
                                                     JsLong.of(n))
-        );
+             );
     }
 }

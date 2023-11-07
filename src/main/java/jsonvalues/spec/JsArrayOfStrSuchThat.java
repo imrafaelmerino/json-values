@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.Function;
@@ -36,8 +37,8 @@ final class JsArrayOfStrSuchThat extends AbstractNullable implements JsOneErrorS
     public Optional<JsError> testValue(final JsValue value) {
         Optional<JsError> result = arrayOfStringSpec.testValue(value);
         return result.isPresent() || value.isNull() ?
-               result :
-               predicate.apply(value.toJsArray());
+                result :
+                predicate.apply(value.toJsArray());
     }
 
 }

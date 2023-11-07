@@ -15,7 +15,7 @@ class JsDoubleLens<S extends Json<S>> extends Lens<S, Double> {
         super(json -> requireNonNull(json).getDouble(path),
               n -> json -> requireNonNull(json).set(path,
                                                     JsDouble.of(n)
-              )
-        );
+                                                   )
+             );
     }
 }

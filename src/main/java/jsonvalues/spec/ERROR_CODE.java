@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
 /**
- * The `ERROR_CODE` enum represents various code codes that can be associated with
- * validation errors when using JSON value specifications (`JsSpecs`). Each code code
- * corresponds to a specific type of validation failure.
+ * The `ERROR_CODE` enum represents various code codes that can be associated with validation errors when using JSON
+ * value specifications (`JsSpecs`). Each code code corresponds to a specific type of validation failure.
  */
 public enum ERROR_CODE {
     /**

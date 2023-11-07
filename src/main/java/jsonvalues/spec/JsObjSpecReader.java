@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsObj;
-import jsonvalues.JsParserException;
 
 import java.util.Map;
 import java.util.function.Predicate;
@@ -71,7 +70,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
 
         }
         if (nextToken != '}')
-            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
                                              reader.getPositionInStream()
                                             );
         obj = addDefaultFieldsIfSpecified(obj);
@@ -80,6 +79,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
             throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
                                              reader.getPositionInStream()
                                             );
+
         return obj;
 
     }

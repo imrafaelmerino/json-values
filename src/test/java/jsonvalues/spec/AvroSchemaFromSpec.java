@@ -137,20 +137,11 @@ public final class AvroSchemaFromSpec {
         if (spec instanceof JsMapOfInstant) return mapOfInstantSchema(spec, defaultValue);
         if (spec instanceof JsEnum jsEnum) return enumSchema(jsEnum, defaultValue);
         if (spec instanceof OneOf oneOf) return oneOfSchema(oneOf, defaultValue);
-        if (spec instanceof OneOfObjSpec oneOfObjSpec) return oneOfObjSpecSchema(oneOfObjSpec, defaultValue);
 
         throw new IllegalArgumentException("Spec " + spec.getClass().getName() + " not supported yet!");
 
     }
 
-    private static JsArray oneOfObjSpecSchema(OneOfObjSpec js, JsValue defaultValue) {
-        var specs = js.getSpecs();
-        JsArray schema = JsArray.ofIterable(specs.stream()
-                                                 .map(it -> toJsSchema(it, JsNothing.NOTHING))
-                                                 .toList());
-        return getTypeSorted(js.isNullable(), defaultValue, schema);
-
-    }
 
     private static JsArray oneOfSchema(OneOf js, JsValue keyDefault) {
         var specs = js.getSpecs();
@@ -574,7 +565,7 @@ public final class AvroSchemaFromSpec {
         if (metaData.aliases() != null)
             schema = schema.set(ALIASES_FIELD, JsArray.ofStrs(metaData.aliases()));
         if (metaData.defaultSymbol() != null)
-            schema = schema.set(DEFAULT_FIELD, JsArray.ofStrs(metaData.defaultSymbol()));
+            schema = schema.set(DEFAULT_FIELD, JsStr.of(metaData.defaultSymbol()));
         schema = schema.set(SYMBOLS_FIELD, jsEnum.getSymbols());
         return getTypeSorted(jsEnum.isNullable(), keyDefault, schema);
     }

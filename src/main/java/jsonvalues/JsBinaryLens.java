@@ -15,6 +15,6 @@ final class JsBinaryLens<S extends Json<S>> extends Lens<S, byte[]> {
         super(json -> requireNonNull(json).getBinary(path),
               o -> json -> requireNonNull(json).set(path,
                                                     JsBinary.of(o))
-        );
+             );
     }
 }

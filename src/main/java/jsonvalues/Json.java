@@ -14,35 +14,30 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable and persistent JSON of type T, where T is either a JsObj or a JsArray.
- * JSON data is modeled as a set of key-value pairs ({@link JsPair}) with keys represented by {@link JsPath}
- * and values as {@link JsValue}. The structure allows for recursion.
+ * Represents an immutable and persistent JSON of type T, where T is either a JsObj or a JsArray. JSON data is modeled
+ * as a set of key-value pairs ({@link JsPair}) with keys represented by {@link JsPath} and values as {@link JsValue}.
+ * The structure allows for recursion.
  * <p>
- * For instance, the JSON:
- * {
- * "a": 1,
- * "x": {
- * "c": true,
- * "d": null,
- * "e": [false, 1, "hi"]
- * }
- * }
+ * For instance, the JSON: { "a": 1, "x": { "c": true, "d": null, "e": [false, 1, "hi"] } }
  * <p>
- * Can be seen as a set:
- * Set[(a, 1), (x.c, true), (x.d, null), (x.e.0, false), (x.e.1, 1), (x.e.2, "hi"), (_, JsNothing)]
+ * Can be seen as a set: Set[(a, 1), (x.c, true), (x.d, null), (x.e.0, false), (x.e.1, 1), (x.e.2, "hi"), (_,
+ * JsNothing)]
  * <p>
- * The special element {@link JsNothing#NOTHING} represents any other JsPath, making functions like
- * {@link #get(JsPath)} total (defined for every possible path).
+ * The special element {@link JsNothing#NOTHING} represents any other JsPath, making functions like {@link #get(JsPath)}
+ * total (defined for every possible path).
  * <p>
  * JSON modification operations, such as {@link #set(JsPath, JsValue)}, can insert JsNothing without changing the JSON.
  * <p>
  * JSONs can also be treated as streams of pairs, enabling operations like map, filter, and reduce.
  * <p>
- * All methods throw a NullPointerException when passed null parameters, and UserError is thrown for inappropriate method calls.
- /**
- * The {@code ARRAY_AS} parameter in various methods of the {@link Json} interface allows you to specify how arrays within the JSON data structure should be treated during specific operations. It provides customization options for handling arrays, giving you control over their behavior in various contexts.
+ * All methods throw a NullPointerException when passed null parameters, and UserError is thrown for inappropriate
+ * method calls. /** The {@code ARRAY_AS} parameter in various methods of the {@link Json} interface allows you to
+ * specify how arrays within the JSON data structure should be treated during specific operations. It provides
+ * customization options for handling arrays, giving you control over their behavior in various contexts.
  *
- * <p>JSON data structures can contain arrays, and the behavior of operations involving these arrays can vary depending on your requirements. The {@code ARRAY_AS} parameter serves as a way to define this behavior by offering different options or types, each of which affects how arrays are treated.</p>
+ * <p>JSON data structures can contain arrays, and the behavior of operations involving these arrays can vary depending
+ * on your requirements. The {@code ARRAY_AS} parameter serves as a way to define this behavior by offering different
+ * options or types, each of which affects how arrays are treated.</p>
  *
  * <p>Common use cases for the {@code ARRAY_AS} parameter include:</p>
  *
@@ -119,8 +114,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     /**
      * Checks if this JSON is equal to another JSON element.
      *
-     * @param elem       The JSON element to compare.
-     * @param ARRAY_AS   The type to consider arrays during comparison.
+     * @param elem     The JSON element to compare.
+     * @param ARRAY_AS The type to consider arrays during comparison.
      * @return True if the JSON elements are equal, otherwise false.
      */
     default boolean equals(final JsValue elem,
@@ -200,7 +195,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the array located at the given path or the default value provided if it doesn't exist or it's not an array.
+     * Returns the array located at the given path or the default value provided if it doesn't exist or it's not an
+     * array.
      *
      * @param path   the path
      * @param orElse the default value provided
@@ -215,7 +211,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big decimal or null if it doesn't exist or it's not a decimal number.
+     * Returns the number located at the given path as a big decimal or null if it doesn't exist or it's not a decimal
+     * number.
      *
      * @param path the path
      * @return the number located at the given JsPath or null
@@ -227,7 +224,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big decimal or the default value provided if it doesn't exist or it's not a decimal number.
+     * Returns the number located at the given path as a big decimal or the default value provided if it doesn't exist
+     * or it's not a decimal number.
      *
      * @param path   the path
      * @param orElse the default value
@@ -247,7 +245,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big integer or null if it doesn't exist or it's not an integral number.
+     * Returns the number located at the given path as a big integer or null if it doesn't exist or it's not an integral
+     * number.
      *
      * @param path the path
      * @return the BigInteger located at the given JsPath or null
@@ -259,7 +258,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the number located at the given path as a big integer or the default value provided if it doesn't exist or it's not an integral number.
+     * Returns the number located at the given path as a big integer or the default value provided if it doesn't exist
+     * or it's not an integral number.
      *
      * @param path   the path
      * @param orElse the default value
@@ -355,8 +355,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the decimal number located at the given path as a double or null if it doesn't exist or it's not a decimal number.
-     * If the number is a BigDecimal, the conversion is identical to that specified in {@link BigDecimal#doubleValue()}.
+     * Returns the decimal number located at the given path as a double or null if it doesn't exist or it's not a
+     * decimal number. If the number is a BigDecimal, the conversion is identical to that specified in
+     * {@link BigDecimal#doubleValue()}.
      *
      * @param path the path
      * @return the decimal number located at the given JsPath or null
@@ -368,8 +369,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the decimal number located at the given path as a double or the default value provided if it doesn't exist or it's not a decimal number.
-     * If the number is a BigDecimal, the conversion is identical to that specified in {@link BigDecimal#doubleValue()}.
+     * Returns the decimal number located at the given path as a double or the default value provided if it doesn't
+     * exist or it's not a decimal number. If the number is a BigDecimal, the conversion is identical to that specified
+     * in {@link BigDecimal#doubleValue()}.
      *
      * @param path   the path
      * @param orElse the default value
@@ -384,7 +386,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as an integer or null if it doesn't exist or it's not an integral number.
+     * Returns the integral number located at the given path as an integer or null if it doesn't exist or it's not an
+     * integral number.
      *
      * @param path the path
      * @return the integral number located at the given JsPath or null
@@ -396,7 +399,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as an integer or the default value provided if it doesn't exist or it's not an integral number.
+     * Returns the integral number located at the given path as an integer or the default value provided if it doesn't
+     * exist or it's not an integral number.
      *
      * @param path   the path
      * @param orElse the default value
@@ -411,7 +415,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as a long or null if it doesn't exist or it's not an integral number.
+     * Returns the integral number located at the given path as a long or null if it doesn't exist or it's not an
+     * integral number.
      *
      * @param path the path
      * @return the integral number located at the given JsPath or null
@@ -423,7 +428,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the integral number located at the given path as a long or the default value provided if it doesn't exist or it's not an integral number.
+     * Returns the integral number located at the given path as a long or the default value provided if it doesn't exist
+     * or it's not an integral number.
      *
      * @param path   the path
      * @param orElse the default value
@@ -438,7 +444,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the object located at the given path or the default value provided if it doesn't exist or it's not an object.
+     * Returns the object located at the given path or the default value provided if it doesn't exist or it's not an
+     * object.
      *
      * @param path   the path
      * @param orElse the default value
@@ -474,7 +481,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Returns the string located at the given path or the default value provided if it doesn't exist or it's not a string.
+     * Returns the string located at the given path or the default value provided if it doesn't exist or it's not a
+     * string.
      *
      * @param path   the path
      * @param orElse the default value
@@ -488,7 +496,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Declarative way of implementing if(this.isEmpty()) return emptySupplier.get() else return nonEmptySupplier.get().
+     * Declarative way of implementing if(this.isEmpty()) return emptySupplier.get() else return
+     * nonEmptySupplier.get().
      *
      * @param emptySupplier    Supplier that will produce the result if this json is empty
      * @param nonemptySupplier Supplier that will produce the result if this json is not empty
@@ -522,8 +531,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
 
 
     /**
-     * Recursively maps all the values of this JSON, replacing each value with the result of applying the given mapping function.
-     * This operation traverses the entire JSON structure.
+     * Recursively maps all the values of this JSON, replacing each value with the result of applying the given mapping
+     * function. This operation traverses the entire JSON structure.
      *
      * @param fn the mapping function that transforms each value
      * @return a new JSON object of the same type T with the mapped values
@@ -531,8 +540,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     T mapValues(final BiFunction<? super JsPath, ? super JsPrimitive, ? extends JsValue> fn);
 
     /**
-     * Recursively maps all the values of this JSON, replacing each value with the result of applying the given mapping function.
-     * This operation traverses the entire JSON structure.
+     * Recursively maps all the values of this JSON, replacing each value with the result of applying the given mapping
+     * function. This operation traverses the entire JSON structure.
      *
      * @param fn the mapping function that transforms each value
      * @return a new JSON object of the same type T with the mapped values
@@ -562,7 +571,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * Maps all the JSON objects of this JSON, traversing the entire JSON if necessary.
      *
      * @param fn the mapping function that transforms each JSON object
-     * @return a new JSON object of the same type T with the mapped objects, or the same instance if no objects are found
+     * @return a new JSON object of the same type T with the mapped objects, or the same instance if no objects are
+     * found
      */
     T mapObjs(final BiFunction<? super JsPath, ? super JsObj, ? extends JsValue> fn);
 
@@ -570,7 +580,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
      * Maps all the JSON objects of this JSON, traversing the entire JSON if necessary.
      *
      * @param fn the mapping function that transforms each JSON object
-     * @return a new JSON object of the same type T with the mapped objects, or the same instance if no objects are found
+     * @return a new JSON object of the same type T with the mapped objects, or the same instance if no objects are
+     * found
      */
     T mapObjs(final Function<? super JsObj, ? extends JsValue> fn);
 
@@ -588,8 +599,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
          );
 
     /**
-     * Inserts the given element at the specified path in this JSON, replacing any existing element.
-     * If necessary, it fills empty indexes in arrays with {@link jsonvalues.JsNull}. You have the option to use
+     * Inserts the given element at the specified path in this JSON, replacing any existing element. If necessary, it
+     * fills empty indexes in arrays with {@link jsonvalues.JsNull}. You have the option to use
      * {@link #set(JsPath, JsValue, JsValue)} to specify a custom padding element.
      *
      * @param path    the path where the element will be inserted
@@ -622,10 +633,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
                           );
 
 
-
     /**
-     * Reduces the values of this JSON object that satisfy the given predicate.
-     * This reduction traverses the entire JSON recursively if necessary.
+     * Reduces the values of this JSON object that satisfy the given predicate. This reduction traverses the entire JSON
+     * recursively if necessary.
      *
      * @param op        the operator to apply to values of type R
      * @param map       the mapping function to convert JsValue to type R
@@ -639,25 +649,26 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
                           );
 
     /**
-     * Removes the element at the specified path within this immutable JSON object, if it exists.
-     * Returns a new JSON object with the element removed, or the original JSON object if the element does not exist.
+     * Removes the element at the specified path within this immutable JSON object, if it exists. Returns a new JSON
+     * object with the element removed, or the original JSON object if the element does not exist.
      *
      * @param path the path specifying the element to be removed
-     * @return a new JSON object with the specified element removed, or the original JSON object if the element does not exist
+     * @return a new JSON object with the specified element removed, or the original JSON object if the element does not
+     * exist
      */
     T delete(final JsPath path);
 
     /**
-     * Returns the number of elements in the first level of this JSON object or array.
-     * This method provides the count of elements directly contained in the JSON object or array.
+     * Returns the number of elements in the first level of this JSON object or array. This method provides the count of
+     * elements directly contained in the JSON object or array.
      *
      * @return the number of elements in the first level of this JSON object or array
      */
     int size();
 
     /**
-     * Returns a stream over all the key-value pairs {@link JsPair} of elements in this JSON object.
-     * This method provides a way to traverse and operate on the key-value pairs within the JSON object.
+     * Returns a stream over all the key-value pairs {@link JsPair} of elements in this JSON object. This method
+     * provides a way to traverse and operate on the key-value pairs within the JSON object.
      *
      * @return a {@code Stream} over all the key-value pairs (JsPairs) in this JSON object
      */
@@ -667,8 +678,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
 
     /**
      * Serializes this JSON object into the given output stream, effectively converting it into its serialized form.
-     * Serialization is the process of converting a JSON object into a byte stream representation. The serialized JSON can be
-     * written to an output stream, such as a file or network socket.
+     * Serialization is the process of converting a JSON object into a byte stream representation. The serialized JSON
+     * can be written to an output stream, such as a file or network socket.
      *
      * @param outputstream the output stream to which the JSON object will be serialized
      */
@@ -679,9 +690,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
     }
 
     /**
-     * Serializes this JSON object into a byte array, effectively converting it into its serialized form as a byte sequence.
-     * Serialization is the process of converting a JSON object into a byte stream representation. This method returns the
-     * serialized JSON as a byte array.
+     * Serializes this JSON object into a byte array, effectively converting it into its serialized form as a byte
+     * sequence. Serialization is the process of converting a JSON object into a byte stream representation. This method
+     * returns the serialized JSON as a byte array.
      *
      * @return a byte array containing the serialized representation of this JSON object
      */
@@ -692,27 +703,28 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
 
     /**
      * Computes the union of this JSON and another JSON object 'that' with respect to the given array merging strategy.
-     * The union of two JSON objects is another JSON object that contains all the key-value pairs present in either 'this'
-     * or 'that'. If a key is present in both JSON objects, the value from 'this' will be used. Array merging strategy 'ARRAY_AS'
-     * determines how arrays are merged during the union operation. If 'ARRAY_AS' is 'MERGE', arrays are merged by concatenating
-     * elements. If 'ARRAY_AS' is 'REPLACE', arrays in 'this' will be replaced with arrays from 'that'.
+     * The union of two JSON objects is another JSON object that contains all the key-value pairs present in either
+     * 'this' or 'that'. If a key is present in both JSON objects, the value from 'this' will be used. Array merging
+     * strategy 'ARRAY_AS' determines how arrays are merged during the union operation. If 'ARRAY_AS' is 'MERGE', arrays
+     * are merged by concatenating elements. If 'ARRAY_AS' is 'REPLACE', arrays in 'this' will be replaced with arrays
+     * from 'that'.
      *
-     * @param that      the other JSON object to compute the union with
-     * @param ARRAY_AS  the array merging strategy, either 'MERGE' or 'REPLACE'
+     * @param that     the other JSON object to compute the union with
+     * @param ARRAY_AS the array merging strategy, either 'MERGE' or 'REPLACE'
      * @return a new JSON object representing the union of 'this' and 'that'
      */
     T union(final T that, final TYPE ARRAY_AS);
 
 
     /**
-     * Computes the intersection of this JSON and another JSON object 'that' with respect to the given array merging strategy.
-     * The intersection of two JSON objects is another JSON object that contains only the key-value pairs present in both 'this'
-     * and 'that'. Array merging strategy 'ARRAY_AS' determines how arrays are merged during the intersection operation.
-     * If 'ARRAY_AS' is 'MERGE', arrays are merged by concatenating elements. If 'ARRAY_AS' is 'REPLACE', arrays in 'this' will be
-     * replaced with arrays from 'that'.
+     * Computes the intersection of this JSON and another JSON object 'that' with respect to the given array merging
+     * strategy. The intersection of two JSON objects is another JSON object that contains only the key-value pairs
+     * present in both 'this' and 'that'. Array merging strategy 'ARRAY_AS' determines how arrays are merged during the
+     * intersection operation. If 'ARRAY_AS' is 'MERGE', arrays are merged by concatenating elements. If 'ARRAY_AS' is
+     * 'REPLACE', arrays in 'this' will be replaced with arrays from 'that'.
      *
-     * @param that      the other JSON object to compute the intersection with
-     * @param ARRAY_AS  the array merging strategy, either 'MERGE' or 'REPLACE'
+     * @param that     the other JSON object to compute the intersection with
+     * @param ARRAY_AS the array merging strategy, either 'MERGE' or 'REPLACE'
      * @return a new JSON object representing the intersection of 'this' and 'that'
      */
     T intersection(final T that, final TYPE ARRAY_AS);

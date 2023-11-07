@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.LongFunction;
@@ -51,15 +51,15 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isLong() || v.isInt() ?
-                                                        predicate.apply(v.toJsLong().value) :
-                                                        Optional.of(new JsError(v,
-                                                                               LONG_EXPECTED
-                                                                    )
-                                                        ),
+                                                                predicate.apply(v.toJsLong().value) :
+                                                                Optional.of(new JsError(v,
+                                                                                        LONG_EXPECTED
+                                                                            )
+                                                                           ),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 

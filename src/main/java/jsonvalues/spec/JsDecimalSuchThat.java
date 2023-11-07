@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
 import java.util.Optional;

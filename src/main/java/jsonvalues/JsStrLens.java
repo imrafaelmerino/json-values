@@ -11,8 +11,8 @@ class JsStrLens<S extends Json<S>> extends Lens<S, String> {
               str -> json -> requireNonNull(json)
                       .set(path,
                            JsStr.of(str)
-                      )
-        );
+                          )
+             );
     }
 
 

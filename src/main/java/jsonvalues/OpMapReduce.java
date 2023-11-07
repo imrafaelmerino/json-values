@@ -14,7 +14,8 @@ final class OpMapReduce {
                                      Predicate<? super JsPrimitive> predicate,
                                      Function<? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
-                                     Optional<T> acc) {
+                                     Optional<T> acc
+                                    ) {
         for (var head : obj) {
             if (head.value().isObj()) {
                 acc = reduceObj(head.value().toJsObj(),
@@ -22,21 +23,21 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else if (head.value().isArray()) {
                 acc = reduceArr(head.value().toJsArray(),
                                 predicate,
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else {
                 acc = reducer(head.value().toJsPrimitive(),
                               acc,
                               predicate,
                               map,
                               op
-                );
+                             );
             }
 
         }
@@ -47,7 +48,8 @@ final class OpMapReduce {
                                      Predicate<? super JsPrimitive> predicate,
                                      Function<? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
-                                     Optional<T> acc) {
+                                     Optional<T> acc
+                                    ) {
         for (JsValue value : arr) {
             if (value.isObj()) {
                 acc = reduceObj(value.toJsObj(),
@@ -55,14 +57,14 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else if (value.isArray()) {
                 acc = reduceArr(value.toJsArray(),
                                 predicate,
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else {
                 acc = reducer(
                         value.toJsPrimitive(),
@@ -70,7 +72,7 @@ final class OpMapReduce {
                         predicate,
                         map,
                         op
-                );
+                             );
             }
         }
         return acc;
@@ -81,14 +83,15 @@ final class OpMapReduce {
                                            Optional<T> acc,
                                            Predicate<? super JsPrimitive> predicate,
                                            Function<? super JsPrimitive, T> map,
-                                           BinaryOperator<T> op) {
+                                           BinaryOperator<T> op
+                                          ) {
 
         if (!predicate.test(value)) return acc;
         T mapped = map.apply(value);
         Optional<T> t = acc.map(it -> op.apply(it,
                                                mapped
-                                )
-        );
+                                              )
+                               );
         if (t.isPresent()) return t;
         return Optional.ofNullable(mapped);
 
@@ -100,18 +103,19 @@ final class OpMapReduce {
                                            Optional<T> acc,
                                            BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
                                            BiFunction<? super JsPath, ? super JsPrimitive, T> map,
-                                           BinaryOperator<T> op) {
+                                           BinaryOperator<T> op
+                                          ) {
 
         if (!predicate.test(path,
                             value
-        )) return acc;
+                           )) return acc;
         T mapped = map.apply(path,
                              value
-        );
+                            );
         Optional<T> t = acc.map(it -> op.apply(it,
                                                mapped
-                                )
-        );
+                                              )
+                               );
         if (t.isPresent()) return t;
         return Optional.ofNullable(mapped);
     }
@@ -121,7 +125,8 @@ final class OpMapReduce {
                                      BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
                                      BiFunction<? super JsPath, ? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
-                                     Optional<T> acc) {
+                                     Optional<T> acc
+                                    ) {
 
         for (var head : obj) {
             JsPath headPath = startingPath.key(head.key());
@@ -132,7 +137,7 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else if (head.value().isArray()) {
                 acc = reduceArr(head.value().toJsArray(),
                                 startingPath.index(-1),
@@ -140,7 +145,7 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else {
                 acc = reducer(headPath,
                               head.value().toJsPrimitive(),
@@ -148,7 +153,7 @@ final class OpMapReduce {
                               predicate,
                               map,
                               op
-                );
+                             );
             }
         }
         return acc;
@@ -159,7 +164,8 @@ final class OpMapReduce {
                                      BiPredicate<? super JsPath, ? super JsPrimitive> predicate,
                                      BiFunction<? super JsPath, ? super JsPrimitive, T> map,
                                      BinaryOperator<T> op,
-                                     Optional<T> acc) {
+                                     Optional<T> acc
+                                    ) {
 
         for (JsValue value : arr) {
             JsPath headPath = startingPath.inc();
@@ -171,7 +177,7 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else if (value.isArray()) {
                 acc = reduceArr(value.toJsArray(),
                                 headPath.index(-1),
@@ -179,7 +185,7 @@ final class OpMapReduce {
                                 map,
                                 op,
                                 acc
-                );
+                               );
             } else {
                 acc = reducer(headPath,
                               value.toJsPrimitive(),
@@ -187,7 +193,7 @@ final class OpMapReduce {
                               predicate,
                               map,
                               op
-                );
+                             );
             }
         }
         return acc;

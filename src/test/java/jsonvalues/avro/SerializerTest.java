@@ -47,43 +47,40 @@ public class SerializerTest {
                                                       "d", JsFixedBuilder.name("fixed").build(1),
                                                       "e", JsSpecs.arrayOfStr(),
                                                       "f", JsSpecs.arrayOfInt(),
-                                                      "g", OneOfObjSpec.of(List.of(JsObjSpecBuilder.name("Merino")
-                                                                                                   .spec(JsObjSpec.of("x", JsSpecs.bool()).withAllOptKeys()),
-                                                                                   JsObjSpecBuilder.name("Garcia")
-                                                                                                   .spec(JsObjSpec.of("z", JsSpecs.bool()).withAllOptKeys())
-                                                                                  )
-                                                                          )
+                                                      "g", JsSpecs.oneSpecOf(List.of(JsObjSpecBuilder.name("Merino")
+                                                                                                     .spec(JsObjSpec.of("x", JsSpecs.bool()).withAllOptKeys()),
+                                                                                     JsObjSpecBuilder.name("Garcia")
+                                                                                                     .spec(JsObjSpec.of("z", JsSpecs.bool()).withAllOptKeys())
+                                                                                    )
+                                                                            )
                                                      )
                                                   .withAllOptKeys()
 
                                         );
 
 
-
-
-
         testSpec(spec, JsObj.of("a", JsStr.of("a"),
                                 "b", JsInt.of(1),
                                 "c", JsStr.of("A"),
                                 "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
-                                "e", JsArray.ofStrs("a", "b", "c"),
-                                "f", JsArray.ofInts(1, 2, 3),
+                                "e", JsArray.of("a", "b", "c"),
+                                "f", JsArray.of(1, 2, 3),
                                 "g", JsObj.of("z", JsBool.FALSE)
                                ));
         testSpec(spec, JsObj.of(
                          "b", JsInt.of(1),
                          "c", JsStr.of("A"),
                          "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
-                         "e", JsArray.ofStrs("a", "b", "c"),
-                         "f", JsArray.ofInts(1, 2, 3),
+                         "e", JsArray.of("a", "b", "c"),
+                         "f", JsArray.of(1, 2, 3),
                          "g", JsObj.of("z", JsBool.FALSE)
                                ),
                  JsObj.of("a", JsNull.NULL,
                           "b", JsInt.of(1),
                           "c", JsStr.of("A"),
                           "d", JsBinary.of("a".getBytes(StandardCharsets.UTF_8)),
-                          "e", JsArray.ofStrs("a", "b", "c"),
-                          "f", JsArray.ofInts(1, 2, 3),
+                          "e", JsArray.of("a", "b", "c"),
+                          "f", JsArray.of(1, 2, 3),
                           "g", JsObj.of("z", JsBool.FALSE)
                          ));
 
@@ -150,8 +147,8 @@ public class SerializerTest {
     @Test
     public void oneOfEnum() {
 
-        JsEnum enum1 = JsEnumBuilder.name("uppercase").symbols(List.of("A", "B", "C"));
-        JsEnum enum2 = JsEnumBuilder.name("lowercas").symbols(List.of("a", "b", "c"));
+        JsSpec enum1 = JsEnumBuilder.name("uppercase").symbols(List.of("A", "B", "C"));
+        JsSpec enum2 = JsEnumBuilder.name("lowercas").symbols(List.of("a", "b", "c"));
         JsSpec oneEnum = JsSpecs.oneSpecOf(List.of(enum1, enum2));
 
         JsObjSpec spec = JsObjSpecBuilder.name("a").spec(JsObjSpec.of("key", oneEnum));

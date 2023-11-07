@@ -30,8 +30,8 @@ import java.util.stream.StreamSupport;
 
 
 /**
- * Vector is the default Seq implementation that provides effectively constant time access to any element.
- * Many other operations (e.g. `tail`, `drop`, `slice`) are also effectively constant.
+ * Vector is the default Seq implementation that provides effectively constant time access to any element. Many other
+ * operations (e.g. `tail`, `drop`, `slice`) are also effectively constant.
  * <p>
  * The implementation is based on a `bit-mapped trie`, a very wide and shallow tree (i.e. depth ≤ 6).
  *
@@ -40,19 +40,12 @@ import java.util.stream.StreamSupport;
 final class Vector<T> implements Iterable<T> {
 
     @SuppressWarnings("unchecked")
-    private static final Vector<?> EMPTY = new Vector<>(BitMappedTrie.empty());
+    private static final Vector<?> EMPTY = new Vector<Object>(BitMappedTrie.empty());
 
     final BitMappedTrie<T> trie;
 
     private Vector(BitMappedTrie<T> trie) {
         this.trie = trie;
-    }
-
-    @SuppressWarnings("ObjectEquality")
-    private Vector<T> wrap(BitMappedTrie<T> trie) {
-        return (trie == this.trie)
-                ? this
-                : ofAll(trie);
     }
 
     private static <T> Vector<T> ofAll(BitMappedTrie<T> trie) {
@@ -72,36 +65,47 @@ final class Vector<T> implements Iterable<T> {
         return (Vector<T>) EMPTY;
     }
 
+    /**
+     * Returns a singleton {@code Vector}, i.e. a {@code Vector} of one element.
+     *
+     * @param element An element.
+     * @param <T>     The component type
+     * @return A new Vector instance containing the given element
+     */
+    public static <T> Vector<T> of(T element) {
+        return ofAll(BitMappedTrie.ofAll(new Object[]{element}));
+    }
+
+    @SuppressWarnings("ObjectEquality")
+    private Vector<T> wrap(BitMappedTrie<T> trie) {
+        return (trie == this.trie)
+                ? this
+                : ofAll(trie);
+    }
 
     public Vector<T> append(T element) {
         return new Vector<>(trie.appendAll(Vector.of(element)));
     }
 
-
     public Vector<T> appendAll(Vector<T> vector) {
         return new Vector<>(trie.appendAll(vector));
     }
-
 
     public Vector<T> drop(int n) {
         return wrap(trie.drop(n));
     }
 
-
     public Vector<T> dropRight(int n) {
         return take(length() - n);
     }
-
 
     public T apply(Integer index) {
         return trie.get(index);
     }
 
-
     public T head() {
         return get(0);
     }
-
 
     /**
      * Returns the element at the specified index.
@@ -114,41 +118,25 @@ final class Vector<T> implements Iterable<T> {
         return apply(index);
     }
 
-
     public Vector<T> init() {
-            return dropRight(1);
+        return dropRight(1);
     }
-
 
     public boolean isEmpty() {
         return length() == 0;
     }
-
 
     @Override
     public Iterator<T> iterator() {
         return trie.iterator();
     }
 
-
     public int length() {
         return trie.length();
     }
 
-
     public Vector<T> prepend(T element) {
         return prependAll(Vector.of(element));
-    }
-
-    /**
-     * Returns a singleton {@code Vector}, i.e. a {@code Vector} of one element.
-     *
-     * @param element An element.
-     * @param <T>     The component type
-     * @return A new Vector instance containing the given element
-     */
-    public static <T> Vector<T> of(T element) {
-        return ofAll(BitMappedTrie.ofAll(new Object[]{element}));
     }
 
     public Vector<T> prependAll(Vector<T> iterable) {

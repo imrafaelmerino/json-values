@@ -11,7 +11,7 @@ final class OpFilterArrKeys {
     static JsArray filter(JsArray json,
                           JsPath startingPath,
                           BiPredicate<? super JsPath, ? super JsValue> predicate
-    ) {
+                         ) {
         for (int i = json.size() - 1; i >= 0; i--) {
             JsValue value = json.get(i);
             JsPath headPath = startingPath.index(i);
@@ -20,15 +20,15 @@ final class OpFilterArrKeys {
                                 OpFilterObjKeys.filter(value.toJsObj(),
                                                        headPath,
                                                        predicate
-                                )
-                );
+                                                      )
+                               );
             } else if (value.isArray()) {
                 json = json.set(i,
                                 filter(value.toJsArray(),
                                        headPath,
                                        predicate
-                                )
-                );
+                                      )
+                               );
             }
         }
         return json;
@@ -37,7 +37,8 @@ final class OpFilterArrKeys {
 
 
     static JsArray filter(JsArray json,
-                          Predicate<? super String> predicate) {
+                          Predicate<? super String> predicate
+                         ) {
         for (int i = json.size() - 1; i >= 0; i--) {
 
             JsValue value = json.get(i);
@@ -46,12 +47,12 @@ final class OpFilterArrKeys {
                 json = json.set(i,
                                 OpFilterObjKeys.filter(value.toJsObj(),
                                                        predicate)
-                );
+                               );
             } else if (value.isArray()) {
                 json = json.set(i,
                                 filter(value.toJsArray(),
                                        predicate)
-                );
+                               );
 
             }
 

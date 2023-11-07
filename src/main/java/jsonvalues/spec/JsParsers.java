@@ -381,40 +381,6 @@ final class JsParsers {
                         );
     }
 
-    JsParser ofNumber(boolean nullable) {
-        return getParser(READERS.numberReader,
-                         nullable
-                        );
-    }
-
-    JsParser ofNumberSuchThat(Function<JsNumber, Optional<JsError>> predicate,
-                              boolean nullable
-                             ) {
-
-        if (nullable) return reader ->
-        {
-            JsValue value = READERS.numberReader.nullOrValue(reader);
-            if (value == JsNull.NULL) return value;
-            Optional<JsError> opErr = predicate.apply(value.toJsNumber());
-            if (opErr.isEmpty()) return value;
-            throw newParseException.apply(reader,
-                                          opErr.get()
-                                         );
-
-        };
-        else return reader ->
-        {
-            JsNumber value = READERS.numberReader.value(reader);
-            Optional<JsError> result = predicate.apply(value);
-            if (result.isEmpty()) return value;
-            throw newParseException.apply(reader,
-                                          result.get()
-                                         );
-        };
-
-    }
-
-
     JsParser ofArrayOfIntegral(boolean nullable,
                                int min,
                                int max

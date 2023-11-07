@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsBinary;
-import jsonvalues.JsParserException;
 
 import java.util.Base64;
 

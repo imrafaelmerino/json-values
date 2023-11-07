@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
 
@@ -12,8 +11,8 @@ abstract class AbstractReader {
     JsValue nullOrValue(final JsReader reader) throws JsParserException {
 
         return reader.wasNull() ?
-               JsNull.NULL :
-               value(reader);
+                JsNull.NULL :
+                value(reader);
     }
 
     abstract JsValue value(final JsReader reader) throws JsParserException;

@@ -18,7 +18,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Predicate;
 
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.spec.ERROR_CODE.*;
@@ -409,7 +408,7 @@ public class TestJsObjSpec {
                                             "d",
                                             bool(),
                                             "e",
-                                            JsSpecs.oneValueOf(List.of(TRUE)),
+                                            JsSpecs.oneValOf(List.of(TRUE)),
                                             "f",
                                             JsObjSpec.of("a",
                                                          str(),

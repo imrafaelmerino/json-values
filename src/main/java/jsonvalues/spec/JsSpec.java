@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsParserException;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -34,7 +33,7 @@ import java.util.List;
  * @see JsPath
  * @see JsReader
  */
-public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, OneOf, OneOfObjSpec {
+public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, OneOf {
 
     /**
      * Returns the same spec with the nullable flag enabled.

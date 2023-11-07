@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
 import java.math.BigInteger;
@@ -22,7 +21,7 @@ final class JsArrayOfBigIntReader extends JsArrayReader {
                                     final Function<BigInteger, Optional<JsError>> fn,
                                     final int min,
                                     final int max
-    ) throws JsParserException {
+                                   ) throws JsParserException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -35,7 +34,7 @@ final class JsArrayOfBigIntReader extends JsArrayReader {
                               final Function<BigInteger, Optional<JsError>> fn,
                               final int min,
                               final int max
-    ) throws JsParserException {
+                             ) throws JsParserException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

@@ -4,6 +4,7 @@ package jsonvalues;
 import fun.optic.Prism;
 import jsonvalues.JsArray.TYPE;
 import jsonvalues.spec.JsIO;
+import jsonvalues.spec.JsParserException;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -22,15 +23,16 @@ import static jsonvalues.JsNull.NULL;
 import static jsonvalues.MatchExp.ifNothingElse;
 
 /**
- * Represents a JSON object in a lightweight, immutable, and functional manner. A `JsObj` consists of a collection
- * of key-value pairs, where the keys are strings and the values can be various JSON data types such as strings,
- * numbers, booleans, arrays, or nested objects.
+ * Represents a JSON object in a lightweight, immutable, and functional manner. A `JsObj` consists of a collection of
+ * key-value pairs, where the keys are strings and the values can be various JSON data types such as strings, numbers,
+ * booleans, arrays, or nested objects.
  *
  * <p>Instances of this class are immutable and persistent, meaning that once created, the contents of a `JsObj` cannot
- * be modified. Instead, operations on `JsObj` instances return new `JsObj` instances with the desired changes,
- * leaving the original object unchanged. This immutability makes `JsObj` a persistent data structure.
+ * be modified. Instead, operations on `JsObj` instances return new `JsObj` instances with the desired changes, leaving
+ * the original object unchanged. This immutability makes `JsObj` a persistent data structure.
  *
- * <p>This class provides methods to access and manipulate JSON data stored within it, including querying values by key,
+ * <p>This class provides methods to access and manipulate JSON data stored within it, including querying values by
+ * key,
  * performing intersections with other `JsObj` instances, and converting the `JsObj` to a JSON string.
  *
  * <p>It also offers a convenient and functional way to work with JSON data in Java, making it easy to create and
@@ -55,23 +57,27 @@ import static jsonvalues.MatchExp.ifNothingElse;
  */
 public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     /**
-     * Using the {@code lens} field, you can apply various optical operations to {@code JsObj} instances
-     * in a functional and declarative manner, making it easier to modify or query the content of a
-     * {@code JsObj}
+     * Using the {@code lens} field, you can apply various optical operations to {@code JsObj} instances in a functional
+     * and declarative manner, making it easier to modify or query the content of a {@code JsObj}
      */
     public static final JsOptics.JsObjLenses lens = JsOptics.obj.lens;
     /**
      * <p>Using the {@code optional} field, you can apply optional optics to {@code JsObj} instances in a functional
-     * and declarative manner. These optics allow you to safely retrieve and modify fields that may or may not be present
-     * in the {@code JsObj}, helping you avoid null pointer exceptions and handle optional values gracefully.
+     * and declarative manner. These optics allow you to safely retrieve and modify fields that may or may not be
+     * present in the {@code JsObj}, helping you avoid null pointer exceptions and handle optional values gracefully.
      */
     public static final JsOptics.JsObjOptional optional = JsOptics.obj.optional;
     /**
-     * A Prism that allows you to view a {@code JsValue} as a {@code JsObj} if it represents an object, or as an empty optional if it's not an object.
+     * A Prism that allows you to view a {@code JsValue} as a {@code JsObj} if it represents an object, or as an empty
+     * optional if it's not an object.
      *
-     * <p>Prisms are a functional optic that can be used to safely extract a specific type from a more general type, or to construct a more general type from a specific type. In this case, the {@code prism} field allows you to view a {@code JsValue} as a {@code JsObj} only if it represents an object, and returns an empty optional if the {@code JsValue} is not an object.
+     * <p>Prisms are a functional optic that can be used to safely extract a specific type from a more general type, or
+     * to construct a more general type from a specific type. In this case, the {@code prism} field allows you to view a
+     * {@code JsValue} as a {@code JsObj} only if it represents an object, and returns an empty optional if the
+     * {@code JsValue} is not an object.
      *
-     * <p>This Prism is useful for safely handling and processing JSON data, ensuring that you only work with objects when you expect them to be objects.
+     * <p>This Prism is useful for safely handling and processing JSON data, ensuring that you only work with objects
+     * when you expect them to be objects.
      */
     public static final Prism<JsValue, JsObj> prism =
             new Prism<>(s -> s.isObj() ?
@@ -2184,6 +2190,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key11, el11, key12, el12, key13, el13, key14, el14, key15, el15,
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20).set(JsPath.empty().key(requireNonNull(key21)), el21);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2235,6 +2242,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
                   key21, el21).set(JsPath.empty().key(requireNonNull(key22)), el22);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2288,6 +2296,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
                   key21, el21, key22, el22).set(JsPath.empty().key(requireNonNull(key23)), el23);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2343,6 +2352,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
                   key21, el21, key22, el22, key23, el23).set(JsPath.empty().key(requireNonNull(key24)), el24);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2400,6 +2410,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
                   key21, el21, key22, el22, key23, el23, key24, el24).set(JsPath.empty().key(requireNonNull(key25)), el25);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2459,6 +2470,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key16, el16, key17, el17, key18, el18, key19, el19, key20, el20,
                   key21, el21, key22, el22, key23, el23, key24, el24, key25, el25).set(JsPath.empty().key(requireNonNull(key26)), el26);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2521,6 +2533,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key21, el21, key22, el22, key23, el23, key24, el24, key25, el25,
                   key26, el26).set(JsPath.empty().key(requireNonNull(key27)), el27);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2585,6 +2598,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                   key21, el21, key22, el22, key23, el23, key24, el24, key25, el25,
                   key26, el26, key27, el27).set(JsPath.empty().key(requireNonNull(key28)), el28);
     }
+
     public static JsObj of(final String key1,
                            final JsValue el1,
                            final String key2,
@@ -2805,177 +2819,177 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to a string value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to a string value. If the key does not exist, it will be
+     * created.
      *
      * @param key   The key to set.
      * @param value The string value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final String value){
+    public JsObj set(final String key, final String value) {
         return set(key, JsStr.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to an integer value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to an integer value. If the key does not exist, it will
+     * be created.
      *
      * @param key   The key to set.
      * @param value The integer value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final int value){
+    public JsObj set(final String key, final int value) {
         return set(key, JsInt.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to a long value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to a long value. If the key does not exist, it will be
+     * created.
      *
      * @param key   The key to set.
      * @param value The long value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final long value){
+    public JsObj set(final String key, final long value) {
         return set(key, JsLong.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to a boolean value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to a boolean value. If the key does not exist, it will be
+     * created.
      *
      * @param key   The key to set.
      * @param value The boolean value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final boolean value){
+    public JsObj set(final String key, final boolean value) {
         return set(key, JsBool.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to an Instant value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to an Instant value. If the key does not exist, it will
+     * be created.
      *
      * @param key   The key to set.
      * @param value The Instant value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final Instant value){
+    public JsObj set(final String key, final Instant value) {
         return set(key, JsInstant.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to a BigDecimal value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to a BigDecimal value. If the key does not exist, it will
+     * be created.
      *
      * @param key   The key to set.
      * @param value The BigDecimal value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final BigDecimal value){
+    public JsObj set(final String key, final BigDecimal value) {
         return set(key, JsBigDec.of(value));
     }
 
     /**
-     * Sets the value of the specified key in this JSON object to a Double value.
-     * If the key does not exist, it will be created.
+     * Sets the value of the specified key in this JSON object to a Double value. If the key does not exist, it will be
+     * created.
      *
      * @param key   The key to set.
      * @param value The Double value to set.
      * @return A new JSON object with the specified key and value.
      */
-    public JsObj set(final String key, final Double value){
+    public JsObj set(final String key, final Double value) {
         return set(key, JsDouble.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to a string value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to a string value. If the path does not exist, it will
+     * be created.
      *
      * @param path  The path to set.
      * @param value The string value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final String value){
+    public JsObj set(final JsPath path, final String value) {
         return set(path, JsStr.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to an integer value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to an integer value. If the path does not exist, it will
+     * be created.
      *
      * @param path  The path to set.
      * @param value The integer value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final int value){
+    public JsObj set(final JsPath path, final int value) {
         return set(path, JsInt.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to a long value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to a long value. If the path does not exist, it will be
+     * created.
      *
      * @param path  The path to set.
      * @param value The long value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final long value){
+    public JsObj set(final JsPath path, final long value) {
         return set(path, JsLong.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to a boolean value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to a boolean value. If the path does not exist, it will
+     * be created.
      *
      * @param path  The path to set.
      * @param value The boolean value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final boolean value){
+    public JsObj set(final JsPath path, final boolean value) {
         return set(path, JsBool.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to an Instant value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to an Instant value. If the path does not exist, it will
+     * be created.
      *
      * @param path  The path to set.
      * @param value The Instant value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final Instant value){
+    public JsObj set(final JsPath path, final Instant value) {
         return set(path, JsInstant.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to a BigDecimal value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to a BigDecimal value. If the path does not exist, it
+     * will be created.
      *
      * @param path  The path to set.
      * @param value The BigDecimal value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final BigDecimal value){
+    public JsObj set(final JsPath path, final BigDecimal value) {
         return set(path, JsBigDec.of(value));
     }
 
     /**
-     * Sets the value of the specified path in this JSON object to a Double value.
-     * If the path does not exist, it will be created.
+     * Sets the value of the specified path in this JSON object to a Double value. If the path does not exist, it will
+     * be created.
      *
      * @param path  The path to set.
      * @param value The Double value to set.
      * @return A new JSON object with the specified path and value.
      */
-    public JsObj set(final JsPath path, final Double value){
+    public JsObj set(final JsPath path, final Double value) {
         return set(path, JsDouble.of(value));
     }
 
 
     /**
-     * Sets the specified key to the given JSON value. If the key already exists, its value will be updated.
-     * If the key doesn't exist, a new key-value pair will be added to the JSON object.
+     * Sets the specified key to the given JSON value. If the key already exists, its value will be updated. If the key
+     * doesn't exist, a new key-value pair will be added to the JSON object.
      *
      * @param key   The key to set.
      * @param value The JSON value to associate with the key.
@@ -3261,10 +3275,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns a stream of `(key, value)` pairs representing the properties of the JSON object at the first level.
-     * This method operates on the top-level properties and does not traverse recursively into nested JSON objects.
+     * Returns a stream of `(key, value)` pairs representing the properties of the JSON object at the first level. This
+     * method operates on the top-level properties and does not traverse recursively into nested JSON objects.
      *
-     * @return A stream of `(key, value)` pairs, where each pair consists of a top-level property key and its corresponding value.
+     * @return A stream of `(key, value)` pairs, where each pair consists of a top-level property key and its
+     * corresponding value.
      */
     public Stream<JsObjPair> streamOfKeys() {
         return StreamSupport.stream(Spliterators.spliterator(iterator(),
@@ -3276,7 +3291,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Checks if this `JsObj` is equal to another `JsObj` considering how arrays are treated (as lists, sets, or multisets).
+     * Checks if this `JsObj` is equal to another `JsObj` considering how arrays are treated (as lists, sets, or
+     * multisets).
      *
      * @param that     The `JsObj` to compare with.
      * @param ARRAY_AS Enum to specify how arrays are considered.
@@ -3340,8 +3356,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the array located at the given key or the default value provided if it
-     * doesn't exist, or it's not an array.
+     * Returns the array located at the given key or the default value provided if it doesn't exist, or it's not an
+     * array.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3356,8 +3372,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the number located at the given key as a big decimal or null if it doesn't exist or it's
-     * not a decimal number.
+     * Returns the number located at the given key as a big decimal or null if it doesn't exist or it's not a decimal
+     * number.
      *
      * @param key the key
      * @return the BigDecimal located at the given key or null
@@ -3370,8 +3386,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the number located at the given key as a big decimal or the default value provided
-     * if it doesn't exist, or it's not a decimal number.
+     * Returns the number located at the given key as a big decimal or the default value provided if it doesn't exist,
+     * or it's not a decimal number.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3387,8 +3403,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the bytes located at the given key or null if it doesn't exist, or it's
-     * not an array of bytes.
+     * Returns the bytes located at the given key or null if it doesn't exist, or it's not an array of bytes.
      *
      * @param key the key
      * @return the bytes located at the given key or null
@@ -3401,8 +3416,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the bytes located at the given key  or the default value provided if it doesn't exist,
-     * or it's not an array of bytes.
+     * Returns the bytes located at the given key  or the default value provided if it doesn't exist, or it's not an
+     * array of bytes.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3418,8 +3433,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the big integer located at the given key as a big integer or null if it doesn't
-     * exist, or it's not an integral number.
+     * Returns the big integer located at the given key as a big integer or null if it doesn't exist, or it's not an
+     * integral number.
      *
      * @param key the key
      * @return the BigInteger located at the given key or null
@@ -3431,8 +3446,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the big integer located at the given key as a big integer or the default value provided
-     * if it doesn't exist, or it's not an integral number.
+     * Returns the big integer located at the given key as a big integer or the default value provided if it doesn't
+     * exist, or it's not an integral number.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3447,8 +3462,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the instant located at the given key or null if it doesn't exist, or it's
-     * not an instant.
+     * Returns the instant located at the given key or null if it doesn't exist, or it's not an instant.
      *
      * @param key the key
      * @return the instant located at the given key or null
@@ -3461,8 +3475,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the instant located at the given key or the default value provided if it doesn't
-     * exist, or it's not an instant.
+     * Returns the instant located at the given key or the default value provided if it doesn't exist, or it's not an
+     * instant.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3505,10 +3519,9 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the number located at the given key as a double or null if it
-     * doesn't exist, or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
-     * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
-     * the precision of the BigDecimal
+     * Returns the number located at the given key as a double or null if it doesn't exist, or it's not a decimal
+     * number. If the number is a BigDecimal, the conversion is identical to the specified in
+     * {@link BigDecimal#doubleValue()} and in some cases it can lose information about the precision of the BigDecimal
      *
      * @param key the key
      * @return the decimal number located at the given key or null
@@ -3520,10 +3533,9 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the number located at the given key as a double or the default value provided if it
-     * doesn't exist, or it's not a decimal number. If the number is a BigDecimal, the conversion is identical
-     * to the specified in {@link BigDecimal#doubleValue()} and in some cases it can lose information about
-     * the precision of the BigDecimal
+     * Returns the number located at the given key as a double or the default value provided if it doesn't exist, or
+     * it's not a decimal number. If the number is a BigDecimal, the conversion is identical to the specified in
+     * {@link BigDecimal#doubleValue()} and in some cases it can lose information about the precision of the BigDecimal
      *
      * @param key    the key
      * @param orElse the default value
@@ -3538,8 +3550,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the integral number located at the given key as an integer or null if it
-     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * Returns the integral number located at the given key as an integer or null if it doesn't exist, or it's not an
+     * integral number or it's an integral number but doesn't fit in an integer.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -3551,8 +3563,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the integral number located at the given key as an integer or the default value provided if it
-     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
+     * Returns the integral number located at the given key as an integer or the default value provided if it doesn't
+     * exist, or it's not an integral number or it's an integral number but doesn't fit in an integer.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3567,8 +3579,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the integral number located at the given key as a long or null if it
-     * doesn't exist, or it's not an integral number or it's an integral number but doesn't fit in a long.
+     * Returns the integral number located at the given key as a long or null if it doesn't exist, or it's not an
+     * integral number or it's an integral number but doesn't fit in a long.
      *
      * @param key the key
      * @return the integral number located at the given key or null
@@ -3580,9 +3592,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the integral number located at the given key as a long or the default value provided
-     * if it doesn't exist, or it's not an integral number or it's an integral number but doesn't fit
-     * in a long.
+     * Returns the integral number located at the given key as a long or the default value provided if it doesn't exist,
+     * or it's not an integral number or it's an integral number but doesn't fit in a long.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3609,8 +3620,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the json object located at the given key or the default value provided
-     * if it doesn't exist, or it's not an object.
+     * Returns the json object located at the given key or the default value provided if it doesn't exist, or it's not
+     * an object.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3636,8 +3647,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     }
 
     /**
-     * Returns the string located at the given key or the default value provided if it doesn't
-     * exist, or it's not an string.
+     * Returns the string located at the given key or the default value provided if it doesn't exist, or it's not an
+     * string.
      *
      * @param key    the key
      * @param orElse the default value
@@ -3726,18 +3737,18 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                 (!pmap.containsKey(head) || pmap.get(head)
                                                 .filter(JsValue::isPrimitive)
                                                 .isPresent())
-                        ||
-                        (
-                                tail.head()
-                                    .isKey() && pmap.get(head)
-                                                    .filter(JsValue::isArray)
-                                                    .isPresent()
-                        )
-                        ||
-                        (tail.head()
-                             .isIndex() && pmap.get(head)
-                                               .filter(JsValue::isObj)
-                                               .isPresent());
+                ||
+                (
+                        tail.head()
+                            .isKey() && pmap.get(head)
+                                            .filter(JsValue::isArray)
+                                            .isPresent()
+                )
+                ||
+                (tail.head()
+                     .isIndex() && pmap.get(head)
+                                       .filter(JsValue::isObj)
+                                       .isPresent());
     }
 
     @Override

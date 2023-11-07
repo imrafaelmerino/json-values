@@ -165,16 +165,16 @@ public class TestJsObjParser {
                                             "d",
                                             bool(),
                                             "e",
-                                            JsSpecs.oneValueOf(List.of(TRUE)),
+                                            JsSpecs.oneValOf(List.of(TRUE)),
                                             "f",
-                                            JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
+                                            JsSpecs.oneValOf(List.of(FALSE)).nullable(),
                                             "g",
                                             decimal(),
                                             "h",
                                             bigInteger(),
                                             "i",
                                             JsObjSpec.of("a",
-                                                         decimal(),
+                                                         doubleNumber(),
                                                          "b",
                                                          array(),
                                                          "c",
@@ -367,15 +367,15 @@ public class TestJsObjParser {
                 JsObjSpec.of("a",
                              integer(i -> i > 0),
                              "b",
-                             str(a -> a.length() > 0),
+                             str(a -> !a.isEmpty()),
                              "c",
                              longInteger(c -> c > 0),
                              "d",
                              bool(),
                              "e",
-                             JsSpecs.oneValueOf(List.of(TRUE)).nullable(),
+                             JsSpecs.oneValOf(List.of(TRUE)).nullable(),
                              "f",
-                             JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
+                             JsSpecs.oneValOf(List.of(FALSE)).nullable(),
                              "g",
                              decimal(d -> d.doubleValue() > 0.0),
                              "h",
@@ -1153,7 +1153,7 @@ public class TestJsObjParser {
                                      "c",
                                      "d"
                                     )
-                        .suchThat(o -> dependencies(o));
+                        .suchThat(this::dependencies);
 
         JsObjSpec spec =
                 baseSpec
@@ -1174,7 +1174,7 @@ public class TestJsObjParser {
                                               ).sample(10000)
                                      .allMatch(o -> spec.test(parser.parse(o.toString())).isEmpty()));
 
-        JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(o -> dependencies(o));
+        JsObjSpec spec1 = baseSpec.withAllOptKeys().suchThat(this::dependencies);
         JsObjSpecParser parser1 = JsObjSpecParser.of(spec1);
         Assertions.assertTrue(baseGen.withAllOptKeys()
                                      .suchThat(spec1).sample(10000)
@@ -1186,8 +1186,7 @@ public class TestJsObjParser {
 
     private boolean dependencies(JsObj o) {
         if (o.containsKey("a") && !o.containsKey("c")) return false;
-        if (o.containsKey("b") && !o.containsKey("d")) return false;
-        return true;
+        return !o.containsKey("b") || o.containsKey("d");
     }
 
     @Test
@@ -1236,7 +1235,7 @@ public class TestJsObjParser {
 
         JsArraySpec arraySpec = JsSpecs.arrayOfSpec(spec.nullable());
 
-        JsArraySpecParser parser = new JsArraySpecParser(arraySpec);
+        JsArraySpecParser parser = JsArraySpecParser.of(arraySpec);
 
         JsObjGen objGen = JsObjGen.of("a",
                                       JsStrGen.biased(0,

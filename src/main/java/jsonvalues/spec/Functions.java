@@ -8,7 +8,8 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import static jsonvalues.spec.ERROR_CODE.*;
+import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
+import static jsonvalues.spec.ERROR_CODE.NULL_NOT_EXPECTED;
 
 class Functions {
 

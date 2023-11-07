@@ -11,9 +11,8 @@ import java.util.function.Function;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents an immutable instant. An instant is not part of the JSON specification. It is serialized into
- * its string representation using the ISO-8601 format. A JsInstant and a JsStr are equal
- * if both represent the same date.
+ * Represents an immutable instant. An instant is not part of the JSON specification. It is serialized into its string
+ * representation using the ISO-8601 format. A JsInstant and a JsStr are equal if both represent the same date.
  * <p>
  * For example:
  * <pre>{@code

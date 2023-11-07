@@ -1,8 +1,6 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsParserException;
-
 import java.math.BigDecimal;
 import java.nio.charset.StandardCharsets;
 
@@ -58,7 +56,7 @@ abstract class NumberConverter {
                                ) {
         int len = end - start;
         if (len > reader.maxNumberDigits) {
-            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS.formatted(len),
                                              reader.getCurrentIndex()
                                             );
         }
@@ -77,7 +75,7 @@ abstract class NumberConverter {
             end--;
         }
         if (end > reader.maxNumberDigits)
-            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS.formatted(end),
                                              reader.getCurrentIndex()
                                             );
 
@@ -117,7 +115,7 @@ abstract class NumberConverter {
             int oldLen = len;
             len += end;
             if (len > reader.maxNumberDigits) {
-                throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+                throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS.formatted(len),
                                                  reader.getCurrentIndex()
                                                 );
             }
@@ -1496,7 +1494,7 @@ abstract class NumberConverter {
             end--;
         }
         if (end > reader.maxNumberDigits) {
-            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS,
+            throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS.formatted(end),
                                              reader.getCurrentIndex()
                                             );
         }

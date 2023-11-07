@@ -6,9 +6,7 @@ import jsonvalues.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -73,6 +71,7 @@ public final class JsSpecs {
 
     private static final JsSpec mapOfDecimalSpec = new JsMapOfDec(false);
     private static final JsSpec mapOfDoubleSpec = new JsMapOfDouble(false);
+    private static final JsSpec mapOfBinarySpec = new JsMapOfBinary(false);
 
     private static final JsSpec mapOfBigIntegerSpec = new JsMapOfBigInt(false);
 
@@ -306,7 +305,6 @@ public final class JsSpecs {
     }
 
 
-
     /**
      * Returns a specification for an array of integers with a specified minimum and maximum length.
      *
@@ -446,7 +444,6 @@ public final class JsSpecs {
     }
 
 
-
     /**
      * Returns a required and non-nullable specification that specifies a constant value.
      *
@@ -475,7 +472,6 @@ public final class JsSpecs {
 
         );
     }
-
 
 
     /**
@@ -1029,9 +1025,9 @@ public final class JsSpecs {
      * @param others The specifications for the rest of the elements.
      * @return A specification for a tuple that enforces the specified structure.
      */
-    public static JsTuple tuple(JsSpec spec,
-                                JsSpec... others
-                               ) {
+    public static JsArraySpec tuple(JsSpec spec,
+                                    JsSpec... others
+                                   ) {
         return JsTuple.of(requireNonNull(spec),
                           requireNonNull(others));
     }
@@ -1043,17 +1039,50 @@ public final class JsSpecs {
      * @param <O>  The type of the possible JSON values (subtype of JsValue).
      * @return A specification that checks if a JSON value matches one of the provided values.
      */
-    public static <O extends JsValue> JsSpec oneValueOf(final List<O> cons) {
+    public static <O extends JsValue> JsSpec oneValOf(final List<O> cons) {
         return any(o -> requireNonNull(cons).contains(o));
     }
 
+    /**
+     * Returns a specification that validates if a JSON value is one of the given possible values.
+     *
+     * @param elem   The first possible JSON value.
+     * @param others Additional possible JSON values.
+     * @param <O>    The type of the possible JSON values (subtype of JsValue).
+     * @return A specification that checks if a JSON value matches one of the provided values.
+     */
+    public static <O extends JsValue> JsSpec oneValOf(O elem, O... others) {
+        List<O> list = new ArrayList<>();
+        list.add(requireNonNull(elem));
+        Collections.addAll(list, requireNonNull(others));
+        return oneValOf(list);
+    }
+
+    /**
+     * Returns a specification that validates if a JSON value is one of the given possible specifications.
+     *
+     * @param specs The list of possible JSON specifications.
+     * @return A specification that checks if a JSON value matches one of the provided specifications.
+     */
     public static JsSpec oneSpecOf(List<? extends JsSpec> specs) {
         return OneOf.of(requireNonNull(specs));
     }
 
-    public static OneOfObjSpec oneObjSpecOf(List<JsObjSpec> specs) {
-        return OneOfObjSpec.of(requireNonNull(specs));
+    /**
+     * Returns a specification that validates if a JSON value is one of the given possible specifications.
+     *
+     * @param elem   The first possible JSON specification.
+     * @param others Additional possible JSON specifications.
+     * @return A specification that checks if a JSON value matches one of the provided specifications.
+     */
+    public static JsSpec oneSpecOf(JsSpec elem, JsSpec... others) {
+        List<JsSpec> list = new ArrayList<>();
+        list.add(requireNonNull(elem));
+        Collections.addAll(list, requireNonNull(others));
+        return oneSpecOf(list);
     }
+
+
 
     /**
      * Returns a specification that validates if a JSON value is one of the given possible symbols.
@@ -1061,9 +1090,24 @@ public final class JsSpecs {
      * @param cons The list of possible JSON values.
      * @return A specification that checks if a JSON value matches one of the provided values.
      */
-    public static JsEnum oneStringOf(final List<String> cons) {
-        return new JsEnum(requireNonNull(cons));
+    public static JsSpec oneStringOf(final List<String> cons) {
+        return JsEnum.of(requireNonNull(cons));
     }
+
+    /**
+     * Returns a specification that validates if a JSON value is one of the given possible symbols.
+     *
+     * @param elem   The first possible symbol value.
+     * @param others Additional possible symbol values.
+     * @return A specification that checks if a JSON value matches one of the provided symbol values.
+     */
+    public static JsSpec oneStringOf(String elem, String... others) {
+        List<String> list = new ArrayList<>();
+        list.add(requireNonNull(elem));
+        Collections.addAll(list, requireNonNull(others));
+        return JsEnum.of(list);
+    }
+
 
     /**
      * Returns a specification that validates that the JSON is an object, and the value of each key is a long number.
@@ -1090,6 +1134,15 @@ public final class JsSpecs {
      */
     public static JsSpec mapOfBigInteger() {
         return mapOfBigIntegerSpec;
+    }
+
+    /**
+     * Returns a specification that validates that the JSON is an object, and the value of each key is a binary.
+     *
+     * @return A JSON specification for objects with binary values.
+     */
+    public static JsSpec mapOfBinary() {
+        return mapOfBinarySpec;
     }
 
     /**

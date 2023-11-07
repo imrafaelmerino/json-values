@@ -16,6 +16,6 @@ class JsDecimalLens<S extends Json<S>> extends Lens<S, BigDecimal> {
         super(json -> requireNonNull(json).getBigDec(path),
               n -> json -> requireNonNull(json).set(path,
                                                     JsBigDec.of(n))
-        );
+             );
     }
 }

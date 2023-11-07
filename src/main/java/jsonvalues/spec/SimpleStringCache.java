@@ -37,7 +37,7 @@ class SimpleStringCache implements StringCache {
      */
     @Override
     public String get(char[] chars, int len) {
-        long hash = 0x811c9dc5;
+        long hash = 0x811c9dc5L;
         for (int i = 0; i < len; i++) {
             hash ^= (byte) chars[i];
             hash *= 0x1000193;

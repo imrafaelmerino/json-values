@@ -108,7 +108,7 @@ public class TestJsParser {
                                                   1,
                                                   5);
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertEquals(parser.parse(array.toString()),
                                 array
@@ -477,9 +477,9 @@ public class TestJsParser {
     @Test
     public void parsingBool() {
         JsObjSpec spec = JsObjSpec.of("a",
-                                      JsSpecs.oneValueOf(List.of(TRUE)).nullable(),
+                                      JsSpecs.oneValOf(List.of(TRUE)).nullable(),
                                       "b",
-                                      JsSpecs.oneValueOf(List.of(FALSE)).nullable(),
+                                      JsSpecs.oneValOf(List.of(FALSE)).nullable(),
                                       "c",
                                       arrayOfBool(1,
                                                   10).nullable(),
@@ -527,9 +527,9 @@ public class TestJsParser {
                                       "c",
                                       arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0),
                                       "d",
-                                      JsSpecs.oneValueOf(List.of(TRUE)),
+                                      JsSpecs.oneValOf(List.of(TRUE)),
                                       "e",
-                                      JsSpecs.oneValueOf(List.of(FALSE))
+                                      JsSpecs.oneValOf(List.of(FALSE))
                                      );
 
         JsObjSpecParser parser = JsObjSpecParser.of(spec);

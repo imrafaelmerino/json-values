@@ -1,8 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
-
 
 
 @FunctionalInterface

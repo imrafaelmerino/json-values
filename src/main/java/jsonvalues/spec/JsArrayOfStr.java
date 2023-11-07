@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 
@@ -13,7 +13,8 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
 
     JsArrayOfStr(final boolean nullable,
                  int min,
-                 int max) {
+                 int max
+                ) {
         super(nullable,
               min,
               max);
@@ -36,13 +37,13 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isStr() ?
-                                                     Optional.empty() :
-                                                     Optional.of(new JsError(v,
-                                                                         STRING_EXPECTED)),
+                                                        Optional.empty() :
+                                                        Optional.of(new JsError(v,
+                                                                                STRING_EXPECTED)),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 

@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsObj;
-import jsonvalues.JsParserException;
 
 import java.util.Objects;
 
@@ -32,7 +31,7 @@ class JsMapOfSpecReader extends AbstractJsObjReader {
 
         }
         if (nextToken != '}')
-            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END,
+            throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) reader.last())),
                                              reader.getPositionInStream()
                                             );
 

@@ -78,7 +78,7 @@ public class MiscellaneousExamples {
                                                             longMax)
         );
 
-        JsArraySpecParser parser = new JsArraySpecParser(spec);
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
         Assertions.assertTrue(gen.sample(100000)
                                  .allMatch(arr -> parser.parse(arr.toString())

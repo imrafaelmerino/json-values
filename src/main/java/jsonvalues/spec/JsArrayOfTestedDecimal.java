@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
 import java.util.Optional;
@@ -51,15 +51,15 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isDouble() || v.isBigDec() ?
-                                                        predicate.apply(v.toJsBigDec().value) :
-                                                        Optional.of(new JsError(v,
-                                                                               DECIMAL_EXPECTED
-                                                                    )
-                                                        ),
+                                                                predicate.apply(v.toJsBigDec().value) :
+                                                                Optional.of(new JsError(v,
+                                                                                        DECIMAL_EXPECTED
+                                                                            )
+                                                                           ),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 

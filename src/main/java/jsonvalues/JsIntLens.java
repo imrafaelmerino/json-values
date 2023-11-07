@@ -14,6 +14,6 @@ class JsIntLens<S extends Json<S>> extends Lens<S, Integer> {
         super(json -> requireNonNull(json).getInt(path),
               n -> json -> requireNonNull(json).set(path,
                                                     JsInt.of(n))
-        );
+             );
     }
 }

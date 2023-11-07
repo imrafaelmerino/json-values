@@ -18,8 +18,8 @@ public final class Key implements Position {
     }
 
     /**
-     * Returns a new instance representing a key with the given name in a JSON object. Any string,
-     * except null, can represent a key in a JSON object, even the empty string.
+     * Returns a new instance representing a key with the given name in a JSON object. Any string, except null, can
+     * represent a key in a JSON object, even the empty string.
      *
      * @param key the given name of the key
      * @return a new Key object

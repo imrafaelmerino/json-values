@@ -150,7 +150,7 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
     default JsInstant toJsInstant() {
         if (this instanceof JsInstant) return ((JsInstant) this);
         if (this instanceof JsStr) {
-            Optional<Instant> instant = JsStr.instantPrism.getOptional.apply(((JsStr) this).value);
+            var instant = JsStr.instantPrism.getOptional.apply(((JsStr) this).value);
             if (instant.isPresent()) return JsInstant.of(instant.get());
         }
         throw UserError.isNotAJsInstant(this);

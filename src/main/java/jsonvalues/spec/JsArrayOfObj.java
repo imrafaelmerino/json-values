@@ -13,7 +13,8 @@ final class JsArrayOfObj extends AbstractSizableArr implements JsOneErrorSpec, J
 
     JsArrayOfObj(final boolean nullable,
                  int min,
-                 int max) {
+                 int max
+                ) {
         super(nullable,
               min,
               max);
@@ -35,17 +36,16 @@ final class JsArrayOfObj extends AbstractSizableArr implements JsOneErrorSpec, J
     }
 
 
-
     @Override
     public Optional<JsError> testValue(final JsValue value) {
         return Functions.testArrayOfTestedValue(v -> v.isObj() ?
-                                                     Optional.empty() :
-                                                     Optional.of(new JsError(v,
-                                                                         OBJ_EXPECTED)),
+                                                        Optional.empty() :
+                                                        Optional.of(new JsError(v,
+                                                                                OBJ_EXPECTED)),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 }

@@ -12,66 +12,40 @@ import java.util.stream.Stream;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Represents the full path location of an element in a JSON. It's a list of {@link Position}.
- * There are two different ways to create a JsPath:
+ * Represents the full path location of an element in a JSON. It's a list of {@link Position}. There are two different
+ * ways to create a JsPath:
  * <p>
- * 1. From a path-like string using the static factory method {@link JsPath#path(String)}. The path
- * follows the JSON Pointer specification <a href="http://tools.ietf.org/html/rfc6901">RFC 6901</a>.
- * To use paths for putting data in a JSON, keys with names that are numbers must be single-quoted.
+ * 1. From a path-like string using the static factory method {@link JsPath#path(String)}. The path follows the JSON
+ * Pointer specification <a href="http://tools.ietf.org/html/rfc6901">RFC 6901</a>. To use paths for putting data in a
+ * JSON, keys with names that are numbers must be single-quoted.
  * <p>
- * For example:
- * a={"0": true}
- * b=[false]
+ * For example: a={"0": true} b=[false]
  * <p>
- * According to RFC 6901, the pointer /0 points to true in 'a', and to false in 'b'.
- * In json-values, it's slightly different:
- * /0 points to false in 'b', and /'0' points to true in 'a'.
+ * According to RFC 6901, the pointer /0 points to true in 'a', and to false in 'b'. In json-values, it's slightly
+ * different: /0 points to false in 'b', and /'0' points to true in 'a'.
  * <p>
- * It's necessary to make that distinction because otherwise, there are scenarios when there is no way
- * to know if the user wants to insert an array or an object.
+ * It's necessary to make that distinction because otherwise, there are scenarios when there is no way to know if the
+ * user wants to insert an array or an object.
  * <p>
- * 2. By using the API, you can use the methods {@link JsPath#fromKey(String)} and {@link JsPath#fromIndex(int)}
- * to create a JsPath and then the methods {@link JsPath#index(int)} and {@link JsPath#key(String)} to
- * append keys or indexes.
+ * 2. By using the API, you can use the methods {@link JsPath#fromKey(String)} and {@link JsPath#fromIndex(int)} to
+ * create a JsPath and then the methods {@link JsPath#index(int)} and {@link JsPath#key(String)} to append keys or
+ * indexes.
  * <p>
- * For example:
- * JsPath a = JsPath.fromKey("a").index(0).key("b"); // Creates /a/0/b
- * JsPath b = JsPath.fromIndex(0).key("a").index(0); // Creates /0/a/0
+ * For example: JsPath a = JsPath.fromKey("a").index(0).key("b"); // Creates /a/0/b JsPath b =
+ * JsPath.fromIndex(0).key("a").index(0); // Creates /0/a/0
  * <p>
  * Example JSON object:
  * <p>
- * {
- * "a": {
- * "x": [
- * {
- * "c": [1, 2, {
- * "": {
- * "1": true,
- * " ": false,
- * "'": 4
- * }
- * }]
- * }
- * ]
- * },
- * "1": null,
- * "": ""
- * }
+ * { "a": { "x": [ { "c": [1, 2, { "": { "1": true, " ": false, "'": 4 } }] } ] }, "1": null, "": "" }
  * <p>
  * The paths are as follows:
  * <p>
- * / = ""                      // an empty string is a valid name for a key
- * /'1' = null                 // numeric keys have to be single-quoted
- * /a/x/0/c/0 = 1
- * /a/x/0/c/1 = 2
- * /a/x/0/c/2//'1' = true      // single quotes are only mandatory when the key is a number
- * #/a/x/0/c/2//+" = false     // + is URL-decoded to a white-space
- * #/a/x/0/c/2//%27" = 4       // %27 is URL-decoded to '
+ * / = ""                      // an empty string is a valid name for a key /'1' = null                 // numeric keys
+ * have to be single-quoted /a/x/0/c/0 = 1 /a/x/0/c/1 = 2 /a/x/0/c/2//'1' = true      // single quotes are only
+ * mandatory when the key is a number #/a/x/0/c/2//+" = false     // + is URL-decoded to a white-space #/a/x/0/c/2//%27"
+ * = 4       // %27 is URL-decoded to '
  * <p>
- * According to the API:
- * fromKey("") = ""
- * fromKey("1") = null
- * fromKey("a").key("x").index(0).key("c").index(0) = 1
+ * According to the API: fromKey("") = "" fromKey("1") = null fromKey("a").key("x").index(0).key("c").index(0) = 1
  * fromKey("a").key("x").index(0).key("c").index(1) = 2
  * fromKey("a").key("x").index(0).key("c").index(2).key("").key("1") = true
  * fromKey("a").key("x").index(0).key("c").index(2).key("").key(" ") = false
@@ -141,7 +115,7 @@ public final class JsPath implements Comparable<JsPath> {
      * @return a new JsPath
      */
     public static JsPath path(final String path) {
-        if (requireNonNull(path).equals("")) return EMPTY;
+        if (requireNonNull(path).isEmpty()) return EMPTY;
         if (path.equals("#")) return EMPTY;
         if (path.equals("#/")) return fromKey("");
         if (path.equals("/")) return fromKey("");
@@ -176,7 +150,7 @@ public final class JsPath implements Comparable<JsPath> {
     private static Function<String, Position> mapTokenToPosition(final UnaryOperator<String> mapKeyFn) {
         return token ->
         {
-            if (token.equals("")) return KEY_EMPTY;
+            if (token.isEmpty()) return KEY_EMPTY;
             if (token.equals("'")) return KEY_SINGLE_QUOTE;
             boolean isNumeric = isNumeric(token);
             if (isNumeric) {
@@ -213,9 +187,8 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * Compares this path with another given as a parameter by comparing in order each of their positions,
-     * one by one, until a result different from zero is returned or all the positions of any path are
-     * consumed.
+     * Compares this path with another given as a parameter by comparing in order each of their positions, one by one,
+     * until a result different from zero is returned or all the positions of any path are consumed.
      *
      * @param that the given path
      * @return 1 if this is greater than that, -1 if this is lower than that, 0 otherwise
@@ -260,8 +233,8 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * Returns a new path incrementing the last index by one, throwing an UserError
-     * if the last Position is not an index
+     * Returns a new path incrementing the last index by one, throwing an UserError if the last Position is not an
+     * index
      *
      * @return a new JsPath with the last index incremented by one
      * @throws UserError if the last position is not an Index
@@ -323,8 +296,8 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * Returns a new path decrementing the last index by one, throwing an UserError
-     * if the last Position is not an index
+     * Returns a new path decrementing the last index by one, throwing an UserError if the last Position is not an
+     * index
      *
      * @return a new JsPath with the last index decremented by one
      * @throws UserError if the last position is not an Index
@@ -404,8 +377,8 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * returns true if this path starts with the given path. If the given path is JsPath.empty(), it
-     * always returns true
+     * returns true if this path starts with the given path. If the given path is JsPath.empty(), it always returns
+     * true
      *
      * @param path the given path
      * @return true if this JsPath starts with the given JsPath
@@ -429,8 +402,7 @@ public final class JsPath implements Comparable<JsPath> {
 
 
     /**
-     * returns true if this path ends with the given path. If the given path is JsPath.empty(), it
-     * always returns true
+     * returns true if this path ends with the given path. If the given path is JsPath.empty(), it always returns true
      *
      * @param path the given path
      * @return true if this JsPath ends with the given JsPath
@@ -477,9 +449,8 @@ public final class JsPath implements Comparable<JsPath> {
     }
 
     /**
-     * Returns a string representation of this path following the format defined in the RFC 6901 with
-     * the exception that keys which names are numbers are single-quoted.
-     * Example: /a/b/0/'1'/
+     * Returns a string representation of this path following the format defined in the RFC 6901 with the exception that
+     * keys which names are numbers are single-quoted. Example: /a/b/0/'1'/
      *
      * @return a string representation of this JsPath following the RFC 6901
      */
@@ -489,7 +460,7 @@ public final class JsPath implements Comparable<JsPath> {
         return positions
                 .map(pos -> pos.match(key ->
                                       {
-                                          if (key.equals("")) return key;
+                                          if (key.isEmpty()) return key;
                                           return isNumeric(key) ?
                                                   String.format("'%s'",
                                                                 key

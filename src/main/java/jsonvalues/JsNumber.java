@@ -1,8 +1,8 @@
 package jsonvalues;
 
 /**
- * Represents a sealed abstract class for JSON number values. It serves as a common base class for various
- * numeric JSON types, such as integers and floating-point numbers. Instances of this class are immutable.
+ * Represents a sealed abstract class for JSON number values. It serves as a common base class for various numeric JSON
+ * types, such as integers and floating-point numbers. Instances of this class are immutable.
  * <p>
  * This class is part of a sealed hierarchy and permits specific subclasses for different numeric JSON types.
  *

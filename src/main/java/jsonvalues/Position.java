@@ -7,8 +7,7 @@ import java.util.function.IntPredicate;
 import java.util.function.Predicate;
 
 /**
- * Represents the location of a first-level element in a JSON, either a Key in a JsObj or an Index in
- * a JsArray.
+ * Represents the location of a first-level element in a JSON, either a Key in a JsObj or an Index in a JsArray.
  */
 public sealed interface Position extends Comparable<Position> permits Index, Key {
     /**
@@ -75,12 +74,12 @@ public sealed interface Position extends Comparable<Position> permits Index, Key
      */
     default <T> T match(final Function<String, T> keyFn,
                         final IntFunction<T> indexFn
-    ) {
+                       ) {
 
         return isKey() ?
-               Objects.requireNonNull(keyFn)
-                      .apply(((Key) this).name) :
-               Objects.requireNonNull(indexFn)
-                      .apply(((Index) this).n);
+                Objects.requireNonNull(keyFn)
+                       .apply(((Key) this).name) :
+                Objects.requireNonNull(indexFn)
+                       .apply(((Index) this).n);
     }
 }

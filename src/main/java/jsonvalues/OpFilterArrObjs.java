@@ -13,7 +13,7 @@ final class OpFilterArrObjs {
                           JsPath startingPath,
                           BiPredicate<? super JsPath, ? super JsObj> predicate
 
-    ) {
+                         ) {
         for (int i = json.size() - 1; i >= 0; i--) {
             JsValue value = json.get(i);
             JsPath path = startingPath.index(i);
@@ -21,20 +21,20 @@ final class OpFilterArrObjs {
                 if (predicate.negate()
                              .test(path,
                                    value.toJsObj()
-                             )) json = json.delete(i);
+                                  )) json = json.delete(i);
                 else json = json.set(i,
                                      OpFilterObjObjs.filter(value.toJsObj(),
                                                             path,
                                                             predicate
-                                     )
-                );
+                                                           )
+                                    );
             } else if (value.isArray()) {
                 json = json.set(i,
                                 filter(value.toJsArray(),
                                        path,
                                        predicate
-                                )
-                );
+                                      )
+                               );
             }
 
         }
@@ -45,7 +45,8 @@ final class OpFilterArrObjs {
     }
 
     static JsArray filter(JsArray json,
-                          Predicate<? super JsObj> predicate) {
+                          Predicate<? super JsObj> predicate
+                         ) {
         for (int i = json.size() - 1; i >= 0; i--) {
             JsValue value = json.get(i);
             if (value.isObj()) {
@@ -55,14 +56,14 @@ final class OpFilterArrObjs {
                 else json = json.set(i,
                                      OpFilterObjObjs.filter(value.toJsObj(),
                                                             predicate
-                                     )
-                );
+                                                           )
+                                    );
             } else if (value.isArray()) {
                 json = json.set(i,
                                 filter(value.toJsArray(),
                                        predicate
-                                )
-                );
+                                      )
+                               );
             }
 
         }

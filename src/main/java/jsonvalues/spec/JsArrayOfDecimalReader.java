@@ -1,20 +1,20 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+
+import static java.util.Objects.requireNonNull;
 
 final class JsArrayOfDecimalReader extends JsArrayReader {
 
     private final JsDecimalReader parser;
 
     JsArrayOfDecimalReader(final JsDecimalReader parser) {
-        super(Objects.requireNonNull(parser));
+        super(requireNonNull(parser));
         this.parser = parser;
     }
 
@@ -22,7 +22,7 @@ final class JsArrayOfDecimalReader extends JsArrayReader {
                                     final Function<BigDecimal, Optional<JsError>> fn,
                                     final int min,
                                     final int max
-    ) throws JsParserException {
+                                   ) throws JsParserException {
         return nullOrArrayEachSuchThat(reader,
                                        () -> parser.valueSuchThat(reader,
                                                                   fn),
@@ -34,7 +34,7 @@ final class JsArrayOfDecimalReader extends JsArrayReader {
                               final Function<BigDecimal, Optional<JsError>> fn,
                               final int min,
                               final int max
-    ) throws JsParserException {
+                             ) throws JsParserException {
         return arrayEachSuchThat(reader,
                                  () -> parser.valueSuchThat(reader,
                                                             fn),

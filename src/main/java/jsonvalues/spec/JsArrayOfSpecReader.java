@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsParserException;
 import jsonvalues.JsValue;
 
 final class JsArrayOfSpecReader extends JsArrayReader {

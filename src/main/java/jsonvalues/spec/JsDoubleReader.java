@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsDouble;
-import jsonvalues.JsParserException;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;

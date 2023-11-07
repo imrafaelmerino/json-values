@@ -22,8 +22,8 @@ public final class JsBool extends JsPrimitive {
      */
     public static final Prism<JsValue, Boolean> prism =
             new Prism<>(s -> s.isBool() ?
-                             Optional.of(s.toJsBool().value) :
-                             Optional.empty(),
+                    Optional.of(s.toJsBool().value) :
+                    Optional.empty(),
                         JsBool::of
             );
     /**
@@ -44,8 +44,8 @@ public final class JsBool extends JsPrimitive {
      */
     public static JsBool of(boolean b) {
         return b ?
-               TRUE :
-               FALSE;
+                TRUE :
+                FALSE;
     }
 
     @Override
@@ -76,8 +76,8 @@ public final class JsBool extends JsPrimitive {
     @Override
     public int hashCode() {
         return value ?
-               1 :
-               0;
+                1 :
+                0;
     }
 
     /**

@@ -2,8 +2,8 @@ package jsonvalues;
 
 
 /**
- Exception that models a programming code made by the user. The user has a bug in their code and something
- has to be fixed. Part of the exception message is a suggestion to fix the bug.
+ * Exception that models a programming code made by the user. The user has a bug in their code and something has to be
+ * fixed. Part of the exception message is a suggestion to fix the bug.
  */
 @SuppressWarnings("serial")
 public final class UserError extends RuntimeException {
@@ -54,7 +54,7 @@ public final class UserError extends RuntimeException {
     static UserError isNotAJsBinary(final JsValue elem) {
         return new UserError(String.format(GENERAL_MESSAGE,
                                            String.format("JsBinary expected or a JsString representing an array of bytes encoded in base64, " +
-                                                                 "but %s was found",
+                                                         "but %s was found",
                                                          elem.getClass()
                                                         ),
                                            "call the guard condition isBinary() before invoking toJsBinary()"
@@ -66,7 +66,7 @@ public final class UserError extends RuntimeException {
                                            String.format("JsLong expected, but %s was found",
                                                          elem.getClass()
                                                         ),
-                                           "call the guard condition isLong() or isInt() before invoking toJsLong()"
+                                           "call the guard condition isLong() before invoking toJsLong()"
                                           ));
     }
 
@@ -75,7 +75,7 @@ public final class UserError extends RuntimeException {
                                            String.format("JsDouble expected, but %s was found",
                                                          elem.getClass()
                                                         ),
-                                           "call the guard condition isDouble() or isDecimal() before invoking toJsDouble()"
+                                           "call the guard condition isDouble() before invoking toJsDouble()"
                                           ));
     }
 
@@ -111,7 +111,7 @@ public final class UserError extends RuntimeException {
                                            String.format("JsPrimitive expected, but %s was found",
                                                          elem.getClass()
                                                         ),
-                                           "call the guard condition isJsPrimitive() before invoking toJsPrimitive()"
+                                           "call the guard condition isPrimitive() before invoking toJsPrimitive()"
                                           ));
     }
 

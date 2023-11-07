@@ -17,11 +17,11 @@ public class TestJsArraySpec {
     @Test
     public void test_value_without_spec_should_return_error() {
 
-        final JsArray array = JsArray.of(JsInt.of(1),
-                                         JsStr.of("a")
-                                        );
-        final JsTuple spec = JsSpecs.tuple(integer());
-        final List<SpecError> error = spec.test(array);
+        JsArray array = JsArray.of(JsInt.of(1),
+                                   JsStr.of("a")
+                                  );
+        var spec = JsSpecs.tuple(integer());
+        List<SpecError> error = spec.test(array);
         assertErrorIs(error,
                       SPEC_MISSING,
                       JsStr.of("a"),
@@ -33,8 +33,8 @@ public class TestJsArraySpec {
     public void test_any_spec_array() {
 
 
-        JsTuple spec = JsSpecs.tuple(any(),
-                                     any());
+        var spec = JsSpecs.tuple(any(),
+                                 any());
 
 
         Assertions.assertTrue(spec.test(JsArray.of(JsNull.NULL,
@@ -86,7 +86,7 @@ public class TestJsArraySpec {
     public void test_any_spec_array_of_two_elements() {
 
 
-        JsTuple spec = JsSpecs.tuple(any(),
+        var spec = JsSpecs.tuple(any(),
                                      any()
                                     );
 
@@ -302,7 +302,7 @@ public class TestJsArraySpec {
 
         JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
-        JsObj obj = JsObj.of("a", JsArray.ofDoubles(1 / 2d, 1 / 4d));
+        JsObj obj = JsObj.of("a", JsArray.of(1 / 2d, 1 / 4d));
         System.out.println(obj);
 
         Assertions.assertTrue(spec.test(obj).isEmpty());

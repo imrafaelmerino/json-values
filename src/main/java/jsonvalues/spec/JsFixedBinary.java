@@ -6,7 +6,7 @@ import java.util.Optional;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_FIXED_LENGTH_EXPECTED;
 
-public final class JsFixedBinary extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
+final class JsFixedBinary extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
     private final int size;
 
@@ -24,7 +24,7 @@ public final class JsFixedBinary extends AbstractNullable implements JsOneErrorS
         this(false, size, null);
     }
 
-    public int getSize() {
+    int getSize() {
         return size;
     }
 

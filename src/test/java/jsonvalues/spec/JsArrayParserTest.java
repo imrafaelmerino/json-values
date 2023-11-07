@@ -18,25 +18,25 @@ public class JsArrayParserTest {
     @Test
     public void test_array_of_different_elements() {
 
-        final JsTuple spec = JsSpecs.tuple(str(),
-                                           integer(),
-                                           longInteger(),
-                                           decimal(),
-                                           bool(),
-                                           bigInteger(),
-                                           obj(),
-                                           array(),
-                                           integer(i -> i > 0),
-                                           any(v -> v.isStr() || v.isInt()),
-                                           str(s -> s.startsWith("1")),
-                                           arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
-                                           arrayOfDecSuchThat(a -> a.size() == 2),
-                                           decimal(),
-                                           arrayOfBigInt(a -> a.longValueExact() > 0),
-                                           arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
-                                           arrayOfObj(),
-                                           arrayOfObj().nullable()
-                                          );
+        var spec = JsSpecs.tuple(str(),
+                                 integer(),
+                                 longInteger(),
+                                 decimal(),
+                                 bool(),
+                                 bigInteger(),
+                                 obj(),
+                                 array(),
+                                 integer(i -> i > 0),
+                                 any(v -> v.isStr() || v.isInt()),
+                                 str(s -> s.startsWith("1")),
+                                 arrayOfBigIntSuchThat(a -> a.size() == 1).nullable(),
+                                 arrayOfDecSuchThat(a -> a.size() == 2),
+                                 decimal(),
+                                 arrayOfBigInt(a -> a.longValueExact() > 0),
+                                 arrayOfBigInt(a -> a.longValueExact() > 0).nullable(),
+                                 arrayOfObj(),
+                                 arrayOfObj().nullable()
+                                );
 
 
         JsArray array = JsArray.of(JsStr.of("a"),
@@ -66,7 +66,7 @@ public class JsArrayParserTest {
                                   );
 
         Assertions.assertEquals(array,
-                                new JsArraySpecParser(spec).parse(array.toPrettyString())
+                                JsArraySpecParser.of(spec).parse(array.toPrettyString())
                                );
     }
 
@@ -246,6 +246,27 @@ public class JsArrayParserTest {
         Assertions.assertTrue(gen.sample(100000)
                                  .allMatch(d -> JsObjSpecParser.of(specSuchThat).parse(d.toString()).equals(d)
                                           ));
+
+
+    }
+
+    @Test
+    public void testArrayOfDouble() {
+
+        JsArraySpec spec = JsSpecs.arrayOfDouble();
+        JsArraySpec spec1 = JsSpecs.arrayOfDoubleSuchThat(a -> a.size() == 3);
+
+        JsArraySpecParser parser = JsArraySpecParser.of(spec);
+        JsArraySpecParser parser1 = JsArraySpecParser.of(spec1);
+
+        JsArray array = JsArray.of(1 / 2d, 1 / 4d, 1 / 8d);
+
+
+        Assertions.assertTrue(spec.test(array).isEmpty());
+        Assertions.assertEquals(array, parser.parse(array.toPrettyString()));
+
+        Assertions.assertTrue(spec1.test(array).isEmpty());
+        Assertions.assertEquals(array, parser1.parse(array.toPrettyString()));
 
 
     }

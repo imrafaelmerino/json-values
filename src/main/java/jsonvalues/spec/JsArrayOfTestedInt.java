@@ -1,6 +1,6 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import jsonvalues.JsValue;
 
 import java.util.Optional;
 import java.util.function.IntFunction;
@@ -53,15 +53,15 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
 
         return Functions.testArrayOfTestedValue(v ->
                                                         v.isInt() ?
-                                                        predicate.apply(v.toJsInt().value) :
-                                                        Optional.of(new JsError(v,
-                                                                               INT_EXPECTED
-                                                                    )
-                                                        ),
+                                                                predicate.apply(v.toJsInt().value) :
+                                                                Optional.of(new JsError(v,
+                                                                                        INT_EXPECTED
+                                                                            )
+                                                                           ),
                                                 nullable,
                                                 min,
                                                 max
-                        )
+                                               )
                         .apply(value);
     }
 

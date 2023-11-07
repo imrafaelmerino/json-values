@@ -1,6 +1,7 @@
 package jsonvalues;
 
 import fun.optic.Option;
+import jsonvalues.spec.JsParserException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -493,7 +494,7 @@ public class TestJsObj {
                                                                         () -> JsObj.parse("")
                                                                        );
 
-        Assertions.assertEquals("Unexpected end of JSON input @ position=0",
+        Assertions.assertEquals("Unexpected end of JSON @ position=0",
                                 malformedJson.getMessage()
                                );
 
