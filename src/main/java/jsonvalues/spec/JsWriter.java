@@ -1,7 +1,5 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsSerializerException;
-
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;

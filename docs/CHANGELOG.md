@@ -56,7 +56,8 @@ Improved javadoc
     -  `JsSpec.readNextValue(JsReader)` -> `JsSpec.parse(String)`. Method used by jio-console and was changed
         since it not necessary to create a JsReader
     - `reduce` methods doesn't return Optional (implementation inefficient since create a lot of Optional objects)
+    - `JsSerializerException` move to spec package to reduce visibility of constructors
 - Refactor internal classes and tests (clients not affected)
 - decimal specs like `JsSpecs.decimal` can parse any kind of numeric values (integers as well)
 - Removed `JsSpecs.number` and related specs like `arrayOfNumbers`  (use decimal instead)
-- Added `JsDouble` and related specs (`JsSpecs.doubleNumber` and others related)
+- Added `JsDoubleSpec` and other related specs (`JsSpecs.arrayOfDouble` and others related)
