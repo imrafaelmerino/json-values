@@ -340,6 +340,20 @@ public final class JsSpecs {
                                    maxLength);
     }
 
+    public static JsArraySpec arrayOfDouble(DoublePredicate predicate,
+                                            int minLength,
+                                            int maxLength
+                                           ) {
+        if (maxLength < minLength) throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+
+        return new JsArrayOfTestedDouble(s -> requireNonNull(predicate).test(s) ?
+                Optional.empty() :
+                Optional.of(new JsError(JsDouble.of(s), DOUBLE_CONDITION)),
+                                         false,
+                                         minLength,
+                                         maxLength);
+    }
+
     /**
      * Returns a specification for an array of big integers with a specified minimum and maximum length.
      *
@@ -1071,6 +1085,7 @@ public final class JsSpecs {
         return new OneOf(false, requireNonNull(specs));
     }
 
+
     /**
      * Returns a specification that validates if a JSON value is one of the given possible specifications.
      *
@@ -1190,6 +1205,7 @@ public final class JsSpecs {
     /**
      * Returns a specification that validates that the JSON is an object, and the value of each key is an object.
      *
+     * @param spec the spec of the values of the map
      * @return A JSON specification for objects with object values.
      */
     public static JsSpec mapOfObj(JsObjSpec spec) {
@@ -1210,6 +1226,7 @@ public final class JsSpecs {
      * Returns a specification that validates that the JSON is an object, and the value of each key is a value that
      * conforms the given spec.
      *
+     * @param spec the spec of the values
      * @return A JSON specification for maps.
      */
     public static JsSpec mapOfSpec(JsSpec spec) {
@@ -1217,12 +1234,55 @@ public final class JsSpecs {
         return new JsMapOfSpec(false, requireNonNull(spec));
     }
 
+    /**
+     * Returns a specification that validates that the JSON is an array, and the value of each element is a value that
+     * conforms the given spec.
+     *
+     * @param spec the spec of the elements
+     * @return A JSON specification for arrays.
+     */
     public static JsArraySpec arrayOfSpec(JsSpec spec) {
         return new JsArrayOfSpec(false, requireNonNull(spec));
     }
 
+    /**
+     * Returns a specification that validates that the JSON is an array within the limits of the specified bounds, and
+     * the value of each element is a value that conforms the given spec.
+     *
+     * @param spec the spec of the elements
+     * @param min  the minimum length of the array
+     * @param max  the maximum length of the array
+     * @return A JSON specification for arrays.
+     */
     public static JsArraySpec arrayOfSpec(JsSpec spec, int min, int max) {
         return new JsArrayOfSpec(false, requireNonNull(spec), min, max);
+    }
+
+    /**
+     * Returns a named spec from the cache based on the provided name. Named specs are created using the
+     * {@link JsObjSpecBuilder} and are cached for efficient retrieval and use in recursive specifications.
+     * <p>
+     * Named specs represent reusable specifications that can be referenced in other specs, allowing for the creation of
+     * recursive data structures. Example usage:
+     * <pre>
+     * {@code
+     * var spec = JsObjSpecBuilder.withName("person")
+     *                            .build(JsObjSpec.of("name", JsSpecs.str(),
+     *                                                "age", JsSpecs.integer(),
+     *                                                "father", JsSpecs.ofNamedSpec("person")
+     *                                               )
+     *                                            .withOptKeys("father")
+     *                                  );
+     * }
+     * </pre>
+     *
+     * @param name The name of the named spec to retrieve from the cache.
+     * @return A named spec with the specified name.
+     * @throws IllegalArgumentException If the specified name does not correspond to a cached named spec.
+     * @see JsObjSpecBuilder
+     */
+    public static JsSpec ofNamedSpec(final String name) {
+        return new NamedSpec(name);
     }
 
 

@@ -43,7 +43,8 @@ Improved javadoc
 
 13.0.0
 - added avro support for some specs with the interfaz AvroSpec (not public is used by avro-values proyect)
-- `JsObjSpecBuilder`, `JsFixedBuilder` and `JsEnumBuilder` to facilitate integration with avro
+- `JsObjSpecBuilder`, `JsFixedBuilder` and `JsEnumBuilder` to facilitate integration with avro. It
+   caches specs by name and now is possible to define recursive data types with `JsObjSpecs.ofNamedSpec`
 - If spec builder is used to create specs and parsers, the metadata of the spec
   can be used for parsing, for example aliases and default values.
 - added oneOf specs and parsers (JsReader now support set marks and rollback to that marks!)
@@ -61,3 +62,6 @@ Improved javadoc
 - decimal specs like `JsSpecs.decimal` can parse any kind of numeric values (integers as well)
 - Removed `JsSpecs.number` and related specs like `arrayOfNumbers`  (use decimal instead)
 - Added `JsDoubleSpec` and other related specs (`JsSpecs.arrayOfDouble` and others related)
+- Removed automatic module name. I'll keep unnamed json-values because of split packages are
+  not allowed in the module system and then there is a problem with avro-spec and all the libraries
+  that defined the package `jsonvalues.spec` (already defined in json-values)

@@ -37,12 +37,7 @@ public final class JsArraySpecParser {
 
     private final JsSpec spec;
 
-    /**
-     * Creates a JSON array parser based on the provided JSON array specification (spec). The parser will validate that
-     * every element in a JSON array adheres to the schema defined in the given specification.
-     *
-     * @param spec The JSON array specification that defines the expected schema for each element in the array.
-     */
+
     private JsArraySpecParser(final JsSpec spec) {
         if (!isValid(requireNonNull(spec))) {
             throw new IllegalArgumentException("`%s` constructor requires a `%s` or `OneSpecOf(%s)`".formatted(JsArraySpecParser.class.getName(),
@@ -54,7 +49,13 @@ public final class JsArraySpecParser {
         parser = spec.parser();
 
     }
-
+    /**
+     * Creates a JSON array parser based on the provided JSON array specification (spec). The parser will validate that
+     * every element in a JSON array adheres to the schema defined in the given specification.
+     *
+     * @param spec The JSON array specification that defines the expected schema for each element in the array.
+     * @return a Json array parser
+     */
     public static JsArraySpecParser of(final JsSpec spec) {
         return new JsArraySpecParser(spec);
     }

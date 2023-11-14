@@ -21,9 +21,9 @@ public class TestAliasSpec {
    static Supplier<String> nameGen = StrGen.alphabetic(10, 10).sample();
 
     static JsObjSpec spec =
-            JsObjSpecBuilder.name(nameGen.get())
-                            .aliasesFields(Map.of("a", List.of("a1", "a2")))
-                            .spec(JsObjSpec.of("a", JsSpecs.integer().nullable()));
+            JsObjSpecBuilder.withName(nameGen.get())
+                            .withFieldAliases(Map.of("a", List.of("a1", "a2")))
+                            .build(JsObjSpec.of("a", JsSpecs.integer().nullable()));
 
     static JsObjSpecParser parser = JsObjSpecParser.of(spec);
 

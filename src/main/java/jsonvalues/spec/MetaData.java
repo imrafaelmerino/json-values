@@ -10,7 +10,7 @@ import java.util.Map;
 record MetaData(String name, String namespace,
                 List<String> aliases, String doc,
                 Map<String, String> fieldsDoc,
-                Map<String, ORDERS> fieldsOrder,
+                Map<String, JsObjSpecBuilder.ORDERS> fieldsOrder,
                 Map<String, List<String>> fieldsAliases,
                 Map<String, JsValue> fieldsDefault) {
 
@@ -31,8 +31,6 @@ record MetaData(String name, String namespace,
         if (fieldsDefault != null) {
             fieldsDefault = Collections.unmodifiableMap(fieldsDefault);
         }
-
-        // Validate name
         if (name == null || name.isEmpty() || name.isBlank()) {
             throw new IllegalArgumentException("Name cannot be null, empty, or blank.");
         }
@@ -53,9 +51,7 @@ record MetaData(String name, String namespace,
     }
 
     public String getFullName() {
-        return namespace != null ? "%s.%s".formatted(name, namespace) : name;
+        return namespace != null ? "%s.%s".formatted(namespace, name) : name;
     }
-
-    enum ORDERS {ascending, descending, ignore}
 
 }

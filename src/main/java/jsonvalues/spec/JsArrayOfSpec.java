@@ -12,7 +12,6 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
 
     private final JsSpec spec;
 
-
     JsArrayOfSpec(final boolean nullable,
                   final JsSpec spec
                  ) {
@@ -33,6 +32,9 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
         this.spec = spec;
     }
 
+    JsSpec getElemSpec() {
+        return spec;
+    }
 
     @Override
     public JsSpec nullable() {

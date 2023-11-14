@@ -35,7 +35,7 @@ import java.util.Objects;
  * @see JsPath
  * @see JsReader
  */
-public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, OneOf {
+public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, NamedSpec, OneOf {
 
     /**
      * Returns the same spec with the nullable flag enabled.

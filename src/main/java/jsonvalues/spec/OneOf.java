@@ -1,5 +1,6 @@
 package jsonvalues.spec;
 
+import jsonvalues.JsNull;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -23,7 +24,14 @@ final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
     @Override
     public JsParser parser() {
-        return reader -> parse(reader, 0);
+
+        return reader -> {
+            if (reader.wasNull()) {
+                if (nullable) return JsNull.NULL;
+                else throw reader.newParseError(ParserErrors.INVALID_NULL);
+            }
+            return parse(reader, 0);
+        };
     }
 
     private JsValue parse(JsReader reader, int i) {
@@ -44,6 +52,7 @@ final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
     @Override
     public List<SpecError> test(JsPath parentPath, JsValue value) {
+        if (nullable && value.isNull()) return List.of();
         return test(parentPath, value, 0, new ArrayList<>());
     }
 

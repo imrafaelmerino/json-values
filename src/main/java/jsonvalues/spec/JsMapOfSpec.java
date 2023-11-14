@@ -19,7 +19,7 @@ final class JsMapOfSpec extends AbstractMap implements JsOneErrorSpec, AvroSpec 
         this.valueSpec = Objects.requireNonNull(spec);
     }
 
-    public JsSpec getValueSpec() {
+    JsSpec getValueSpec() {
         return valueSpec;
     }
 

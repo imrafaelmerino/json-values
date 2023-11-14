@@ -14,6 +14,9 @@ import static java.util.Objects.requireNonNull;
  * Represents an immutable JSON number of type BigInteger.
  */
 public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
+    /**
+     * prism between the sum type JsValue and JsBigInt. int and long types are considered valid bigintegers
+     */
     public static final Prism<JsValue, BigInteger> prism =
             new Prism<>(s ->
                         {

@@ -44,7 +44,7 @@ class ParserErrors {
     static final String STRING_NOT_CLOSED = "JSON string was not closed with a double quote";
     static final String INVALID_HEX = "Could not parse unicode escape, expected a hexadecimal digit";
     static final String EXPECTING_COLON = "Expecting ':' after attribute name";
-    static final String INVALID_NULL_CONSTANT = "Invalid null constant found";
+    static final String INVALID_NULL = "Invalid null found";
     static final String INVALID_TRUE_CONSTANT = "Invalid true constant found";
     static final String INVALID_FALSE_CONSTANT = "Invalid false constant found";
     static final String UNEXPECTED_END_OF_ARRAY = "Unexpected end of JSON in collection";

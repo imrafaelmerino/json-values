@@ -1,12 +1,13 @@
 package jsonvalues.api;
 
 import fun.gen.Combinators;
-import jsonvalues.JsInt;
-import jsonvalues.JsStr;
+import jsonvalues.*;
 import jsonvalues.gen.JsDoubleGen;
 import jsonvalues.gen.JsStrGen;
 import jsonvalues.gen.JsTupleGen;
 import jsonvalues.spec.JsArraySpecParser;
+import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -37,5 +38,27 @@ public class OneOfTests {
             Assertions.assertEquals(obj, parser.parse(obj.toPrettyString()));
             Assertions.assertTrue(spec.test(obj).isEmpty());
         });
+    }
+
+    @Test
+    public void nullableOneOf(){
+
+        JsObjSpec spec = JsObjSpec.of("a",
+                                      JsSpecs.oneSpecOf(JsSpecs.str(), JsSpecs.bool()).nullable()
+                                     );
+
+        JsObjSpecParser parser = JsObjSpecParser.of(spec);
+
+        var obj3 = JsObj.of("a", JsNull.NULL);
+        var obj1 = JsObj.of("a", JsBool.FALSE);
+        var obj2 = JsObj.of("a", JsStr.of("a"));
+
+        Assertions.assertEquals(obj1,parser.parse(obj1.toString()));
+        Assertions.assertTrue(spec.test(obj1).isEmpty());
+        Assertions.assertEquals(obj2,parser.parse(obj2.toString()));
+        Assertions.assertTrue(spec.test(obj2).isEmpty());
+        Assertions.assertEquals(obj3,parser.parse(obj3.toString()));
+        Assertions.assertTrue(spec.test(obj3).isEmpty());
+
     }
 }

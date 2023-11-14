@@ -10,6 +10,11 @@ import jsonvalues.JsValue;
  */
 public record JsError(JsValue value, ERROR_CODE code) {
 
+    /**
+     * Constructor to validate that fields are not null
+     * @param value the value that is not valid
+     * @param code the error code
+     */
     public JsError {
         if (value == null) throw new IllegalArgumentException("value is null");
         if (code == null) throw new IllegalArgumentException("code is null");

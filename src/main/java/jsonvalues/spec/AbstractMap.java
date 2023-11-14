@@ -38,6 +38,8 @@ abstract class AbstractMap extends AbstractNullable {
     protected Optional<JsError> test(JsValue value,
                                      JsSpec spec
                                     ) {
+        if (value.isNull() && nullable) return Optional.empty();
+
         if (!value.isObj())
             return Optional.of(new JsError(value,
                                            ERROR_CODE.OBJ_EXPECTED));

@@ -49,6 +49,13 @@ public final class JsObjSpecParser {
         parser = spec.parser();
     }
 
+    /**
+     * Creates a JSON object parser based on the provided JSON object specification (spec). The parser will validate
+     * that every field in a JSON object adheres to the schema defined in the given specification.
+     *
+     * @param spec The JSON object specification that defines the expected schema for each field-value in the object.
+     * @return a Json object parser
+     */
     public static JsObjSpecParser of(final JsSpec spec) {
         return new JsObjSpecParser(spec);
     }

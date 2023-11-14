@@ -567,7 +567,7 @@ import static jsonvalues.spec.ParserErrors.UNEXPECTED_END_OF_JSON;
                 last = 'l';
                 return true;
             }
-            throw newParseError(ParserErrors.INVALID_NULL_CONSTANT);
+            throw newParseError(ParserErrors.INVALID_NULL);
         }
         return false;
     }

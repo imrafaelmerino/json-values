@@ -1,12 +1,10 @@
 package jsonvalues.api.spec;
 
 
+import fun.gen.Combinators;
 import fun.gen.Gen;
 import jsonvalues.*;
-import jsonvalues.gen.JsIntGen;
-import jsonvalues.gen.JsLongGen;
-import jsonvalues.gen.JsObjGen;
-import jsonvalues.gen.JsStrGen;
+import jsonvalues.gen.*;
 import jsonvalues.spec.*;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -21,8 +19,8 @@ import java.util.Arrays;
 import java.util.List;
 
 import static jsonvalues.JsBool.TRUE;
-import static jsonvalues.spec.ERROR_CODE.*;
 import static jsonvalues.api.spec.FunTest.assertErrorIs;
+import static jsonvalues.spec.ERROR_CODE.*;
 import static jsonvalues.spec.JsSpecs.*;
 
 public class TestJsObjSpec {
@@ -1808,7 +1806,8 @@ public class TestJsObjSpec {
                            JsObjSpec spec
                           ) {
 
-        Assertions.assertTrue(spec.test(valid).isEmpty());
+        Assertions.assertTrue(spec.test(valid)
+                                  .isEmpty());
 
         List<SpecError> errors = spec.test(invalid);
 
@@ -1826,5 +1825,58 @@ public class TestJsObjSpec {
 
         Assertions.assertTrue(errors.stream()
                                     .allMatch(it -> it.error.code() == expectedCode));
+    }
+
+    @Test
+    public void testDoubleSpec() {
+
+        JsObjSpec spec = JsObjSpec.of("a", arrayOfDouble(s -> s > 1.5, 1, 10).nullable(),
+                                      "b", doubleNumber(s -> s > 0.0d).nullable()
+                                     );
+        JsObjGen gen = JsObjGen.of("a", Combinators.oneOf(Gen.cons(JsNull.NULL),
+                                                          JsArrayGen.ofN(JsDoubleGen.arbitrary(1.5d, 10d), 10)),
+                                   "b", Combinators.oneOf(Gen.cons(JsNull.NULL),
+                                                          JsDoubleGen.arbitrary(0.0d, 1.0d))
+                                  );
+
+        gen.sample(100)
+           .forEach(obj -> Assertions.assertTrue(spec.test(obj)
+                                                     .isEmpty())
+                   );
+
+    }
+
+    @Test
+    public void testReqKeys() {
+
+        JsObjSpec spec = JsObjSpec.of(
+                                          "a", str(),
+                                          "b", integer()
+                                     )
+                                  .withReqKeys("a", "b");
+
+        List<SpecError> errors = spec.test(JsObj.empty())
+                                     .stream()
+                                     .toList();
+        Assertions.assertEquals(2,
+                                errors.size());
+        for (SpecError error : errors) {
+            Assertions.assertSame(error.error.code(),
+                                  REQUIRED);
+        }
+
+    }
+
+    @Test
+    public void testOptKeys() {
+
+        JsObjSpec spec = JsObjSpec.of("a", str(),
+                                      "b", integer()
+                                     )
+                                  .withOptKeys(List.of("a", "b"));
+
+        List<SpecError> errors = spec.test(JsObj.empty())
+                                     .stream().toList();
+        Assertions.assertEquals(0, errors.size());
     }
 }
