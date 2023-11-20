@@ -23,6 +23,7 @@ And to make matters worse: complexity sells better._”
     - [Optics](#optics)
 - [Requirements](#requirements)
 - [Installation](#installation)
+- [Backward compatibility](#bc)
 - [Related projects](#rp)
 - [Sponsors](#sponsor)
 
@@ -124,8 +125,8 @@ public class ModelingInheritance {
 
     @Test
     public void test() {
-        
-        var baseSpec = 
+
+        var baseSpec =
                 JsObjSpec.of(NAME_FIELD, JsSpecs.str(),
                              TYPE_FIELD, JsSpecs.oneStringOf("mouse", "keyboard", "usb_hub"));
 
@@ -159,36 +160,36 @@ public class ModelingInheritance {
                             TYPE_FIELD, Gen.cons(JsStr.of("keyboard"))
                            )
                         .concat(baseGen);
-        
+
         var usbHubSpec =
-                JsObjSpec.of(CONNECTED_DEVICES_FIELD, 
+                JsObjSpec.of(CONNECTED_DEVICES_FIELD,
                              JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
                             )
                          .withOptKeys(CONNECTED_DEVICES_FIELD)
                          .concat(baseSpec);
 
-        var usbHubGen = 
-                JsObjGen.of(CONNECTED_DEVICES_FIELD, 
+        var usbHubGen =
+                JsObjGen.of(CONNECTED_DEVICES_FIELD,
                             JsArrayGen.biased(NamedGen.of(PERIPHERAL_FIELD), 2, 10),
                             TYPE_FIELD, Gen.cons(JsStr.of("usb_hub"))
                            )
                         .withOptKeys(CONNECTED_DEVICES_FIELD)
                         .concat(baseGen);
-        
-        var peripheralSpec = 
+
+        var peripheralSpec =
                 JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
                                     oneSpecOf(mouseSpec, keyboardSpec, usbHubSpec));
 
         var peripheralGen =
-                NamedGen.of(PERIPHERAL_FIELD, 
+                NamedGen.of(PERIPHERAL_FIELD,
                             Combinators.oneOf(mouseGen, keyboardGen, usbHubGen));
-        
+
         var parser = JsObjSpecParser.of(peripheralSpec);
-        
+
         peripheralGen.sample(10).peek(System.out::println)
                      .forEach(obj -> {
                                   System.out.println(obj.getStr(TYPE_FIELD));
-                                  
+
                                   Assertions.assertEquals(obj,
                                                           parser.parse(obj.toString())
                                                          );
@@ -197,7 +198,7 @@ public class ModelingInheritance {
                               }
                              );
     }
-    
+
 }
 
 ```
@@ -279,7 +280,8 @@ listed on [json-schema.org](https://json-schema.org/implementations.html). The r
 
 <img src="./performance_parsing_json.png" alt="parsing string comparison"/>
 
-You can find more details in the class [JsDeserializers](./../benchmarking/src/main/java/jsonvalues/benchmark/JsDeserializers.java)
+You can find more details in the
+class [JsDeserializers](./../benchmarking/src/main/java/jsonvalues/benchmark/JsDeserializers.java)
 
 Did you see that!?
 
@@ -1153,7 +1155,8 @@ catch(JsParserException e){
 ```
 
 Another compelling feature is the use of named specs, which simplifies the creation of recursive specifications. To
-implement this, start by creating a spec with `JsObjSpecBuilder` or `JsObjSpecs.ofNamedSpec(name, spec)` to give it a name . 
+implement this, start by creating a spec with `JsObjSpecBuilder` or `JsObjSpecs.ofNamedSpec(name, spec)` to give it a
+name .
 Then, refer to it using the `JsSpecs.ofNamedSpec(name)` method within its own definition.
 
 ```code
@@ -1169,7 +1172,6 @@ var spec =
 ```
 
 In this example, the spec named 'person' is referenced within its own definition.
-
 
 We can describe json-specs as:
 
@@ -1563,6 +1565,17 @@ For Java 17 or higher:
 ```
 
 Choose the appropriate version according to your Java runtime.
+
+## <a name="bc"><a/> Backward compatibility
+
+Please be aware that versions prior to 13.1.0 may not maintain backward compatibility, as indicated in the changelog.md
+file. This library has served as a kind of laboratory for my experimentation, and initially, backward compatibility was
+not a primary concern. The focus was on creating a powerful library, and insights into necessary improvements often come
+with real-world usage.
+
+Given that the library now has a substantial user base, starting from version 13.1.0 and onwards, every effort will be
+made to ensure backward compatibility. This enhancement is aimed at providing a more stable and user-friendly
+experience, especially for a feature-rich library like json-values."
 
 ## <a name="rp"><a/> Related projects
 

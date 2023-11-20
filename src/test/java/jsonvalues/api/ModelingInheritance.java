@@ -96,6 +96,7 @@ public class ModelingInheritance {
 
         peripheralGen.sample(10).peek(System.out::println)
                      .forEach(obj -> {
+                                  System.out.println(obj);
                                   System.out.println(obj.getStr(TYPE_FIELD));
 
                                   Assertions.assertEquals(obj,

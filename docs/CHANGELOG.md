@@ -92,10 +92,13 @@ Improved javadoc
 
 13.2.0
 
-
-- Previous version 13.1.0 allows named specs of any type with `JsSpecs.ofNamedSpec(name, spec)`, but
+New features:
+  - Previous version 13.1.0 allows named specs of any type with `JsSpecs.ofNamedSpec(name, spec)`, but
   in the case of registering `JsObjSpec`, `JsEnum` and `JsFixedBinary` with that method instead 
   of the builders `JsObjSpecBuilder`, `JsEnumBuilder` and `JsFixedBinaryBuilder`, we need to 
   create the metadata object to be able to create Avro schemas with avro-spec
 
-- Proofreading typos
+    - JsEnumBuilder new overloaded build method `build(JsArray)`
+
+Doc
+    - Proofreading javadoc typos

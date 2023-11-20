@@ -148,13 +148,7 @@ public final class JsEnumBuilder {
      * @throws IllegalArgumentException If the default symbol is specified and is not contained in the list of symbols.
      */
     public JsSpec build(final List<String> symbols) {
-        if (defaultSymbol != null && !symbols.contains(defaultSymbol))
-            throw new IllegalArgumentException(("Default symbol `%s` must be contained in the list of possible " +
-                                                "symbols of the enum.").formatted(defaultSymbol));
-        var metadata = new EnumMetaData(name, nameSpace, aliases, doc, defaultSymbol);
-        var enumSpec = new JsEnum(false, JsArray.ofStrs(symbols), metadata);
-        JsSpecCache.putAll(metadata.getFullName(), aliases, enumSpec);
-        return enumSpec;
+        return build(JsArray.ofStrs(symbols));
 
     }
 
