@@ -21,7 +21,7 @@ public final class JsIO {
     public static final JsIO INSTANCE = new JsIO();
     static final JsValueWritter valueSerializer = new JsValueWritter();
     static final JsObjWriter objSerializer = new JsObjWriter(valueSerializer);
-    static final JsArrayWritter arraySerializer = new JsArrayWritter(valueSerializer);
+    static final JsArrayWriter arraySerializer = new JsArrayWriter(valueSerializer);
 
     static {
         valueSerializer.setArraySerializer(arraySerializer);

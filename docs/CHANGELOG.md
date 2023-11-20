@@ -62,7 +62,7 @@ Improved javadoc
     - `JsObjSpecParser.of` and `JsArraySpecParser.of` instead of constructors
     - `JsReader` visibility change (is not public)
     - `JsSpec.readNextValue(JsReader)` -> `JsSpec.parse(String)`. Method used by jio-console and was changed
-      since it not necessary to create a JsReader
+      since it's not necessary to create a JsReader
     - `reduce` methods doesn't return Optional (implementation inefficient since create a lot of Optional objects)
     - `JsSerializerException` move to spec package to reduce visibility of constructors
 - Refactor internal classes and tests (clients not affected)
@@ -90,3 +90,12 @@ Improved javadoc
 - Issues:
   - https://github.com/imrafaelmerino/json-values/issues/195
 
+13.2.0
+
+
+- Previous version 13.1.0 allows named specs of any type with `JsSpecs.ofNamedSpec(name, spec)`, but
+  in the case of registering `JsObjSpec`, `JsEnum` and `JsFixedBinary` with that method instead 
+  of the builders `JsObjSpecBuilder`, `JsEnumBuilder` and `JsFixedBinaryBuilder`, we need to 
+  create the metadata object to be able to create Avro schemas with avro-spec
+
+- Proofreading typos

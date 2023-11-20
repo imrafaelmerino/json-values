@@ -1,6 +1,6 @@
 <img src="./logo/package_twitter_if9bsyj4/color1/full/coverphoto/color1-white_logo_dark_background.png" alt="logo"/>
 
-[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/13.1.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/13.1.0/jar)
+[![Maven](https://img.shields.io/maven-central/v/com.github.imrafaelmerino/json-values/13.2.0)](https://search.maven.org/artifact/com.github.imrafaelmerino/json-values/13.2.0/jar)
 
 “_Simplicity is a great virtue, but it requires hard work to achieve it and education to appreciate it.
 And to make matters worse: complexity sells better._”
@@ -98,7 +98,7 @@ values known to trigger bugs.
 
 **Modeling inheritance**
 
-The `jsonvalues` library simplifies the implementation of inheritance and the generation of structured data in Java.
+The json-values library simplifies the implementation of inheritance and the generation of structured data in Java.
 Let's explore an example showcasing the ease of defining object specifications, generating data, and validating against
 specifications.
 
@@ -1558,7 +1558,7 @@ For Java 17 or higher:
 <dependency>
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
-    <version>13.1.0</version>
+    <version>13.2.0</version>
 </dependency>
 ```
 

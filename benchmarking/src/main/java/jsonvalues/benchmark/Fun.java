@@ -1,6 +1,7 @@
 package jsonvalues.benchmark;
 
 import jsonvalues.spec.JsObjSpec;
+import jsonvalues.spec.JsSpecs;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -21,36 +22,36 @@ public class Fun {
 
     static {
         PERSON_SPEC = JsObjSpec.of("firstName",
-                                       str(length(1,
+                                   str(length(1,
                                                   255)),
-                                       "lastName",
-                                       str(length(1,
+                                   "lastName",
+                                   str(length(1,
                                                   255)),
-                                       "age",
-                                       integer(interval(0,
+                                   "age",
+                                   integer(interval(0,
                                                         110)),
-                                       "latitude",
-                                       decimal(interval(new BigDecimal(-90),
+                                   "latitude",
+                                   decimal(interval(new BigDecimal(-90),
                                                         new BigDecimal(90)
                                                        )
                                               ),
-                                       "longitude",
-                                       decimal(interval(new BigDecimal(-180),
+                                   "longitude",
+                                   decimal(interval(new BigDecimal(-180),
                                                         new BigDecimal(180)
                                                        )
                                               ),
-                                       "fruits",
-                                       arrayOfStr(1,100),
-                                       "numbers",
-                                       arrayOfInt(1,100),
-                                       "vegetables",
-                                       arrayOfSpec(JsObjSpec.of("veggieName",
-                                                                str(length(1,
+                                   "fruits",
+                                   arrayOfStr(1,100),
+                                   "numbers",
+                                   arrayOfInt(1,100),
+                                   "vegetables",
+                                   arrayOfSpec(JsObjSpec.of("veggieName",
+                                                                    str(length(1,
                                                                            255)),
-                                                                "veggieLike",
-                                                                bool()
-                                                               )
-                                              )
+                                                                    "veggieLike",
+                                                                    bool()
+                                                                   )
+                                                      )
                                       ).withOptKeys("vegetables");
         PERSON_JSON_SCHEMA = fileContent("personSchema.json");
         PERSON_JSON = fileContent("person.json");

@@ -8,7 +8,7 @@ import static java.util.Objects.requireNonNull;
 
 final class JsSpecCache {
 
-    static Map<String, JsSpec> cache = new HashMap<>();
+    static final Map<String, JsSpec> cache = new HashMap<>();
 
     private JsSpecCache() {
     }

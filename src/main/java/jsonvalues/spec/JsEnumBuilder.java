@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 
 import java.util.Arrays;
 import java.util.List;
@@ -152,6 +153,27 @@ public final class JsEnumBuilder {
                                                 "symbols of the enum.").formatted(defaultSymbol));
         var metadata = new EnumMetaData(name, nameSpace, aliases, doc, defaultSymbol);
         var enumSpec = new JsEnum(false, JsArray.ofStrs(symbols), metadata);
+        JsSpecCache.putAll(metadata.getFullName(), aliases, enumSpec);
+        return enumSpec;
+
+    }
+
+    /**
+     * Builds and returns a {@link JsEnum} specification with the specified symbols. The symbols represent the allowed
+     * values for the enum.
+     *
+     * @param symbols The symbols allowed in the enum.
+     * @return The constructed {@link JsEnum} specification.
+     * @throws IllegalArgumentException If the default symbol is specified and is not contained in the list of symbols.
+     */
+    public JsSpec build(final JsArray symbols) {
+        if(!JsSpecs.arrayOfStr().test(symbols).isEmpty())
+            throw new IllegalArgumentException("The list of symbols must be an array of strings");
+        if (defaultSymbol != null && !symbols.containsValue(JsStr.of(defaultSymbol)))
+            throw new IllegalArgumentException(("Default symbol `%s` must be contained in the list of possible " +
+                                                "symbols of the enum.").formatted(defaultSymbol));
+        var metadata = new EnumMetaData(name, nameSpace, aliases, doc, defaultSymbol);
+        var enumSpec = new JsEnum(false, symbols, metadata);
         JsSpecCache.putAll(metadata.getFullName(), aliases, enumSpec);
         return enumSpec;
 

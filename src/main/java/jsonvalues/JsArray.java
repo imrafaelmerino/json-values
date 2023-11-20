@@ -577,7 +577,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the integral number located at the given index as an integer or a default value if it doesn't exist or
+     * Returns the integral number located at the given index as an integer or a default value if it doesn't exist, or
      * it's not an integral number, or it's an integral number but doesn't fit in an integer.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an
@@ -603,7 +603,7 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     }
 
     /**
-     * Returns the integral number located at the given index as a long or null if it doesn't exist or it's not an
+     * Returns the integral number located at the given index as a long or null if it doesn't exist, or it's not an
      * integral number, or it's an integral number but doesn't fit in a long.
      *
      * <p>This method retrieves the JSON value at the specified index in the array and attempts to parse it as an

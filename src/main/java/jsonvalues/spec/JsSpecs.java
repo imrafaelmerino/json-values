@@ -1278,7 +1278,6 @@ public final class JsSpecs {
      *
      * @param name The name of the named spec to retrieve from the cache.
      * @return A named spec with the specified name.
-     * @throws IllegalArgumentException If the specified name does not correspond to a cached named spec.
      * @see JsObjSpecBuilder
      */
     public static JsSpec ofNamedSpec(final String name) {
@@ -1286,8 +1285,24 @@ public final class JsSpecs {
     }
 
 
+    /**
+     * Creates and caches a named spec.
+     *
+     * @param name The name of the named spec.
+     * @param spec The JsSpec to be associated with the named spec.
+     * @return A named spec with the specified name.
+     * @throws IllegalArgumentException If the specified name already exists or the name is not valid
+     */
     public static JsSpec ofNamedSpec(final String name, final JsSpec spec) {
-        JsSpecCache.put(name, spec);
+
+        if (spec instanceof JsObjSpec objSpec) {
+            JsSpecCache.put(name, JsObjSpecBuilder.withName(name).build(objSpec));
+        } else if (spec instanceof JsEnum enumSpec) {
+            JsSpecCache.put(name, JsEnumBuilder.withName(name).build(enumSpec.symbols));
+        } else if (spec instanceof JsFixedBinary fixed) {
+            JsSpecCache.put(name, JsFixedBuilder.withName(name).build(fixed.getSize()));
+
+        } else JsSpecCache.put(name, spec);
         return new NamedSpec(name);
     }
 

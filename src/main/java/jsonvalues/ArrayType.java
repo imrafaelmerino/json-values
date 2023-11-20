@@ -113,14 +113,32 @@ interface ArrayType<T> {
         }
 
         @Override
-        public Object copy(Object array, int arraySize, int sourceFrom, int destinationFrom, int size) {
+        public Object copy(Object array,
+                           int arraySize,
+                           int sourceFrom,
+                           int destinationFrom,
+                           int size
+                          ) {
             return (size > 0)
-                    ? copyNonEmpty(array, arraySize, sourceFrom, destinationFrom, size)
+                    ? copyNonEmpty(array,
+                                   arraySize,
+                                   sourceFrom,
+                                   destinationFrom,
+                                   size)
                     : new Object[arraySize];
         }
-        private static Object copyNonEmpty(Object array, int arraySize, int sourceFrom, int destinationFrom, int size) {
+        private static Object copyNonEmpty(Object array,
+                                           int arraySize,
+                                           int sourceFrom,
+                                           int destinationFrom,
+                                           int size
+                                          ) {
             final Object[] result = new Object[arraySize];
-            System.arraycopy(array, sourceFrom, result, destinationFrom, size); /* has to be near the object allocation to avoid zeroing out the array */
+            System.arraycopy(array,
+                             sourceFrom,
+                             result,
+                             destinationFrom,
+                             size); /* has to be near the object allocation to avoid zeroing out the array */
             return result;
         }
     }

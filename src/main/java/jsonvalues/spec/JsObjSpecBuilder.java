@@ -64,7 +64,7 @@ public final class JsObjSpecBuilder {
 
     private JsObjSpecBuilder(String name) {
         if (!isValidName.test(requireNonNull(name)))
-            throw new IllegalArgumentException(("The name of the JsObjSpec with name %s doesn't follow the " +
+            throw new IllegalArgumentException(("The name of the JsObjSpec with name `%s` doesn't follow the " +
                                                 "pattern %s"
                                                ).formatted(name,
                                                            AVRO_NAME_PATTERN));
