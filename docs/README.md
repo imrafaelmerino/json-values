@@ -1566,16 +1566,18 @@ For Java 17 or higher:
 
 Choose the appropriate version according to your Java runtime.
 
+Find [here](./../docs/CHANGELOG.md) the releases notes.
+
+
 ## <a name="bc"><a/> Backward compatibility
 
-Please be aware that versions prior to 13.1.0 may not maintain backward compatibility, as indicated in the changelog.md
-file. This library has served as a kind of laboratory for my experimentation, and initially, backward compatibility was
+Please be aware that versions prior to 13.1.0 may not maintain backward compatibility. This library has served as a kind of laboratory for my experimentation, and initially, backward compatibility was
 not a primary concern. The focus was on creating a powerful library, and insights into necessary improvements often come
 with real-world usage.
 
 Given that the library now has a substantial user base, starting from version 13.1.0 and onwards, every effort will be
 made to ensure backward compatibility. This enhancement is aimed at providing a more stable and user-friendly
-experience, especially for a feature-rich library like json-values."
+experience, especially for a feature-rich library like json-values.
 
 ## <a name="rp"><a/> Related projects
 
