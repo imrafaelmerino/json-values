@@ -5,8 +5,8 @@ import fun.gen.Gen;
 import jsonvalues.JsBigInt;
 
 import java.math.BigInteger;
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -61,7 +61,7 @@ public final class JsBigIntGen implements Gen<JsBigInt> {
 
 
     @Override
-    public Supplier<JsBigInt> apply(final Random seed) {
+    public Supplier<JsBigInt> apply(final RandomGenerator seed) {
         return gen.map(JsBigInt::of)
                   .apply(requireNonNull(seed));
     }

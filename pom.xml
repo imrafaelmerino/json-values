@@ -6,7 +6,7 @@
     <groupId>com.github.imrafaelmerino</groupId>
     <artifactId>json-values</artifactId>
     <packaging>jar</packaging>
-    <version>13.2.0</version>
+    <version>13.3.0</version>
     <name>json-values</name>
     <description>json-values is a functional Java library to work with immutable Json using persistent data
         structures.
@@ -41,7 +41,7 @@
         <MAVEN-SUREFIRE-PLUGIN.VERSION>3.0.0-M6</MAVEN-SUREFIRE-PLUGIN.VERSION>
         <MAVEN-JAR-PLUGIN.VERSION>3.2.2</MAVEN-JAR-PLUGIN.VERSION>
         <JUNIT-JUPITER-API.VERSION>5.8.2</JUNIT-JUPITER-API.VERSION>
-        <JAVA-FUN.VERSION>1.4.0</JAVA-FUN.VERSION>
+        <JAVA-FUN.VERSION>2.0.0</JAVA-FUN.VERSION>
         <MAVEN-JAVADOC-PLUGIN.VERSION>3.3.2</MAVEN-JAVADOC-PLUGIN.VERSION>
         <sonar.organization>imrafaelmerino</sonar.organization>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>

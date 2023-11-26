@@ -5,8 +5,8 @@ import fun.gen.IntGen;
 import jsonvalues.JsInt;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -128,7 +128,7 @@ public final class JsIntGen implements Gen<JsInt> {
 
 
     @Override
-    public Supplier<JsInt> apply(final Random seed) {
+    public Supplier<JsInt> apply(final RandomGenerator seed) {
         return gen.map(JsInt::of)
                   .apply(requireNonNull(seed));
     }

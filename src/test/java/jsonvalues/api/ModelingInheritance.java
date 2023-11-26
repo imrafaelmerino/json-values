@@ -3,7 +3,6 @@ package jsonvalues.api;
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.NamedGen;
-
 import jsonvalues.JsStr;
 import jsonvalues.gen.*;
 import jsonvalues.spec.JsObjSpec;
@@ -35,7 +34,7 @@ public class ModelingInheritance {
         var baseSpec = JsObjSpec.of(NAME_FIELD, JsSpecs.str(),
                                     TYPE_FIELD, JsSpecs.oneStringOf("mouse", "keyboard", "usb_hub"));
 
-        var baseGen = JsObjGen.of(NAME_FIELD, JsStrGen.alphabetic());
+        var baseGen = JsObjGen.of(NAME_FIELD, JsStrGen.alphabetic().distinct());
 
         var mouseSpec =
                 JsObjSpec.of(BUTTON_COUNT_FIELD, JsSpecs.integer(),
@@ -94,7 +93,8 @@ public class ModelingInheritance {
         var parser = JsObjSpecParser.of(peripheralSpec);
 
 
-        peripheralGen.sample(10).peek(System.out::println)
+        peripheralGen.sample(100)
+                     .peek(System.out::println)
                      .forEach(obj -> {
                                   System.out.println(obj);
                                   System.out.println(obj.getStr(TYPE_FIELD));
@@ -106,10 +106,6 @@ public class ModelingInheritance {
                                   Assertions.assertTrue(peripheralSpec.test(obj).isEmpty());
                               }
                              );
-
-
     }
-
-
 
 }

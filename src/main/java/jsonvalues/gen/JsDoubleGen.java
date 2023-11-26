@@ -5,8 +5,8 @@ import fun.gen.DoubleGen;
 import fun.gen.Gen;
 import jsonvalues.JsDouble;
 
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -98,7 +98,7 @@ public final class JsDoubleGen implements Gen<JsDouble> {
 
 
     @Override
-    public Supplier<JsDouble> apply(final Random seed) {
+    public Supplier<JsDouble> apply(final RandomGenerator seed) {
         return gen.map(JsDouble::of)
                   .apply(requireNonNull(seed));
     }

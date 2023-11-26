@@ -6,8 +6,8 @@ import fun.gen.Gen;
 import jsonvalues.JsBinary;
 
 import java.util.Objects;
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -71,7 +71,7 @@ public final class JsBinaryGen implements Gen<JsBinary> {
 
 
     @Override
-    public Supplier<JsBinary> apply(Random seed) {
+    public Supplier<JsBinary> apply(final RandomGenerator seed) {
         return gen.map(JsBinary::of)
                   .apply(requireNonNull(seed));
     }

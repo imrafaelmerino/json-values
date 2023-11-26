@@ -5,8 +5,8 @@ import fun.gen.BoolGen;
 import fun.gen.Gen;
 import jsonvalues.JsBool;
 
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,7 +36,7 @@ public final class JsBoolGen implements Gen<JsBool> {
 
 
     @Override
-    public Supplier<JsBool> apply(final Random seed) {
+    public Supplier<JsBool> apply(final RandomGenerator seed) {
         return gen.map(JsBool::of)
                   .apply(requireNonNull(seed));
     }

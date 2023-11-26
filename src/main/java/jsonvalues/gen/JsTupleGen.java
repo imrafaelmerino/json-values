@@ -9,9 +9,8 @@ import jsonvalues.JsValue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Random;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,16 +50,16 @@ public final class JsTupleGen implements Gen<JsArray> {
 
 
     @Override
-    public Supplier<JsArray> apply(final Random seed) {
+    public Supplier<JsArray> apply(final RandomGenerator seed) {
         requireNonNull(seed);
-        List<Supplier<? extends JsValue>> suppliers =
+        var suppliers =
                 gens.stream()
                     .map(it -> it.apply(SplitGen.DEFAULT.apply(seed)))
-                    .collect(Collectors.toList());
+                    .toList();
         return () ->
         {
             JsArray array = JsArray.empty();
-            for (Supplier<? extends JsValue> supplier : suppliers) array = array.append(supplier.get());
+            for (var supplier : suppliers) array = array.append(supplier.get());
             return array;
         };
     }

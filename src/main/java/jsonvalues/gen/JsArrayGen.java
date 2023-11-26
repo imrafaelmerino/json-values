@@ -8,8 +8,8 @@ import fun.tuple.Pair;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -65,13 +65,11 @@ public final class JsArrayGen implements Gen<JsArray> {
         if (maxSize < minSize) throw new IllegalArgumentException("maxSize < minSize");
         requireNonNull(gen);
         return seed -> {
-            Supplier<Integer> sizeSupplier =
-                    IntGen.arbitrary(minSize,
-                                     maxSize)
-                          .apply(SplitGen.DEFAULT.apply(seed));
+            var sizeSupplier = IntGen.arbitrary(minSize,
+                                                maxSize)
+                                     .apply(SplitGen.DEFAULT.apply(seed));
 
-            Supplier<? extends JsValue> elemSupplier =
-                    gen.apply(SplitGen.DEFAULT.apply(seed));
+            var elemSupplier = gen.apply(SplitGen.DEFAULT.apply(seed));
             return arraySupplier(elemSupplier,
                                  sizeSupplier);
         };
@@ -102,16 +100,12 @@ public final class JsArrayGen implements Gen<JsArray> {
                                         JsArrayGen.arbitrary(gen,
                                                              minSize,
                                                              maxSize)));
-
-
     }
 
 
     private static Supplier<JsArray> arraySupplier(Supplier<? extends JsValue> elemSupplier,
                                                    Supplier<Integer> sizeSupplier
                                                   ) {
-
-
         return () ->
                 JsArray.ofIterable(IntStream.range(0,
                                                    sizeSupplier.get())
@@ -121,7 +115,7 @@ public final class JsArrayGen implements Gen<JsArray> {
 
 
     @Override
-    public Supplier<JsArray> apply(final Random seed) {
+    public Supplier<JsArray> apply(final RandomGenerator seed) {
         return arraySupplier(gen.apply(requireNonNull(seed)),
                              () -> size);
     }

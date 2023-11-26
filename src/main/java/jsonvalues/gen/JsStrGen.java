@@ -4,8 +4,8 @@ import fun.gen.Gen;
 import fun.gen.StrGen;
 import jsonvalues.JsStr;
 
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -271,7 +271,7 @@ public final class JsStrGen implements Gen<JsStr> {
 
 
     @Override
-    public Supplier<JsStr> apply(Random seed) {
+    public Supplier<JsStr> apply(final RandomGenerator seed) {
         return gen.map(JsStr::of)
                   .apply(requireNonNull(seed));
     }

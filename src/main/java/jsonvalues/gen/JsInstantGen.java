@@ -7,8 +7,8 @@ import jsonvalues.JsInstant;
 
 import java.time.Instant;
 import java.time.ZonedDateTime;
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -108,14 +108,14 @@ public final class JsInstantGen implements Gen<JsInstant> {
      * @param max The upper bound of the time range (inclusive).
      * @return A biased JsInstant generator.
      */
-    public static Gen<JsInstant> biased(ZonedDateTime min,
-                                        ZonedDateTime max) {
+    public static Gen<JsInstant> biased(final ZonedDateTime min,
+                                        final ZonedDateTime max) {
         return new JsInstantGen(InstantGen.biased(min, max));
     }
 
 
     @Override
-    public Supplier<JsInstant> apply(final Random seed) {
+    public Supplier<JsInstant> apply(final RandomGenerator seed) {
         return gen.map(JsInstant::of)
                 .apply(requireNonNull(seed));
     }

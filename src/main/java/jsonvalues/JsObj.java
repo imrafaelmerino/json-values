@@ -123,6 +123,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                               );
     }
 
+
     /**
      * Static factory method to create one-element JSON object
      *
@@ -175,6 +176,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
                      requireNonNull(el2)
                     );
     }
+
 
     /**
      * Static factory method to create three-element JSON object

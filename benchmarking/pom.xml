@@ -102,6 +102,12 @@
             <version>13.0.0</version>
             <scope>compile</scope>
         </dependency>
+        <dependency>
+            <groupId>com.github.imrafaelmerino</groupId>
+            <artifactId>json-values</artifactId>
+            <version>13.2.0</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
     <build>
         <plugins>

@@ -11,6 +11,7 @@ import jsonvalues.spec.JsObjSpec;
 
 import java.util.*;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -5448,28 +5449,28 @@ public final class JsObjGen implements Gen<JsObj> {
     }
 
     @Override
-    public Supplier<JsObj> apply(final Random seed) {
+    public Supplier<JsObj> apply(final RandomGenerator seed) {
         requireNonNull(seed);
 
-        Supplier<Set<String>> optionalFields =
+        var optionalFields =
                 optionals.isEmpty() ?
                         EMPTY_SET_GEN :
                         Combinators.subsets(optionals)
                                    .suchThat(set -> !set.isEmpty())
                                    .sample(SplitGen.DEFAULT.apply(seed));
 
-        Supplier<Set<String>> nullableFields =
+        var nullableFields =
                 nullables.isEmpty() ?
                         EMPTY_SET_GEN :
                         Combinators.subsets(nullables)
                                    .suchThat(set -> !set.isEmpty())
                                    .sample(SplitGen.DEFAULT.apply(seed));
 
-        Supplier<Boolean> isOpt = BoolGen.arbitrary().apply(SplitGen.DEFAULT.apply(seed));
-        Supplier<Boolean> isNullable = BoolGen.arbitrary().apply(SplitGen.DEFAULT.apply(seed));
+        var isOpt = BoolGen.arbitrary().apply(seed);
+        var isNullable = BoolGen.arbitrary().apply(seed);
 
         Map<String, Supplier<? extends JsValue>> map = new LinkedHashMap<>();
-        for (Map.Entry<String, Gen<? extends JsValue>> pair : bindings.entrySet())
+        for (var pair : bindings.entrySet())
             map.put(pair.getKey(),
                     pair.getValue().apply(SplitGen.DEFAULT.apply(seed)));
 
@@ -5481,10 +5482,9 @@ public final class JsObjGen implements Gen<JsObj> {
 
             for (var pair : map.entrySet()) {
                 if (optFields == null || !optFields.contains(pair.getKey())) {
-                    var value =
-                            nullFields != null && nullFields.contains(pair.getKey()) ?
-                                    JsNull.NULL :
-                                    pair.getValue().get();
+                    var value = nullFields != null && nullFields.contains(pair.getKey()) ?
+                            JsNull.NULL :
+                            pair.getValue().get();
                     obj = obj.set(pair.getKey(),
                                   value);
                 }

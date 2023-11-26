@@ -4,8 +4,8 @@ import fun.gen.Gen;
 import fun.gen.LongGen;
 import jsonvalues.JsLong;
 
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -137,7 +137,7 @@ public final class JsLongGen implements Gen<JsLong> {
 
 
     @Override
-    public Supplier<JsLong> apply(Random seed) {
+    public Supplier<JsLong> apply(final RandomGenerator seed) {
         return gen.map(JsLong::of).apply(requireNonNull(seed));
     }
 }

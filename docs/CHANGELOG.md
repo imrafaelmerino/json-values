@@ -102,3 +102,10 @@ New features:
 
 Doc
     - Proofreading javadoc typos
+
+
+13.3.0 
+  - Backward compatible with 13.2.0 version
+  - Upgrade to java-fun 2.0.0. 
+  - This java-fun version works with the new Java 17 interface `RandomGenerator` instead of `Random`,
+    that is an implementation.

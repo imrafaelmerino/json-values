@@ -5,8 +5,8 @@ import fun.gen.Gen;
 import jsonvalues.JsBigDec;
 
 import java.math.BigDecimal;
-import java.util.Random;
 import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -165,7 +165,7 @@ public final class JsBigDecGen implements Gen<JsBigDec> {
 
 
     @Override
-    public Supplier<JsBigDec> apply(final Random seed) {
+    public Supplier<JsBigDec> apply(final RandomGenerator seed) {
         return gen.map(JsBigDec::of).apply(requireNonNull(seed));
     }
 
