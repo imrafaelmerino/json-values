@@ -93,7 +93,7 @@ Gen<JsObj> invalidDataGen = gen.suchThatNo(spec);
 ```
 
 The biased generators generate, with higher probability, values that are proven to cause more bugs in our code (zero,
-blank strings ...).Generating robust test data is essential for identifying potential issues in your code. With *
+blank strings ...).Generating robust test data is essential for identifying potential issues in your code. With
 json-values, we take this a step further by introducing **biased generators** that never forget to include special
 values known to trigger bugs.
 
@@ -204,7 +204,7 @@ public class ModelingInheritance {
 ```
 
 This example illustrates the straightforward approach of implementing inheritance and generating structured data
-using `jsonvalues`. The library's features make it easy to model complex hierarchies, generate diverse data, and ensure
+using json-values. The library's features make it easy to model complex hierarchies, generate diverse data, and ensure
 compliance with defined specifications.
 
 **Optics: Elevating JSON Manipulation to a New Level**
@@ -256,7 +256,7 @@ json.mapKeys(toSneakCase)
 
 **Efficient JSON Parsing and Validation**
 
-Parsing and validating JSON data can be a time-consuming process, especially when dealing with large payloads. *
+Parsing and validating JSON data can be a time-consuming process, especially when dealing with large payloads.
 json-values offers a more efficient and convenient approach by interleaving parsing and validation without the need
 to parse the entire JSON. Here's how it works:
 
