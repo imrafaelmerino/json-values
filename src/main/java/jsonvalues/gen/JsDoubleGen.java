@@ -1,14 +1,13 @@
 package jsonvalues.gen;
 
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.DoubleGen;
 import fun.gen.Gen;
-import jsonvalues.JsDouble;
-
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsDouble;
 
 /**
  * Represents a JsDouble generator. It can be created using the static factory methods {@link #biased()} and

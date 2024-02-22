@@ -1,10 +1,17 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
-
-import java.io.*;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Objects;
+import jsonvalues.JsArray;
+import jsonvalues.JsNull;
+import jsonvalues.JsObj;
+import jsonvalues.JsValue;
+import jsonvalues.Json;
 
 /**
  * Singleton instance to create JSON readers and writers to parse bytes into JSON and serialize JSON into bytes. Only a
@@ -108,9 +115,9 @@ public final class JsIO {
     try {
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
-        if (parsed == JsNull.NULL) {
-            throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
-        }
+      if (parsed == JsNull.NULL) {
+        throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
+      }
       return parsed.toJsObj();
     } finally {
       reader.reset();
@@ -152,9 +159,9 @@ public final class JsIO {
     try {
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
-        if (parsed == JsNull.NULL) {
-            throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
-        }
+      if (parsed == JsNull.NULL) {
+        throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
+      }
       return parsed.toJsArray();
     } finally {
       reader.reset();
@@ -169,14 +176,14 @@ public final class JsIO {
       reader = createReader(is);
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
-        if (parsed == JsNull.NULL) {
-            throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
-        }
+      if (parsed == JsNull.NULL) {
+        throw reader.newParseError(ParserErrors.EXPECTING_FOR_OBJ_START);
+      }
       return parsed.toJsObj();
     } finally {
-        if (reader != null) {
-            reader.reset();
-        }
+      if (reader != null) {
+        reader.reset();
+      }
     }
   }
 
@@ -189,15 +196,15 @@ public final class JsIO {
       reader = createReader(is);
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
-        if (parsed == JsNull.NULL) {
-            throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
-        }
+      if (parsed == JsNull.NULL) {
+        throw reader.newParseError(ParserErrors.EXPECTING_FOR_ARRAY_START);
+      }
       return parsed
           .toJsArray();
     } finally {
-        if (reader != null) {
-            reader.reset();
-        }
+      if (reader != null) {
+        reader.reset();
+      }
     }
   }
 

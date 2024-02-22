@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsDouble;
-
 import java.util.Optional;
 import java.util.function.DoubleFunction;
+import jsonvalues.JsDouble;
 
 final class JsDoubleReader extends AbstractReader {
 
@@ -17,9 +16,9 @@ final class JsDoubleReader extends AbstractReader {
                         ) throws JsParserException {
     double value = NumberConverter.deserializeDouble(reader);
     Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return JsDouble.of(value);
-      }
+    if (result.isEmpty()) {
+      return JsDouble.of(value);
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );

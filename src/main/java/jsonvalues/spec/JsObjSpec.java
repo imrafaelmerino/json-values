@@ -1,16 +1,27 @@
 package jsonvalues.spec;
 
+import static java.util.Objects.requireNonNull;
+import static jsonvalues.spec.ERROR_CODE.OBJ_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
+import static jsonvalues.spec.ERROR_CODE.REQUIRED;
+import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
-
-import java.util.*;
-import java.util.function.Predicate;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
-import static jsonvalues.spec.ERROR_CODE.*;
 
 /**
  * Represents a specification of a JSON object, allowing you to define rules and constraints for validating JSON

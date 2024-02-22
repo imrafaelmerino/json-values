@@ -23,12 +23,12 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
   public static final Prism<JsValue, BigDecimal> prism =
       new Prism<>(s ->
                   {
-                      if (s.isDouble()) {
-                          return Optional.of(BigDecimal.valueOf(s.toJsDouble().value));
-                      }
-                      if (s.isBigDec()) {
-                          return Optional.of(s.toJsBigDec().value);
-                      }
+                    if (s.isDouble()) {
+                      return Optional.of(BigDecimal.valueOf(s.toJsDouble().value));
+                    }
+                    if (s.isBigDec()) {
+                      return Optional.of(s.toJsBigDec().value);
+                    }
                     return Optional.empty();
                   },
                   JsBigDec::of
@@ -75,15 +75,15 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
   @Override
   public int hashCode() {
     OptionalInt optInt = intValueExact();
-      if (optInt.isPresent()) {
-          return optInt.getAsInt();
-      }
+    if (optInt.isPresent()) {
+      return optInt.getAsInt();
+    }
 
     OptionalLong optLong = longValueExact();
-      if (optLong.isPresent()) {
-          return JsLong.of(optLong.getAsLong())
-                       .hashCode();
-      }
+    if (optLong.isPresent()) {
+      return JsLong.of(optLong.getAsLong())
+                   .hashCode();
+    }
 
     Optional<BigInteger> optBigInt = bigIntegerExact();
     return optBigInt.map(BigInteger::hashCode)
@@ -100,27 +100,27 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
    */
   @Override
   public boolean equals(Object that) {
-      if (this == that) {
-          return true;
-      }
-      if (!(that instanceof JsNumber number)) {
-          return false;
-      }
-      if (number.isBigDec()) {
-          return value.compareTo(number.toJsBigDec().value) == 0;
-      }
-      if (number.isBigInt()) {
-          return bigIntEquals(number.toJsBigInt());
-      }
-      if (number.isInt()) {
-          return intEquals(number.toJsInt());
-      }
-      if (number.isLong()) {
-          return longEquals(number.toJsLong());
-      }
-      if (number.isDouble()) {
-          return doubleEquals(number.toJsDouble());
-      }
+    if (this == that) {
+      return true;
+    }
+    if (!(that instanceof JsNumber number)) {
+      return false;
+    }
+    if (number.isBigDec()) {
+      return value.compareTo(number.toJsBigDec().value) == 0;
+    }
+    if (number.isBigInt()) {
+      return bigIntEquals(number.toJsBigInt());
+    }
+    if (number.isInt()) {
+      return intEquals(number.toJsInt());
+    }
+    if (number.isLong()) {
+      return longEquals(number.toJsLong());
+    }
+    if (number.isDouble()) {
+      return doubleEquals(number.toJsDouble());
+    }
     return false;
   }
 
@@ -249,12 +249,12 @@ public final class JsBigDec extends JsNumber implements Comparable<JsBigDec> {
    */
   Optional<Double> doubleValueExact() {
     double number = this.value.doubleValue();
-      if (number == Double.NEGATIVE_INFINITY) {
-          return Optional.empty();
-      }
-      if (number == Double.POSITIVE_INFINITY) {
-          return Optional.empty();
-      }
+    if (number == Double.NEGATIVE_INFINITY) {
+      return Optional.empty();
+    }
+    if (number == Double.POSITIVE_INFINITY) {
+      return Optional.empty();
+    }
     return Optional.of(number);
 
   }

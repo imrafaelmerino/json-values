@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 import java.math.BigInteger;
 import java.util.Optional;
 import java.util.function.Function;
-
-import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

@@ -1,19 +1,18 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.IntGen;
 import fun.gen.SplitGen;
 import fun.tuple.Pair;
-import jsonvalues.JsArray;
-import jsonvalues.JsValue;
-
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 /**
  * Represents a JsArray generator. It can be created from the static factory methods biased and arbitrary, specifying an
@@ -27,9 +26,9 @@ public final class JsArrayGen implements Gen<JsArray> {
   private JsArrayGen(final Gen<? extends JsValue> gen,
                      final int size
                     ) {
-      if (size < 0) {
-          throw new IllegalArgumentException("size < 0");
-      }
+    if (size < 0) {
+      throw new IllegalArgumentException("size < 0");
+    }
     this.size = size;
     this.gen = requireNonNull(gen);
   }
@@ -63,12 +62,12 @@ public final class JsArrayGen implements Gen<JsArray> {
                                        final int minSize,
                                        final int maxSize
                                       ) {
-      if (minSize < 0) {
-          throw new IllegalArgumentException("minSize < 0");
-      }
-      if (maxSize < minSize) {
-          throw new IllegalArgumentException("maxSize < minSize");
-      }
+    if (minSize < 0) {
+      throw new IllegalArgumentException("minSize < 0");
+    }
+    if (maxSize < minSize) {
+      throw new IllegalArgumentException("maxSize < minSize");
+    }
     requireNonNull(gen);
     return seed -> {
       var sizeSupplier = IntGen.arbitrary(minSize,
@@ -94,12 +93,12 @@ public final class JsArrayGen implements Gen<JsArray> {
                                     final int minSize,
                                     final int maxSize
                                    ) {
-      if (minSize < 0) {
-          throw new IllegalArgumentException("minSize < 0");
-      }
-      if (maxSize < minSize) {
-          throw new IllegalArgumentException("maxSize < minSize");
-      }
+    if (minSize < 0) {
+      throw new IllegalArgumentException("minSize < 0");
+    }
+    if (maxSize < minSize) {
+      throw new IllegalArgumentException("maxSize < minSize");
+    }
     requireNonNull(gen);
     return Combinators.freq(Pair.of(1,
                                     new JsArrayGen(gen,

@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
 import java.util.Optional;
 import java.util.function.Function;
-
-import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsStrSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

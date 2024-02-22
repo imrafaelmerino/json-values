@@ -1,14 +1,13 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.BigDecGen;
 import fun.gen.Gen;
-import jsonvalues.JsBigDec;
-
 import java.math.BigDecimal;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsBigDec;
 
 /**
  * Represents a JsBigDec generator. It can be created using the static factory methods

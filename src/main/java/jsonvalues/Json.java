@@ -125,17 +125,17 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default boolean equals(final JsValue elem,
                          final TYPE ARRAY_AS
                         ) {
-      if (elem == null || getClass() != elem.getClass()) {
-          return false;
-      }
-      if (isObj()) {
-          return toJsObj().equals(elem.toJsObj(),
-                                  ARRAY_AS);
-      }
-      if (isArray()) {
-          return toJsArray().equals(elem.toJsArray(),
-                                    ARRAY_AS);
-      }
+    if (elem == null || getClass() != elem.getClass()) {
+      return false;
+    }
+    if (isObj()) {
+      return toJsObj().equals(elem.toJsObj(),
+                              ARRAY_AS);
+    }
+    if (isArray()) {
+      return toJsArray().equals(elem.toJsArray(),
+                                ARRAY_AS);
+    }
     return false;
 
   }

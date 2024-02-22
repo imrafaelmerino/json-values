@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsInstant;
+import static java.time.format.DateTimeFormatter.ISO_INSTANT;
 
 import java.time.Instant;
 import java.time.format.DateTimeParseException;
-
-import static java.time.format.DateTimeFormatter.ISO_INSTANT;
+import jsonvalues.JsInstant;
 
 final class JsInstantReader extends AbstractReader {
 

@@ -481,9 +481,9 @@ public class NumberConverterTest {
     BigDecimal res = null;
     try {
       res = NumberConverter.deserializeDecimal(reader);
-        if (error != null) {
-            Assertions.fail("Expecting " + error);
-        }
+      if (error != null) {
+        Assertions.fail("Expecting " + error);
+      }
     } catch (Exception ex) {
       Assertions.assertTrue(ex.getMessage()
                               .contains(error));
@@ -496,9 +496,9 @@ public class NumberConverterTest {
     int res = 0;
     try {
       res = NumberConverter.deserializeInt(reader);
-        if (error != null) {
-            Assertions.fail("Expecting " + error);
-        }
+      if (error != null) {
+        Assertions.fail("Expecting " + error);
+      }
     } catch (Exception ex) {
       Assertions.assertTrue(ex.getMessage()
                               .contains(error));
@@ -511,9 +511,9 @@ public class NumberConverterTest {
     long res = 0;
     try {
       res = NumberConverter.deserializeLong(reader);
-        if (error != null) {
-            Assertions.fail("Expecting " + error);
-        }
+      if (error != null) {
+        Assertions.fail("Expecting " + error);
+      }
     } catch (Exception ex) {
       Assertions.assertTrue(ex.getMessage()
                               .contains(error));
@@ -526,9 +526,9 @@ public class NumberConverterTest {
     Number res = null;
     try {
       res = NumberConverter.deserializeNumber(reader);
-        if (error != null) {
-            Assertions.fail("Expecting " + error);
-        }
+      if (error != null) {
+        Assertions.fail("Expecting " + error);
+      }
     } catch (Exception ex) {
       Assertions.assertTrue(ex.getMessage()
                               .contains(error));

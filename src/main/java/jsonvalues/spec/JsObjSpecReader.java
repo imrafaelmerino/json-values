@@ -1,19 +1,17 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsObj;
-
 import java.util.Map;
 import java.util.function.Predicate;
+import jsonvalues.JsObj;
 
 class JsObjSpecReader extends AbstractJsObjReader {
 
   private static final JsValueReader valueParser = JsReaders.READERS.valueReader;
   private static final JsParser defaultParser = valueParser::nullOrValue;
+  protected final Predicate<JsObj> predicate;
   final boolean strict;
   private final Map<String, JsParser> parsers;
   private final MetaData metadata;
-
-  protected final Predicate<JsObj> predicate;
 
   JsObjSpecReader(boolean strict,
                   Map<String, JsParser> parsers,
@@ -29,9 +27,9 @@ class JsObjSpecReader extends AbstractJsObjReader {
 
   @Override
   JsObj value(final JsReader reader) throws JsParserException {
-      if (isEmptyObj(reader)) {
-          return addDefaultFieldsIfSpecified(EMPTY_OBJ);
-      }
+    if (isEmptyObj(reader)) {
+      return addDefaultFieldsIfSpecified(EMPTY_OBJ);
+    }
     var key = reader.readKey();
     var parser = parsers.get(key);
     if (parser == null) {
@@ -72,18 +70,18 @@ class JsObjSpecReader extends AbstractJsObjReader {
                    );
 
     }
-      if (nextToken != '}') {
-          throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
-                                           reader.getPositionInStream()
-                                          );
-      }
+    if (nextToken != '}') {
+      throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
+                                       reader.getPositionInStream()
+                                      );
+    }
     obj = addDefaultFieldsIfSpecified(obj);
 
-      if (predicate != null && !predicate.test(obj)) {
-          throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
-                                           reader.getPositionInStream()
-                                          );
-      }
+    if (predicate != null && !predicate.test(obj)) {
+      throw JsParserException.reasonAt(ParserErrors.OBJ_CONDITION,
+                                       reader.getPositionInStream()
+                                      );
+    }
 
     return obj;
 
@@ -93,12 +91,12 @@ class JsObjSpecReader extends AbstractJsObjReader {
     if (metadata != null && metadata.fieldsDefault() != null) {
       for (String defaultKey : metadata.fieldsDefault()
                                        .keySet()) {
-          if (obj.get(defaultKey)
-                 .isNothing()) {
-              obj = obj.set(defaultKey,
-                            metadata.fieldsDefault()
-                                    .get(defaultKey));
-          }
+        if (obj.get(defaultKey)
+               .isNothing()) {
+          obj = obj.set(defaultKey,
+                        metadata.fieldsDefault()
+                                .get(defaultKey));
+        }
       }
     }
     return obj;

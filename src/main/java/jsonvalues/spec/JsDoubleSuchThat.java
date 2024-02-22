@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
 import java.util.Optional;
 import java.util.function.DoubleFunction;
-
-import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsDoubleSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

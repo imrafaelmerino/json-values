@@ -1,9 +1,9 @@
 package jsonvalues.spec;
 
+import static java.util.Objects.requireNonNull;
+
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
-
-import static java.util.Objects.requireNonNull;
 
 final class JsObjWriter implements JsWriter.WriteObject<JsObj> {
 

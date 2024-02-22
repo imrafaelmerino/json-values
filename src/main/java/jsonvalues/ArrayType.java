@@ -166,6 +166,21 @@ interface ArrayType<T> {
       return (Object[]) array;
     }
 
+    private static Object copyNonEmpty(Object array,
+                                       int arraySize,
+                                       int sourceFrom,
+                                       int destinationFrom,
+                                       int size
+                                      ) {
+      final Object[] result = new Object[arraySize];
+      System.arraycopy(array,
+                       sourceFrom,
+                       result,
+                       destinationFrom,
+                       size); /* has to be near the object allocation to avoid zeroing out the array */
+      return result;
+    }
+
     @Override
     public Object[] empty() {
       return EMPTY;
@@ -203,21 +218,6 @@ interface ArrayType<T> {
                             destinationFrom,
                             size)
              : new Object[arraySize];
-    }
-
-    private static Object copyNonEmpty(Object array,
-                                       int arraySize,
-                                       int sourceFrom,
-                                       int destinationFrom,
-                                       int size
-                                      ) {
-      final Object[] result = new Object[arraySize];
-      System.arraycopy(array,
-                       sourceFrom,
-                       result,
-                       destinationFrom,
-                       size); /* has to be near the object allocation to avoid zeroing out the array */
-      return result;
     }
   }
 }

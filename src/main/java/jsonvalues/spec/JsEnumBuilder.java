@@ -1,13 +1,15 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
+import static java.util.Objects.requireNonNull;
+import static jsonvalues.spec.NameValidationSpecConstants.AVRO_NAMESPACE_PATTERN;
+import static jsonvalues.spec.NameValidationSpecConstants.AVRO_NAME_PATTERN;
+import static jsonvalues.spec.NameValidationSpecConstants.isValidName;
+import static jsonvalues.spec.NameValidationSpecConstants.isValidNamespace;
 
 import java.util.Arrays;
 import java.util.List;
-
-import static java.util.Objects.requireNonNull;
-import static jsonvalues.spec.NameValidationSpecConstants.*;
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
 
 /**
  * Builder class for creating instances of {@link JsEnum}, which represents an enumeration of string symbols. Enums
@@ -41,10 +43,10 @@ public final class JsEnumBuilder {
   private List<String> aliases;
 
   private JsEnumBuilder(final String name) {
-      if (!isValidName.test(name)) {
-          throw new IllegalArgumentException("The name `%s` doesn't follow the pattern %s ".formatted(name,
-                                                                                                      AVRO_NAME_PATTERN));
-      }
+    if (!isValidName.test(name)) {
+      throw new IllegalArgumentException("The name `%s` doesn't follow the pattern %s ".formatted(name,
+                                                                                                  AVRO_NAME_PATTERN));
+    }
 
     this.name = name;
   }
@@ -99,13 +101,13 @@ public final class JsEnumBuilder {
    */
   public JsEnumBuilder withNamespace(final String nameSpace) {
     this.nameSpace = requireNonNull(nameSpace);
-      if (!isValidNamespace.test(nameSpace)) {
-          throw new IllegalArgumentException(("The namespace `%s` of the Enum with name `%s` doesn't follow the " +
-                                              "pattern `%s`"
-                                             ).formatted(nameSpace,
-                                                         name,
-                                                         AVRO_NAMESPACE_PATTERN));
-      }
+    if (!isValidNamespace.test(nameSpace)) {
+      throw new IllegalArgumentException(("The namespace `%s` of the Enum with name `%s` doesn't follow the " +
+                                          "pattern `%s`"
+                                         ).formatted(nameSpace,
+                                                     name,
+                                                     AVRO_NAMESPACE_PATTERN));
+    }
     return this;
   }
 
@@ -166,15 +168,15 @@ public final class JsEnumBuilder {
    * @throws IllegalArgumentException If the default symbol is specified and is not contained in the list of symbols.
    */
   public JsSpec build(final JsArray symbols) {
-      if (!JsSpecs.arrayOfStr()
-                  .test(symbols)
-                  .isEmpty()) {
-          throw new IllegalArgumentException("The list of symbols must be an array of strings");
-      }
-      if (defaultSymbol != null && !symbols.containsValue(JsStr.of(defaultSymbol))) {
-          throw new IllegalArgumentException(("Default symbol `%s` must be contained in the list of possible " +
-                                              "symbols of the enum.").formatted(defaultSymbol));
-      }
+    if (!JsSpecs.arrayOfStr()
+                .test(symbols)
+                .isEmpty()) {
+      throw new IllegalArgumentException("The list of symbols must be an array of strings");
+    }
+    if (defaultSymbol != null && !symbols.containsValue(JsStr.of(defaultSymbol))) {
+      throw new IllegalArgumentException(("Default symbol `%s` must be contained in the list of possible " +
+                                          "symbols of the enum.").formatted(defaultSymbol));
+    }
     var metadata = new EnumMetaData(name,
                                     nameSpace,
                                     aliases,

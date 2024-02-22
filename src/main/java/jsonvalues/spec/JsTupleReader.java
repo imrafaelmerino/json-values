@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
+import java.util.List;
 import jsonvalues.JsArray;
 import jsonvalues.JsNull;
 import jsonvalues.JsValue;
-
-import java.util.List;
 
 final class JsTupleReader {
 
@@ -24,15 +23,15 @@ final class JsTupleReader {
 
 
   JsArray array(final JsReader reader) throws JsParserException {
-      if (reader.last() != '[') {
-          throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_ARRAY_START,
-                                           reader.getPositionInStream()
-                                          );
-      }
+    if (reader.last() != '[') {
+      throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_ARRAY_START,
+                                       reader.getPositionInStream()
+                                      );
+    }
     reader.readNextToken();
-      if (reader.last() == ']') {
-          return JsArray.empty();
-      }
+    if (reader.last() == ']') {
+      return JsArray.empty();
+    }
     JsArray buffer = JsArray.empty();
     int i = 0;
     buffer = buffer.append(parsers.get(i)

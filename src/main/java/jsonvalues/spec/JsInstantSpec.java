@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
 import java.util.Optional;
-
-import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

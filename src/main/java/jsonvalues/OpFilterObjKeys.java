@@ -23,18 +23,18 @@ final class OpFilterObjKeys {
         json = json.delete(next.key());
       } else if (next.value()
                      .isObj()) {
-          json = json.set(next.key(),
-                          filter(next.value()
-                                     .toJsObj(),
-                                 headPath,
-                                 predicate));
+        json = json.set(next.key(),
+                        filter(next.value()
+                                   .toJsObj(),
+                               headPath,
+                               predicate));
       } else if (next.value()
                      .isArray()) {
-          json = json.set(next.key(),
-                          OpFilterArrKeys.filter(next.value()
-                                                     .toJsArray(),
-                                                 headPath,
-                                                 predicate));
+        json = json.set(next.key(),
+                        OpFilterArrKeys.filter(next.value()
+                                                   .toJsArray(),
+                                               headPath,
+                                               predicate));
       }
 
 
@@ -56,16 +56,16 @@ final class OpFilterObjKeys {
         json = json.delete(next.key());
       } else if (next.value()
                      .isObj()) {
-          json = json.set(next.key(),
-                          filter(next.value()
-                                     .toJsObj(),
-                                 predicate));
+        json = json.set(next.key(),
+                        filter(next.value()
+                                   .toJsObj(),
+                               predicate));
       } else if (next.value()
                      .isArray()) {
-          json = json.set(next.key(),
-                          OpFilterArrKeys.filter(next.value()
-                                                     .toJsArray(),
-                                                 predicate));
+        json = json.set(next.key(),
+                        OpFilterArrKeys.filter(next.value()
+                                                   .toJsArray(),
+                                               predicate));
       }
 
 

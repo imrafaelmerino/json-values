@@ -1,8 +1,20 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
-
 import java.util.Objects;
+import jsonvalues.JsArray;
+import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
+import jsonvalues.JsBinary;
+import jsonvalues.JsBool;
+import jsonvalues.JsDouble;
+import jsonvalues.JsInstant;
+import jsonvalues.JsInt;
+import jsonvalues.JsLong;
+import jsonvalues.JsNothing;
+import jsonvalues.JsNull;
+import jsonvalues.JsObj;
+import jsonvalues.JsStr;
+import jsonvalues.JsValue;
 
 
 final class JsValueWritter {
@@ -56,11 +68,11 @@ final class JsValueWritter {
                                );
     } else if (value instanceof JsBinary b) {
       byte[] xs = b.value;
-        if (xs.length == 0) {
-            writer.writeString("");
-        } else {
-            writer.writeBinary(xs);
-        }
+      if (xs.length == 0) {
+        writer.writeString("");
+      } else {
+        writer.writeBinary(xs);
+      }
     } else if (value instanceof JsInstant instant) {
       writer.writeString(instant.value.toString());
     } else if (value instanceof JsNothing) {

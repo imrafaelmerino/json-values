@@ -1,20 +1,44 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.*;
+import static java.util.Objects.requireNonNull;
+import static jsonvalues.spec.ERROR_CODE.ARRAY_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.BINARY_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.CONSTANT_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.DECIMAL_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.DOUBLE_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.INSTANT_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.INTEGRAL_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.INT_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.LONG_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.OBJ_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.STRING_CONDITION;
+import static jsonvalues.spec.ERROR_CODE.VALUE_CONDITION;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
-
-import static java.util.Objects.requireNonNull;
-import static jsonvalues.spec.ERROR_CODE.*;
+import jsonvalues.JsArray;
+import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
+import jsonvalues.JsBinary;
+import jsonvalues.JsDouble;
+import jsonvalues.JsInstant;
+import jsonvalues.JsInt;
+import jsonvalues.JsLong;
+import jsonvalues.JsObj;
+import jsonvalues.JsStr;
+import jsonvalues.JsValue;
 
 /**
  * The `JsSpecs` class provides a collection of static factory methods for creating JSON specifications (JsSpec). These
@@ -284,15 +308,15 @@ public final class JsSpecs {
   public static JsSpec str(int min,
                            int max
                           ) {
-      if (min < 0) {
-          throw new IllegalArgumentException("min < 0");
-      }
-      if (max <= 0) {
-          throw new IllegalArgumentException("max <= 0");
-      }
-      if (min > max) {
-          throw new IllegalArgumentException("min > max");
-      }
+    if (min < 0) {
+      throw new IllegalArgumentException("min < 0");
+    }
+    if (max <= 0) {
+      throw new IllegalArgumentException("max <= 0");
+    }
+    if (min > max) {
+      throw new IllegalArgumentException("min > max");
+    }
     return str(s -> s.length() >= min && s.length() <= max);
   }
 
@@ -322,9 +346,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfInt(int minLength,
                                        int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfInt(false,
                             minLength,
                             maxLength);
@@ -342,9 +366,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfDouble(int minLength,
                                           int maxLength
                                          ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfDouble(false,
                                minLength,
                                maxLength);
@@ -354,9 +378,9 @@ public final class JsSpecs {
                                           int minLength,
                                           int maxLength
                                          ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedDouble(s -> requireNonNull(predicate).test(s) ?
                                           Optional.empty() :
@@ -378,9 +402,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfBigInt(int minLength,
                                           int maxLength
                                          ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfBigInt(false,
                                minLength,
                                maxLength);
@@ -398,9 +422,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfObj(int minLength,
                                        int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfObj(false,
                             minLength,
                             maxLength);
@@ -417,9 +441,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfDec(int minLength,
                                        int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfDecimal(false,
                                 minLength,
                                 maxLength);
@@ -436,9 +460,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfBool(int minLength,
                                         int maxLength
                                        ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfBool(false,
                              minLength,
                              maxLength);
@@ -455,9 +479,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfStr(int minLength,
                                        int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfStr(false,
                             minLength,
                             maxLength);
@@ -474,9 +498,9 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfLong(int minLength,
                                         int maxLength
                                        ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
     return new JsArrayOfLong(false,
                              minLength,
                              maxLength);
@@ -576,9 +600,9 @@ public final class JsSpecs {
                                        final int minLength,
                                        final int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedDecimal(s -> requireNonNull(predicate).test(s) ?
                                            Optional.empty() :
@@ -633,9 +657,9 @@ public final class JsSpecs {
                                           final int minLength,
                                           final int maxLength
                                          ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedBigInt(s -> requireNonNull(predicate).test(s) ?
                                           Optional.empty() :
@@ -692,9 +716,9 @@ public final class JsSpecs {
                                        final int minLength,
                                        final int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedObj(s -> requireNonNull(predicate).test(s) ?
                                        Optional.empty() :
@@ -795,9 +819,9 @@ public final class JsSpecs {
                                         final int minLength,
                                         final int maxLength
                                        ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedLong(s -> requireNonNull(predicate).test(s) ?
                                         Optional.empty() :
@@ -925,9 +949,9 @@ public final class JsSpecs {
                                        final int minLength,
                                        final int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedStr(s -> requireNonNull(predicate).test(s) ?
                                        Optional.empty() :
@@ -1055,9 +1079,9 @@ public final class JsSpecs {
                                        final int minLength,
                                        final int maxLength
                                       ) {
-      if (maxLength < minLength) {
-          throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-      }
+    if (maxLength < minLength) {
+      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
+    }
 
     return new JsArrayOfTestedInt(s -> requireNonNull(predicate).test(s) ?
                                        Optional.empty() :
@@ -1358,12 +1382,12 @@ public final class JsSpecs {
                                 .build(enumSpec.symbols);
       assert unused != null;
     } else if (spec instanceof JsFixedBinary fixed) {
-        var unused = JsFixedBuilder.withName(name)
-                                   .build(fixed.getSize());
-        assert unused != null;
+      var unused = JsFixedBuilder.withName(name)
+                                 .build(fixed.getSize());
+      assert unused != null;
     } else {
-        JsSpecCache.put(name,
-                        spec);
+      JsSpecCache.put(name,
+                      spec);
     }
     return new NamedSpec(name);
   }

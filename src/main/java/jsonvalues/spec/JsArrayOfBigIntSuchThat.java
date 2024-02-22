@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsValue;
-
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 

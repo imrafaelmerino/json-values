@@ -52,9 +52,9 @@ public final class JsBinary extends JsPrimitive {
    */
   public static final Prism<JsValue, byte[]> prism =
       new Prism<>(s -> {
-          if (s.isBinary()) {
-              return Optional.of(s.toJsBinary().value);
-          }
+        if (s.isBinary()) {
+          return Optional.of(s.toJsBinary().value);
+        }
         if (s.isStr()) {
           return JsStr.base64Prism.getOptional.apply(s.toJsStr().value);
         }
@@ -112,12 +112,12 @@ public final class JsBinary extends JsPrimitive {
 
   @Override
   public boolean equals(final Object o) {
-      if (this == o) {
-          return true;
-      }
-      if (o == null) {
-          return false;
-      }
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
     if (o instanceof JsValue) {
       return JsBinary.prism.getOptional.apply(((JsValue) o))
                                        .map(bytes -> Arrays.equals(bytes,

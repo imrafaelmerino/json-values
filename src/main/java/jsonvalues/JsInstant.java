@@ -26,12 +26,12 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
    */
   public static final Prism<JsValue, Instant> prism =
       new Prism<>(s -> {
-          if (s.isInstant()) {
-              return Optional.of(s.toJsInstant().value);
-          }
-          if (s.isStr()) {
-              return JsStr.instantPrism.getOptional.apply(s.toJsStr().value);
-          }
+        if (s.isInstant()) {
+          return Optional.of(s.toJsInstant().value);
+        }
+        if (s.isStr()) {
+          return JsStr.instantPrism.getOptional.apply(s.toJsStr().value);
+        }
         return Optional.empty();
       },
                   JsInstant::of
@@ -89,12 +89,12 @@ public final class JsInstant extends JsPrimitive implements Comparable<JsInstant
 
   @Override
   public boolean equals(final Object o) {
-      if (this == o) {
-          return true;
-      }
-      if (o == null) {
-          return false;
-      }
+    if (this == o) {
+      return true;
+    }
+    if (o == null) {
+      return false;
+    }
     return o instanceof JsValue ?
            JsInstant.prism.getOptional.apply(((JsValue) o))
                                       .map(instant -> instant.equals(value))

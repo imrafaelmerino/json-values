@@ -1,13 +1,12 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsValue;
+import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 final class JsArrayOfDecimalReader extends JsArrayReader {
 

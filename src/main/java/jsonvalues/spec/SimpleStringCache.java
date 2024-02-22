@@ -44,22 +44,22 @@ class SimpleStringCache implements StringCache {
     }
     final int index = (int) hash & mask;
     final String value = cache[index];
-      if (value == null) {
-          return createAndPut(index,
-                              chars,
-                              len);
-      }
-      if (value.length() != len) {
-          return createAndPut(index,
-                              chars,
-                              len);
-      }
+    if (value == null) {
+      return createAndPut(index,
+                          chars,
+                          len);
+    }
+    if (value.length() != len) {
+      return createAndPut(index,
+                          chars,
+                          len);
+    }
     for (int i = 0; i < value.length(); i++) {
-        if (value.charAt(i) != chars[i]) {
-            return createAndPut(index,
-                                chars,
-                                len);
-        }
+      if (value.charAt(i) != chars[i]) {
+        return createAndPut(index,
+                            chars,
+                            len);
+      }
     }
     return value;
   }

@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsValue;
-
 import java.util.Optional;
 import java.util.function.Predicate;
+import jsonvalues.JsValue;
 
 abstract class AbstractMap extends AbstractNullable {
 
@@ -17,9 +16,9 @@ abstract class AbstractMap extends AbstractNullable {
                                    Predicate<JsValue> isError,
                                    ERROR_CODE code
                                   ) {
-      if (value.isNull() && nullable) {
-          return Optional.empty();
-      }
+    if (value.isNull() && nullable) {
+      return Optional.empty();
+    }
     if (!value.isObj()) {
       return Optional.of(new JsError(value,
                                      ERROR_CODE.OBJ_EXPECTED));
@@ -28,10 +27,10 @@ abstract class AbstractMap extends AbstractNullable {
     var obj = value.toJsObj();
 
     for (var pair : obj) {
-        if (isError.test(pair.value())) {
-            return Optional.of(new JsError(pair.value(),
-                                           code));
-        }
+      if (isError.test(pair.value())) {
+        return Optional.of(new JsError(pair.value(),
+                                       code));
+      }
     }
 
     return Optional.empty();
@@ -40,22 +39,22 @@ abstract class AbstractMap extends AbstractNullable {
   protected Optional<JsError> test(JsValue value,
                                    JsSpec spec
                                   ) {
-      if (value.isNull() && nullable) {
-          return Optional.empty();
-      }
+    if (value.isNull() && nullable) {
+      return Optional.empty();
+    }
 
-      if (!value.isObj()) {
-          return Optional.of(new JsError(value,
-                                         ERROR_CODE.OBJ_EXPECTED));
-      }
+    if (!value.isObj()) {
+      return Optional.of(new JsError(value,
+                                     ERROR_CODE.OBJ_EXPECTED));
+    }
 
     var obj = value.toJsObj();
 
     for (var pair : obj) {
       var xs = spec.test(pair.value());
-        if (!xs.isEmpty()) {
-            return Optional.of(xs.get(0).error);
-        }
+      if (!xs.isEmpty()) {
+        return Optional.of(xs.get(0).error);
+      }
     }
 
     return Optional.empty();

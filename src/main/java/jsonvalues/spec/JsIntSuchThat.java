@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
 import java.util.Optional;
 import java.util.function.IntFunction;
-
-import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsIntSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

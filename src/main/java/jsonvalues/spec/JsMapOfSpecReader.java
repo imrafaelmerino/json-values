@@ -1,8 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsObj;
-
 import java.util.Objects;
+import jsonvalues.JsObj;
 
 class JsMapOfSpecReader extends AbstractJsObjReader {
 
@@ -15,9 +14,9 @@ class JsMapOfSpecReader extends AbstractJsObjReader {
 
   @Override
   JsObj value(final JsReader reader) throws JsParserException {
-      if (isEmptyObj(reader)) {
-          return EMPTY_OBJ;
-      }
+    if (isEmptyObj(reader)) {
+      return EMPTY_OBJ;
+    }
     String key = reader.readKey();
 
     JsObj obj = EMPTY_OBJ.set(key,
@@ -33,11 +32,11 @@ class JsMapOfSpecReader extends AbstractJsObjReader {
                    );
 
     }
-      if (nextToken != '}') {
-          throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) reader.last())),
-                                           reader.getPositionInStream()
-                                          );
-      }
+    if (nextToken != '}') {
+      throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) reader.last())),
+                                       reader.getPositionInStream()
+                                      );
+    }
 
     return obj;
 

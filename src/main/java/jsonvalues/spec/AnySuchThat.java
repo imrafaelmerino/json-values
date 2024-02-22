@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.REQUIRED;
 
 import java.util.Optional;
 import java.util.function.Function;
-
-import static jsonvalues.spec.ERROR_CODE.REQUIRED;
+import jsonvalues.JsValue;
 
 final class AnySuchThat implements JsOneErrorSpec {
 

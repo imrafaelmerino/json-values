@@ -17,18 +17,18 @@ public class TestFun {
   static <I> void assertGeneratedValuesHaveSameProbability(Map<I, Long> counts,
                                                            Collection<I> values,
                                                            double errorMargin) {
-      if (errorMargin < 0.0) {
-          throw new IllegalArgumentException("errorMargin < 0");
-      }
-      if (errorMargin > 1.0) {
-          throw new IllegalArgumentException("errorMargin > 1");
-      }
+    if (errorMargin < 0.0) {
+      throw new IllegalArgumentException("errorMargin < 0");
+    }
+    if (errorMargin > 1.0) {
+      throw new IllegalArgumentException("errorMargin > 1");
+    }
 
     List<Long> valueCounts = values.stream()
                                    .map(key -> {
-                                       if (!counts.containsKey(key)) {
-                                           throw new RuntimeException(key + " was not generated");
-                                       }
+                                     if (!counts.containsKey(key)) {
+                                       throw new RuntimeException(key + " was not generated");
+                                     }
                                      return counts.get(key);
                                    })
                                    .collect(Collectors.toList());

@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 
 import java.util.List;
 import java.util.Optional;
-
-import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
@@ -59,9 +58,9 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
 
   @Override
   public Optional<JsError> testValue(JsValue value) {
-      if (isNullable() && value.isNull()) {
-          return Optional.empty();
-      }
+    if (isNullable() && value.isNull()) {
+      return Optional.empty();
+    }
 
     if (!value.isArray()) {
       return Optional.of(new JsError(value,
@@ -76,20 +75,20 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
   private Optional<JsError> apply(final JsArray array
                                  ) {
 
-      if (array.size() < min) {
-          return Optional.of(new JsError(array,
-                                         ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN));
-      }
-      if (array.size() > max) {
-          return Optional.of(new JsError(array,
-                                         ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX));
-      }
+    if (array.size() < min) {
+      return Optional.of(new JsError(array,
+                                     ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN));
+    }
+    if (array.size() > max) {
+      return Optional.of(new JsError(array,
+                                     ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX));
+    }
 
     for (JsValue value : array) {
       List<SpecError> errors = spec.test(value);
-        if (!errors.isEmpty()) {
-            return Optional.of(errors.get(0).error);
-        }
+      if (!errors.isEmpty()) {
+        return Optional.of(errors.get(0).error);
+      }
     }
     return Optional.empty();
   }

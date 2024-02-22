@@ -25,10 +25,10 @@ public final class Index implements Position {
    * @throws IndexOutOfBoundsException if the index is less than -1
    */
   public static Index of(final int index) {
-      if (index < -1) {
-          throw new IndexOutOfBoundsException(String.format("%s is not between [-1,U+221E)",
-                                                            index));
-      }
+    if (index < -1) {
+      throw new IndexOutOfBoundsException(String.format("%s is not between [-1,U+221E)",
+                                                        index));
+    }
     return new Index(index);
   }
 
@@ -107,12 +107,12 @@ public final class Index implements Position {
    */
   @Override
   public boolean equals(final Object that) {
-      if (that == null || getClass() != that.getClass()) {
-          return false;
-      }
-      if (this == that) {
-          return true;
-      }
+    if (that == null || getClass() != that.getClass()) {
+      return false;
+    }
+    if (this == that) {
+      return true;
+    }
     final Index thatObj = (Index) that;
     return n == thatObj.n;
   }

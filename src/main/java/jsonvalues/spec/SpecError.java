@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.Objects;
 import jsonvalues.JsObj;
 import jsonvalues.JsPath;
 import jsonvalues.JsStr;
-
-import java.util.Objects;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * The `SpecError` class represents a code that occurs during the validation of a JSON value against a specification. It
@@ -78,10 +77,10 @@ public final class SpecError {
                            "code",
                            JsStr.of(this.error.code()
                                               .name()));
-      if (spec != null && !spec.isEmpty()) {
-          error = error.set("spec",
-                            JsStr.of(spec));
-      }
+    if (spec != null && !spec.isEmpty()) {
+      error = error.set("spec",
+                        JsStr.of(spec));
+    }
     return error.toString();
   }
 
@@ -93,12 +92,12 @@ public final class SpecError {
    */
   @Override
   public boolean equals(Object o) {
-      if (this == o) {
-          return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-          return false;
-      }
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     SpecError specError = (SpecError) o;
     return Objects.equals(path,
                           specError.path) &&

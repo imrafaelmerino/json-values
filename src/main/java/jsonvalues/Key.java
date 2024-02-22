@@ -38,10 +38,10 @@ public final class Key implements Position {
    */
   @Override
   public int compareTo(final Position o) {
-      if (requireNonNull(o)
-          .isKey()) {
-          return name.compareTo(o.asKey().name);
-      }
+    if (requireNonNull(o)
+        .isKey()) {
+      return name.compareTo(o.asKey().name);
+    }
     return name.compareTo(o.asIndex()
                            .toString());
 
@@ -106,12 +106,12 @@ public final class Key implements Position {
    */
   @Override
   public boolean equals(final Object that) {
-      if (that == null || getClass() != that.getClass()) {
-          return false;
-      }
-      if (this == that) {
-          return true;
-      }
+    if (that == null || getClass() != that.getClass()) {
+      return false;
+    }
+    if (this == that) {
+      return true;
+    }
     Key thatObj = (Key) that;
     return name.equals(thatObj.name);
   }

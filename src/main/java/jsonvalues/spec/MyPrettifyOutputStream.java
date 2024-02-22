@@ -31,9 +31,9 @@ final class MyPrettifyOutputStream extends OutputStream {
                          IndentType indentType,
                          int indentLength
                         ) {
-      if (indentLength < 1) {
-          throw new IllegalArgumentException("'indentLength' must be >= 1");
-      }
+    if (indentLength < 1) {
+      throw new IllegalArgumentException("'indentLength' must be >= 1");
+    }
     this.out = out;
     this.indentType = indentType;
     this.indentLength = indentLength;

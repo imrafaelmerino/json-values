@@ -1,14 +1,13 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Gen;
 import fun.gen.IntGen;
-import jsonvalues.JsInt;
-
 import java.util.Objects;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsInt;
 
 /**
  * Represents a JsInt generator. It can be created using the static factory methods {@link #biased()} and

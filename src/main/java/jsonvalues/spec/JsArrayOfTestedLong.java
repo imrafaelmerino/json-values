@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 import java.util.Optional;
 import java.util.function.LongFunction;
-
-import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 

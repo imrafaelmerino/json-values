@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsPath;
-import jsonvalues.JsValue;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 /**
  * Spec that implements this interface will stop after finding the first code and will return that code

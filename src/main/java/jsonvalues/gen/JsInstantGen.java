@@ -1,16 +1,15 @@
 package jsonvalues.gen;
 
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Gen;
 import fun.gen.InstantGen;
-import jsonvalues.JsInstant;
-
 import java.time.Instant;
 import java.time.ZonedDateTime;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsInstant;
 
 /**
  * Represents a JsInstant generator. It can be created using the static factory methods {@link #biased()} and

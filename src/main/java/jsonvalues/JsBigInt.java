@@ -20,15 +20,15 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
   public static final Prism<JsValue, BigInteger> prism =
       new Prism<>(s ->
                   {
-                      if (s.isLong()) {
-                          return Optional.of(BigInteger.valueOf(s.toJsLong().value));
-                      }
-                      if (s.isInt()) {
-                          return Optional.of(BigInteger.valueOf(s.toJsInt().value));
-                      }
-                      if (s.isBigInt()) {
-                          return Optional.of(s.toJsBigInt().value);
-                      }
+                    if (s.isLong()) {
+                      return Optional.of(BigInteger.valueOf(s.toJsLong().value));
+                    }
+                    if (s.isInt()) {
+                      return Optional.of(BigInteger.valueOf(s.toJsInt().value));
+                    }
+                    if (s.isBigInt()) {
+                      return Optional.of(s.toJsBigInt().value);
+                    }
                     return Optional.empty();
                   },
                   JsBigInt::of
@@ -76,9 +76,9 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
   @Override
   public int hashCode() {
     Optional<Integer> optInt = intValueExact();
-      if (optInt.isPresent()) {
-          return optInt.get();
-      }
+    if (optInt.isPresent()) {
+      return optInt.get();
+    }
 
     Optional<Long> optLong = longValueExact();
     return optLong.map(aLong -> JsLong.of(aLong)
@@ -96,27 +96,27 @@ public final class JsBigInt extends JsNumber implements Comparable<JsBigInt> {
    */
   @Override
   public boolean equals(Object that) {
-      if (this == that) {
-          return true;
-      }
-      if (!(that instanceof JsNumber number)) {
-          return false;
-      }
-      if (number.isBigInt()) {
-          return value.equals(number.toJsBigInt().value);
-      }
-      if (number.isInt()) {
-          return intEquals(number.toJsInt());
-      }
-      if (number.isLong()) {
-          return longEquals(number.toJsLong());
-      }
-      if (number.isBigDec()) {
-          return bigDecEquals(number.toJsBigDec());
-      }
-      if (number.isDouble()) {
-          return doubleEquals(number.toJsDouble());
-      }
+    if (this == that) {
+      return true;
+    }
+    if (!(that instanceof JsNumber number)) {
+      return false;
+    }
+    if (number.isBigInt()) {
+      return value.equals(number.toJsBigInt().value);
+    }
+    if (number.isInt()) {
+      return intEquals(number.toJsInt());
+    }
+    if (number.isLong()) {
+      return longEquals(number.toJsLong());
+    }
+    if (number.isBigDec()) {
+      return bigDecEquals(number.toJsBigDec());
+    }
+    if (number.isDouble()) {
+      return doubleEquals(number.toJsDouble());
+    }
     return false;
   }
 

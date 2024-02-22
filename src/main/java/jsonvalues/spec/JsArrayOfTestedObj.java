@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsObj;
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
 import java.util.Optional;
 import java.util.function.Function;
-
-import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
+import jsonvalues.JsObj;
+import jsonvalues.JsValue;
 
 final class JsArrayOfTestedObj extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
 

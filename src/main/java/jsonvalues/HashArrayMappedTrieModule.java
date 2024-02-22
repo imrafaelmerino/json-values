@@ -37,6 +37,35 @@ interface HashArrayMappedTrieModule {
                          0);
     }
 
+    private static int downstairs(Object[] nodes,
+                                  int[] indexes,
+                                  AbstractNode root,
+                                  int level) {
+      while (true) {
+        nodes[level] = root;
+        indexes[level] = 0;
+        root = getChild(root,
+                        0);
+        if (root == null) {
+          break;
+        } else {
+          level++;
+        }
+      }
+      return level;
+    }
+
+    private static AbstractNode getChild(AbstractNode node,
+                                         int index) {
+      if (node instanceof IndexedNode indexedNode) {
+        final Object[] subNodes = indexedNode.subNodes;
+        return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
+      } else if (node instanceof ArrayNode arrayNode) {
+        return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
+      }
+      return null;
+    }
+
     @Override
     public boolean hasNext() {
       return ptr < total;
@@ -77,35 +106,6 @@ interface HashArrayMappedTrieModule {
                          node,
                          level + 1);
       return nodes[level];
-    }
-
-    private static int downstairs(Object[] nodes,
-                                  int[] indexes,
-                                  AbstractNode root,
-                                  int level) {
-      while (true) {
-        nodes[level] = root;
-        indexes[level] = 0;
-        root = getChild(root,
-                        0);
-        if (root == null) {
-          break;
-        } else {
-          level++;
-        }
-      }
-      return level;
-    }
-
-    private static AbstractNode getChild(AbstractNode node,
-                                         int index) {
-      if (node instanceof IndexedNode indexedNode) {
-        final Object[] subNodes = indexedNode.subNodes;
-        return index < subNodes.length ? (AbstractNode) subNodes[index] : null;
-      } else if (node instanceof ArrayNode arrayNode) {
-        return index < AbstractNode.BUCKET_SIZE ? (AbstractNode) arrayNode.subNodes[index] : null;
-      }
-      return null;
     }
   }
 
@@ -330,12 +330,6 @@ interface HashArrayMappedTrieModule {
    */
   abstract class LeafNode extends AbstractNode {
 
-    public abstract String key();
-
-    public abstract JsValue value();
-
-    abstract int hash();
-
     static AbstractNode mergeLeaves(int shift,
                                     LeafNode leaf1,
                                     LeafSingleton leaf2) {
@@ -366,6 +360,12 @@ interface HashArrayMappedTrieModule {
         );
       }
     }
+
+    public abstract String key();
+
+    public abstract JsValue value();
+
+    abstract int hash();
 
     @Override
     public boolean isEmpty() {
@@ -497,6 +497,38 @@ interface HashArrayMappedTrieModule {
       this.tail = tail;
     }
 
+    private static AbstractNode mergeNodes(LeafNode leaf1,
+                                           LeafNode leaf2) {
+      if (leaf2 == null) {
+        return leaf1;
+      }
+      if (leaf1 instanceof LeafSingleton) {
+        return new LeafList(leaf1.hash(),
+                            leaf1.key(),
+                            leaf1.value(),
+                            leaf2);
+      }
+      if (leaf2 instanceof LeafSingleton) {
+        return new LeafList(leaf2.hash(),
+                            leaf2.key(),
+                            leaf2.value(),
+                            leaf1);
+      }
+      LeafNode result = leaf1;
+      LeafNode tail = leaf2;
+      while (tail instanceof LeafList list) {
+        result = new LeafList(list.hash,
+                              list.key,
+                              list.value,
+                              result);
+        tail = list.tail;
+      }
+      return new LeafList(tail.hash(),
+                          tail.key(),
+                          tail.value(),
+                          result);
+    }
+
     @Override
     Optional<JsValue> lookup(int shift,
                              int keyHash,
@@ -507,10 +539,10 @@ interface HashArrayMappedTrieModule {
       var iter = nodes();
       while (iter.hasNext()) {
         LeafNode next = iter.next();
-          if (Objects.equals(next.key(),
-                             key)) {
-              return Optional.of(next.value());
-          }
+        if (Objects.equals(next.key(),
+                           key)) {
+          return Optional.of(next.value());
+        }
       }
       return Optional.empty();
     }
@@ -559,38 +591,6 @@ interface HashArrayMappedTrieModule {
                                                                          key,
                                                                          value));
       }
-    }
-
-    private static AbstractNode mergeNodes(LeafNode leaf1,
-                                           LeafNode leaf2) {
-      if (leaf2 == null) {
-        return leaf1;
-      }
-      if (leaf1 instanceof LeafSingleton) {
-        return new LeafList(leaf1.hash(),
-                            leaf1.key(),
-                            leaf1.value(),
-                            leaf2);
-      }
-      if (leaf2 instanceof LeafSingleton) {
-        return new LeafList(leaf2.hash(),
-                            leaf2.key(),
-                            leaf2.value(),
-                            leaf1);
-      }
-      LeafNode result = leaf1;
-      LeafNode tail = leaf2;
-      while (tail instanceof LeafList list) {
-        result = new LeafList(list.hash,
-                              list.key,
-                              list.value,
-                              result);
-        tail = list.tail;
-      }
-      return new LeafList(tail.hash(),
-                          tail.key(),
-                          tail.value(),
-                          result);
     }
 
     private AbstractNode removeElement(String k) {

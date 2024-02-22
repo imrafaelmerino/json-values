@@ -1,13 +1,12 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.JsArray;
-import jsonvalues.JsObj;
-import jsonvalues.JsValue;
-
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsArray;
+import jsonvalues.JsObj;
+import jsonvalues.JsValue;
 
 final class JsArrayOfObjReader extends JsArrayReader {
 

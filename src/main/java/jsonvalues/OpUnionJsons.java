@@ -8,27 +8,27 @@ class OpUnionJsons {
                           JsArray.TYPE ARRAY_AS
                          ) {
 
-      if (a.isObj() && b.isObj()) {
-          return a.toJsObj()
-                  .union(b.toJsObj(),
-                         ARRAY_AS
-                        );
-      }
-      if (ARRAY_AS == JsArray.TYPE.LIST) {
-          return a.toJsArray()
-                  .union(b.toJsArray(),
-                         ARRAY_AS
-                        );
-      }
-      if (ARRAY_AS == JsArray.TYPE.SET) {
-          return unionAsSet(a.toJsArray(),
-                            b.toJsArray());
-      }
+    if (a.isObj() && b.isObj()) {
+      return a.toJsObj()
+              .union(b.toJsObj(),
+                     ARRAY_AS
+                    );
+    }
+    if (ARRAY_AS == JsArray.TYPE.LIST) {
+      return a.toJsArray()
+              .union(b.toJsArray(),
+                     ARRAY_AS
+                    );
+    }
+    if (ARRAY_AS == JsArray.TYPE.SET) {
+      return unionAsSet(a.toJsArray(),
+                        b.toJsArray());
+    }
 
-      if (ARRAY_AS == JsArray.TYPE.MULTISET) {
-          return unionAsMultiSet(a.toJsArray(),
-                                 b.toJsArray());
-      }
+    if (ARRAY_AS == JsArray.TYPE.MULTISET) {
+      return unionAsMultiSet(a.toJsArray(),
+                             b.toJsArray());
+    }
     throw new RuntimeException("Array type not implemented yet: " + ARRAY_AS);
 
   }
@@ -44,23 +44,23 @@ class OpUnionJsons {
   private static JsArray unionAsSet(JsArray a,
                                     JsArray b
                                    ) {
-      if (b.isEmpty()) {
-          return a;
-      }
-      if (a.isEmpty()) {
-          return b;
-      }
+    if (b.isEmpty()) {
+      return a;
+    }
+    if (a.isEmpty()) {
+      return b;
+    }
 
     JsArray result = JsArray.empty();
     for (JsValue value : a) {
-        if (!result.containsValue(value)) {
-            result = result.append(value);
-        }
+      if (!result.containsValue(value)) {
+        result = result.append(value);
+      }
     }
     for (JsValue value : b) {
-        if (!result.containsValue(value)) {
-            result = result.append(value);
-        }
+      if (!result.containsValue(value)) {
+        result = result.append(value);
+      }
     }
 
     return result;

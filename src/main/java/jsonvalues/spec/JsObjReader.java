@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsObj;
-
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsObj;
 
 final class JsObjReader extends AbstractJsObjReader {
 
@@ -18,9 +17,9 @@ final class JsObjReader extends AbstractJsObjReader {
                      ) throws JsParserException {
     final JsObj value = value(reader);
     final Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return value;
-      }
+    if (result.isEmpty()) {
+      return value;
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );
@@ -28,9 +27,9 @@ final class JsObjReader extends AbstractJsObjReader {
 
   @Override
   public JsObj value(final JsReader reader) throws JsParserException {
-      if (isEmptyObj(reader)) {
-          return EMPTY_OBJ;
-      }
+    if (isEmptyObj(reader)) {
+      return EMPTY_OBJ;
+    }
 
     String key = reader.readKey();
     JsObj map = EMPTY_OBJ.set(key,
@@ -44,11 +43,11 @@ final class JsObjReader extends AbstractJsObjReader {
                     valueDeserializer.value(reader)
                    );
     }
-      if (nextToken != '}') {
-          throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
-                                           reader.getPositionInStream()
-                                          );
-      }
+    if (nextToken != '}') {
+      throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
+                                       reader.getPositionInStream()
+                                      );
+    }
     return map;
   }
 

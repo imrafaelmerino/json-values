@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
+import static java.util.Objects.requireNonNull;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsArray;
 
 /**
  * The {@code JsArraySpecParser} class is responsible for creating JSON array parsers based on provided JSON
@@ -62,18 +61,18 @@ public final class JsArraySpecParser {
   }
 
   private boolean isValid(JsSpec spec) {
-      if (spec instanceof JsArraySpec) {
-          return true;
-      }
-      if (spec instanceof OneOf oneOf) {
-          return oneOf
-              .specs
-              .stream()
-              .allMatch(this::isValid);
-      }
-      if (spec instanceof NamedSpec namedSpec) {
-          return isValid(JsSpecCache.get(namedSpec.name));
-      }
+    if (spec instanceof JsArraySpec) {
+      return true;
+    }
+    if (spec instanceof OneOf oneOf) {
+      return oneOf
+          .specs
+          .stream()
+          .allMatch(this::isValid);
+    }
+    if (spec instanceof NamedSpec namedSpec) {
+      return isValid(JsSpecCache.get(namedSpec.name));
+    }
     return false;
   }
 

@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsStr;
-
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsStr;
 
 final class JsStrReader extends AbstractReader {
 
@@ -18,9 +17,9 @@ final class JsStrReader extends AbstractReader {
                      ) throws JsParserException {
     String value = reader.readString();
     Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return JsStr.of(value);
-      }
+    if (result.isEmpty()) {
+      return JsStr.of(value);
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );

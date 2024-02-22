@@ -40,10 +40,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, JsValue> value(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsValueLens<>(requireNonNull(path));
     }
 
@@ -64,10 +64,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, String> str(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsStrLens<>(requireNonNull(path));
     }
 
@@ -88,10 +88,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, Boolean> bool(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsBoolLens<>(requireNonNull(path));
     }
 
@@ -112,10 +112,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, Long> longNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsLongLens<>(requireNonNull(path));
     }
 
@@ -136,10 +136,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, Integer> intNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsIntLens<>(requireNonNull(path));
     }
 
@@ -160,10 +160,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, Double> doubleNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsDoubleLens<>(requireNonNull(path));
     }
 
@@ -184,10 +184,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, BigDecimal> decimalNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsDecimalLens<>(requireNonNull(path));
     }
 
@@ -208,10 +208,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, BigInteger> integralNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsBigIntLens<>(requireNonNull(path));
     }
 
@@ -232,10 +232,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, JsObj> obj(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsObjLens<>(requireNonNull(path));
     }
 
@@ -256,10 +256,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, JsArray> array(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsArrayLens<>(requireNonNull(path));
     }
 
@@ -281,10 +281,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, byte[]> binary(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsBinaryLens<>(requireNonNull(path));
     }
 
@@ -306,10 +306,10 @@ public final class JsOptics {
      * @return a lens
      */
     public Lens<JsArray, Instant> instant(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return new JsInstantLens<>(requireNonNull(path));
     }
 
@@ -345,10 +345,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, String> str(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsStr.prism);
     }
@@ -371,10 +371,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, Boolean> bool(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsBool.prism);
     }
@@ -397,10 +397,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, Long> longNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsLong.prism);
@@ -424,10 +424,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, Integer> intNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsInt.prism);
@@ -451,10 +451,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, Double> doubleNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsDouble.prism);
@@ -478,10 +478,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, BigDecimal> decimalNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsBigDec.prism);
@@ -505,10 +505,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, BigInteger> integralNum(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsBigInt.prism);
@@ -532,10 +532,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, JsObj> obj(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsObj.prism);
@@ -559,10 +559,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, JsArray> array(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsArray.prism);
@@ -586,10 +586,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsArray, Instant> instant(final JsPath path) {
-        if (path.head()
-                .isKey()) {
-            throw UserError.pathHeadIsNotAnIndex(path);
-        }
+      if (path.head()
+              .isKey()) {
+        throw UserError.pathHeadIsNotAnIndex(path);
+      }
 
       return JsOptics.array.lens.value(requireNonNull(path))
                                 .compose(JsInstant.prism);
@@ -619,10 +619,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, String> str(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsStr.prism);
     }
@@ -645,10 +645,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, Boolean> bool(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsBool.prism);
@@ -672,10 +672,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, Long> longNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsLong.prism);
@@ -699,10 +699,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, Integer> intNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsInt.prism);
@@ -726,10 +726,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, Double> doubleNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsDouble.prism);
@@ -753,10 +753,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, BigDecimal> decimalNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsBigDec.prism);
@@ -780,10 +780,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, BigInteger> integralNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsBigInt.prism);
@@ -807,10 +807,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, JsObj> obj(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsObj.prism);
@@ -834,10 +834,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, JsArray> array(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsArray.prism);
@@ -861,10 +861,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, byte[]> binary(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsBinary.prism);
@@ -888,10 +888,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Option<JsObj, Instant> instant(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return JsOptics.obj.lens.value(requireNonNull(path))
                               .compose(JsInstant.prism);
@@ -921,10 +921,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, JsValue> value(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsValueLens<>(requireNonNull(path));
     }
@@ -946,10 +946,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, String> str(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsStrLens<>(requireNonNull(path));
     }
@@ -971,10 +971,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, Boolean> bool(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsBoolLens<>(requireNonNull(path));
     }
@@ -996,10 +996,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, Long> longNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsLongLens<>(requireNonNull(path));
     }
@@ -1021,10 +1021,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, Integer> intNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsIntLens<>(requireNonNull(path));
     }
@@ -1046,10 +1046,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, Double> doubleNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsDoubleLens<>(requireNonNull(path));
     }
@@ -1071,10 +1071,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, BigDecimal> decimalNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsDecimalLens<>(requireNonNull(path));
     }
@@ -1096,10 +1096,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, BigInteger> integralNum(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsBigIntLens<>(requireNonNull(path));
     }
@@ -1121,10 +1121,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, JsObj> obj(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsObjLens<>(requireNonNull(path));
     }
@@ -1146,10 +1146,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, JsArray> array(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsArrayLens<>(requireNonNull(path));
     }
@@ -1172,10 +1172,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, byte[]> binary(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsBinaryLens<>(requireNonNull(path));
     }
@@ -1198,10 +1198,10 @@ public final class JsOptics {
      * @return an optional
      */
     public Lens<JsObj, Instant> instant(final JsPath path) {
-        if (path.head()
-                .isIndex()) {
-            throw UserError.pathHeadIsNotAKey(requireNonNull(path));
-        }
+      if (path.head()
+              .isIndex()) {
+        throw UserError.pathHeadIsNotAKey(requireNonNull(path));
+      }
 
       return new JsInstantLens<>(requireNonNull(path));
     }

@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
+import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 import java.util.Optional;
-
-import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

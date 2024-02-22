@@ -1,14 +1,13 @@
 package jsonvalues.gen;
 
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.BoolGen;
 import fun.gen.Gen;
-import jsonvalues.JsBool;
-
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsBool;
 
 /**
  * Represents a JsBool generator

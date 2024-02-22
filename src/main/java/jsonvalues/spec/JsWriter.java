@@ -1,10 +1,10 @@
 package jsonvalues.spec;
 
+import static java.nio.charset.StandardCharsets.UTF_8;
+
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Arrays;
-
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * DslJson writes JSON into JsonWriter which has two primary modes of operation:
@@ -27,8 +27,24 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 class JsWriter {
 
 
+  static final byte OBJECT_START = '{';
+  static final byte OBJECT_END = '}';
+  static final byte ARRAY_START = '[';
+  static final byte ARRAY_END = ']';
+  static final byte COMMA = ',';
+  static final byte SEMI = ':';
+  static final byte QUOTE = '"';
+  static final byte ESCAPE = '\\';
+  private int position;
+  private OutputStream target;
+  private byte[] buffer;
+
   JsWriter(byte[] buffer) {
     this.buffer = buffer;
+  }
+
+  JsWriter(int size) {
+    this.buffer = new byte[size];
   }
 
   byte[] ensureCapacity(int free) {
@@ -42,31 +58,6 @@ class JsWriter {
   void advance(int size) {
     position += size;
   }
-
-  private int position;
-  private OutputStream target;
-  private byte[] buffer;
-
-
-  JsWriter(int size) {
-    this.buffer = new byte[size];
-  }
-
-  static final byte OBJECT_START = '{';
-
-  static final byte OBJECT_END = '}';
-
-  static final byte ARRAY_START = '[';
-
-  static final byte ARRAY_END = ']';
-
-  static final byte COMMA = ',';
-
-  static final byte SEMI = ':';
-
-  static final byte QUOTE = '"';
-
-  static final byte ESCAPE = '\\';
 
   private void enlargeOrFlush(int size,
                               int padding) {

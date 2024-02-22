@@ -48,9 +48,9 @@ class Settings {
    * @return itself
    */
   Settings limitDigitsBuffer(int size) {
-      if (size < 1) {
-          throw new IllegalArgumentException("size can't be smaller than 1");
-      }
+    if (size < 1) {
+      throw new IllegalArgumentException("size can't be smaller than 1");
+    }
     this.maxNumberDigits = size;
     return this;
   }
@@ -63,9 +63,9 @@ class Settings {
    * @return itself
    */
   Settings limitStringBuffer(int size) {
-      if (size < 1) {
-          throw new IllegalArgumentException("size can't be smaller than 1");
-      }
+    if (size < 1) {
+      throw new IllegalArgumentException("size can't be smaller than 1");
+    }
     this.maxStringBuffer = size;
     return this;
   }

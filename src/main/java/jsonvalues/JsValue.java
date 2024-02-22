@@ -148,14 +148,14 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    *                   JsInstant or a JsString with a date formatted in ISO-8601.
    */
   default JsInstant toJsInstant() {
-      if (this instanceof JsInstant) {
-          return ((JsInstant) this);
-      }
+    if (this instanceof JsInstant) {
+      return ((JsInstant) this);
+    }
     if (this instanceof JsStr) {
       var instant = JsStr.instantPrism.getOptional.apply(((JsStr) this).value);
-        if (instant.isPresent()) {
-            return JsInstant.of(instant.get());
-        }
+      if (instant.isPresent()) {
+        return JsInstant.of(instant.get());
+      }
     }
     throw UserError.isNotAJsInstant(this);
   }
@@ -168,14 +168,14 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    *                   JsBinary or a JsString with a value encoded in base64.
    */
   default JsBinary toJsBinary() {
-      if (this instanceof JsBinary) {
-          return ((JsBinary) this);
-      }
+    if (this instanceof JsBinary) {
+      return ((JsBinary) this);
+    }
     if (this instanceof JsStr) {
       Optional<byte[]> bytes = JsStr.base64Prism.getOptional.apply(((JsStr) this).value);
-        if (bytes.isPresent()) {
-            return JsBinary.of(bytes.get());
-        }
+      if (bytes.isPresent()) {
+        return JsBinary.of(bytes.get());
+      }
     }
     throw UserError.isNotAJsBinary(this);
   }
@@ -240,11 +240,11 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    */
   default JsBigDec toJsBigDec() {
     try {
-        if (isDouble()) {
-            return JsBigDec.of(BigDecimal.valueOf(toJsDouble().value));
-        } else {
-            return ((JsBigDec) this);
-        }
+      if (isDouble()) {
+        return JsBigDec.of(BigDecimal.valueOf(toJsDouble().value));
+      } else {
+        return ((JsBigDec) this);
+      }
     } catch (ClassCastException e) {
       throw UserError.isNotAJsBigDec(this);
     }
@@ -278,11 +278,11 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    */
   default JsLong toJsLong() {
     try {
-        if (isInt()) {
-            return JsLong.of(toJsInt().value);
-        } else {
-            return ((JsLong) this);
-        }
+      if (isInt()) {
+        return JsLong.of(toJsInt().value);
+      } else {
+        return ((JsLong) this);
+      }
     } catch (ClassCastException e) {
       throw UserError.isNotAJsLong(this);
     }
@@ -343,13 +343,13 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
   //S1452: Json<?> has only two possible types: JsObj or JsArr,
   default Json<?> toJson() {
 
-      if (isObj()) {
-          return toJsObj();
-      } else if (isArray()) {
-          return toJsArray();
-      } else {
-          throw UserError.isNotAJson(this);
-      }
+    if (isObj()) {
+      return toJsObj();
+    } else if (isArray()) {
+      return toJsArray();
+    } else {
+      throw UserError.isNotAJson(this);
+    }
 
   }
 
@@ -442,12 +442,12 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    */
   default JsBigInt toJsBigInt() {
     try {
-        if (isInt()) {
-            return JsBigInt.of(BigInteger.valueOf(toJsInt().value));
-        }
-        if (isLong()) {
-            return JsBigInt.of(BigInteger.valueOf(toJsLong().value));
-        }
+      if (isInt()) {
+        return JsBigInt.of(BigInteger.valueOf(toJsInt().value));
+      }
+      if (isLong()) {
+        return JsBigInt.of(BigInteger.valueOf(toJsLong().value));
+      }
       return ((JsBigInt) this);
     } catch (ClassCastException e) {
       throw UserError.isNotAJsBigInt(this);
@@ -566,9 +566,9 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    * @return A JSON value.
    */
   default JsValue ifNull(final JsValue value) {
-      if (isNull()) {
-          return requireNonNull(value);
-      }
+    if (isNull()) {
+      return requireNonNull(value);
+    }
     return this;
   }
 
@@ -579,9 +579,9 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    * @return A JSON value.
    */
   default JsValue ifNothing(final JsValue value) {
-      if (isNothing()) {
-          return requireNonNull(value);
-      }
+    if (isNothing()) {
+      return requireNonNull(value);
+    }
     return this;
   }
 }

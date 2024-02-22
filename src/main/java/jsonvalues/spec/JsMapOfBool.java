@@ -1,8 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
-
 import java.util.Optional;
+import jsonvalues.JsValue;
 
 
 final class JsMapOfBool extends AbstractMap implements JsOneErrorSpec, AvroSpec {

@@ -222,12 +222,12 @@ final class Vector<T> implements Iterable<T> {
 
   @Override
   public boolean equals(Object o) {
-      if (this == o) {
-          return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-          return false;
-      }
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
     Vector<?> vector = (Vector<?>) o;
     final java.util.Iterator<?> iter1 = this.iterator();
     final java.util.Iterator<?> iter2 = vector.iterator();

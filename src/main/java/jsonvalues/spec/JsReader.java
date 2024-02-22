@@ -1,12 +1,12 @@
 package jsonvalues.spec;
 
+import static jsonvalues.spec.ParserErrors.UNEXPECTED_END_OF_JSON;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayDeque;
 import java.util.Arrays;
 import java.util.Deque;
-
-import static jsonvalues.spec.ParserErrors.UNEXPECTED_END_OF_JSON;
 
 /**
  * Object for processing JSON from byte[] and InputStream. The only public methods are {@link #readNextToken()} and
@@ -52,13 +52,12 @@ final class JsReader {
   private final byte[] originalBuffer;
   private final int originalBufferLenWithExtraSpace;
   private final int maxStringBuffer;
+  private final Deque<Integer> markPositions = new ArrayDeque<>();
   byte[] buffer;
   char[] chars;
-
   DoublePrecision doublePrecision;
   int doubleLengthLimit;
   int maxNumberDigits;
-  private final Deque<Integer> markPositions = new ArrayDeque<>();
   private int currentIndex = 0;
   private long currentPosition = 0;
   private byte last = ' ';

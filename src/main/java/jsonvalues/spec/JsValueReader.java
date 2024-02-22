@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
 
+import java.util.Optional;
+import java.util.function.Function;
 import jsonvalues.JsBool;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 
 class JsValueReader extends AbstractReader {
@@ -33,9 +32,9 @@ class JsValueReader extends AbstractReader {
                        ) throws JsParserException {
     JsValue value = value(reader);
     Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return value;
-      }
+    if (result.isEmpty()) {
+      return value;
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );
@@ -46,16 +45,16 @@ class JsValueReader extends AbstractReader {
   JsValue value(JsReader reader) throws JsParserException {
     return switch (reader.last()) {
       case 't' -> {
-          if (reader.wasTrue()) {
-              yield JsBool.TRUE;
-          }
+        if (reader.wasTrue()) {
+          yield JsBool.TRUE;
+        }
         throw JsParserException.reasonAt("true was expected",
                                          reader.getCurrentIndex());
       }
       case 'f' -> {
-          if (reader.wasFalse()) {
-              yield JsBool.FALSE;
-          }
+        if (reader.wasFalse()) {
+          yield JsBool.FALSE;
+        }
         throw JsParserException.reasonAt("false was expected",
                                          reader.getCurrentIndex());
       }

@@ -1,9 +1,12 @@
 package jsonvalues.spec;
 
-import java.util.List;
-
 import static java.util.Objects.requireNonNull;
-import static jsonvalues.spec.NameValidationSpecConstants.*;
+import static jsonvalues.spec.NameValidationSpecConstants.AVRO_NAMESPACE_PATTERN;
+import static jsonvalues.spec.NameValidationSpecConstants.AVRO_NAME_PATTERN;
+import static jsonvalues.spec.NameValidationSpecConstants.isValidName;
+import static jsonvalues.spec.NameValidationSpecConstants.isValidNamespace;
+
+import java.util.List;
 
 /**
  * Builder class for creating instances of {@link JsFixedBinary}, which represents a fixed-size binary type. Fixed
@@ -35,11 +38,11 @@ public final class JsFixedBuilder {
    * @throws IllegalArgumentException If the provided name does not follow the specified pattern.
    */
   public static JsFixedBuilder withName(String name) {
-      if (!isValidName.test(requireNonNull(name))) {
-          throw new IllegalArgumentException(("The name `%s` of the Fixed binary doesn't follow the " +
-                                              "pattern `%s`").formatted(name,
-                                                                        AVRO_NAME_PATTERN));
-      }
+    if (!isValidName.test(requireNonNull(name))) {
+      throw new IllegalArgumentException(("The name `%s` of the Fixed binary doesn't follow the " +
+                                          "pattern `%s`").formatted(name,
+                                                                    AVRO_NAME_PATTERN));
+    }
     return new JsFixedBuilder(name.formatted());
   }
 
@@ -54,12 +57,12 @@ public final class JsFixedBuilder {
    */
   public JsFixedBuilder withNamespace(String nameSpace) {
     this.nameSpace = requireNonNull(nameSpace);
-      if (!isValidNamespace.test(nameSpace)) {
-          throw new IllegalArgumentException(("The namespace `%s` of the Fixed binary with name `%s` doesn't follow " +
-                                              "the pattern `%s`").formatted(nameSpace,
-                                                                            name,
-                                                                            AVRO_NAMESPACE_PATTERN));
-      }
+    if (!isValidNamespace.test(nameSpace)) {
+      throw new IllegalArgumentException(("The namespace `%s` of the Fixed binary with name `%s` doesn't follow " +
+                                          "the pattern `%s`").formatted(nameSpace,
+                                                                        name,
+                                                                        AVRO_NAMESPACE_PATTERN));
+    }
 
     return this;
   }
@@ -108,9 +111,9 @@ public final class JsFixedBuilder {
    * @throws IllegalArgumentException If the size is less than or equal to 0.
    */
   public JsSpec build(final int size) {
-      if (size <= 0) {
-          throw new IllegalArgumentException("size < 0");
-      }
+    if (size <= 0) {
+      throw new IllegalArgumentException("size < 0");
+    }
     var metadata = new FixedMetaData(name,
                                      nameSpace,
                                      aliases,

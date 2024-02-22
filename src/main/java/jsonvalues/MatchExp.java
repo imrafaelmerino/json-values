@@ -31,12 +31,12 @@ final class MatchExp {
 
     return elem ->
     {
-        if (elem.isObj()) {
-            return requireNonNull(ifObj).apply(elem.toJsObj());
-        }
-        if (elem.isArray()) {
-            return requireNonNull(ifArr).apply(elem.toJsArray());
-        }
+      if (elem.isObj()) {
+        return requireNonNull(ifObj).apply(elem.toJsObj());
+      }
+      if (elem.isArray()) {
+        return requireNonNull(ifArr).apply(elem.toJsArray());
+      }
       return ifValue.apply(elem);
     };
   }

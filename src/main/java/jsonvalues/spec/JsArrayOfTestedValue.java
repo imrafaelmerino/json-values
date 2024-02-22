@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
-
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsValue;
 
 final class JsArrayOfTestedValue extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
 

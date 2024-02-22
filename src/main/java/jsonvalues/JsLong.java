@@ -18,16 +18,16 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
   public static final Prism<JsValue, Long> prism =
       new Prism<>(s ->
                   {
-                      if (s.isLong()) {
-                          return Optional.of(s.toJsLong().value);
-                      }
-                      if (s.isInt()) {
-                          return Optional.of((long) s.toJsInt().value);
-                      }
-                      if (s.isBigInt()) {
-                          return s.toJsBigInt()
-                                  .longValueExact();
-                      }
+                    if (s.isLong()) {
+                      return Optional.of(s.toJsLong().value);
+                    }
+                    if (s.isInt()) {
+                      return Optional.of((long) s.toJsInt().value);
+                    }
+                    if (s.isBigInt()) {
+                      return s.toJsBigInt()
+                              .longValueExact();
+                    }
                     return Optional.empty();
                   },
                   JsLong::of
@@ -89,30 +89,30 @@ public final class JsLong extends JsNumber implements Comparable<JsLong> {
    */
   @Override
   public boolean equals(final Object that) {
-      if (this == that) {
-          return true;
-      }
-      if (that == null) {
-          return false;
-      }
-      if (!(that instanceof JsNumber number)) {
-          return false;
-      }
-      if (number.isLong()) {
-          return value == number.toJsLong().value;
-      }
-      if (number.isInt()) {
-          return intEquals(number.toJsInt());
-      }
-      if (number.isBigInt()) {
-          return bigIntEquals(number.toJsBigInt());
-      }
-      if (number.isBigDec()) {
-          return bigDecEquals(number.toJsBigDec());
-      }
-      if (number.isDouble()) {
-          return doubleEquals(number.toJsDouble());
-      }
+    if (this == that) {
+      return true;
+    }
+    if (that == null) {
+      return false;
+    }
+    if (!(that instanceof JsNumber number)) {
+      return false;
+    }
+    if (number.isLong()) {
+      return value == number.toJsLong().value;
+    }
+    if (number.isInt()) {
+      return intEquals(number.toJsInt());
+    }
+    if (number.isBigInt()) {
+      return bigIntEquals(number.toJsBigInt());
+    }
+    if (number.isBigDec()) {
+      return bigDecEquals(number.toJsBigDec());
+    }
+    if (number.isDouble()) {
+      return doubleEquals(number.toJsDouble());
+    }
 
     return false;
 

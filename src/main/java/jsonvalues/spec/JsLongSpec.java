@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 import java.util.Optional;
-
-import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 

@@ -4,8 +4,23 @@
   "age": 21,
   "latitude": 48.858093,
   "longitude": 2.294694,
-  "fruits": ["apple", "orange", "pear"],
-  "numbers": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "fruits": [
+    "apple",
+    "orange",
+    "pear"
+  ],
+  "numbers": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10
+  ],
   "vegetables": [
     {
       "veggieName": "potato",

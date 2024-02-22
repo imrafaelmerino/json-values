@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
+import static java.util.Objects.requireNonNull;
+
+import java.util.List;
 import jsonvalues.JsNull;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
-
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 final class NamedSpec extends AbstractNullable implements JsSpec {
 
@@ -34,11 +33,11 @@ final class NamedSpec extends AbstractNullable implements JsSpec {
   public JsParser parser() {
     return reader -> {
       if (reader.wasNull()) {
-          if (nullable) {
-              return JsNull.NULL;
-          } else {
-              throw reader.newParseError(ParserErrors.INVALID_NULL);
-          }
+        if (nullable) {
+          return JsNull.NULL;
+        } else {
+          throw reader.newParseError(ParserErrors.INVALID_NULL);
+        }
       }
       return JsSpecCache.get(name)
                         .parser()
@@ -49,9 +48,9 @@ final class NamedSpec extends AbstractNullable implements JsSpec {
   @Override
   public List<SpecError> test(JsPath parentPath,
                               JsValue value) {
-      if (nullable && value.isNull()) {
-          return List.of();
-      }
+    if (nullable && value.isNull()) {
+      return List.of();
+    }
     return JsSpecCache.get(name)
                       .test(parentPath,
                             value);

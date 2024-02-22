@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
+import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
-
-import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
+import jsonvalues.JsValue;
 
 final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 

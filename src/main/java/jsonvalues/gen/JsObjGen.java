@@ -1,20 +1,25 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.BoolGen;
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.SplitGen;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Supplier;
+import java.util.random.RandomGenerator;
+import java.util.stream.Collectors;
 import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 import jsonvalues.spec.JsObjSpec;
-
-import java.util.*;
-import java.util.function.Supplier;
-import java.util.random.RandomGenerator;
-import java.util.stream.Collectors;
-
-import static java.util.Objects.requireNonNull;
 
 
 /**
@@ -55,14 +60,14 @@ public final class JsObjGen implements Gen<JsObj> {
                    Set<String> nullables
                   ) {
     for (String key : optionals) {
-        if (!bindings.containsKey(key)) {
-            throw new IllegalArgumentException("optional '" + key + "' not defined in generator");
-        }
+      if (!bindings.containsKey(key)) {
+        throw new IllegalArgumentException("optional '" + key + "' not defined in generator");
+      }
     }
     for (String key : nullables) {
-        if (!bindings.containsKey(key)) {
-            throw new IllegalArgumentException("nullable '" + key + "' not defined in generator");
-        }
+      if (!bindings.containsKey(key)) {
+        throw new IllegalArgumentException("nullable '" + key + "' not defined in generator");
+      }
     }
     this.optionals = optionals;
     this.nullables = nullables;
@@ -5526,11 +5531,11 @@ public final class JsObjGen implements Gen<JsObj> {
                             .apply(seed);
 
     Map<String, Supplier<? extends JsValue>> map = new LinkedHashMap<>();
-      for (var pair : bindings.entrySet()) {
-          map.put(pair.getKey(),
-                  pair.getValue()
-                      .apply(SplitGen.DEFAULT.apply(seed)));
-      }
+    for (var pair : bindings.entrySet()) {
+      map.put(pair.getKey(),
+              pair.getValue()
+                  .apply(SplitGen.DEFAULT.apply(seed)));
+    }
 
     return () ->
     {

@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsStr;
-import jsonvalues.JsValue;
-
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import jsonvalues.JsArray;
+import jsonvalues.JsStr;
+import jsonvalues.JsValue;
 
 
 final class JsEnum extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
@@ -57,9 +56,9 @@ final class JsEnum extends AbstractNullable implements JsOneErrorSpec, AvroSpec 
 
   @Override
   public Optional<JsError> testValue(JsValue value) {
-      if (isNullable() && value.isNull()) {
-          return Optional.empty();
-      }
+    if (isNullable() && value.isNull()) {
+      return Optional.empty();
+    }
     return !symbols.containsValue(value) ?
            Optional.of(new JsError(value,
                                    ERROR_CODE.ENUM_SYMBOL_EXPECTED)) :

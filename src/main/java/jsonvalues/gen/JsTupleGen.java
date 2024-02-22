@@ -1,18 +1,17 @@
 package jsonvalues.gen;
 
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Gen;
 import fun.gen.SplitGen;
-import jsonvalues.JsArray;
-import jsonvalues.JsValue;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsArray;
+import jsonvalues.JsValue;
 
 /**
  * Represents a tuple generator that is modeled with a JsArray generator. Each generator of the tuple is created from a
@@ -59,9 +58,9 @@ public final class JsTupleGen implements Gen<JsArray> {
     return () ->
     {
       JsArray array = JsArray.empty();
-        for (var supplier : suppliers) {
-            array = array.append(supplier.get());
-        }
+      for (var supplier : suppliers) {
+        array = array.append(supplier.get());
+      }
       return array;
     };
   }

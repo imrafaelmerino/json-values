@@ -1,11 +1,14 @@
 package jsonvalues.spec;
 
-import jsonvalues.*;
-
-import java.util.*;
-
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.SPEC_MISSING;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import jsonvalues.JsArray;
+import jsonvalues.JsPath;
+import jsonvalues.JsValue;
 
 /**
  * Represents a specification of every element of a Json array. It allows to define tuples and the schema of every of
@@ -56,9 +59,9 @@ final class JsTuple extends AbstractNullable implements JsArraySpec {
   public JsParser parser() {
 
     List<JsParser> parsers = new ArrayList<>();
-      for (JsSpec spec : specs) {
-          parsers.add(spec.parser());
-      }
+    for (JsSpec spec : specs) {
+      parsers.add(spec.parser());
+    }
 
     return JsParsers.INSTANCE.ofTuple(parsers,
                                       nullable
@@ -84,9 +87,9 @@ final class JsTuple extends AbstractNullable implements JsArraySpec {
                                final List<SpecError> errors,
                                final JsValue value
                               ) {
-      if (value.isNull() && nullable) {
-          return errors;
-      }
+    if (value.isNull() && nullable) {
+      return errors;
+    }
 
     if (!value.isArray()) {
       errors.add(SpecError.of(parent,

@@ -1,13 +1,12 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Gen;
 import fun.gen.StrGen;
-import jsonvalues.JsStr;
-
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsStr;
 
 /**
  * Represents a JsStr generator. There are different static factory methods to create all kinds of generators: - One

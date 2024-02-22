@@ -1,7 +1,7 @@
 package jsonvalues.spec;
 
 
-import jsonvalues.*;
+import static jsonvalues.spec.JsReaders.READERS;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -9,9 +9,24 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.function.*;
-
-import static jsonvalues.spec.JsReaders.READERS;
+import java.util.function.BiFunction;
+import java.util.function.DoubleFunction;
+import java.util.function.Function;
+import java.util.function.IntFunction;
+import java.util.function.LongFunction;
+import java.util.function.Predicate;
+import jsonvalues.JsArray;
+import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
+import jsonvalues.JsBinary;
+import jsonvalues.JsDouble;
+import jsonvalues.JsInstant;
+import jsonvalues.JsInt;
+import jsonvalues.JsLong;
+import jsonvalues.JsNull;
+import jsonvalues.JsObj;
+import jsonvalues.JsStr;
+import jsonvalues.JsValue;
 
 /**
  * set of factory methods to create parsers from specs. Internal class that will be hidden when migrating json-values to

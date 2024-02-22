@@ -143,9 +143,9 @@ final class HashMap implements Iterable<HashArrayMappedTrieModule.LeafNode> {
   boolean containsValue(JsValue value) {
     for (Iterator<JsValue> it = trie.valuesIterator(); it.hasNext(); ) {
       JsValue v = it.next();
-        if (v.equals(value)) {
-            return true;
-        }
+      if (v.equals(value)) {
+        return true;
+      }
     }
 
     return false;

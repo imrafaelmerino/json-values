@@ -1,13 +1,12 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.Gen;
 import fun.gen.LongGen;
-import jsonvalues.JsLong;
-
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsLong;
 
 /**
  * Represents a JsLong generator. It can be created using the static factory methods {@link #biased()} and

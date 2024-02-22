@@ -4,89 +4,91 @@ package jsonvalues.benchmark;
 import java.util.List;
 
 public class Person {
-    private String firstName;
-    private String lastName;
-    private int age;
-    private Double latitude;
-    private Double longitude;
-    private List<String> fruits;
-    private List<Veggie> vegetables;
-    private List<Integer> numbers;
 
-    public String getFirstName() {
-        return firstName;
-    }
+  private String firstName;
+  private String lastName;
+  private int age;
+  private Double latitude;
+  private Double longitude;
+  private List<String> fruits;
+  private List<Veggie> vegetables;
+  private List<Integer> numbers;
 
-    public void setFirstName(final String firstName) {
-        this.firstName = firstName;
-    }
+  public String getFirstName() {
+    return firstName;
+  }
 
-    public String getLastName() {
-        return lastName;
-    }
+  public void setFirstName(final String firstName) {
+    this.firstName = firstName;
+  }
 
-    public void setLastName(final String lastName) {
-        this.lastName = lastName;
-    }
+  public String getLastName() {
+    return lastName;
+  }
 
-    public int getAge() {
-        return age;
-    }
+  public void setLastName(final String lastName) {
+    this.lastName = lastName;
+  }
 
-    public void setAge(final int age) {
-        this.age = age;
-    }
+  public int getAge() {
+    return age;
+  }
 
-    public Double getLatitude() {
-        return latitude;
-    }
+  public void setAge(final int age) {
+    this.age = age;
+  }
 
-    public void setLatitude(final Double latitude) {
-        this.latitude = latitude;
-    }
+  public Double getLatitude() {
+    return latitude;
+  }
 
-    public Double getLongitude() {
-        return longitude;
-    }
+  public void setLatitude(final Double latitude) {
+    this.latitude = latitude;
+  }
 
-    public void setLongitude(final Double longitude) {
-        this.longitude = longitude;
-    }
+  public Double getLongitude() {
+    return longitude;
+  }
 
-    public List<String> getFruits() {
-        return fruits;
-    }
+  public void setLongitude(final Double longitude) {
+    this.longitude = longitude;
+  }
 
-    public void setFruits(final List<String> fruits) {
-        this.fruits = fruits;
-    }
+  public List<String> getFruits() {
+    return fruits;
+  }
 
-    public List<Veggie> getVegetables() {
-        return vegetables;
-    }
+  public void setFruits(final List<String> fruits) {
+    this.fruits = fruits;
+  }
 
-    public void setVegetables(final List<Veggie> vegetables) {
-        this.vegetables = vegetables;
-    }
-    public List<Integer> getNumbers() {
-        return numbers;
-    }
+  public List<Veggie> getVegetables() {
+    return vegetables;
+  }
 
-    public void setNumbers(final List<Integer> numbers) {
-        this.numbers = numbers;
-    }
+  public void setVegetables(final List<Veggie> vegetables) {
+    this.vegetables = vegetables;
+  }
 
-    @Override
-    public String toString() {
-        return "Person{" +
-                "firstName='" + firstName + '\'' +
-                ", lastName='" + lastName + '\'' +
-                ", age=" + age +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
-                ", fruits=" + fruits +
-                ", vegetables=" + vegetables +
-                ", numbers=" + numbers +
-                '}';
-    }
+  public List<Integer> getNumbers() {
+    return numbers;
+  }
+
+  public void setNumbers(final List<Integer> numbers) {
+    this.numbers = numbers;
+  }
+
+  @Override
+  public String toString() {
+    return "Person{" +
+           "firstName='" + firstName + '\'' +
+           ", lastName='" + lastName + '\'' +
+           ", age=" + age +
+           ", latitude=" + latitude +
+           ", longitude=" + longitude +
+           ", fruits=" + fruits +
+           ", vegetables=" + vegetables +
+           ", numbers=" + numbers +
+           '}';
+  }
 }

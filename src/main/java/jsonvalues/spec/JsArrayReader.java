@@ -1,12 +1,11 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsArray;
-import jsonvalues.JsNull;
-import jsonvalues.JsValue;
-
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import jsonvalues.JsArray;
+import jsonvalues.JsNull;
+import jsonvalues.JsValue;
 
 abstract class JsArrayReader extends AbstractReader {
 

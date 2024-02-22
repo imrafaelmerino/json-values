@@ -66,11 +66,11 @@ public final class JsPath implements Comparable<JsPath> {
   private static final BiFunction<UnaryOperator<String>, Position, Position> mapKeyFn = (map, it) ->
   {
 
-      if (it.isKey()) {
-          return Key.of(map.apply(it.asKey().name));
-      } else {
-          return it;
-      }
+    if (it.isKey()) {
+      return Key.of(map.apply(it.asKey().name));
+    } else {
+      return it;
+    }
   };
   private static final UnaryOperator<String> escape =
       token -> token.replace("~1",
@@ -119,25 +119,25 @@ public final class JsPath implements Comparable<JsPath> {
    * @return a new JsPath
    */
   public static JsPath path(final String path) {
-      if (requireNonNull(path).isEmpty()) {
-          return EMPTY;
-      }
-      if (path.equals("#")) {
-          return EMPTY;
-      }
-      if (path.equals("#/")) {
-          return fromKey("");
-      }
-      if (path.equals("/")) {
-          return fromKey("");
-      }
-      if (!path.startsWith("#/") && !path.startsWith("/")) {
-          throw UserError.pathMalformed(path);
-      }
-      if (path.startsWith("#")) {
-          return parse(mapTokenToPosition(t -> escape.andThen(decode)
-                                                     .apply(t))).apply(path.substring(2));
-      }
+    if (requireNonNull(path).isEmpty()) {
+      return EMPTY;
+    }
+    if (path.equals("#")) {
+      return EMPTY;
+    }
+    if (path.equals("#/")) {
+      return fromKey("");
+    }
+    if (path.equals("/")) {
+      return fromKey("");
+    }
+    if (!path.startsWith("#/") && !path.startsWith("/")) {
+      throw UserError.pathMalformed(path);
+    }
+    if (path.startsWith("#")) {
+      return parse(mapTokenToPosition(t -> escape.andThen(decode)
+                                                 .apply(t))).apply(path.substring(2));
+    }
     return parse(mapTokenToPosition(escape)).apply(path.substring(1));
   }
 
@@ -158,9 +158,9 @@ public final class JsPath implements Comparable<JsPath> {
                                                    -1
                                                   );
       Vector<Position> vector = EMPTY_VECTOR;
-        for (String token : tokens) {
-            vector = vector.append(mapFn.apply(token));
-        }
+      for (String token : tokens) {
+        vector = vector.append(mapFn.apply(token));
+      }
       return new JsPath(vector);
     };
   }
@@ -168,25 +168,25 @@ public final class JsPath implements Comparable<JsPath> {
   private static Function<String, Position> mapTokenToPosition(final UnaryOperator<String> mapKeyFn) {
     return token ->
     {
-        if (token.isEmpty()) {
-            return KEY_EMPTY;
-        }
-        if (token.equals("'")) {
-            return KEY_SINGLE_QUOTE;
-        }
+      if (token.isEmpty()) {
+        return KEY_EMPTY;
+      }
+      if (token.equals("'")) {
+        return KEY_SINGLE_QUOTE;
+      }
       boolean isNumeric = isNumeric(token);
       if (isNumeric) {
-          if (token.length() > 1 && token.startsWith("0")) {
-              throw UserError.indexWithLeadingZeros(token);
-          }
+        if (token.length() > 1 && token.startsWith("0")) {
+          throw UserError.indexWithLeadingZeros(token);
+        }
         return Index.of(Integer.parseInt(token));
       }
-        if (token.startsWith("'") && token.endsWith("'")) {
-            return Key.of(mapKeyFn.apply(token.substring(1,
-                                                         token.length() - 1
-                                                        ))
-                         );
-        }
+      if (token.startsWith("'") && token.endsWith("'")) {
+        return Key.of(mapKeyFn.apply(token.substring(1,
+                                                     token.length() - 1
+                                                    ))
+                     );
+      }
       return Key.of(mapKeyFn.apply(token));
     };
   }
@@ -221,15 +221,15 @@ public final class JsPath implements Comparable<JsPath> {
    */
   @Override
   public int compareTo(final JsPath that) {
-      if (this.isEmpty() && requireNonNull(that).isEmpty()) {
-          return 0;
-      }
-      if (that.isEmpty()) {
-          return 1;
-      }
-      if (this.isEmpty()) {
-          return -1;
-      }
+    if (this.isEmpty() && requireNonNull(that).isEmpty()) {
+      return 0;
+    }
+    if (that.isEmpty()) {
+      return 1;
+    }
+    if (this.isEmpty()) {
+      return -1;
+    }
 
     int i = this.head()
                 .compareTo(that.head());
@@ -248,9 +248,9 @@ public final class JsPath implements Comparable<JsPath> {
    * @throws UserError if the path is empty
    */
   public Position head() {
-      if (isEmpty()) {
-          throw UserError.headOfEmptyPath();
-      }
+    if (isEmpty()) {
+      throw UserError.headOfEmptyPath();
+    }
     return positions.head();
 
   }
@@ -290,9 +290,9 @@ public final class JsPath implements Comparable<JsPath> {
    * @throws UserError if the JsPath is empty
    */
   public Position last() {
-      if (isEmpty()) {
-          throw UserError.lastOfEmptyPath();
-      }
+    if (isEmpty()) {
+      throw UserError.lastOfEmptyPath();
+    }
     return positions.last();
   }
 
@@ -314,9 +314,9 @@ public final class JsPath implements Comparable<JsPath> {
    * @throws UserError if the JsPath is empty
    */
   public JsPath init() {
-      if (isEmpty()) {
-          throw UserError.initOfEmptyPath();
-      }
+    if (isEmpty()) {
+      throw UserError.initOfEmptyPath();
+    }
     return new JsPath(positions.init());
 
   }
@@ -365,9 +365,9 @@ public final class JsPath implements Comparable<JsPath> {
    * @throws UserError if the JsPath is empty
    */
   public JsPath tail() {
-      if (isEmpty()) {
-          throw UserError.tailOfEmptyPath();
-      }
+    if (isEmpty()) {
+      throw UserError.tailOfEmptyPath();
+    }
     return new JsPath(positions.tail());
   }
 
@@ -379,18 +379,18 @@ public final class JsPath implements Comparable<JsPath> {
    */
   public JsPath mapKeys(final UnaryOperator<String> map) {
     requireNonNull(map);
-      if (this.isEmpty()) {
-          return EMPTY;
-      }
+    if (this.isEmpty()) {
+      return EMPTY;
+    }
     Position head = this.head();
     JsPath tail = this.tail();
 
     JsPath headPath = new JsPath(mapKeyFn.apply(map,
                                                 head
                                                ));
-      if (tail.isEmpty()) {
-          return headPath;
-      }
+    if (tail.isEmpty()) {
+      return headPath;
+    }
 
     return headPath.append(tail.mapKeys(map));
 
@@ -423,12 +423,12 @@ public final class JsPath implements Comparable<JsPath> {
    * @return true if this JsPath starts with the given JsPath
    */
   public boolean startsWith(final JsPath path) {
-      if (requireNonNull(path).isEmpty()) {
-          return true;
-      }
-      if (this.isEmpty()) {
-          return false;
-      }
+    if (requireNonNull(path).isEmpty()) {
+      return true;
+    }
+    if (this.isEmpty()) {
+      return false;
+    }
 
     return this.head()
                .equals(path.head()) && this.tail()
@@ -451,12 +451,12 @@ public final class JsPath implements Comparable<JsPath> {
    * @return true if this JsPath ends with the given JsPath
    */
   public boolean endsWith(final JsPath path) {
-      if (requireNonNull(path).isEmpty()) {
-          return true;
-      }
-      if (this.isEmpty()) {
-          return false;
-      }
+    if (requireNonNull(path).isEmpty()) {
+      return true;
+    }
+    if (this.isEmpty()) {
+      return false;
+    }
 
     return this.last()
                .equals(path.last()) && this.init()
@@ -481,22 +481,22 @@ public final class JsPath implements Comparable<JsPath> {
    */
   @Override
   public boolean equals(final Object that) {
-      if (that == null || getClass() != that.getClass()) {
-          return false;
-      }
-      if (this == that) {
-          return true;
-      }
+    if (that == null || getClass() != that.getClass()) {
+      return false;
+    }
+    if (this == that) {
+      return true;
+    }
     JsPath thatObj = (JsPath) that;
-      if (isEmpty() && thatObj.isEmpty()) {
-          return true;
-      }
-      if (isEmpty()) {
-          return false;
-      }
-      if (thatObj.isEmpty()) {
-          return false;
-      }
+    if (isEmpty() && thatObj.isEmpty()) {
+      return true;
+    }
+    if (isEmpty()) {
+      return false;
+    }
+    if (thatObj.isEmpty()) {
+      return false;
+    }
 
     return this.head()
                .equals(thatObj.head()) && this.tail()
@@ -513,15 +513,15 @@ public final class JsPath implements Comparable<JsPath> {
    */
   @Override
   public String toString() {
-      if (positions.isEmpty()) {
-          return "";
-      }
+    if (positions.isEmpty()) {
+      return "";
+    }
     return positions
         .map(pos -> pos.match(key ->
                               {
-                                  if (key.isEmpty()) {
-                                      return key;
-                                  }
+                                if (key.isEmpty()) {
+                                  return key;
+                                }
                                 return isNumeric(key) ?
                                        String.format("'%s'",
                                                      key
@@ -555,13 +555,13 @@ public final class JsPath implements Comparable<JsPath> {
    * @return true if this path contains the given path
    */
   public boolean contains(JsPath path) {
-      if (Objects.requireNonNull(path)
-                 .isEmpty()) {
-          return true;
-      }
-      if (this.isEmpty()) {
-          return false;
-      }
+    if (Objects.requireNonNull(path)
+               .isEmpty()) {
+      return true;
+    }
+    if (this.isEmpty()) {
+      return false;
+    }
     return this.toString()
                .contains(path.toString());
   }

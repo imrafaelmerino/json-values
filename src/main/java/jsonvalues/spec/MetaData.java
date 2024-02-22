@@ -1,11 +1,10 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsValue;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import jsonvalues.JsValue;
 
 
 record MetaData(String name,
@@ -46,14 +45,14 @@ record MetaData(String name,
    * @return the field that has as one possible alias the given one
    */
   String getAliasField(String alias) {
-      if (fieldsAliases == null) {
-          return null;
-      }
+    if (fieldsAliases == null) {
+      return null;
+    }
     for (String key : fieldsAliases.keySet()) {
-        if (fieldsAliases.get(key)
-                         .contains(alias)) {
-            return key;
-        }
+      if (fieldsAliases.get(key)
+                       .contains(alias)) {
+        return key;
+      }
     }
     return null;
   }

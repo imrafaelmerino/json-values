@@ -88,12 +88,12 @@ public final class JsBool extends JsPrimitive {
    */
   @Override
   public boolean equals(final Object that) {
-      if (this == that) {
-          return true;
-      }
-      if (that == null || getClass() != that.getClass()) {
-          return false;
-      }
+    if (this == that) {
+      return true;
+    }
+    if (that == null || getClass() != that.getClass()) {
+      return false;
+    }
     JsBool thatBool = (JsBool) that;
     return value == thatBool.value;
   }

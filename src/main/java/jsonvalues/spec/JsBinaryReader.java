@@ -1,8 +1,7 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsBinary;
-
 import java.util.Base64;
+import jsonvalues.JsBinary;
 
 
 final class JsBinaryReader extends AbstractReader {

@@ -1,14 +1,13 @@
 package jsonvalues.gen;
 
+import static java.util.Objects.requireNonNull;
+
 import fun.gen.BigIntGen;
 import fun.gen.Gen;
-import jsonvalues.JsBigInt;
-
 import java.math.BigInteger;
 import java.util.function.Supplier;
 import java.util.random.RandomGenerator;
-
-import static java.util.Objects.requireNonNull;
+import jsonvalues.JsBigInt;
 
 /**
  * Represents a JsBigInt generator. It can be created using the static factory methods

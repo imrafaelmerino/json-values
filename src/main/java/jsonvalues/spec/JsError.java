@@ -18,11 +18,11 @@ public record JsError(JsValue value,
    * @param code  the error code
    */
   public JsError {
-      if (value == null) {
-          throw new IllegalArgumentException("value is null");
-      }
-      if (code == null) {
-          throw new IllegalArgumentException("code is null");
-      }
+    if (value == null) {
+      throw new IllegalArgumentException("value is null");
+    }
+    if (code == null) {
+      throw new IllegalArgumentException("code is null");
+    }
   }
 }

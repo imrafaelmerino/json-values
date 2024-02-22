@@ -1,10 +1,9 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsBigDec;
-
 import java.math.BigDecimal;
 import java.util.Optional;
 import java.util.function.Function;
+import jsonvalues.JsBigDec;
 
 
 final class JsDecimalReader extends AbstractReader {
@@ -19,9 +18,9 @@ final class JsDecimalReader extends AbstractReader {
                         ) throws JsParserException {
     final BigDecimal value = NumberConverter.deserializeDecimal(reader);
     final Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return JsBigDec.of(value);
-      }
+    if (result.isEmpty()) {
+      return JsBigDec.of(value);
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );

@@ -1,9 +1,8 @@
 package jsonvalues.spec;
 
-import jsonvalues.JsLong;
-
 import java.util.Optional;
 import java.util.function.LongFunction;
+import jsonvalues.JsLong;
 
 final class JsLongReader extends AbstractReader {
 
@@ -17,9 +16,9 @@ final class JsLongReader extends AbstractReader {
                       ) throws JsParserException {
     long value = NumberConverter.deserializeLong(reader);
     Optional<JsError> result = fn.apply(value);
-      if (result.isEmpty()) {
-          return JsLong.of(value);
-      }
+    if (result.isEmpty()) {
+      return JsLong.of(value);
+    }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
                                      reader.getPositionInStream()
                                     );
