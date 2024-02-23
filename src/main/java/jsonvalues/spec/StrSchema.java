@@ -5,6 +5,7 @@ public final class StrSchema {
   public enum BUILT_INT_FORMAT {
     DATE_TIME,
     DATE,
+    BASE64,
     TIME,
     EMAIL,
     HOSTNAME,
