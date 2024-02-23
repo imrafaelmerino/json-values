@@ -14,7 +14,8 @@ final class JsArrayOfStrSuchThat extends AbstractNullable implements JsOneErrorS
                        final boolean nullable
                       ) {
     super(nullable);
-    this.arrayOfStringSpec = new JsArrayOfStr(nullable);
+    this.arrayOfStringSpec = new JsArrayOfStr(nullable,
+                                              null);
     this.predicate = predicate;
   }
 

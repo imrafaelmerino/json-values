@@ -357,8 +357,9 @@ final class JsParsers {
 
   JsParser ofArrayOfStr(boolean nullable,
                         int min,
-                        int max
-                       ) {
+                        int max,
+                        final StrConstraints schema) {
+    //todo incluir schema validation
     return getParser(READERS.arrayOfStringReader,
                      nullable,
                      min,
@@ -657,7 +658,9 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofMapOfString(boolean nullable) {
+  JsParser ofMapOfString(boolean nullable,
+                         final StrConstraints schema) {
+    //todo incluir schema validation
     return getParser(READERS.mapOfStringReader,
                      nullable
                     );

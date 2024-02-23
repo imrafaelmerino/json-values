@@ -42,7 +42,7 @@ public final class JsObjSpecToSchema {
   }
 
   private static JsValue getDefinitions(final JsObjSpec jsObjSpec,
-                                      final Set<String> nameSpecsVisited) {
+                                        final Set<String> nameSpecsVisited) {
     JsObj definitions = JsObj.empty();
     var names = new HashSet<String>();
     findNamedSpecsRecursively(jsObjSpec,
@@ -127,7 +127,8 @@ public final class JsObjSpecToSchema {
 
       case JsBooleanSpec s -> getBoolSchema(s);
 
-      case JsStrSpec s -> getStrSchema(s);
+      case JsStrSpec s -> getStrSchema(s,
+                                       s.schema);
       case JsStrSuchThat s -> getStrSchema(s);
 
       case JsInstantSpec s -> getInstantSchema(s);
@@ -159,7 +160,7 @@ public final class JsObjSpecToSchema {
       case JsMapOfInstant ignored -> getMapOfInstantSpec();
       case JsMapOfSpec s -> getMapOfSpec(s,
                                          nameSpecsVisited);
-      case JsMapOfStr ignored -> getMapOfSpec();
+      case JsMapOfStr mapOfStr -> getMapOfStrSpec(mapOfStr.schema);
 
       case NamedSpec namedSpec -> JsObj.of("$ref",
                                            JsStr.of("#/definitions/" + namedSpec.name)
@@ -168,6 +169,53 @@ public final class JsObjSpecToSchema {
                                    nameSpecsVisited);
     };
 
+  }
+
+  private static JsValue getMapOfStrSpec(final StrConstraints schema) {
+    if (schema != null) {
+      return JsObj.of("type",
+                      JsStr.of("object"),
+                      "additionalProperties",
+                      JsObj.of("type",
+                               JsStr.of("string"),
+                               "minLength",
+                               schema.minLength == 0 ? JsNothing.NOTHING : JsInt.of(schema.minLength),
+                               "maxLength",
+                               schema.maxLength == Integer.MAX_VALUE ? JsNothing.NOTHING : JsInt.of(schema.maxLength),
+                               "pattern",
+                               schema.pattern == null ? JsNothing.NOTHING : JsStr.of(schema.pattern.pattern()),
+                               "format",
+                               schema.format == null ? JsNothing.NOTHING : JsStr.of(schema.format)
+                              )
+                     );
+    }
+    return JsObj.of("type",
+                    JsStr.of("object"),
+                    "additionalProperties",
+                    JsObj.of("type",
+                             JsStr.of("string")
+                            )
+                   );
+  }
+
+  private static JsValue getStrSchema(final JsStrSpec s,
+                                      final StrConstraints schema) {
+    if (schema != null) {
+      return JsObj.of("type",
+                      s.nullable ? JsArray.of(JsStr.of("string"),
+                                              JsStr.of("null")
+                                             ) : JsStr.of("string"),
+                      "minLength",
+                      schema.minLength == 0 ? JsNothing.NOTHING : JsInt.of(schema.minLength),
+                      "maxLength",
+                      schema.maxLength == Integer.MAX_VALUE ? JsNothing.NOTHING : JsInt.of(schema.maxLength),
+                      "pattern",
+                      schema.pattern == null ? JsNothing.NOTHING : JsStr.of(schema.pattern.pattern()),
+                      "format",
+                      schema.format == null ? JsNothing.NOTHING : JsStr.of(schema.format)
+                     );
+    }
+    return getStrSchema(s);
   }
 
   private static JsObj getOneOf(final OneOf oneOf,
@@ -180,15 +228,6 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsObj getMapOfSpec() {
-    return JsObj.of("type",
-                    JsStr.of("object"),
-                    "additionalProperties",
-                    JsObj.of("type",
-                             JsStr.of("string")
-                            )
-                   );
-  }
 
   private static JsObj getMapOfSpec(final JsMapOfSpec jsMapOfSpec,
                                     final Set<String> nameSpecsVisited) {
@@ -429,7 +468,8 @@ public final class JsObjSpecToSchema {
                                                      JsStr.of("boolean")
                                                     );
 
-      case JsArrayOfStr s -> getSizableArrayOfStrSchema(s);
+      case JsArrayOfStr s -> getSizableArrayOfStrSchema(s,
+                                                        s.schema);
       case JsArrayOfStrSuchThat ignored -> JsObj.of("type",
                                                     JsStr.of("string")
                                                    );
@@ -452,6 +492,30 @@ public final class JsObjSpecToSchema {
       case JsTuple tuple -> getArrayOfTupleSchema(tuple,
                                                   new HashSet<>());
     };
+  }
+
+  private static JsValue getSizableArrayOfStrSchema(final JsArrayOfStr s,
+                                                    final StrConstraints schema) {
+    if (schema != null) {
+      return getSizableArraySchema(s,
+                                   JsObj.of("type",
+                                            JsStr.of("string"),
+                                            "minLength",
+                                            schema.minLength == 0 ? JsNothing.NOTHING : JsInt.of(schema.minLength),
+                                            "maxLength",
+                                            schema.maxLength == Integer.MAX_VALUE ? JsNothing.NOTHING
+                                                                                  : JsInt.of(schema.maxLength),
+                                            "pattern",
+                                            schema.pattern == null ? JsNothing.NOTHING
+                                                                   : JsStr.of(schema.pattern.pattern()),
+                                            "format",
+                                            schema.format == null ? JsNothing.NOTHING : JsStr.of(schema.format)
+                                           ));
+    }
+    return getSizableArraySchema(s,
+                                 JsObj.of("type",
+                                          JsStr.of("string")
+                                         ));
   }
 
 

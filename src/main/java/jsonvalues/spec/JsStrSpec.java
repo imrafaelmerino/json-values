@@ -8,9 +8,17 @@ import jsonvalues.JsValue;
 final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
   JsStrSpec(final boolean nullable) {
-    super(nullable);
+    this(nullable,
+         null);
   }
 
+  final StrConstraints schema;
+
+  public JsStrSpec(final boolean nullable,
+                   final StrConstraints schema) {
+    super(nullable);
+    this.schema = schema;
+  }
 
   @Override
   public JsSpec nullable() {

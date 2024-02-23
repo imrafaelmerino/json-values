@@ -21,13 +21,11 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
 import java.util.function.Predicate;
-import java.util.regex.Pattern;
 import jsonvalues.JsArray;
 import jsonvalues.JsBigDec;
 import jsonvalues.JsBigInt;
@@ -71,7 +69,8 @@ public final class JsSpecs {
   private static final JsSpec instant = new JsInstantSpec(false);
   private static final JsArraySpec arrayOfLong = new JsArrayOfLong(false);
   private static final JsArraySpec arrayOfInt = new JsArrayOfInt(false);
-  private static final JsArraySpec arrayOfStr = new JsArrayOfStr(false);
+  private static final JsArraySpec arrayOfStr = new JsArrayOfStr(false,
+                                                                 null);
   private static final JsSpec binary = new JsBinarySpec(false);
   private static final JsSpec bigInteger = new JsBigIntSpec(false);
   private static final JsSpec longInteger = new JsLongSpec(false);
@@ -86,7 +85,8 @@ public final class JsSpecs {
 
   private static final JsSpec mapOfLongSpec = new JsMapOfLong(false);
 
-  private static final JsSpec mapOfStrSpec = new JsMapOfStr(false);
+  private static final JsSpec mapOfStrSpec = new JsMapOfStr(false,
+                                                            null);
 
 
   private static final JsSpec mapOfIntSpec = new JsMapOfInt(false);
@@ -189,6 +189,12 @@ public final class JsSpecs {
    */
   public static JsArraySpec arrayOfStr() {
     return arrayOfStr;
+  }
+
+  public static JsArraySpec arrayOfStr(StrSchema elemSchema) {
+    //TODO
+    return new  JsArrayOfStr(false,
+                        elemSchema.build());
   }
 
   /**
@@ -296,42 +302,10 @@ public final class JsSpecs {
     return str;
   }
 
-  /**
-   * Returns a non-nullable string specification that validates strings based on their length within the specified
-   * range.
-   *
-   * @param min The minimum allowed length for strings (inclusive).
-   * @param max The maximum allowed length for strings (inclusive).
-   * @return A specification for strings that have a length within the specified range.
-   * @throws IllegalArgumentException If the provided min is negative, max is non-positive, or min is greater than max.
-   */
-  public static JsSpec str(int min,
-                           int max
-                          ) {
-    if (min < 0) {
-      throw new IllegalArgumentException("min < 0");
-    }
-    if (max <= 0) {
-      throw new IllegalArgumentException("max <= 0");
-    }
-    if (min > max) {
-      throw new IllegalArgumentException("min > max");
-    }
-    return str(s -> s.length() >= min && s.length() <= max);
-  }
 
-
-  /**
-   * Returns a non-nullable string specification with the specified regular expression pattern.
-   *
-   * @param pattern The regular expression pattern to match strings against.
-   * @return A specification for strings that match the given pattern.
-   * @throws NullPointerException If the provided pattern is null.
-   */
-  public static JsSpec str(final Pattern pattern) {
-    Objects.requireNonNull(pattern);
-    return str(s -> pattern.matcher(s)
-                           .matches());
+  public static JsSpec str(StrSchema schema) {
+    return new JsStrSpec(false,
+                         schema.build());
   }
 
 
@@ -486,6 +460,17 @@ public final class JsSpecs {
                             minLength,
                             maxLength);
   }
+
+  public static JsArraySpec arrayOfStr(int minLength,
+                                       int maxLength,
+                                       StrSchema elemSchema
+                                      ) {
+    return new JsArrayOfStr(false,
+                            minLength,
+                            maxLength,
+                            elemSchema.build());
+  }
+
 
   /**
    * Returns a specification for an array of long numbers with a specified minimum and maximum length.
@@ -1286,6 +1271,11 @@ public final class JsSpecs {
    */
   public static JsSpec mapOfStr() {
     return mapOfStrSpec;
+  }
+
+  public static JsSpec mapOfStr(StrSchema elemSchema) {
+    return new JsMapOfStr(false,
+                          elemSchema.build());
   }
 
 

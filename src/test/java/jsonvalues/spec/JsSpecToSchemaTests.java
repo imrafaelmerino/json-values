@@ -40,7 +40,7 @@ public class JsSpecToSchemaTests {
   }
 
   @Test
-  public void testNamedSpec(){
+  public void testNamedSpec() {
 
     String NAME_FIELD = "name";
     String TYPE_FIELD = "type";
@@ -62,7 +62,6 @@ public class JsSpecToSchemaTests {
                                          "keyboard",
                                          "usb_hub"));
 
-
     var mouseSpec =
         JsObjSpec.of(BUTTON_COUNT_FIELD,
                      JsSpecs.integer(),
@@ -73,7 +72,6 @@ public class JsSpecToSchemaTests {
                     )
                  .concat(baseSpec);
 
-
     var keyboardSpec =
         JsObjSpec.of(KEY_COUNT_FIELD,
                      JsSpecs.integer(),
@@ -82,16 +80,12 @@ public class JsSpecToSchemaTests {
                     )
                  .concat(baseSpec);
 
-
-
     var usbHubSpec =
         JsObjSpec.of(CONNECTED_DEVICES_FIELD,
                      JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
                     )
                  .withOptKeys(CONNECTED_DEVICES_FIELD)
                  .concat(baseSpec);
-
-
 
     var peripheralSpec =
         JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
@@ -103,10 +97,29 @@ public class JsSpecToSchemaTests {
 /*    System.out.println(JsObjSpecToSchema.convert(peripheralSpec)
                                         .toPrettyString());*/
 
-  System.out.println(JsObjSpecToSchema.convert(usbHubSpec)
-                                      .toPrettyString());
+    System.out.println(JsObjSpecToSchema.convert(usbHubSpec)
+                                        .toPrettyString());
 
 
+  }
+
+  @Test
+  public void testStrSchema() {
+
+    StrSchema strSchema = new StrSchema().setMinLength(1)
+                                         .setMaxLength(2)
+                                         .setFormat("email")
+                                         .setPattern(".*");
+    var spec = JsObjSpec.of("a",
+                            JsSpecs.str(strSchema),
+                            "b",
+                            JsSpecs.arrayOfStr(strSchema),
+                            "c",
+                            JsSpecs.mapOfStr(strSchema)
+                           );
+
+    System.out.println(JsObjSpecToSchema.convert(spec)
+                                        .toPrettyString());
   }
 
   @Test
