@@ -29,7 +29,9 @@ public final class LongSchema {
   }
 
   public LongSchema setMultipleOf(final long multipleOf) {
-    if (multipleOf <= 0) throw new IllegalArgumentException("multipleOf must be greater than 0");
+    if (multipleOf <= 0) {
+      throw new IllegalArgumentException("multipleOf must be greater than 0");
+    }
     this.multipleOf = multipleOf;
     return this;
   }

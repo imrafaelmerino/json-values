@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class IsJsObj extends AbstractNullable implements JsOneErrorSpec {

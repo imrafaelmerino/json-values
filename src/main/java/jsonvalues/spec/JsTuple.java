@@ -16,8 +16,8 @@ import jsonvalues.JsValue;
  */
 final class JsTuple extends AbstractNullable implements JsArraySpec {
 
-  private final boolean required;
   final List<JsSpec> specs;
+  private final boolean required;
   private final boolean strict = true;
 
   private JsTuple(final List<JsSpec> specs) {

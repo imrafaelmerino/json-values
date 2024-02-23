@@ -33,7 +33,8 @@ public final class DecimalSchema {
   }
 
   public DecimalSchema setMultipleOf(final BigDecimal multipleOf) {
-    if (Objects.requireNonNull(multipleOf).signum() <= 0) {
+    if (Objects.requireNonNull(multipleOf)
+               .signum() <= 0) {
       throw new IllegalArgumentException("multipleOf must be a positive number");
     }
     this.multipleOf = multipleOf;

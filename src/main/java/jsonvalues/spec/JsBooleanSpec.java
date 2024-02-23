@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsBooleanSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {

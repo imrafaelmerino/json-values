@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 
@@ -21,7 +20,8 @@ final class JsMapOfLong extends AbstractMap implements JsOneErrorSpec, AvroSpec 
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfLong(true,valuesConstraints);
+    return new JsMapOfLong(true,
+                           valuesConstraints);
   }
 
   @Override

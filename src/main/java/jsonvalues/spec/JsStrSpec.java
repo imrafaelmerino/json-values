@@ -6,12 +6,12 @@ import jsonvalues.JsValue;
 
 final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
+  final StrConstraints constraints;
+
   JsStrSpec(final boolean nullable) {
     this(nullable,
          null);
   }
-
-  final StrConstraints constraints;
 
   public JsStrSpec(final boolean nullable,
                    final StrConstraints constraints) {

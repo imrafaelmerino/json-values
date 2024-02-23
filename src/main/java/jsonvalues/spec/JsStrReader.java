@@ -16,7 +16,7 @@ final class JsStrReader extends AbstractReader {
                      ) throws JsParserException {
     String value = reader.readString();
     JsError result = fn.apply(value);
-    if (result==null) {
+    if (result == null) {
       return JsStr.of(value);
     }
     throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),

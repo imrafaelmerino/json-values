@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import java.util.Objects;
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 

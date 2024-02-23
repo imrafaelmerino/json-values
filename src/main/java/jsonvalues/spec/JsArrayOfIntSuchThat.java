@@ -36,7 +36,7 @@ final class JsArrayOfIntSuchThat extends AbstractNullable implements JsOneErrorS
 
   @Override
   public JsError testValue(final JsValue value) {
-     JsError result = arrayOfIntSpec.testValue(value);
+    JsError result = arrayOfIntSpec.testValue(value);
     return result != null || value.isNull() ?
            result :
            predicate.apply(value.toJsArray());

@@ -36,7 +36,7 @@ public final class IntegerSchema {
     return this;
   }
 
-   IntegerSchemaConstraints build() {
+  IntegerSchemaConstraints build() {
     return new IntegerSchemaConstraints(minimum,
                                         maximum,
                                         exclusiveMinimum,

@@ -13,8 +13,7 @@
 
 **12.4.0**
 
-- JsObjGen with optional and nullable fields, generates the whole json and with no null vales 50% of
-  the times refactor some tests Improved javadoc
+- JsObjGen with optional and nullable fields, generates the whole json and with no null vales 50% of the times refactor some tests Improved javadoc
 
 **12.5.0**
 

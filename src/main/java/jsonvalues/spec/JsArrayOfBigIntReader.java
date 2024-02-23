@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import java.math.BigInteger;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;

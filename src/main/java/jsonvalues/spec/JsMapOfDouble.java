@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 
@@ -21,7 +20,8 @@ final class JsMapOfDouble extends AbstractMap implements JsOneErrorSpec, AvroSpe
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfDouble(true,valuesConstraints);
+    return new JsMapOfDouble(true,
+                             valuesConstraints);
   }
 
   @Override

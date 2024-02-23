@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 
@@ -18,6 +17,7 @@ final class JsMapOfBigInt extends AbstractMap implements JsOneErrorSpec, AvroSpe
     super(nullable);
     this.valuesConstraints = valuesConstraints;
   }
+
   @Override
   public JsSpec nullable() {
     return new JsMapOfBigInt(true);

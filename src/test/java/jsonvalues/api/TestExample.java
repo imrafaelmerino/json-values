@@ -31,7 +31,8 @@ public class TestExample {
     JsObjSpec spec = JsObjSpec.of("name",
                                   str(new StrSchema().setPattern("\\w+")),
                                   "surname",
-                                  str(new StrSchema().setMaxLength(20).setMinLength(2)),
+                                  str(new StrSchema().setMaxLength(20)
+                                                     .setMinLength(2)),
                                   "languages",
                                   JsSpecs.arrayOfStr(),
                                   "age",

@@ -3,7 +3,6 @@ package jsonvalues.spec;
 import static java.util.Objects.requireNonNull;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;

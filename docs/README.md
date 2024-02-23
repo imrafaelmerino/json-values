@@ -1015,18 +1015,25 @@ Another interesting spec you can define is map, i.e, an arbitrary number of keys
 
 ```java
 
-JsObjSpec a = JsObjSpec.of("name", str(),
-                           "grades", mapOfInteger()
+JsObjSpec a = JsObjSpec.of("name",
+                           str(),
+                           "grades",
+                           mapOfInteger()
                           );
 
 List<SpecError> errors =
-        spec.test(JsObj.of("name", JsStr.of("Rafael"),
-                           "grades", JsObj.of("Maths", JsInt.of(10),
-                                              "Science", JsInt.of(8),
-                                              "Geography", JsInt.of(8)
-                                              )
-                          )
-                 );
+    spec.test(JsObj.of("name",
+                       JsStr.of("Rafael"),
+                       "grades",
+                       JsObj.of("Maths",
+                                JsInt.of(10),
+                                "Science",
+                                JsInt.of(8),
+                                "Geography",
+                                JsInt.of(8)
+                               )
+                      )
+             );
 
 ```
 

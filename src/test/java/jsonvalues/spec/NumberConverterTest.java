@@ -19,7 +19,7 @@ public class NumberConverterTest {
     JsWriter sw = new JsWriter(40);
     JsReader jr = dslJson.newReader(sw.getByteBuffer());
     JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
-                                           new byte[64]);
+                                     new byte[64]);
 
     int from = -10000000;
     int to = 10000000;
@@ -54,7 +54,7 @@ public class NumberConverterTest {
     JsWriter sw = new JsWriter(40);
     JsReader jr = dslJson.newReader(sw.getByteBuffer());
     JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
-                                           new byte[64]);
+                                     new byte[64]);
 
     long from = -10000000000L;
     long to = 10000000000L;
@@ -104,7 +104,7 @@ public class NumberConverterTest {
     JsWriter sw = new JsWriter(40);
     JsReader jr = dslJson.newReader(sw.getByteBuffer());
     JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
-                                           new byte[64]);
+                                     new byte[64]);
 
     int from = -100000000;
     int to = 100000000;
