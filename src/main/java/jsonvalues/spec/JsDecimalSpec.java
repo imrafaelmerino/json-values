@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
+import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 import jsonvalues.JsValue;
 
@@ -33,11 +34,22 @@ final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, Av
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isNumber,
-                               DECIMAL_EXPECTED,
-                               nullable,
-                               value
-                              );
+    var error =
+        Functions.testValue(JsValue::isNumber,
+                            DECIMAL_EXPECTED,
+                            nullable,
+                            value
+                           );
+    if (error != null) {
+      return error;
+    }
+
+    if (constraints != null) {
+      return Functions.testDecimalConstraints(constraints,
+                                           value.toJsBigDec());
+    }
+
+    return null;
 
   }
 

@@ -71,12 +71,13 @@ public enum ERROR_CODE {
   BOOLEAN_CONDITION,
 
   /**
-   * Indicates that an integral number (integer or long) was expected but a different type of value was encountered.
+   * Indicates that an integral number (integer or long or biginteger) was expected but a different type of value was
+   * encountered.
    */
   INTEGRAL_EXPECTED,
 
   /**
-   * Represents a failed condition for an integral number (integer or long).
+   * Represents a failed condition for an integral number (integer or long or biginteger).
    */
   INTEGRAL_CONDITION,
 
@@ -185,6 +186,34 @@ public enum ERROR_CODE {
    */
   ENUM_SYMBOL_EXPECTED,
 
+  STR_SIZE_LOWER_THAN_MIN,
+  STR_SIZE_GREATER_THAN_MAX,
+  STR_PATTERN_NOT_MATCH,
+  LONG_LOWER_THAN_MIN,
+  LONG_GREATER_THAN_MAX,
+  LONG_NOT_MULTIPLE_OF,
+  LONG_EXCLUSIVE_MINIMUM,
+  LONG_EXCLUSIVE_MAXIMUM,
+  INT_LOWER_THAN_MIN,
+  INT_GREATER_THAN_MAX,
+  INT_NOT_MULTIPLE_OF,
+  INT_EXCLUSIVE_MINIMUM,
+  INT_EXCLUSIVE_MAXIMUM,
+  DOUBLE_LOWER_THAN_MIN,
+  DOUBLE_GREATER_THAN_MAX,
+  DOUBLE_NOT_MULTIPLE_OF,
+  DOUBLE_EXCLUSIVE_MINIMUM,
+  DOUBLE_EXCLUSIVE_MAXIMUM,
+  DECIMAL_LOWER_THAN_MIN,
+  DECIMAL_GREATER_THAN_MAX,
+  DECIMAL_NOT_MULTIPLE_OF,
+  DECIMAL_EXCLUSIVE_MINIMUM,
+  DECIMAL_EXCLUSIVE_MAXIMUM,
+  BIGINT_LOWER_THAN_MIN,
+  BIGINT_GREATER_THAN_MAX,
+  BIGINT_NOT_MULTIPLE_OF,
+  BIGINT_EXCLUSIVE_MINIMUM,
+  BIGINT_EXCLUSIVE_MAXIMUM,
   /**
    * All the specs from the `OneOf` spec was tried but the value doesn't confirm none of them
    */

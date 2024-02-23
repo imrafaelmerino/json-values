@@ -33,11 +33,22 @@ final class JsDoubleSpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isDouble,
-                               DOUBLE_EXPECTED,
-                               nullable,
-                               value
-                              );
+    var error =
+        Functions.testValue(JsValue::isDouble,
+                            DOUBLE_EXPECTED,
+                            nullable,
+                            value
+                           );
+    if (error != null) {
+      return error;
+    }
+
+    if (constraints != null) {
+      return Functions.testDoubleConstraints(constraints,
+                                             value.toJsDouble());
+    }
+
+    return null;
   }
 
 

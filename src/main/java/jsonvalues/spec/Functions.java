@@ -4,9 +4,17 @@ package jsonvalues.spec;
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.NULL_NOT_EXPECTED;
 
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import jsonvalues.JsArray;
+import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
+import jsonvalues.JsDouble;
+import jsonvalues.JsInt;
+import jsonvalues.JsLong;
+import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
 class Functions {
@@ -136,7 +144,186 @@ class Functions {
   }
 
   public static JsError testStrConstraints(final StrConstraints constraints,
-                                           final JsValue value) {
+                                           final JsStr jsStr) {
+    String value = jsStr.value;
+    int length = value.length();
+    if (length < constraints.minLength) {
+      return new JsError(jsStr,
+                         ERROR_CODE.STR_SIZE_LOWER_THAN_MIN
+      );
+    }
+    if (length > constraints.maxLength) {
+      return new JsError(jsStr,
+                         ERROR_CODE.STR_SIZE_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.pattern != null && !constraints.pattern.matcher(value)
+                                                           .matches()) {
+      return new JsError(jsStr,
+                         ERROR_CODE.STR_PATTERN_NOT_MATCH
+      );
+    }
+
+    return null;
+  }
+
+  public static JsError testLongConstraints(final LongSchemaConstraints constraints,
+                                            final JsLong value) {
+    if (value.value < constraints.minimum()) {
+      return new JsError(value,
+                         ERROR_CODE.LONG_LOWER_THAN_MIN
+      );
+    }
+    if (value.value > constraints.maximum()) {
+      return new JsError(value,
+                         ERROR_CODE.LONG_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
+      return new JsError(value,
+                         ERROR_CODE.LONG_NOT_MULTIPLE_OF
+      );
+    }
+    if (constraints.exclusiveMinimum() && value.value == Long.MAX_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.LONG_EXCLUSIVE_MINIMUM
+      );
+    }
+    if (constraints.exclusiveMaximum() && value.value == Long.MIN_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.LONG_EXCLUSIVE_MAXIMUM
+      );
+    }
+    return null;
+  }
+
+  public static JsError testIntConstraints(final IntegerSchemaConstraints constraints,
+                                           final JsInt value) {
+    if (value.value < constraints.minimum()) {
+      return new JsError(value,
+                         ERROR_CODE.INT_LOWER_THAN_MIN
+      );
+    }
+    if (value.value > constraints.maximum()) {
+      return new JsError(value,
+                         ERROR_CODE.INT_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
+      return new JsError(value,
+                         ERROR_CODE.INT_NOT_MULTIPLE_OF
+      );
+    }
+    if (constraints.exclusiveMinimum() && value.value == Integer.MAX_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.INT_EXCLUSIVE_MINIMUM
+      );
+    }
+    if (constraints.exclusiveMaximum() && value.value == Integer.MIN_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.INT_EXCLUSIVE_MAXIMUM
+      );
+    }
+    return null;
+  }
+
+  public static JsError testDoubleConstraints(final DoubleSchemaConstraints constraints,
+                                              final JsDouble value) {
+    if (value.value < constraints.minimum()) {
+      return new JsError(value,
+                         ERROR_CODE.DOUBLE_LOWER_THAN_MIN
+      );
+    }
+    if (value.value > constraints.maximum()) {
+      return new JsError(value,
+                         ERROR_CODE.DOUBLE_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
+      return new JsError(value,
+                         ERROR_CODE.DOUBLE_NOT_MULTIPLE_OF
+      );
+    }
+    if (constraints.exclusiveMinimum() && value.value == Double.MAX_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.DOUBLE_EXCLUSIVE_MINIMUM
+      );
+    }
+    if (constraints.exclusiveMaximum() && value.value == Double.MIN_VALUE) {
+      return new JsError(value,
+                         ERROR_CODE.DOUBLE_EXCLUSIVE_MAXIMUM
+      );
+    }
+    return null;
+  }
+
+  public static JsError testDecimalConstraints(final DecimalSchemaConstraints constraints,
+                                               final JsBigDec jsBigDec) {
+    if (constraints.minimum() != null
+        && jsBigDec.value.compareTo(constraints.minimum()) < 0) {
+      return new JsError(jsBigDec,
+                         ERROR_CODE.DECIMAL_LOWER_THAN_MIN
+      );
+    }
+    if (constraints.maximum() != null
+        && jsBigDec.value.compareTo(constraints.maximum()) > 0) {
+      return new JsError(jsBigDec,
+                         ERROR_CODE.DECIMAL_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.multipleOf() != null &&
+        jsBigDec.value.remainder(constraints.multipleOf())
+                      .compareTo(BigDecimal.ZERO) != 0) {
+      return new JsError(jsBigDec,
+                         ERROR_CODE.DECIMAL_NOT_MULTIPLE_OF
+      );
+    }
+    if (constraints.minimum() != null && constraints.exclusiveMinimum()
+        && jsBigDec.value.compareTo(constraints.minimum()) == 0) {
+      return new JsError(jsBigDec,
+                         ERROR_CODE.DECIMAL_EXCLUSIVE_MINIMUM
+      );
+    }
+    if (constraints.maximum() != null &&
+        constraints.exclusiveMaximum() && jsBigDec.value.compareTo(constraints.maximum()) == 0) {
+      return new JsError(jsBigDec,
+                         ERROR_CODE.DECIMAL_EXCLUSIVE_MAXIMUM
+      );
+    }
+    return null;
+  }
+
+  public static JsError testBigIntConstraints(final BigIntSchemaConstraints constraints,
+                                              final JsBigInt jsBigInt) {
+    if (constraints.minimum() != null && jsBigInt.value.compareTo(constraints.minimum()) < 0) {
+      return new JsError(jsBigInt,
+                         ERROR_CODE.BIGINT_LOWER_THAN_MIN
+      );
+    }
+    if (constraints.maximum() != null && jsBigInt.value.compareTo(constraints.maximum()) > 0) {
+      return new JsError(jsBigInt,
+                         ERROR_CODE.BIGINT_GREATER_THAN_MAX
+      );
+    }
+    if (constraints.multipleOf() != null
+        && jsBigInt.value.remainder(constraints.multipleOf())
+                         .compareTo(BigInteger.ZERO) != 0) {
+      return new JsError(jsBigInt,
+                         ERROR_CODE.BIGINT_NOT_MULTIPLE_OF
+      );
+    }
+    if (constraints.minimum() != null && constraints.exclusiveMinimum()
+        && jsBigInt.value.compareTo(constraints.minimum()) == 0) {
+      return new JsError(jsBigInt,
+                         ERROR_CODE.BIGINT_EXCLUSIVE_MINIMUM
+      );
+    }
+    if (constraints.maximum() != null &&
+        constraints.exclusiveMaximum() && jsBigInt.value.compareTo(constraints.maximum()) == 0) {
+      return new JsError(jsBigInt,
+                         ERROR_CODE.BIGINT_EXCLUSIVE_MAXIMUM
+      );
+    }
     return null;
   }
 }

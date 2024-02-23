@@ -13,8 +13,8 @@ final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
          null);
   }
 
-  public JsStrSpec(final boolean nullable,
-                   final StrConstraints constraints) {
+  JsStrSpec(final boolean nullable,
+            final StrConstraints constraints) {
     super(nullable);
     this.constraints = constraints;
   }
@@ -34,14 +34,22 @@ final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
 
   @Override
   public JsError testValue(final JsValue value) {
-    return constraints == null ?
-           Functions.testValue(JsValue::isStr,
-                               STRING_EXPECTED,
-                               nullable,
-                               value
-                              ) :
-           Functions.testStrConstraints(constraints,
-                                        value)
-        ;
+    var error =
+        Functions.testValue(JsValue::isStr,
+                            STRING_EXPECTED,
+                            nullable,
+                            value
+                           );
+    if (error != null) {
+      return error;
+    }
+
+    if (constraints != null) {
+      return Functions.testStrConstraints(constraints,
+                                          value.toJsStr());
+    }
+
+    return null;
   }
+
 }

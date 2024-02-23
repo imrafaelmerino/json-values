@@ -36,11 +36,22 @@ final class JsIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isInt,
-                               INT_EXPECTED,
-                               nullable,
-                               value
-                              );
+    var error =
+        Functions.testValue(JsValue::isInt,
+                            INT_EXPECTED,
+                            nullable,
+                            value
+                           );
+    if (error != null) {
+      return error;
+    }
+
+    if (constraints != null) {
+      return Functions.testIntConstraints(constraints,
+                                          value.toJsInt());
+    }
+
+    return null;
 
   }
 
