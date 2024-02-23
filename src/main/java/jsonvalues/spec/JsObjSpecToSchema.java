@@ -1,10 +1,12 @@
 package jsonvalues.spec;
 
+import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import jsonvalues.JsArray;
 import jsonvalues.JsBool;
 import jsonvalues.JsInt;
+import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
@@ -15,17 +17,75 @@ public final class JsObjSpecToSchema {
   }
 
   public static JsObj convert(final JsObjSpec jsObjSpec) {
+    return convert(jsObjSpec,
+                   new HashSet<>());
+  }
+
+  private static JsObj convert(final JsObjSpec jsObjSpec,
+                               Set<String> nameSpecsVisited) {
     return JsObj.of("type",
                     jsObjSpec.nullable ? JsArray.of(JsStr.of("object"),
                                                     JsStr.of("null")
                                                    ) : JsStr.of("object"),
                     "properties",
-                    getProperties(jsObjSpec),
+                    getProperties(jsObjSpec,
+                                  nameSpecsVisited),
                     "additionalProperties",
                     JsBool.of(!jsObjSpec.strict),
                     "required",
-                    getRequired(jsObjSpec)
+                    getRequired(jsObjSpec),
+                    "definitions",
+                    getDefinitions(jsObjSpec,
+                                   nameSpecsVisited)
                    );
+
+  }
+
+  private static JsValue getDefinitions(final JsObjSpec jsObjSpec,
+                                      final Set<String> nameSpecsVisited) {
+    JsObj definitions = JsObj.empty();
+    var names = new HashSet<String>();
+    findNamedSpecsRecursively(jsObjSpec,
+                              names,
+                              nameSpecsVisited);
+    for (String name : names) {
+      nameSpecsVisited.add(name);
+      definitions = definitions.set(name,
+                                    getSchema(JsSpecCache.get(name),
+                                              nameSpecsVisited));
+    }
+    return definitions.isEmpty() ? JsNothing.NOTHING : definitions;
+  }
+
+  private static void findNamedSpecsRecursively(final JsSpec spec,
+                                                Set<String> found,
+                                                final Set<String> nameSpecsVisited) {
+    if (spec instanceof NamedSpec namedSpec && !nameSpecsVisited.contains(namedSpec.name)) {
+      found.add(namedSpec.name);
+      nameSpecsVisited.add(namedSpec.name);
+    } else if (spec instanceof JsObjSpec jsObjSpec) {
+      for (JsSpec a : jsObjSpec.bindings.values()) {
+        findNamedSpecsRecursively(a,
+                                  found,
+                                  nameSpecsVisited);
+      }
+    } else if (spec instanceof JsArrayOfSpec arraySpec) {
+      findNamedSpecsRecursively(arraySpec.getElemSpec(),
+                                found,
+                                nameSpecsVisited);
+    } else if (spec instanceof OneOf oneOf) {
+      for (JsSpec s : oneOf.specs) {
+        findNamedSpecsRecursively(s,
+                                  found,
+                                  nameSpecsVisited);
+      }
+    } else if (spec instanceof JsTuple tuple) {
+      for (JsSpec s : tuple.specs) {
+        findNamedSpecsRecursively(s,
+                                  found,
+                                  nameSpecsVisited);
+      }
+    }
 
   }
 
@@ -33,18 +93,21 @@ public final class JsObjSpecToSchema {
     return JsArray.ofStrs(jsObjSpec.requiredFields);
   }
 
-  private static JsObj getProperties(final JsObjSpec jsObjSpec) {
+  private static JsObj getProperties(final JsObjSpec jsObjSpec,
+                                     final Set<String> nameSpecsVisited) {
     JsObj properties = JsObj.empty();
     Set<Entry<String, JsSpec>> entries = jsObjSpec.bindings.entrySet();
     for (Entry<String, JsSpec> entry : entries) {
       properties = properties.set(entry.getKey(),
-                                  getSchema(entry.getValue()));
+                                  getSchema(entry.getValue(),
+                                            nameSpecsVisited));
     }
     return properties;
   }
 
 
-  private static JsValue getSchema(final JsSpec spec) {
+  private static JsValue getSchema(final JsSpec spec,
+                                   final Set<String> nameSpecsVisited) {
 
     return switch (spec) {
       case JsIntSpec s -> getIntSchema(s);
@@ -80,7 +143,8 @@ public final class JsObjSpecToSchema {
       case AnySuchThat ignored -> getAnySpec();
 
       case JsArraySpec s -> getArraySchema(s);
-      case JsObjSpec s -> convert(s);
+      case JsObjSpec s -> convert(s,
+                                  nameSpecsVisited);
 
       case IsJsObj ignored -> getObjType();
       case JsObjSuchThat ignored -> getObjType();
@@ -93,22 +157,25 @@ public final class JsObjSpecToSchema {
       case JsMapOfBinary ignored -> getMapOfBinarySpec();
       case JsMapOfBool ignored -> getMapOfBoolSpec();
       case JsMapOfInstant ignored -> getMapOfInstantSpec();
-      case JsMapOfSpec s -> getMapOfSpec(s);
+      case JsMapOfSpec s -> getMapOfSpec(s,
+                                         nameSpecsVisited);
       case JsMapOfStr ignored -> getMapOfSpec();
 
-      case NamedSpec namedSpec -> {
-        //TODO, coger de la cache,meter en definitions el schema y hacer referencia a el
-        yield null;
-      }
-      case OneOf oneOf -> getOneOf(oneOf);
+      case NamedSpec namedSpec -> JsObj.of("$ref",
+                                           JsStr.of("#/definitions/" + namedSpec.name)
+                                          );
+      case OneOf oneOf -> getOneOf(oneOf,
+                                   nameSpecsVisited);
     };
 
   }
 
-  private static JsObj getOneOf(final OneOf oneOf) {
+  private static JsObj getOneOf(final OneOf oneOf,
+                                final Set<String> nameSpecsVisited) {
     return JsObj.of("oneOf",
                     JsArray.ofIterable(oneOf.specs.stream()
-                                                  .map(JsObjSpecToSchema::getSchema)
+                                                  .map(spec -> getSchema(spec,
+                                                                         nameSpecsVisited))
                                                   .toList())
                    );
   }
@@ -123,11 +190,13 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsObj getMapOfSpec(final JsMapOfSpec jsMapOfSpec) {
+  private static JsObj getMapOfSpec(final JsMapOfSpec jsMapOfSpec,
+                                    final Set<String> nameSpecsVisited) {
     return JsObj.of("type",
                     JsStr.of("object"),
                     "additionalProperties",
-                    getSchema(jsMapOfSpec.getValueSpec())
+                    getSchema(jsMapOfSpec.getValueSpec(),
+                              nameSpecsVisited)
                    );
   }
 
@@ -327,87 +396,67 @@ public final class JsObjSpecToSchema {
     return switch (spec) {
       case JsArrayOfInt s -> getSizableArrayOfIntSchema(s);
       case JsArrayOfTestedInt s -> getSizableArrayOfIntSchema(s);
-      case JsArrayOfIntSuchThat s -> getArrayOfIntSchema(s);
+      case JsArrayOfIntSuchThat ignored -> JsObj.of("type",
+                                                    JsStr.of("integer")
+                                                   );
 
       case JsArrayOfLong s -> getSizableArrayOfIntSchema(s);
       case JsArrayOfTestedLong s -> getSizableArrayOfIntSchema(s);
-      case JsArrayOfLongSuchThat s -> getArrayOfIntSchema(s);
+      case JsArrayOfLongSuchThat ignored -> JsObj.of("type",
+                                                     JsStr.of("integer")
+                                                    );
 
       case JsArrayOfBigInt s -> getSizableArrayOfIntSchema(s);
       case JsArrayOfTestedBigInt s -> getSizableArrayOfIntSchema(s);
-      case JsArrayOfBigIntSuchThat s -> getArrayOfIntSchema(s);
+      case JsArrayOfBigIntSuchThat ignored -> JsObj.of("type",
+                                                       JsStr.of("integer")
+                                                      );
 
       case JsArrayOfDouble s -> getSizableArrayOfNumberSchema(s);
       case JsArrayOfTestedDouble s -> getSizableArrayOfNumberSchema(s);
-      case JsArrayOfDoubleSuchThat s -> getArrayOfNumberSchema(s);
+      case JsArrayOfDoubleSuchThat ignored -> JsObj.of("type",
+                                                       JsStr.of("number")
+                                                      );
 
       case JsArrayOfDecimal s -> getSizableArrayOfNumberSchema(s);
       case JsArrayOfTestedDecimal s -> getSizableArrayOfNumberSchema(s);
-      case JsArrayOfDecimalSuchThat s -> getArrayOfNumberSchema(s);
+      case JsArrayOfDecimalSuchThat ignored -> JsObj.of("type",
+                                                        JsStr.of("number")
+                                                       );
 
       case JsArrayOfBool s -> getSizableArrayOfBoolSchema(s);
-      case JsArrayOfBoolSuchThat s -> getArrayOfBoolSchema(s);
+      case JsArrayOfBoolSuchThat ignored -> JsObj.of("type",
+                                                     JsStr.of("boolean")
+                                                    );
 
       case JsArrayOfStr s -> getSizableArrayOfStrSchema(s);
-      case JsArrayOfStrSuchThat s -> getArrayOfStrSchema(s);
+      case JsArrayOfStrSuchThat ignored -> JsObj.of("type",
+                                                    JsStr.of("string")
+                                                   );
       case JsArrayOfTestedStr s -> getSizableArrayOfStrSchema(s);
 
       case JsArrayOfValue s -> getSizableArrayOfValueSchema(s);
       case JsArrayOfTestedValue s -> getSizableArrayOfValueSchema(s);
-      case JsArraySuchThat s -> getArrayOfValueSchema(s);
+      case JsArraySuchThat ignored -> JsObj.of("type",
+                                               JsStr.of("*")
+                                              );
 
       case JsArrayOfObj s -> getSizableArrayOfObjSchema(s);
-      case JsArrayOfObjSuchThat s -> getArrayOfObjSchema(s);
+      case JsArrayOfObjSuchThat ignored -> JsObj.of("type",
+                                                    JsStr.of("object")
+                                                   );
       case JsArrayOfTestedObj s -> getSizableArrayOfObjSchema(s);
 
-      case JsArrayOfSpec s -> getSizableArrayOfSpecSchema(s);
-      case JsTuple jsTuple -> getArrayOfTupleSchema(jsTuple);
+      case JsArrayOfSpec s -> getSizableArrayOfSpecSchema(s,
+                                                          new HashSet<>());
+      case JsTuple tuple -> getArrayOfTupleSchema(tuple,
+                                                  new HashSet<>());
     };
   }
 
-  private static JsValue getArrayOfObjSchema(final JsArraySpec s) {
-    return getArraySchema(s,
-                          JsObj.of("type",
-                                   JsStr.of("object")
-                                  ));
-  }
 
-  private static JsValue getArrayOfValueSchema(final JsArraySpec s) {
-    return getArraySchema(s,
-                          JsObj.of("type",
-                                   JsStr.of("*")
-                                  ));
-  }
-
-  private static JsValue getArrayOfStrSchema(final JsSpec s) {
-    return getArraySchema((JsArraySpec) s,
-                          JsObj.of("type",
-                                   JsStr.of("string")
-                                  ));
-  }
-
-  private static JsValue getArrayOfBoolSchema(final JsArraySpec s) {
-    return getArraySchema(s,
-                          JsObj.of("type",
-                                   JsStr.of("boolean")
-                                  ));
-  }
-
-  private static JsValue getArrayOfNumberSchema(final JsArraySpec s) {
-    return getArraySchema(s,
-                          JsObj.of("type",
-                                   JsStr.of("number")
-                                  ));
-  }
-
-  private static JsValue getArrayOfIntSchema(final JsArraySpec s) {
-    return getArraySchema(s,
-                          JsObj.of("type",
-                                   JsStr.of("integer")
-                                  ));
-  }
-
-  private static JsValue getArrayOfTupleSchema(final JsTuple jsTuple) {
+  private static JsValue getArrayOfTupleSchema(final JsTuple jsTuple,
+                                               final Set<String> nameSpecsVisited) {
     return JsObj.of("type",
                     jsTuple.isNullable() ?
                     JsArray.of(JsStr.of("array"),
@@ -416,7 +465,8 @@ public final class JsObjSpecToSchema {
                     JsStr.of("array"),
                     "items",
                     JsArray.ofIterable(jsTuple.specs.stream()
-                                                    .map(JsObjSpecToSchema::getSchema)
+                                                    .map(spec -> getSchema(spec,
+                                                                           nameSpecsVisited))
                                                     .toList()
                                       ),
                     "additionalItems",
@@ -424,10 +474,12 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsValue getSizableArrayOfSpecSchema(final JsArrayOfSpec s) {
+  private static JsValue getSizableArrayOfSpecSchema(final JsArrayOfSpec s,
+                                                     final Set<String> nameSpecsVisited) {
     return getSizableArraySchema(s,
                                  JsObj.of("type",
-                                          getSchema(s.getElemSpec())
+                                          getSchema(s.getElemSpec(),
+                                                    nameSpecsVisited)
                                          ));
 
   }
@@ -464,14 +516,7 @@ public final class JsObjSpecToSchema {
   private static JsObj getSizableArraySchema(AbstractSizableArr spec,
                                              JsObj elemSchema) {
 
-    JsObj schema = JsObj.of("type",
-                            spec.isNullable() ?
-                            JsArray.of(JsStr.of("array"),
-                                       JsStr.of("null")
-                                      ) :
-                            JsStr.of("array"),
-                            "items",
-                            elemSchema);
+    JsObj schema = elemSchema;
     var minElems = spec.min;
     var maxElems = spec.max;
     if (minElems > 0) {
@@ -486,19 +531,6 @@ public final class JsObjSpecToSchema {
     return schema;
   }
 
-  private static JsObj getArraySchema(JsArraySpec spec,
-                                      JsObj elemSchema) {
-
-    return JsObj.of("type",
-                    spec.isNullable() ?
-                    JsArray.of(JsStr.of("array"),
-                               JsStr.of("null")
-                              ) :
-                    JsStr.of("array"),
-                    "items",
-                    elemSchema);
-
-  }
 
   private static JsObj getSizableArrayOfIntSchema(AbstractSizableArr spec) {
 
