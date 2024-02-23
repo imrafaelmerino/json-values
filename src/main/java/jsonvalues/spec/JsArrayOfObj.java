@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfObj extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
@@ -37,15 +36,15 @@ final class JsArrayOfObj extends AbstractSizableArr implements JsOneErrorSpec, J
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v -> v.isObj() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         OBJ_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             OBJ_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

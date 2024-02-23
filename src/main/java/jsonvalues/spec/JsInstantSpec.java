@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INSTANT_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
@@ -22,12 +21,12 @@ final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, Av
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isInstant,
-                              INSTANT_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return Functions.testValue(JsValue::isInstant,
+                               INSTANT_EXPECTED,
+                               nullable,
+                               value
+                              );
 
   }
 

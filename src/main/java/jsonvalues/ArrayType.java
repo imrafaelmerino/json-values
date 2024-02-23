@@ -61,7 +61,7 @@ interface ArrayType<T> {
   default Object copyRange(Object array,
                            int from,
                            int to) {
-    final int length = to - from;
+    int length = to - from;
     return copy(array,
                 length,
                 from,

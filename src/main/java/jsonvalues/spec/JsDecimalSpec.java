@@ -7,14 +7,23 @@ import jsonvalues.JsValue;
 
 final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
+  final DecimalSchemaConstraints constraints;
+
   JsDecimalSpec(final boolean nullable) {
-    super(nullable);
+    this(nullable,
+         null);
   }
 
+  JsDecimalSpec(final boolean nullable,
+                final DecimalSchemaConstraints constraints) {
+    super(nullable);
+    this.constraints = constraints;
+  }
 
   @Override
   public JsSpec nullable() {
-    return new JsDecimalSpec(true);
+    return new JsDecimalSpec(true,
+                             constraints);
   }
 
 
@@ -24,12 +33,12 @@ final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, Av
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isNumber,
-                              DECIMAL_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return Functions.testValue(JsValue::isNumber,
+                               DECIMAL_EXPECTED,
+                               nullable,
+                               value
+                              );
 
   }
 

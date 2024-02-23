@@ -2,29 +2,51 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
+  final DecimalSchemaConstraints constraints;
+
   JsArrayOfDecimal(final boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsArrayOfDecimal(final boolean nullable,
+                   DecimalSchemaConstraints constraints) {
     super(nullable);
+    this.constraints = constraints;
   }
 
   JsArrayOfDecimal(final boolean nullable,
                    int min,
                    int max
                   ) {
+    this(nullable,
+         min,
+         max,
+         null);
+  }
+
+  JsArrayOfDecimal(final boolean nullable,
+                   int min,
+                   int max,
+                   DecimalSchemaConstraints constraints
+                  ) {
     super(nullable,
           min,
           max);
+    this.constraints = constraints;
   }
+
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfDecimal(true,
                                 min,
-                                max);
+                                max,
+                                constraints);
   }
 
 
@@ -37,15 +59,15 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v -> v.isNumber() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         DECIMAL_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             DECIMAL_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

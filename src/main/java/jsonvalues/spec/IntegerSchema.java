@@ -2,8 +2,8 @@ package jsonvalues.spec;
 
 public final class IntegerSchema {
 
-  private int minimum;
-  private int maximum;
+  private int minimum = Integer.MIN_VALUE;
+  private int maximum = Integer.MAX_VALUE;
   private boolean exclusiveMinimum;
   private boolean exclusiveMaximum;
   private int multipleOf;
@@ -18,13 +18,13 @@ public final class IntegerSchema {
     return this;
   }
 
-  public IntegerSchema setExclusiveMinimum(final boolean exclusiveMinimum) {
-    this.exclusiveMinimum = exclusiveMinimum;
+  public IntegerSchema setExclusiveMinimum() {
+    this.exclusiveMinimum = true;
     return this;
   }
 
-  public IntegerSchema setExclusiveMaximum(final boolean exclusiveMaximum) {
-    this.exclusiveMaximum = exclusiveMaximum;
+  public IntegerSchema setExclusiveMaximum() {
+    this.exclusiveMaximum = true;
     return this;
   }
 

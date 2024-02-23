@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.DoubleFunction;
 import jsonvalues.JsDouble;
 
@@ -12,14 +11,14 @@ final class JsDoubleReader extends AbstractReader {
   }
 
   JsDouble valueSuchThat(final JsReader reader,
-                         final DoubleFunction<Optional<JsError>> fn
+                         final DoubleFunction<JsError> fn
                         ) throws JsParserException {
     double value = NumberConverter.deserializeDouble(reader);
-    Optional<JsError> result = fn.apply(value);
-    if (result.isEmpty()) {
+    JsError result = fn.apply(value);
+    if (result == null) {
       return JsDouble.of(value);
     }
-    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),
                                      reader.getPositionInStream()
                                     );
   }

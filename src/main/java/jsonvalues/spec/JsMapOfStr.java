@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 
 final class JsMapOfStr extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
-  final StrConstraints schema;
+  final StrConstraints valuesConstraints;
 
   JsMapOfStr(boolean nullable) {
     this(nullable,
@@ -14,24 +14,25 @@ final class JsMapOfStr extends AbstractMap implements JsOneErrorSpec, AvroSpec {
   }
 
   JsMapOfStr(boolean nullable,
-             StrConstraints schema) {
+             StrConstraints valuesConstraints) {
     super(nullable);
-    this.schema = schema;
+    this.valuesConstraints = valuesConstraints;
   }
 
   @Override
   public JsSpec nullable() {
     return new JsMapOfStr(true,
-                          schema);
+                          valuesConstraints);
   }
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfString(nullable,schema);
+    return JsParsers.INSTANCE.ofMapOfString(nullable,
+                                            valuesConstraints);
   }
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     //todo incluir schema validation
     return test(value,
                 it -> !it.isStr(),

@@ -2,19 +2,27 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
+  final BigIntSchemaConstraints constraints;
+
   JsBigIntSpec(final boolean nullable) {
-    super(nullable);
+    this(nullable,
+         null);
   }
 
+  JsBigIntSpec(final boolean nullable,
+               BigIntSchemaConstraints constraints) {
+    super(nullable);
+    this.constraints = constraints;
+  }
 
   @Override
   public JsSpec nullable() {
-    return new JsBigIntSpec(true);
+    return new JsBigIntSpec(true,
+                            constraints);
   }
 
 
@@ -25,12 +33,12 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isIntegral,
-                              INTEGRAL_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return Functions.testValue(JsValue::isIntegral,
+                               INTEGRAL_EXPECTED,
+                               nullable,
+                               value
+                              );
 
   }
 }

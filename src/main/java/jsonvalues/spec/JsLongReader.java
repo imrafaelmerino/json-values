@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.LongFunction;
 import jsonvalues.JsLong;
 
@@ -12,14 +11,14 @@ final class JsLongReader extends AbstractReader {
   }
 
   JsLong valueSuchThat(final JsReader reader,
-                       final LongFunction<Optional<JsError>> fn
+                       final LongFunction<JsError> fn
                       ) throws JsParserException {
     long value = NumberConverter.deserializeLong(reader);
-    Optional<JsError> result = fn.apply(value);
-    if (result.isEmpty()) {
+    JsError result = fn.apply(value);
+    if (result == null) {
       return JsLong.of(value);
     }
-    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),
                                      reader.getPositionInStream()
                                     );
   }

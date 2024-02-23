@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.BOOLEAN_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
@@ -37,14 +36,14 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, 
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v -> v.isBool() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         BOOLEAN_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             BOOLEAN_EXPECTED),
                                             nullable,
                                             min,
-                                            max)
-                    .apply(value);
+                                            max,
+                                            value);
   }
 }

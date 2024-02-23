@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsObj;
 
@@ -13,14 +12,14 @@ final class JsObjReader extends AbstractJsObjReader {
   }
 
   JsObj valueSuchThat(final JsReader reader,
-                      final Function<JsObj, Optional<JsError>> fn
+                      final Function<JsObj, JsError> fn
                      ) throws JsParserException {
-    final JsObj value = value(reader);
-    final Optional<JsError> result = fn.apply(value);
-    if (result.isEmpty()) {
+    JsObj value = value(reader);
+    JsError result = fn.apply(value);
+    if (result == null) {
       return value;
     }
-    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),
                                      reader.getPositionInStream()
                                     );
   }

@@ -2,23 +2,22 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
 final class JsArrayOfTestedObj extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
 
-  final Function<JsObj, Optional<JsError>> predicate;
+  final Function<JsObj, JsError> predicate;
 
-  JsArrayOfTestedObj(final Function<JsObj, Optional<JsError>> predicate,
+  JsArrayOfTestedObj(final Function<JsObj, JsError> predicate,
                      final boolean nullable
                     ) {
     super(nullable);
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedObj(final Function<JsObj, Optional<JsError>> predicate,
+  JsArrayOfTestedObj(final Function<JsObj, JsError> predicate,
                      final boolean nullable,
                      int min,
                      int max
@@ -49,18 +48,17 @@ final class JsArrayOfTestedObj extends AbstractSizableArr implements JsOneErrorS
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v ->
                                                 v.isObj() ?
                                                 predicate.apply(v.toJsObj()) :
-                                                Optional.of(new JsError(v,
-                                                                        OBJ_EXPECTED
-                                                            )
-                                                           ),
+                                                new JsError(v,
+                                                            OBJ_EXPECTED
+                                                ),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

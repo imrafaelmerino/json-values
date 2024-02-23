@@ -3,15 +3,14 @@ package jsonvalues.spec;
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
 import java.math.BigInteger;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsValue;
 
 final class JsBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
-  final Function<BigInteger, Optional<JsError>> predicate;
+  final Function<BigInteger, JsError> predicate;
 
-  JsBigIntSuchThat(final Function<BigInteger, Optional<JsError>> predicate,
+  JsBigIntSuchThat(final Function<BigInteger, JsError> predicate,
                    final boolean nullable
                   ) {
     super(nullable);
@@ -37,14 +36,15 @@ final class JsBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec,
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    final Optional<JsError> error = jsonvalues.spec.Functions.testElem(JsValue::isIntegral,
-                                                                       INTEGRAL_EXPECTED,
-                                                                       nullable
-                                                                      )
-                                                             .apply(value);
+  public JsError testValue(final JsValue value) {
+    JsError error =
+        Functions.testValue(JsValue::isIntegral,
+                            INTEGRAL_EXPECTED,
+                            nullable,
+                            value
+                           );
 
-    return error.isPresent() || value.isNull() ?
+    return error != null || value.isNull() ?
            error :
            predicate.apply(value.toJsBigInt().value);
   }

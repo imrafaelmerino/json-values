@@ -1,21 +1,20 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsValue;
 
 final class JsArrayOfTestedValue extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec {
 
-  private final Function<JsValue, Optional<JsError>> predicate;
+  private final Function<JsValue, JsError> predicate;
 
-  JsArrayOfTestedValue(final Function<JsValue, Optional<JsError>> predicate,
+  JsArrayOfTestedValue(final Function<JsValue, JsError> predicate,
                        final boolean nullable
                       ) {
     super(nullable);
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedValue(final Function<JsValue, Optional<JsError>> predicate,
+  JsArrayOfTestedValue(final Function<JsValue, JsError> predicate,
                        final boolean nullable,
                        int min,
                        int max
@@ -47,11 +46,11 @@ final class JsArrayOfTestedValue extends AbstractSizableArr implements JsOneErro
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(predicate,
                                             nullable,
                                             min,
-                                            max)
-                    .apply(value);
+                                            max,
+                                            value);
   }
 }

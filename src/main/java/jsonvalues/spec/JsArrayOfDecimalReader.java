@@ -18,7 +18,7 @@ final class JsArrayOfDecimalReader extends JsArrayReader {
   }
 
   JsValue nullOrArrayEachSuchThat(final JsReader reader,
-                                  final Function<BigDecimal, Optional<JsError>> fn,
+                                  final Function<BigDecimal, JsError> fn,
                                   final int min,
                                   final int max
                                  ) throws JsParserException {
@@ -30,7 +30,7 @@ final class JsArrayOfDecimalReader extends JsArrayReader {
   }
 
   JsArray arrayEachSuchThat(final JsReader reader,
-                            final Function<BigDecimal, Optional<JsError>> fn,
+                            final Function<BigDecimal, JsError> fn,
                             final int min,
                             final int max
                            ) throws JsParserException {

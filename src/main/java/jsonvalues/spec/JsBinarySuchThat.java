@@ -2,15 +2,14 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.BINARY_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsValue;
 
 final class JsBinarySuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
-  final Function<byte[], Optional<JsError>> predicate;
+  final Function<byte[], JsError> predicate;
 
-  JsBinarySuchThat(final Function<byte[], Optional<JsError>> predicate,
+  JsBinarySuchThat(final Function<byte[], JsError> predicate,
                    final boolean nullable
                   ) {
     super(nullable);
@@ -34,14 +33,14 @@ final class JsBinarySuchThat extends AbstractNullable implements JsOneErrorSpec,
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    Optional<JsError> error = Functions.testElem(JsValue::isBinary,
-                                                 BINARY_EXPECTED,
-                                                 nullable
-                                                )
-                                       .apply(value);
+  public JsError testValue(final JsValue value) {
+    JsError error = Functions.testValue(JsValue::isBinary,
+                                        BINARY_EXPECTED,
+                                        nullable,
+                                        value
+                                       );
 
-    return error.isPresent() || value.isNull() ?
+    return error != null || value.isNull() ?
            error :
            predicate.apply(value.toJsBinary().value);
   }

@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import java.util.Objects;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
@@ -16,7 +15,7 @@ final class JsArrayOfValueReader extends JsArrayReader {
   }
 
   JsValue nullOrArrayEachSuchThat(final JsReader reader,
-                                  final Function<JsValue, Optional<JsError>> fn,
+                                  final Function<JsValue, JsError> fn,
                                   final int min,
                                   final int max
                                  ) throws JsParserException {
@@ -29,7 +28,7 @@ final class JsArrayOfValueReader extends JsArrayReader {
 
 
   JsArray arrayEachSuchThat(final JsReader reader,
-                            final Function<JsValue, Optional<JsError>> fn,
+                            final Function<JsValue, JsError> fn,
                             final int min,
                             final int max
                            ) throws JsParserException {

@@ -2,29 +2,50 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
+  final DoubleSchemaConstraints constraints;
+
   JsArrayOfDouble(final boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsArrayOfDouble(final boolean nullable,
+                  DoubleSchemaConstraints constraints) {
     super(nullable);
+    this.constraints = constraints;
   }
 
   JsArrayOfDouble(final boolean nullable,
                   int min,
                   int max
                  ) {
+    this(nullable,
+         min,
+         max,
+         null);
+  }
+
+  JsArrayOfDouble(final boolean nullable,
+                  int min,
+                  int max,
+                  DoubleSchemaConstraints constraints
+                 ) {
     super(nullable,
           min,
           max);
+    this.constraints = constraints;
   }
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfDouble(true,
                                min,
-                               max);
+                               max,
+                               constraints);
   }
 
 
@@ -37,15 +58,15 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v -> v.isDouble() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         DOUBLE_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             DOUBLE_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

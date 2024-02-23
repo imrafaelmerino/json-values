@@ -13,22 +13,22 @@ public final class DecimalSchema {
   private BigDecimal multipleOf;
 
   public DecimalSchema setMinimum(final BigDecimal minimum) {
-    this.minimum = minimum;
+    this.minimum = Objects.requireNonNull(minimum);
     return this;
   }
 
   public DecimalSchema setMaximum(final BigDecimal maximum) {
-    this.maximum = maximum;
+    this.maximum = Objects.requireNonNull(maximum);
     return this;
   }
 
-  public DecimalSchema setExclusiveMinimum(final boolean exclusiveMinimum) {
-    this.exclusiveMinimum = exclusiveMinimum;
+  public DecimalSchema setExclusiveMinimum() {
+    this.exclusiveMinimum = true;
     return this;
   }
 
-  public DecimalSchema setExclusiveMaximum(final boolean exclusiveMaximum) {
-    this.exclusiveMaximum = exclusiveMaximum;
+  public DecimalSchema setExclusiveMaximum() {
+    this.exclusiveMaximum = true;
     return this;
   }
 

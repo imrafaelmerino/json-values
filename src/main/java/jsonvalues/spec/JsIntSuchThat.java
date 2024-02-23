@@ -2,15 +2,14 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.IntFunction;
 import jsonvalues.JsValue;
 
 final class JsIntSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
-  final IntFunction<Optional<JsError>> predicate;
+  final IntFunction<JsError> predicate;
 
-  JsIntSuchThat(final IntFunction<Optional<JsError>> predicate,
+  JsIntSuchThat(final IntFunction<JsError> predicate,
                 final boolean nullable
                ) {
     super(nullable);
@@ -34,14 +33,14 @@ final class JsIntSuchThat extends AbstractNullable implements JsOneErrorSpec, Av
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    final Optional<JsError> error = Functions.testElem(JsValue::isInt,
-                                                       INT_EXPECTED,
-                                                       nullable
-                                                      )
-                                             .apply(value);
+  public JsError testValue(final JsValue value) {
+    final JsError error = Functions.testValue(JsValue::isInt,
+                                              INT_EXPECTED,
+                                              nullable,
+                                              value
+                                             );
 
-    return error.isPresent() || value.isNull() ?
+    return error != null || value.isNull() ?
            error :
            predicate.apply(value.toJsInt().value);
   }

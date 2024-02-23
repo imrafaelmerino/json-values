@@ -2,8 +2,8 @@ package jsonvalues.spec;
 
 public final class LongSchema {
 
-  private long minimum;
-  private long maximum;
+  private long minimum = Long.MIN_VALUE;
+  private long maximum = Long.MAX_VALUE;
   private boolean exclusiveMinimum;
   private boolean exclusiveMaximum;
   private long multipleOf;
@@ -18,13 +18,13 @@ public final class LongSchema {
     return this;
   }
 
-  public LongSchema setExclusiveMinimum(final boolean exclusiveMinimum) {
-    this.exclusiveMinimum = exclusiveMinimum;
+  public LongSchema setExclusiveMinimum() {
+    this.exclusiveMinimum = true;
     return this;
   }
 
-  public LongSchema setExclusiveMaximum(final boolean exclusiveMaximum) {
-    this.exclusiveMaximum = exclusiveMaximum;
+  public LongSchema setExclusiveMaximum() {
+    this.exclusiveMaximum = true;
     return this;
   }
 

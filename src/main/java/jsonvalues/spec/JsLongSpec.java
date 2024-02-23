@@ -2,18 +2,27 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
+  final LongSchemaConstraints constraints;
+
   JsLongSpec(final boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsLongSpec(final boolean nullable,
+             final LongSchemaConstraints constraints) {
     super(nullable);
+    this.constraints = constraints;
   }
 
   @Override
   public JsSpec nullable() {
-    return new JsLongSpec(true);
+    return new JsLongSpec(true,
+                          constraints);
   }
 
 
@@ -23,12 +32,12 @@ final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroS
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isLong,
-                              LONG_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return Functions.testValue(JsValue::isLong,
+                               LONG_EXPECTED,
+                               nullable,
+                               value
+                              );
   }
 
 

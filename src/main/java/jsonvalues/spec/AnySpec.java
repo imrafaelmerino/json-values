@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class AnySpec implements JsOneErrorSpec {
@@ -22,10 +21,10 @@ final class AnySpec implements JsOneErrorSpec {
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return value.isNothing() ?
-           Optional.of(new JsError(value,
-                                   ERROR_CODE.REQUIRED)) :
-           Optional.empty();
+           new JsError(value,
+                       ERROR_CODE.REQUIRED) :
+           null;
   }
 }

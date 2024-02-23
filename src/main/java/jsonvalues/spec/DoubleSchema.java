@@ -2,11 +2,11 @@ package jsonvalues.spec;
 
 public final class DoubleSchema {
 
-  private double minimum;
-  private double maximum;
+  private double minimum = Double.NEGATIVE_INFINITY;
+  private double maximum = Double.NEGATIVE_INFINITY;
   private boolean exclusiveMinimum;
   private boolean exclusiveMaximum;
-  private double multipleOf;
+  private double multipleOf = Double.NEGATIVE_INFINITY;
 
   public DoubleSchema setMinimum(final double minimum) {
     this.minimum = minimum;
@@ -18,13 +18,13 @@ public final class DoubleSchema {
     return this;
   }
 
-  public DoubleSchema setExclusiveMinimum(final boolean exclusiveMinimum) {
-    this.exclusiveMinimum = exclusiveMinimum;
+  public DoubleSchema setExclusiveMinimum() {
+    this.exclusiveMinimum = true;
     return this;
   }
 
-  public DoubleSchema setExclusiveMaximum(final boolean exclusiveMaximum) {
-    this.exclusiveMaximum = exclusiveMaximum;
+  public DoubleSchema setExclusiveMaximum() {
+    this.exclusiveMaximum = true;
     return this;
   }
 

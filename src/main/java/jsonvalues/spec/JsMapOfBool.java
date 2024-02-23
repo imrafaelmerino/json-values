@@ -22,7 +22,7 @@ final class JsMapOfBool extends AbstractMap implements JsOneErrorSpec, AvroSpec 
 
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     return test(value,
                 it -> !it.isBool(),
                 ERROR_CODE.BOOLEAN_EXPECTED);

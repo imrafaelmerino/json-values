@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsBigDec;
 import jsonvalues.JsDouble;
@@ -12,14 +11,14 @@ import jsonvalues.JsNumber;
 final class JsNumberReader extends AbstractReader {
 
   JsNumber valueSuchThat(final JsReader reader,
-                         final Function<JsNumber, Optional<JsError>> fn
+                         final Function<JsNumber, JsError> fn
                         ) throws JsParserException {
     final JsNumber value = value(reader);
-    final Optional<JsError> result = fn.apply(value);
-    if (result.isEmpty()) {
+    final JsError result = fn.apply(value);
+    if (result == null) {
       return value;
     }
-    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),
                                      reader.getPositionInStream()
                                     );
   }

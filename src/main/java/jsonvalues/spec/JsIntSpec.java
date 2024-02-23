@@ -2,19 +2,30 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
-  JsIntSpec(final boolean nullable) {
+  final IntegerSchemaConstraints constraints;
+
+  JsIntSpec(final boolean nullable,
+            final IntegerSchemaConstraints constraints
+           ) {
     super(nullable);
+    this.constraints = constraints;
+  }
+
+  JsIntSpec(final boolean nullable) {
+    this(nullable,
+         null
+        );
   }
 
 
   @Override
   public JsSpec nullable() {
-    return new JsIntSpec(true);
+    return new JsIntSpec(true,
+                         constraints);
   }
 
 
@@ -24,12 +35,12 @@ final class JsIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isInt,
-                              INT_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return Functions.testValue(JsValue::isInt,
+                               INT_EXPECTED,
+                               nullable,
+                               value
+                              );
 
   }
 

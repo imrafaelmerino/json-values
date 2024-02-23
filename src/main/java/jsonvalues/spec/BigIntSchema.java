@@ -21,18 +21,19 @@ public final class BigIntSchema {
     return this;
   }
 
-  public BigIntSchema setExclusiveMinimum(final boolean exclusiveMinimum) {
-    this.exclusiveMinimum = exclusiveMinimum;
+  public BigIntSchema setExclusiveMinimum() {
+    this.exclusiveMinimum = true;
     return this;
   }
 
-  public BigIntSchema setExclusiveMaximum(final boolean exclusiveMaximum) {
-    this.exclusiveMaximum = exclusiveMaximum;
+  public BigIntSchema setExclusiveMaximum() {
+    this.exclusiveMaximum = true;
     return this;
   }
 
   public BigIntSchema setMultipleOf(final BigInteger multipleOf) {
-    if (Objects.requireNonNull(multipleOf).signum() <= 0) {
+    if (Objects.requireNonNull(multipleOf)
+               .signum() <= 0) {
       throw new IllegalArgumentException("multipleOf must be a positive number");
     }
     this.multipleOf = multipleOf;

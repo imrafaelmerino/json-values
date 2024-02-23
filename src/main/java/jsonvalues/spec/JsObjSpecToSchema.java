@@ -4,8 +4,12 @@ import java.util.HashSet;
 import java.util.Map.Entry;
 import java.util.Set;
 import jsonvalues.JsArray;
+import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
 import jsonvalues.JsBool;
+import jsonvalues.JsDouble;
 import jsonvalues.JsInt;
+import jsonvalues.JsLong;
 import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsStr;
@@ -39,6 +43,11 @@ public final class JsObjSpecToSchema {
   private static final String MAX_LENGTH = "maxLength";
   private static final String PATTERN = "pattern";
   private static final String FORMAT = "format";
+  private static final String EXCLUSIVE_MINIMUM = "exclusiveMinimum";
+  private static final String EXCLUSIVE_MAXIMUM = "exclusiveMaximum";
+  private static final String MULTIPLE_OF = "multipleOf";
+  private static final String MINIMUM = "minimum";
+  private static final String MAXIMUM = "maximum";
 
   private JsObjSpecToSchema() {
   }
@@ -137,25 +146,30 @@ public final class JsObjSpecToSchema {
                                    final Set<String> nameSpecsVisited) {
 
     return switch (spec) {
-      case JsIntSpec s -> getIntSchema(s);
+      case JsIntSpec s -> getIntSchema(s,
+                                       s.constraints);
       case JsIntSuchThat s -> getIntSchema(s);
 
-      case JsLongSpec s -> getLongSchema(s);
-      case JsLongSuchThat s -> getLongSchema(s);
+      case JsLongSpec s -> getLongSchema(s,
+                                         s.constraints);
+      case JsLongSuchThat s -> getIntSchema(s);
 
-      case JsBigIntSpec s -> getIntSchema(s);
+      case JsBigIntSpec s -> getBigIntSchema(s,
+                                             s.constraints);
       case JsBigIntSuchThat s -> getIntSchema(s);
 
-      case JsDoubleSpec s -> getNumberSchema(s);
+      case JsDoubleSpec s -> getDoubleSchema(s,
+                                             s.constraints);
       case JsDoubleSuchThat s -> getNumberSchema(s);
 
-      case JsDecimalSpec s -> getNumberSchema(s);
+      case JsDecimalSpec s -> getDecimalSchema(s,
+                                               s.constraints);
       case JsDecimalSuchThat s -> getNumberSchema(s);
 
       case JsBooleanSpec s -> getBoolSchema(s);
 
       case JsStrSpec s -> getStrSchema(s,
-                                       s.schema);
+                                       s.constraints);
       case JsStrSuchThat s -> getStrSchema(s);
 
       case JsInstantSpec s -> getInstantSchema(s);
@@ -177,28 +191,268 @@ public final class JsObjSpecToSchema {
       case IsJsObj ignored -> getObjType();
       case JsObjSuchThat ignored -> getObjType();
 
-      case JsMapOfBigInt ignored -> getMapOfIntegerSchema();
-      case JsMapOfInt ignored -> getMapOfIntegerSchema();
-      case JsMapOfLong ignored -> getMapOfIntegerSchema();
-      case JsMapOfDouble ignored -> getMapOfNumberSchema();
-      case JsMapOfDec ignored -> getMapOfNumberSchema();
-      case JsMapOfBinary ignored -> getMapOfBinarySpec();
-      case JsMapOfBool ignored -> getMapOfBoolSpec();
-      case JsMapOfInstant ignored -> getMapOfInstantSpec();
+      case JsMapOfBigInt s -> getMapOfBigIntSchema(s.valuesConstraints);
+      case JsMapOfInt s -> getMapOfIntegerSchema(s.valuesConstraints);
+      case JsMapOfLong s -> getMapOfLongSchema(s.valuesConstraints);
+      case JsMapOfDouble s -> getMapOfDoubleSchema(s.valuesConstraints);
+      case JsMapOfDec s -> getMapOfDecSchema(s.valuesConstraints);
+      case JsMapOfBinary ignored -> getMapOfBinarySchema();
+      case JsMapOfBool ignored -> getMapOfBoolSchema();
+      case JsMapOfInstant ignored -> getMapOfInstantSchema();
       case JsMapOfSpec s -> getMapOfSpec(s,
                                          nameSpecsVisited);
-      case JsMapOfStr mapOfStr -> getMapOfStrSpec(mapOfStr.schema);
+      case JsMapOfStr s -> getMapOfStrSchema(s.valuesConstraints);
 
       case NamedSpec namedSpec -> JsObj.of(REF,
                                            JsStr.of("#/definitions/" + namedSpec.name)
                                           );
-      case OneOf oneOf -> getOneOf(oneOf,
-                                   nameSpecsVisited);
+      case OneOf oneOf -> getOneOfSchema(oneOf,
+                                         nameSpecsVisited);
     };
 
   }
 
-  private static JsValue getMapOfStrSpec(final StrConstraints schema) {
+  private static JsValue getMapOfIntegerSchema(final IntegerSchemaConstraints valuesConstraints) {
+    if (valuesConstraints != null) {
+      return JsObj.of(TYPE,
+                      JsStr.of(OBJECT),
+                      ADDITIONAL_PROPERTIES,
+                      JsObj.of(TYPE,
+                               JsStr.of(INTEGER),
+                               MINIMUM,
+                               valuesConstraints.minimum() == Integer.MIN_VALUE ? JsNothing.NOTHING
+                                                                                : JsInt.of(valuesConstraints.minimum()),
+                               MAXIMUM,
+                               valuesConstraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING
+                                                                                : JsInt.of(valuesConstraints.maximum()),
+                               EXCLUSIVE_MINIMUM,
+                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               EXCLUSIVE_MAXIMUM,
+                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               MULTIPLE_OF,
+                               valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
+                                                                   : JsInt.of(valuesConstraints.multipleOf())
+                              ));
+    }
+    return getMapOfIntegerSchema();
+  }
+
+  private static JsValue getMapOfDecSchema(final DecimalSchemaConstraints valuesConstraints) {
+    if (valuesConstraints != null) {
+      return JsObj.of(TYPE,
+                      JsStr.of(OBJECT),
+                      ADDITIONAL_PROPERTIES,
+                      JsObj.of(TYPE,
+                               JsStr.of(NUMBER),
+                               MINIMUM,
+                               valuesConstraints.minimum() == null ? JsNothing.NOTHING
+                                                                   : JsBigDec.of(valuesConstraints.minimum()),
+                               MAXIMUM,
+                               valuesConstraints.maximum() == null ? JsNothing.NOTHING
+                                                                   : JsBigDec.of(valuesConstraints.maximum()),
+                               EXCLUSIVE_MINIMUM,
+                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               EXCLUSIVE_MAXIMUM,
+                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               MULTIPLE_OF,
+                               valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
+                                                                      : JsBigDec.of(valuesConstraints.multipleOf())
+                              ));
+    }
+    return getMapOfNumberSchema();
+  }
+
+  private static JsValue getMapOfDoubleSchema(final DoubleSchemaConstraints valuesConstraints) {
+
+    if (valuesConstraints != null) {
+      return JsObj.of(TYPE,
+                      JsStr.of(OBJECT),
+                      ADDITIONAL_PROPERTIES,
+                      JsObj.of(TYPE,
+                               JsStr.of(NUMBER),
+                               MINIMUM,
+                               valuesConstraints.minimum() == Double.NEGATIVE_INFINITY ? JsNothing.NOTHING
+                                                                                       : JsDouble.of(valuesConstraints.minimum()),
+                               MAXIMUM,
+                               valuesConstraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
+                                                                                       : JsDouble.of(valuesConstraints.maximum()),
+                               EXCLUSIVE_MINIMUM,
+                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               EXCLUSIVE_MAXIMUM,
+                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               MULTIPLE_OF,
+                               valuesConstraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
+                                                                                          : JsDouble.of(valuesConstraints.multipleOf())
+                              ));
+    }
+    return getMapOfNumberSchema();
+  }
+
+  private static JsValue getMapOfLongSchema(final LongSchemaConstraints valuesConstraints) {
+    if (valuesConstraints != null) {
+      return JsObj.of(TYPE,
+                      JsStr.of(OBJECT),
+                      ADDITIONAL_PROPERTIES,
+                      JsObj.of(TYPE,
+                               JsStr.of(INTEGER),
+                               MINIMUM,
+                               valuesConstraints.minimum() == Long.MIN_VALUE ? JsNothing.NOTHING
+                                                                             : JsLong.of(valuesConstraints.minimum()),
+                               MAXIMUM,
+                               valuesConstraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING
+                                                                             : JsLong.of(valuesConstraints.maximum()),
+                               EXCLUSIVE_MINIMUM,
+                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               EXCLUSIVE_MAXIMUM,
+                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               MULTIPLE_OF,
+                               valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
+                                                                   : JsLong.of(valuesConstraints.multipleOf())
+                              ));
+    }
+    return getMapOfIntegerSchema();
+  }
+
+  private static JsValue getMapOfBigIntSchema(final BigIntSchemaConstraints valuesConstraints) {
+    if (valuesConstraints != null) {
+      return JsObj.of(TYPE,
+                      JsStr.of(OBJECT),
+                      ADDITIONAL_PROPERTIES,
+                      JsObj.of(TYPE,
+                               JsStr.of(INTEGER),
+                               MINIMUM,
+                               valuesConstraints.minimum() == null ? JsNothing.NOTHING
+                                                                   : JsBigInt.of(valuesConstraints.minimum()),
+                               MAXIMUM,
+                               valuesConstraints.maximum() == null ? JsNothing.NOTHING
+                                                                   : JsBigInt.of(valuesConstraints.maximum()),
+                               EXCLUSIVE_MINIMUM,
+                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               EXCLUSIVE_MAXIMUM,
+                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                               MULTIPLE_OF,
+                               valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
+                                                                      : JsBigInt.of(valuesConstraints.multipleOf())
+                              ));
+    }
+    return getMapOfIntegerSchema();
+  }
+
+  private static JsValue getDecimalSchema(final JsDecimalSpec s,
+                                          final DecimalSchemaConstraints constraints) {
+
+    if (constraints != null) {
+      return JsObj.of(TYPE,
+                      s.nullable ? JsArray.of(JsStr.of(NUMBER),
+                                              JsStr.of(NULL)
+                                             ) : JsStr.of(NUMBER),
+                      MINIMUM,
+                      constraints.minimum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.minimum()),
+                      MAXIMUM,
+                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.maximum()),
+                      EXCLUSIVE_MINIMUM,
+                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      EXCLUSIVE_MAXIMUM,
+                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      MULTIPLE_OF,
+                      constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.multipleOf())
+                     );
+    }
+    return getNumberSchema(s);
+  }
+
+  private static JsValue getDoubleSchema(final JsDoubleSpec s,
+                                         final DoubleSchemaConstraints constraints) {
+    if (constraints != null) {
+      return JsObj.of(TYPE,
+                      s.nullable ? JsArray.of(JsStr.of(NUMBER),
+                                              JsStr.of(NULL)
+                                             ) : JsStr.of(NUMBER),
+                      MINIMUM,
+                      constraints.minimum() == Double.NEGATIVE_INFINITY ? JsNothing.NOTHING
+                                                                        : JsDouble.of(constraints.minimum()),
+                      MAXIMUM,
+                      constraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
+                                                                        : JsDouble.of(constraints.maximum()),
+                      EXCLUSIVE_MINIMUM,
+                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      EXCLUSIVE_MAXIMUM,
+                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      MULTIPLE_OF,
+                      constraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
+                                                                           : JsDouble.of(constraints.multipleOf())
+                     );
+    }
+    return getNumberSchema(s);
+  }
+
+  private static JsValue getBigIntSchema(final JsBigIntSpec s,
+                                         final BigIntSchemaConstraints constraints) {
+    if (constraints != null) {
+      return JsObj.of(TYPE,
+                      s.nullable ? JsArray.of(JsStr.of(INTEGER),
+                                              JsStr.of(NULL)
+                                             ) : JsStr.of(INTEGER),
+                      MINIMUM,
+                      constraints.minimum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.minimum()),
+                      MAXIMUM,
+                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.maximum()),
+                      EXCLUSIVE_MINIMUM,
+                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      EXCLUSIVE_MAXIMUM,
+                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      MULTIPLE_OF,
+                      constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.multipleOf())
+                     );
+    }
+    return getIntSchema(s);
+  }
+
+  private static JsValue getLongSchema(final JsLongSpec s,
+                                       final LongSchemaConstraints constraints) {
+    if (constraints != null) {
+      return JsObj.of(TYPE,
+                      s.nullable ? JsArray.of(JsStr.of(INTEGER),
+                                              JsStr.of(NULL)
+                                             ) : JsStr.of(INTEGER),
+                      MINIMUM,
+                      constraints.minimum() == Long.MIN_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.minimum()),
+                      MAXIMUM,
+                      constraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.maximum()),
+                      EXCLUSIVE_MINIMUM,
+                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      EXCLUSIVE_MAXIMUM,
+                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      MULTIPLE_OF,
+                      constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsLong.of(constraints.multipleOf())
+                     );
+    }
+    return getIntSchema(s);
+  }
+
+  private static JsValue getIntSchema(final JsIntSpec s,
+                                      final IntegerSchemaConstraints constraints) {
+    if (constraints != null) {
+      return JsObj.of(TYPE,
+                      s.nullable ? JsArray.of(JsStr.of(INTEGER),
+                                              JsStr.of(NULL)
+                                             ) : JsStr.of(INTEGER),
+                      MINIMUM,
+                      constraints.minimum() == Integer.MIN_VALUE ? JsNothing.NOTHING : JsInt.of(constraints.minimum()),
+                      MAXIMUM,
+                      constraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING : JsInt.of(constraints.maximum()),
+                      EXCLUSIVE_MINIMUM,
+                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      EXCLUSIVE_MAXIMUM,
+                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
+                      MULTIPLE_OF,
+                      constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsInt.of(constraints.multipleOf())
+                     );
+    }
+    return getIntSchema(s);
+  }
+
+  private static JsValue getMapOfStrSchema(final StrConstraints schema) {
     if (schema != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -245,8 +499,8 @@ public final class JsObjSpecToSchema {
     return getStrSchema(s);
   }
 
-  private static JsObj getOneOf(final OneOf oneOf,
-                                final Set<String> nameSpecsVisited) {
+  private static JsObj getOneOfSchema(final OneOf oneOf,
+                                      final Set<String> nameSpecsVisited) {
     return JsObj.of(ONE_OF,
                     JsArray.ofIterable(oneOf.specs.stream()
                                                   .map(spec -> getSchema(spec,
@@ -266,19 +520,19 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsObj getMapOfInstantSpec() {
+  private static JsObj getMapOfInstantSchema() {
     return JsObj.of(TYPE,
                     JsStr.of(OBJECT),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
                              FORMAT,
-                             JsStr.of(BUILT_INT_FORMAT.DATE_TIME.name())
+                             JsStr.of(BUILT_INT_FORMAT.DATE_TIME.format)
                             )
                    );
   }
 
-  private static JsObj getMapOfBoolSpec() {
+  private static JsObj getMapOfBoolSchema() {
     return JsObj.of(TYPE,
                     JsStr.of(OBJECT),
                     ADDITIONAL_PROPERTIES,
@@ -288,14 +542,14 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsObj getMapOfBinarySpec() {
+  private static JsObj getMapOfBinarySchema() {
     return JsObj.of(TYPE,
                     JsStr.of(OBJECT),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
                              CONTENT_ENCODING,
-                             JsStr.of(BUILT_INT_FORMAT.BASE64.name())
+                             JsStr.of(BUILT_INT_FORMAT.BASE64.format)
                             )
                    );
   }
@@ -371,13 +625,13 @@ public final class JsObjSpecToSchema {
                                  JsStr.of(NULL)
                                 ),
                       CONTENT_ENCODING,
-                      JsStr.of(BUILT_INT_FORMAT.BASE64.name())
+                      JsStr.of(BUILT_INT_FORMAT.BASE64.format)
                      );
     }
     return JsObj.of(TYPE,
                     JsStr.of(STRING),
                     CONTENT_ENCODING,
-                    JsStr.of(BUILT_INT_FORMAT.BASE64.name()));
+                    JsStr.of(BUILT_INT_FORMAT.BASE64.format));
   }
 
   private static JsObj getInstantSchema(final JsSpec s) {
@@ -387,7 +641,7 @@ public final class JsObjSpecToSchema {
                                  JsStr.of(NULL)
                                 ),
                       FORMAT,
-                      JsStr.of("date-time"));
+                      JsStr.of(BUILT_INT_FORMAT.DATE_TIME.format));
     }
     return JsObj.of(TYPE,
                     JsStr.of(STRING),
@@ -444,18 +698,6 @@ public final class JsObjSpecToSchema {
                     JsStr.of(INTEGER));
   }
 
-  private static JsObj getLongSchema(final JsSpec s) {
-    if (s.isNullable()) {
-      return JsObj.of(TYPE,
-                      JsArray.of(JsStr.of(INTEGER),
-                                 JsStr.of(NULL)
-                                )
-                     );
-    }
-    return JsObj.of(TYPE,
-                    JsStr.of(INTEGER));
-  }
-
 
   private static JsValue getSchemaOfArrayOfSpec(final JsArraySpec spec) {
 
@@ -496,7 +738,7 @@ public final class JsObjSpecToSchema {
                                                     );
 
       case JsArrayOfStr s -> getSizableArrayOfStrSchema(s,
-                                                        s.schema);
+                                                        s.constraints);
       case JsArrayOfStrSuchThat ignored -> JsObj.of(TYPE,
                                                     JsStr.of(STRING)
                                                    );

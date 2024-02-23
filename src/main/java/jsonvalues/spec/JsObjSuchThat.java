@@ -2,16 +2,15 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.OBJ_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 
 final class JsObjSuchThat extends AbstractNullable implements JsOneErrorSpec {
 
-  final Function<JsObj, Optional<JsError>> predicate;
+  final Function<JsObj, JsError> predicate;
 
-  JsObjSuchThat(final Function<JsObj, Optional<JsError>> predicate,
+  JsObjSuchThat(final Function<JsObj, JsError> predicate,
                 final boolean nullable
                ) {
     super(nullable);
@@ -35,14 +34,14 @@ final class JsObjSuchThat extends AbstractNullable implements JsOneErrorSpec {
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    Optional<JsError> error = Functions.testElem(JsValue::isObj,
-                                                 OBJ_EXPECTED,
-                                                 nullable
-                                                )
-                                       .apply(value);
+  public JsError testValue(final JsValue value) {
+    JsError error = Functions.testValue(JsValue::isObj,
+                                        OBJ_EXPECTED,
+                                        nullable,
+                                        value
+                                       );
 
-    return error.isPresent() || value.isNull() ?
+    return error != null || value.isNull() ?
            error :
            predicate.apply(value.toJsObj());
   }

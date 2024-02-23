@@ -6,13 +6,22 @@ import jsonvalues.JsValue;
 
 final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
+  final DecimalSchemaConstraints valuesConstraints;
+
   JsMapOfDec(boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsMapOfDec(boolean nullable,
+             DecimalSchemaConstraints valuesConstraints) {
     super(nullable);
+    this.valuesConstraints = valuesConstraints;
   }
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfDec(true);
+    return new JsMapOfDec(true,valuesConstraints);
   }
 
   @Override
@@ -22,7 +31,7 @@ final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     return test(value,
                 it -> !it.isNumber(),
                 ERROR_CODE.DECIMAL_EXPECTED);

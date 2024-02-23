@@ -6,13 +6,22 @@ import jsonvalues.JsValue;
 
 final class JsMapOfInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
+  final IntegerSchemaConstraints valuesConstraints;
+
   JsMapOfInt(boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsMapOfInt(boolean nullable,
+             IntegerSchemaConstraints valuesConstraints) {
     super(nullable);
+    this.valuesConstraints = valuesConstraints;
   }
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfInt(true);
+    return new JsMapOfInt(true,valuesConstraints);
   }
 
   @Override
@@ -22,7 +31,7 @@ final class JsMapOfInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     return test(value,
                 it -> !it.isInt(),
                 ERROR_CODE.INT_EXPECTED);

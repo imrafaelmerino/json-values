@@ -1,16 +1,15 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
 
 final class JsArrayOfDecimalSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  private final Function<JsArray, Optional<JsError>> predicate;
+  private final Function<JsArray, JsError> predicate;
   private final JsArrayOfDecimal arrayOfDecimalSpec;
 
-  JsArrayOfDecimalSuchThat(final Function<JsArray, Optional<JsError>> predicate,
+  JsArrayOfDecimalSuchThat(final Function<JsArray, JsError> predicate,
                            final boolean nullable
                           ) {
     super(nullable);
@@ -33,9 +32,9 @@ final class JsArrayOfDecimalSuchThat extends AbstractNullable implements JsOneEr
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    final Optional<JsError> result = arrayOfDecimalSpec.testValue(value);
-    return result.isPresent() || value.isNull() ?
+  public JsError testValue(final JsValue value) {
+    final JsError result = arrayOfDecimalSpec.testValue(value);
+    return result != null || value.isNull() ?
            result :
            predicate.apply(value.toJsArray());
   }

@@ -2,22 +2,21 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.DoubleFunction;
 import jsonvalues.JsValue;
 
 final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  private final DoubleFunction<Optional<JsError>> predicate;
+  private final DoubleFunction<JsError> predicate;
 
-  JsArrayOfTestedDouble(final DoubleFunction<Optional<JsError>> predicate,
+  JsArrayOfTestedDouble(final DoubleFunction<JsError> predicate,
                         final boolean nullable
                        ) {
     super(nullable);
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedDouble(final DoubleFunction<Optional<JsError>> predicate,
+  JsArrayOfTestedDouble(final DoubleFunction<JsError> predicate,
                         final boolean nullable,
                         int min,
                         int max
@@ -46,19 +45,19 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErr
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v ->
                                                 v.isDouble() ?
                                                 predicate.apply(v.toJsDouble().value) :
-                                                Optional.of(new JsError(v,
-                                                                        DOUBLE_EXPECTED
-                                                            )
-                                                           ),
+                                                new JsError(v,
+                                                            DOUBLE_EXPECTED
+
+                                                ),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 
 

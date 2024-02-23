@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import java.math.BigInteger;
-import java.util.Objects;
 
 record BigIntSchemaConstraints(BigInteger minimum,
                                BigInteger maximum,
@@ -11,11 +10,11 @@ record BigIntSchemaConstraints(BigInteger minimum,
 
   BigIntSchemaConstraints {
 
-    if (Objects.requireNonNull(minimum)
-               .compareTo(Objects.requireNonNull(maximum)) > 0) {
+    if (minimum != null && maximum != null && minimum
+                                                  .compareTo(maximum) > 0) {
       throw new IllegalArgumentException("minimum must be less than or equal to maximum");
     }
-    if (minimum.equals(maximum) && (exclusiveMinimum || exclusiveMaximum)) {
+    if (minimum != null && minimum.equals(maximum) && (exclusiveMinimum || exclusiveMaximum)) {
       throw new IllegalArgumentException("minimum must be less than maximum if exclusiveMinimum or exclusiveMaximum are true");
     }
 

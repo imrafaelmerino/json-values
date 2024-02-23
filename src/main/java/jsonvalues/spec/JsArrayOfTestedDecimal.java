@@ -3,22 +3,21 @@ package jsonvalues.spec;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
 import java.math.BigDecimal;
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsValue;
 
 final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  final Function<BigDecimal, Optional<JsError>> predicate;
+  final Function<BigDecimal, JsError> predicate;
 
-  JsArrayOfTestedDecimal(final Function<BigDecimal, Optional<JsError>> predicate,
+  JsArrayOfTestedDecimal(final Function<BigDecimal, JsError> predicate,
                          final boolean nullable
                         ) {
     super(nullable);
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedDecimal(final Function<BigDecimal, Optional<JsError>> predicate,
+  JsArrayOfTestedDecimal(final Function<BigDecimal, JsError> predicate,
                          final boolean nullable,
                          int min,
                          int max
@@ -48,19 +47,19 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v ->
                                                 v.isDouble() || v.isBigDec() ?
                                                 predicate.apply(v.toJsBigDec().value) :
-                                                Optional.of(new JsError(v,
-                                                                        DECIMAL_EXPECTED
-                                                            )
-                                                           ),
+                                                new JsError(v,
+                                                            DECIMAL_EXPECTED
+
+                                                ),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 
 

@@ -6,13 +6,22 @@ import jsonvalues.JsValue;
 
 final class JsMapOfLong extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
+  final LongSchemaConstraints valuesConstraints;
+
   JsMapOfLong(boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsMapOfLong(boolean nullable,
+              LongSchemaConstraints valuesConstraints) {
     super(nullable);
+    this.valuesConstraints = valuesConstraints;
   }
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfLong(true);
+    return new JsMapOfLong(true,valuesConstraints);
   }
 
   @Override
@@ -22,7 +31,7 @@ final class JsMapOfLong extends AbstractMap implements JsOneErrorSpec, AvroSpec 
 
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     return test(value,
                 it -> !it.isLong() && !it.isInt(),
                 ERROR_CODE.LONG_EXPECTED);

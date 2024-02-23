@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsValue;
@@ -8,10 +7,10 @@ import jsonvalues.JsValue;
 
 final class JsArraySuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec {
 
-  final Function<JsArray, Optional<JsError>> predicate;
+  final Function<JsArray, JsError> predicate;
   private final JsArrayOfValue isArray;
 
-  JsArraySuchThat(final Function<JsArray, Optional<JsError>> predicate,
+  JsArraySuchThat(final Function<JsArray, JsError> predicate,
                   final boolean nullable
                  ) {
     super(nullable);
@@ -35,9 +34,9 @@ final class JsArraySuchThat extends AbstractNullable implements JsOneErrorSpec, 
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    final Optional<JsError> result = isArray.testValue(value);
-    return result.isPresent() || value.isNull() ?
+  public JsError testValue(final JsValue value) {
+    final JsError result = isArray.testValue(value);
+    return result != null || value.isNull() ?
            result :
            predicate.apply(value.toJsArray());
   }

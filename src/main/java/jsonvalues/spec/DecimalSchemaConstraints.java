@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import java.math.BigDecimal;
-import java.util.Objects;
 
 record DecimalSchemaConstraints(BigDecimal minimum,
                                 BigDecimal maximum,
@@ -10,12 +9,12 @@ record DecimalSchemaConstraints(BigDecimal minimum,
                                 BigDecimal multipleOf) {
 
   DecimalSchemaConstraints {
-    if (Objects.requireNonNull(minimum)
-               .compareTo(Objects.requireNonNull(maximum)) > 0) {
+    if (minimum != null && maximum != null && minimum
+                                                  .compareTo(maximum) > 0) {
       throw new IllegalArgumentException("minimum must be less than or equal to maximum");
     }
-    if (minimum.compareTo(maximum) == 0 && (exclusiveMinimum
-                                            || exclusiveMaximum)) {
+    if (minimum != null && maximum != null && minimum.compareTo(maximum) == 0 && (exclusiveMinimum
+                                                                                  || exclusiveMaximum)) {
       throw new IllegalArgumentException("minimum must be less than maximum if exclusiveMinimum or exclusiveMaximum are true");
     }
   }

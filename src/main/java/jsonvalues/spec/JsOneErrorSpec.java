@@ -3,7 +3,6 @@ package jsonvalues.spec;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
@@ -34,14 +33,16 @@ sealed interface JsOneErrorSpec extends JsSpec permits AnySpec, AnySuchThat, IsJ
                                final JsValue value
                               ) {
     List<SpecError> errors = new ArrayList<>();
-    testValue(value).ifPresent(e -> errors.add(SpecError.of(parentPath,
-                                                            e
-                                                           )
-                                              )
-                              );
+    JsError error = testValue(value);
+    if (error != null) {
+      errors.add(SpecError.of(parentPath,
+                              error
+                             )
+                );
+    }
     return errors;
   }
 
-  Optional<JsError> testValue(final JsValue value);
+  JsError testValue(final JsValue value);
 
 }

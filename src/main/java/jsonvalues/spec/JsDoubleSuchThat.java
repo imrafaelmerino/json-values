@@ -2,15 +2,14 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.DoubleFunction;
 import jsonvalues.JsValue;
 
 final class JsDoubleSuchThat extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
 
-  final DoubleFunction<Optional<JsError>> predicate;
+  final DoubleFunction<JsError> predicate;
 
-  JsDoubleSuchThat(final DoubleFunction<Optional<JsError>> predicate,
+  JsDoubleSuchThat(final DoubleFunction<JsError> predicate,
                    final boolean nullable
                   ) {
     super(nullable);
@@ -35,14 +34,14 @@ final class JsDoubleSuchThat extends AbstractNullable implements JsOneErrorSpec,
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    final Optional<JsError> error = Functions.testElem(JsValue::isDouble,
-                                                       DOUBLE_EXPECTED,
-                                                       nullable
-                                                      )
-                                             .apply(value);
+  public JsError testValue(final JsValue value) {
+    final JsError error = Functions.testValue(JsValue::isDouble,
+                                              DOUBLE_EXPECTED,
+                                              nullable,
+                                              value
+                                             );
 
-    return error.isPresent() || value.isNull() ?
+    return error != null || value.isNull() ?
            error :
            predicate.apply(value.toJsDouble().value);
   }

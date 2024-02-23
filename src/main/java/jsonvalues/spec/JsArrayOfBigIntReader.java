@@ -17,7 +17,7 @@ final class JsArrayOfBigIntReader extends JsArrayReader {
   }
 
   JsValue nullOrArrayEachSuchThat(final JsReader reader,
-                                  final Function<BigInteger, Optional<JsError>> fn,
+                                  final Function<BigInteger, JsError> fn,
                                   final int min,
                                   final int max
                                  ) throws JsParserException {
@@ -30,7 +30,7 @@ final class JsArrayOfBigIntReader extends JsArrayReader {
 
 
   JsArray arrayEachSuchThat(final JsReader reader,
-                            final Function<BigInteger, Optional<JsError>> fn,
+                            final Function<BigInteger, JsError> fn,
                             final int min,
                             final int max
                            ) throws JsParserException {

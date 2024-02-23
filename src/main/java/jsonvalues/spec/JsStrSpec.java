@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSpec {
@@ -12,17 +11,18 @@ final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
          null);
   }
 
-  final StrConstraints schema;
+  final StrConstraints constraints;
 
   public JsStrSpec(final boolean nullable,
-                   final StrConstraints schema) {
+                   final StrConstraints constraints) {
     super(nullable);
-    this.schema = schema;
+    this.constraints = constraints;
   }
 
   @Override
   public JsSpec nullable() {
-    return new JsStrSpec(true);
+    return new JsStrSpec(true,
+                         constraints);
   }
 
 
@@ -33,11 +33,15 @@ final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
-    return Functions.testElem(JsValue::isStr,
-                              STRING_EXPECTED,
-                              nullable
-                             )
-                    .apply(value);
+  public JsError testValue(final JsValue value) {
+    return constraints == null ?
+           Functions.testValue(JsValue::isStr,
+                               STRING_EXPECTED,
+                               nullable,
+                               value
+                              ) :
+           Functions.testStrConstraints(constraints,
+                                        value)
+        ;
   }
 }

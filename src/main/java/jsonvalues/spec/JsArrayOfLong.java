@@ -2,22 +2,42 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
+  final LongSchemaConstraints constraints;
+
   JsArrayOfLong(final boolean nullable) {
+    this(nullable,
+         null);
+  }
+
+  JsArrayOfLong(final boolean nullable,
+                LongSchemaConstraints constraints) {
     super(nullable);
+    this.constraints = constraints;
   }
 
   JsArrayOfLong(final boolean nullable,
                 int min,
                 int max
                ) {
+    this(nullable,
+         min,
+         max,
+         null);
+  }
+
+  JsArrayOfLong(final boolean nullable,
+                int min,
+                int max,
+                LongSchemaConstraints constraints
+               ) {
     super(nullable,
           min,
           max);
+    this.constraints = constraints;
   }
 
 
@@ -25,7 +45,8 @@ final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, 
   public JsSpec nullable() {
     return new JsArrayOfLong(true,
                              min,
-                             max);
+                             max,
+                             constraints);
   }
 
 
@@ -38,15 +59,15 @@ final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, 
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v -> v.isInt() || v.isLong() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         LONG_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             LONG_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

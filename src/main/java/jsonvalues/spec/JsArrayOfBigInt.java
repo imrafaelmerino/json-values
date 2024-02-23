@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
@@ -38,16 +37,16 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec
 
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     return Functions.testArrayOfTestedValue(v ->
                                                 v.isIntegral() ?
-                                                Optional.empty() :
-                                                Optional.of(new JsError(v,
-                                                                        INTEGRAL_EXPECTED)),
+                                                null :
+                                                new JsError(v,
+                                                            INTEGRAL_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 }

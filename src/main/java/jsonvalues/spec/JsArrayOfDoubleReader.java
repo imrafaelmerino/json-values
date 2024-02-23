@@ -16,7 +16,7 @@ final class JsArrayOfDoubleReader extends JsArrayReader {
   }
 
   JsValue nullOrArrayEachSuchThat(final JsReader reader,
-                                  final DoubleFunction<Optional<JsError>> fn,
+                                  final DoubleFunction<JsError> fn,
                                   final int min,
                                   final int max
                                  ) throws JsParserException {
@@ -29,7 +29,7 @@ final class JsArrayOfDoubleReader extends JsArrayReader {
 
 
   JsArray arrayEachSuchThat(final JsReader reader,
-                            final DoubleFunction<Optional<JsError>> fn,
+                            final DoubleFunction<JsError> fn,
                             final int min,
                             final int max
                            ) throws JsParserException {

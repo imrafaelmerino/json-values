@@ -8,7 +8,6 @@ import java.math.BigInteger;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.function.BiFunction;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
@@ -44,7 +43,7 @@ final class JsParsers {
                                   );
   }
 
-  JsParser ofArrayOfObjSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfObjSuchThat(Function<JsArray, JsError> p,
                                 boolean nullable
                                ) {
     return getParser(READERS.arrayOfObjReader,
@@ -54,7 +53,7 @@ final class JsParsers {
   }
 
   private JsParser getParser(JsArrayReader parser,
-                             Function<JsArray, Optional<JsError>> p,
+                             Function<JsArray, JsError> p,
                              boolean nullable
                             ) {
     return nullable ?
@@ -66,7 +65,7 @@ final class JsParsers {
                                          );
   }
 
-  JsParser ofArrayOfObjEachSuchThat(Function<JsObj, Optional<JsError>> p,
+  JsParser ofArrayOfObjEachSuchThat(Function<JsObj, JsError> p,
                                     boolean nullable,
                                     int min,
                                     int max
@@ -113,7 +112,7 @@ final class JsParsers {
   }
 
 
-  JsParser ofObjSuchThat(final Function<JsObj, Optional<JsError>> predicate,
+  JsParser ofObjSuchThat(final Function<JsObj, JsError> predicate,
                          final boolean nullable
                         ) {
 
@@ -124,24 +123,24 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsObj());
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsObj());
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
       };
     } else {
       return reader ->
       {
         JsObj value = READERS.objReader.value(reader);
-        Optional<JsError> result = predicate.apply(value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
       };
     }
@@ -217,7 +216,7 @@ final class JsParsers {
     };
   }
 
-  JsParser ofArrayOfValueSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfValueSuchThat(Function<JsArray, JsError> p,
                                   boolean nullable
                                  ) {
     return getParser(READERS.arrayOfValueReader,
@@ -251,7 +250,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofArrayOfValueEachSuchThat(Function<JsValue, Optional<JsError>> p,
+  JsParser ofArrayOfValueEachSuchThat(Function<JsValue, JsError> p,
                                       boolean nullable,
                                       int min,
                                       int max
@@ -275,19 +274,19 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofValueSuchThat(Function<JsValue, Optional<JsError>> predicate) {
+  JsParser ofValueSuchThat(Function<JsValue, JsError> predicate) {
     return reader ->
     {
       JsValue value = READERS.valueReader.nullOrValue(reader);
       if (value == JsNull.NULL) {
         return value;
       }
-      Optional<JsError> result = predicate.apply(value);
-      if (result.isEmpty()) {
+      JsError result = predicate.apply(value);
+      if (result == null) {
         return value;
       }
       throw newParseException.apply(reader,
-                                    result.get()
+                                    result
                                    );
     };
   }
@@ -316,7 +315,7 @@ final class JsParsers {
                                                     );
   }
 
-  JsParser ofArrayOfBoolSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfBoolSuchThat(Function<JsArray, JsError> p,
                                  boolean nullable
                                 ) {
     return getParser(READERS.arrayOfBoolReader,
@@ -326,7 +325,7 @@ final class JsParsers {
 
   }
 
-  JsParser ofArrayOfStrEachSuchThat(Function<String, Optional<JsError>> p,
+  JsParser ofArrayOfStrEachSuchThat(Function<String, JsError> p,
                                     boolean nullable,
                                     int min,
                                     int max
@@ -346,7 +345,7 @@ final class JsParsers {
                                                             );
   }
 
-  JsParser ofArrayOfStrSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfStrSuchThat(Function<JsArray, JsError> p,
                                 boolean nullable
                                ) {
     return getParser(READERS.arrayOfStringReader,
@@ -374,7 +373,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofStrSuchThat(Function<String, Optional<JsError>> predicate,
+  JsParser ofStrSuchThat(Function<String, JsError> predicate,
                          boolean nullable
                         ) {
 
@@ -385,12 +384,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsStr().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsStr().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
       };
     } else {
@@ -398,12 +397,12 @@ final class JsParsers {
       {
         JsStr value = READERS.strReader.value(reader);
 
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         } else {
           throw newParseException.apply(reader,
-                                        result.get()
+                                        result
                                        );
         }
       };
@@ -411,7 +410,7 @@ final class JsParsers {
   }
 
 
-  JsParser ofArrayOfIntegralSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfIntegralSuchThat(Function<JsArray, JsError> p,
                                      boolean nullable
                                     ) {
     return getParser(READERS.arrayOfBigIntReader,
@@ -431,7 +430,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, Optional<JsError>> p,
+  JsParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, JsError> p,
                                          boolean nullable,
                                          int min,
                                          int max
@@ -451,7 +450,7 @@ final class JsParsers {
                                                             );
   }
 
-  JsParser ofArrayOfDoubleEachSuchThat(DoubleFunction<Optional<JsError>> p,
+  JsParser ofArrayOfDoubleEachSuchThat(DoubleFunction<JsError> p,
                                        boolean nullable,
                                        int min,
                                        int max
@@ -477,7 +476,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofIntegralSuchThat(Function<BigInteger, Optional<JsError>> predicate,
+  JsParser ofIntegralSuchThat(Function<BigInteger, JsError> predicate,
                               boolean nullable
                              ) {
 
@@ -488,24 +487,24 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsBigInt().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsBigInt().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
       };
     } else {
       return reader ->
       {
         JsBigInt integral = READERS.jsBigIntReader.value(reader);
-        Optional<JsError> result = predicate.apply(integral.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(integral.value);
+        if (result == null) {
           return integral;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
@@ -523,7 +522,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, Optional<JsError>> p,
+  JsParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, JsError> p,
                                         boolean nullable,
                                         int min,
                                         int max
@@ -543,7 +542,7 @@ final class JsParsers {
                                                              );
   }
 
-  JsParser ofArrayOfDecimalSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfDecimalSuchThat(Function<JsArray, JsError> p,
                                     boolean nullable
                                    ) {
     return getParser(READERS.arrayOfDecimalReader,
@@ -553,7 +552,7 @@ final class JsParsers {
 
   }
 
-  JsParser ofArrayOfDoubleSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfDoubleSuchThat(Function<JsArray, JsError> p,
                                    boolean nullable
                                   ) {
     return getParser(READERS.arrayOfDoubleReader,
@@ -575,7 +574,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofArrayOfLongEachSuchThat(LongFunction<Optional<JsError>> p,
+  JsParser ofArrayOfLongEachSuchThat(LongFunction<JsError> p,
                                      boolean nullable,
                                      int min,
                                      int max
@@ -594,7 +593,7 @@ final class JsParsers {
                                                                 );
   }
 
-  JsParser ofArrayOfLongSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfLongSuchThat(Function<JsArray, JsError> p,
                                  boolean nullable
                                 ) {
     return getParser(READERS.arrayOfLongReader,
@@ -610,7 +609,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofDecimalSuchThat(Function<BigDecimal, Optional<JsError>> predicate,
+  JsParser ofDecimalSuchThat(Function<BigDecimal, JsError> predicate,
                              boolean nullable
                             ) {
 
@@ -621,12 +620,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsBigDec().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsBigDec().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
 
       };
@@ -634,12 +633,12 @@ final class JsParsers {
       return reader ->
       {
         JsBigDec decimal = READERS.decimalReader.value(reader);
-        Optional<JsError> result = predicate.apply(decimal.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(decimal.value);
+        if (result == null) {
           return decimal;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
@@ -716,7 +715,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofLongSuchThat(LongFunction<Optional<JsError>> predicate,
+  JsParser ofLongSuchThat(LongFunction<JsError> predicate,
                           boolean nullable
                          ) {
 
@@ -727,12 +726,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         } else {
-          Optional<JsError> optErr = predicate.apply(value.toJsLong().value);
-          if (optErr.isEmpty()) {
+          JsError optErr = predicate.apply(value.toJsLong().value);
+          if (optErr == null) {
             return value;
           }
           throw newParseException.apply(reader,
-                                        optErr.get()
+                                        optErr
                                        );
 
         }
@@ -741,19 +740,19 @@ final class JsParsers {
       return reader ->
       {
         JsLong value = READERS.longReader.value(reader);
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
     }
   }
 
-  JsParser ofDoubleSuchThat(DoubleFunction<Optional<JsError>> predicate,
+  JsParser ofDoubleSuchThat(DoubleFunction<JsError> predicate,
                             boolean nullable
                            ) {
 
@@ -764,12 +763,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         } else {
-          Optional<JsError> optErr = predicate.apply(value.toJsDouble().value);
-          if (optErr.isEmpty()) {
+          JsError optErr = predicate.apply(value.toJsDouble().value);
+          if (optErr == null) {
             return value;
           }
           throw newParseException.apply(reader,
-                                        optErr.get()
+                                        optErr
                                        );
 
         }
@@ -778,12 +777,12 @@ final class JsParsers {
       return reader ->
       {
         JsDouble value = READERS.doubleReader.value(reader);
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
@@ -814,7 +813,7 @@ final class JsParsers {
   }
 
 
-  JsParser ofArrayOfIntSuchThat(Function<JsArray, Optional<JsError>> p,
+  JsParser ofArrayOfIntSuchThat(Function<JsArray, JsError> p,
                                 boolean nullable
                                ) {
     return getParser(READERS.arrayOfIntReader,
@@ -824,7 +823,7 @@ final class JsParsers {
   }
 
 
-  JsParser ofArrayOfIntEachSuchThat(IntFunction<Optional<JsError>> p,
+  JsParser ofArrayOfIntEachSuchThat(IntFunction<JsError> p,
                                     boolean nullable,
                                     int min,
                                     int max
@@ -856,7 +855,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofBinarySuchThat(Function<byte[], Optional<JsError>> predicate,
+  JsParser ofBinarySuchThat(Function<byte[], JsError> predicate,
                             boolean nullable
                            ) {
 
@@ -867,12 +866,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsBinary().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsBinary().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
 
       };
@@ -880,12 +879,12 @@ final class JsParsers {
       return reader ->
       {
         JsBinary value = READERS.binaryReader.value(reader);
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
@@ -898,7 +897,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofIntSuchThat(IntFunction<Optional<JsError>> predicate,
+  JsParser ofIntSuchThat(IntFunction<JsError> predicate,
                          boolean nullable
                         ) {
 
@@ -909,12 +908,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsInt().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsInt().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
 
       };
@@ -922,12 +921,12 @@ final class JsParsers {
       return reader ->
       {
         JsInt value = READERS.intReader.value(reader);
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };
@@ -941,7 +940,7 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofInstantSuchThat(Function<Instant, Optional<JsError>> predicate,
+  JsParser ofInstantSuchThat(Function<Instant, JsError> predicate,
                              boolean nullable
                             ) {
     if (nullable) {
@@ -951,12 +950,12 @@ final class JsParsers {
         if (value == JsNull.NULL) {
           return value;
         }
-        Optional<JsError> opErr = predicate.apply(value.toJsInstant().value);
-        if (opErr.isEmpty()) {
+        JsError opErr = predicate.apply(value.toJsInstant().value);
+        if (opErr == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      opErr.get()
+                                      opErr
                                      );
 
       };
@@ -964,12 +963,12 @@ final class JsParsers {
       return reader ->
       {
         JsInstant value = READERS.instantReader.value(reader);
-        Optional<JsError> result = predicate.apply(value.value);
-        if (result.isEmpty()) {
+        JsError result = predicate.apply(value.value);
+        if (result == null) {
           return value;
         }
         throw newParseException.apply(reader,
-                                      result.get()
+                                      result
                                      );
 
       };

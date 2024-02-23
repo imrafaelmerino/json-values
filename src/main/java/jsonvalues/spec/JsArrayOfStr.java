@@ -2,12 +2,11 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.STRING_EXPECTED;
 
-import java.util.Optional;
 import jsonvalues.JsValue;
 
 final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  final StrConstraints schema;
+  final StrConstraints constraints;
 
   JsArrayOfStr(final boolean nullable) {
     this(nullable,
@@ -15,9 +14,9 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
   }
 
   JsArrayOfStr(final boolean nullable,
-               StrConstraints schema) {
+               StrConstraints constraints) {
     super(nullable);
-    this.schema = schema;
+    this.constraints = constraints;
   }
 
   JsArrayOfStr(final boolean nullable,
@@ -33,12 +32,12 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
   JsArrayOfStr(final boolean nullable,
                int min,
                int max,
-               StrConstraints schema
+               StrConstraints constraints
               ) {
     super(nullable,
           min,
           max);
-    this.schema = schema;
+    this.constraints = constraints;
   }
 
   @Override
@@ -46,7 +45,7 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
     return new JsArrayOfStr(true,
                             min,
                             max,
-                            schema);
+                            constraints);
   }
 
   @Override
@@ -54,21 +53,21 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
     return JsParsers.INSTANCE.ofArrayOfStr(nullable,
                                            min,
                                            max,
-                                           schema);
+                                           constraints);
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
     //TODO incluir schema validation
     return Functions.testArrayOfTestedValue(v -> v.isStr() ?
-                                                 Optional.empty() :
-                                                 Optional.of(new JsError(v,
-                                                                         STRING_EXPECTED)),
+                                                 null :
+                                                 new JsError(v,
+                                                             STRING_EXPECTED),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 
 

@@ -22,7 +22,7 @@ final class JsMapOfInstant extends AbstractMap implements JsOneErrorSpec, AvroSp
 
 
   @Override
-  public Optional<JsError> testValue(JsValue value) {
+  public JsError testValue(JsValue value) {
     return test(value,
                 it -> !it.isInstant(),
                 ERROR_CODE.INSTANT_EXPECTED);

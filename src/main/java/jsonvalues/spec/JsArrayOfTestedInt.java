@@ -2,22 +2,21 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INT_EXPECTED;
 
-import java.util.Optional;
 import java.util.function.IntFunction;
 import jsonvalues.JsValue;
 
 final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  final IntFunction<Optional<JsError>> predicate;
+  final IntFunction<JsError> predicate;
 
-  JsArrayOfTestedInt(final IntFunction<Optional<JsError>> predicate,
+  JsArrayOfTestedInt(final IntFunction<JsError> predicate,
                      final boolean nullable
                     ) {
     super(nullable);
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedInt(final IntFunction<Optional<JsError>> predicate,
+  JsArrayOfTestedInt(final IntFunction<JsError> predicate,
                      final boolean nullable,
                      int min,
                      int max
@@ -49,20 +48,19 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
   }
 
   @Override
-  public Optional<JsError> testValue(final JsValue value) {
+  public JsError testValue(final JsValue value) {
 
     return Functions.testArrayOfTestedValue(v ->
                                                 v.isInt() ?
                                                 predicate.apply(v.toJsInt().value) :
-                                                Optional.of(new JsError(v,
-                                                                        INT_EXPECTED
-                                                            )
-                                                           ),
+                                                new JsError(v,
+                                                            INT_EXPECTED
+                                                ),
                                             nullable,
                                             min,
-                                            max
-                                           )
-                    .apply(value);
+                                            max,
+                                            value
+                                           );
   }
 
 

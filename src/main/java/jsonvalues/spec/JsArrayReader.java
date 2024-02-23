@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import jsonvalues.JsArray;
@@ -98,7 +97,7 @@ abstract class JsArrayReader extends AbstractReader {
   }
 
   public JsValue nullOrArraySuchThat(final JsReader reader,
-                                     final Function<JsArray, Optional<JsError>> fn
+                                     final Function<JsArray, JsError> fn
                                     ) throws JsParserException {
 
     return reader.wasNull() ?
@@ -111,15 +110,15 @@ abstract class JsArrayReader extends AbstractReader {
 
 
   JsArray arraySuchThat(final JsReader reader,
-                        final Function<JsArray, Optional<JsError>> fn
+                        final Function<JsArray, JsError> fn
                        ) throws JsParserException {
 
-    final JsArray array = value(reader);
-    final Optional<JsError> result = fn.apply(array);
-    if (result.isEmpty()) {
+    JsArray array = value(reader);
+    JsError result = fn.apply(array);
+    if (result == null) {
       return array;
     }
-    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result.get()),
+    throw JsParserException.reasonAt(ParserErrors.JS_ERROR_2_STR.apply(result),
                                      reader.getPositionInStream()
                                     );
   }

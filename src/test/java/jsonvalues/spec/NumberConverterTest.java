@@ -16,13 +16,13 @@ public class NumberConverterTest {
   @Test
   public void rangeCheckInt() throws JsParserException {
     // setup
-    final JsWriter sw = new JsWriter(40);
-    final JsReader jr = dslJson.newReader(sw.getByteBuffer());
-    final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
+    JsWriter sw = new JsWriter(40);
+    JsReader jr = dslJson.newReader(sw.getByteBuffer());
+    JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
                                            new byte[64]);
 
-    final int from = -10000000;
-    final int to = 10000000;
+    int from = -10000000;
+    int to = 10000000;
 
     for (int value = from; value <= to; value += 33) {
       sw.reset();
@@ -34,7 +34,7 @@ public class NumberConverterTest {
       jr.process(null,
                  sw.size());
       jr.read();
-      final int valueParsed1 = NumberConverter.deserializeInt(jr);
+      int valueParsed1 = NumberConverter.deserializeInt(jr);
       Assertions.assertEquals(value,
                               valueParsed1);
 
@@ -42,7 +42,7 @@ public class NumberConverterTest {
                                            0,
                                            sw.size()));
       jsr.read();
-      final int valueParsed2 = NumberConverter.deserializeInt(jsr);
+      int valueParsed2 = NumberConverter.deserializeInt(jsr);
       Assertions.assertEquals(value,
                               valueParsed2);
     }
@@ -51,13 +51,13 @@ public class NumberConverterTest {
   @Test
   public void rangeCheckLong() throws JsParserException {
     // setup
-    final JsWriter sw = new JsWriter(40);
-    final JsReader jr = dslJson.newReader(sw.getByteBuffer());
-    final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
+    JsWriter sw = new JsWriter(40);
+    JsReader jr = dslJson.newReader(sw.getByteBuffer());
+    JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
                                            new byte[64]);
 
-    final long from = -10000000000L;
-    final long to = 10000000000L;
+    long from = -10000000000L;
+    long to = 10000000000L;
 
     for (long value = from; value <= to; value += 33333) {
       sw.reset();
@@ -69,14 +69,14 @@ public class NumberConverterTest {
       jr.process(null,
                  sw.size());
       jr.read();
-      final long valueParsed1 = NumberConverter.deserializeLong(jr);
+      long valueParsed1 = NumberConverter.deserializeLong(jr);
       Assertions.assertEquals(value,
                               valueParsed1);
 
       jr.process(null,
                  sw.size());
       jr.read();
-      final Number numberParsed1 = NumberConverter.deserializeNumber(jr);
+      Number numberParsed1 = NumberConverter.deserializeNumber(jr);
       Assertions.assertEquals(value,
                               numberParsed1);
 
@@ -84,7 +84,7 @@ public class NumberConverterTest {
                                            0,
                                            sw.size()));
       jsr.read();
-      final long valueParsed2 = NumberConverter.deserializeLong(jsr);
+      long valueParsed2 = NumberConverter.deserializeLong(jsr);
       Assertions.assertEquals(value,
                               valueParsed2);
 
@@ -92,7 +92,7 @@ public class NumberConverterTest {
                                            0,
                                            sw.size()));
       jsr.read();
-      final Number numberParsed2 = NumberConverter.deserializeNumber(jsr);
+      Number numberParsed2 = NumberConverter.deserializeNumber(jsr);
       Assertions.assertEquals(value,
                               numberParsed2);
     }
@@ -101,14 +101,14 @@ public class NumberConverterTest {
   @Test
   public void rangeCheckDecimal() throws JsParserException {
     // setup
-    final JsWriter sw = new JsWriter(40);
-    final JsReader jr = dslJson.newReader(sw.getByteBuffer());
-    final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
+    JsWriter sw = new JsWriter(40);
+    JsReader jr = dslJson.newReader(sw.getByteBuffer());
+    JsReader jsr = dslJson.newReader(new ByteArrayInputStream(new byte[0]),
                                            new byte[64]);
 
-    final int from = -100000000;
-    final int to = 100000000;
-    final double[] dividers = {1, 10, 0.1, 100, 0.01, 1000, 0.001};
+    int from = -100000000;
+    int to = 100000000;
+    double[] dividers = {1, 10, 0.1, 100, 0.01, 1000, 0.001};
     int x = 0;
 
     for (int value = from; value <= to; value += 333) {
@@ -122,13 +122,13 @@ public class NumberConverterTest {
       jr.process(null,
                  sw.size());
       jr.read();
-      final BigDecimal valueParsed1 = NumberConverter.deserializeDecimal(jr);
+      BigDecimal valueParsed1 = NumberConverter.deserializeDecimal(jr);
       Assertions.assertEquals(bd,
                               valueParsed1);
       jr.process(null,
                  sw.size());
       jr.read();
-      final Number numberParsed1 = NumberConverter.deserializeNumber(jr);
+      Number numberParsed1 = NumberConverter.deserializeNumber(jr);
       Assertions.assertEquals(bd,
                               BigDecimal.valueOf(numberParsed1.doubleValue()));
 
@@ -136,14 +136,14 @@ public class NumberConverterTest {
                                            0,
                                            sw.size()));
       jsr.read();
-      final BigDecimal valueParsed2 = NumberConverter.deserializeDecimal(jsr);
+      BigDecimal valueParsed2 = NumberConverter.deserializeDecimal(jsr);
       Assertions.assertEquals(bd,
                               valueParsed2);
       jsr.process(new ByteArrayInputStream(sw.getByteBuffer(),
                                            0,
                                            sw.size()));
       jsr.read();
-      final Number numberParsed2 = NumberConverter.deserializeNumber(jsr);
+      Number numberParsed2 = NumberConverter.deserializeNumber(jsr);
       Assertions.assertEquals(bd,
                               BigDecimal.valueOf(numberParsed2.doubleValue()));
     }
@@ -153,10 +153,10 @@ public class NumberConverterTest {
   @Test
   public void testSerialization() {
     // setup
-    final JsWriter sw = new JsWriter(40);
+    JsWriter sw = new JsWriter(40);
 
-    final int from = -1000000;
-    final int to = 1000000;
+    int from = -1000000;
+    int to = 1000000;
 
     for (long value = from; value <= to; value++) {
 
@@ -168,7 +168,7 @@ public class NumberConverterTest {
                                 sw);
 
       // check
-      final String valueString = sw.toString();
+      String valueString = sw.toString();
       final int valueParsed = Integer.parseInt(valueString);
       Assertions.assertEquals(value,
                               valueParsed);
