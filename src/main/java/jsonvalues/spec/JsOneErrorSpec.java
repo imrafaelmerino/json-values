@@ -8,7 +8,7 @@ import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
 /**
- * Spec that implements this interface will stop after finding the first code and will return that code
+ * Spec that implements this interface will stop after finding the first error and will return that error
  */
 sealed interface JsOneErrorSpec extends JsSpec permits AnySpec, AnySuchThat, IsJsObj, JsArrayOfBigInt,
                                                        JsArrayOfBigIntSuchThat, JsArrayOfBool, JsArrayOfBoolSuchThat,
