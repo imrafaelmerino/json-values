@@ -62,20 +62,28 @@ public final class JsObjSpecToSchema {
 
   private static JsObj convert(final JsObjSpec jsObjSpec,
                                Set<String> nameSpecsVisited) {
+    MetaData metaData = jsObjSpec.metaData;
     return JsObj.of(TYPE,
                     jsObjSpec.nullable ? JsArray.of(JsStr.of(OBJECT),
                                                     JsStr.of(NULL)
                                                    ) : JsStr.of(OBJECT),
                     PROPERTIES,
                     getProperties(jsObjSpec,
-                                  nameSpecsVisited),
+                                  nameSpecsVisited,
+                                  metaData),
                     ADDITIONAL_PROPERTIES,
                     JsBool.of(!jsObjSpec.strict),
                     REQUIRED,
                     getRequired(jsObjSpec),
                     DEFINITIONS,
                     getDefinitions(jsObjSpec,
-                                   nameSpecsVisited)
+                                   nameSpecsVisited),
+                    "description",
+                    metaData != null && metaData.doc() != null ?
+                    JsStr.of(metaData.doc()) :
+                    JsNothing.NOTHING,
+                    "title",
+                    metaData != null ? JsStr.of(metaData.getFullName()) : JsNothing.NOTHING
                    );
 
   }
@@ -133,20 +141,37 @@ public final class JsObjSpecToSchema {
   }
 
   private static JsObj getProperties(final JsObjSpec jsObjSpec,
-                                     final Set<String> nameSpecsVisited) {
+                                     final Set<String> nameSpecsVisited,
+                                     final MetaData metaData) {
     JsObj properties = JsObj.empty();
     Set<Entry<String, JsSpec>> entries = jsObjSpec.bindings.entrySet();
     for (Entry<String, JsSpec> entry : entries) {
+      JsObj schema = getSchema(entry.getValue(),
+                               nameSpecsVisited);
+      if (metaData != null) {
+        if (metaData.fieldsDoc() != null && metaData.fieldsDoc()
+                                                    .containsKey(entry.getKey())) {
+          schema = schema.set("description",
+                              JsStr.of(metaData.fieldsDoc()
+                                               .get(entry.getKey())));
+        }
+        if (metaData.fieldsDefault() != null && metaData.fieldsDefault()
+                                                        .containsKey(entry.getKey())) {
+          schema = schema.set("default",
+                              metaData.fieldsDefault()
+                                      .get(entry.getKey()));
+        }
+
+      }
       properties = properties.set(entry.getKey(),
-                                  getSchema(entry.getValue(),
-                                            nameSpecsVisited));
+                                  schema);
     }
     return properties;
   }
 
 
-  private static JsValue getSchema(final JsSpec spec,
-                                   final Set<String> nameSpecsVisited) {
+  private static JsObj getSchema(final JsSpec spec,
+                                 final Set<String> nameSpecsVisited) {
 
     return switch (spec) {
       case JsIntSpec s -> getIntSchema(s,
@@ -215,7 +240,7 @@ public final class JsObjSpecToSchema {
 
   }
 
-  private static JsValue getMapOfIntegerSchema(final IntegerSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfIntegerSchema(final IntegerSchemaConstraints valuesConstraints) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -240,7 +265,7 @@ public final class JsObjSpecToSchema {
     return getMapOfIntegerSchema();
   }
 
-  private static JsValue getMapOfDecSchema(final DecimalSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfDecSchema(final DecimalSchemaConstraints valuesConstraints) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -265,7 +290,7 @@ public final class JsObjSpecToSchema {
     return getMapOfNumberSchema();
   }
 
-  private static JsValue getMapOfDoubleSchema(final DoubleSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfDoubleSchema(final DoubleSchemaConstraints valuesConstraints) {
 
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
@@ -291,7 +316,7 @@ public final class JsObjSpecToSchema {
     return getMapOfNumberSchema();
   }
 
-  private static JsValue getMapOfLongSchema(final LongSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfLongSchema(final LongSchemaConstraints valuesConstraints) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -316,7 +341,7 @@ public final class JsObjSpecToSchema {
     return getMapOfIntegerSchema();
   }
 
-  private static JsValue getMapOfBigIntSchema(final BigIntSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfBigIntSchema(final BigIntSchemaConstraints valuesConstraints) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -341,8 +366,8 @@ public final class JsObjSpecToSchema {
     return getMapOfIntegerSchema();
   }
 
-  private static JsValue getDecimalSchema(final JsDecimalSpec s,
-                                          final DecimalSchemaConstraints constraints) {
+  private static JsObj getDecimalSchema(final JsDecimalSpec s,
+                                        final DecimalSchemaConstraints constraints) {
 
     if (constraints != null) {
       return JsObj.of(TYPE,
@@ -364,8 +389,8 @@ public final class JsObjSpecToSchema {
     return getNumberSchema(s);
   }
 
-  private static JsValue getDoubleSchema(final JsDoubleSpec s,
-                                         final DoubleSchemaConstraints constraints) {
+  private static JsObj getDoubleSchema(final JsDoubleSpec s,
+                                       final DoubleSchemaConstraints constraints) {
     if (constraints != null) {
       return JsObj.of(TYPE,
                       s.nullable ? JsArray.of(JsStr.of(NUMBER),
@@ -389,8 +414,8 @@ public final class JsObjSpecToSchema {
     return getNumberSchema(s);
   }
 
-  private static JsValue getBigIntSchema(final JsBigIntSpec s,
-                                         final BigIntSchemaConstraints constraints) {
+  private static JsObj getBigIntSchema(final JsBigIntSpec s,
+                                       final BigIntSchemaConstraints constraints) {
     if (constraints != null) {
       return JsObj.of(TYPE,
                       s.nullable ? JsArray.of(JsStr.of(INTEGER),
@@ -411,8 +436,8 @@ public final class JsObjSpecToSchema {
     return getIntSchema(s);
   }
 
-  private static JsValue getLongSchema(final JsLongSpec s,
-                                       final LongSchemaConstraints constraints) {
+  private static JsObj getLongSchema(final JsLongSpec s,
+                                     final LongSchemaConstraints constraints) {
     if (constraints != null) {
       return JsObj.of(TYPE,
                       s.nullable ? JsArray.of(JsStr.of(INTEGER),
@@ -433,8 +458,8 @@ public final class JsObjSpecToSchema {
     return getIntSchema(s);
   }
 
-  private static JsValue getIntSchema(final JsIntSpec s,
-                                      final IntegerSchemaConstraints constraints) {
+  private static JsObj getIntSchema(final JsIntSpec s,
+                                    final IntegerSchemaConstraints constraints) {
     if (constraints != null) {
       return JsObj.of(TYPE,
                       s.nullable ? JsArray.of(JsStr.of(INTEGER),
@@ -455,7 +480,7 @@ public final class JsObjSpecToSchema {
     return getIntSchema(s);
   }
 
-  private static JsValue getMapOfStrSchema(final StrConstraints schema) {
+  private static JsObj getMapOfStrSchema(final StrConstraints schema) {
     if (schema != null) {
       return JsObj.of(TYPE,
                       JsStr.of(OBJECT),
@@ -482,8 +507,8 @@ public final class JsObjSpecToSchema {
                    );
   }
 
-  private static JsValue getStrSchema(final JsStrSpec s,
-                                      final StrConstraints schema) {
+  private static JsObj getStrSchema(final JsStrSpec s,
+                                    final StrConstraints schema) {
     if (schema != null) {
       return JsObj.of(TYPE,
                       s.nullable ? JsArray.of(JsStr.of(STRING),
