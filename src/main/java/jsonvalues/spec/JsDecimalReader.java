@@ -8,11 +8,11 @@ import jsonvalues.JsBigDec;
 final class JsDecimalReader extends AbstractReader {
 
   @Override
-  JsBigDec value(final JsReader reader) throws JsParserException {
+  JsBigDec value(final DslJsReader reader) throws JsParserException {
     return JsBigDec.of(NumberConverter.deserializeDecimal(reader));
   }
 
-  JsBigDec valueSuchThat(final JsReader reader,
+  JsBigDec valueSuchThat(final DslJsReader reader,
                          final Function<BigDecimal, JsError> fn
                         ) throws JsParserException {
     final BigDecimal value = NumberConverter.deserializeDecimal(reader);

@@ -9,7 +9,7 @@ import jsonvalues.JsInstant;
 final class JsInstantReader extends AbstractReader {
 
   @Override
-  JsInstant value(final JsReader reader) throws JsParserException {
+  JsInstant value(final DslJsReader reader) throws JsParserException {
     try {
       return JsInstant.of(Instant.from(ISO_INSTANT.parse(reader.readString())));
     } catch (DateTimeParseException e) {

@@ -6,11 +6,11 @@ import jsonvalues.JsInt;
 final class JsIntReader extends AbstractReader {
 
   @Override
-  JsInt value(final JsReader reader) throws JsParserException {
+  JsInt value(final DslJsReader reader) throws JsParserException {
     return JsInt.of(NumberConverter.deserializeInt(reader));
   }
 
-  JsInt valueSuchThat(final JsReader reader,
+  JsInt valueSuchThat(final DslJsReader reader,
                       final IntFunction<JsError> fn
                      ) throws JsParserException {
     int value = NumberConverter.deserializeInt(reader);

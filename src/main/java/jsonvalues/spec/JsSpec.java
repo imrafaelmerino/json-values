@@ -32,7 +32,7 @@ import jsonvalues.JsValue;
  * @see JsParser
  * @see SpecError
  * @see JsPath
- * @see JsReader
+ * @see DslJsReader
  */
 public sealed interface JsSpec permits JsArraySpec, JsObjSpec, JsOneErrorSpec, NamedSpec, OneOf {
 

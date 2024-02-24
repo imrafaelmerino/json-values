@@ -6,11 +6,11 @@ import jsonvalues.JsDouble;
 final class JsDoubleReader extends AbstractReader {
 
   @Override
-  JsDouble value(final JsReader reader) throws JsParserException {
+  JsDouble value(final DslJsReader reader) throws JsParserException {
     return JsDouble.of(NumberConverter.deserializeDouble(reader));
   }
 
-  JsDouble valueSuchThat(final JsReader reader,
+  JsDouble valueSuchThat(final DslJsReader reader,
                          final DoubleFunction<JsError> fn
                         ) throws JsParserException {
     double value = NumberConverter.deserializeDouble(reader);

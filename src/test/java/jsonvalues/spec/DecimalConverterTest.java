@@ -102,9 +102,9 @@ public class DecimalConverterTest {
     final int count = values.length;
 
     final byte[] buf = VALUES.getBytes(StandardCharsets.ISO_8859_1);
-    JsReader jr = dslJson.newReader(buf);
-    JsReader jsr = dslJson.newReader(new ByteArrayInputStream(buf),
-                                     new byte[64]);
+    DslJsReader jr = dslJson.newReader(buf);
+    DslJsReader jsr = dslJson.newReader(new ByteArrayInputStream(buf),
+                                        new byte[64]);
 
     // first digit in values
     Assertions.assertEquals('0',
@@ -199,12 +199,12 @@ public class DecimalConverterTest {
       final String plainForm = check.toPlainString();
       final byte[] body = plainForm.getBytes(StandardCharsets.ISO_8859_1);
 
-      final JsReader jr = dslJson.newReader(body);
+      final DslJsReader jr = dslJson.newReader(body);
       jr.readNextToken();
       final BigDecimal parsed1 = NumberConverter.deserializeDecimal(jr);
 
-      final JsReader jsr = dslJson.newReader(new ByteArrayInputStream(body),
-                                             new byte[64]);
+      final DslJsReader jsr = dslJson.newReader(new ByteArrayInputStream(body),
+                                                new byte[64]);
       jsr.readNextToken();
       final BigDecimal parsed2 = NumberConverter.deserializeDecimal(jsr);
 

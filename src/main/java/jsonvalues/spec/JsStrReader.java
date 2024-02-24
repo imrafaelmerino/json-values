@@ -6,12 +6,12 @@ import jsonvalues.JsStr;
 final class JsStrReader extends AbstractReader {
 
   @Override
-  JsStr value(final JsReader reader) throws JsParserException {
+  JsStr value(final DslJsReader reader) throws JsParserException {
     return JsStr.of(reader.readString());
   }
 
 
-  JsStr valueSuchThat(final JsReader reader,
+  JsStr valueSuchThat(final DslJsReader reader,
                       final Function<String, JsError> fn
                      ) throws JsParserException {
     String value = reader.readString();

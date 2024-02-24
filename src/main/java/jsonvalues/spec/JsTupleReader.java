@@ -13,7 +13,7 @@ final class JsTupleReader {
     this.parsers = parsers;
   }
 
-  JsValue nullOrArray(final JsReader reader) throws JsParserException {
+  JsValue nullOrArray(final DslJsReader reader) throws JsParserException {
 
     return reader.wasNull() ?
            JsNull.NULL :
@@ -22,7 +22,7 @@ final class JsTupleReader {
   }
 
 
-  JsArray array(final JsReader reader) throws JsParserException {
+  JsArray array(final DslJsReader reader) throws JsParserException {
     if (reader.last() != '[') {
       throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_ARRAY_START,
                                        reader.getPositionInStream()

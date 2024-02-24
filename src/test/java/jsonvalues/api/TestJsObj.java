@@ -505,7 +505,7 @@ public class TestJsObj {
                                                                     () -> JsObj.parse("")
                                                                    );
 
-    Assertions.assertEquals("Unexpected end of JSON @ position=0",
+    Assertions.assertEquals("Unexpected end of JSON. Current parser position is 0",
                             malformedJson.getMessage()
                            );
 

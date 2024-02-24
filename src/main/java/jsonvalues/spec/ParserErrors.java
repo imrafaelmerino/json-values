@@ -8,6 +8,9 @@ import java.util.function.UnaryOperator;
 class ParserErrors {
 
   public static final String OBJ_CONDITION = "JSON Object was parsed but it doesn't conform the predicate specified with the spec method 'suchThat'";
+  public static final String STR_LENGTH_LOWER_THAN_MINIMUM = "String length lower than minimum";
+  public static final String STR_LENGTH_GREATER_THAN_MAXIMUM = "String length greater than maximum";
+  public static final String STR_STRING_DOES_NOT_MATCH_PATTERN = "String does not match pattern";
   static final String EXPECTING_FOR_OBJ_START = "Expecting '{' for Json object start but get %s";
   static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end but get %s";
   static final String ONEOF_EXHAUSTED = "`OneOf` spec exhausted";

@@ -8,7 +8,7 @@ import jsonvalues.JsBigInt;
 final class JsBigIntReader extends AbstractReader {
 
   @Override
-  JsBigInt value(final JsReader reader) throws JsParserException {
+  JsBigInt value(final DslJsReader reader) throws JsParserException {
     try {
 
       return JsBigInt.of(NumberConverter.deserializeDecimal(reader)
@@ -22,7 +22,7 @@ final class JsBigIntReader extends AbstractReader {
 
   }
 
-  JsBigInt valueSuchThat(final JsReader reader,
+  JsBigInt valueSuchThat(final DslJsReader reader,
                          final Function<BigInteger, JsError> fn
                         ) throws JsParserException {
     try {

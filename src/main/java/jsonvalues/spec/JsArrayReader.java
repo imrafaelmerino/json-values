@@ -15,7 +15,7 @@ abstract class JsArrayReader extends AbstractReader {
     this.elementReader = reader;
   }
 
-  JsValue nullOrArray(JsReader reader,
+  JsValue nullOrArray(DslJsReader reader,
                       int min,
                       int max
                      ) throws JsParserException {
@@ -28,7 +28,7 @@ abstract class JsArrayReader extends AbstractReader {
                 );
   }
 
-  JsArray array(final JsReader reader,
+  JsArray array(final DslJsReader reader,
                 int min,
                 int max
                ) throws JsParserException {
@@ -72,7 +72,7 @@ abstract class JsArrayReader extends AbstractReader {
   }
 
   @Override
-  public JsArray value(final JsReader reader) throws JsParserException {
+  public JsArray value(final DslJsReader reader) throws JsParserException {
     if (isEmptyArray(reader)) {
       return EMPTY;
     }
@@ -87,7 +87,7 @@ abstract class JsArrayReader extends AbstractReader {
   }
 
 
-  private boolean isEmptyArray(final JsReader reader) throws JsParserException {
+  private boolean isEmptyArray(final DslJsReader reader) throws JsParserException {
     checkSize(reader.last() != '[',
               ParserErrors.EXPECTING_FOR_ARRAY_START,
               reader.getPositionInStream()
@@ -96,7 +96,7 @@ abstract class JsArrayReader extends AbstractReader {
     return reader.last() == ']';
   }
 
-  public JsValue nullOrArraySuchThat(final JsReader reader,
+  public JsValue nullOrArraySuchThat(final DslJsReader reader,
                                      final Function<JsArray, JsError> fn
                                     ) throws JsParserException {
 
@@ -109,7 +109,7 @@ abstract class JsArrayReader extends AbstractReader {
   }
 
 
-  JsArray arraySuchThat(final JsReader reader,
+  JsArray arraySuchThat(final DslJsReader reader,
                         final Function<JsArray, JsError> fn
                        ) throws JsParserException {
 
@@ -123,7 +123,7 @@ abstract class JsArrayReader extends AbstractReader {
                                     );
   }
 
-  JsArray arrayEachSuchThat(final JsReader reader,
+  JsArray arrayEachSuchThat(final DslJsReader reader,
                             final Supplier<JsValue> f,
                             final int min,
                             final int max
@@ -165,7 +165,7 @@ abstract class JsArrayReader extends AbstractReader {
     }
   }
 
-  JsValue nullOrArrayEachSuchThat(final JsReader reader,
+  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
                                   final Supplier<JsValue> fn,
                                   final int min,
                                   final int max

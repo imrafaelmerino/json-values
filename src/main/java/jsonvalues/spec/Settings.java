@@ -8,7 +8,7 @@ class Settings {
 
   final StringCache keyCache = new SimpleStringCache();
   StringCache valuesCache;
-  JsReader.DoublePrecision doublePrecision = JsReader.DoublePrecision.DEFAULT;
+  DslJsReader.DoublePrecision doublePrecision = DslJsReader.DoublePrecision.DEFAULT;
   int maxNumberDigits = 512;
   int maxStringBuffer = 128 * 1024 * 1024;
 
@@ -34,7 +34,7 @@ class Settings {
    * @param precision type of double deserialization
    * @return itself
    */
-  Settings doublePrecision(JsReader.DoublePrecision precision) {
+  Settings doublePrecision(DslJsReader.DoublePrecision precision) {
     this.doublePrecision = precision;
     return this;
   }

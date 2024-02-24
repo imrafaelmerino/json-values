@@ -10,7 +10,7 @@ import jsonvalues.JsNumber;
 
 final class JsNumberReader extends AbstractReader {
 
-  JsNumber valueSuchThat(final JsReader reader,
+  JsNumber valueSuchThat(final DslJsReader reader,
                          final Function<JsNumber, JsError> fn
                         ) throws JsParserException {
     final JsNumber value = value(reader);
@@ -24,7 +24,7 @@ final class JsNumberReader extends AbstractReader {
   }
 
   @Override
-  JsNumber value(final JsReader reader) throws JsParserException {
+  JsNumber value(final DslJsReader reader) throws JsParserException {
     Number number = NumberConverter.deserializeNumber(reader);
     if (number instanceof Double) {
       return JsDouble.of(((double) number));

@@ -39,7 +39,7 @@ final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
     };
   }
 
-  private JsValue parse(JsReader reader,
+  private JsValue parse(DslJsReader reader,
                         int i) {
     if (i >= specs.size()) {
       throw JsParserException.reasonAt(ParserErrors.ONEOF_EXHAUSTED,

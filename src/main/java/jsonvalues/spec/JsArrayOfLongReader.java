@@ -14,7 +14,7 @@ final class JsArrayOfLongReader extends JsArrayReader {
     this.parser = parser;
   }
 
-  JsValue nullOrArrayEachSuchThat(final JsReader reader,
+  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
                                   final LongFunction<JsError> fn,
                                   final int min,
                                   final int max
@@ -27,7 +27,7 @@ final class JsArrayOfLongReader extends JsArrayReader {
   }
 
 
-  JsArray arrayEachSuchThat(final JsReader reader,
+  JsArray arrayEachSuchThat(final DslJsReader reader,
                             final LongFunction<JsError> fn,
                             final int min,
                             final int max

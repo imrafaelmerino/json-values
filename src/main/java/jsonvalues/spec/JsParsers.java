@@ -34,7 +34,7 @@ import jsonvalues.JsValue;
 final class JsParsers {
 
   static final JsParsers INSTANCE = new JsParsers();
-  private final BiFunction<JsReader, JsError, JsParserException> newParseException;
+  private final BiFunction<DslJsReader, JsError, JsParserException> newParseException;
 
   private JsParsers() {
     newParseException = (reader, error) ->
@@ -231,12 +231,12 @@ final class JsParsers {
                     );
   }
 
-  private JsParser getParser(AbstractReader parser,
+  private JsParser getParser(AbstractReader reader,
                              boolean nullable
                             ) {
     return nullable ?
-           parser::nullOrValue :
-           parser::value;
+           reader::nullOrValue :
+           reader::value;
   }
 
   JsParser ofArrayOfValue(boolean nullable,
@@ -358,8 +358,19 @@ final class JsParsers {
                         int min,
                         int max,
                         final StrConstraints schema) {
-    //todo incluir schema validation
-    return getParser(READERS.arrayOfStringReader,
+    return schema != null ?
+           reader -> ofArrayOfStrEachSuchThat(s -> {
+                                                validateStr(schema,
+                                                            s,
+                                                            reader
+                                                           );
+                                                return null;
+                                              },
+                                              nullable,
+                                              min,
+                                              max
+                                             ).parse(reader) :
+           getParser(READERS.arrayOfStringReader,
                      nullable,
                      min,
                      max
@@ -367,10 +378,60 @@ final class JsParsers {
   }
 
 
-  JsParser ofStr(boolean nullable) {
-    return getParser(READERS.strReader,
-                     nullable
-                    );
+  JsParser ofStr(boolean nullable,
+                 final StrConstraints constraints) {
+    return nullable ?
+           reader -> {
+             JsValue value = READERS.strReader.nullOrValue(reader);
+             if (value == JsNull.NULL) {
+               return value;
+             }
+             JsStr jsStr = value.toJsStr();
+             if (constraints != null) {
+               validateStr(constraints,
+                           jsStr.value,
+                           reader
+                          );
+             }
+             return jsStr;
+           } :
+           reader -> {
+             JsStr jsStr = READERS.strReader.value(reader);
+             if (constraints != null) {
+               validateStr(constraints,
+                           jsStr.value,
+                           reader
+                          );
+             }
+             return jsStr;
+           };
+
+  }
+
+  private void validateStr(final StrConstraints constraints,
+                           final String str,
+                           final DslJsReader reader) {
+    if (constraints.minLength > 0
+        && str.length() < constraints.minLength) {
+      throw JsParserException.reasonAt(ParserErrors.STR_LENGTH_LOWER_THAN_MINIMUM,
+                                       reader.getPositionInStream()
+                                      );
+    }
+
+    if (constraints.maxLength < Integer.MAX_VALUE
+        && str.length() > constraints.maxLength) {
+      throw JsParserException.reasonAt(ParserErrors.STR_LENGTH_GREATER_THAN_MAXIMUM,
+                                       reader.getPositionInStream()
+                                      );
+    }
+    if (constraints.pattern != null
+        && !constraints.pattern.matcher(str)
+                               .matches()) {
+      throw JsParserException.reasonAt(ParserErrors.STR_STRING_DOES_NOT_MATCH_PATTERN,
+                                       reader.getPositionInStream()
+                                      );
+    }
+
   }
 
   JsParser ofStrSuchThat(Function<String, JsError> predicate,
@@ -659,10 +720,16 @@ final class JsParsers {
 
   JsParser ofMapOfString(boolean nullable,
                          final StrConstraints schema) {
-    //todo incluir schema validation
-    return getParser(READERS.mapOfStringReader,
-                     nullable
-                    );
+    return schema != null
+           ? dslJsReader ->
+               READERS.mapOfStringReader.eachEntrySuchThat(dslJsReader,
+                                                           e -> validateStr(schema,
+                                                                            e.toJsStr().value,
+                                                                            dslJsReader),
+                                                           nullable) :
+           getParser(READERS.mapOfStringReader,
+                     nullable);
+
   }
 
   JsParser ofMapOfBool(boolean nullable) {

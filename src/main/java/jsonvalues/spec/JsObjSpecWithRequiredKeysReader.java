@@ -26,7 +26,7 @@ final class JsObjSpecWithRequiredKeysReader extends JsObjSpecReader {
 
 
   @Override
-  JsObj value(JsReader reader) throws JsParserException {
+  JsObj value(DslJsReader reader) throws JsParserException {
     JsObj obj = super.value(reader);
     for (String key : required) {
       if (!obj.containsKey(key)) {

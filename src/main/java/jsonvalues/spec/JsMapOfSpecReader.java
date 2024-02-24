@@ -13,7 +13,7 @@ class JsMapOfSpecReader extends AbstractJsObjReader {
   }
 
   @Override
-  JsObj value(final JsReader reader) throws JsParserException {
+  JsObj value(final DslJsReader reader) throws JsParserException {
     if (isEmptyObj(reader)) {
       return EMPTY_OBJ;
     }

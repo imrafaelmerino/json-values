@@ -18,7 +18,7 @@ import jsonvalues.Json;
  * few a methods are exposed since this class is vastly used internally. You may be interested in creating JsReaders
  * only to parse bytes or strings token by token.
  *
- * @see JsReader
+ * @see DslJsReader
  * @see JsSpec#parse(String)
  */
 public final class JsIO {
@@ -39,8 +39,8 @@ public final class JsIO {
   final StringCache keyCache;
   final StringCache valuesCache;
   final ThreadLocal<JsWriter> localWriter;
-  final ThreadLocal<JsReader> localReader;
-  private final JsReader.DoublePrecision doublePrecision;
+  final ThreadLocal<DslJsReader> localReader;
+  private final DslJsReader.DoublePrecision doublePrecision;
   private final int maxNumberDigits;
   private final int maxStringSize;
 
@@ -50,15 +50,15 @@ public final class JsIO {
     this.localWriter = ThreadLocal.withInitial(() -> newWriter(512));
     this.localReader = new ThreadLocal<>() {
       @Override
-      protected JsReader initialValue() {
-        return new JsReader(new byte[4096],
-                            4096,
-                            new char[64],
-                            self.keyCache,
-                            self.valuesCache,
-                            self.doublePrecision,
-                            self.maxNumberDigits,
-                            self.maxStringSize
+      protected DslJsReader initialValue() {
+        return new DslJsReader(new byte[4096],
+                               4096,
+                               new char[64],
+                               self.keyCache,
+                               self.valuesCache,
+                               self.doublePrecision,
+                               self.maxNumberDigits,
+                               self.maxStringSize
         );
       }
     };
@@ -71,7 +71,7 @@ public final class JsIO {
 
   JsIO() {
     this(new Settings()
-             .doublePrecision(JsReader.DoublePrecision.HIGH));
+             .doublePrecision(DslJsReader.DoublePrecision.HIGH));
   }
 
   /**
@@ -82,7 +82,7 @@ public final class JsIO {
    * @throws JsParserException if the string doesn't represent a json object
    */
   public JsObj parseToJsObj(final byte[] bytes) {
-    JsReader reader = createReader(bytes);
+    DslJsReader reader = createReader(bytes);
     try {
       reader.readNextToken();
       return JsReaders.READERS.objReader.value(reader);
@@ -99,7 +99,7 @@ public final class JsIO {
    * @throws JsParserException if the string doesn't represent a json object
    */
   public JsArray parseToJsArray(final byte[] bytes) {
-    JsReader reader = createReader(bytes);
+    DslJsReader reader = createReader(bytes);
     try {
       reader.readNextToken();
       return JsReaders.READERS.arrayOfValueReader.value(reader);
@@ -111,7 +111,7 @@ public final class JsIO {
   JsObj parseToJsObj(final byte[] bytes,
                      final JsParser parser
                     ) {
-    JsReader reader = createReader(bytes);
+    DslJsReader reader = createReader(bytes);
     try {
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
@@ -130,7 +130,7 @@ public final class JsIO {
    * @param bytes the array of bytes
    * @return a JSON reader
    */
-  JsReader createReader(final byte[] bytes) {
+  DslJsReader createReader(final byte[] bytes) {
     return localReader.get()
                       .process(Objects.requireNonNull(bytes),
                                bytes.length
@@ -145,7 +145,7 @@ public final class JsIO {
    * @param is the input stream
    * @return a JSON reader
    */
-  JsReader createReader(final InputStream is) throws JsParserException {
+  DslJsReader createReader(final InputStream is) throws JsParserException {
 
     return localReader.get()
                       .process(Objects.requireNonNull(is));
@@ -155,7 +155,7 @@ public final class JsIO {
   JsArray parseToJsArray(final byte[] bytes,
                          final JsParser parser
                         ) {
-    JsReader reader = createReader(bytes);
+    DslJsReader reader = createReader(bytes);
     try {
       reader.readNextToken();
       JsValue parsed = parser.parse(reader);
@@ -171,7 +171,7 @@ public final class JsIO {
   JsObj parseToJsObj(final InputStream is,
                      final JsParser parser
                     ) {
-    JsReader reader = null;
+    DslJsReader reader = null;
     try {
       reader = createReader(is);
       reader.readNextToken();
@@ -191,7 +191,7 @@ public final class JsIO {
   JsArray parseToJsArray(final InputStream is,
                          final JsParser parser
                         ) {
-    JsReader reader = null;
+    DslJsReader reader = null;
     try {
       reader = createReader(is);
       reader.readNextToken();
@@ -294,15 +294,15 @@ public final class JsIO {
    * @param bytes input bytes
    * @return bound reader
    */
-  JsReader newReader(byte[] bytes) {
-    return new JsReader(bytes,
-                        bytes.length,
-                        new char[64],
-                        keyCache,
-                        valuesCache,
-                        doublePrecision,
-                        maxNumberDigits,
-                        maxStringSize
+  DslJsReader newReader(byte[] bytes) {
+    return new DslJsReader(bytes,
+                           bytes.length,
+                           new char[64],
+                           keyCache,
+                           valuesCache,
+                           doublePrecision,
+                           maxNumberDigits,
+                           maxStringSize
     );
   }
 
@@ -316,9 +316,9 @@ public final class JsIO {
    * @return bound reader
    * @throws JsParserException unable to read from stream
    */
-  JsReader newReader(InputStream stream,
-                     byte[] buffer) throws JsParserException {
-    JsReader reader = newReader(buffer);
+  DslJsReader newReader(InputStream stream,
+                        byte[] buffer) throws JsParserException {
+    DslJsReader reader = newReader(buffer);
     reader.process(stream);
     return reader;
   }

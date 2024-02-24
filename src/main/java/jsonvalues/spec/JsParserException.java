@@ -13,7 +13,7 @@ public class JsParserException extends RuntimeException {
 
   static JsParserException reasonAt(String reason,
                                     long index) {
-    return new JsParserException(reason + " @ position=" + index);
+    return new JsParserException(reason + ". Current parser position is " + index);
 
   }
 

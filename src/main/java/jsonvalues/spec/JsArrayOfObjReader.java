@@ -16,7 +16,7 @@ final class JsArrayOfObjReader extends JsArrayReader {
     this.parser = parser;
   }
 
-  JsValue nullOrArrayEachSuchThat(final JsReader reader,
+  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
                                   final Function<JsObj, JsError> fn,
                                   final int min,
                                   final int max
@@ -29,7 +29,7 @@ final class JsArrayOfObjReader extends JsArrayReader {
   }
 
 
-  JsArray arrayEachSuchThat(final JsReader reader,
+  JsArray arrayEachSuchThat(final DslJsReader reader,
                             final Function<JsObj, JsError> fn,
                             final int min,
                             final int max

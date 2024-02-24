@@ -6,11 +6,11 @@ import jsonvalues.JsLong;
 final class JsLongReader extends AbstractReader {
 
   @Override
-  JsLong value(final JsReader reader) throws JsParserException {
+  JsLong value(final DslJsReader reader) throws JsParserException {
     return JsLong.of(NumberConverter.deserializeLong(reader));
   }
 
-  JsLong valueSuchThat(final JsReader reader,
+  JsLong valueSuchThat(final DslJsReader reader,
                        final LongFunction<JsError> fn
                       ) throws JsParserException {
     long value = NumberConverter.deserializeLong(reader);

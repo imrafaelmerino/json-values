@@ -2,7 +2,14 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.JsSpecs.oneSpecOf;
 
+import fun.gen.Combinators;
+import fun.gen.Gen;
 import java.util.List;
+import jsonvalues.JsStr;
+import jsonvalues.gen.JsArrayGen;
+import jsonvalues.gen.JsObjGen;
+import jsonvalues.gen.JsStrGen;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 public class JsSpecToSchemaTests {
@@ -145,5 +152,91 @@ public class JsSpecToSchemaTests {
     System.out.println(JsObjSpecToSchema.convert(objSpec)
                                         .toPrettyString());
 
+  }
+
+  @Test
+  public void testStringConstraints() {
+
+    StrSchema strSchema = new StrSchema()
+        .setMinLength(3)
+        .setMaxLength(5)
+        .setFormat("digits")
+        .setPattern("\\[a-z]+");
+    JsSpec strSpec = JsSpecs.str(strSchema
+                                );
+    JsObjSpec objSpec = JsObjSpec.of("a",
+                                     strSpec
+                                    );
+    Gen<JsStr> strGen = Combinators.oneOf(JsStrGen.alphabetic(0,
+                                                              2),
+                                          JsStrGen.alphabetic(6,
+                                                              10),
+                                          JsStrGen.digits(3,
+                                                          5)
+                                         );
+    JsObjGen gen = JsObjGen.of("a",
+                               strGen
+                              );
+
+    var parser = JsObjSpecParser.of(objSpec);
+
+    gen.sample(100)
+       .forEach(obj -> {
+         Assertions.assertThrows(JsParserException.class,
+                                 () -> {
+                                   try {
+                                     parser.parse(obj.toString());
+                                   } catch (Exception e) {
+                                     System.out.println(obj);
+                                     System.out.println(e.getMessage());
+                                     throw e;
+                                   }
+                                 }
+                                );
+       });
+  }
+
+  @Test
+  public void testArrayOfStringConstraints() {
+
+    StrSchema strSchema = new StrSchema()
+        .setMinLength(3)
+        .setMaxLength(5)
+        .setFormat("digits")
+        .setPattern("\\[a-z]+");
+
+    JsObjSpec objSpec = JsObjSpec.of("b",
+                                     JsSpecs.arrayOfStr(strSchema)
+                                    );
+    Gen<JsStr> strGen = Combinators.oneOf(JsStrGen.alphabetic(0,
+                                                              2),
+                                          JsStrGen.alphabetic(6,
+                                                              10),
+                                          JsStrGen.digits(3,
+                                                          5)
+                                         );
+    JsObjGen gen = JsObjGen.of(
+        "b",
+        JsArrayGen.biased(strGen,
+                          1,
+                          10)
+                              );
+
+    var parser = JsObjSpecParser.of(objSpec);
+
+    gen.sample(100)
+       .forEach(obj -> {
+         Assertions.assertThrows(JsParserException.class,
+                                 () -> {
+                                   try {
+                                     parser.parse(obj.toString());
+                                   } catch (Exception e) {
+                                     System.out.println(obj);
+                                     System.out.println(e.getMessage());
+                                     throw e;
+                                   }
+                                 }
+                                );
+       });
   }
 }

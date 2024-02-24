@@ -26,7 +26,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
 
 
   @Override
-  JsObj value(final JsReader reader) throws JsParserException {
+  JsObj value(final DslJsReader reader) throws JsParserException {
     if (isEmptyObj(reader)) {
       return addDefaultFieldsIfSpecified(EMPTY_OBJ);
     }
@@ -102,7 +102,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
     return obj;
   }
 
-  private void throwErrorIfStrictAndKeyMissing(final JsReader reader,
+  private void throwErrorIfStrictAndKeyMissing(final DslJsReader reader,
                                                final JsParser keyParser,
                                                final String key
                                               ) {

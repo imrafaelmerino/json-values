@@ -49,7 +49,7 @@ abstract class NumberConverter {
   private NumberConverter() {
   }
 
-  static void numberException(JsReader reader,
+  static void numberException(DslJsReader reader,
                               int start,
                               int end,
                               String message
@@ -68,7 +68,7 @@ abstract class NumberConverter {
 
   private static BigDecimal parseNumberGeneric(char[] buf,
                                                int len,
-                                               JsReader reader
+                                               DslJsReader reader
                                               ) {
     int end = len;
     while (end > 0 && Character.isWhitespace(buf[end - 1])) {
@@ -103,7 +103,7 @@ abstract class NumberConverter {
     }
   }
 
-  private static NumberConverter.NumberInfo readLongNumber(JsReader reader,
+  private static NumberConverter.NumberInfo readLongNumber(DslJsReader reader,
                                                            int start
                                                           ) {
     int len = reader.length() - start;
@@ -228,7 +228,7 @@ abstract class NumberConverter {
     return pos + 6;
   }
 
-  public static int deserializeInt(JsReader reader) throws JsParserException {
+  public static int deserializeInt(DslJsReader reader) throws JsParserException {
     int start = reader.scanNumber();
     int end = reader.getCurrentIndex();
     byte[] buf = reader.buffer;
@@ -264,7 +264,7 @@ abstract class NumberConverter {
   }
 
   private static int parsePositiveInt(byte[] buf,
-                                      JsReader reader,
+                                      DslJsReader reader,
                                       int start,
                                       int end,
                                       int offset
@@ -321,7 +321,7 @@ abstract class NumberConverter {
   }
 
   private static int parseNegativeInt(byte[] buf,
-                                      JsReader reader,
+                                      DslJsReader reader,
                                       int start,
                                       int end
                                      ) throws JsParserException {
@@ -572,7 +572,7 @@ abstract class NumberConverter {
     return pos + 15;
   }
 
-  public static long deserializeLong(JsReader reader) {
+  public static long deserializeLong(DslJsReader reader) {
     int start = reader.scanNumber();
     int end = reader.getCurrentIndex();
     byte[] buf = reader.buffer;
@@ -678,7 +678,7 @@ abstract class NumberConverter {
     return value;
   }
 
-  private static long parseLongGeneric(JsReader reader,
+  private static long parseLongGeneric(DslJsReader reader,
                                        int start,
                                        int end
                                       ) {
@@ -713,7 +713,7 @@ abstract class NumberConverter {
     sw.writeAscii(value.toString());
   }
 
-  public static BigDecimal deserializeDecimal(JsReader reader) throws JsParserException {
+  public static BigDecimal deserializeDecimal(DslJsReader reader) throws JsParserException {
     int start = reader.scanNumber();
     int end = reader.getCurrentIndex();
     if (end == reader.length()) {
@@ -751,7 +751,7 @@ abstract class NumberConverter {
   }
 
   private static BigDecimal parsePositiveDecimal(byte[] buf,
-                                                 JsReader reader,
+                                                 DslJsReader reader,
                                                  int start,
                                                  int end
                                                 ) {
@@ -902,7 +902,7 @@ abstract class NumberConverter {
   }
 
   private static BigDecimal parseNegativeDecimal(byte[] buf,
-                                                 JsReader reader,
+                                                 DslJsReader reader,
                                                  int start,
                                                  int end
                                                 ) {
@@ -1054,7 +1054,7 @@ abstract class NumberConverter {
 
   private static Number tryLongFromBigDecimal(char[] buf,
                                               int len,
-                                              JsReader reader
+                                              DslJsReader reader
                                              ) {
     BigDecimal num = parseNumberGeneric(buf,
                                         len,
@@ -1072,7 +1072,7 @@ abstract class NumberConverter {
     return num;
   }
 
-  public static Number deserializeNumber(JsReader reader) throws JsParserException {
+  public static Number deserializeNumber(DslJsReader reader) throws JsParserException {
     int start = reader.scanNumber();
     int end = reader.getCurrentIndex();
     if (end == reader.length()) {
@@ -1110,7 +1110,7 @@ abstract class NumberConverter {
   }
 
   private static Number parsePositiveNumber(byte[] buf,
-                                            JsReader reader,
+                                            DslJsReader reader,
                                             int start,
                                             int end
                                            ) {
@@ -1263,7 +1263,7 @@ abstract class NumberConverter {
   }
 
   private static Number parseNegativeNumber(byte[] buf,
-                                            JsReader reader,
+                                            DslJsReader reader,
                                             int start,
                                             int end
                                            ) {
@@ -1415,7 +1415,7 @@ abstract class NumberConverter {
     return BigDecimal.valueOf(value);
   }
 
-  public static double deserializeDouble(final JsReader reader) {
+  public static double deserializeDouble(final DslJsReader reader) {
     final int start = reader.scanNumber();
     final int end = reader.getCurrentIndex();
     final byte[] buf = reader.buffer;
@@ -1435,7 +1435,7 @@ abstract class NumberConverter {
   }
 
   private static double parseDouble(final byte[] buf,
-                                    final JsReader reader,
+                                    final DslJsReader reader,
                                     final int start,
                                     final int end,
                                     final int offset) {
@@ -1567,7 +1567,7 @@ abstract class NumberConverter {
                               offset,
                               i);
       }
-      if (reader.doublePrecision == JsReader.DoublePrecision.HIGH) {
+      if (reader.doublePrecision == DslJsReader.DoublePrecision.HIGH) {
         return parseDoubleGeneric(reader.prepareBuffer(start + offset,
                                                        end - start - offset),
                                   end - start - offset,
@@ -1643,7 +1643,7 @@ abstract class NumberConverter {
     return Double.longBitsToDouble(bits + missing);
   }
 
-  private static double doubleExponent(JsReader reader,
+  private static double doubleExponent(DslJsReader reader,
                                        final long whole,
                                        final int decimals,
                                        double fraction,
@@ -1652,7 +1652,7 @@ abstract class NumberConverter {
                                        int end,
                                        int offset,
                                        int i) {
-    if (reader.doublePrecision == JsReader.DoublePrecision.EXACT) {
+    if (reader.doublePrecision == DslJsReader.DoublePrecision.EXACT) {
       return parseDoubleGeneric(reader.prepareBuffer(start + offset,
                                                      end - start - offset),
                                 end - start - offset,
@@ -1686,7 +1686,7 @@ abstract class NumberConverter {
         return whole * POW_10[exp - 1];
       } else if (exp < 0 && -exp < POW_10.length) {
         return whole / POW_10[-exp - 1];
-      } else if (reader.doublePrecision != JsReader.DoublePrecision.HIGH) {
+      } else if (reader.doublePrecision != DslJsReader.DoublePrecision.HIGH) {
         if (exp > 0 && exp < 300) {
           return whole * Math.pow(10,
                                   exp);
@@ -1702,7 +1702,7 @@ abstract class NumberConverter {
         return fraction * POW_10[exp - 1] + whole * POW_10[exp - 1];
       } else if (exp < 0 && -exp < POW_10.length) {
         return fraction / POW_10[-exp - 1] + whole / POW_10[-exp - 1];
-      } else if (reader.doublePrecision != JsReader.DoublePrecision.HIGH) {
+      } else if (reader.doublePrecision != DslJsReader.DoublePrecision.HIGH) {
         if (exp > 0 && exp < 300) {
           return whole * Math.pow(10,
                                   exp);
@@ -1720,7 +1720,7 @@ abstract class NumberConverter {
 
   private static double parseDoubleGeneric(final char[] buf,
                                            final int len,
-                                           final JsReader reader) {
+                                           final DslJsReader reader) {
     int end = len;
     while (end > 0 && Character.isWhitespace(buf[end - 1])) {
       end--;

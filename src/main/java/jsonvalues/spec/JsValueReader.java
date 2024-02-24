@@ -25,7 +25,7 @@ class JsValueReader extends AbstractReader {
     this.arrayDeserializer = arrayDeserializer;
   }
 
-  JsValue valueSuchThat(JsReader reader,
+  JsValue valueSuchThat(DslJsReader reader,
                         Function<JsValue, JsError> fn
 
                        ) throws JsParserException {
@@ -41,7 +41,7 @@ class JsValueReader extends AbstractReader {
 
   @Override
   @SuppressWarnings("FallThrough")
-  JsValue value(JsReader reader) throws JsParserException {
+  JsValue value(DslJsReader reader) throws JsParserException {
     return switch (reader.last()) {
       case 't' -> {
         if (reader.wasTrue()) {

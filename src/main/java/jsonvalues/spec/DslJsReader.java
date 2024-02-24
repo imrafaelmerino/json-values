@@ -30,7 +30,7 @@ import java.util.Deque;
  * <p>
  * You can also  read tokens as JsValue and validate them using the method {@link jsonvalues.spec.JsSpec#parse(String)}
  */
-final class JsReader {
+final class DslJsReader {
 
   private static final boolean[] WHITESPACE = new boolean[256];
 
@@ -68,15 +68,15 @@ final class JsReader {
   //always leave some room for reading special stuff, so that buffer contains enough padding for such optimizations
   private int bufferLenWithExtraSpace;
 
-  private JsReader(char[] tmp,
-                   byte[] buffer,
-                   int length,
-                   StringCache keyCache,
-                   StringCache valuesCache,
-                   DoublePrecision doublePrecision,
-                   int maxNumberDigits,
-                   int maxStringBuffer
-                  ) {
+  private DslJsReader(char[] tmp,
+                      byte[] buffer,
+                      int length,
+                      StringCache keyCache,
+                      StringCache valuesCache,
+                      DoublePrecision doublePrecision,
+                      int maxNumberDigits,
+                      int maxStringBuffer
+                     ) {
     this.buffer = buffer;
     this.length = length;
     this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
@@ -91,15 +91,15 @@ final class JsReader {
     this.originalBufferLenWithExtraSpace = bufferLenWithExtraSpace;
   }
 
-  JsReader(byte[] buffer,
-           int length,
-           char[] tmp,
-           StringCache keyCache,
-           StringCache valuesCache,
-           DoublePrecision doublePrecision,
-           int maxNumberDigits,
-           int maxStringBuffer
-          ) {
+  DslJsReader(byte[] buffer,
+              int length,
+              char[] tmp,
+              StringCache keyCache,
+              StringCache valuesCache,
+              DoublePrecision doublePrecision,
+              int maxNumberDigits,
+              int maxStringBuffer
+             ) {
     this(tmp,
          buffer,
          length,
@@ -149,7 +149,7 @@ final class JsReader {
    * @return itself
    * @throws JsParserException unable to read from stream
    */
-  JsReader process(InputStream stream) throws JsParserException {
+  DslJsReader process(InputStream stream) throws JsParserException {
     this.currentPosition = 0;
     this.currentIndex = 0;
     this.stream = stream;
@@ -178,8 +178,8 @@ final class JsReader {
    * @param newLength length of buffer which can be used
    * @return itself
    */
-  JsReader process(byte[] newBuffer,
-                   int newLength) {
+  DslJsReader process(byte[] newBuffer,
+                      int newLength) {
     if (newBuffer != null) {
       this.buffer = newBuffer;
       this.bufferLenWithExtraSpace = buffer.length - 38; //currently maximum padding is for uuid
