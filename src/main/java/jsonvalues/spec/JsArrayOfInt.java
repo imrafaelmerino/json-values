@@ -10,6 +10,7 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
 
   JsArrayOfInt(final boolean nullable) {
     this(nullable,
+         null,
          null);
   }
 
@@ -20,23 +21,19 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
   }
 
   JsArrayOfInt(final boolean nullable,
-               int min,
-               int max
+               ArraySchemaConstraints arrayConstraints
               ) {
     this(nullable,
-         min,
-         max,
+         arrayConstraints,
          null);
   }
 
-  JsArrayOfInt(final boolean nullable,
-               int min,
-               int max,
+  JsArrayOfInt(boolean nullable,
+               ArraySchemaConstraints arrayConstraints,
                IntegerSchemaConstraints constraints
               ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.constraints = constraints;
   }
 
@@ -44,8 +41,7 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
   @Override
   public JsSpec nullable() {
     return new JsArrayOfInt(true,
-                            min,
-                            max,
+                            arrayConstraints,
                             constraints);
   }
 
@@ -53,8 +49,7 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfInt(nullable,
-                                           min,
-                                           max);
+                                           arrayConstraints);
   }
 
 
@@ -65,8 +60,7 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
                                                  new JsError(v,
                                                              INT_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
 

@@ -298,13 +298,12 @@ public class TestGenerators {
                                            "o",
                                            "p");
 
-    Assertions.assertTrue(
-        gen.sample(1000)
-           .allMatch(it -> {
-             List<SpecError> errors = spec.test(it);
-             return errors
-                 .isEmpty();
-           })
+    Assertions.assertTrue(gen.sample(1000)
+                             .allMatch(it -> {
+                               List<SpecError> errors = spec.test(it);
+                               return errors
+                                   .isEmpty();
+                             })
                          );
 
   }

@@ -29,7 +29,7 @@ public final class JsObjSpecToSchema {
   private static final String PROPERTIES = "properties";
   private static final String ADDITIONAL_PROPERTIES = "additionalProperties";
   private static final String REQUIRED = "required";
-  private static final String DEFINITIONS = "definitions";
+  private static final String DEFINITIONS = "defs";
   private static final String REF = "$ref";
   private static final String ENUM = "enum";
   private static final String ONE_OF = "oneOf";
@@ -48,10 +48,13 @@ public final class JsObjSpecToSchema {
   private static final String MULTIPLE_OF = "multipleOf";
   private static final String MINIMUM = "minimum";
   private static final String MAXIMUM = "maximum";
+  private static final String UNIQUE_ITEMS = "uniqueItems";
 
   private JsObjSpecToSchema() {
   }
 
+
+  //TODO tener en cuenta metadata
   public static JsObj convert(final JsObjSpec jsObjSpec) {
     return convert(jsObjSpec,
                    new HashSet<>());
@@ -850,15 +853,22 @@ public final class JsObjSpecToSchema {
                                              JsObj elemSchema) {
 
     JsObj schema = elemSchema;
-    var minElems = spec.min;
-    var maxElems = spec.max;
-    if (minElems > 0) {
-      schema = schema.set(MIN_ITEMS,
-                          JsInt.of(minElems));
-    }
-    if (maxElems < Integer.MAX_VALUE) {
-      schema = schema.set(MAX_ITEMS,
-                          JsInt.of(maxElems));
+
+    if (spec.arrayConstraints != null) {
+      var minElems = spec.arrayConstraints.minItems();
+      var maxElems = spec.arrayConstraints.maxItems();
+      if (minElems > 0) {
+        schema = schema.set(MIN_ITEMS,
+                            JsInt.of(minElems));
+      }
+      if (maxElems < Integer.MAX_VALUE) {
+        schema = schema.set(MAX_ITEMS,
+                            JsInt.of(maxElems));
+      }
+      if (spec.arrayConstraints.uniqueItems()) {
+        schema = schema.set(UNIQUE_ITEMS,
+                            JsBool.TRUE);
+      }
     }
 
     return schema;

@@ -11,27 +11,23 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, 
   }
 
   JsArrayOfBool(final boolean nullable,
-                int min,
-                int max
+                ArraySchemaConstraints arrayConstraints
                ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
   }
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfBool(true,
-                             min,
-                             max);
+                             arrayConstraints);
   }
 
 
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfBool(nullable,
-                                            min,
-                                            max);
+                                            arrayConstraints);
   }
 
 
@@ -42,8 +38,7 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, 
                                                  new JsError(v,
                                                              BOOLEAN_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value);
   }
 }

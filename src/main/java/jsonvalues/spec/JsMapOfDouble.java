@@ -26,7 +26,8 @@ final class JsMapOfDouble extends AbstractMap implements JsOneErrorSpec, AvroSpe
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfDouble(nullable);
+    return JsParsers.INSTANCE.ofMapOfDouble(nullable,
+                                            valuesConstraints);
   }
 
 

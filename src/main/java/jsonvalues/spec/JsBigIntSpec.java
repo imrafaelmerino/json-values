@@ -1,7 +1,6 @@
 package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
-import static jsonvalues.spec.ERROR_CODE.LONG_EXPECTED;
 
 import jsonvalues.JsValue;
 
@@ -29,7 +28,9 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofIntegral(nullable);
+    return JsParsers.INSTANCE.ofIntegral(nullable,
+                                         constraints
+                                        );
   }
 
 
@@ -47,7 +48,7 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
     if (constraints != null) {
       return Functions.testBigIntConstraints(constraints,
-                                           value.toJsBigInt());
+                                             value.toJsBigInt());
     }
 
     return null;

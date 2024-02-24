@@ -17,14 +17,12 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedDecimal(final Function<BigDecimal, JsError> predicate,
-                         final boolean nullable,
-                         int min,
-                         int max
+  JsArrayOfTestedDecimal(Function<BigDecimal, JsError> predicate,
+                         boolean nullable,
+                         ArraySchemaConstraints arrayConstraints
                         ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.predicate = predicate;
   }
 
@@ -32,8 +30,7 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
   public JsSpec nullable() {
     return new JsArrayOfTestedDecimal(predicate,
                                       true,
-                                      min,
-                                      max
+                                      arrayConstraints
     );
   }
 
@@ -41,8 +38,7 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDecimalEachSuchThat(predicate,
                                                            nullable,
-                                                           min,
-                                                           max
+                                                           arrayConstraints
                                                           );
   }
 
@@ -56,8 +52,7 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
 
                                                 ),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

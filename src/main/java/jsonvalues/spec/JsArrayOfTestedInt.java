@@ -18,12 +18,10 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
 
   JsArrayOfTestedInt(final IntFunction<JsError> predicate,
                      final boolean nullable,
-                     int min,
-                     int max
+                     ArraySchemaConstraints arrayConstraints
                     ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.predicate = predicate;
   }
 
@@ -32,8 +30,7 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
   public JsSpec nullable() {
     return new JsArrayOfTestedInt(predicate,
                                   true,
-                                  min,
-                                  max
+                                  arrayConstraints
     );
   }
 
@@ -42,8 +39,7 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfIntEachSuchThat(predicate,
                                                        nullable,
-                                                       min,
-                                                       max
+                                                       arrayConstraints
                                                       );
   }
 
@@ -57,8 +53,7 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
                                                             INT_EXPECTED
                                                 ),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

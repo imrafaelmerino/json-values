@@ -31,7 +31,8 @@ final class JsIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofInt(nullable);
+    return JsParsers.INSTANCE.ofInt(nullable,
+                                    constraints);
   }
 
   @Override

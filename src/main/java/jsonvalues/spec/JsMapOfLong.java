@@ -26,7 +26,8 @@ final class JsMapOfLong extends AbstractMap implements JsOneErrorSpec, AvroSpec 
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfLong(nullable);
+    return JsParsers.INSTANCE.ofMapOfLong(nullable,
+                                          valuesConstraints);
   }
 
 

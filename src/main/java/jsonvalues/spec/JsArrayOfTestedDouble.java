@@ -16,14 +16,12 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErr
     this.predicate = predicate;
   }
 
-  JsArrayOfTestedDouble(final DoubleFunction<JsError> predicate,
-                        final boolean nullable,
-                        int min,
-                        int max
+  JsArrayOfTestedDouble(DoubleFunction<JsError> predicate,
+                        boolean nullable,
+                        ArraySchemaConstraints arrayConstraints
                        ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.predicate = predicate;
   }
 
@@ -31,16 +29,14 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErr
   public JsSpec nullable() {
     return new JsArrayOfTestedDouble(predicate,
                                      true,
-                                     min,
-                                     max);
+                                     arrayConstraints);
   }
 
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDoubleEachSuchThat(predicate,
                                                           nullable,
-                                                          min,
-                                                          max
+                                                          arrayConstraints
                                                          );
   }
 
@@ -54,8 +50,7 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErr
 
                                                 ),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

@@ -11,9 +11,25 @@ class ParserErrors {
   public static final String STR_LENGTH_LOWER_THAN_MINIMUM = "String length lower than minimum";
   public static final String STR_LENGTH_GREATER_THAN_MAXIMUM = "String length greater than maximum";
   public static final String STR_STRING_DOES_NOT_MATCH_PATTERN = "String does not match pattern";
+  public static final String LONG_LOWER_THAN_MINIMUM = "Long number lower than minimum";
+  public static final String LONG_GREATER_THAN_MAXIMUM = "Long number greater than maximum";
+  public static final String LONG_NOT_MULTIPLE_OF = "Long number is not multiple of";
+  public static final String INT_LOWER_THAN_MINIMUM = "Int number lower than minimum";
+  public static final String INT_GREATER_THAN_MAXIMUM = "Int number greater than maximum";
+  public static final String INT_NOT_MULTIPLE_OF = "Int number is not multiple of";
+  public static final String DOUBLE_LOWER_THAN_MINIMUM = "Double number lower than minimum";
+  public static final String DOUBLE_GREATER_THAN_MAXIMUM = "Double number greater than maximum";
+  public static final String DOUBLE_NOT_MULTIPLE_OF = "Double number is not multiple of";
+  public static final String DOUBLE__GREATER_THAN_MAXIMUM = "Double number greater than maximum";
+  public static final String BIGINT_LOWER_THAN_MINIMUM = "BigInteger number lower than minimum";
+  public static final String BIGINT_GREATER_THAN_MAXIMUM = "BigInteger number greater than maximum";
+  public static final String BIGINT_NOT_MULTIPLE_OF = "BigInteger number is not multiple of";
+  public static final String DECIMAL_LOWER_THAN_MINIMUM = "BigDecimal number lower than minimum";
+  public static final String DECIMAL_GREATER_THAN_MAXIMUM = "BigDecimal number greater than maximum";
+  public static final String DECIMAL_NOT_MULTIPLE_OF = "BigDecimal number is not multiple of";
   static final String EXPECTING_FOR_OBJ_START = "Expecting '{' for Json object start but get %s";
   static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end but get %s";
-  static final String ONEOF_EXHAUSTED = "`OneOf` spec exhausted";
+  static final String ONE_OF_EXHAUSTED = "`OneOf` spec exhausted";
 
   static final String UNEXPECTED_END_OF_JSON = "Unexpected end of JSON";
 

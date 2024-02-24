@@ -64,6 +64,7 @@ import jsonvalues.gen.JsIntGen;
 import jsonvalues.gen.JsLongGen;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.gen.JsStrGen;
+import jsonvalues.spec.ArraySchema;
 import jsonvalues.spec.JsArraySpecParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsObjSpecParser;
@@ -158,8 +159,8 @@ public class TestJsParser {
                                example);
 
     JsSpec spec = JsSpecs.arrayOfSpec(objSpec,
-                                      1,
-                                      5);
+                                      new ArraySchema().setMinItems(1)
+                                                       .setMaxItems(5));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -299,12 +300,12 @@ public class TestJsParser {
   public void test_parsing_nullable_arrays() {
 
     JsObjSpec spec = JsObjSpec.of("a",
-                                  JsSpecs.arrayOfDec(0,
-                                                     1)
+                                  JsSpecs.arrayOfDec(new ArraySchema().setMinItems(0)
+                                                                      .setMaxItems(1))
                                          .nullable(),
                                   "b",
-                                  JsSpecs.arrayOfInt(0,
-                                                     1)
+                                  JsSpecs.arrayOfInt(new ArraySchema().setMinItems(0)
+                                                                      .setMaxItems(1))
                                          .nullable(),
                                   "c",
                                   JsSpecs.array()
@@ -343,13 +344,13 @@ public class TestJsParser {
                                   str(s -> s.length() < 10).nullable(),
                                   "b",
                                   arrayOfStr(s -> s.length() < 10,
-                                             1,
-                                             10).nullable(),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)).nullable(),
                                   "c",
-                                  arrayOfStr(1,
-                                             10).nullable(),
+                                  arrayOfStr(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)).nullable(),
                                   "d",
-                                  arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                  arrayOfStrSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
                               .withAllOptKeys();
 
@@ -390,13 +391,13 @@ public class TestJsParser {
                                   str(s -> s.length() < 10),
                                   "b",
                                   arrayOfStr(s -> s.length() < 10,
-                                             1,
-                                             10),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "c",
-                                  arrayOfStr(1,
-                                             10),
+                                  arrayOfStr(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "d",
-                                  arrayOfStrSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfStrSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  )
                               .withAllOptKeys();
 
@@ -443,13 +444,13 @@ public class TestJsParser {
                                   integer(s -> s < 10),
                                   "b",
                                   arrayOfInt(s -> s < 10,
-                                             1,
-                                             10),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "c",
-                                  arrayOfInt(1,
-                                             10),
+                                  arrayOfInt(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "d",
-                                  arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfIntSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);
@@ -498,13 +499,13 @@ public class TestJsParser {
                                          .nullable(),
                                   "b",
                                   arrayOfInt(s -> s < 10,
-                                             1,
-                                             10).nullable(),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)).nullable(),
                                   "c",
-                                  arrayOfInt(1,
-                                             10).nullable(),
+                                  arrayOfInt(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)).nullable(),
                                   "d",
-                                  arrayOfIntSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                  arrayOfIntSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
                               .withAllOptKeys();
 
@@ -547,10 +548,10 @@ public class TestJsParser {
                                   JsSpecs.oneValOf(List.of(FALSE))
                                          .nullable(),
                                   "c",
-                                  arrayOfBool(1,
-                                              10).nullable(),
+                                  arrayOfBool(new ArraySchema().setMinItems(1)
+                                                               .setMaxItems(10)).nullable(),
                                   "d",
-                                  arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0).nullable()
+                                  arrayOfBoolSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
                               .withAllOptKeys();
 
@@ -589,10 +590,10 @@ public class TestJsParser {
     JsObjSpec spec = JsObjSpec.of("a",
                                   bool(),
                                   "b",
-                                  arrayOfBool(1,
-                                              10),
+                                  arrayOfBool(new ArraySchema().setMinItems(1)
+                                                               .setMaxItems(10)),
                                   "c",
-                                  arrayOfBoolSuchThat(a -> a.size() < 11 && a.size() > 0),
+                                  arrayOfBoolSuchThat(a -> a.size() < 11 && !a.isEmpty()),
                                   "d",
                                   JsSpecs.oneValOf(List.of(TRUE)),
                                   "e",
@@ -646,13 +647,13 @@ public class TestJsParser {
                                   longInteger(s -> s < 10),
                                   "b",
                                   arrayOfLong(s -> s < 10,
-                                              1,
-                                              10),
+                                              new ArraySchema().setMinItems(1)
+                                                               .setMaxItems(10)),
                                   "c",
-                                  arrayOfLong(1,
-                                              10),
+                                  arrayOfLong(new ArraySchema().setMinItems(1)
+                                                               .setMaxItems(10)),
                                   "d",
-                                  arrayOfLongSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfLongSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);
@@ -755,13 +756,13 @@ public class TestJsParser {
                                   decimal(s -> s.compareTo(BigDecimal.TEN) < 0),
                                   "b",
                                   arrayOfDec(s -> s.compareTo(BigDecimal.TEN) < 0,
-                                             1,
-                                             10),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "c",
-                                  arrayOfDec(1,
-                                             10),
+                                  arrayOfDec(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "d",
-                                  arrayOfDecSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfDecSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);
@@ -811,13 +812,13 @@ public class TestJsParser {
                                   bigInteger(s -> s.compareTo(BigInteger.TEN) < 0),
                                   "b",
                                   arrayOfBigInt(s -> s.compareTo(BigInteger.TEN) < 0,
-                                                1,
-                                                10),
+                                                new ArraySchema().setMinItems(1)
+                                                                 .setMaxItems(10)),
                                   "c",
-                                  arrayOfBigInt(1,
-                                                10),
+                                  arrayOfBigInt(new ArraySchema().setMinItems(1)
+                                                                 .setMaxItems(10)),
                                   "d",
-                                  arrayOfBigIntSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfBigIntSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);
@@ -866,13 +867,13 @@ public class TestJsParser {
                                   obj(s -> s.containsKey("a")),
                                   "b",
                                   arrayOfObj(s -> s.containsKey("a"),
-                                             1,
-                                             10),
+                                             new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "c",
-                                  arrayOfObj(1,
-                                             10),
+                                  arrayOfObj(new ArraySchema().setMinItems(1)
+                                                              .setMaxItems(10)),
                                   "d",
-                                  arrayOfObjSuchThat(a -> a.size() < 11 && a.size() > 0)
+                                  arrayOfObjSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);

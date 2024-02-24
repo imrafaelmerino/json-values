@@ -26,7 +26,8 @@ final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfDecimal(nullable);
+    return JsParsers.INSTANCE.ofMapOfDecimal(nullable,
+                                             valuesConstraints);
   }
 
 

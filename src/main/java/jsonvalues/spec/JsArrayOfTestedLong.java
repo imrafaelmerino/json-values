@@ -18,12 +18,10 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
 
   JsArrayOfTestedLong(final LongFunction<JsError> predicate,
                       final boolean nullable,
-                      int min,
-                      int max
+                      final ArraySchemaConstraints arrayConstraints
                      ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.predicate = predicate;
   }
 
@@ -32,8 +30,7 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
   public JsSpec nullable() {
     return new JsArrayOfTestedLong(predicate,
                                    true,
-                                   min,
-                                   max
+                                   arrayConstraints
     );
   }
 
@@ -41,8 +38,7 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfLongEachSuchThat(predicate,
                                                         nullable,
-                                                        min,
-                                                        max
+                                                        arrayConstraints
                                                        );
   }
 
@@ -53,11 +49,9 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
                                                 predicate.apply(v.toJsLong().value) :
                                                 new JsError(v,
                                                             LONG_EXPECTED
-                                                )
-        ,
+                                                ),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

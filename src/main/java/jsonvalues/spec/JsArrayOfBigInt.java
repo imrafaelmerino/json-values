@@ -11,19 +11,16 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec
   }
 
   JsArrayOfBigInt(final boolean nullable,
-                  int min,
-                  int max
+                  ArraySchemaConstraints arrayConstraints
                  ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
   }
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfBigInt(true,
-                               min,
-                               max);
+                               arrayConstraints);
   }
 
 
@@ -31,8 +28,7 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec
   public JsParser parser() {
     return JsParsers.INSTANCE
         .ofArrayOfIntegral(nullable,
-                           min,
-                           max);
+                           arrayConstraints);
   }
 
 
@@ -44,8 +40,7 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec
                                                 new JsError(v,
                                                             INTEGRAL_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

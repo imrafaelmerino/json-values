@@ -11,6 +11,7 @@ import jsonvalues.JsInt;
 import jsonvalues.JsLong;
 import jsonvalues.JsObj;
 import jsonvalues.JsStr;
+import jsonvalues.spec.ArraySchema;
 import jsonvalues.spec.JsArraySpecParser;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsParserException;
@@ -25,8 +26,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   @Test
   public void testArrayOfBool() {
 
-    JsSpec spec = JsSpecs.arrayOfBool(1,
-                                      2);
+    JsSpec spec = JsSpecs.arrayOfBool(new ArraySchema().setMinItems(1)
+                                                       .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -55,8 +56,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfString() {
 
     JsStr A = JsStr.of("a");
-    JsSpec spec = JsSpecs.arrayOfStr(1,
-                                     2);
+    JsSpec spec = JsSpecs.arrayOfStr(new ArraySchema().setMinItems(1)
+                                                      .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -86,8 +87,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfInt() {
 
     JsInt ONE = JsInt.of(1);
-    JsSpec spec = JsSpecs.arrayOfInt(1,
-                                     2);
+    JsSpec spec = JsSpecs.arrayOfInt(new ArraySchema().setMinItems(1)
+                                                      .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -116,8 +117,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfNumber() {
 
     JsDouble ONE = JsDouble.of(1.0);
-    JsSpec spec = JsSpecs.arrayOfDouble(1,
-                                        2);
+    JsSpec spec = JsSpecs.arrayOfDouble(new ArraySchema().setMinItems(1)
+                                                         .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -146,8 +147,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfLong() {
 
     JsLong MAX = JsLong.of(Long.MAX_VALUE);
-    JsSpec spec = JsSpecs.arrayOfLong(1,
-                                      2);
+    JsSpec spec = JsSpecs.arrayOfLong(new ArraySchema().setMinItems(1)
+                                                       .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -176,8 +177,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfObj() {
 
     JsObj EMPTY = JsObj.empty();
-    JsSpec spec = JsSpecs.arrayOfObj(1,
-                                     2);
+    JsSpec spec = JsSpecs.arrayOfObj(new ArraySchema().setMinItems(1)
+                                                      .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -206,8 +207,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfDec() {
 
     JsBigDec TEN = JsBigDec.of(BigDecimal.TEN);
-    JsSpec spec = JsSpecs.arrayOfDec(1,
-                                     2);
+    JsSpec spec = JsSpecs.arrayOfDec(new ArraySchema().setMinItems(1)
+                                                      .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -236,8 +237,8 @@ public class TestMinAndMaxOfJsArraySpecs {
   public void testArrayOfIntegral() {
 
     JsBigInt A = JsBigInt.of(new BigInteger("111111111111111111111111111111111111111111111111"));
-    JsSpec spec = JsSpecs.arrayOfBigInt(1,
-                                        2);
+    JsSpec spec = JsSpecs.arrayOfBigInt(new ArraySchema().setMinItems(1)
+                                                         .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -269,8 +270,8 @@ public class TestMinAndMaxOfJsArraySpecs {
                        JsInt.of(1));
     JsSpec spec = JsSpecs.arrayOfSpec(JsObjSpec.of("a",
                                                    JsSpecs.integer()),
-                                      1,
-                                      2);
+                                      new ArraySchema().setMinItems(1)
+                                                       .setMaxItems(2));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 

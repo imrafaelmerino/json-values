@@ -28,7 +28,8 @@ final class JsDoubleSpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofDouble(nullable);
+    return JsParsers.INSTANCE.ofDouble(nullable,
+                                       constraints);
   }
 
   @Override

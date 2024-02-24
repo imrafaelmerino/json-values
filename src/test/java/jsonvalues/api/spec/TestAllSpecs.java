@@ -10,6 +10,7 @@ import jsonvalues.gen.JsIntGen;
 import jsonvalues.gen.JsLongGen;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.gen.JsStrGen;
+import jsonvalues.spec.ArraySchema;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsSpecs;
@@ -34,11 +35,11 @@ public class TestAllSpecs {
                                   "a6",
                                   JsSpecs.instant(),
                                   "a7",
-                                  JsSpecs.arrayOfStr(1,
-                                                     10),
+                                  JsSpecs.arrayOfStr(new ArraySchema().setMinItems(1)
+                                                                      .setMaxItems(10)),
                                   "a8",
-                                  JsSpecs.arrayOfInt(1,
-                                                     10),
+                                  JsSpecs.arrayOfInt(new ArraySchema().setMinItems(1)
+                                                                      .setMaxItems(10)),
                                   "a9",
                                   JsSpecs.arrayOfDec(),
                                   "a10",

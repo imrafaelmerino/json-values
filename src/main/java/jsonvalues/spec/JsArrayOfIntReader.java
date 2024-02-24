@@ -14,28 +14,24 @@ final class JsArrayOfIntReader extends JsArrayReader {
     this.parser = parser;
   }
 
-  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
-                                  final IntFunction<JsError> fn,
-                                  final int min,
-                                  final int max
+  JsValue nullOrArrayEachSuchThat(DslJsReader reader,
+                                  IntFunction<JsError> fn,
+                                  ArraySchemaConstraints arrayConstraints
                                  ) throws JsParserException {
     return nullOrArrayEachSuchThat(reader,
                                    () -> parser.valueSuchThat(reader,
                                                               fn),
-                                   min,
-                                   max);
+                                   arrayConstraints);
   }
 
-  JsArray arrayEachSuchThat(final DslJsReader reader,
-                            final IntFunction<JsError> fn,
-                            final int min,
-                            final int max
+  JsArray arrayEachSuchThat(DslJsReader reader,
+                            IntFunction<JsError> fn,
+                            ArraySchemaConstraints arrayConstraints
                            ) throws JsParserException {
     return arrayEachSuchThat(reader,
                              () -> parser.valueSuchThat(reader,
                                                         fn),
-                             min,
-                             max);
+                             arrayConstraints);
   }
 
 }

@@ -14,29 +14,28 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
   }
 
   JsArrayOfDecimal(final boolean nullable,
-                   DecimalSchemaConstraints constraints) {
-    super(nullable);
+                   DecimalSchemaConstraints constraints,
+                   ArraySchemaConstraints arrayConstraints) {
+    super(nullable,
+          arrayConstraints);
     this.constraints = constraints;
+
   }
 
   JsArrayOfDecimal(final boolean nullable,
-                   int min,
-                   int max
+                   ArraySchemaConstraints arrayConstraints
                   ) {
     this(nullable,
-         min,
-         max,
+         arrayConstraints,
          null);
   }
 
   JsArrayOfDecimal(final boolean nullable,
-                   int min,
-                   int max,
+                   ArraySchemaConstraints arrayConstraints,
                    DecimalSchemaConstraints constraints
                   ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.constraints = constraints;
   }
 
@@ -44,8 +43,7 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
   @Override
   public JsSpec nullable() {
     return new JsArrayOfDecimal(true,
-                                min,
-                                max,
+                                arrayConstraints,
                                 constraints);
   }
 
@@ -53,8 +51,7 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDecimal(nullable,
-                                               min,
-                                               max);
+                                               arrayConstraints);
   }
 
 
@@ -65,8 +62,7 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
                                                  new JsError(v,
                                                              DECIMAL_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

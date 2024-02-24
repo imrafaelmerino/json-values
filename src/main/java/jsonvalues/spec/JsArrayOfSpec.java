@@ -15,18 +15,15 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
                ) {
     this(nullable,
          spec,
-         0,
-         Integer.MAX_VALUE);
+         null);
   }
 
-  JsArrayOfSpec(final boolean nullable,
-                final JsSpec spec,
-                int min,
-                int max
+  JsArrayOfSpec(boolean nullable,
+                JsSpec spec,
+                ArraySchemaConstraints arrayConstraints
                ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.spec = spec;
   }
 
@@ -38,8 +35,7 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
   public JsSpec nullable() {
     return new JsArrayOfSpec(true,
                              spec,
-                             min,
-                             max
+                             arrayConstraints
     );
   }
 
@@ -48,8 +44,7 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfSpec(spec.parser(),
                                             nullable,
-                                            min,
-                                            max
+                                            arrayConstraints
                                            );
 
   }
@@ -73,14 +68,15 @@ final class JsArrayOfSpec extends AbstractSizableArr implements JsOneErrorSpec, 
 
   private JsError apply(final JsArray array
                        ) {
-
-    if (array.size() < min) {
-      return new JsError(array,
-                         ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN);
-    }
-    if (array.size() > max) {
-      return new JsError(array,
-                         ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX);
+    if (arrayConstraints != null) {
+      if (array.size() < arrayConstraints.minItems()) {
+        return new JsError(array,
+                           ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN);
+      }
+      if (array.size() > arrayConstraints.maxItems()) {
+        return new JsError(array,
+                           ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX);
+      }
     }
 
     for (JsValue value : array) {

@@ -67,47 +67,39 @@ final class JsParsers {
 
   JsParser ofArrayOfObjEachSuchThat(Function<JsObj, JsError> p,
                                     boolean nullable,
-                                    int min,
-                                    int max
+                                    ArraySchemaConstraints arrayConstraints
                                    ) {
     return nullable ?
            reader -> READERS.arrayOfObjReader.nullOrArrayEachSuchThat(reader,
                                                                       p,
-                                                                      min,
-                                                                      max
+                                                                      arrayConstraints
                                                                      ) :
            reader -> READERS.arrayOfObjReader.arrayEachSuchThat(reader,
                                                                 p,
-                                                                min,
-                                                                max
+                                                                arrayConstraints
                                                                );
   }
 
 
   JsParser ofArrayOfObj(boolean nullable,
-                        int min,
-                        int max
+                        ArraySchemaConstraints arrayConstraints
                        ) {
     return getParser(READERS.arrayOfObjReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   private JsParser getParser(JsArrayReader parser,
                              boolean nullable,
-                             int min,
-                             int max
+                             ArraySchemaConstraints arrayConstraints
                             ) {
     return nullable ?
            reader -> parser.nullOrArray(reader,
-                                        min,
-                                        max
+                                        arrayConstraints
                                        ) :
            reader -> parser.array(reader,
-                                  min,
-                                  max
+                                  arrayConstraints
                                  );
   }
 
@@ -157,13 +149,11 @@ final class JsParsers {
 
   JsParser ofArrayOfSpec(JsParser parser,
                          boolean nullable,
-                         int min,
-                         int max
+                         ArraySchemaConstraints arrayConstraints
                         ) {
     return getParser(new JsArrayOfSpecReader(parser),
                      nullable,
-                     min,
-                     max);
+                     arrayConstraints);
   }
 
   JsParser ofMapOfSpec(JsParser parser,
@@ -240,31 +230,26 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfValue(boolean nullable,
-                          int min,
-                          int max
+                          ArraySchemaConstraints arrayConstraints
                          ) {
     return getParser(READERS.arrayOfValueReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   JsParser ofArrayOfValueEachSuchThat(Function<JsValue, JsError> p,
                                       boolean nullable,
-                                      int min,
-                                      int max
+                                      ArraySchemaConstraints arrayConstraints
                                      ) {
     return nullable ?
            reader -> READERS.arrayOfValueReader.nullOrArrayEachSuchThat(reader,
                                                                         p,
-                                                                        min,
-                                                                        max
+                                                                        arrayConstraints
                                                                        ) :
            reader -> READERS.arrayOfValueReader.arrayEachSuchThat(reader,
                                                                   p,
-                                                                  min,
-                                                                  max
+                                                                  arrayConstraints
                                                                  );
   }
 
@@ -300,18 +285,15 @@ final class JsParsers {
 
 
   JsParser ofArrayOfBool(boolean nullable,
-                         int min,
-                         int max
+                         ArraySchemaConstraints arrayConstraints
                         ) {
 
     return nullable ?
            reader -> READERS.arrayOfBoolReader.nullOrArray(reader,
-                                                           min,
-                                                           max
+                                                           arrayConstraints
                                                           ) :
            reader -> READERS.arrayOfBoolReader.array(reader,
-                                                     min,
-                                                     max
+                                                     arrayConstraints
                                                     );
   }
 
@@ -327,21 +309,18 @@ final class JsParsers {
 
   JsParser ofArrayOfStrEachSuchThat(Function<String, JsError> p,
                                     boolean nullable,
-                                    int min,
-                                    int max
+                                    ArraySchemaConstraints arrayConstraints
                                    ) {
     return nullable ?
            reader ->
                READERS.arrayOfStringReader.nullOrArrayEachSuchThat(reader,
                                                                    p,
-                                                                   min,
-                                                                   max
+                                                                   arrayConstraints
                                                                   ) :
            reader ->
                READERS.arrayOfStringReader.arrayEachSuchThat(reader,
                                                              p,
-                                                             min,
-                                                             max
+                                                             arrayConstraints
                                                             );
   }
 
@@ -355,8 +334,7 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfStr(boolean nullable,
-                        int min,
-                        int max,
+                        ArraySchemaConstraints arrayConstraints,
                         final StrConstraints schema) {
     return schema != null ?
            reader -> ofArrayOfStrEachSuchThat(s -> {
@@ -367,13 +345,11 @@ final class JsParsers {
                                                 return null;
                                               },
                                               nullable,
-                                              min,
-                                              max
+                                              arrayConstraints
                                              ).parse(reader) :
            getParser(READERS.arrayOfStringReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
@@ -481,58 +457,61 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfIntegral(boolean nullable,
-                             int min,
-                             int max
+                             ArraySchemaConstraints arrayConstraints
                             ) {
     return getParser(READERS.arrayOfBigIntReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   JsParser ofArrayOfIntegralEachSuchThat(Function<BigInteger, JsError> p,
                                          boolean nullable,
-                                         int min,
-                                         int max
+                                         ArraySchemaConstraints arrayConstraints
                                         ) {
     return nullable ?
            reader ->
                READERS.arrayOfBigIntReader.nullOrArrayEachSuchThat(reader,
                                                                    p,
-                                                                   min,
-                                                                   max
+                                                                   arrayConstraints
                                                                   ) :
            reader ->
                READERS.arrayOfBigIntReader.arrayEachSuchThat(reader,
                                                              p,
-                                                             min,
-                                                             max
+                                                             arrayConstraints
                                                             );
   }
 
   JsParser ofArrayOfDoubleEachSuchThat(DoubleFunction<JsError> p,
                                        boolean nullable,
-                                       int min,
-                                       int max
+                                       ArraySchemaConstraints arrayConstraints
                                       ) {
     return nullable ?
            reader ->
                READERS.arrayOfDoubleReader.nullOrArrayEachSuchThat(reader,
                                                                    p,
-                                                                   min,
-                                                                   max
+                                                                   arrayConstraints
                                                                   ) :
            reader ->
                READERS.arrayOfDoubleReader.arrayEachSuchThat(reader,
                                                              p,
-                                                             min,
-                                                             max
+                                                             arrayConstraints
                                                             );
   }
 
-  JsParser ofIntegral(boolean nullable) {
-    return getParser(READERS.jsBigIntReader,
+  JsParser ofIntegral(boolean nullable,
+                      final BigIntSchemaConstraints schema) {
+    return schema != null ?
+           reader -> ofIntegralSuchThat(i -> {
+                                          validateBigInteger(schema,
+                                                             i,
+                                                             reader
+                                                            );
+                                          return null;
+                                        },
+                                        nullable
+                                       ).parse(reader) :
+           getParser(READERS.jsBigIntReader,
                      nullable
                     );
   }
@@ -573,33 +552,28 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfDecimal(boolean nullable,
-                            int min,
-                            int max
+                            ArraySchemaConstraints arrayConstraints
                            ) {
     return getParser(READERS.arrayOfDecimalReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   JsParser ofArrayOfDecimalEachSuchThat(Function<BigDecimal, JsError> p,
                                         boolean nullable,
-                                        int min,
-                                        int max
+                                        ArraySchemaConstraints arrayConstraints
                                        ) {
     return nullable ?
            reader ->
                READERS.arrayOfDecimalReader.nullOrArrayEachSuchThat(reader,
                                                                     p,
-                                                                    min,
-                                                                    max
+                                                                    arrayConstraints
                                                                    ) :
            reader ->
                READERS.arrayOfDecimalReader.arrayEachSuchThat(reader,
                                                               p,
-                                                              min,
-                                                              max
+                                                              arrayConstraints
                                                              );
   }
 
@@ -625,32 +599,27 @@ final class JsParsers {
 
 
   JsParser ofArrayOfLong(boolean nullable,
-                         int min,
-                         int max
+                         ArraySchemaConstraints arrayConstraints
                         ) {
     return getParser(READERS.arrayOfLongReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   JsParser ofArrayOfLongEachSuchThat(LongFunction<JsError> p,
                                      boolean nullable,
-                                     int min,
-                                     int max
+                                     ArraySchemaConstraints arrayConstraints
                                     ) {
     return nullable ?
            reader ->
                READERS.arrayOfLongReader.nullOrArrayEachSuchThat(reader,
                                                                  p,
-                                                                 min,
-                                                                 max
+                                                                 arrayConstraints
                                                                 ) :
            reader -> READERS.arrayOfLongReader.arrayEachSuchThat(reader,
                                                                  p,
-                                                                 min,
-                                                                 max
+                                                                 arrayConstraints
                                                                 );
   }
 
@@ -664,8 +633,19 @@ final class JsParsers {
   }
 
 
-  JsParser ofDecimal(boolean nullable) {
-    return getParser(READERS.decimalReader,
+  JsParser ofDecimal(boolean nullable,
+                     final DecimalSchemaConstraints schema) {
+    return schema != null ?
+           reader -> ofDecimalSuchThat(d -> {
+                                         validateDecimal(schema,
+                                                         d,
+                                                         reader
+                                                        );
+                                         return null;
+                                       },
+                                       nullable
+                                      ).parse(reader) :
+           getParser(READERS.decimalReader,
                      nullable
                     );
   }
@@ -706,19 +686,197 @@ final class JsParsers {
     }
   }
 
-  JsParser ofMapOfLong(boolean nullable) {
-    return getParser(READERS.mapOfLongReader,
+  JsParser ofMapOfLong(boolean nullable,
+                       final LongSchemaConstraints schema) {
+    return schema != null ?
+           dslJsReader ->
+               READERS.mapOfLongReader.eachEntrySuchThat(dslJsReader,
+                                                         e -> validateLong(schema,
+                                                                           e.toJsLong().value,
+                                                                           dslJsReader),
+                                                         nullable) :
+           getParser(READERS.mapOfLongReader,
                      nullable
                     );
   }
 
-  JsParser ofMapOfDouble(boolean nullable) {
-    return getParser(READERS.mapOfDoubleReader,
-                     nullable
-                    );
+  private void validateLong(final LongSchemaConstraints schema,
+                            final long value,
+                            final DslJsReader dslJsReader) {
+    if (schema.minimum() > value) {
+      throw JsParserException.reasonAt(ParserErrors.LONG_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum() < value) {
+      throw JsParserException.reasonAt(ParserErrors.LONG_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
+    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
+      throw JsParserException.reasonAt(ParserErrors.LONG_NOT_MULTIPLE_OF,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMaximum() && schema.maximum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.LONG_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMinimum() && schema.minimum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.LONG_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
   }
 
-  JsParser ofMapOfString(boolean nullable,
+  private void validateBigInteger(final BigIntSchemaConstraints schema,
+                                  final BigInteger value,
+                                  final DslJsReader dslJsReader) {
+    if (schema.minimum() != null && schema.minimum()
+                                          .compareTo(value) > 0) {
+      throw JsParserException.reasonAt(ParserErrors.BIGINT_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum() != null && schema.maximum()
+                                          .compareTo(value) < 0) {
+      throw JsParserException.reasonAt(ParserErrors.BIGINT_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.multipleOf() != null && value.mod(schema.multipleOf())
+                                            .compareTo(BigInteger.ZERO) != 0) {
+      throw JsParserException.reasonAt(ParserErrors.BIGINT_NOT_MULTIPLE_OF,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum() != null && schema.exclusiveMaximum() && schema.maximum()
+                                                                       .compareTo(value) == 0) {
+      throw JsParserException.reasonAt(ParserErrors.BIGINT_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.minimum() != null && schema.exclusiveMinimum() && schema.minimum()
+                                                                       .compareTo(value) == 0) {
+      throw JsParserException.reasonAt(ParserErrors.BIGINT_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+  }
+
+  private void validateInteger(final IntegerSchemaConstraints schema,
+                               final int value,
+                               final DslJsReader dslJsReader) {
+    if (schema.minimum() > value) {
+      throw JsParserException.reasonAt(ParserErrors.INT_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum() < value) {
+      throw JsParserException.reasonAt(ParserErrors.INT_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
+    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
+      throw JsParserException.reasonAt(ParserErrors.INT_NOT_MULTIPLE_OF,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMaximum() && schema.maximum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.INT_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMinimum() && schema.minimum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.INT_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
+  }
+
+  private void validateDecimal(final DecimalSchemaConstraints schema,
+                               final BigDecimal value,
+                               final DslJsReader dslJsReader) {
+    if (schema.minimum() != null && schema.minimum()
+                                          .compareTo(value) > 0) {
+      throw JsParserException.reasonAt(ParserErrors.DECIMAL_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream());
+    }
+    if (schema.maximum() != null && schema.maximum()
+                                          .compareTo(value) < 0) {
+      throw JsParserException.reasonAt(ParserErrors.DECIMAL_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream());
+    }
+    if (schema.multipleOf() != null && value.remainder(schema.multipleOf())
+                                            .compareTo(BigDecimal.ZERO) != 0) {
+      throw JsParserException.reasonAt(ParserErrors.DECIMAL_NOT_MULTIPLE_OF,
+                                       dslJsReader.getPositionInStream());
+    }
+    if (schema.maximum() != null && schema.exclusiveMaximum() && schema.maximum()
+                                                                       .compareTo(value) == 0) {
+      throw JsParserException.reasonAt(ParserErrors.DECIMAL_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream());
+    }
+    if (schema.minimum() != null && schema.exclusiveMinimum() && schema.minimum()
+                                                                       .compareTo(value) == 0) {
+      throw JsParserException.reasonAt(ParserErrors.DECIMAL_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream());
+    }
+
+  }
+
+  private void validateDouble(final DoubleSchemaConstraints schema,
+                              final double value,
+                              final DslJsReader dslJsReader) {
+    if (schema.minimum() > value) {
+      throw JsParserException.reasonAt(ParserErrors.DOUBLE_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum() < value) {
+      throw JsParserException.reasonAt(ParserErrors.DOUBLE_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
+    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
+      throw JsParserException.reasonAt(ParserErrors.DOUBLE_NOT_MULTIPLE_OF,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMaximum() && schema.maximum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.DOUBLE__GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.exclusiveMinimum() && schema.minimum() == value) {
+      throw JsParserException.reasonAt(ParserErrors.DOUBLE_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+  }
+
+  JsParser ofMapOfDouble(boolean nullable,
+                         final DoubleSchemaConstraints schema) {
+    return
+        schema != null ?
+        dslJsReader ->
+            READERS.mapOfDoubleReader.eachEntrySuchThat(dslJsReader,
+                                                        e -> validateDouble(schema,
+                                                                            e.toJsDouble().value,
+                                                                            dslJsReader),
+                                                        nullable) :
+        getParser(READERS.mapOfDoubleReader,
+                  nullable
+                 );
+  }
+
+  JsParser ofMapOfString(final boolean nullable,
                          final StrConstraints schema) {
     return schema != null
            ? dslJsReader ->
@@ -738,10 +896,20 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofMapOfInt(boolean nullable) {
-    return getParser(READERS.mapOfIntegerReader,
-                     nullable
-                    );
+  JsParser ofMapOfInt(final boolean nullable,
+                      final IntegerSchemaConstraints schema) {
+
+    return
+        schema != null ?
+        dslJsReader ->
+            READERS.mapOfIntegerReader.eachEntrySuchThat(dslJsReader,
+                                                         e -> validateInteger(schema,
+                                                                              e.toJsInt().value,
+                                                                              dslJsReader),
+                                                         nullable) :
+        getParser(READERS.mapOfIntegerReader,
+                  nullable
+                 );
   }
 
   JsParser ofMapOfInstant(boolean nullable) {
@@ -750,8 +918,16 @@ final class JsParsers {
                     );
   }
 
-  JsParser ofMapOfDecimal(boolean nullable) {
-    return getParser(READERS.mapOfDecimalReader,
+  JsParser ofMapOfDecimal(final boolean nullable,
+                          final DecimalSchemaConstraints schema) {
+    return schema != null ?
+           dslJsReader ->
+               READERS.mapOfDecimalReader.eachEntrySuchThat(dslJsReader,
+                                                            e -> validateDecimal(schema,
+                                                                                 e.toJsBigDec().value,
+                                                                                 dslJsReader),
+                                                            nullable) :
+           getParser(READERS.mapOfDecimalReader,
                      nullable
                     );
   }
@@ -763,21 +939,51 @@ final class JsParsers {
   }
 
 
-  JsParser ofMapOfBigInt(boolean nullable) {
-    return getParser(READERS.mapOfBigIntegerReader,
+  JsParser ofMapOfBigInt(boolean nullable,
+                         final BigIntSchemaConstraints schema) {
+    return schema != null ?
+           dslJsReader ->
+               READERS.mapOfBigIntegerReader.eachEntrySuchThat(dslJsReader,
+                                                               e -> validateBigInteger(schema,
+                                                                                       e.toJsBigInt().value,
+                                                                                       dslJsReader),
+                                                               nullable) :
+           getParser(READERS.mapOfBigIntegerReader,
                      nullable
                     );
   }
 
 
-  JsParser ofLong(boolean nullable) {
-    return getParser(READERS.longReader,
+  JsParser ofLong(boolean nullable,
+                  final LongSchemaConstraints schema) {
+    return schema != null ?
+           reader -> ofLongSuchThat(l -> {
+                                      validateLong(schema,
+                                                   l,
+                                                   reader
+                                                  );
+                                      return null;
+                                    },
+                                    nullable
+                                   ).parse(reader) :
+           getParser(READERS.longReader,
                      nullable
                     );
   }
 
-  JsParser ofDouble(boolean nullable) {
-    return getParser(READERS.doubleReader,
+  JsParser ofDouble(boolean nullable,
+                    final DoubleSchemaConstraints schema) {
+    return schema != null ?
+           reader -> ofDoubleSuchThat(d -> {
+                                        validateDouble(schema,
+                                                       d,
+                                                       reader
+                                                      );
+                                        return null;
+                                      },
+                                      nullable
+                                     ).parse(reader) :
+           getParser(READERS.doubleReader,
                      nullable
                     );
   }
@@ -858,24 +1064,20 @@ final class JsParsers {
 
 
   JsParser ofArrayOfInt(boolean nullable,
-                        int min,
-                        int max
+                        ArraySchemaConstraints arrayConstraints
                        ) {
     return getParser(READERS.arrayOfIntReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
   JsParser ofArrayOfDouble(boolean nullable,
-                           int min,
-                           int max
+                           ArraySchemaConstraints arrayConstraints
                           ) {
     return getParser(READERS.arrayOfDoubleReader,
                      nullable,
-                     min,
-                     max
+                     arrayConstraints
                     );
   }
 
@@ -892,20 +1094,17 @@ final class JsParsers {
 
   JsParser ofArrayOfIntEachSuchThat(IntFunction<JsError> p,
                                     boolean nullable,
-                                    int min,
-                                    int max
+                                    ArraySchemaConstraints arrayConstraints
                                    ) {
 
     return nullable ?
            reader -> READERS.arrayOfIntReader.nullOrArrayEachSuchThat(reader,
                                                                       p,
-                                                                      min,
-                                                                      max
+                                                                      arrayConstraints
                                                                      ) :
            reader -> READERS.arrayOfIntReader.arrayEachSuchThat(reader,
                                                                 p,
-                                                                min,
-                                                                max
+                                                                arrayConstraints
                                                                );
   }
 
@@ -958,8 +1157,19 @@ final class JsParsers {
     }
   }
 
-  JsParser ofInt(boolean nullable) {
-    return getParser(READERS.intReader,
+  JsParser ofInt(boolean nullable,
+                 final IntegerSchemaConstraints schema) {
+    return schema != null ?
+           reader -> ofIntSuchThat(i -> {
+                                     validateInteger(schema,
+                                                     i,
+                                                     reader
+                                                    );
+                                     return null;
+                                   },
+                                   nullable
+                                  ).parse(reader) :
+           getParser(READERS.intReader,
                      nullable
                     );
   }

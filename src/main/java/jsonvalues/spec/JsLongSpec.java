@@ -28,7 +28,8 @@ final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroS
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofLong(nullable);
+    return JsParsers.INSTANCE.ofLong(nullable,
+                                     constraints);
   }
 
   @Override

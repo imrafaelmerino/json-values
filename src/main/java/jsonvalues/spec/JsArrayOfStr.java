@@ -10,6 +10,7 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
 
   JsArrayOfStr(final boolean nullable) {
     this(nullable,
+         null,
          null);
   }
 
@@ -20,39 +21,33 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
   }
 
   JsArrayOfStr(final boolean nullable,
-               int min,
-               int max
+               ArraySchemaConstraints arrayConstraints
               ) {
     this(nullable,
-         min,
-         max,
+         arrayConstraints,
          null);
   }
 
   JsArrayOfStr(final boolean nullable,
-               int min,
-               int max,
+               ArraySchemaConstraints arrayConstraints,
                StrConstraints constraints
               ) {
     super(nullable,
-          min,
-          max);
+          arrayConstraints);
     this.constraints = constraints;
   }
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfStr(true,
-                            min,
-                            max,
+                            arrayConstraints,
                             constraints);
   }
 
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfStr(nullable,
-                                           min,
-                                           max,
+                                           arrayConstraints,
                                            constraints);
   }
 
@@ -64,8 +59,7 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
                                                  new JsError(v,
                                                              STRING_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

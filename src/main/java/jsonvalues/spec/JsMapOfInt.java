@@ -26,7 +26,8 @@ final class JsMapOfInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfInt(nullable);
+    return JsParsers.INSTANCE.ofMapOfInt(nullable,
+                                         valuesConstraints);
   }
 
 

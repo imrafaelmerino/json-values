@@ -69,6 +69,7 @@ public final class JsSpecs {
   private static final JsArraySpec arrayOfLong = new JsArrayOfLong(false);
   private static final JsArraySpec arrayOfInt = new JsArrayOfInt(false);
   private static final JsArraySpec arrayOfStr = new JsArrayOfStr(false,
+                                                                 null,
                                                                  null);
   private static final JsSpec binary = new JsBinarySpec(false);
   private static final JsSpec bigInteger = new JsBigIntSpec(false);
@@ -316,15 +317,10 @@ public final class JsSpecs {
    * @return A specification for an array of integers with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfInt(int minLength,
-                                       int maxLength
-                                      ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+  public static JsArraySpec arrayOfInt(ArraySchema schema) {
+
     return new JsArrayOfInt(false,
-                            minLength,
-                            maxLength);
+                            schema.build());
   }
 
 
@@ -336,32 +332,23 @@ public final class JsSpecs {
    * @return A specification for an array of double with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfDouble(int minLength,
-                                          int maxLength
+  public static JsArraySpec arrayOfDouble(ArraySchema arraySchema
                                          ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+
     return new JsArrayOfDouble(false,
-                               minLength,
-                               maxLength);
+                               arraySchema.build());
   }
 
   public static JsArraySpec arrayOfDouble(DoublePredicate predicate,
-                                          int minLength,
-                                          int maxLength
+                                          ArraySchema arraySchema
                                          ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedDouble(s -> requireNonNull(predicate).test(s) ?
                                           null :
                                           new JsError(JsDouble.of(s),
                                                       DOUBLE_CONDITION),
                                      false,
-                                     minLength,
-                                     maxLength);
+                                     arraySchema.build());
   }
 
   /**
@@ -372,15 +359,11 @@ public final class JsSpecs {
    * @return A specification for an array of big integers with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfBigInt(int minLength,
-                                          int maxLength
+  public static JsArraySpec arrayOfBigInt(ArraySchema arraySchema
                                          ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+
     return new JsArrayOfBigInt(false,
-                               minLength,
-                               maxLength);
+                               arraySchema.build());
   }
 
 
@@ -392,15 +375,11 @@ public final class JsSpecs {
    * @return A specification for an array of objects with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfObj(int minLength,
-                                       int maxLength
+  public static JsArraySpec arrayOfObj(ArraySchema schema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+
     return new JsArrayOfObj(false,
-                            minLength,
-                            maxLength);
+                            schema.build());
   }
 
   /**
@@ -411,15 +390,10 @@ public final class JsSpecs {
    * @return A specification for an array of decimal numbers with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfDec(int minLength,
-                                       int maxLength
+  public static JsArraySpec arrayOfDec(ArraySchema schema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
     return new JsArrayOfDecimal(false,
-                                minLength,
-                                maxLength);
+                                schema.build());
   }
 
   /**
@@ -430,15 +404,11 @@ public final class JsSpecs {
    * @return A specification for an array of booleans with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfBool(int minLength,
-                                        int maxLength
+  public static JsArraySpec arrayOfBool(ArraySchema schema
                                        ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+
     return new JsArrayOfBool(false,
-                             minLength,
-                             maxLength);
+                             schema.build());
   }
 
   /**
@@ -449,24 +419,18 @@ public final class JsSpecs {
    * @return A specification for an array of strings with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfStr(int minLength,
-                                       int maxLength
+  public static JsArraySpec arrayOfStr(ArraySchema arraySchema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
+
     return new JsArrayOfStr(false,
-                            minLength,
-                            maxLength);
+                            arraySchema.build());
   }
 
-  public static JsArraySpec arrayOfStr(int minLength,
-                                       int maxLength,
+  public static JsArraySpec arrayOfStr(ArraySchema arraySchema,
                                        StrSchema elemSchema
                                       ) {
     return new JsArrayOfStr(false,
-                            minLength,
-                            maxLength,
+                            arraySchema.build(),
                             elemSchema.build());
   }
 
@@ -479,15 +443,10 @@ public final class JsSpecs {
    * @return A specification for an array of long numbers with the specified length constraints.
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
-  public static JsArraySpec arrayOfLong(int minLength,
-                                        int maxLength
+  public static JsArraySpec arrayOfLong(ArraySchema schema
                                        ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
     return new JsArrayOfLong(false,
-                             minLength,
-                             maxLength);
+                             schema.build());
   }
 
 
@@ -581,20 +540,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If the maximum length is lower than the minimum length.
    */
   public static JsArraySpec arrayOfDec(final Predicate<BigDecimal> predicate,
-                                       final int minLength,
-                                       final int maxLength
+                                       ArraySchema arraySchema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedDecimal(s -> requireNonNull(predicate).test(s) ?
                                            null :
                                            new JsError(JsBigDec.of(s),
                                                        DECIMAL_CONDITION),
                                       false,
-                                      minLength,
-                                      maxLength);
+                                      arraySchema.build());
   }
 
   /**
@@ -638,20 +592,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If the maximum size is lower than the minimum size.
    */
   public static JsArraySpec arrayOfBigInt(final Predicate<BigInteger> predicate,
-                                          final int minLength,
-                                          final int maxLength
+                                          ArraySchema arraySchema
                                          ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedBigInt(s -> requireNonNull(predicate).test(s) ?
                                           null :
                                           new JsError(JsBigInt.of(s),
                                                       INTEGRAL_CONDITION),
                                      false,
-                                     minLength,
-                                     maxLength);
+                                     arraySchema.build());
   }
 
   /**
@@ -697,20 +646,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfObj(final Predicate<JsObj> predicate,
-                                       final int minLength,
-                                       final int maxLength
+                                       ArraySchema arraySchema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedObj(s -> requireNonNull(predicate).test(s) ?
                                        null :
                                        new JsError(s,
                                                    OBJ_CONDITION),
                                   false,
-                                  minLength,
-                                  maxLength);
+                                  arraySchema.build());
 
   }
 
@@ -800,20 +744,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfLong(final LongPredicate predicate,
-                                        final int minLength,
-                                        final int maxLength
+                                        final ArraySchema schema
                                        ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedLong(s -> requireNonNull(predicate).test(s) ?
                                         null :
                                         new JsError(JsLong.of(s),
                                                     LONG_CONDITION),
                                    false,
-                                   minLength,
-                                   maxLength);
+                                   schema.build());
   }
 
   /**
@@ -929,20 +868,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfStr(final Predicate<String> predicate,
-                                       final int minLength,
-                                       final int maxLength
+                                       final ArraySchema arraySchema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedStr(s -> requireNonNull(predicate).test(s) ?
                                        null :
                                        new JsError(JsStr.of(s),
                                                    STRING_CONDITION),
                                   false,
-                                  minLength,
-                                  maxLength);
+                                  arraySchema.build());
   }
 
   /**
@@ -1059,20 +993,15 @@ public final class JsSpecs {
    * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfInt(final IntPredicate predicate,
-                                       final int minLength,
-                                       final int maxLength
+                                       ArraySchema arraySchema
                                       ) {
-    if (maxLength < minLength) {
-      throw new IllegalArgumentException(MAX_LOWER_THAN_MIN_ERROR);
-    }
 
     return new JsArrayOfTestedInt(s -> requireNonNull(predicate).test(s) ?
                                        null :
                                        new JsError(JsInt.of(s),
                                                    INT_CONDITION),
                                   false,
-                                  minLength,
-                                  maxLength);
+                                  arraySchema.build());
 
   }
 
@@ -1312,12 +1241,10 @@ public final class JsSpecs {
    * @return A JSON specification for arrays.
    */
   public static JsArraySpec arrayOfSpec(JsSpec spec,
-                                        int min,
-                                        int max) {
+                                        ArraySchema arraySchema) {
     return new JsArrayOfSpec(false,
                              requireNonNull(spec),
-                             min,
-                             max);
+                             arraySchema.build());
   }
 
   /**

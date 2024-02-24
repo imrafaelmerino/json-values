@@ -51,18 +51,17 @@ class Functions {
 
   static JsError testArrayOfTestedValue(Function<JsValue, JsError> predicate,
                                         boolean nullable,
-                                        int min,
-                                        int max,
+                                        ArraySchemaConstraints arrayConstraints,
                                         JsValue value
                                        ) {
     return testArrayPredicate(nullable,
                               array -> {
-                                if (array.size() < min) {
+                                if (arrayConstraints != null && array.size() < arrayConstraints.minItems()) {
                                   return new JsError(array,
                                                      ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN
                                   );
                                 }
-                                if (array.size() > max) {
+                                if (arrayConstraints != null && array.size() > arrayConstraints.maxItems()) {
                                   return new JsError(array,
                                                      ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX
                                   );
@@ -109,8 +108,7 @@ class Functions {
   }
 
   static JsError testArray(boolean nullable,
-                           int min,
-                           int max,
+                           ArraySchemaConstraints arrayConstraints,
                            JsValue value) {
 
     JsError error = testNullable(nullable,
@@ -119,16 +117,19 @@ class Functions {
       return error;
     }
     if (value.isArray()) {
+
       JsArray array = value.toJsArray();
-      if (array.size() < min) {
-        return new JsError(array,
-                           ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN
-        );
-      }
-      if (array.size() > max) {
-        return new JsError(array,
-                           ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX
-        );
+      if (arrayConstraints != null) {
+        if (array.size() < arrayConstraints.minItems()) {
+          return new JsError(array,
+                             ERROR_CODE.ARR_SIZE_LOWER_THAN_MIN
+          );
+        }
+        if (array.size() > arrayConstraints.maxItems()) {
+          return new JsError(array,
+                             ERROR_CODE.ARR_SIZE_GREATER_THAN_MAX
+          );
+        }
       }
       return null;
 

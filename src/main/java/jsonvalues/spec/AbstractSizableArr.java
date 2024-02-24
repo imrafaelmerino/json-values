@@ -2,20 +2,16 @@ package jsonvalues.spec;
 
 abstract class AbstractSizableArr extends AbstractNullable {
 
-  final int min;
-  final int max;
+  ArraySchemaConstraints arrayConstraints;
 
   protected AbstractSizableArr(boolean nullable,
-                               int min,
-                               int max) {
+                               ArraySchemaConstraints arrayConstraints) {
     super(nullable);
-    this.min = min;
-    this.max = max;
+    this.arrayConstraints = arrayConstraints;
   }
 
   protected AbstractSizableArr(boolean nullable) {
     super(nullable);
-    this.min = 0;
-    this.max = Integer.MAX_VALUE;
+
   }
 }

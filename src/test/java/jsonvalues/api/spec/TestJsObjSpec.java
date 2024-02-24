@@ -90,6 +90,7 @@ import jsonvalues.gen.JsIntGen;
 import jsonvalues.gen.JsLongGen;
 import jsonvalues.gen.JsObjGen;
 import jsonvalues.gen.JsStrGen;
+import jsonvalues.spec.ArraySchema;
 import jsonvalues.spec.ERROR_CODE;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsObjSpecParser;
@@ -1926,8 +1927,8 @@ public class TestJsObjSpec {
 
     JsObjSpec spec = JsObjSpec.of("a",
                                   arrayOfDouble(s -> s > 1.5,
-                                                1,
-                                                10).nullable(),
+                                                new ArraySchema().setMinItems(1)
+                                                                 .setMaxItems(10)).nullable(),
                                   "b",
                                   doubleNumber(s -> s > 0.0d).nullable()
                                  );

@@ -25,7 +25,8 @@ final class JsMapOfBigInt extends AbstractMap implements JsOneErrorSpec, AvroSpe
 
   @Override
   public JsParser parser() {
-    return JsParsers.INSTANCE.ofMapOfBigInt(nullable);
+    return JsParsers.INSTANCE.ofMapOfBigInt(nullable,
+                                            valuesConstraints);
   }
 
 

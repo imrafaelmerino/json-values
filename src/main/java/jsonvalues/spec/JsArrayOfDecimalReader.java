@@ -16,28 +16,24 @@ final class JsArrayOfDecimalReader extends JsArrayReader {
     this.parser = parser;
   }
 
-  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
-                                  final Function<BigDecimal, JsError> fn,
-                                  final int min,
-                                  final int max
+  JsValue nullOrArrayEachSuchThat(DslJsReader reader,
+                                  Function<BigDecimal, JsError> fn,
+                                  ArraySchemaConstraints arrayConstraints
                                  ) throws JsParserException {
     return nullOrArrayEachSuchThat(reader,
                                    () -> parser.valueSuchThat(reader,
                                                               fn),
-                                   min,
-                                   max);
+                                   arrayConstraints);
   }
 
-  JsArray arrayEachSuchThat(final DslJsReader reader,
-                            final Function<BigDecimal, JsError> fn,
-                            final int min,
-                            final int max
+  JsArray arrayEachSuchThat(DslJsReader reader,
+                            Function<BigDecimal, JsError> fn,
+                            ArraySchemaConstraints arrayConstraints
                            ) throws JsParserException {
     return arrayEachSuchThat(reader,
                              () -> parser.valueSuchThat(reader,
                                                         fn),
-                             min,
-                             max);
+                             arrayConstraints);
 
   }
 

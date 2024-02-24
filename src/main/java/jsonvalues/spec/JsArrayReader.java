@@ -16,56 +16,60 @@ abstract class JsArrayReader extends AbstractReader {
   }
 
   JsValue nullOrArray(DslJsReader reader,
-                      int min,
-                      int max
+                      ArraySchemaConstraints arrayConstraints
                      ) throws JsParserException {
 
     return reader.wasNull() ?
            JsNull.NULL :
            array(reader,
-                 min,
-                 max
+                 arrayConstraints
                 );
   }
 
-  JsArray array(final DslJsReader reader,
-                int min,
-                int max
+  JsArray array(DslJsReader reader,
+                ArraySchemaConstraints arrayConstraints
                ) throws JsParserException {
     if (checkIfEmpty(isEmptyArray(reader),
-                     min,
+                     arrayConstraints,
                      reader.getPositionInStream()
-                    )) {
+                    )
+    ) {
       return EMPTY;
     }
-    JsArray buffer = EMPTY.append(elementReader.value(reader));
+    var array = EMPTY.append(elementReader.value(reader));
     while (reader.readNextToken() == ',') {
       reader.readNextToken();
-      buffer = buffer.append(elementReader.value(reader));
-      checkSize(buffer.size() > max,
-                ParserErrors.TOO_LONG_ARRAY.apply(max),
-                reader.getPositionInStream()
-               );
+      array = array.append(elementReader.value(reader));
+      if (arrayConstraints != null) {
+        checkSize(array.size() > arrayConstraints.maxItems(),
+                  ParserErrors.TOO_LONG_ARRAY.apply(arrayConstraints.maxItems()),
+                  reader.getPositionInStream()
+                 );
+      }
 
     }
-    checkSize(buffer.size() < min,
-              ParserErrors.TOO_SHORT_ARRAY.apply(min),
-              reader.getPositionInStream()
-             );
+    if (arrayConstraints != null) {
+      checkSize(array.size() < arrayConstraints.minItems(),
+                ParserErrors.TOO_SHORT_ARRAY.apply(arrayConstraints.minItems()),
+                reader.getPositionInStream()
+               );
+    }
 
     reader.checkArrayEnd();
-    return buffer;
+    return array;
   }
 
-  private boolean checkIfEmpty(boolean error,
-                               int min,
+  private boolean checkIfEmpty(boolean isEmpty,
+                               ArraySchemaConstraints constraints,
                                long reader
                               ) {
-    if (error) {
-      checkSize(min > 0,
-                ParserErrors.EMPTY_ARRAY.apply(min),
-                reader
-               );
+    if (isEmpty) {
+      if (constraints != null) {
+        checkSize(constraints.minItems() > 0,
+                  ParserErrors.EMPTY_ARRAY.apply(constraints.minItems()),
+                  reader
+                 );
+      }
       return true;
     }
     return false;
@@ -125,32 +129,35 @@ abstract class JsArrayReader extends AbstractReader {
 
   JsArray arrayEachSuchThat(final DslJsReader reader,
                             final Supplier<JsValue> f,
-                            final int min,
-                            final int max
+                            final ArraySchemaConstraints arrayConstraints
                            ) throws JsParserException {
 
     if (checkIfEmpty(isEmptyArray(reader),
-                     min,
+                     arrayConstraints,
                      reader.getPositionInStream()
                     )) {
       return EMPTY;
     }
-    JsArray buffer = EMPTY.append(f.get());
+    JsArray array = EMPTY.append(f.get());
     while (reader.readNextToken() == ',') {
       reader.readNextToken();
-      buffer = buffer.append(f.get());
-      checkSize(buffer.size() > max,
-                ParserErrors.TOO_LONG_ARRAY.apply(max),
+      array = array.append(f.get());
+      if (arrayConstraints != null) {
+        checkSize(array.size() > arrayConstraints.maxItems(),
+                  ParserErrors.TOO_LONG_ARRAY.apply(arrayConstraints.maxItems()),
+                  reader.getPositionInStream()
+                 );
+      }
+    }
+    if (arrayConstraints != null) {
+      checkSize(array.size() < arrayConstraints.minItems(),
+                ParserErrors.TOO_SHORT_ARRAY.apply(arrayConstraints.minItems()),
                 reader.getPositionInStream()
                );
     }
-    checkSize(buffer.size() < min,
-              ParserErrors.TOO_SHORT_ARRAY.apply(min),
-              reader.getPositionInStream()
-             );
 
     reader.checkArrayEnd();
-    return buffer;
+    return array;
 
   }
 
@@ -167,16 +174,14 @@ abstract class JsArrayReader extends AbstractReader {
 
   JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
                                   final Supplier<JsValue> fn,
-                                  final int min,
-                                  final int max
+                                  final ArraySchemaConstraints arrayConstraints
                                  ) throws JsParserException {
 
     return reader.wasNull() ?
            JsNull.NULL :
            arrayEachSuchThat(reader,
                              fn,
-                             min,
-                             max
+                             arrayConstraints
                             );
   }
 

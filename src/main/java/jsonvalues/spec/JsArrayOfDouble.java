@@ -10,50 +10,39 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec
 
   JsArrayOfDouble(final boolean nullable) {
     this(nullable,
+         null,
          null);
   }
 
-  JsArrayOfDouble(final boolean nullable,
-                  DoubleSchemaConstraints constraints) {
+  JsArrayOfDouble(boolean nullable,
+                  DoubleSchemaConstraints constraints,
+                  ArraySchemaConstraints arrayConstraints) {
     super(nullable);
     this.constraints = constraints;
+    this.arrayConstraints = arrayConstraints;
   }
 
   JsArrayOfDouble(final boolean nullable,
-                  int min,
-                  int max
+                  ArraySchemaConstraints arrayConstraints
                  ) {
     this(nullable,
-         min,
-         max,
-         null);
+         null,
+         arrayConstraints);
   }
 
-  JsArrayOfDouble(final boolean nullable,
-                  int min,
-                  int max,
-                  DoubleSchemaConstraints constraints
-                 ) {
-    super(nullable,
-          min,
-          max);
-    this.constraints = constraints;
-  }
 
   @Override
   public JsSpec nullable() {
     return new JsArrayOfDouble(true,
-                               min,
-                               max,
-                               constraints);
+                               constraints,
+                               arrayConstraints);
   }
 
 
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDouble(nullable,
-                                              min,
-                                              max);
+                                              arrayConstraints);
   }
 
 
@@ -64,8 +53,7 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec
                                                  new JsError(v,
                                                              DOUBLE_EXPECTED),
                                             nullable,
-                                            min,
-                                            max,
+                                            arrayConstraints,
                                             value
                                            );
   }

@@ -14,29 +14,25 @@ final class JsArrayOfStringReader extends JsArrayReader {
     this.parser = reader;
   }
 
-  JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
-                                  final Function<String, JsError> fn,
-                                  final int min,
-                                  final int max
+  JsValue nullOrArrayEachSuchThat(DslJsReader reader,
+                                  Function<String, JsError> fn,
+                                  ArraySchemaConstraints arrayConstraints
                                  ) throws JsParserException {
     return nullOrArrayEachSuchThat(reader,
                                    () -> parser.valueSuchThat(reader,
                                                               fn),
-                                   min,
-                                   max);
+                                   arrayConstraints);
   }
 
 
-  JsArray arrayEachSuchThat(final DslJsReader reader,
-                            final Function<String, JsError> fn,
-                            final int min,
-                            final int max
+  JsArray arrayEachSuchThat(DslJsReader reader,
+                            Function<String, JsError> fn,
+                            ArraySchemaConstraints arrayConstraints
                            ) throws JsParserException {
     return arrayEachSuchThat(reader,
                              () -> parser.valueSuchThat(reader,
                                                         fn),
-                             min,
-                             max);
+                             arrayConstraints);
   }
 
 

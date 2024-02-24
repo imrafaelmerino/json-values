@@ -16,27 +16,23 @@ final class JsArrayOfDoubleReader extends JsArrayReader {
 
   JsValue nullOrArrayEachSuchThat(final DslJsReader reader,
                                   final DoubleFunction<JsError> fn,
-                                  final int min,
-                                  final int max
+                                  ArraySchemaConstraints arrayConstraints
                                  ) throws JsParserException {
     return nullOrArrayEachSuchThat(reader,
                                    () -> parser.valueSuchThat(reader,
                                                               fn),
-                                   min,
-                                   max);
+                                   arrayConstraints);
   }
 
 
   JsArray arrayEachSuchThat(final DslJsReader reader,
                             final DoubleFunction<JsError> fn,
-                            final int min,
-                            final int max
+                            ArraySchemaConstraints arrayConstraints
                            ) throws JsParserException {
     return arrayEachSuchThat(reader,
                              () -> parser.valueSuchThat(reader,
                                                         fn),
-                             min,
-                             max);
+                             arrayConstraints);
   }
 
 
