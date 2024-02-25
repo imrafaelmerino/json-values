@@ -39,7 +39,14 @@ abstract class JsArrayReader extends AbstractReader {
     var array = EMPTY.append(elementReader.value(reader));
     while (reader.readNextToken() == ',') {
       reader.readNextToken();
-      array = array.append(elementReader.value(reader));
+      JsValue value = elementReader.value(reader);
+      if (arrayConstraints != null && arrayConstraints.uniqueItems() && array.containsValue(value)) {
+        throw JsParserException.reasonAt(ParserErrors.DUPLICATED_ARRAY_ITEM,
+                                         reader.getPositionInStream()
+                                        );
+
+      }
+      array = array.append(value);
       if (arrayConstraints != null) {
         checkSize(array.size() > arrayConstraints.maxItems(),
                   ParserErrors.TOO_LONG_ARRAY.apply(arrayConstraints.maxItems()),
@@ -80,13 +87,13 @@ abstract class JsArrayReader extends AbstractReader {
     if (isEmptyArray(reader)) {
       return EMPTY;
     }
-    JsArray buffer = EMPTY.append(elementReader.value(reader));
+    var array = EMPTY.append(elementReader.value(reader));
     while (reader.readNextToken() == ',') {
       reader.readNextToken();
-      buffer = buffer.append(elementReader.value(reader));
+      array = array.append(elementReader.value(reader));
     }
     reader.checkArrayEnd();
-    return buffer;
+    return array;
 
   }
 

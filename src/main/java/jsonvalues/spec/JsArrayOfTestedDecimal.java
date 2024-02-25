@@ -44,17 +44,17 @@ final class JsArrayOfTestedDecimal extends AbstractSizableArr implements JsOneEr
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArrayOfTestedValue(v ->
+    return Fun.testArrayOfTestedValue(v ->
                                                 v.isDouble() || v.isBigDec() ?
                                                 predicate.apply(v.toJsBigDec().value) :
                                                 new JsError(v,
                                                             DECIMAL_EXPECTED
 
                                                 ),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 
 

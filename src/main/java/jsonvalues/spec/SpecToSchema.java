@@ -16,7 +16,11 @@ import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 import jsonvalues.spec.StrSchema.BUILT_INT_FORMAT;
 
-public final class JsObjSpecToSchema {
+/**
+ * Utility class for converting JSON specifications (JsObjSpec or JsArraySpec) to JSON schemas represented with a JsObj.
+ * .
+ */
+public final class SpecToSchema {
 
   private static final String TYPE = "type";
   private static final String STAR = "*";
@@ -49,19 +53,35 @@ public final class JsObjSpecToSchema {
   private static final String MINIMUM = "minimum";
   private static final String MAXIMUM = "maximum";
   private static final String UNIQUE_ITEMS = "uniqueItems";
+  private static final String DESCRIPTION = "description";
+  private static final String TITLE = "title";
 
-  private JsObjSpecToSchema() {
+  private SpecToSchema() {
   }
 
-
-  //TODO tener en cuenta metadata
-  public static JsObj convert(final JsObjSpec jsObjSpec) {
-    return convert(jsObjSpec,
-                   new HashSet<>());
+  /**
+   * Converts a JsObjSpec to a JSON schema (JsObj).
+   *
+   * @param jsObjSpec The JsObjSpec to be converted.
+   * @return The resulting JSON schema as a JsObj.
+   */
+  public static JsObj toJsSchema(final JsObjSpec jsObjSpec) {
+    return toJsSchema(jsObjSpec,
+                      new HashSet<>());
   }
 
-  private static JsObj convert(final JsObjSpec jsObjSpec,
-                               Set<String> nameSpecsVisited) {
+  /**
+   * Converts a JsArraySpec to a JSON schema (JsObj).
+   *
+   * @param jsArraySpec The JsArraySpec to be converted.
+   * @return The resulting JSON schema as a JsObj.
+   */
+  public static JsObj toJsSchema(final JsArraySpec jsArraySpec) {
+    return getArraySchema(jsArraySpec);
+  }
+
+  private static JsObj toJsSchema(final JsObjSpec jsObjSpec,
+                                  Set<String> nameSpecsVisited) {
     MetaData metaData = jsObjSpec.metaData;
     return JsObj.of(TYPE,
                     jsObjSpec.nullable ? JsArray.of(JsStr.of(OBJECT),
@@ -78,12 +98,14 @@ public final class JsObjSpecToSchema {
                     DEFINITIONS,
                     getDefinitions(jsObjSpec,
                                    nameSpecsVisited),
-                    "description",
+                    DESCRIPTION,
                     metaData != null && metaData.doc() != null ?
                     JsStr.of(metaData.doc()) :
                     JsNothing.NOTHING,
-                    "title",
-                    metaData != null ? JsStr.of(metaData.getFullName()) : JsNothing.NOTHING
+                    TITLE,
+                    metaData != null ?
+                    JsStr.of(metaData.getFullName()) :
+                    JsNothing.NOTHING
                    );
 
   }
@@ -151,7 +173,7 @@ public final class JsObjSpecToSchema {
       if (metaData != null) {
         if (metaData.fieldsDoc() != null && metaData.fieldsDoc()
                                                     .containsKey(entry.getKey())) {
-          schema = schema.set("description",
+          schema = schema.set(DESCRIPTION,
                               JsStr.of(metaData.fieldsDoc()
                                                .get(entry.getKey())));
         }
@@ -213,8 +235,8 @@ public final class JsObjSpecToSchema {
       case AnySuchThat ignored -> getAnySpec();
 
       case JsArraySpec s -> getArraySchema(s);
-      case JsObjSpec s -> convert(s,
-                                  nameSpecsVisited);
+      case JsObjSpec s -> toJsSchema(s,
+                                     nameSpecsVisited);
 
       case IsJsObj ignored -> getObjType();
       case JsObjSuchThat ignored -> getObjType();

@@ -57,13 +57,13 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArrayOfTestedValue(v -> v.isNumber() ?
-                                                 null :
-                                                 new JsError(v,
+    return Fun.testArrayOfTestedValue(v -> v.isNumber() ?
+                                           null :
+                                           new JsError(v,
                                                              DECIMAL_EXPECTED),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 }

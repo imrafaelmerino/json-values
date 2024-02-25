@@ -23,11 +23,11 @@ final class JsBinarySpec extends AbstractNullable implements JsOneErrorSpec, Avr
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isBinary,
-                               BINARY_EXPECTED,
-                               nullable,
-                               value
-                              );
+    return Fun.testValue(JsValue::isBinary,
+                         BINARY_EXPECTED,
+                         nullable,
+                         value
+                        );
 
   }
 

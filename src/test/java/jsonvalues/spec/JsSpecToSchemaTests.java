@@ -41,8 +41,8 @@ public class JsSpecToSchemaTests {
                                      JsSpecs.instant()
                                     );
 
-    System.out.println(JsObjSpecToSchema.convert(objSpec)
-                                        .toPrettyString());
+    System.out.println(SpecToSchema.toJsSchema(objSpec)
+                                   .toPrettyString());
 
   }
 
@@ -104,8 +104,8 @@ public class JsSpecToSchemaTests {
 /*    System.out.println(JsObjSpecToSchema.convert(peripheralSpec)
                                         .toPrettyString());*/
 
-    System.out.println(JsObjSpecToSchema.convert(usbHubSpec)
-                                        .toPrettyString());
+    System.out.println(SpecToSchema.toJsSchema(usbHubSpec)
+                                   .toPrettyString());
 
 
   }
@@ -125,8 +125,8 @@ public class JsSpecToSchemaTests {
                             JsSpecs.mapOfStr(strSchema)
                            );
 
-    System.out.println(JsObjSpecToSchema.convert(spec)
-                                        .toPrettyString());
+    System.out.println(SpecToSchema.toJsSchema(spec)
+                                   .toPrettyString());
   }
 
   @Test
@@ -149,8 +149,8 @@ public class JsSpecToSchemaTests {
                                      JsSpecs.arrayOfObj()
                                     );
 
-    System.out.println(JsObjSpecToSchema.convert(objSpec)
-                                        .toPrettyString());
+    System.out.println(SpecToSchema.toJsSchema(objSpec)
+                                   .toPrettyString());
 
   }
 

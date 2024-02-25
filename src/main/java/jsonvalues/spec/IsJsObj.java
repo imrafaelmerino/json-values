@@ -24,10 +24,10 @@ final class IsJsObj extends AbstractNullable implements JsOneErrorSpec {
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isObj,
-                               OBJ_EXPECTED,
-                               nullable,
-                               value);
+    return Fun.testValue(JsValue::isObj,
+                         OBJ_EXPECTED,
+                         nullable,
+                         value);
 
   }
 }

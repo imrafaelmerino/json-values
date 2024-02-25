@@ -81,7 +81,7 @@ public class Fun {
   private static String fromStream(InputStream in) throws IOException {
     BufferedReader reader = new BufferedReader(new InputStreamReader(in));
     StringBuilder out = new StringBuilder();
-    String newLine = System.getProperty("line.separator");
+    String newLine = System.lineSeparator();
     String line;
     while ((line = reader.readLine()) != null) {
       out.append(line);

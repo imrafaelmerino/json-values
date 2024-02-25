@@ -214,6 +214,8 @@ public enum ERROR_CODE {
   BIGINT_NOT_MULTIPLE_OF,
   BIGINT_EXCLUSIVE_MINIMUM,
   BIGINT_EXCLUSIVE_MAXIMUM,
+  OBJ_MIN_SIZE_NOT_MET,
+  OBJ_MAX_SIZE_EXCEEDED,
   /**
    * All the specs from the `OneOf` spec was tried but the value doesn't confirm none of them
    */

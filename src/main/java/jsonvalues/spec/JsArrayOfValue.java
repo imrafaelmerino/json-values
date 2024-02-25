@@ -32,9 +32,9 @@ final class JsArrayOfValue extends AbstractSizableArr implements JsOneErrorSpec,
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArray(nullable,
-                               arrayConstraints,
-                               value);
+    return Fun.testArray(nullable,
+                         arrayConstraints,
+                         value);
   }
 
 }

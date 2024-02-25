@@ -46,15 +46,15 @@ final class JsArrayOfTestedObj extends AbstractSizableArr implements JsOneErrorS
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArrayOfTestedValue(v ->
+    return Fun.testArrayOfTestedValue(v ->
                                                 v.isObj() ?
                                                 predicate.apply(v.toJsObj()) :
                                                 new JsError(v,
                                                             OBJ_EXPECTED
                                                 ),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 }

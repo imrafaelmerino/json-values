@@ -47,11 +47,11 @@ final class JsFixedBinary extends AbstractNullable implements JsOneErrorSpec, Av
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(val -> val.isBinary() && val.toJsBinary().value.length == size,
-                               BINARY_FIXED_LENGTH_EXPECTED,
-                               nullable,
-                               value
-                              );
+    return Fun.testValue(val -> val.isBinary() && val.toJsBinary().value.length == size,
+                         BINARY_FIXED_LENGTH_EXPECTED,
+                         nullable,
+                         value
+                        );
 
   }
 

@@ -37,11 +37,11 @@ final class JsDecimalSuchThat extends AbstractNullable implements JsOneErrorSpec
   @Override
   public JsError testValue(final JsValue value) {
     final JsError error =
-        Functions.testValue(JsValue::isDecimal,
-                            DECIMAL_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isDecimal,
+                      DECIMAL_EXPECTED,
+                      nullable,
+                      value
+                     );
 
     return error != null || value.isNull() ?
            error :

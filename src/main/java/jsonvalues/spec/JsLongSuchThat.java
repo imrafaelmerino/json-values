@@ -37,11 +37,11 @@ final class JsLongSuchThat extends AbstractNullable implements JsOneErrorSpec, A
   @Override
   public JsError testValue(final JsValue value) {
     JsError error =
-        Functions.testValue(JsValue::isLong,
-                            LONG_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isLong,
+                      LONG_EXPECTED,
+                      nullable,
+                      value
+                     );
 
     return error != null || value.isNull() ?
            error :

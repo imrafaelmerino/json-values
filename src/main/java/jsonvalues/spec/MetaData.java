@@ -14,7 +14,9 @@ record MetaData(String name,
                 Map<String, String> fieldsDoc,
                 Map<String, JsObjSpecBuilder.ORDERS> fieldsOrder,
                 Map<String, List<String>> fieldsAliases,
-                Map<String, JsValue> fieldsDefault) {
+                Map<String, JsValue> fieldsDefault,
+                int minProperties,
+                int maxProperties) {
 
   MetaData {
     // Make lists and maps immutable (if they're not null)
@@ -35,6 +37,9 @@ record MetaData(String name,
     }
     if (name == null || name.isEmpty() || name.isBlank()) {
       throw new IllegalArgumentException("Name cannot be null, empty, or blank.");
+    }
+    if (minProperties > maxProperties) {
+      throw new IllegalArgumentException("minProperties must be less than or equal to maxProperties");
     }
   }
 
@@ -107,7 +112,9 @@ record MetaData(String name,
                         newFieldsDoc,
                         newOrders,
                         newAliases,
-                        newDefaults);
+                        newDefaults,
+                        minProperties,
+                        maxProperties);
   }
 
 }

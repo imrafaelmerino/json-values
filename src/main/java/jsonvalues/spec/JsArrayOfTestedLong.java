@@ -44,16 +44,16 @@ final class JsArrayOfTestedLong extends AbstractSizableArr implements JsOneError
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArrayOfTestedValue(v ->
+    return Fun.testArrayOfTestedValue(v ->
                                                 v.isLong() || v.isInt() ?
                                                 predicate.apply(v.toJsLong().value) :
                                                 new JsError(v,
                                                             LONG_EXPECTED
                                                 ),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 
 }

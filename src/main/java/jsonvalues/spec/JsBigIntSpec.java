@@ -37,18 +37,18 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
   @Override
   public JsError testValue(final JsValue value) {
     var error =
-        Functions.testValue(JsValue::isIntegral,
-                            INTEGRAL_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isIntegral,
+                      INTEGRAL_EXPECTED,
+                      nullable,
+                      value
+                     );
     if (error != null) {
       return error;
     }
 
     if (constraints != null) {
-      return Functions.testBigIntConstraints(constraints,
-                                             value.toJsBigInt());
+      return Fun.testBigIntConstraints(constraints,
+                                       value.toJsBigInt());
     }
 
     return null;

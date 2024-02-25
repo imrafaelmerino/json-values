@@ -199,9 +199,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the JsArray located at the given JsPath or null
    */
   default JsArray getArray(final JsPath path) {
-    return JsArray.prism.getOptional.apply(get(requireNonNull(path)))
-                                    .orElse(null);
-
+    var value = get(requireNonNull(path));
+    return value.isArray() ? value.toJsArray() : null;
   }
 
   /**
@@ -215,9 +214,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default JsArray getArray(final JsPath path,
                            final Supplier<JsArray> orElse
                           ) {
-    return JsArray.prism.getOptional.apply(get(requireNonNull(path)))
-                                    .orElseGet(requireNonNull(orElse));
-
+    requireNonNull(orElse);
+    var value = get(requireNonNull(path));
+    return value.isArray() ? value.toJsArray() : orElse.get();
   }
 
   /**
@@ -228,8 +227,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the number located at the given JsPath or null
    */
   default BigDecimal getBigDec(final JsPath path) {
-    return JsBigDec.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElse(null);
+    return Fun.getBigDec(get(requireNonNull(path)));
 
   }
 
@@ -244,9 +242,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default BigDecimal getBigDec(final JsPath path,
                                final Supplier<BigDecimal> orElse
                               ) {
-    return JsBigDec.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElseGet(requireNonNull(orElse));
-
+    requireNonNull(orElse);
+    var value = Fun.getBigDec(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
   }
 
   @Override
@@ -262,8 +260,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the BigInteger located at the given JsPath or null
    */
   default BigInteger getBigInt(final JsPath path) {
-    return JsBigInt.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElse(null);
+    return Fun.getBigInt(get(requireNonNull(path)));
 
   }
 
@@ -278,8 +275,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default BigInteger getBigInt(final JsPath path,
                                final Supplier<BigInteger> orElse
                               ) {
-    return JsBigInt.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = Fun.getBigInt(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
 
   }
 
@@ -290,8 +288,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the Boolean located at the given JsPath or null
    */
   default Boolean getBool(final JsPath path) {
-    return JsBool.prism.getOptional.apply(get(requireNonNull(path)))
-                                   .orElse(null);
+    var value = get(requireNonNull(path));
+    return value.isBool() ? value.toJsBool().value : null;
 
   }
 
@@ -302,11 +300,12 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @param orElse the default value
    * @return the Boolean located at the given JsPath or null
    */
-  default Boolean getBool(final JsPath path,
+  default boolean getBool(final JsPath path,
                           final Supplier<Boolean> orElse
                          ) {
-    return JsBool.prism.getOptional.apply(get(requireNonNull(path)))
-                                   .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = get(requireNonNull(path));
+    return value.isBool() ? value.toJsBool().value : orElse.get();
 
   }
 
@@ -317,9 +316,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the bytes located at the given JsPath or null
    */
   default byte[] getBinary(final JsPath path) {
-    return JsBinary.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElse(null);
-
+    return Fun.getBytes(get(requireNonNull(path)));
   }
 
   /**
@@ -332,9 +329,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default byte[] getBinary(final JsPath path,
                            final Supplier<byte[]> orElse
                           ) {
-    return JsBinary.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElseGet(requireNonNull(orElse));
-
+    var value = Fun.getBytes(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -344,9 +340,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the instant located at the given JsPath or null
    */
   default Instant getInstant(final JsPath path) {
-    return JsInstant.prism.getOptional.apply(get(requireNonNull(path)))
-                                      .orElse(null);
-
+    var value = get(requireNonNull(path));
+    return value.isInstant() ? value.toJsInstant().value : null;
   }
 
   /**
@@ -359,8 +354,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default Instant getInstant(final JsPath path,
                              final Supplier<Instant> orElse
                             ) {
-    return JsInstant.prism.getOptional.apply(get(requireNonNull(path)))
-                                      .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = get(requireNonNull(path));
+    return value.isInstant() ? value.toJsInstant().value : orElse.get();
 
   }
 
@@ -373,8 +369,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the decimal number located at the given JsPath or null
    */
   default Double getDouble(final JsPath path) {
-    return JsDouble.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElse(null);
+    return Fun.getDouble(get(requireNonNull(path)));
 
   }
 
@@ -387,11 +382,12 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @param orElse the default value
    * @return the decimal number located at the given JsPath or null
    */
-  default Double getDouble(final JsPath path,
+  default double getDouble(final JsPath path,
                            final Supplier<Double> orElse
                           ) {
-    return JsDouble.prism.getOptional.apply(get(requireNonNull(path)))
-                                     .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = Fun.getDouble(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
 
   }
 
@@ -403,9 +399,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the integral number located at the given JsPath or null
    */
   default Integer getInt(final JsPath path) {
-    return JsInt.prism.getOptional.apply(get(requireNonNull(path)))
-                                  .orElse(null);
-
+    return Fun.getInt(get(requireNonNull(path)));
   }
 
   /**
@@ -416,12 +410,12 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @param orElse the default value
    * @return the integral number located at the given JsPath or null
    */
-  default Integer getInt(final JsPath path,
-                         final Supplier<Integer> orElse
-                        ) {
-    return JsInt.prism.getOptional.apply(get(requireNonNull(path)))
-                                  .orElseGet(requireNonNull(orElse));
-
+  default int getInt(final JsPath path,
+                     final Supplier<Integer> orElse
+                    ) {
+    requireNonNull(orElse);
+    var value = Fun.getInt(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -432,8 +426,7 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the integral number located at the given JsPath or null
    */
   default Long getLong(final JsPath path) {
-    return JsLong.prism.getOptional.apply(get(requireNonNull(path)))
-                                   .orElse(null);
+    return Fun.getLong(get(requireNonNull(path)));
 
   }
 
@@ -445,11 +438,12 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @param orElse the default value
    * @return the integral number located at the given JsPath or null
    */
-  default Long getLong(final JsPath path,
+  default long getLong(final JsPath path,
                        final Supplier<Long> orElse
                       ) {
-    return JsLong.prism.getOptional.apply(get(requireNonNull(path)))
-                                   .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = Fun.getLong(get(requireNonNull(path)));
+    return value != null ? value : orElse.get();
 
   }
 
@@ -464,8 +458,9 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default JsObj getObj(final JsPath path,
                        final Supplier<JsObj> orElse
                       ) {
-    return JsObj.prism.getOptional.apply(get(requireNonNull(path)))
-                                  .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    var value = get(requireNonNull(path));
+    return value.isObj() ? value.toJsObj() : orElse.get();
   }
 
   /**
@@ -475,8 +470,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the JsObj located at the given JsPath or null
    */
   default JsObj getObj(final JsPath path) {
-    return JsObj.prism.getOptional.apply(get(requireNonNull(path)))
-                                  .orElse(null);
+    var value = get(requireNonNull(path));
+    return value.isObj() ? value.toJsObj() : null;
   }
 
   /**
@@ -486,8 +481,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
    * @return the string located at the given path or null
    */
   default String getStr(final JsPath path) {
-    return JsStr.prism.getOptional.apply(get(path))
-                                  .orElse(null);
+    var value = get(requireNonNull(path));
+    return value.isStr() ? value.toJsStr().value : null;
   }
 
   /**
@@ -501,8 +496,8 @@ public sealed interface Json<T extends Json<T>> extends JsValue permits JsArray,
   default String getStr(final JsPath path,
                         final Supplier<String> orElse
                        ) {
-    return JsStr.prism.getOptional.apply(get(requireNonNull(path)))
-                                  .orElseGet(requireNonNull(orElse));
+    var value = get(requireNonNull(path));
+    return value.isStr() ? value.toJsStr().value : orElse.get();
   }
 
   /**

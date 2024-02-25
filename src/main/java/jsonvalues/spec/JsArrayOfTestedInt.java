@@ -46,16 +46,16 @@ final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorS
   @Override
   public JsError testValue(final JsValue value) {
 
-    return Functions.testArrayOfTestedValue(v ->
+    return Fun.testArrayOfTestedValue(v ->
                                                 v.isInt() ?
                                                 predicate.apply(v.toJsInt().value) :
                                                 new JsError(v,
                                                             INT_EXPECTED
                                                 ),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 
 

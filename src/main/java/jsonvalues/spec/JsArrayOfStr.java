@@ -54,14 +54,14 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
   @Override
   public JsError testValue(final JsValue value) {
     //TODO incluir schema validation
-    return Functions.testArrayOfTestedValue(v -> v.isStr() ?
-                                                 null :
-                                                 new JsError(v,
+    return Fun.testArrayOfTestedValue(v -> v.isStr() ?
+                                           null :
+                                           new JsError(v,
                                                              STRING_EXPECTED),
-                                            nullable,
-                                            arrayConstraints,
-                                            value
-                                           );
+                                      nullable,
+                                      arrayConstraints,
+                                      value
+                                     );
   }
 
 

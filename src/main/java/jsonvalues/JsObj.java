@@ -110,31 +110,60 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
     this.map = myMap;
   }
 
+  /**
+   * Creates a JsObj from a Map of keys and JsValue.
+   *
+   * @param map The input Map with String keys and JsValue values.
+   * @return A JsObj created from the input Map.
+   */
   public static JsObj ofMap(final Map<String, JsValue> map) {
     return new JsObj(HashMap.ofEntries(Objects.requireNonNull(map)
                                               .entrySet()));
   }
 
+  /**
+   * Creates a JsObj from a Map of keys and String.
+   *
+   * @param map The input Map with String keys and String values.
+   * @return A JsObj created from the input Map.
+   */
   public static JsObj ofMapOfStr(final Map<String, String> map) {
     return new JsObj(HashMap.ofStrEntries(Objects.requireNonNull(map)
                                                  .entrySet()));
   }
 
+  /**
+   * Creates a JsObj from a Map of  keys and Integer.
+   *
+   * @param map The input Map with String keys and Integer values.
+   * @return A JsObj created from the input Map.
+   */
   public static JsObj ofMapOfInt(final Map<String, Integer> map) {
     return new JsObj(HashMap.ofIntEntries(Objects.requireNonNull(map)
                                                  .entrySet()));
   }
 
+  /**
+   * Creates a JsObj from a Map of String keys and Long.
+   *
+   * @param map The input Map with String keys and Long .
+   * @return A JsObj created from the input Map.
+   */
   public static JsObj ofMapOfLong(final Map<String, Long> map) {
     return new JsObj(HashMap.ofLongEntries(Objects.requireNonNull(map)
                                                   .entrySet()));
   }
 
+  /**
+   * Creates a JsObj from a Map of String keys and Double .
+   *
+   * @param map The input Map with String keys and Double.
+   * @return A JsObj created from the input Map.
+   */
   public static JsObj ofMapOfDouble(final Map<String, Double> map) {
     return new JsObj(HashMap.ofDoubleEntries(Objects.requireNonNull(map)
                                                     .entrySet()));
   }
-
 
   /**
    * Returns the singleton empty JSON object
@@ -3842,8 +3871,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the JsArray located at the given key or null
    */
   public JsArray getArray(final String key) {
-    return JsArray.prism.getOptional.apply(get(requireNonNull(key)))
-                                    .orElse(null);
+    JsValue value = get(requireNonNull(key));
+    return value.isArray() ? value.toJsArray() : null;
 
   }
 
@@ -3858,8 +3887,9 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public JsArray getArray(final String key,
                           final Supplier<JsArray> orElse
                          ) {
-    return JsArray.prism.getOptional.apply(get(requireNonNull(key)))
-                                    .orElseGet(requireNonNull(orElse));
+    requireNonNull(orElse);
+    JsValue value = get(requireNonNull(key));
+    return value.isArray() ? value.toJsArray() : orElse.get();
 
   }
 
@@ -3871,9 +3901,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the BigDecimal located at the given key or null
    */
   public BigDecimal getBigDec(final String key) {
-    return JsBigDec.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElse(null);
-
+    return Fun.getBigDec(get(requireNonNull(key)));
 
   }
 
@@ -3888,10 +3916,9 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public BigDecimal getBigDec(final String key,
                               final Supplier<BigDecimal> orElse
                              ) {
-    return JsBigDec.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElseGet(requireNonNull(orElse));
-
-
+    requireNonNull(orElse);
+    var value = getBigDec(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -3901,10 +3928,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the bytes located at the given key or null
    */
   public byte[] getBinary(final String key) {
-    return JsBinary.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElse(null);
-
-
+    return Fun.getBytes(requireNonNull(get(key)));
   }
 
   /**
@@ -3918,8 +3942,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public byte[] getBinary(final String key,
                           final Supplier<byte[]> orElse
                          ) {
-    return JsBinary.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElseGet(requireNonNull(orElse));
+    byte[] value = getBinary(key);
+    return value != null ? value : orElse.get();
 
 
   }
@@ -3932,9 +3956,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the BigInteger located at the given key or null
    */
   public BigInteger getBigInt(final String key) {
-    return JsBigInt.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElse(null);
-
+    return Fun.getBigInt(get(requireNonNull(key)));
   }
 
   /**
@@ -3948,9 +3970,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public BigInteger getBigInt(final String key,
                               final Supplier<BigInteger> orElse
                              ) {
-    return JsBigInt.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElseGet(requireNonNull(orElse));
-
+    var value = getBigInt(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -3960,10 +3981,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the instant located at the given key or null
    */
   public Instant getInstant(final String key) {
-    return JsInstant.prism.getOptional.apply(get(requireNonNull(key)))
-                                      .orElse(null);
-
-
+    return Fun.getInstant(get(requireNonNull(key)));
   }
 
   /**
@@ -3977,10 +3995,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public Instant getInstant(final String key,
                             final Supplier<Instant> orElse
                            ) {
-    return JsInstant.prism.getOptional.apply(get(requireNonNull(key)))
-                                      .orElseGet(requireNonNull(orElse));
-
-
+    var value = getInstant(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -3990,9 +4006,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the Boolean located at the given key or null
    */
   public Boolean getBool(final String key) {
-    return JsBool.prism.getOptional.apply(get(requireNonNull(key)))
-                                   .orElse(null);
-
+    var value = get(requireNonNull(key));
+    return value.isBool() ? value.toJsBool().value : null;
   }
 
   /**
@@ -4002,12 +4017,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @param orElse the default value
    * @return the Boolean located at the given key or null
    */
-  public Boolean getBool(final String key,
+  public boolean getBool(final String key,
                          final Supplier<Boolean> orElse
                         ) {
-    return JsBool.prism.getOptional.apply(get(requireNonNull(key)))
-                                   .orElseGet(requireNonNull(orElse));
-
+    var value = getBool(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -4019,9 +4033,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the decimal number located at the given key or null
    */
   public Double getDouble(final String key) {
-    return JsDouble.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElse(null);
-
+    return Fun.getDouble(get(requireNonNull(key)));
   }
 
   /**
@@ -4033,12 +4045,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @param orElse the default value
    * @return the decimal number located at the given key or null
    */
-  public Double getDouble(final String key,
+  public double getDouble(final String key,
                           final Supplier<Double> orElse
                          ) {
-    return JsDouble.prism.getOptional.apply(get(requireNonNull(key)))
-                                     .orElseGet(requireNonNull(orElse));
-
+    var value = getDouble(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -4049,9 +4060,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the integral number located at the given key or null
    */
   public Integer getInt(final String key) {
-    return JsInt.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElse(null);
-
+    return Fun.getInt(get(requireNonNull(key)));
   }
 
   /**
@@ -4062,12 +4071,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @param orElse the default value
    * @return the integral number located at the given key or null
    */
-  public Integer getInt(final String key,
-                        final Supplier<Integer> orElse
-                       ) {
-    return JsInt.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElseGet(requireNonNull(orElse));
-
+  public int getInt(final String key,
+                    final Supplier<Integer> orElse
+                   ) {
+    var value = getInt(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -4078,8 +4086,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the integral number located at the given key or null
    */
   public Long getLong(final String key) {
-    return JsLong.prism.getOptional.apply(get(requireNonNull(key)))
-                                   .orElse(null);
+    return Fun.getLong(get(requireNonNull(key)));
 
   }
 
@@ -4091,12 +4098,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @param orElse the default value
    * @return the integral number located at the given key or the default value provided
    */
-  public Long getLong(final String key,
+  public long getLong(final String key,
                       final Supplier<Long> orElse
                      ) {
-    return JsLong.prism.getOptional.apply(get(requireNonNull(key)))
-                                   .orElseGet(requireNonNull(orElse));
-
+    var value = getLong(key);
+    return value != null ? value : orElse.get();
   }
 
   /**
@@ -4106,9 +4112,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the json object located at the given key or null
    */
   public JsObj getObj(final String key) {
-    return JsObj.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElse(null);
-
+    JsValue value = get(requireNonNull(key));
+    return value.isObj() ? value.toJsObj() : null;
   }
 
   /**
@@ -4122,8 +4127,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public JsObj getObj(final String key,
                       final Supplier<JsObj> orElse
                      ) {
-    return JsObj.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElseGet(requireNonNull(orElse));
+    JsValue value = get(requireNonNull(key));
+    return value.isObj() ? value.toJsObj() : orElse.get();
 
   }
 
@@ -4134,8 +4139,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return the string located at the given key or null
    */
   public String getStr(final String key) {
-    return JsStr.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElse(null);
+    JsValue value = get(requireNonNull(key));
+    return value.isStr() ? value.toJsStr().value : null;
   }
 
   /**
@@ -4149,8 +4154,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public String getStr(final String key,
                        final Supplier<String> orElse
                       ) {
-    return JsStr.prism.getOptional.apply(get(requireNonNull(key)))
-                                  .orElseGet(requireNonNull(orElse));
+    String value = getStr(key);
+    return value != null ? value : orElse.get();
   }
 
 

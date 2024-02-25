@@ -17,9 +17,9 @@ import jsonvalues.JsLong;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
 
-class Functions {
+class Fun {
 
-  private Functions() {
+  private Fun() {
   }
 
   static JsError testValue(Predicate<JsValue> predicate,

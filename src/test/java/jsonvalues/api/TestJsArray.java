@@ -965,7 +965,8 @@ public class TestJsArray {
                             a.getBigInt(6)
                            );
 
-    Assertions.assertNull(a.getInt(1));
+    Integer x = a.getInt(1);
+    Assertions.assertNull(x);
     Assertions.assertEquals(Integer.valueOf(1),
                             a.getInt(0)
                            );

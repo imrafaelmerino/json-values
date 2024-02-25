@@ -25,11 +25,11 @@ final class JsBooleanSpec extends AbstractNullable implements JsOneErrorSpec, Av
   @Override
   public JsError testValue(final JsValue value) {
 
-    return Functions.testValue(JsValue::isBool,
-                               BOOLEAN_EXPECTED,
-                               nullable,
-                               value
-                              );
+    return Fun.testValue(JsValue::isBool,
+                         BOOLEAN_EXPECTED,
+                         nullable,
+                         value
+                        );
 
   }
 

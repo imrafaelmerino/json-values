@@ -34,11 +34,11 @@ final class JsIntSuchThat extends AbstractNullable implements JsOneErrorSpec, Av
 
   @Override
   public JsError testValue(final JsValue value) {
-    final JsError error = Functions.testValue(JsValue::isInt,
-                                              INT_EXPECTED,
-                                              nullable,
-                                              value
-                                             );
+    final JsError error = Fun.testValue(JsValue::isInt,
+                                        INT_EXPECTED,
+                                        nullable,
+                                        value
+                                       );
 
     return error != null || value.isNull() ?
            error :

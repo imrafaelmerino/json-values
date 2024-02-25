@@ -22,11 +22,11 @@ final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, Av
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testValue(JsValue::isInstant,
-                               INSTANT_EXPECTED,
-                               nullable,
-                               value
-                              );
+    return Fun.testValue(JsValue::isInstant,
+                         INSTANT_EXPECTED,
+                         nullable,
+                         value
+                        );
 
   }
 

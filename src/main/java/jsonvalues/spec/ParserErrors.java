@@ -27,6 +27,9 @@ class ParserErrors {
   public static final String DECIMAL_LOWER_THAN_MINIMUM = "BigDecimal number lower than minimum";
   public static final String DECIMAL_GREATER_THAN_MAXIMUM = "BigDecimal number greater than maximum";
   public static final String DECIMAL_NOT_MULTIPLE_OF = "BigDecimal number is not multiple of";
+  public static final String OBJ_MAX_SIZE_EXCEEDED = "Object max size exceeded";
+  public static final String OBJ_MIN_SIZE_NOT_MET = "Object min size not met";
+  public static final String DUPLICATED_ARRAY_ITEM = "Duplicated array item";
   static final String EXPECTING_FOR_OBJ_START = "Expecting '{' for Json object start but get %s";
   static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end but get %s";
   static final String ONE_OF_EXHAUSTED = "`OneOf` spec exhausted";

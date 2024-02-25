@@ -33,12 +33,12 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, 
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Functions.testArrayOfTestedValue(v -> v.isBool() ?
-                                                 null :
-                                                 new JsError(v,
+    return Fun.testArrayOfTestedValue(v -> v.isBool() ?
+                                           null :
+                                           new JsError(v,
                                                              BOOLEAN_EXPECTED),
-                                            nullable,
-                                            arrayConstraints,
-                                            value);
+                                      nullable,
+                                      arrayConstraints,
+                                      value);
   }
 }

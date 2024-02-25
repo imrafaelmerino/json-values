@@ -35,11 +35,11 @@ final class JsDoubleSuchThat extends AbstractNullable implements JsOneErrorSpec,
 
   @Override
   public JsError testValue(final JsValue value) {
-    final JsError error = Functions.testValue(JsValue::isDouble,
-                                              DOUBLE_EXPECTED,
-                                              nullable,
-                                              value
-                                             );
+    final JsError error = Fun.testValue(JsValue::isDouble,
+                                        DOUBLE_EXPECTED,
+                                        nullable,
+                                        value
+                                       );
 
     return error != null || value.isNull() ?
            error :

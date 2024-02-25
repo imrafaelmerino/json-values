@@ -38,11 +38,11 @@ final class JsBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec,
   @Override
   public JsError testValue(final JsValue value) {
     JsError error =
-        Functions.testValue(JsValue::isIntegral,
-                            INTEGRAL_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isIntegral,
+                      INTEGRAL_EXPECTED,
+                      nullable,
+                      value
+                     );
 
     return error != null || value.isNull() ?
            error :

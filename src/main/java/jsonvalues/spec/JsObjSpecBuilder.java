@@ -69,6 +69,8 @@ public final class JsObjSpecBuilder {
   private Map<String, JsValue> fieldsDefaults;
   private String nameSpace;
   private List<String> aliases;
+  private int minProperties = 0;
+  private int maxProperties = Integer.MAX_VALUE;
 
   private JsObjSpecBuilder(String name) {
     if (!isValidName.test(requireNonNull(name))) {
@@ -178,6 +180,36 @@ public final class JsObjSpecBuilder {
   }
 
   /**
+   * Sets the minimum number of properties that the JSON object must have.
+   *
+   * @param minProperties The minimum number of properties (inclusive).
+   * @return This JsObjSpecBuilder instance for method chaining.
+   * @throws IllegalArgumentException If minProperties is negative.
+   */
+  public JsObjSpecBuilder withMinProperties(int minProperties) {
+    if (minProperties < 0) {
+      throw new IllegalArgumentException("minProperties can not be negative");
+    }
+    this.minProperties = minProperties;
+    return this;
+  }
+
+  /**
+   * Sets the maximum number of properties that the JSON object must have.
+   *
+   * @param maxProperties The maximum number of properties (inclusive).
+   * @return This JsObjSpecBuilder instance for method chaining.
+   * @throws IllegalArgumentException If maxProperties is negative.
+   */
+  public JsObjSpecBuilder withMaxProperties(int maxProperties) {
+    if (maxProperties < 0) {
+      throw new IllegalArgumentException("maxProperties can not be negative");
+    }
+    this.maxProperties = maxProperties;
+    return this;
+  }
+
+  /**
    * Sets aliases for the JsObjSpec. Must follow the avro naming conventions and, adhering to the regex pattern:
    * {@code [A-Za-z_][A-Za-z0-9_.]+}
    * <p>
@@ -257,18 +289,20 @@ public final class JsObjSpecBuilder {
                                 fieldsDoc,
                                 fieldsOrder,
                                 fieldsAliases,
-                                fieldsDefaults);
-    var metadataSpec = new JsObjSpec(spec.bindings,
-                                     spec.nullable,
-                                     spec.strict,
-                                     spec.predicate,
-                                     spec.requiredFields,
-                                     metadata);
+                                fieldsDefaults,
+                                minProperties,
+                                maxProperties);
+    var objSpec = new JsObjSpec(spec.bindings,
+                                spec.nullable,
+                                spec.strict,
+                                spec.predicate,
+                                spec.requiredFields,
+                                metadata);
     JsSpecCache.putAll(metadata.getFullName(),
                        aliases,
-                       metadataSpec);
+                       objSpec);
 
-    return metadataSpec;
+    return objSpec;
 
   }
 

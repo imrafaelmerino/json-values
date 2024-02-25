@@ -5734,6 +5734,23 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
       return errors;
     }
     JsObj json = parentValue.toJsObj();
+    if (metaData != null) {
+      if (json.size() < metaData.minProperties()) {
+        errors.add(SpecError.of(parent,
+                                new JsError(parentValue,
+                                            ERROR_CODE.OBJ_MIN_SIZE_NOT_MET
+
+                                )
+                               ));
+      }
+      if (json.size() > metaData.maxProperties()) {
+        errors.add(SpecError.of(parent,
+                                new JsError(parentValue,
+                                            ERROR_CODE.OBJ_MAX_SIZE_EXCEEDED
+                                )
+                               ));
+      }
+    }
     for (var next : json) {
       String key = next.key();
       JsValue value = next.value();

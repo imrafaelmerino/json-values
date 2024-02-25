@@ -37,11 +37,11 @@ final class JsInstantSuchThat extends AbstractNullable implements JsOneErrorSpec
   @Override
   public JsError testValue(final JsValue value) {
     JsError error =
-        Functions.testValue(JsValue::isInstant,
-                            INSTANT_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isInstant,
+                      INSTANT_EXPECTED,
+                      nullable,
+                      value
+                     );
 
     return error != null || value.isNull() ?
            error :

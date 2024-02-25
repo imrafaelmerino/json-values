@@ -35,11 +35,11 @@ final class JsStrSuchThat extends AbstractNullable implements JsOneErrorSpec, Av
 
   @Override
   public JsError testValue(final JsValue value) {
-    final JsError error = Functions.testValue(JsValue::isStr,
-                                              STRING_EXPECTED,
-                                              nullable,
-                                              value
-                                             );
+    final JsError error = Fun.testValue(JsValue::isStr,
+                                        STRING_EXPECTED,
+                                        nullable,
+                                        value
+                                       );
 
     return error != null || value.isNull() ?
            error :

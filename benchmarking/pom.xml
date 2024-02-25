@@ -120,27 +120,10 @@
       <version>${JACKSON-VERSION}</version>
     </dependency>
     <dependency>
-      <artifactId>json-values</artifactId>
-      <groupId>com.github.imrafaelmerino</groupId>
-      <version>${JSON-VALUES.VERSION}</version>
-    </dependency>
-    <dependency>
       <artifactId>junit-jupiter</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
       <version>5.8.1</version>
-    </dependency>
-    <dependency>
-      <artifactId>json-values</artifactId>
-      <groupId>com.github.imrafaelmerino</groupId>
-      <scope>compile</scope>
-      <version>13.0.0</version>
-    </dependency>
-    <dependency>
-      <artifactId>json-values</artifactId>
-      <groupId>com.github.imrafaelmerino</groupId>
-      <scope>compile</scope>
-      <version>13.2.0</version>
     </dependency>
   </dependencies>
   <groupId>com.github.imrafaelmerino</groupId>

@@ -36,18 +36,18 @@ final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, Av
   @Override
   public JsError testValue(final JsValue value) {
     var error =
-        Functions.testValue(JsValue::isNumber,
-                            DECIMAL_EXPECTED,
-                            nullable,
-                            value
-                           );
+        Fun.testValue(JsValue::isNumber,
+                      DECIMAL_EXPECTED,
+                      nullable,
+                      value
+                     );
     if (error != null) {
       return error;
     }
 
     if (constraints != null) {
-      return Functions.testDecimalConstraints(constraints,
-                                              value.toJsBigDec());
+      return Fun.testDecimalConstraints(constraints,
+                                        value.toJsBigDec());
     }
 
     return null;

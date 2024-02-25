@@ -35,11 +35,11 @@ final class JsObjSuchThat extends AbstractNullable implements JsOneErrorSpec {
 
   @Override
   public JsError testValue(final JsValue value) {
-    JsError error = Functions.testValue(JsValue::isObj,
-                                        OBJ_EXPECTED,
-                                        nullable,
-                                        value
-                                       );
+    JsError error = Fun.testValue(JsValue::isObj,
+                                  OBJ_EXPECTED,
+                                  nullable,
+                                  value
+                                 );
 
     return error != null || value.isNull() ?
            error :

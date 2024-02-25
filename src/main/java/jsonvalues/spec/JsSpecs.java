@@ -102,8 +102,6 @@ public final class JsSpecs {
   private static final JsSpec mapOfInstantSpec = new JsMapOfInstant(false);
 
 
-  private static final String MAX_LOWER_THAN_MIN_ERROR = "max < min";
-
   private JsSpecs() {
   }
 
@@ -312,10 +310,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of integers with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param schema The schema defining constraints for the array.
    * @return A specification for an array of integers with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfInt(ArraySchema schema) {
 
@@ -325,12 +321,10 @@ public final class JsSpecs {
 
 
   /**
-   * Returns a specification for an array of double with a specified minimum and maximum length.
+   * Returns a specification for an array of doubles with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
-   * @return A specification for an array of double with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
+   * @param arraySchema The schema defining constraints for the array.
+   * @return A specification for an array of doubles with the specified length constraints.
    */
   public static JsArraySpec arrayOfDouble(ArraySchema arraySchema
                                          ) {
@@ -352,12 +346,10 @@ public final class JsSpecs {
   }
 
   /**
-   * Returns a specification for an array of big integers with a specified minimum and maximum length.
+   * Returns a specification for an array of integral numbers with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
-   * @return A specification for an array of big integers with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
+   * @param arraySchema The schema defining constraints for the array.
+   * @return A specification for an array of integral numbers with the specified length constraints.
    */
   public static JsArraySpec arrayOfBigInt(ArraySchema arraySchema
                                          ) {
@@ -370,10 +362,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of objects with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param schema The schema defining constraints for the array.
    * @return A specification for an array of objects with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfObj(ArraySchema schema
                                       ) {
@@ -385,10 +375,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of decimal numbers with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param schema The schema defining constraints for the array.
    * @return A specification for an array of decimal numbers with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfDec(ArraySchema schema
                                       ) {
@@ -399,10 +387,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of booleans with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param schema The schema defining constraints for the array.
    * @return A specification for an array of booleans with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfBool(ArraySchema schema
                                        ) {
@@ -414,10 +400,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of strings with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param arraySchema The schema defining constraints for the array.
    * @return A specification for an array of strings with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfStr(ArraySchema arraySchema
                                       ) {
@@ -426,6 +410,14 @@ public final class JsSpecs {
                             arraySchema.build());
   }
 
+  /**
+   * Returns a specification for an array of strings with a specified minimum and maximum length, and each element
+   * conforming to the given element schema.
+   *
+   * @param arraySchema The schema defining constraints for the array.
+   * @param elemSchema  The schema defining constraints for each element in the array.
+   * @return A specification for an array of strings with the specified length constraints and element schema.
+   */
   public static JsArraySpec arrayOfStr(ArraySchema arraySchema,
                                        StrSchema elemSchema
                                       ) {
@@ -438,10 +430,8 @@ public final class JsSpecs {
   /**
    * Returns a specification for an array of long numbers with a specified minimum and maximum length.
    *
-   * @param minLength The minimum length of the array (inclusive).
-   * @param maxLength The maximum length of the array (inclusive).
+   * @param schema The schema defining constraints for the array.
    * @return A specification for an array of long numbers with the specified length constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfLong(ArraySchema schema
                                        ) {
@@ -533,11 +523,9 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable array of decimal numbers, where each element of the array satisfies the
    * given predicate. The array must have a size within the specified range.
    *
-   * @param predicate The predicate that each decimal number in the array must satisfy.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param predicate   The predicate that each decimal number in the array must satisfy.
+   * @param arraySchema The schema defining constraints for the array.
    * @return An array specification for decimal numbers based on the specified predicate and size range.
-   * @throws IllegalArgumentException If the maximum length is lower than the minimum length.
    */
   public static JsArraySpec arrayOfDec(final Predicate<BigDecimal> predicate,
                                        ArraySchema arraySchema
@@ -585,11 +573,9 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable array of integral numbers, where each element of the array satisfies the
    * given predicate. The array must have a minimum and maximum size as specified by the parameters.
    *
-   * @param predicate The predicate that each integral number in the array must satisfy.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param predicate   The predicate that each integral number in the array must satisfy.
+   * @param arraySchema The schema defining constraints for the array.
    * @return An array specification for integral numbers based on the specified predicate and size constraints.
-   * @throws IllegalArgumentException If the maximum size is lower than the minimum size.
    */
   public static JsArraySpec arrayOfBigInt(final Predicate<BigInteger> predicate,
                                           ArraySchema arraySchema
@@ -639,11 +625,9 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable array of objects, where each element of the array satisfies the given
    * predicate.
    *
-   * @param predicate The predicate that each object in the array must satisfy.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param predicate   The predicate that each object in the array must satisfy.
+   * @param arraySchema The schema defining constraints for the array.
    * @return An array specification for objects based on the specified predicate and size constraints.
-   * @throws IllegalArgumentException If the maximum length is less than the minimum length.
    */
   public static JsArraySpec arrayOfObj(final Predicate<JsObj> predicate,
                                        ArraySchema arraySchema
@@ -738,10 +722,8 @@ public final class JsSpecs {
    * given predicate.
    *
    * @param predicate The predicate that each long number in the array must satisfy.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param schema    The schema defining constraints for the array.
    * @return An array specification for long numbers based on the specified predicate.
-   * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfLong(final LongPredicate predicate,
                                         final ArraySchema schema
@@ -861,11 +843,9 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable array of strings, where each element of the array satisfies the given
    * predicate.
    *
-   * @param predicate The predicate that each string in the array must satisfy.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param predicate   The predicate that each string in the array must satisfy.
+   * @param arraySchema The schema defining constraints for the array.
    * @return An array specification for strings based on the specified predicate and size constraints.
-   * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfStr(final Predicate<String> predicate,
                                        final ArraySchema arraySchema
@@ -986,11 +966,9 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable array of integer numbers, where each element of the array satisfies the
    * given predicate.
    *
-   * @param predicate The predicate each integer number of the array is tested on.
-   * @param minLength The minimum size of the array (inclusive).
-   * @param maxLength The maximum size of the array (inclusive).
+   * @param predicate   The predicate each integer number of the array is tested on.
+   * @param arraySchema The schema defining constraints for the array.
    * @return An array specification that enforces the specified conditions.
-   * @throws IllegalArgumentException If maxLength is less than minLength.
    */
   public static JsArraySpec arrayOfInt(final IntPredicate predicate,
                                        ArraySchema arraySchema
@@ -1233,11 +1211,10 @@ public final class JsSpecs {
 
   /**
    * Returns a specification that validates that the JSON is an array within the limits of the specified bounds, and the
-   * value of each element is a value that conforms the given spec.
+   * value of each element is a value that conforms to the given spec.
    *
-   * @param spec the spec of the elements
-   * @param min  the minimum length of the array
-   * @param max  the maximum length of the array
+   * @param spec        The spec of the elements.
+   * @param arraySchema The schema defining constraints for the array.
    * @return A JSON specification for arrays.
    */
   public static JsArraySpec arrayOfSpec(JsSpec spec,
@@ -1280,14 +1257,13 @@ public final class JsSpecs {
    * @param name The name of the named spec.
    * @param spec The JsSpec to be associated with the named spec.
    * @return A named spec with the specified name.
-   * @throws IllegalArgumentException If the specified name already exists or the name is not valid
    */
   public static JsSpec ofNamedSpec(final String name,
                                    final JsSpec spec) {
     //builders already cache the specs, we need to create named specs with the builder
     //to create a metadata object used by avro-spec library. It's more common to
     //use the builder because there are a lot of metadata options not provided by this method
-    //(only the name). This is more commonly used by other kind of specs like oneOf(obspec1,objspec2)
+    //(only the name). This is more commonly used by other kind of specs like oneOf(obspec1, objspec2)
     if (requireNonNull(spec) instanceof JsObjSpec objSpec) {
       var unused = JsObjSpecBuilder.withName(name)
                                    .build(objSpec);

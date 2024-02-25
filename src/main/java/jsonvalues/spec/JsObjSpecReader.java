@@ -49,6 +49,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
                                 .parse(reader)
                            );
     byte nextToken;
+    int size = 0;
     while ((nextToken = reader.readNextToken()) == ',') {
       reader.readNextToken();
       key = reader.readKey();
@@ -68,10 +69,21 @@ class JsObjSpecReader extends AbstractJsObjReader {
       obj = obj.set(key,
                     parser.parse(reader)
                    );
+      size += 1;
+      if (metadata != null && size > metadata.maxProperties()) {
+        throw JsParserException.reasonAt(ParserErrors.OBJ_MAX_SIZE_EXCEEDED,
+                                         reader.getPositionInStream()
+                                        );
+      }
 
     }
     if (nextToken != '}') {
       throw JsParserException.reasonAt(ParserErrors.EXPECTING_FOR_MAP_END.formatted(((char) nextToken)),
+                                       reader.getPositionInStream()
+                                      );
+    }
+    if(metadata != null && metadata.minProperties() > size){
+      throw JsParserException.reasonAt(ParserErrors.OBJ_MIN_SIZE_NOT_MET,
                                        reader.getPositionInStream()
                                       );
     }
