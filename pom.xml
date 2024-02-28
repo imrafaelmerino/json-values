@@ -3,11 +3,6 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>json-values</artifactId>
-  <version>14.0.0-RC1</version>
-  <scm>
-    <url>https://github.com/imrafaelmerino/json-values.git</url>
-  </scm>
-  <url>https://github.com/imrafaelmerino/json-values</url>
   <build>
     <plugins>
       <plugin>
@@ -195,4 +190,9 @@
     <sonar.host.url>https://sonarcloud.io</sonar.host.url>
     <sonar.organization>imrafaelmerino</sonar.organization>
   </properties>
+  <scm>
+    <url>https://github.com/imrafaelmerino/json-values.git</url>
+  </scm>
+  <url>https://github.com/imrafaelmerino/json-values</url>
+  <version>14.0.0-RC1</version>
 </project>

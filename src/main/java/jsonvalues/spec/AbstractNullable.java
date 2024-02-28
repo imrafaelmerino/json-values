@@ -8,7 +8,6 @@ abstract class AbstractNullable {
     this.nullable = nullable;
   }
 
-
   public boolean isNullable() {
     return nullable;
   }

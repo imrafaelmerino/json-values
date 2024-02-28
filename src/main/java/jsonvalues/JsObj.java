@@ -99,11 +99,9 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * the empty Json Object
    */
   static final JsObj EMPTY = new JsObj(HashMap.empty());
-  @SuppressWarnings("squid:S3008")
   private static final JsPath EMPTY_PATH = JsPath.empty();
   private final HashMap map;
   private volatile int hashcode;
-  @SuppressWarnings("squid:S3077")
   private volatile String str;
 
   JsObj(final HashMap myMap) {
@@ -249,7 +247,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -272,7 +270,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -295,7 +293,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * @return an immutable and persistent JSON object
    */
 
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -323,7 +321,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -349,7 +347,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -381,7 +379,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -411,7 +409,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -447,7 +445,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -481,7 +479,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -521,7 +519,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -559,7 +557,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -603,7 +601,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -645,7 +643,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -693,7 +691,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -739,7 +737,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -791,7 +789,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -842,7 +840,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -898,7 +896,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -952,7 +950,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1012,7 +1010,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1071,7 +1069,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1135,7 +1133,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1197,7 +1195,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1265,7 +1263,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1331,7 +1329,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1403,7 +1401,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1474,7 +1472,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1550,7 +1548,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1624,7 +1622,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1704,7 +1702,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1782,7 +1780,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -1866,7 +1864,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -1948,7 +1946,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -2036,7 +2034,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,
@@ -2122,7 +2120,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final String key1,
                          final JsValue el1,
                          final String key2,
@@ -3142,7 +3140,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @return an immutable and persistent JSON object
    */
-  @SuppressWarnings("squid:S00107")
+
   public static JsObj of(final JsPath path1,
                          final JsValue el1,
                          final JsPath path2,

@@ -563,7 +563,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
    * @return {@code true} if the arrays are equal according to the specified type, {@code false} otherwise.
    * @see TYPE
    */
-  @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
   public boolean equals(final JsArray array,
                         final TYPE ARRAY_AS
                        ) {
@@ -1697,8 +1696,6 @@ public final class JsArray implements Json<JsArray>, Iterable<JsValue> {
     return arr.append(e);
   }
 
-
-  @SuppressWarnings("squid:S00117") //  ARRAY_AS is a perfectly fine name
 
   private JsArray union(final JsArray a,
                         final JsArray b,

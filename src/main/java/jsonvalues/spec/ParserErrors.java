@@ -43,14 +43,13 @@ class ParserErrors {
   static final String EXPECTING_FOR_ARRAY_START = "Expecting '[' for Json array start";
   static final String BOOL_EXPECTED = "Boolean expected";
   static final String BIG_INTEGER_WITH_FRACTIONAL_PART = "`BigInteger` with fractional part";
-  static final UnaryOperator<String> SPEC_NOT_FOUND = key -> "The key '" + key
-                                                             + "' has no spec associated to it. Strict specs don't allow this."
-                                                             +
-                                                             " Either declare de spec lenient or add a new spec for the missing key";
-  static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND = key ->
-      "The JSON doesn't conform the spec because the required key '" + key + "' doesn't exist";
-  static final Function<JsError, String> JS_ERROR_2_STR = e -> "Error code: %s".formatted(e.code()
-                                                                                           .name());
+  static final UnaryOperator<String> SPEC_NOT_FOUND =
+      "The key '%s' has no spec associated to it. Strict specs don't allow this. Either declare de spec lenient or add a new spec for the missing key"::formatted;
+  static final UnaryOperator<String> REQUIRED_KEY_NOT_FOUND =
+      "The JSON doesn't conform the spec because the required key '%s' doesn't exist"::formatted;
+  static final Function<JsError, String> JS_ERROR_2_STR =
+      e -> "Error code: %s".formatted(e.code()
+                                       .name());
   static final String TOO_MANY_DIGITS = "Too many digits detected in number: %d";
   static final String LEADING_ZERO = "Leading zero is not allowed";
   static final String NOT_VALID_NUMBER = "Invalid representation of a number";

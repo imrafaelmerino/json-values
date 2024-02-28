@@ -61,7 +61,6 @@ public class TestJsElems {
   }
 
   @Test
-  @SuppressWarnings("squid:S5845")
   public void test_equals() {
     Assertions.assertEquals(JsBigDec.of(BigDecimal.valueOf(1.00)),
                             JsBigDec.of(BigDecimal.ONE)

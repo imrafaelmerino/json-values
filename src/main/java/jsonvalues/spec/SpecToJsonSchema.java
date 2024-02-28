@@ -54,7 +54,10 @@ public final class SpecToJsonSchema {
   private static final String MAXIMUM = "maximum";
   private static final String UNIQUE_ITEMS = "uniqueItems";
   private static final String DESCRIPTION = "description";
-  private static final String TITLE = "title";
+  private static final String SCHEMA = "$schema";
+  private static final String ID = "$id";
+  private static final String DRAFT = "https://json-schema.org/draft/2019-09/schema";
+  private static final String DEFAULT = "default";
 
   private SpecToJsonSchema() {
   }
@@ -66,31 +69,56 @@ public final class SpecToJsonSchema {
    * @return The resulting JSON schema as a JsObj.
    */
   public static JsObj convert(final JsObjSpec jsObjSpec) {
-    return convert(jsObjSpec,
-                   new HashSet<>());
+    return JsObj.of(SCHEMA,
+                    JsStr.of(DRAFT),
+                    DEFINITIONS,
+                    getDefinitions(jsObjSpec,
+                                   new HashSet<>())
+                   )
+                .union(convert(jsObjSpec,
+                               new HashSet<>()),
+                       JsArray.TYPE.SET);
   }
 
   public static JsObj convert(final JsSpec spec) {
+    if (spec instanceof NamedSpec namedSpec) {
+      return convert(spec,
+                     namedSpec);
+    }
     if (spec instanceof JsObjSpec jsObjSpec) {
       return convert(jsObjSpec);
     }
     if (spec instanceof JsArraySpec jsArraySpec) {
       return convert(jsArraySpec);
     }
-    if (spec instanceof NamedSpec namedSpec) {
-      HashSet<String> visited = new HashSet<>();
-      var a = JsSpecCache.get(namedSpec.name);
-      return JsObj.of(DEFINITIONS,
-                      getDefinitions(a,
-                                     visited)
-
-                     )
-                  .union(getSchema(a,
+    HashSet<String> visited = new HashSet<>();
+    return JsObj.of(DEFINITIONS,
+                    getDefinitions(spec,
                                    visited),
-                         JsArray.TYPE.LIST);
-    }
-    return getSchema(spec,
-                     new HashSet<>());
+                    SCHEMA,
+                    JsStr.of(DRAFT)
+                   )
+                .union(getSchema(spec,
+                                 visited),
+                       JsArray.TYPE.SET);
+
+
+  }
+
+  private static JsObj convert(final JsSpec spec,
+                               final NamedSpec namedSpec) {
+    HashSet<String> visited = new HashSet<>();
+    return JsObj.of(DEFINITIONS,
+                    getDefinitions(spec,
+                                   visited),
+                    SCHEMA,
+                    JsStr.of(DRAFT),
+                    ID,
+                    JsStr.of(namedSpec.name)
+                   )
+                .union(getSchema(JsSpecCache.get(namedSpec.name),
+                                 visited),
+                       JsArray.TYPE.SET);
   }
 
 
@@ -102,8 +130,16 @@ public final class SpecToJsonSchema {
    */
   public static JsObj convert(final JsArraySpec jsArraySpec) {
 
-    return getArraySchema(jsArraySpec);
+    return JsObj.of(SCHEMA,
+                    JsStr.of(DRAFT),
+                    DEFINITIONS,
+                    getDefinitions(jsArraySpec,
+                                   new HashSet<>())
+                   )
+                .union(getArraySchema(jsArraySpec),
+                       JsArray.TYPE.SET);
   }
+
 
   private static JsObj convert(final JsObjSpec jsObjSpec,
                                Set<String> nameSpecsVisited) {
@@ -120,14 +156,11 @@ public final class SpecToJsonSchema {
                     JsBool.of(!jsObjSpec.strict),
                     REQUIRED,
                     getRequired(jsObjSpec),
-                    DEFINITIONS,
-                    getDefinitions(jsObjSpec,
-                                   nameSpecsVisited),
                     DESCRIPTION,
                     metaData != null && metaData.doc() != null ?
                     JsStr.of(metaData.doc()) :
                     JsNothing.NOTHING,
-                    TITLE,
+                    ID,
                     metaData != null ?
                     JsStr.of(metaData.getFullName()) :
                     JsNothing.NOTHING
@@ -157,6 +190,9 @@ public final class SpecToJsonSchema {
     if (spec instanceof NamedSpec namedSpec && !nameSpecsVisited.contains(namedSpec.name)) {
       found.add(namedSpec.name);
       nameSpecsVisited.add(namedSpec.name);
+      findDefinitionsRecursively(JsSpecCache.get(namedSpec.name),
+                                 found,
+                                 nameSpecsVisited);
     } else if (spec instanceof JsObjSpec jsObjSpec) {
       for (JsSpec a : jsObjSpec.bindings.values()) {
         findDefinitionsRecursively(a,
@@ -168,17 +204,21 @@ public final class SpecToJsonSchema {
                                  found,
                                  nameSpecsVisited);
     } else if (spec instanceof OneOf oneOf) {
-      for (JsSpec s : oneOf.specs) {
-        findDefinitionsRecursively(s,
+      for (JsSpec oneOfSpec : oneOf.specs) {
+        findDefinitionsRecursively(oneOfSpec,
                                    found,
                                    nameSpecsVisited);
       }
     } else if (spec instanceof JsTuple tuple) {
-      for (JsSpec s : tuple.specs) {
-        findDefinitionsRecursively(s,
+      for (JsSpec tupleSpec : tuple.specs) {
+        findDefinitionsRecursively(tupleSpec,
                                    found,
                                    nameSpecsVisited);
       }
+    } else if (spec instanceof JsMapOfSpec mapOfSpec) {
+      findDefinitionsRecursively(mapOfSpec.getValueSpec(),
+                                 found,
+                                 nameSpecsVisited);
     }
 
   }
@@ -204,7 +244,7 @@ public final class SpecToJsonSchema {
         }
         if (metaData.fieldsDefault() != null && metaData.fieldsDefault()
                                                         .containsKey(entry.getKey())) {
-          schema = schema.set("default",
+          schema = schema.set(DEFAULT,
                               metaData.fieldsDefault()
                                       .get(entry.getKey()));
         }

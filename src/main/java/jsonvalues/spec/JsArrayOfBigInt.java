@@ -2,7 +2,6 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.INTEGRAL_EXPECTED;
 
-import java.util.Objects;
 import jsonvalues.JsValue;
 
 final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
