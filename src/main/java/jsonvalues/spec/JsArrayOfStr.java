@@ -57,7 +57,7 @@ final class JsArrayOfStr extends AbstractSizableArr implements JsOneErrorSpec, J
     return Fun.testArrayOfTestedValue(v -> v.isStr() ?
                                            null :
                                            new JsError(v,
-                                                             STRING_EXPECTED),
+                                                       STRING_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value

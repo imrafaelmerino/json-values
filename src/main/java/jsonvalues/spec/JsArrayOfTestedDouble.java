@@ -43,12 +43,12 @@ final class JsArrayOfTestedDouble extends AbstractSizableArr implements JsOneErr
   @Override
   public JsError testValue(final JsValue value) {
     return Fun.testArrayOfTestedValue(v ->
-                                                v.isDouble() ?
-                                                predicate.apply(v.toJsDouble().value) :
-                                                new JsError(v,
-                                                            DOUBLE_EXPECTED
+                                          v.isDouble() ?
+                                          predicate.apply(v.toJsDouble().value) :
+                                          new JsError(v,
+                                                      DOUBLE_EXPECTED
 
-                                                ),
+                                          ),
                                       nullable,
                                       arrayConstraints,
                                       value

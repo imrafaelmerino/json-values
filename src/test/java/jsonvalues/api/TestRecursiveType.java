@@ -18,7 +18,7 @@ public class TestRecursiveType {
   @Test
   public void testWithBuilder() {
 
-    var spec = JsObjSpecBuilder.withName("person")
+    var spec = JsObjSpecBuilder.withName("person_data")
                                .build(JsObjSpec.of("name",
                                                    JsSpecs.str(),
                                                    "image",
@@ -26,7 +26,7 @@ public class TestRecursiveType {
                                                    "age",
                                                    JsSpecs.integer(),
                                                    "father",
-                                                   JsSpecs.ofNamedSpec("person")
+                                                   JsSpecs.ofNamedSpec("person_data")
                                                   )
                                                .withOptKeys("father")
                                      );

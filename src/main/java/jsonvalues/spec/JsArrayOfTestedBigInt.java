@@ -44,12 +44,12 @@ final class JsArrayOfTestedBigInt extends AbstractSizableArr implements JsOneErr
   @Override
   public JsError testValue(final JsValue value) {
     return Fun.testArrayOfTestedValue(v ->
-                                                v.isIntegral() ?
-                                                predicate.apply(v.toJsBigInt().value) :
-                                                new JsError(v,
-                                                            INTEGRAL_EXPECTED
+                                          v.isIntegral() ?
+                                          predicate.apply(v.toJsBigInt().value) :
+                                          new JsError(v,
+                                                      INTEGRAL_EXPECTED
 
-                                                ),
+                                          ),
                                       nullable,
                                       arrayConstraints,
                                       value

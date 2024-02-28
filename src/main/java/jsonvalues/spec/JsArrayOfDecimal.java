@@ -60,7 +60,7 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
     return Fun.testArrayOfTestedValue(v -> v.isNumber() ?
                                            null :
                                            new JsError(v,
-                                                             DECIMAL_EXPECTED),
+                                                       DECIMAL_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value

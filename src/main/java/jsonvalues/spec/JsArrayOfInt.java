@@ -58,7 +58,7 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
     return Fun.testArrayOfTestedValue(v -> v.isInt() ?
                                            null :
                                            new JsError(v,
-                                                             INT_EXPECTED),
+                                                       INT_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value

@@ -36,7 +36,7 @@ final class JsArrayOfBool extends AbstractSizableArr implements JsOneErrorSpec, 
     return Fun.testArrayOfTestedValue(v -> v.isBool() ?
                                            null :
                                            new JsError(v,
-                                                             BOOLEAN_EXPECTED),
+                                                       BOOLEAN_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value);

@@ -5,6 +5,7 @@ import static jsonvalues.spec.JsSpecs.oneSpecOf;
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import java.util.List;
+import jsonvalues.JsObj;
 import jsonvalues.JsStr;
 import jsonvalues.gen.JsArrayGen;
 import jsonvalues.gen.JsObjGen;
@@ -12,37 +13,51 @@ import jsonvalues.gen.JsStrGen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class JsSpecToSchemaTests {
+public class JsSpecToJsonSchemaTests {
 
 
   @Test
   public void test() {
-    JsObjSpec objSpec = JsObjSpec.of("name",
-                                     JsSpecs.str(),
-                                     "age",
-                                     JsSpecs.integer(),
-                                     "address",
-                                     JsObjSpec.of("street",
-                                                  JsSpecs.str(),
-                                                  "city",
-                                                  JsSpecs.str(),
-                                                  "zip",
-                                                  JsSpecs.integer()
-                                                 ),
-                                     "vip",
-                                     JsSpecs.bool(),
-                                     "height",
-                                     JsSpecs.decimal(),
-                                     "distance",
-                                     JsSpecs.longInteger(),
-                                     "image",
-                                     JsSpecs.binary(),
-                                     "birthDate",
-                                     JsSpecs.instant()
-                                    );
+    JsObjSpec objSpec =
+        JsObjSpecBuilder.withName("person")
+                        .build(JsObjSpec.of("name",
+                                            JsSpecs.str(new StrSchema().setMinLength(3)
+                                                                       .setMaxLength(10)
+                                                                       .setPattern("[a-z]+")
+                                                                       .setFormat("email")
+                                                       ),
+                                            "age",
+                                            JsSpecs.integer(new IntegerSchema().setMaximum(100)
+                                                                               .setMinimum(0)
+                                                                               .setExclusiveMaximum()
+                                                                               .setExclusiveMinimum()
+                                                           ),
+                                            "address",
+                                            JsObjSpec.of("street",
+                                                         JsSpecs.str(new StrSchema().setMinLength(5)
+                                                                                    .setMaxLength(10)
+                                                                                    .setPattern("[a-z]+")
+                                                                                    .setFormat("email")),
+                                                         "city",
+                                                         JsSpecs.str(),
+                                                         "zip",
+                                                         JsSpecs.integer()
+                                                        ),
+                                            "vip",
+                                            JsSpecs.bool(),
+                                            "height",
+                                            JsSpecs.decimal(),
+                                            "distance",
+                                            JsSpecs.longInteger(),
+                                            "image",
+                                            JsSpecs.binary(),
+                                            "birthDate",
+                                            JsSpecs.instant()
+                                           )
+                              );
 
-    System.out.println(SpecToSchema.toJsSchema(objSpec)
-                                   .toPrettyString());
+    System.out.println(SpecToJsonSchema.convert(objSpec)
+                                       .toPrettyString());
 
   }
 
@@ -98,14 +113,48 @@ public class JsSpecToSchemaTests {
         JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
                             oneSpecOf(mouseSpec,
                                       keyboardSpec,
-                                      usbHubSpec));
+                                      usbHubSpec)
+                           );
 
 
-/*    System.out.println(JsObjSpecToSchema.convert(peripheralSpec)
-                                        .toPrettyString());*/
+   System.out.println(SpecToJsonSchema.convert(peripheralSpec)
+                                        .toPrettyString());
 
-    System.out.println(SpecToSchema.toJsSchema(usbHubSpec)
-                                   .toPrettyString());
+  }
+
+  @Test
+  public void testNamedSpecs() {
+
+    var address =
+        JsObjSpecBuilder.withName("address")
+                        .build(JsObjSpec.of("street",
+                                            JsSpecs.str(),
+                                            "city",
+                                            JsSpecs.str(),
+                                            "zip",
+                                            JsSpecs.integer()
+                                           ));
+
+    var email =
+        JsObjSpecBuilder.withName("email")
+                        .build(JsObjSpec.of("address",
+                                            JsSpecs.str()
+                                           ));
+
+    var person = JsObjSpecBuilder.withName("person")
+                                 .build(JsObjSpec.of("name",
+                                                     JsSpecs.str(),
+                                                     "age",
+                                                     JsSpecs.integer(),
+                                                     "addresses",
+                                                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec("address")),
+                                                     "email",
+                                                     email
+                                                    )
+                                       );
+
+    System.out.println(SpecToJsonSchema.convert(person)
+                                       .toPrettyString());
 
 
   }
@@ -125,8 +174,8 @@ public class JsSpecToSchemaTests {
                             JsSpecs.mapOfStr(strSchema)
                            );
 
-    System.out.println(SpecToSchema.toJsSchema(spec)
-                                   .toPrettyString());
+    System.out.println(SpecToJsonSchema.convert(spec)
+                                       .toPrettyString());
   }
 
   @Test
@@ -149,8 +198,8 @@ public class JsSpecToSchemaTests {
                                      JsSpecs.arrayOfObj()
                                     );
 
-    System.out.println(SpecToSchema.toJsSchema(objSpec)
-                                   .toPrettyString());
+    System.out.println(SpecToJsonSchema.convert(objSpec)
+                                       .toPrettyString());
 
   }
 

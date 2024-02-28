@@ -189,12 +189,6 @@ public final class JsSpecs {
     return arrayOfStr;
   }
 
-  public static JsArraySpec arrayOfStr(StrSchema elemSchema) {
-    //TODO
-    return new JsArrayOfStr(false,
-                            elemSchema.build());
-  }
-
   /**
    * non-nullable binary spec
    *
@@ -237,6 +231,11 @@ public final class JsSpecs {
     return doubleNumber;
   }
 
+  public static JsSpec doubleNumber(DoubleSchema schema) {
+    return new JsDoubleSpec(false,
+                            requireNonNull(schema).build());
+  }
+
   /**
    * non-nullable boolean
    *
@@ -262,6 +261,12 @@ public final class JsSpecs {
    */
   public static JsSpec integer() {
     return integer;
+  }
+
+
+  public static JsSpec integer(IntegerSchema schema) {
+    return new JsIntSpec(false,
+                         requireNonNull(schema).build());
   }
 
   /**
@@ -319,6 +324,20 @@ public final class JsSpecs {
                             schema.build());
   }
 
+  public static JsArraySpec arrayOfInt(IntegerSchema schema) {
+
+    return new JsArrayOfInt(false,
+                            schema.build());
+  }
+
+  public static JsArraySpec arrayOfInt(IntegerSchema schema,
+                                       ArraySchema arraySchema) {
+
+    return new JsArrayOfInt(false,
+                            arraySchema.build(),
+                            schema.build());
+  }
+
 
   /**
    * Returns a specification for an array of doubles with a specified minimum and maximum length.
@@ -326,12 +345,28 @@ public final class JsSpecs {
    * @param arraySchema The schema defining constraints for the array.
    * @return A specification for an array of doubles with the specified length constraints.
    */
-  public static JsArraySpec arrayOfDouble(ArraySchema arraySchema
-                                         ) {
+  public static JsArraySpec arrayOfDouble(ArraySchema arraySchema) {
 
     return new JsArrayOfDouble(false,
                                arraySchema.build());
   }
+
+
+  public static JsArraySpec arrayOfDouble(DoubleSchema schema) {
+
+    return new JsArrayOfDouble(false,
+                               schema.build(),
+                               null);
+  }
+
+  public static JsArraySpec arrayOfDouble(DoubleSchema schema,
+                                          ArraySchema arraySchema) {
+
+    return new JsArrayOfDouble(false,
+                               schema.build(),
+                               arraySchema.build());
+  }
+
 
   public static JsArraySpec arrayOfDouble(DoublePredicate predicate,
                                           ArraySchema arraySchema
@@ -355,7 +390,25 @@ public final class JsSpecs {
                                          ) {
 
     return new JsArrayOfBigInt(false,
-                               arraySchema.build());
+                               arraySchema.build(),
+                               null);
+  }
+
+  public static JsArraySpec arrayOfBigInt(BigIntSchema schema
+                                         ) {
+
+    return new JsArrayOfBigInt(false,
+                               null,
+                               schema.build());
+  }
+
+  public static JsArraySpec arrayOfBigInt(BigIntSchema schema,
+                                          ArraySchema arraySchema
+                                         ) {
+
+    return new JsArrayOfBigInt(false,
+                               arraySchema.build(),
+                               schema.build());
   }
 
 
@@ -382,6 +435,21 @@ public final class JsSpecs {
                                       ) {
     return new JsArrayOfDecimal(false,
                                 schema.build());
+  }
+
+  public static JsArraySpec arrayOfDec(DecimalSchema schema
+                                      ) {
+    return new JsArrayOfDecimal(false,
+                                schema.build(),
+                                null);
+  }
+
+  public static JsArraySpec arrayOfDec(DecimalSchema schema,
+                                       ArraySchema arraySchema
+                                      ) {
+    return new JsArrayOfDecimal(false,
+                                schema.build(),
+                                arraySchema.build());
   }
 
   /**
@@ -418,8 +486,8 @@ public final class JsSpecs {
    * @param elemSchema  The schema defining constraints for each element in the array.
    * @return A specification for an array of strings with the specified length constraints and element schema.
    */
-  public static JsArraySpec arrayOfStr(ArraySchema arraySchema,
-                                       StrSchema elemSchema
+  public static JsArraySpec arrayOfStr(StrSchema elemSchema,
+                                       ArraySchema arraySchema
                                       ) {
     return new JsArrayOfStr(false,
                             arraySchema.build(),
@@ -779,6 +847,11 @@ public final class JsSpecs {
                               false);
   }
 
+  public static JsSpec longInteger(LongSchema schema) {
+    return new JsLongSpec(false,
+                          requireNonNull(schema).build());
+  }
+
   /**
    * Returns a specification for a non-nullable double number that satisfies the given predicate.
    *
@@ -807,6 +880,11 @@ public final class JsSpecs {
                                  false);
   }
 
+  public static JsSpec decimal(DecimalSchema schema) {
+    return new JsDecimalSpec(false,
+                             requireNonNull(schema).build());
+  }
+
   /**
    * Returns a specification for a non-nullable integral number that satisfies the given predicate.
    *
@@ -819,6 +897,11 @@ public final class JsSpecs {
                                      new JsError(JsBigInt.of(s),
                                                  INTEGRAL_CONDITION),
                                 false);
+  }
+
+  public static JsSpec bigInteger(BigIntSchema schema) {
+    return new JsBigIntSpec(false,
+                            requireNonNull(schema).build());
   }
 
   /**
@@ -836,6 +919,13 @@ public final class JsSpecs {
                                                    STRING_CONDITION
                                        ),
                                   false);
+  }
+
+  public static JsArraySpec arrayOfStr(final StrSchema schema) {
+
+    return new JsArrayOfStr(false,
+                            null,
+                            schema.build());
   }
 
 
@@ -858,6 +948,7 @@ public final class JsSpecs {
                                   false,
                                   arraySchema.build());
   }
+
 
   /**
    * Returns a specification that accepts any JSON value for which the given predicate evaluates to true. When the type
@@ -1113,6 +1204,11 @@ public final class JsSpecs {
     return mapOfBigIntegerSpec;
   }
 
+  public static JsSpec mapOfBigInteger(BigIntSchema schema) {
+    return new JsMapOfBigInt(false,
+                             requireNonNull(schema).build());
+  }
+
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a binary.
    *
@@ -1131,6 +1227,10 @@ public final class JsSpecs {
     return mapOfDoubleSpec;
   }
 
+  public static JsSpec mapOfDouble(DoubleSchema doubleSchema) {
+    return new JsMapOfDouble(false,
+                             requireNonNull(doubleSchema).build());
+  }
 
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a decimal number.
@@ -1139,6 +1239,11 @@ public final class JsSpecs {
    */
   public static JsSpec mapOfDecimal() {
     return mapOfDecimalSpec;
+  }
+
+  public static JsSpec mapOfDecimal(DecimalSchema decimalSchema) {
+    return new JsMapOfDec(false,
+                          requireNonNull(decimalSchema).build());
   }
 
   /**
@@ -1178,11 +1283,10 @@ public final class JsSpecs {
     return mapOfStrSpec;
   }
 
-  public static JsSpec mapOfStr(StrSchema elemSchema) {
+  public static JsSpec mapOfStr(StrSchema schema) {
     return new JsMapOfStr(false,
-                          elemSchema.build());
+                          requireNonNull(schema).build());
   }
-
 
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a value that

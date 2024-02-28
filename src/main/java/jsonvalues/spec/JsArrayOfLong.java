@@ -53,7 +53,7 @@ final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, 
     return Fun.testArrayOfTestedValue(v -> v.isInt() || v.isLong() ?
                                            null :
                                            new JsError(v,
-                                                             LONG_EXPECTED),
+                                                       LONG_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value

@@ -75,7 +75,11 @@
       <groupId>org.hibernate</groupId>
       <version>6.2.3.Final</version>
     </dependency>
-
+    <dependency>
+      <artifactId>json-values</artifactId>
+      <groupId>com.github.imrafaelmerino</groupId>
+      <version>13.4.0</version>
+    </dependency>
     <dependency>
       <artifactId>json-schema-validator</artifactId>
       <groupId>com.github.java-json-tools</groupId>
@@ -131,9 +135,8 @@
   <name>json-values-benchmark-${version}</name>
   <packaging>jar</packaging>
   <properties>
-    <COMPILER_SOURCE_VERSION>17</COMPILER_SOURCE_VERSION>
-    <COMPILER_SOURCE_VERSION>17</COMPILER_SOURCE_VERSION>
-    <COMPILER_TARGET_VERSION>17</COMPILER_TARGET_VERSION>
+    <COMPILER_SOURCE_VERSION>21</COMPILER_SOURCE_VERSION>
+    <COMPILER_TARGET_VERSION>21</COMPILER_TARGET_VERSION>
     <HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>7.0.1.Final
     </HIBERNATE-VALIDATOR-ANNOTATION-PROCESSOR.VERSION>
     <HIBERNATE-VALIDATOR.VERSION>7.0.4.Final</HIBERNATE-VALIDATOR.VERSION>

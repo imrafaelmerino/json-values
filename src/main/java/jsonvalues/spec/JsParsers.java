@@ -457,9 +457,21 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfIntegral(boolean nullable,
-                             ArraySchemaConstraints arrayConstraints
+                             ArraySchemaConstraints arrayConstraints,
+                             BigIntSchemaConstraints schema
                             ) {
-    return getParser(READERS.arrayOfBigIntReader,
+    return schema != null ?
+           reader -> ofArrayOfIntegralEachSuchThat(i -> {
+                                                     validateBigInteger(schema,
+                                                                        i,
+                                                                        reader
+                                                                       );
+                                                     return null;
+                                                   },
+                                                   nullable,
+                                                   arrayConstraints
+                                                  ).parse(reader) :
+           getParser(READERS.arrayOfBigIntReader,
                      nullable,
                      arrayConstraints
                     );

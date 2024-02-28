@@ -51,7 +51,7 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec
     return Fun.testArrayOfTestedValue(v -> v.isDouble() ?
                                            null :
                                            new JsError(v,
-                                                             DOUBLE_EXPECTED),
+                                                       DOUBLE_EXPECTED),
                                       nullable,
                                       arrayConstraints,
                                       value

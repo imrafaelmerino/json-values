@@ -82,7 +82,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
                                        reader.getPositionInStream()
                                       );
     }
-    if(metadata != null && metadata.minProperties() > size){
+    if (metadata != null && metadata.minProperties() > size) {
       throw JsParserException.reasonAt(ParserErrors.OBJ_MIN_SIZE_NOT_MET,
                                        reader.getPositionInStream()
                                       );

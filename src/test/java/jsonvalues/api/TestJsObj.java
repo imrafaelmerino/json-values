@@ -898,9 +898,9 @@ public class TestJsObj {
                            );
     Assertions.assertNull(o.getInt("b"));
     Assertions.assertEquals(1,
-                            (int) o.getInt("b",
-                                           () -> 1
-                                          )
+                            o.getInt("b",
+                                     () -> 1
+                                    )
                            );
     Assertions.assertNull(o.getBool("b"));
     Assertions.assertFalse(o.getBool("b",
@@ -916,9 +916,9 @@ public class TestJsObj {
 
     Assertions.assertNull(o.getDouble("b"));
     Assertions.assertEquals(1.5,
-                            (double) o.getDouble("b",
-                                                 () -> 1.5
-                                                )
+                            o.getDouble("b",
+                                        () -> 1.5
+                                       )
                            );
 
     Assertions.assertNull(o.getArray("b"));
@@ -930,9 +930,9 @@ public class TestJsObj {
 
     Assertions.assertNull(o.getLong("c"));
     Assertions.assertEquals(10L,
-                            (long) o.getLong("c",
-                                             () -> 10L
-                                            )
+                            o.getLong("c",
+                                      () -> 10L
+                                     )
                            );
 
     Assertions.assertNull(o.getStr("e"));

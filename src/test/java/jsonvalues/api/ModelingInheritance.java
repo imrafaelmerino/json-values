@@ -19,7 +19,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 
-public class ModelingInheritance {
+public final class ModelingInheritance {
 
   String NAME_FIELD = "name";
   String TYPE_FIELD = "type";
