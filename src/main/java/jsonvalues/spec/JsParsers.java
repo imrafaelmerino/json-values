@@ -731,17 +731,6 @@ final class JsParsers {
                                        dslJsReader.getPositionInStream()
                                       );
     }
-    if (schema.exclusiveMaximum() && schema.maximum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.LONG_GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.exclusiveMinimum() && schema.minimum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.LONG_LOWER_THAN_MINIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-
   }
 
   private void validateBigInteger(final BigIntSchemaConstraints schema,
@@ -762,18 +751,6 @@ final class JsParsers {
     if (schema.multipleOf() != null && value.mod(schema.multipleOf())
                                             .compareTo(BigInteger.ZERO) != 0) {
       throw JsParserException.reasonAt(ParserErrors.BIGINT_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.maximum() != null && schema.exclusiveMaximum() && schema.maximum()
-                                                                       .compareTo(value) == 0) {
-      throw JsParserException.reasonAt(ParserErrors.BIGINT_GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.minimum() != null && schema.exclusiveMinimum() && schema.minimum()
-                                                                       .compareTo(value) == 0) {
-      throw JsParserException.reasonAt(ParserErrors.BIGINT_LOWER_THAN_MINIMUM,
                                        dslJsReader.getPositionInStream()
                                       );
     }
@@ -798,16 +775,6 @@ final class JsParsers {
                                        dslJsReader.getPositionInStream()
                                       );
     }
-    if (schema.exclusiveMaximum() && schema.maximum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.INT_GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.exclusiveMinimum() && schema.minimum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.INT_LOWER_THAN_MINIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
 
   }
 
@@ -829,16 +796,6 @@ final class JsParsers {
       throw JsParserException.reasonAt(ParserErrors.DECIMAL_NOT_MULTIPLE_OF,
                                        dslJsReader.getPositionInStream());
     }
-    if (schema.maximum() != null && schema.exclusiveMaximum() && schema.maximum()
-                                                                       .compareTo(value) == 0) {
-      throw JsParserException.reasonAt(ParserErrors.DECIMAL_GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream());
-    }
-    if (schema.minimum() != null && schema.exclusiveMinimum() && schema.minimum()
-                                                                       .compareTo(value) == 0) {
-      throw JsParserException.reasonAt(ParserErrors.DECIMAL_LOWER_THAN_MINIMUM,
-                                       dslJsReader.getPositionInStream());
-    }
 
   }
 
@@ -858,16 +815,6 @@ final class JsParsers {
 
     if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
       throw JsParserException.reasonAt(ParserErrors.DOUBLE_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.exclusiveMaximum() && schema.maximum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.DOUBLE__GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.exclusiveMinimum() && schema.minimum() == value) {
-      throw JsParserException.reasonAt(ParserErrors.DOUBLE_LOWER_THAN_MINIMUM,
                                        dslJsReader.getPositionInStream()
                                       );
     }

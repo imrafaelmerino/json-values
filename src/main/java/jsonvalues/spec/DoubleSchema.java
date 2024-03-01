@@ -8,8 +8,6 @@ public final class DoubleSchema {
 
   private double minimum = Double.NEGATIVE_INFINITY;
   private double maximum = Double.NEGATIVE_INFINITY;
-  private boolean exclusiveMinimum;
-  private boolean exclusiveMaximum;
   private double multipleOf = Double.NEGATIVE_INFINITY;
 
   /**
@@ -34,25 +32,6 @@ public final class DoubleSchema {
     return this;
   }
 
-  /**
-   * Sets the flag to enforce exclusive minimum value for double numbers in the schema.
-   *
-   * @return This DoubleSchema instance for method chaining.
-   */
-  public DoubleSchema setExclusiveMinimum() {
-    this.exclusiveMinimum = true;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive maximum value for double numbers in the schema.
-   *
-   * @return This DoubleSchema instance for method chaining.
-   */
-  public DoubleSchema setExclusiveMaximum() {
-    this.exclusiveMaximum = true;
-    return this;
-  }
 
   /**
    * Sets a constraint for a multiple of double numbers in the schema.
@@ -77,8 +56,6 @@ public final class DoubleSchema {
   DoubleSchemaConstraints build() {
     return new DoubleSchemaConstraints(minimum,
                                        maximum,
-                                       exclusiveMinimum,
-                                       exclusiveMaximum,
                                        multipleOf);
   }
 }

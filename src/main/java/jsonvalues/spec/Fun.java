@@ -185,16 +185,6 @@ class Fun {
                          ERROR_CODE.LONG_NOT_MULTIPLE_OF
       );
     }
-    if (constraints.exclusiveMinimum() && value.value == Long.MAX_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.LONG_EXCLUSIVE_MINIMUM
-      );
-    }
-    if (constraints.exclusiveMaximum() && value.value == Long.MIN_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.LONG_EXCLUSIVE_MAXIMUM
-      );
-    }
     return null;
   }
 
@@ -215,16 +205,6 @@ class Fun {
                          ERROR_CODE.INT_NOT_MULTIPLE_OF
       );
     }
-    if (constraints.exclusiveMinimum() && value.value == Integer.MAX_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.INT_EXCLUSIVE_MINIMUM
-      );
-    }
-    if (constraints.exclusiveMaximum() && value.value == Integer.MIN_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.INT_EXCLUSIVE_MAXIMUM
-      );
-    }
     return null;
   }
 
@@ -243,16 +223,6 @@ class Fun {
     if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
       return new JsError(value,
                          ERROR_CODE.DOUBLE_NOT_MULTIPLE_OF
-      );
-    }
-    if (constraints.exclusiveMinimum() && value.value == Double.MAX_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.DOUBLE_EXCLUSIVE_MINIMUM
-      );
-    }
-    if (constraints.exclusiveMaximum() && value.value == Double.MIN_VALUE) {
-      return new JsError(value,
-                         ERROR_CODE.DOUBLE_EXCLUSIVE_MAXIMUM
       );
     }
     return null;
@@ -279,18 +249,6 @@ class Fun {
                          ERROR_CODE.DECIMAL_NOT_MULTIPLE_OF
       );
     }
-    if (constraints.minimum() != null && constraints.exclusiveMinimum()
-        && jsBigDec.value.compareTo(constraints.minimum()) == 0) {
-      return new JsError(jsBigDec,
-                         ERROR_CODE.DECIMAL_EXCLUSIVE_MINIMUM
-      );
-    }
-    if (constraints.maximum() != null &&
-        constraints.exclusiveMaximum() && jsBigDec.value.compareTo(constraints.maximum()) == 0) {
-      return new JsError(jsBigDec,
-                         ERROR_CODE.DECIMAL_EXCLUSIVE_MAXIMUM
-      );
-    }
     return null;
   }
 
@@ -313,18 +271,7 @@ class Fun {
                          ERROR_CODE.BIGINT_NOT_MULTIPLE_OF
       );
     }
-    if (constraints.minimum() != null && constraints.exclusiveMinimum()
-        && jsBigInt.value.compareTo(constraints.minimum()) == 0) {
-      return new JsError(jsBigInt,
-                         ERROR_CODE.BIGINT_EXCLUSIVE_MINIMUM
-      );
-    }
-    if (constraints.maximum() != null &&
-        constraints.exclusiveMaximum() && jsBigInt.value.compareTo(constraints.maximum()) == 0) {
-      return new JsError(jsBigInt,
-                         ERROR_CODE.BIGINT_EXCLUSIVE_MAXIMUM
-      );
-    }
+
     return null;
   }
 }

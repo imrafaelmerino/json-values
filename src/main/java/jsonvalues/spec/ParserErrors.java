@@ -20,7 +20,6 @@ class ParserErrors {
   public static final String DOUBLE_LOWER_THAN_MINIMUM = "Double number lower than minimum";
   public static final String DOUBLE_GREATER_THAN_MAXIMUM = "Double number greater than maximum";
   public static final String DOUBLE_NOT_MULTIPLE_OF = "Double number is not multiple of";
-  public static final String DOUBLE__GREATER_THAN_MAXIMUM = "Double number greater than maximum";
   public static final String BIGINT_LOWER_THAN_MINIMUM = "BigInteger number lower than minimum";
   public static final String BIGINT_GREATER_THAN_MAXIMUM = "BigInteger number greater than maximum";
   public static final String BIGINT_NOT_MULTIPLE_OF = "BigInteger number is not multiple of";

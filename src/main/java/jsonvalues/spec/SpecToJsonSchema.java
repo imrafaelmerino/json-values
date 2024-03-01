@@ -47,8 +47,6 @@ public final class SpecToJsonSchema {
   private static final String MAX_LENGTH = "maxLength";
   private static final String PATTERN = "pattern";
   private static final String FORMAT = "format";
-  private static final String EXCLUSIVE_MINIMUM = "exclusiveMinimum";
-  private static final String EXCLUSIVE_MAXIMUM = "exclusiveMaximum";
   private static final String MULTIPLE_OF = "multipleOf";
   private static final String MINIMUM = "minimum";
   private static final String MAXIMUM = "maximum";
@@ -327,10 +325,6 @@ public final class SpecToJsonSchema {
                                MAXIMUM,
                                valuesConstraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING
                                                                                 : JsInt.of(valuesConstraints.maximum()),
-                               EXCLUSIVE_MINIMUM,
-                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                               EXCLUSIVE_MAXIMUM,
-                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                                MULTIPLE_OF,
                                valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
                                                                    : JsInt.of(valuesConstraints.multipleOf())
@@ -352,10 +346,6 @@ public final class SpecToJsonSchema {
                                MAXIMUM,
                                valuesConstraints.maximum() == null ? JsNothing.NOTHING
                                                                    : JsBigDec.of(valuesConstraints.maximum()),
-                               EXCLUSIVE_MINIMUM,
-                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                               EXCLUSIVE_MAXIMUM,
-                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                                MULTIPLE_OF,
                                valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
                                                                       : JsBigDec.of(valuesConstraints.multipleOf())
@@ -378,10 +368,6 @@ public final class SpecToJsonSchema {
                                MAXIMUM,
                                valuesConstraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
                                                                                        : JsDouble.of(valuesConstraints.maximum()),
-                               EXCLUSIVE_MINIMUM,
-                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                               EXCLUSIVE_MAXIMUM,
-                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                                MULTIPLE_OF,
                                valuesConstraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
                                                                                           : JsDouble.of(valuesConstraints.multipleOf())
@@ -403,10 +389,6 @@ public final class SpecToJsonSchema {
                                MAXIMUM,
                                valuesConstraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING
                                                                              : JsLong.of(valuesConstraints.maximum()),
-                               EXCLUSIVE_MINIMUM,
-                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                               EXCLUSIVE_MAXIMUM,
-                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                                MULTIPLE_OF,
                                valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
                                                                    : JsLong.of(valuesConstraints.multipleOf())
@@ -428,10 +410,6 @@ public final class SpecToJsonSchema {
                                MAXIMUM,
                                valuesConstraints.maximum() == null ? JsNothing.NOTHING
                                                                    : JsBigInt.of(valuesConstraints.maximum()),
-                               EXCLUSIVE_MINIMUM,
-                               valuesConstraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                               EXCLUSIVE_MAXIMUM,
-                               valuesConstraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                                MULTIPLE_OF,
                                valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
                                                                       : JsBigInt.of(valuesConstraints.multipleOf())
@@ -452,10 +430,6 @@ public final class SpecToJsonSchema {
                       constraints.minimum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.minimum()),
                       MAXIMUM,
                       constraints.maximum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.maximum()),
-                      EXCLUSIVE_MINIMUM,
-                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                      EXCLUSIVE_MAXIMUM,
-                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                       MULTIPLE_OF,
                       constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.multipleOf())
                      );
@@ -476,10 +450,6 @@ public final class SpecToJsonSchema {
                       MAXIMUM,
                       constraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
                                                                         : JsDouble.of(constraints.maximum()),
-                      EXCLUSIVE_MINIMUM,
-                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                      EXCLUSIVE_MAXIMUM,
-                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                       MULTIPLE_OF,
                       constraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
                                                                            : JsDouble.of(constraints.multipleOf())
@@ -499,10 +469,6 @@ public final class SpecToJsonSchema {
                       constraints.minimum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.minimum()),
                       MAXIMUM,
                       constraints.maximum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.maximum()),
-                      EXCLUSIVE_MINIMUM,
-                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                      EXCLUSIVE_MAXIMUM,
-                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                       MULTIPLE_OF,
                       constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.multipleOf())
                      );
@@ -521,10 +487,6 @@ public final class SpecToJsonSchema {
                       constraints.minimum() == Long.MIN_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.minimum()),
                       MAXIMUM,
                       constraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.maximum()),
-                      EXCLUSIVE_MINIMUM,
-                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                      EXCLUSIVE_MAXIMUM,
-                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                       MULTIPLE_OF,
                       constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsLong.of(constraints.multipleOf())
                      );
@@ -545,10 +507,6 @@ public final class SpecToJsonSchema {
                       MAXIMUM,
                       constraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING
                                                                  : JsInt.of(constraints.maximum()),
-                      EXCLUSIVE_MINIMUM,
-                      constraints.exclusiveMinimum() ? JsBool.TRUE : JsNothing.NOTHING,
-                      EXCLUSIVE_MAXIMUM,
-                      constraints.exclusiveMaximum() ? JsBool.TRUE : JsNothing.NOTHING,
                       MULTIPLE_OF,
                       constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsInt.of(constraints.multipleOf())
                      );

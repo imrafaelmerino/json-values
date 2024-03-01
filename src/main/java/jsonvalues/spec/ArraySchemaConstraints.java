@@ -1,6 +1,5 @@
 package jsonvalues.spec;
 
-//TODO uniqueItems no implementado
 record ArraySchemaConstraints(int minItems,
                               int maxItems,
                               boolean uniqueItems) {

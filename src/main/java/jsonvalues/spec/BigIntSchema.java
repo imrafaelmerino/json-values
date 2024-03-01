@@ -11,8 +11,6 @@ public final class BigIntSchema {
 
   private BigInteger minimum;
   private BigInteger maximum;
-  private boolean exclusiveMinimum;
-  private boolean exclusiveMaximum;
   private BigInteger multipleOf;
 
   /**
@@ -37,25 +35,6 @@ public final class BigIntSchema {
     return this;
   }
 
-  /**
-   * Sets the flag to enforce exclusive minimum value for BigInteger numbers in the schema.
-   *
-   * @return This BigIntSchema instance for method chaining.
-   */
-  public BigIntSchema setExclusiveMinimum() {
-    this.exclusiveMinimum = true;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive maximum value for BigInteger numbers in the schema.
-   *
-   * @return This BigIntSchema instance for method chaining.
-   */
-  public BigIntSchema setExclusiveMaximum() {
-    this.exclusiveMaximum = true;
-    return this;
-  }
 
   /**
    * Sets a constraint for a multiple of BigInteger numbers in the schema.
@@ -81,8 +60,6 @@ public final class BigIntSchema {
   BigIntSchemaConstraints build() {
     return new BigIntSchemaConstraints(minimum,
                                        maximum,
-                                       exclusiveMinimum,
-                                       exclusiveMaximum,
                                        multipleOf);
   }
 }

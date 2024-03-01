@@ -11,8 +11,6 @@ public final class DecimalSchema {
 
   private BigDecimal minimum;
   private BigDecimal maximum;
-  private boolean exclusiveMinimum;
-  private boolean exclusiveMaximum;
   private BigDecimal multipleOf;
 
   /**
@@ -34,26 +32,6 @@ public final class DecimalSchema {
    */
   public DecimalSchema setMaximum(final BigDecimal maximum) {
     this.maximum = Objects.requireNonNull(maximum);
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive minimum value for BigDecimal numbers in the schema.
-   *
-   * @return This DecimalSchema instance for method chaining.
-   */
-  public DecimalSchema setExclusiveMinimum() {
-    this.exclusiveMinimum = true;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive maximum value for BigDecimal numbers in the schema.
-   *
-   * @return This DecimalSchema instance for method chaining.
-   */
-  public DecimalSchema setExclusiveMaximum() {
-    this.exclusiveMaximum = true;
     return this;
   }
 
@@ -81,8 +59,6 @@ public final class DecimalSchema {
   DecimalSchemaConstraints build() {
     return new DecimalSchemaConstraints(minimum,
                                         maximum,
-                                        exclusiveMinimum,
-                                        exclusiveMaximum,
                                         multipleOf);
   }
 }

@@ -8,8 +8,6 @@ public final class IntegerSchema {
 
   private int minimum = Integer.MIN_VALUE;
   private int maximum = Integer.MAX_VALUE;
-  private boolean exclusiveMinimum;
-  private boolean exclusiveMaximum;
   private int multipleOf;
 
   /**
@@ -34,25 +32,6 @@ public final class IntegerSchema {
     return this;
   }
 
-  /**
-   * Sets the flag to enforce exclusive minimum value for integer numbers in the schema.
-   *
-   * @return This IntegerSchema instance for method chaining.
-   */
-  public IntegerSchema setExclusiveMinimum() {
-    this.exclusiveMinimum = true;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive maximum value for integer numbers in the schema.
-   *
-   * @return This IntegerSchema instance for method chaining.
-   */
-  public IntegerSchema setExclusiveMaximum() {
-    this.exclusiveMaximum = true;
-    return this;
-  }
 
   /**
    * Sets a constraint for a multiple of integer numbers in the schema.
@@ -77,8 +56,6 @@ public final class IntegerSchema {
   IntegerSchemaConstraints build() {
     return new IntegerSchemaConstraints(minimum,
                                         maximum,
-                                        exclusiveMinimum,
-                                        exclusiveMaximum,
                                         multipleOf);
   }
 }

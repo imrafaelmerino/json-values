@@ -21,7 +21,7 @@ public class JsSpecToJsonSchemaTests {
   @Test
   public void test() {
     JsObjSpec objSpec =
-        JsObjSpecBuilder.withName("person")
+        JsObjSpecBuilder.withName("person_with_embedded_address")
                         .build(JsObjSpec.of("name",
                                             JsSpecs.str(new StrSchema().setMinLength(3)
                                                                        .setMaxLength(10)
@@ -31,8 +31,6 @@ public class JsSpecToJsonSchemaTests {
                                             "age",
                                             JsSpecs.integer(new IntegerSchema().setMaximum(100)
                                                                                .setMinimum(0)
-                                                                               .setExclusiveMaximum()
-                                                                               .setExclusiveMinimum()
                                                            ),
                                             "address",
                                             JsObjSpec.of("street",
@@ -73,7 +71,7 @@ public class JsSpecToJsonSchemaTests {
     String KEY_COUNT_FIELD = "keyCount";
     String MEDIA_BUTTONS_FIELD = "mediaButtons";
     String CONNECTED_DEVICES_FIELD = "connectedDevices";
-    String PERIPHERAL_FIELD = "peripheral";
+    String PERIPHERAL_FIELD = "peripheral_device";
     JsObjSpec baseSpec =
         JsObjSpec.of(NAME_FIELD,
                      JsSpecs.str(),
@@ -84,7 +82,7 @@ public class JsSpecToJsonSchemaTests {
                                          "usb_hub"));
 
     JsObjSpec mouseSpec =
-        JsObjSpecBuilder.withName("mouse")
+        JsObjSpecBuilder.withName("mouse_device")
                         .build(JsObjSpec.of(BUTTON_COUNT_FIELD,
                                             JsSpecs.integer(),
                                             WHEEL_COUNT_FIELD,
@@ -96,7 +94,7 @@ public class JsSpecToJsonSchemaTests {
                         .concat(baseSpec);
 
     JsObjSpec keyboardSpec =
-        JsObjSpecBuilder.withName("keyboard")
+        JsObjSpecBuilder.withName("keyboard_device")
                         .build(JsObjSpec.of(KEY_COUNT_FIELD,
                                             JsSpecs.integer(),
                                             MEDIA_BUTTONS_FIELD,
@@ -105,7 +103,7 @@ public class JsSpecToJsonSchemaTests {
                         .concat(baseSpec);
 
     JsObjSpec usbHubSpec =
-        JsObjSpecBuilder.withName("usb_hub")
+        JsObjSpecBuilder.withName("usb_hub_device")
                         .withFieldsDefaults(Map.of(CONNECTED_DEVICES_FIELD,
                                                    JsNull.NULL))
                         .build(JsObjSpec.of(CONNECTED_DEVICES_FIELD,
@@ -127,7 +125,7 @@ public class JsSpecToJsonSchemaTests {
                                             {
                                               "$schema": "https://json-schema.org/draft/2019-09/schema",
                                               "defs": {
-                                                "peripheral": {
+                                                "peripheral_device": {
                                                   "oneOf": [
                                                     {
                                                       "properties": {
@@ -157,7 +155,7 @@ public class JsSpecToJsonSchemaTests {
                                                       },
                                                       "additionalProperties": false,
                                                       "type": "object",
-                                                      "$id": "mouse",
+                                                      "$id": "mouse_device",
                                                       "required": [
                                                         "buttonCount",
                                                         "wheelCount",
@@ -188,7 +186,7 @@ public class JsSpecToJsonSchemaTests {
                                                       },
                                                       "additionalProperties": false,
                                                       "type": "object",
-                                                      "$id": "keyboard",
+                                                      "$id": "keyboard_device",
                                                       "required": [
                                                         "keyCount",
                                                         "mediaButtons",
@@ -203,7 +201,7 @@ public class JsSpecToJsonSchemaTests {
                                                         },
                                                         "connectedDevices": {
                                                           "items": {
-                                                            "$ref": "#/defs/peripheral"
+                                                            "$ref": "#/defs/peripheral_device"
                                                           },
                                                           "default": null,
                                                           "type": [
@@ -222,7 +220,7 @@ public class JsSpecToJsonSchemaTests {
                                                       },
                                                       "additionalProperties": false,
                                                       "type": "object",
-                                                      "$id": "usb_hub",
+                                                      "$id": "usb_hub_device",
                                                       "required": [
                                                         "name",
                                                         "type"
@@ -260,7 +258,7 @@ public class JsSpecToJsonSchemaTests {
                                                   },
                                                   "additionalProperties": false,
                                                   "type": "object",
-                                                  "$id": "mouse",
+                                                  "$id": "mouse_device",
                                                   "required": [
                                                     "buttonCount",
                                                     "wheelCount",
@@ -291,7 +289,7 @@ public class JsSpecToJsonSchemaTests {
                                                   },
                                                   "additionalProperties": false,
                                                   "type": "object",
-                                                  "$id": "keyboard",
+                                                  "$id": "keyboard_device",
                                                   "required": [
                                                     "keyCount",
                                                     "mediaButtons",
@@ -306,7 +304,7 @@ public class JsSpecToJsonSchemaTests {
                                                     },
                                                     "connectedDevices": {
                                                       "items": {
-                                                        "$ref": "#/defs/peripheral"
+                                                        "$ref": "#/defs/peripheral_device"
                                                       },
                                                       "default": null,
                                                       "type": [
@@ -325,14 +323,14 @@ public class JsSpecToJsonSchemaTests {
                                                   },
                                                   "additionalProperties": false,
                                                   "type": "object",
-                                                  "$id": "usb_hub",
+                                                  "$id": "usb_hub_device",
                                                   "required": [
                                                     "name",
                                                     "type"
                                                   ]
                                                 }
                                               ],
-                                              "$id": "peripheral"
+                                              "$id": "peripheral_device"
                                             }"""),
                             SpecToJsonSchema.convert(peripheralSpec));
   }

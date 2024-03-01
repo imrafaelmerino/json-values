@@ -8,8 +8,6 @@ public final class LongSchema {
 
   private long minimum = Long.MIN_VALUE;
   private long maximum = Long.MAX_VALUE;
-  private boolean exclusiveMinimum;
-  private boolean exclusiveMaximum;
   private long multipleOf;
 
   /**
@@ -31,26 +29,6 @@ public final class LongSchema {
    */
   public LongSchema setMaximum(final long maximum) {
     this.maximum = maximum;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive minimum value for long numbers in the schema.
-   *
-   * @return This LongSchema instance for method chaining.
-   */
-  public LongSchema setExclusiveMinimum() {
-    this.exclusiveMinimum = true;
-    return this;
-  }
-
-  /**
-   * Sets the flag to enforce exclusive maximum value for long numbers in the schema.
-   *
-   * @return This LongSchema instance for method chaining.
-   */
-  public LongSchema setExclusiveMaximum() {
-    this.exclusiveMaximum = true;
     return this;
   }
 
@@ -77,8 +55,6 @@ public final class LongSchema {
   LongSchemaConstraints build() {
     return new LongSchemaConstraints(minimum,
                                      maximum,
-                                     exclusiveMinimum,
-                                     exclusiveMaximum,
                                      multipleOf);
   }
 }
