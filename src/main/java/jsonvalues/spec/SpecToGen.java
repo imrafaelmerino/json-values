@@ -1002,7 +1002,6 @@ public final class SpecToGen {
     if (constraints == null) {
       gen = JsDoubleGen.biased();
     } else {
-      //todo multiple of
       gen = JsDoubleGen.biased(constraints.minimum(),
                                constraints.maximum()
                               );
@@ -1035,7 +1034,6 @@ public final class SpecToGen {
     if (constraints == null) {
       gen = JsBigIntGen.biased();
     } else {
-      //todo multiple of
       gen = JsBigIntGen.biased(constraints.minimum(),
                                constraints.maximum()
                               );
@@ -1093,7 +1091,6 @@ public final class SpecToGen {
     if (constraints == null) {
       gen = JsIntGen.biased();
     } else {
-      //todo multiple of
       gen = JsIntGen.biased(constraints.minimum(),
                             constraints.maximum()
                            );
@@ -1111,7 +1108,6 @@ public final class SpecToGen {
     if (constraints == null) {
       gen = JsLongGen.biased();
     } else {
-      //todo multiple of
       gen = JsLongGen.biased(constraints.minimum(),
                              constraints.maximum()
                             );

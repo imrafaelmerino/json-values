@@ -3,8 +3,7 @@ package jsonvalues.spec;
 import java.math.BigDecimal;
 
 record DecimalSchemaConstraints(BigDecimal minimum,
-                                BigDecimal maximum,
-                                BigDecimal multipleOf) {
+                                BigDecimal maximum) {
 
   DecimalSchemaConstraints {
     if (minimum != null && maximum != null && minimum

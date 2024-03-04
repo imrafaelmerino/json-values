@@ -29,10 +29,10 @@ public class TestExample {
   public void test() {
 
     JsObjSpec spec = JsObjSpec.of("name",
-                                  str(new StrSchema().setPattern("\\w+")),
+                                  str(StrSchema.withPattern("\\w+")),
                                   "surname",
-                                  str(new StrSchema().setMaxLength(20)
-                                                     .setMinLength(2)),
+                                  str(StrSchema.withLength(2,
+                                                           20)),
                                   "languages",
                                   JsSpecs.arrayOfStr(),
                                   "age",

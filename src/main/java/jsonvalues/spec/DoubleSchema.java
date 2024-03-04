@@ -8,54 +8,30 @@ public final class DoubleSchema {
 
   private double minimum = Double.NEGATIVE_INFINITY;
   private double maximum = Double.POSITIVE_INFINITY;
-  private double multipleOf;
 
-  /**
-   * Sets the minimum value for double numbers in the schema.
-   *
-   * @param minimum The minimum value (inclusive).
-   * @return This DoubleSchema instance for method chaining.
-   */
-  public DoubleSchema setMinimum(final double minimum) {
-    this.minimum = minimum;
-    return this;
+  public static DoubleSchema withMinimum(final double minimum) {
+    var schema = new DoubleSchema();
+    schema.minimum = minimum;
+    return schema;
   }
 
-  /**
-   * Sets the maximum value for double numbers in the schema.
-   *
-   * @param maximum The maximum value (inclusive).
-   * @return This DoubleSchema instance for method chaining.
-   */
-  public DoubleSchema setMaximum(final double maximum) {
-    this.maximum = maximum;
-    return this;
+  public static DoubleSchema withMaximum(final double maximum) {
+    var schema = new DoubleSchema();
+    schema.maximum = maximum;
+    return schema;
+  }
+
+  public static DoubleSchema betweenInterval(final double minimum,
+                                             final double maximum) {
+    var schema = new DoubleSchema();
+    schema.minimum = minimum;
+    schema.maximum = maximum;
+    return schema;
   }
 
 
-  /**
-   * Sets a constraint for a multiple of double numbers in the schema.
-   *
-   * @param multipleOf The value that the double numbers must be a multiple of.
-   * @return This DoubleSchema instance for method chaining.
-   * @throws IllegalArgumentException If multipleOf is not greater than 0.
-   */
-  public DoubleSchema setMultipleOf(final double multipleOf) {
-    if (multipleOf <= 0) {
-      throw new IllegalArgumentException("multipleOf must be > 0");
-    }
-    this.multipleOf = multipleOf;
-    return this;
-  }
-
-  /**
-   * Builds and returns an instance of DoubleSchemaConstraints based on the specified constraints.
-   *
-   * @return An instance of DoubleSchemaConstraints with the specified constraints.
-   */
   DoubleSchemaConstraints build() {
     return new DoubleSchemaConstraints(minimum,
-                                       maximum,
-                                       multipleOf);
+                                       maximum);
   }
 }

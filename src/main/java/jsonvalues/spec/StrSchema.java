@@ -11,6 +11,36 @@ public final class StrSchema {
   private String pattern;
   private String format;
 
+  private StrSchema() {
+  }
+
+  public static StrSchema withLength(final int minLength,
+                                     final int maxLength) {
+    var schema = new StrSchema();
+    schema.minLength = minLength;
+    schema.maxLength = maxLength;
+    return schema;
+  }
+
+  public static StrSchema withMinLength(final int minLength) {
+    var schema = new StrSchema();
+    schema.minLength = minLength;
+    return schema;
+  }
+
+  public static StrSchema withMaxLength(final int maxLength) {
+    var schema = new StrSchema();
+    schema.maxLength = maxLength;
+    return schema;
+  }
+
+  public static StrSchema withPattern(final String pattern) {
+    var schema = new StrSchema();
+    schema.pattern = pattern;
+    return schema;
+  }
+
+
   /**
    * Sets the minimum length for string values in the schema.
    *
@@ -67,30 +97,5 @@ public final class StrSchema {
                               format);
   }
 
-  /**
-   * Enumerates built-in formats for string values.
-   */
-  public enum BUILT_INT_FORMAT {
-    DATE_TIME("date-time"),
-    DATE("date"),
-    BASE64("base64"),
-    TIME("time"),
-    EMAIL("email"),
-    HOSTNAME("hostname"),
-    IPV4("ipv4"),
-    IPV6("ipv6"),
-    URI("uri"),
-    URI_REFERENCE("uri-reference"),
-    URI_TEMPLATE("uri-template"),
-    JSON_POINTER("json-pointer"),
-    RELATIVE_JSON_POINTER("relative-json-pointer"),
-    REGEX("regex"),
-    UUID("uuid");
 
-    final String format;
-
-    BUILT_INT_FORMAT(final String format) {
-      this.format = format;
-    }
-  }
 }

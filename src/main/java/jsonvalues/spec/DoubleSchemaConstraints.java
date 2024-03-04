@@ -2,8 +2,7 @@ package jsonvalues.spec;
 
 
 record DoubleSchemaConstraints(double minimum,
-                               double maximum,
-                               double multipleOf) {
+                               double maximum) {
 
   DoubleSchemaConstraints {
     if (minimum > maximum) {

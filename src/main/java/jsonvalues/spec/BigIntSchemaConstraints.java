@@ -3,8 +3,7 @@ package jsonvalues.spec;
 import java.math.BigInteger;
 
 record BigIntSchemaConstraints(BigInteger minimum,
-                               BigInteger maximum,
-                               BigInteger multipleOf) {
+                               BigInteger maximum) {
 
   BigIntSchemaConstraints {
 

@@ -68,20 +68,21 @@ public class SpecToGenTests {
   public void test_primitives_with_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.str(new StrSchema().setMinLength(0)
-                                                       .setMaxLength(10)),
+                            JsSpecs.str(StrSchema.withLength(0,
+                                                             10)),
                             "b",
-                            JsSpecs.decimal(new DecimalSchema().setMinimum(BigDecimal.ZERO)
-                                                               .setMaximum(BigDecimal.TEN)),
+                            JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
+                                                                          BigDecimal.TEN)
+                                           ),
                             "c",
-                            JsSpecs.doubleNumber(new DoubleSchema().setMinimum(0.0)
-                                                                   .setMaximum(10.0)),
+                            JsSpecs.doubleNumber(DoubleSchema.betweenInterval(0.0,
+                                                                              10.0)),
                             "d",
-                            JsSpecs.integer(new IntegerSchema().setMinimum(0)
-                                                               .setMaximum(10)),
+                            JsSpecs.integer(IntegerSchema.betweenInterval(0,
+                                                                          10)),
                             "e",
-                            JsSpecs.longInteger(new LongSchema().setMinimum(0L)
-                                                                .setMaximum(10L)),
+                            JsSpecs.longInteger(LongSchema.betweenInterval(0,
+                                                                           10)),
                             "f",
                             JsSpecs.bool(),
                             "g",
@@ -92,20 +93,21 @@ public class SpecToGenTests {
                                            ),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.str(new StrSchema().setMinLength(0)
-                                                                    .setMaxLength(10)),
+                                         JsSpecs.str(StrSchema.withLength(0,
+                                                                          10)),
                                          "b",
-                                         JsSpecs.decimal(new DecimalSchema().setMinimum(BigDecimal.ZERO)
-                                                                            .setMaximum(BigDecimal.TEN)),
+                                         JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
+                                                                                       BigDecimal.TEN)),
                                          "c",
-                                         JsSpecs.doubleNumber(new DoubleSchema().setMinimum(0.0)
-                                                                                .setMaximum(10.0)),
+                                         JsSpecs.doubleNumber(DoubleSchema.betweenInterval(0.0,
+                                                                                           10.0)),
                                          "d",
-                                         JsSpecs.integer(new IntegerSchema().setMinimum(0)
-                                                                            .setMaximum(10)),
+                                         JsSpecs.integer(IntegerSchema.betweenInterval(0,
+                                                                                       10)
+                                                        ),
                                          "e",
-                                         JsSpecs.longInteger(new LongSchema().setMinimum(0L)
-                                                                             .setMaximum(10L)),
+                                         JsSpecs.longInteger(LongSchema.betweenInterval(0,
+                                                                                        10)),
                                          "f",
                                          JsSpecs.bool(),
                                          "g",
@@ -114,11 +116,13 @@ public class SpecToGenTests {
                                                                                                            ChronoUnit.DAYS)
                                                                                        )),
                                          "h",
-                                         JsSpecs.decimal(new DecimalSchema().setMinimum(BigDecimal.ZERO)
-                                                                            .setMaximum(BigDecimal.TEN)),
+                                         JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
+                                                                                       BigDecimal.TEN)),
                                          "i",
-                                         JsSpecs.bigInteger(new BigIntSchema().setMinimum(new BigInteger("10000000000000000"))
-                                                                              .setMaximum(new BigInteger("20000000000000000"))),
+                                         JsSpecs.bigInteger(BigIntSchema.betweenInterval(new BigInteger("10000000000000000"),
+                                                                                         new BigInteger("20000000000000000")
+                                                                                        )
+                                                           ),
                                          "j",
                                          JsSpecs.binary()
                                         )
@@ -269,20 +273,20 @@ public class SpecToGenTests {
   public void test_array_of_primitives_with_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.arrayOfStr(new StrSchema().setMinLength(0)
-                                                              .setMaxLength(10)),
+                            JsSpecs.arrayOfStr(StrSchema.withLength(0,
+                                                                    10)),
                             "b",
-                            JsSpecs.arrayOfDec(new DecimalSchema().setMinimum(BigDecimal.ZERO)
-                                                                  .setMaximum(BigDecimal.TEN)),
+                            JsSpecs.arrayOfDec(DecimalSchema.betweenInterval(BigDecimal.ZERO,
+                                                                             BigDecimal.TEN)),
                             "c",
-                            JsSpecs.arrayOfDouble(new DoubleSchema().setMinimum(0.0)
-                                                                    .setMaximum(10.0)),
+                            JsSpecs.arrayOfDouble(DoubleSchema.betweenInterval(0.0,
+                                                                               10.0)),
                             "d",
-                            JsSpecs.arrayOfInt(new IntegerSchema().setMinimum(0)
-                                                                  .setMaximum(10)),
+                            JsSpecs.arrayOfInt(IntegerSchema.betweenInterval(0,
+                                                                             10)),
                             "e",
-                            JsSpecs.arrayOfLong(new LongSchema().setMaximum(10L)
-                                                                .setMinimum(0L)),
+                            JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
+                                                                           10)),
                             "f",
                             JsSpecs.arrayOfBool(),
                             "g",
@@ -294,27 +298,27 @@ public class SpecToGenTests {
                                                ),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.arrayOfStr(new StrSchema().setMinLength(0)
-                                                                           .setMaxLength(10)),
+                                         JsSpecs.arrayOfStr(StrSchema.withLength(0,
+                                                                                 10)),
                                          "b",
-                                         JsSpecs.arrayOfDec(new DecimalSchema().setMaximum(BigDecimal.TEN)
-                                                                               .setMinimum(BigDecimal.ZERO)),
+                                         JsSpecs.arrayOfDec(DecimalSchema.betweenInterval(BigDecimal.ZERO,
+                                                                                          BigDecimal.TEN)),
                                          "c",
-                                         JsSpecs.arrayOfDouble(new DoubleSchema().setMaximum(10.0)
-                                                                                 .setMinimum(0.0)),
+                                         JsSpecs.arrayOfDouble(DoubleSchema.betweenInterval(0.0,
+                                                                                            10.0)),
                                          "d",
-                                         JsSpecs.arrayOfInt(new IntegerSchema().setMinimum(0)
-                                                                               .setMaximum(10)),
+                                         JsSpecs.arrayOfInt(IntegerSchema.betweenInterval(0,
+                                                                                          10)),
                                          "e",
-                                         JsSpecs.arrayOfLong(new LongSchema().setMaximum(10L)
-                                                                             .setMinimum(0L)),
+                                         JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
+                                                                                        10)),
                                          "f",
                                          JsSpecs.arrayOfBool(),
                                          "g",
                                          JsSpecs.arrayOfSpec(JsSpecs.instant()),
                                          "i",
-                                         JsSpecs.arrayOfBigInt(new BigIntSchema().setMinimum(new BigInteger("10000000000000000"))
-                                                                                 .setMaximum(new BigInteger("20000000000000000"))),
+                                         JsSpecs.arrayOfBigInt(BigIntSchema.betweenInterval(new BigInteger("10000000000000000"),
+                                                                                            new BigInteger("20000000000000000"))),
                                          "j",
                                          JsSpecs.arrayOfSpec(JsSpecs.binary()
                                                             )

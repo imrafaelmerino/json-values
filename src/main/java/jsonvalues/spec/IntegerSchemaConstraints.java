@@ -2,8 +2,7 @@ package jsonvalues.spec;
 
 
 record IntegerSchemaConstraints(int minimum,
-                                int maximum,
-                                int multipleOf) {
+                                int maximum) {
 
   IntegerSchemaConstraints {
     if (minimum > maximum) {

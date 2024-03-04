@@ -23,21 +23,21 @@ public class JsSpecToJsonSchemaTests {
     JsObjSpec objSpec =
         JsObjSpecBuilder.withName("person_with_embedded_address")
                         .build(JsObjSpec.of("name",
-                                            JsSpecs.str(new StrSchema().setMinLength(3)
-                                                                       .setMaxLength(10)
-                                                                       .setPattern("[a-z]+")
-                                                                       .setFormat("email")
+                                            JsSpecs.str(StrSchema.withLength(3,
+                                                                             10)
+                                                                 .setPattern("[a-z]+")
+                                                                 .setFormat("email")
                                                        ),
                                             "age",
-                                            JsSpecs.integer(new IntegerSchema().setMaximum(100)
-                                                                               .setMinimum(0)
+                                            JsSpecs.integer(IntegerSchema.betweenInterval(0,
+                                                                                          100)
                                                            ),
                                             "address",
                                             JsObjSpec.of("street",
-                                                         JsSpecs.str(new StrSchema().setMinLength(5)
-                                                                                    .setMaxLength(10)
-                                                                                    .setPattern("[a-z]+")
-                                                                                    .setFormat("email")),
+                                                         JsSpecs.str(StrSchema.withLength(5,
+                                                                                          10)
+                                                                              .setPattern("[a-z]+")
+                                                                              .setFormat("email")),
                                                          "city",
                                                          JsSpecs.str(),
                                                          "zip",
@@ -630,10 +630,10 @@ public class JsSpecToJsonSchemaTests {
   @Test
   public void testStrSchema() {
 
-    StrSchema strSchema = new StrSchema().setMinLength(1)
-                                         .setMaxLength(2)
-                                         .setFormat("email")
-                                         .setPattern(".*");
+    StrSchema strSchema = StrSchema.withLength(1,
+                                               2)
+                                   .setFormat("email")
+                                   .setPattern(".*");
     var spec = JsObjSpec.of("a",
                             JsSpecs.str(strSchema),
                             "b",
@@ -674,11 +674,10 @@ public class JsSpecToJsonSchemaTests {
   @Test
   public void testStringConstraints() {
 
-    StrSchema strSchema = new StrSchema()
-        .setMinLength(3)
-        .setMaxLength(5)
-        .setFormat("digits")
-        .setPattern("\\[a-z]+");
+    StrSchema strSchema = StrSchema.withLength(3,
+                                               5)
+                                   .setFormat("digits")
+                                   .setPattern("\\[a-z]+");
     JsSpec strSpec = JsSpecs.str(strSchema
                                 );
     JsObjSpec objSpec = JsObjSpec.of("a",
@@ -716,11 +715,10 @@ public class JsSpecToJsonSchemaTests {
   @Test
   public void testArrayOfStringConstraints() {
 
-    StrSchema strSchema = new StrSchema()
-        .setMinLength(3)
-        .setMaxLength(5)
-        .setFormat("digits")
-        .setPattern("\\[a-z]+");
+    StrSchema strSchema = StrSchema.withLength(3,
+                                               5)
+                                   .setFormat("digits")
+                                   .setPattern("\\[a-z]+");
 
     JsObjSpec objSpec = JsObjSpec.of("b",
                                      JsSpecs.arrayOfStr(strSchema)

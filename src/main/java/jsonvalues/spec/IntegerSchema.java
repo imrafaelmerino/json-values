@@ -8,54 +8,29 @@ public final class IntegerSchema {
 
   private int minimum = Integer.MIN_VALUE;
   private int maximum = Integer.MAX_VALUE;
-  private int multipleOf;
 
-  /**
-   * Sets the minimum value for integer numbers in the schema.
-   *
-   * @param minimum The minimum value (inclusive).
-   * @return This IntegerSchema instance for method chaining.
-   */
-  public IntegerSchema setMinimum(final int minimum) {
-    this.minimum = minimum;
-    return this;
+  public static IntegerSchema withMinimum(final int minimum) {
+    var schema = new IntegerSchema();
+    schema.minimum = minimum;
+    return schema;
   }
 
-  /**
-   * Sets the maximum value for integer numbers in the schema.
-   *
-   * @param maximum The maximum value (inclusive).
-   * @return This IntegerSchema instance for method chaining.
-   */
-  public IntegerSchema setMaximum(final int maximum) {
-    this.maximum = maximum;
-    return this;
+  public static IntegerSchema withMaximum(final int maximum) {
+    var schema = new IntegerSchema();
+    schema.maximum = maximum;
+    return schema;
   }
 
-
-  /**
-   * Sets a constraint for a multiple of integer numbers in the schema.
-   *
-   * @param multipleOf The value that the integer numbers must be a multiple of.
-   * @return This IntegerSchema instance for method chaining.
-   * @throws IllegalArgumentException If multipleOf is not greater than 0.
-   */
-  public IntegerSchema setMultipleOf(final int multipleOf) {
-    if (multipleOf <= 0) {
-      throw new IllegalArgumentException("multipleOf must be > 0");
-    }
-    this.multipleOf = multipleOf;
-    return this;
+  public static IntegerSchema betweenInterval(final int minimum,
+                                              final int maximum) {
+    var schema = new IntegerSchema();
+    schema.minimum = minimum;
+    schema.maximum = maximum;
+    return schema;
   }
 
-  /**
-   * Builds and returns an instance of IntegerSchemaConstraints based on the specified constraints.
-   *
-   * @return An instance of IntegerSchemaConstraints with the specified constraints.
-   */
   IntegerSchemaConstraints build() {
     return new IntegerSchemaConstraints(minimum,
-                                        maximum,
-                                        multipleOf);
+                                        maximum);
   }
 }

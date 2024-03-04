@@ -1,8 +1,7 @@
 package jsonvalues.spec;
 
 record LongSchemaConstraints(long minimum,
-                             long maximum,
-                             long multipleOf) {
+                             long maximum) {
 
   LongSchemaConstraints {
     if (minimum > maximum) {

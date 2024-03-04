@@ -110,5 +110,7 @@ New features:
 - `SpecToGen` to convert specs into generators
 - `JsBigIntGen` new methods `biased(min, max)` and `arbitrary(min,max)` 
 
+Bugs:
 
+- `writeBinary` method in `JsWritter` class
 

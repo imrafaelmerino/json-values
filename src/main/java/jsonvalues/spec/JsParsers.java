@@ -726,11 +726,6 @@ final class JsParsers {
                                       );
     }
 
-    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
-      throw JsParserException.reasonAt(ParserErrors.LONG_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
   }
 
   private void validateBigInteger(final BigIntSchemaConstraints schema,
@@ -745,12 +740,6 @@ final class JsParsers {
     if (schema.maximum() != null && schema.maximum()
                                           .compareTo(value) < 0) {
       throw JsParserException.reasonAt(ParserErrors.BIGINT_GREATER_THAN_MAXIMUM,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
-    if (schema.multipleOf() != null && value.mod(schema.multipleOf())
-                                            .compareTo(BigInteger.ZERO) != 0) {
-      throw JsParserException.reasonAt(ParserErrors.BIGINT_NOT_MULTIPLE_OF,
                                        dslJsReader.getPositionInStream()
                                       );
     }
@@ -770,11 +759,6 @@ final class JsParsers {
                                       );
     }
 
-    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
-      throw JsParserException.reasonAt(ParserErrors.INT_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
 
   }
 
@@ -810,12 +794,6 @@ final class JsParsers {
       throw JsParserException.reasonAt(ParserErrors.DECIMAL_GREATER_THAN_MAXIMUM,
                                        dslJsReader.getPositionInStream());
     }
-    if (schema.multipleOf() != null && value.remainder(schema.multipleOf())
-                                            .compareTo(BigDecimal.ZERO) != 0) {
-      throw JsParserException.reasonAt(ParserErrors.DECIMAL_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream());
-    }
-
   }
 
   private void validateDouble(final DoubleSchemaConstraints schema,
@@ -832,11 +810,6 @@ final class JsParsers {
                                       );
     }
 
-    if (schema.multipleOf() != 0 && value % schema.multipleOf() != 0) {
-      throw JsParserException.reasonAt(ParserErrors.DOUBLE_NOT_MULTIPLE_OF,
-                                       dslJsReader.getPositionInStream()
-                                      );
-    }
   }
 
   JsParser ofMapOfDouble(boolean nullable,

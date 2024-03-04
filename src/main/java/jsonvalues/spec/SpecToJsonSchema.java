@@ -14,7 +14,6 @@ import jsonvalues.JsNothing;
 import jsonvalues.JsObj;
 import jsonvalues.JsStr;
 import jsonvalues.JsValue;
-import jsonvalues.spec.StrSchema.BUILT_INT_FORMAT;
 
 /**
  * Utility class for converting JSON specifications (JsObjSpec or JsArraySpec) to JSON schemas represented with a JsObj.
@@ -47,7 +46,6 @@ public final class SpecToJsonSchema {
   private static final String MAX_LENGTH = "maxLength";
   private static final String PATTERN = "pattern";
   private static final String FORMAT = "format";
-  private static final String MULTIPLE_OF = "multipleOf";
   private static final String MINIMUM = "minimum";
   private static final String MAXIMUM = "maximum";
   private static final String UNIQUE_ITEMS = "uniqueItems";
@@ -324,10 +322,7 @@ public final class SpecToJsonSchema {
                                                                                 : JsInt.of(valuesConstraints.minimum()),
                                MAXIMUM,
                                valuesConstraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING
-                                                                                : JsInt.of(valuesConstraints.maximum()),
-                               MULTIPLE_OF,
-                               valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
-                                                                   : JsInt.of(valuesConstraints.multipleOf())
+                                                                                : JsInt.of(valuesConstraints.maximum())
                               ));
     }
     return getMapOfIntegerSchema();
@@ -345,10 +340,7 @@ public final class SpecToJsonSchema {
                                                                    : JsBigDec.of(valuesConstraints.minimum()),
                                MAXIMUM,
                                valuesConstraints.maximum() == null ? JsNothing.NOTHING
-                                                                   : JsBigDec.of(valuesConstraints.maximum()),
-                               MULTIPLE_OF,
-                               valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
-                                                                      : JsBigDec.of(valuesConstraints.multipleOf())
+                                                                   : JsBigDec.of(valuesConstraints.maximum())
                               ));
     }
     return getMapOfNumberSchema();
@@ -367,10 +359,7 @@ public final class SpecToJsonSchema {
                                                                                        : JsDouble.of(valuesConstraints.minimum()),
                                MAXIMUM,
                                valuesConstraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
-                                                                                       : JsDouble.of(valuesConstraints.maximum()),
-                               MULTIPLE_OF,
-                               valuesConstraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
-                                                                                          : JsDouble.of(valuesConstraints.multipleOf())
+                                                                                       : JsDouble.of(valuesConstraints.maximum())
                               ));
     }
     return getMapOfNumberSchema();
@@ -388,10 +377,7 @@ public final class SpecToJsonSchema {
                                                                              : JsLong.of(valuesConstraints.minimum()),
                                MAXIMUM,
                                valuesConstraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING
-                                                                             : JsLong.of(valuesConstraints.maximum()),
-                               MULTIPLE_OF,
-                               valuesConstraints.multipleOf() == 0 ? JsNothing.NOTHING
-                                                                   : JsLong.of(valuesConstraints.multipleOf())
+                                                                             : JsLong.of(valuesConstraints.maximum())
                               ));
     }
     return getMapOfIntegerSchema();
@@ -409,11 +395,8 @@ public final class SpecToJsonSchema {
                                                                    : JsBigInt.of(valuesConstraints.minimum()),
                                MAXIMUM,
                                valuesConstraints.maximum() == null ? JsNothing.NOTHING
-                                                                   : JsBigInt.of(valuesConstraints.maximum()),
-                               MULTIPLE_OF,
-                               valuesConstraints.multipleOf() == null ? JsNothing.NOTHING
-                                                                      : JsBigInt.of(valuesConstraints.multipleOf())
-                              ));
+                                                                   : JsBigInt.of(valuesConstraints.maximum()))
+                     );
     }
     return getMapOfIntegerSchema();
   }
@@ -429,9 +412,7 @@ public final class SpecToJsonSchema {
                       MINIMUM,
                       constraints.minimum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.minimum()),
                       MAXIMUM,
-                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.maximum()),
-                      MULTIPLE_OF,
-                      constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.multipleOf())
+                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigDec.of(constraints.maximum())
                      );
     }
     return getNumberSchema(s);
@@ -449,10 +430,7 @@ public final class SpecToJsonSchema {
                                                                         : JsDouble.of(constraints.minimum()),
                       MAXIMUM,
                       constraints.maximum() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
-                                                                        : JsDouble.of(constraints.maximum()),
-                      MULTIPLE_OF,
-                      constraints.multipleOf() == Double.POSITIVE_INFINITY ? JsNothing.NOTHING
-                                                                           : JsDouble.of(constraints.multipleOf())
+                                                                        : JsDouble.of(constraints.maximum())
                      );
     }
     return getNumberSchema(s);
@@ -468,9 +446,7 @@ public final class SpecToJsonSchema {
                       MINIMUM,
                       constraints.minimum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.minimum()),
                       MAXIMUM,
-                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.maximum()),
-                      MULTIPLE_OF,
-                      constraints.multipleOf() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.multipleOf())
+                      constraints.maximum() == null ? JsNothing.NOTHING : JsBigInt.of(constraints.maximum())
                      );
     }
     return getIntSchema(s);
@@ -486,9 +462,7 @@ public final class SpecToJsonSchema {
                       MINIMUM,
                       constraints.minimum() == Long.MIN_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.minimum()),
                       MAXIMUM,
-                      constraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.maximum()),
-                      MULTIPLE_OF,
-                      constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsLong.of(constraints.multipleOf())
+                      constraints.maximum() == Long.MAX_VALUE ? JsNothing.NOTHING : JsLong.of(constraints.maximum())
                      );
     }
     return getIntSchema(s);
@@ -506,9 +480,7 @@ public final class SpecToJsonSchema {
                                                                  : JsInt.of(constraints.minimum()),
                       MAXIMUM,
                       constraints.maximum() == Integer.MAX_VALUE ? JsNothing.NOTHING
-                                                                 : JsInt.of(constraints.maximum()),
-                      MULTIPLE_OF,
-                      constraints.multipleOf() == 0 ? JsNothing.NOTHING : JsInt.of(constraints.multipleOf())
+                                                                 : JsInt.of(constraints.maximum())
                      );
     }
     return getIntSchema(s);
@@ -588,7 +560,7 @@ public final class SpecToJsonSchema {
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
                              FORMAT,
-                             JsStr.of(BUILT_INT_FORMAT.DATE_TIME.format)
+                             JsStr.of("date-time")
                             )
                    );
   }
@@ -610,7 +582,7 @@ public final class SpecToJsonSchema {
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
                              CONTENT_ENCODING,
-                             JsStr.of(BUILT_INT_FORMAT.BASE64.format)
+                             JsStr.of("base64")
                             )
                    );
   }
@@ -685,13 +657,13 @@ public final class SpecToJsonSchema {
                                  JsStr.of(NULL)
                                 ),
                       CONTENT_ENCODING,
-                      JsStr.of(BUILT_INT_FORMAT.BASE64.format)
+                      JsStr.of("base64")
                      );
     }
     return JsObj.of(TYPE,
                     JsStr.of(STRING),
                     CONTENT_ENCODING,
-                    JsStr.of(BUILT_INT_FORMAT.BASE64.format));
+                    JsStr.of("base64"));
   }
 
   private static JsObj getInstantSchema(final JsSpec s) {
@@ -701,7 +673,7 @@ public final class SpecToJsonSchema {
                                  JsStr.of(NULL)
                                 ),
                       FORMAT,
-                      JsStr.of(BUILT_INT_FORMAT.DATE_TIME.format));
+                      JsStr.of("date-time"));
     }
     return JsObj.of(TYPE,
                     JsStr.of(STRING),

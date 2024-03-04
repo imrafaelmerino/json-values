@@ -4,8 +4,6 @@ package jsonvalues.spec;
 import static jsonvalues.spec.ERROR_CODE.ARRAY_EXPECTED;
 import static jsonvalues.spec.ERROR_CODE.NULL_NOT_EXPECTED;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import jsonvalues.JsArray;
@@ -172,9 +170,7 @@ class Fun {
     if (value.value > constraints.maximum()) {
       return ERROR_CODE.LONG_GREATER_THAN_MAX;
     }
-    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
-      return ERROR_CODE.LONG_NOT_MULTIPLE_OF;
-    }
+
     return null;
   }
 
@@ -185,9 +181,6 @@ class Fun {
     }
     if (value.value > constraints.maximum()) {
       return ERROR_CODE.INT_GREATER_THAN_MAX;
-    }
-    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
-      return ERROR_CODE.INT_NOT_MULTIPLE_OF;
     }
     return null;
   }
@@ -212,9 +205,6 @@ class Fun {
     if (value.value > constraints.maximum()) {
       return ERROR_CODE.DOUBLE_GREATER_THAN_MAX;
     }
-    if (constraints.multipleOf() != 0 && value.value % constraints.multipleOf() != 0) {
-      return ERROR_CODE.DOUBLE_NOT_MULTIPLE_OF;
-    }
     return null;
   }
 
@@ -228,11 +218,7 @@ class Fun {
         && jsBigDec.value.compareTo(constraints.maximum()) > 0) {
       return ERROR_CODE.DECIMAL_GREATER_THAN_MAX;
     }
-    if (constraints.multipleOf() != null &&
-        jsBigDec.value.remainder(constraints.multipleOf())
-                      .compareTo(BigDecimal.ZERO) != 0) {
-      return ERROR_CODE.DECIMAL_NOT_MULTIPLE_OF;
-    }
+
     return null;
   }
 
@@ -244,12 +230,6 @@ class Fun {
     if (constraints.maximum() != null && jsBigInt.value.compareTo(constraints.maximum()) > 0) {
       return ERROR_CODE.BIGINT_GREATER_THAN_MAX;
     }
-    if (constraints.multipleOf() != null
-        && jsBigInt.value.remainder(constraints.multipleOf())
-                         .compareTo(BigInteger.ZERO) != 0) {
-      return ERROR_CODE.BIGINT_NOT_MULTIPLE_OF;
-    }
-
     return null;
   }
 }
