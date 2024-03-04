@@ -45,8 +45,12 @@ final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroS
     }
 
     if (constraints != null) {
-      return Fun.testLongConstraints(constraints,
-                                     value.toJsLong());
+      var errorCode = Fun.testLongConstraints(constraints,
+                                              value.toJsLong());
+      if (errorCode != null) {
+        return new JsError(value,
+                           errorCode);
+      }
     }
 
     return null;

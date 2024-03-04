@@ -111,23 +111,23 @@ public class TestJson {
     Assertions.assertEquals(1,
                             (int) a.getInt(JsPath.path("/a")));
     Assertions.assertEquals(100,
-                            (int) a.getInt(JsPath.path("/apple"),
-                                           () -> 100));
+                            a.getInt(JsPath.path("/apple"),
+                                     () -> 100));
 
     Assertions.assertEquals("default",
                             a.getStr(JsPath.path("/a"),
                                      () -> "default"));
     Assertions.assertEquals(1L,
-                            (long) a.getLong(JsPath.path("/a"),
-                                             () -> 2L));
+                            a.getLong(JsPath.path("/a"),
+                                      () -> 2L));
     Assertions.assertTrue(a.getBool(JsPath.path("/a"),
                                     () -> true));
     Assertions.assertEquals(JsArray.empty(),
                             a.getArray(JsPath.path("/a"),
-                                       () -> JsArray.empty()));
+                                       JsArray::empty));
     Assertions.assertEquals(JsObj.empty(),
                             a.getObj(JsPath.path("/a"),
-                                     () -> JsObj.empty()));
+                                     JsObj::empty));
     Assertions.assertSame(BigDecimal.TEN,
                           a.getBigDec(JsPath.path("/a"),
                                       () -> BigDecimal.TEN));
@@ -141,19 +141,18 @@ public class TestJson {
     Assertions.assertEquals(true,
                             a.getBool(JsPath.path("/c"))
                            );
-    Assertions.assertEquals(true,
-                            a.getBool(JsPath.path("/hi"),
-                                      () -> true)
-                           );
+    Assertions.assertTrue(a.getBool(JsPath.path("/hi"),
+                                    () -> true));
     Assertions.assertEquals(1L,
                             (long) a.getLong(JsPath.path("/d")));
     Assertions.assertEquals(10L,
-                            (long) a.getLong(JsPath.path("/dime"),
-                                             () -> 10L));
+                            a.getLong(JsPath.path("/dime"),
+                                      () -> 10L));
 
     Assertions.assertTrue(1.5 == a.getDouble(JsPath.path("/e")));
-    Assertions.assertTrue(10.5 == a.getDouble(JsPath.path("/table"),
-                                              () -> 10.5));
+    Assertions.assertEquals(10.5,
+                            a.getDouble(JsPath.path("/table"),
+                                        () -> 10.5));
 
     Assertions.assertEquals(BigInteger.TEN,
                             a.getBigInt(JsPath.path("/f"))

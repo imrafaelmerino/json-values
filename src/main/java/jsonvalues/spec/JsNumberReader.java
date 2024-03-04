@@ -1,8 +1,10 @@
 package jsonvalues.spec;
 
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Function;
 import jsonvalues.JsBigDec;
+import jsonvalues.JsBigInt;
 import jsonvalues.JsDouble;
 import jsonvalues.JsInt;
 import jsonvalues.JsLong;
@@ -36,6 +38,8 @@ final class JsNumberReader extends AbstractReader {
       } catch (ArithmeticException e) {
         return JsLong.of(n);
       }
+    } else if (number instanceof BigInteger) {
+      return JsBigInt.of((BigInteger) number);
     }
     return JsBigDec.of(((BigDecimal) number));
   }

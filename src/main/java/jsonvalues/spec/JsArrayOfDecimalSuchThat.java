@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 
 final class JsArrayOfDecimalSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  private final Function<JsArray, JsError> predicate;
+  final Function<JsArray, JsError> predicate;
   private final JsArrayOfDecimal arrayOfDecimalSpec;
 
   JsArrayOfDecimalSuchThat(final Function<JsArray, JsError> predicate,

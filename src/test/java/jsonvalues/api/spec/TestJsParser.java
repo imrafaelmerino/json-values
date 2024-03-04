@@ -823,7 +823,7 @@ public class TestJsParser {
 
     JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
-    Gen<JsBigInt> bigIntGen = JsBigIntGen.arbitrary(4);
+    Gen<JsBigInt> bigIntGen = JsBigIntGen.biased();
     Gen<JsPrimitive> valueGen = Combinators.oneOf(bigIntGen,
                                                   Gen.cons(JsNull.NULL),
                                                   Gen.cons(JsBool.TRUE),

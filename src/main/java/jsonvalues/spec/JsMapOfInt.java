@@ -34,8 +34,16 @@ final class JsMapOfInt extends AbstractMap implements JsOneErrorSpec, AvroSpec {
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isInt(),
-                ERROR_CODE.INT_EXPECTED);
+                it -> {
+                  if(!it.isInt())return ERROR_CODE.INT_EXPECTED;
+                  if(valuesConstraints != null) {
+                    return Fun.testIntConstraints(valuesConstraints,
+                                                   value.toJsInt());
+                  }
+                  return null;
+                }
+               );
+
   }
 
 

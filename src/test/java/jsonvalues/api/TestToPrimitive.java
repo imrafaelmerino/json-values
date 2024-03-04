@@ -1,5 +1,6 @@
 package jsonvalues.api;
 
+import java.math.BigInteger;
 import jsonvalues.JsNull;
 import jsonvalues.JsPrimitive;
 import jsonvalues.gen.JsBigDecGen;
@@ -37,7 +38,8 @@ public class TestToPrimitive {
     Assertions.assertTrue(JsBigDecGen.arbitrary()
                                      .sample(10000)
                                      .allMatch(JsPrimitive::isPrimitive));
-    Assertions.assertTrue(JsBigIntGen.arbitrary(100)
+    Assertions.assertTrue(JsBigIntGen.arbitrary(BigInteger.ZERO,
+                                                new BigInteger("1000000000000000000"))
                                      .sample(10000)
                                      .allMatch(JsPrimitive::isPrimitive));
     Assertions.assertTrue(JsDoubleGen.arbitrary()
@@ -70,7 +72,8 @@ public class TestToPrimitive {
     Assertions.assertTrue(JsBigDecGen.arbitrary()
                                      .sample(10000)
                                      .allMatch(b -> b.equals(b.toJsPrimitive())));
-    Assertions.assertTrue(JsBigIntGen.arbitrary(100)
+    Assertions.assertTrue(JsBigIntGen.arbitrary(BigInteger.ZERO,
+                                                new BigInteger("1000000000000000000"))
                                      .sample(10000)
                                      .allMatch(b -> b.equals(b.toJsPrimitive())));
     Assertions.assertTrue(JsDoubleGen.arbitrary()

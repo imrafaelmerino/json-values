@@ -32,10 +32,19 @@ final class JsMapOfStr extends AbstractMap implements JsOneErrorSpec, AvroSpec {
 
   @Override
   public JsError testValue(JsValue value) {
-    //todo incluir schema validation
     return test(value,
-                it -> !it.isStr(),
-                ERROR_CODE.STRING_EXPECTED);
+                it -> {
+                  if (!it.isStr()) {
+                    return ERROR_CODE.STRING_EXPECTED;
+                  }
+                  if (valuesConstraints != null) {
+                    return Fun.testStrConstraints(valuesConstraints,
+                                                  value.toJsStr());
+                  }
+                  return null;
+                }
+               );
+
 
   }
 

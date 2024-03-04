@@ -1052,21 +1052,32 @@ abstract class NumberConverter {
     return BigDecimal.valueOf(value);
   }
 
-  private static Number tryLongFromBigDecimal(char[] buf,
-                                              int len,
-                                              DslJsReader reader
-                                             ) {
+  private static Number tryIntegralFromBigDecimal(char[] buf,
+                                                  int len,
+                                                  DslJsReader reader
+                                                 ) {
     BigDecimal num = parseNumberGeneric(buf,
                                         len,
                                         reader
                                        );
-    if (num.scale() == 0 && num.precision() <= 19) {
+    if (num.scale() == 0) {
       if (num.signum() == 1) {
         if (num.compareTo(BD_MAX_LONG) <= 0) {
           return num.longValue();
         }
+        try {
+          return num.toBigIntegerExact();
+        } catch (ArithmeticException ignored) {
+
+        }
       } else if (num.compareTo(BD_MIN_LONG) >= 0) {
         return num.longValue();
+      } else {
+        try {
+          return num.toBigIntegerExact();
+        } catch (ArithmeticException ignored) {
+
+        }
       }
     }
     return num;
@@ -1079,19 +1090,19 @@ abstract class NumberConverter {
       NumberConverter.NumberInfo info = readLongNumber(reader,
                                                        start
                                                       );
-      return tryLongFromBigDecimal(info.buffer,
-                                   info.length,
-                                   reader
-                                  );
+      return tryIntegralFromBigDecimal(info.buffer,
+                                       info.length,
+                                       reader
+                                      );
     }
     int len = end - start;
     if (len > 18) {
-      return tryLongFromBigDecimal(reader.prepareBuffer(start,
-                                                        len
-                                                       ),
-                                   len,
-                                   reader
-                                  );
+      return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
+                                                            len
+                                                           ),
+                                       len,
+                                       reader
+                                      );
     }
     byte[] buf = reader.buffer;
     byte ch = buf[start];
@@ -1137,12 +1148,12 @@ abstract class NumberConverter {
                                              )) {
           return value;
         }
-        return tryLongFromBigDecimal(reader.prepareBuffer(start,
+        return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
                                                           end - start
-                                                         ),
+                                                             ),
                                      end - start,
-                                     reader
-                                    );
+                                         reader
+                                        );
       }
       value = (value << 3) + (value << 1) + ind;
     }
@@ -1184,12 +1195,12 @@ abstract class NumberConverter {
                                       i - dp
                                      );
           }
-          return tryLongFromBigDecimal(reader.prepareBuffer(start,
+          return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
                                                             end - start
-                                                           ),
+                                                               ),
                                        end - start,
-                                       reader
-                                      );
+                                           reader
+                                          );
         }
         value = (value << 3) + (value << 1) + ind;
       }
@@ -1290,12 +1301,12 @@ abstract class NumberConverter {
                                                  )) {
           return value;
         }
-        return tryLongFromBigDecimal(reader.prepareBuffer(start,
+        return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
                                                           end - start
-                                                         ),
+                                                             ),
                                      end - start,
-                                     reader
-                                    );
+                                         reader
+                                        );
       }
       value = (value << 3) + (value << 1) - ind;
     }
@@ -1337,12 +1348,12 @@ abstract class NumberConverter {
                                       i - dp
                                      );
           }
-          return tryLongFromBigDecimal(reader.prepareBuffer(start,
+          return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
                                                             end - start
-                                                           ),
+                                                               ),
                                        end - start,
-                                       reader
-                                      );
+                                           reader
+                                          );
         }
         value = (value << 3) + (value << 1) - ind;
       }

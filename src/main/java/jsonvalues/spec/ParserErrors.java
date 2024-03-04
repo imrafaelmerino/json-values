@@ -29,6 +29,8 @@ class ParserErrors {
   public static final String OBJ_MAX_SIZE_EXCEEDED = "Object max size exceeded";
   public static final String OBJ_MIN_SIZE_NOT_MET = "Object min size not met";
   public static final String DUPLICATED_ARRAY_ITEM = "Duplicated array item";
+  public static final String INSTANT_LOWER_THAN_MINIMUM = "Instant lower than minimum";
+  public static final String INSTANT_GREATER_THAN_MAXIMUM = "Instant greater than maximum";
   static final String EXPECTING_FOR_OBJ_START = "Expecting '{' for Json object start but get %s";
   static final String EXPECTING_FOR_MAP_END = "Expecting '}' for Json object end but get %s";
   static final String ONE_OF_EXHAUSTED = "`OneOf` spec exhausted";

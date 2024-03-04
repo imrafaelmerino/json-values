@@ -49,7 +49,6 @@ import jsonvalues.spec.JsObjSpec;
  */
 public final class JsObjGen implements Gen<JsObj> {
 
-
   private final static Supplier<Set<String>> EMPTY_SET_GEN = HashSet::new;
   private final Map<String, Gen<? extends JsValue>> bindings;
   private final Set<String> optionals;
@@ -80,10 +79,12 @@ public final class JsObjGen implements Gen<JsObj> {
     this.bindings = bindings;
   }
 
-  public static JsObjGen of() {
+  public static JsObjGen empty() {
     Map<String, Gen<? extends JsValue>> map = new HashMap<>();
     return new JsObjGen(map);
   }
+
+
 
   public static JsObjGen of(final String key,
                             final Gen<? extends JsValue> gen

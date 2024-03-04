@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 
 final class JsArrayOfStrSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  private final Function<JsArray, JsError> predicate;
+  final Function<JsArray, JsError> predicate;
   private final JsArrayOfStr arrayOfStringSpec;
 
   JsArrayOfStrSuchThat(final Function<JsArray, JsError> predicate,

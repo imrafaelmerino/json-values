@@ -1,7 +1,7 @@
 package jsonvalues.spec;
 
 
-import java.util.function.Predicate;
+import java.util.function.Function;
 import jsonvalues.JsValue;
 
 abstract class AbstractMap extends AbstractNullable {
@@ -12,8 +12,7 @@ abstract class AbstractMap extends AbstractNullable {
 
 
   protected JsError test(JsValue value,
-                         Predicate<JsValue> isError,
-                         ERROR_CODE code
+                         Function<JsValue, ERROR_CODE> getError
                         ) {
     if (value.isNull() && nullable) {
       return null;
@@ -26,9 +25,10 @@ abstract class AbstractMap extends AbstractNullable {
     var obj = value.toJsObj();
 
     for (var pair : obj) {
-      if (isError.test(pair.value())) {
+      ERROR_CODE errorCode = getError.apply(pair.value());
+      if (errorCode != null) {
         return new JsError(pair.value(),
-                           code);
+                           errorCode);
       }
     }
 

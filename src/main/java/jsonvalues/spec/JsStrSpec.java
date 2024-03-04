@@ -46,8 +46,12 @@ final class JsStrSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
     }
 
     if (constraints != null) {
-      return Fun.testStrConstraints(constraints,
-                                    value.toJsStr());
+      var errorCode = Fun.testStrConstraints(constraints,
+                                             value.toJsStr());
+      if (errorCode != null) {
+        return new JsError(value,
+                           errorCode);
+      }
     }
 
     return null;

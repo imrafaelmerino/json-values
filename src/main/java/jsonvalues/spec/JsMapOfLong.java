@@ -34,8 +34,16 @@ final class JsMapOfLong extends AbstractMap implements JsOneErrorSpec, AvroSpec 
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isLong() && !it.isInt(),
-                ERROR_CODE.LONG_EXPECTED);
+                it -> {
+                  if(!it.isLong() && !it.isInt())return ERROR_CODE.LONG_EXPECTED;
+                  if(valuesConstraints != null) {
+                    return Fun.testLongConstraints(valuesConstraints,
+                                                   value.toJsLong());
+                  }
+                  return null;
+                }
+                );
+
   }
 
 }

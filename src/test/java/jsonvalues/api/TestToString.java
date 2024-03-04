@@ -12,7 +12,7 @@ public class TestToString {
   @Test
   public void testBigIntToStr() {
 
-    Assertions.assertTrue(BigIntGen.arbitrary(10000)
+    Assertions.assertTrue(BigIntGen.arbitrary(BigInteger.ZERO,BigInteger.valueOf(10000))
                                    .sample(1000)
                                    .allMatch(it -> it.equals(new BigInteger(it.toString()))));
   }

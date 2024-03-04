@@ -47,8 +47,12 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
     }
 
     if (constraints != null) {
-      return Fun.testBigIntConstraints(constraints,
-                                       value.toJsBigInt());
+      var errorCode = Fun.testBigIntConstraints(constraints,
+                                                value.toJsBigInt());
+      if (errorCode != null) {
+        return new JsError(value,
+                           errorCode);
+      }
     }
 
     return null;

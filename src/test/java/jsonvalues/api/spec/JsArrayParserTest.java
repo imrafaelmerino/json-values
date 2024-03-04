@@ -324,7 +324,7 @@ public class JsArrayParserTest {
 
   @Test
   public void testArrayOfValue() {
-    Gen<JsValue> valueGen = Combinators.oneOf(JsBigIntGen.biased(10),
+    Gen<JsValue> valueGen = Combinators.oneOf(JsBigIntGen.biased(),
                                               JsStrGen.biased(10));
     JsObjGen gen = JsObjGen.of("a",
                                JsArrayGen.ofN(JsStrGen.arbitrary(10),
@@ -353,13 +353,11 @@ public class JsArrayParserTest {
                                   "b",
                                   array().nullable(),
                                   "d",
-                                  array(v -> v.isIntegral() || v.isStr())
-                                      .nullable(),
+                                  array(v -> v.isIntegral() || v.isStr()).nullable(),
                                   "e",
                                   array(v -> v.isIntegral() || v.isStr()).nullable(),
                                   "f",
-                                  array(v -> v.isIntegral() || v.isStr())
-                                      .nullable()
+                                  array(v -> v.isIntegral() || v.isStr()).nullable()
                                  )
                               .lenient()
                               .withOptKeys("c",

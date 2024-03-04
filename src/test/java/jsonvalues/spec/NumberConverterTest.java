@@ -3,6 +3,7 @@ package jsonvalues.spec;
 
 import java.io.ByteArrayInputStream;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import jsonvalues.JsObj;
@@ -210,22 +211,18 @@ public class NumberConverterTest {
   public void testGenericNumberLongBoundaries() {
     final Long maxIntAsLong = (long) Integer.MAX_VALUE;
     final Long minIntAsLong = (long) Integer.MIN_VALUE;
-    final BigDecimal maxIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MAX_VALUE)
-                                                               .setScale(1);
-    final BigDecimal minIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MIN_VALUE)
-                                                               .setScale(1);
+    final BigDecimal maxIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MAX_VALUE);
+    final BigDecimal minIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MIN_VALUE);
     final Long positive18DigitLong = 876543210987654321L;
     final Long negative18DigitLong = -876543210987654321L;
-    final BigDecimal positive18DigitAndOneDecimal = BigDecimal.valueOf(876543210987654321L)
-                                                              .setScale(1);
-    final BigDecimal negative18DigitAndOneDecimal = BigDecimal.valueOf(-876543210987654321L)
-                                                              .setScale(1);
+    final BigDecimal positive18DigitAndOneDecimal = BigDecimal.valueOf(876543210987654321L);
+    final BigDecimal negative18DigitAndOneDecimal = BigDecimal.valueOf(-876543210987654321L);
     final Long maxLong = Long.MAX_VALUE;
     final Long minLong = Long.MIN_VALUE;
-    final BigDecimal maxLongPlusOneAsBigDecimal = BigDecimal.valueOf(Long.MAX_VALUE)
-                                                            .add(BigDecimal.ONE);
-    final BigDecimal minLongMinusOneAsBigDecimal = BigDecimal.valueOf(Long.MIN_VALUE)
-                                                             .subtract(BigDecimal.ONE);
+    final BigInteger maxLongPlusOneAsBigDecimal = BigInteger.valueOf(Long.MAX_VALUE)
+                                                            .add(BigInteger.ONE);
+    final BigInteger minLongMinusOneAsBigDecimal = BigInteger.valueOf(Long.MIN_VALUE)
+                                                             .subtract(BigInteger.ONE);
 
     String input = "{\n" +
                    "\"maxIntAsLong\":" + maxIntAsLong + ",\n" +
@@ -264,9 +261,9 @@ public class NumberConverterTest {
     Assertions.assertEquals(minLong,
                             result.getLong("minLong"));
     Assertions.assertEquals(maxLongPlusOneAsBigDecimal,
-                            result.getBigDec("maxLongPlusOneAsBigDecimal"));
+                            result.getBigInt("maxLongPlusOneAsBigDecimal"));
     Assertions.assertEquals(minLongMinusOneAsBigDecimal,
-                            result.getBigDec("minLongMinusOneAsBigDecimal"));
+                            result.getBigInt("minLongMinusOneAsBigDecimal"));
   }
 
   @Test
@@ -1060,6 +1057,30 @@ public class NumberConverterTest {
     final Number actual = NumberConverter.deserializeNumber(jr);
 
     Assertions.assertEquals(expected,
+                            actual);
+  }
+
+  @Test
+  public void testPositiveBigInteger(){
+    var bytes = "9223372036854775808".getBytes(StandardCharsets.UTF_8);
+    final DslJsReader jr = dslJson.newReader(new ByteArrayInputStream(bytes),
+                                             new byte[100]);
+    jr.read(); // init start pointer
+
+    final Number actual = NumberConverter.deserializeNumber(jr);
+    Assertions.assertEquals(new BigInteger("9223372036854775808"),
+                            actual);
+  }
+
+  @Test
+  public void testNegativeBigInteger(){
+    var bytes = "-9223372036854775808999999".getBytes(StandardCharsets.UTF_8);
+    final DslJsReader jr = dslJson.newReader(new ByteArrayInputStream(bytes),
+                                             new byte[100]);
+    jr.read(); // init start pointer
+
+    final Number actual = NumberConverter.deserializeNumber(jr);
+    Assertions.assertEquals(new BigInteger("-9223372036854775808999999"),
                             actual);
   }
 

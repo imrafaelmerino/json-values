@@ -34,8 +34,18 @@ final class JsMapOfDouble extends AbstractMap implements JsOneErrorSpec, AvroSpe
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isDouble(),
-                ERROR_CODE.DOUBLE_EXPECTED);
+                it -> {
+                  if (!it.isDouble()) {
+                    return ERROR_CODE.DOUBLE_EXPECTED;
+                  }
+                  if (valuesConstraints != null) {
+                    return Fun.testDoubleConstraints(valuesConstraints,
+                                                     value.toJsDouble());
+                  }
+                  return null;
+                }
+               );
+
   }
 
 }

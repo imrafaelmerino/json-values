@@ -22,8 +22,9 @@ final class JsMapOfBinary extends AbstractMap implements JsOneErrorSpec, AvroSpe
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isBinary(),
-                ERROR_CODE.BINARY_EXPECTED);
+                it -> it.isBinary() ? null :  ERROR_CODE.BINARY_EXPECTED
+               );
+
 
   }
 

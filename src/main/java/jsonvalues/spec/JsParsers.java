@@ -778,6 +778,25 @@ final class JsParsers {
 
   }
 
+  private void validateInstant(final InstantSchemaConstraints schema,
+                               final Instant value,
+                               final DslJsReader dslJsReader) {
+    if (schema.minimum()
+              .isAfter(value)) {
+      throw JsParserException.reasonAt(ParserErrors.INSTANT_LOWER_THAN_MINIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+    if (schema.maximum()
+              .isBefore(value)) {
+      throw JsParserException.reasonAt(ParserErrors.INSTANT_GREATER_THAN_MAXIMUM,
+                                       dslJsReader.getPositionInStream()
+                                      );
+    }
+
+
+  }
+
   private void validateDecimal(final DecimalSchemaConstraints schema,
                                final BigDecimal value,
                                final DslJsReader dslJsReader) {
@@ -871,8 +890,16 @@ final class JsParsers {
                  );
   }
 
-  JsParser ofMapOfInstant(boolean nullable) {
-    return getParser(READERS.mapOfInstantReader,
+  JsParser ofMapOfInstant(boolean nullable,
+                          final InstantSchemaConstraints valuesConstraints) {
+    return valuesConstraints != null ?
+           dslJsReader ->
+               READERS.mapOfInstantReader.eachEntrySuchThat(dslJsReader,
+                                                            e -> validateInstant(valuesConstraints,
+                                                                                 e.toJsInstant().value,
+                                                                                 dslJsReader),
+                                                            nullable) :
+           getParser(READERS.mapOfInstantReader,
                      nullable
                     );
   }
@@ -1170,8 +1197,20 @@ final class JsParsers {
   }
 
 
-  JsParser ofInstant(boolean nullable) {
-    return getParser(READERS.instantReader,
+  JsParser ofInstant(boolean nullable,
+                     final InstantSchemaConstraints schema
+                    ) {
+    return schema != null ?
+           reader -> ofInstantSuchThat(i -> {
+                                         validateInstant(schema,
+                                                         i,
+                                                         reader
+                                                        );
+                                         return null;
+                                       },
+                                       nullable
+                                      ).parse(reader) :
+           getParser(READERS.instantReader,
                      nullable
                     );
   }

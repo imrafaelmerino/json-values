@@ -34,8 +34,17 @@ final class JsMapOfDec extends AbstractMap implements JsOneErrorSpec, AvroSpec {
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isNumber(),
-                ERROR_CODE.DECIMAL_EXPECTED);
+                it -> {
+                  if (!it.isNumber()) {
+                    return ERROR_CODE.DECIMAL_EXPECTED;
+                  }
+                  if (valuesConstraints != null) {
+                    return Fun.testDecimalConstraints(valuesConstraints,
+                                                      value.toJsBigDec());
+                  }
+                  return null;
+                }
+               );
   }
 
 

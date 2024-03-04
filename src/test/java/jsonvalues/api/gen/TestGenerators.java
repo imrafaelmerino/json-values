@@ -105,7 +105,7 @@ public class TestGenerators {
                                                                          10)
                                                   ),
                                      "e",
-                                     JsBigIntGen.arbitrary(2)
+                                     JsBigIntGen.arbitrary()
                                     );
 
     JsObjSpec spec = JsObjSpec.of("a",

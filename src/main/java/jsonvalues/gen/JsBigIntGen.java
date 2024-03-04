@@ -23,36 +23,41 @@ import jsonvalues.JsBigInt;
  *      }
  *  </pre>
  * <p>
- * Arbitrary generators produces uniformed distributions of values. Biased generators produces, with higher probability,
+ * Arbitrary generators produce uniformed distributions of values. Biased generators produce, with higher probability,
  * potential problematic values that usually cause more bugs.
  */
 public final class JsBigIntGen implements Gen<JsBigInt> {
 
+  private static final Gen<JsBigInt> biased = new JsBigIntGen(BigIntGen.biased());
+  private static final Gen<JsBigInt> arbitrary = new JsBigIntGen(BigIntGen.arbitrary());
   private final Gen<BigInteger> gen;
 
   private JsBigIntGen(final Gen<BigInteger> gen) {
     this.gen = requireNonNull(gen);
   }
 
-  /**
-   * Returns an arbitrary JSON big integer generator with a specified number of bits.
-   *
-   * @param bits The number of bits for the generated big integer.
-   * @return An arbitrary JSON big integer generator.
-   */
-  public static Gen<JsBigInt> arbitrary(int bits) {
-    return new JsBigIntGen(BigIntGen.arbitrary(bits));
+
+  public static Gen<JsBigInt> arbitrary(BigInteger min,
+                                        BigInteger max
+                                       ) {
+    return new JsBigIntGen(BigIntGen.arbitrary(requireNonNull(min),
+                                               requireNonNull(max)));
   }
 
 
-  /**
-   * Returns a biased JSON big integer generator with a specified number of bits.
-   *
-   * @param bits The number of bits for the generated big integer.
-   * @return A biased JSON big integer generator.
-   */
-  public static Gen<JsBigInt> biased(int bits) {
-    return new JsBigIntGen(BigIntGen.biased(bits));
+  public static Gen<JsBigInt> arbitrary() {
+    return arbitrary;
+  }
+
+  public static Gen<JsBigInt> biased() {
+    return biased;
+  }
+
+
+  public static Gen<JsBigInt> biased(final BigInteger min,
+                                     final BigInteger max) {
+    return new JsBigIntGen(BigIntGen.biased(requireNonNull(min),
+                                            requireNonNull(max)));
   }
 
 

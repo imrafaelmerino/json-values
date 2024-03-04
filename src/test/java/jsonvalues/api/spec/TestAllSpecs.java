@@ -79,7 +79,7 @@ public class TestAllSpecs {
                                                                       1,
                                                                       10)),
                                "a10",
-                               JsArrayGen.arbitrary(JsBigIntGen.arbitrary(10),
+                               JsArrayGen.arbitrary(JsBigIntGen.arbitrary(),
                                                     1,
                                                     10)
                               )

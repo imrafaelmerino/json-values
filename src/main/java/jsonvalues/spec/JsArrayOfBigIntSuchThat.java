@@ -6,7 +6,7 @@ import jsonvalues.JsValue;
 
 final class JsArrayOfBigIntSuchThat extends AbstractNullable implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  private final Function<JsArray, JsError> predicate;
+  final Function<JsArray, JsError> predicate;
   private final JsArrayOfBigInt arrayOfIntegralSpec;
 
   JsArrayOfBigIntSuchThat(final Function<JsArray, JsError> predicate,

@@ -493,6 +493,7 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
    * @return True if this element is an integral number (JsInt, JsLong, or JsBigInt).
    */
   default boolean isIntegral() {
+
     return isInt() || isLong() || isBigInt();
   }
 

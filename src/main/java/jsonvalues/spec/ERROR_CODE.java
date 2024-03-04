@@ -216,6 +216,8 @@ public enum ERROR_CODE {
   BIGINT_EXCLUSIVE_MAXIMUM,
   OBJ_MIN_SIZE_NOT_MET,
   OBJ_MAX_SIZE_EXCEEDED,
+  INSTANT_LOWER_THAN_MIN,
+  INSTANT_GREATER_THAN_MAX,
   /**
    * All the specs from the `OneOf` spec was tried but the value doesn't confirm none of them
    */

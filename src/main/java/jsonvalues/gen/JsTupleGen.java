@@ -30,6 +30,10 @@ public final class JsTupleGen implements Gen<JsArray> {
     gens.addAll(Arrays.asList(requireNonNull(others)));
   }
 
+  private JsTupleGen(List<Gen<? extends JsValue>> gens) {
+    this.gens.addAll(gens);
+  }
+
   /**
    * Returns a tuple generator. The tuple is modeled with a JsArray. Each element generator is independent of each
    * other, being created from a different seed.
@@ -45,6 +49,10 @@ public final class JsTupleGen implements Gen<JsArray> {
                                ) {
     return new JsTupleGen(gen,
                           others);
+  }
+
+  public static Gen<JsArray> of(List<Gen<? extends JsValue>> gens) {
+    return new JsTupleGen(gens);
   }
 
 

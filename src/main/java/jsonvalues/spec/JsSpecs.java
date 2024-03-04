@@ -65,7 +65,8 @@ public final class JsSpecs {
   private static final JsArraySpec arrayOfBigInt = new JsArrayOfBigInt(false);
   private static final JsArraySpec arrayOfObj = new JsArrayOfObj(false);
   private static final JsArraySpec arrayOfBool = new JsArrayOfBool(false);
-  private static final JsSpec instant = new JsInstantSpec(false);
+  private static final JsSpec instant = new JsInstantSpec(false,
+                                                          null);
   private static final JsArraySpec arrayOfLong = new JsArrayOfLong(false);
   private static final JsArraySpec arrayOfInt = new JsArrayOfInt(false);
   private static final JsArraySpec arrayOfStr = new JsArrayOfStr(false,
@@ -762,10 +763,11 @@ public final class JsSpecs {
    * @return An array specification for values based on the specified predicate.
    */
   public static JsArraySpec array(final Predicate<JsValue> predicate) {
-    return new JsArrayOfTestedValue(s -> requireNonNull(predicate).test(s) ?
-                                         null :
-                                         new JsError(s,
-                                                     VALUE_CONDITION),
+    return new JsArrayOfTestedValue(s ->
+                                        requireNonNull(predicate).test(s) ?
+                                        null :
+                                        new JsError(s,
+                                                    VALUE_CONDITION),
                                     false);
   }
 
@@ -992,6 +994,17 @@ public final class JsSpecs {
                                       new JsError(JsInstant.of(s),
                                                   INSTANT_CONDITION),
                                  false);
+  }
+
+  /**
+   * Returns a specification for a non-nullable JSON instant that satisfies the given schema.
+   *
+   * @param schema The schema the instant must satisfy.
+   * @return A specification that enforces the specified condition for JSON long numbers.
+   */
+  public static JsSpec instant(final InstantSchema schema) {
+    return new JsInstantSpec(false,
+                             requireNonNull(schema).build());
   }
 
   /**
@@ -1262,6 +1275,16 @@ public final class JsSpecs {
    */
   public static JsSpec mapOfInstant() {
     return mapOfInstantSpec;
+  }
+
+  /**
+   * Returns a specification that validates that the JSON is an object, and the value of each key is an instant.
+   *
+   * @return A JSON specification for objects with instant values.
+   */
+  public static JsSpec mapOfInstant(final InstantSchema instantSchema) {
+    return new JsMapOfInstant(false,
+                              requireNonNull(instantSchema).build());
   }
 
   /**

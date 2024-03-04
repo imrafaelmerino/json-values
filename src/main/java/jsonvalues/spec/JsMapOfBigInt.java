@@ -33,8 +33,18 @@ final class JsMapOfBigInt extends AbstractMap implements JsOneErrorSpec, AvroSpe
   @Override
   public JsError testValue(JsValue value) {
     return test(value,
-                it -> !it.isIntegral(),
-                ERROR_CODE.INTEGRAL_EXPECTED);
+                it -> {
+                  if (!it.isIntegral()) {
+                    return ERROR_CODE.INTEGRAL_EXPECTED;
+                  }
+                  if (valuesConstraints != null) {
+                    return Fun.testBigIntConstraints(valuesConstraints,
+                                                     value.toJsBigInt());
+                  }
+                  return null;
+                }
+               );
+
   }
 
 
