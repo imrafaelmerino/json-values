@@ -1068,7 +1068,7 @@ abstract class NumberConverter {
         try {
           return num.toBigIntegerExact();
         } catch (ArithmeticException ignored) {
-
+          assert ignored != null;
         }
       } else if (num.compareTo(BD_MIN_LONG) >= 0) {
         return num.longValue();
@@ -1076,7 +1076,7 @@ abstract class NumberConverter {
         try {
           return num.toBigIntegerExact();
         } catch (ArithmeticException ignored) {
-
+          assert ignored != null;
         }
       }
     }
@@ -1149,9 +1149,9 @@ abstract class NumberConverter {
           return value;
         }
         return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
-                                                          end - start
+                                                              end - start
                                                              ),
-                                     end - start,
+                                         end - start,
                                          reader
                                         );
       }
@@ -1196,9 +1196,9 @@ abstract class NumberConverter {
                                      );
           }
           return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
-                                                            end - start
+                                                                end - start
                                                                ),
-                                       end - start,
+                                           end - start,
                                            reader
                                           );
         }
@@ -1302,9 +1302,9 @@ abstract class NumberConverter {
           return value;
         }
         return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
-                                                          end - start
+                                                              end - start
                                                              ),
-                                     end - start,
+                                         end - start,
                                          reader
                                         );
       }
@@ -1349,9 +1349,9 @@ abstract class NumberConverter {
                                      );
           }
           return tryIntegralFromBigDecimal(reader.prepareBuffer(start,
-                                                            end - start
+                                                                end - start
                                                                ),
-                                       end - start,
+                                           end - start,
                                            reader
                                           );
         }

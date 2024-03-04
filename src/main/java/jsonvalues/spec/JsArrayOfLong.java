@@ -32,6 +32,14 @@ final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, 
     this.constraints = constraints;
   }
 
+  public JsArrayOfLong(final boolean nullable,
+                       final LongSchemaConstraints build) {
+    this(nullable,
+         null,
+         build
+        );
+  }
+
 
   @Override
   public JsSpec nullable() {

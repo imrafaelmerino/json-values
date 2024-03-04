@@ -1,5 +1,6 @@
 package jsonvalues.spec;
 
+import java.util.Base64;
 import java.util.Objects;
 import jsonvalues.JsArray;
 import jsonvalues.JsBigDec;
@@ -34,7 +35,7 @@ final class JsValueWritter {
                  final JsValue value
                 ) {
 
-    if (Objects.requireNonNull(value) instanceof JsBool bool) {
+    if (value instanceof JsBool bool) {
       writer.writeAscii(Boolean.toString(bool.value));
     } else if (value instanceof JsNull) {
       writer.writeNull();
@@ -71,6 +72,7 @@ final class JsValueWritter {
       if (xs.length == 0) {
         writer.writeString("");
       } else {
+        //writer.writeString(Base64.getEncoder().encodeToString(xs));
         writer.writeBinary(xs);
       }
     } else if (value instanceof JsInstant instant) {

@@ -211,32 +211,32 @@ public class NumberConverterTest {
   public void testGenericNumberLongBoundaries() {
     final Long maxIntAsLong = (long) Integer.MAX_VALUE;
     final Long minIntAsLong = (long) Integer.MIN_VALUE;
-    final BigDecimal maxIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MAX_VALUE);
-    final BigDecimal minIntWithDecimalAsBigDecimal = BigDecimal.valueOf(Integer.MIN_VALUE);
+    final BigInteger maxIntWithDecimalAsBigInt = BigInteger.valueOf(Integer.MAX_VALUE);
+    final BigInteger minIntWithDecimalAsBigInt = BigInteger.valueOf(Integer.MIN_VALUE);
     final Long positive18DigitLong = 876543210987654321L;
     final Long negative18DigitLong = -876543210987654321L;
-    final BigDecimal positive18DigitAndOneDecimal = BigDecimal.valueOf(876543210987654321L);
-    final BigDecimal negative18DigitAndOneDecimal = BigDecimal.valueOf(-876543210987654321L);
+    final BigInteger positive18DigitAndOneInt = BigInteger.valueOf(876543210987654321L);
+    final BigInteger negative18DigitAndOneInt = BigInteger.valueOf(-876543210987654321L);
     final Long maxLong = Long.MAX_VALUE;
     final Long minLong = Long.MIN_VALUE;
-    final BigInteger maxLongPlusOneAsBigDecimal = BigInteger.valueOf(Long.MAX_VALUE)
+    final BigInteger maxLongPlusOneAsBigInt = BigInteger.valueOf(Long.MAX_VALUE)
                                                             .add(BigInteger.ONE);
-    final BigInteger minLongMinusOneAsBigDecimal = BigInteger.valueOf(Long.MIN_VALUE)
+    final BigInteger minLongMinusOneAsBigInt= BigInteger.valueOf(Long.MIN_VALUE)
                                                              .subtract(BigInteger.ONE);
 
     String input = "{\n" +
                    "\"maxIntAsLong\":" + maxIntAsLong + ",\n" +
                    "\"minIntAsLong\":" + minIntAsLong + ",\n" +
-                   "\"maxIntWithDecimalAsBigDecimal\":" + maxIntWithDecimalAsBigDecimal + ",\n" +
-                   "\"minIntWithDecimalAsBigDecimal\":" + minIntWithDecimalAsBigDecimal + ",\n" +
+                   "\"maxIntWithDecimalAsBigInt\":" + maxIntWithDecimalAsBigInt + ",\n" +
+                   "\"minIntWithDecimalAsBigInt\":" + minIntWithDecimalAsBigInt + ",\n" +
                    "\"positive18DigitLong\":" + positive18DigitLong + ",\n" +
                    "\"negative18DigitLong\":" + negative18DigitLong + ",\n" +
-                   "\"positive18DigitAndOneDecimal\":" + positive18DigitAndOneDecimal + ",\n" +
-                   "\"negative18DigitAndOneDecimal\":" + negative18DigitAndOneDecimal + ",\n" +
+                   "\"positive18DigitAndOneDecimal\":" + positive18DigitAndOneInt + ",\n" +
+                   "\"negative18DigitAndOneDecimal\":" + negative18DigitAndOneInt + ",\n" +
                    "\"maxLong\":" + maxLong + ",\n" +
                    "\"minLong\":" + minLong + ",\n" +
-                   "\"maxLongPlusOneAsBigDecimal\":" + maxLongPlusOneAsBigDecimal + ",\n" +
-                   "\"minLongMinusOneAsBigDecimal\":" + minLongMinusOneAsBigDecimal + "\n" +
+                   "\"maxLongPlusOneAsBigInt\":" + maxLongPlusOneAsBigInt + ",\n" +
+                   "\"minLongMinusOneAsBigInt\":" + minLongMinusOneAsBigInt + "\n" +
                    "}";
 
     var result = JsObj.parse(input);
@@ -244,26 +244,26 @@ public class NumberConverterTest {
                             result.getLong("maxIntAsLong"));
     Assertions.assertEquals(minIntAsLong,
                             result.getLong("minIntAsLong"));
-    Assertions.assertEquals(maxIntWithDecimalAsBigDecimal,
-                            result.getBigDec("maxIntWithDecimalAsBigDecimal"));
-    Assertions.assertEquals(minIntWithDecimalAsBigDecimal,
-                            result.getBigDec("minIntWithDecimalAsBigDecimal"));
+    Assertions.assertEquals(maxIntWithDecimalAsBigInt,
+                            result.getBigInt("maxIntWithDecimalAsBigInt"));
+    Assertions.assertEquals(minIntWithDecimalAsBigInt,
+                            result.getBigInt("minIntWithDecimalAsBigInt"));
     Assertions.assertEquals(positive18DigitLong,
                             result.getLong("positive18DigitLong"));
     Assertions.assertEquals(negative18DigitLong,
                             result.getLong("negative18DigitLong"));
-    Assertions.assertEquals(positive18DigitAndOneDecimal,
-                            result.getBigDec("positive18DigitAndOneDecimal"));
-    Assertions.assertEquals(negative18DigitAndOneDecimal,
-                            result.getBigDec("negative18DigitAndOneDecimal"));
+    Assertions.assertEquals(positive18DigitAndOneInt,
+                            result.getBigInt("positive18DigitAndOneDecimal"));
+    Assertions.assertEquals(negative18DigitAndOneInt,
+                            result.getBigInt("negative18DigitAndOneDecimal"));
     Assertions.assertEquals(maxLong,
                             result.getLong("maxLong"));
     Assertions.assertEquals(minLong,
                             result.getLong("minLong"));
-    Assertions.assertEquals(maxLongPlusOneAsBigDecimal,
-                            result.getBigInt("maxLongPlusOneAsBigDecimal"));
-    Assertions.assertEquals(minLongMinusOneAsBigDecimal,
-                            result.getBigInt("minLongMinusOneAsBigDecimal"));
+    Assertions.assertEquals(maxLongPlusOneAsBigInt,
+                            result.getBigInt("maxLongPlusOneAsBigInt"));
+    Assertions.assertEquals(minLongMinusOneAsBigInt,
+                            result.getBigInt("minLongMinusOneAsBigInt"));
   }
 
   @Test

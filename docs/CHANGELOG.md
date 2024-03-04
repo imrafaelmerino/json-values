@@ -99,13 +99,16 @@ New features:
 **14.0.0**
 
 Breaking changes:
+
 - JsSpec parsers returns `JsBigInt` instead of `JsBigDec` when numbers don't have decimal part and don't fit in a `long`
-  If you are parsing strings into Json using spec parsers and have to deal with big integer numbers, please take this
-  into account.
-  
+  If you are parsing strings into Json using spec parsers and have to deal with big integer numbers, please take this into account.
+- Removed methods `biased(nBits)` and `arbitrary(nBits)` since better alternatives has been added
+
 New features:
-- `SpecToJsonSchema` to convert specs into json-schema (sonSchemaDraft.DRAFT_2019_09)
+
+- `SpecToJsonSchema` to convert specs into json-schema (SchemaDraft.DRAFT_2019_09)
 - `SpecToGen` to convert specs into generators
+- `JsBigIntGen` new methods `biased(min, max)` and `arbitrary(min,max)` 
 
 
 

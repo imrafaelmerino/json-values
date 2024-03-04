@@ -8,6 +8,7 @@ import fun.gen.SplitGen;
 import fun.gen.StrGen;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -20,6 +21,7 @@ import jsonvalues.JsBigDec;
 import jsonvalues.JsBigInt;
 import jsonvalues.JsBool;
 import jsonvalues.JsDouble;
+import jsonvalues.JsInstant;
 import jsonvalues.JsInt;
 import jsonvalues.JsLong;
 import jsonvalues.JsNull;
@@ -41,10 +43,18 @@ import jsonvalues.gen.JsStrGen;
 import jsonvalues.gen.JsTupleGen;
 
 /**
- * Utility class for converting JSON specifications (JsObjSpec or JsArraySpec) to JSON schemas represented with a JsObj.
- * .
+ * Utility class for converting JSON specifications (JsObjSpec or JsArraySpec) to JSON schemas represented with a
+ * JsObj.
  */
 public final class SpecToGen {
+
+
+  private static final int MAX_ARRAY_SIZE = 100;
+  private static final int MIN_ARRAY_SIZE = 0;
+  private static final int MAX_MAP_SIZE = 20;
+  private static final int MIN_MAP_SIZE = 1;
+  private static final int MIN_KEY_MAP_SIZE = 1;
+  private static final int MAX_KEY_MAP_SIZE = 10;
 
 
   private SpecToGen() {
@@ -61,7 +71,7 @@ public final class SpecToGen {
    * @param objSpec The JsObjSpec to be converted.
    * @return The resulting JSON schema as a JsObj.
    */
-  public static JsObjGen convert(final JsObjSpec objSpec,
+  public static JsObjGen convert(JsObjSpec objSpec,
                                  Map<JsPath, Gen<? extends JsValue>> overrides) {
     var gen = JsObjGen.empty();
     var currentPath = JsPath.empty();
@@ -114,34 +124,41 @@ public final class SpecToGen {
                                                      s.predicate);
       case JsInstantSpec s -> createJsInstantGen(s.nullable,
                                                  s.constraints);
-      case JsInstantSuchThat s -> null;
-      case JsBinarySpec s -> createJsBinarySpec(s.nullable);
-      case JsBinarySuchThat s -> null;
+      case JsInstantSuchThat s -> createJsInstantGenSuchThat(s.nullable,
+                                                             s.predicate);
+
+      case JsBinarySpec s -> createJsBinaryGen(s.nullable);
+      case JsBinarySuchThat s -> createJsBinaryGenSuchThat(s.nullable,
+                                                           s.predicate);
       case JsFixedBinary s -> createJsFixedBinaryGen(s.getSize(),
                                                      s.nullable);
       case JsEnum jsEnum -> createEnumGen(jsEnum);
-      case AnySpec ignored -> null;
-      case AnySuchThat ignored -> null;
+      case AnySpec s -> createAnySpecGen(s.isNullable());
+      case AnySuchThat ignored ->
+          throw new IllegalArgumentException("Generators for `AnySuchThat` spec are not supported. User `override` parameter to provide a custom generator for the path %s".formatted(currentPath));
+
       case JsArraySpec s -> createJsArrayGen(s.isNullable(),
                                              s,
                                              currentPath,
                                              overrides);
       case JsObjSpec s -> convert(s,
                                   overrides);
-      case IsJsObj ignored -> null;
-      case JsObjSuchThat ignored -> null;
+      case IsJsObj s -> createIsObjGen(s.nullable);
+      case JsObjSuchThat ignored ->
+          throw new IllegalArgumentException("Generators for `JsObjSuchThat` spec are not supported. User `override` parameter to provide a custom generator for the path %s".formatted(currentPath));
+
       case JsMapOfBigInt s -> createMapOfBigIntGen(s.nullable,
                                                    s.valuesConstraints);
       case JsMapOfInt s -> createMapOfIntGen(s.nullable,
                                              s.valuesConstraints);
-      case JsMapOfLong s -> createMapOfLongtGen(s.nullable,
-                                                s.valuesConstraints);
+      case JsMapOfLong s -> createMapOfLongGen(s.nullable,
+                                               s.valuesConstraints);
 
       case JsMapOfDouble s -> createMapOfDoubleGen(s.nullable,
                                                    s.valuesConstraints);
 
-      case JsMapOfDec s -> createMapOfDecGen(s.nullable,
-                                             s.valuesConstraints);
+      case JsMapOfDec s -> createMapOfBigDecGen(s.nullable,
+                                                s.valuesConstraints);
 
       case JsMapOfBinary s -> createMapOfBinaryGen(s.nullable);
 
@@ -160,21 +177,82 @@ public final class SpecToGen {
                                              currentPath);
 
       case NamedSpec namedSpec -> null;
-      case OneOf oneOf -> null;
+      case OneOf oneOf -> createOneOfGen(oneOf,
+                                         overrides,
+                                         currentPath);
       default -> throw new IllegalArgumentException();
     };
 
   }
 
+  private static Gen<JsValue> createAnySpecGen(boolean nullable) {
+    var gen = Combinators.oneOf(createJsStrGen(null,
+                                               nullable,
+                                               null),
+                                createJsLongGen(null,
+                                                nullable),
+                                createJsIntGen(null,
+                                               nullable),
+                                createJsBigIntGen(null,
+                                                  nullable),
+                                createJsBigDecimalGen(null,
+                                                      nullable),
+                                createJsDoubleGen(null,
+                                                  nullable),
+                                createJsBoolGen(nullable),
+                                createJsBinaryGen(nullable),
+                                createIsObjGen(nullable)
+                               );
+    return nullable ?
+           Combinators.oneOf(Gen.cons(JsNull.NULL),
+                             gen
+                            ) :
+           gen;
+  }
+
+  private static Gen<JsValue> createIsObjGen(boolean nullable) {
+    return Combinators.oneOf(createMapOfBigIntGen(nullable,
+                                                  null),
+                             createMapOfBoolGen(nullable),
+
+                             createMapOfBigDecGen(nullable,
+                                                  null),
+                             createMapOfIntGen(nullable,
+                                               null),
+                             createMapOfLongGen(nullable,
+                                                null),
+                             createMapOfInstantGen(nullable,
+                                                   null),
+                             createMapOfStrGen(nullable,
+                                               null,
+                                               null),
+                             createMapOfDoubleGen(nullable,
+                                                  null)
+                            );
+  }
+
+  private static Gen<? extends JsValue> createOneOfGen(OneOf oneOf,
+                                                       Map<JsPath, Gen<? extends JsValue>> overrides,
+                                                       JsPath currentPath
+                                                      ) {
+    List<Gen<? extends JsValue>>
+        gens = new ArrayList<>(oneOf.specs.stream()
+                                          .map(spec -> createGen(spec,
+                                                                 overrides,
+                                                                 currentPath))
+                                          .toList());
+    return Combinators.oneOfList(gens);
+  }
+
   private static Gen<? extends JsValue> createMapOfBigIntGen(final boolean nullable,
                                                              final BigIntSchemaConstraints valuesConstraints) {
 
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsBigIntGen(valuesConstraints,
                                   false);
 
@@ -186,14 +264,14 @@ public final class SpecToGen {
   private static Gen<? extends JsValue> createMapOfStrGen(boolean nullable,
                                                           StrConstraints valuesConstraints,
                                                           JsPath path) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsStrGen(valuesConstraints,
-                               nullable,
+                               false,
                                path);
 
     return mapGen(nullable,
@@ -228,12 +306,12 @@ public final class SpecToGen {
                                                            final JsSpec valueSpec,
                                                            final Map<JsPath, Gen<? extends JsValue>> overrides,
                                                            final JsPath path) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createGen(valueSpec,
                           overrides,
                           path
@@ -247,12 +325,12 @@ public final class SpecToGen {
   private static Gen<? extends JsValue> createMapOfInstantGen(final boolean nullable,
                                                               final InstantSchemaConstraints valuesConstraints) {
 
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsInstantGen(nullable,
                                    valuesConstraints);
 
@@ -264,12 +342,12 @@ public final class SpecToGen {
   }
 
   private static Gen<? extends JsValue> createMapOfBoolGen(final boolean nullable) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = JsBoolGen.arbitrary();
 
     return mapGen(nullable,
@@ -279,12 +357,12 @@ public final class SpecToGen {
   }
 
   private static Gen<? extends JsValue> createMapOfBinaryGen(final boolean nullable) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     //TODO binary constraints
     var value = JsBinaryGen.biased(0,
                                    50);
@@ -295,14 +373,14 @@ public final class SpecToGen {
 
   }
 
-  private static Gen<? extends JsValue> createMapOfDecGen(final boolean nullable,
-                                                          final DecimalSchemaConstraints valuesConstraints) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+  private static Gen<? extends JsValue> createMapOfBigDecGen(final boolean nullable,
+                                                             final DecimalSchemaConstraints valuesConstraints) {
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsBigDecimalGen(valuesConstraints,
                                       false);
 
@@ -314,12 +392,12 @@ public final class SpecToGen {
 
   private static Gen<? extends JsValue> createMapOfDoubleGen(final boolean nullable,
                                                              final DoubleSchemaConstraints valuesConstraints) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
 
     var value = createJsDoubleGen(valuesConstraints,
                                   false);
@@ -329,14 +407,14 @@ public final class SpecToGen {
                   value);
   }
 
-  private static Gen<? extends JsValue> createMapOfLongtGen(final boolean nullable,
-                                                            final LongSchemaConstraints valuesConstraints) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+  private static Gen<? extends JsValue> createMapOfLongGen(final boolean nullable,
+                                                           final LongSchemaConstraints valuesConstraints) {
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsLongGen(valuesConstraints,
                                 false);
 
@@ -347,12 +425,13 @@ public final class SpecToGen {
 
   private static Gen<? extends JsValue> createMapOfIntGen(final boolean nullable,
                                                           final IntegerSchemaConstraints valuesConstraints) {
-    var keyGen = StrGen.alphabetic(1,
-                                   10)
+    var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
+                                   MAX_KEY_MAP_SIZE)
                        .distinct();
+
     var keys = ListGen.arbitrary(keyGen,
-                                 1,
-                                 20);
+                                 MIN_MAP_SIZE,
+                                 MAX_MAP_SIZE);
     var value = createJsIntGen(valuesConstraints,
                                false);
 
@@ -362,15 +441,15 @@ public final class SpecToGen {
 
   }
 
-  private static Gen<? extends JsValue> createJsBinarySpec(final boolean nullable) {
+  private static Gen<? extends JsValue> createJsBinaryGen(final boolean nullable) {
 
     return nullable ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
-                             JsBinaryGen.arbitrary(0,
-                                                   100)
+                             JsBinaryGen.arbitrary(1,
+                                                   10)
                             ) :
-           JsBinaryGen.arbitrary(0,
-                                 100);
+           JsBinaryGen.arbitrary(1,
+                                 10);
   }
 
   private static Gen<? extends JsValue> createJsArrayGen(boolean nullable,
@@ -440,21 +519,21 @@ public final class SpecToGen {
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
       Gen<JsArray> arrGen =
-          IntGen.arbitrary(0,
-                           100)
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
                 .then(max -> JsArrayGen.biased(createJsBigIntGen(constraints,
                                                                  false),
-                                               0,
+                                               MIN_ARRAY_SIZE,
                                                max)
                      );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsBigIntGen(constraints,
                                                                     false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max)
                         );
     }
@@ -488,29 +567,29 @@ public final class SpecToGen {
 
   }
 
-  private static Gen<? extends JsValue> getSizableArrayOfSpecGen(final boolean nullable,
-                                                                 final JsArrayOfSpec spec,
+  private static Gen<? extends JsValue> getSizableArrayOfSpecGen(boolean nullable,
+                                                                 JsArrayOfSpec spec,
                                                                  Map<JsPath, Gen<? extends JsValue>> overrides,
                                                                  JsPath path) {
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
+      Gen<JsArray> arrGen = IntGen.arbitrary(MIN_ARRAY_SIZE,
+                                             MAX_ARRAY_SIZE)
                                   .then(max -> JsArrayGen.biased(createGen(spec.getElemSpec(),
                                                                            overrides,
                                                                            path),
-                                                                 0,
+                                                                 MIN_ARRAY_SIZE,
                                                                  max)
                                        );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createGen(spec.getElemSpec(),
                                                             overrides,
                                                             path),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max)
                         );
     }
@@ -528,38 +607,39 @@ public final class SpecToGen {
 
   }
 
-  private static Gen<? extends JsValue> getSizableArrayOfObjGen(final boolean nullable,
-                                                                final JsArrayOfObj spec) {
-    var objGen = Combinators.oneOf(
-        createMapOfDoubleGen(false,
-                             null),
-        createMapOfStrGen(false,
-                          null,
-                          null),
-        createMapOfIntGen(false,
-                          null),
-        createMapOfLongtGen(false,
-                            null),
-        createMapOfDoubleGen(false,
-                             null),
-        createMapOfInstantGen(false,
-                              null),
-        createMapOfBoolGen(false));
+  private static Gen<? extends JsValue> getSizableArrayOfObjGen(boolean nullable,
+                                                                JsArrayOfObj spec) {
+    var objGen = Combinators.oneOf(createMapOfDoubleGen(false,
+                                                        null),
+                                   createMapOfStrGen(false,
+                                                     null,
+                                                     null),
+                                   createMapOfIntGen(false,
+                                                     null),
+                                   createMapOfLongGen(false,
+                                                      null),
+                                   createMapOfDoubleGen(false,
+                                                        null),
+                                   createMapOfInstantGen(false,
+                                                         null),
+                                   createMapOfBoolGen(false));
+
     var arrayConstraints = spec.arrayConstraints;
+
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
+      Gen<JsArray> arrGen = IntGen.arbitrary(MIN_ARRAY_SIZE,
+                                             MAX_ARRAY_SIZE)
                                   .then(max -> JsArrayGen.biased(objGen,
-                                                                 0,
+                                                                 MIN_ARRAY_SIZE,
                                                                  max)
                                        );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(objGen,
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max)
                         );
     }
@@ -590,26 +670,26 @@ public final class SpecToGen {
                        false,
                        null),
         createJsBoolGen(false),
-        createJsBinarySpec(false),
+        createJsBinaryGen(false),
         createJsInstantGen(false,
                            null)
                                     );
 
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
+      Gen<JsArray> arrGen = IntGen.arbitrary(MIN_ARRAY_SIZE,
+                                             MAX_ARRAY_SIZE)
                                   .then(max -> JsArrayGen.biased(valueGen,
-                                                                 0,
+                                                                 MIN_ARRAY_SIZE,
                                                                  max)
                                        );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(valueGen,
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max)
                         );
     }
@@ -630,23 +710,24 @@ public final class SpecToGen {
     var constraints = spec.constraints;
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
-                                  .then(max -> JsArrayGen.biased(createJsStrGen(constraints,
-                                                                                false,
-                                                                                path),
-                                                                 0,
-                                                                 max)
-                                       );
+      Gen<JsArray> arrGen =
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
+                .then(max -> JsArrayGen.biased(createJsStrGen(constraints,
+                                                              false,
+                                                              path),
+                                               MIN_ARRAY_SIZE,
+                                               max)
+                     );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsStrGen(constraints,
                                                                  false,
                                                                  path),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max)
                         );
     }
@@ -668,19 +749,20 @@ public final class SpecToGen {
                                                                  final JsArrayOfBool spec) {
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
-                                  .then(max -> JsArrayGen.biased(createJsBoolGen(false),
-                                                                 0,
-                                                                 max)
-                                       );
+      Gen<JsArray> arrGen =
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
+                .then(max -> JsArrayGen.biased(createJsBoolGen(false),
+                                               MIN_ARRAY_SIZE,
+                                               max)
+                     );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsBoolGen(false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max));
     }
 
@@ -694,35 +776,36 @@ public final class SpecToGen {
            arrGen;
   }
 
-  private static Gen<? extends JsValue> getSizableArrayOfDecGen(final boolean nullable,
-                                                                final JsArrayOfDecimal spec) {
+  private static Gen<? extends JsValue> getSizableArrayOfDecGen(boolean nullable,
+                                                                JsArrayOfDecimal spec) {
     var constraints = spec.constraints;
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
       Gen<JsArray> arrGen =
-          IntGen.arbitrary(0,
-                           100)
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
                 .then(max -> JsArrayGen.biased(createJsBigDecimalGen(constraints,
                                                                      false),
-                                               0,
+                                               MIN_ARRAY_SIZE,
                                                max)
                      );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsBigDecimalGen(constraints,
                                                                         false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max));
     }
 
-    Gen<JsArray> arrGen = JsArrayGen.biased(createJsBigDecimalGen(constraints,
-                                                                  false),
-                                            arrayConstraints.minItems(),
-                                            arrayConstraints.maxItems()
-                                           );
+    Gen<JsArray> arrGen =
+        JsArrayGen.biased(createJsBigDecimalGen(constraints,
+                                                false),
+                          arrayConstraints.minItems(),
+                          arrayConstraints.maxItems()
+                         );
     return nullable ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
                              arrGen) :
@@ -736,29 +819,30 @@ public final class SpecToGen {
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
       Gen<JsArray> arrGen =
-          IntGen.arbitrary(0,
-                           100)
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
                 .then(max -> JsArrayGen.biased(createJsDoubleGen(constraints,
                                                                  false),
-                                               0,
+                                               MIN_ARRAY_SIZE,
                                                max)
                      );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsDoubleGen(constraints,
                                                                     false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max));
     }
 
-    Gen<JsArray> arrGen = JsArrayGen.biased(createJsDoubleGen(constraints,
-                                                              false),
-                                            arrayConstraints.minItems(),
-                                            arrayConstraints.maxItems()
-                                           );
+    Gen<JsArray> arrGen =
+        JsArrayGen.biased(createJsDoubleGen(constraints,
+                                            false),
+                          arrayConstraints.minItems(),
+                          arrayConstraints.maxItems()
+                         );
     return nullable ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
                              arrGen) :
@@ -771,21 +855,21 @@ public final class SpecToGen {
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
       Gen<JsArray> arrGen =
-          IntGen.arbitrary(0,
-                           100)
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
                 .then(max -> JsArrayGen.biased(createJsLongGen(constraints,
                                                                false),
-                                               0,
+                                               MIN_ARRAY_SIZE,
                                                max)
                      );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsLongGen(constraints,
                                                                   false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max));
     }
 
@@ -804,21 +888,22 @@ public final class SpecToGen {
     var intConstraints = spec.constraints;
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
-      Gen<JsArray> arrGen = IntGen.arbitrary(0,
-                                             100)
-                                  .then(max -> JsArrayGen.biased(createJsIntGen(intConstraints,
-                                                                                false),
-                                                                 0,
-                                                                 max)
-                                       );
+      Gen<JsArray> arrGen =
+          IntGen.arbitrary(MIN_ARRAY_SIZE,
+                           MAX_ARRAY_SIZE)
+                .then(max -> JsArrayGen.biased(createJsIntGen(intConstraints,
+                                                              false),
+                                               MIN_ARRAY_SIZE,
+                                               max)
+                     );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
-             IntGen.arbitrary(0,
-                              100)
+             IntGen.arbitrary(MIN_ARRAY_SIZE,
+                              MAX_ARRAY_SIZE)
                    .then(max -> JsArrayGen.biased(createJsIntGen(intConstraints,
                                                                  false),
-                                                  0,
+                                                  MIN_ARRAY_SIZE,
                                                   max));
     }
 
@@ -846,22 +931,21 @@ public final class SpecToGen {
 
   private static Gen<? extends JsValue> createJsInstantGen(final boolean nullable,
                                                            final InstantSchemaConstraints constraints) {
+    Gen<JsInstant> gen;
     if (constraints == null) {
-      return JsInstantGen.biased();
+      gen = JsInstantGen.biased();
+    } else {
+      gen = JsInstantGen.biased(constraints.minimum()
+                                           .getEpochSecond(),
+                                constraints.maximum()
+                                           .getEpochSecond()
+                               );
     }
     return nullable ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
-                             JsInstantGen.biased(constraints.minimum()
-                                                            .getEpochSecond(),
-                                                 constraints.maximum()
-                                                            .getEpochSecond()
-                                                )
+                             gen
                             ) :
-           JsInstantGen.biased(constraints.minimum()
-                                          .getEpochSecond(),
-                               constraints.maximum()
-                                          .getEpochSecond()
-                              );
+           gen;
   }
 
   private static Gen<? extends JsValue> createJsBigDecimalGenSuchThat(final boolean nullable,
@@ -978,12 +1062,12 @@ public final class SpecToGen {
                                                        JsPath path) {
     Gen<JsStr> gen;
     if (constraints == null) {
-      gen = IntGen.arbitrary(0,
-                             100)
-                  .then(max -> JsStrGen.alphabetic(0,
+      gen = IntGen.arbitrary(MIN_ARRAY_SIZE,
+                             MAX_ARRAY_SIZE)
+                  .then(max -> JsStrGen.alphabetic(MIN_ARRAY_SIZE,
                                                    max));
     } else if (constraints.pattern != null) {
-      throw new IllegalArgumentException("Generators for regex patterns are not yet implemented. User `override` parameter to provide a custom generator for the path %s".formatted(path));
+      throw new IllegalArgumentException("Generators for regex patterns spec are not supported. User `override` parameter to provide a custom generator for the path %s".formatted(path));
     } else {
       gen = JsStrGen.alphanumeric(constraints.minLength,
                                   constraints.maxLength
@@ -1001,6 +1085,7 @@ public final class SpecToGen {
                           nullable)
         .suchThat(n -> n == JsNull.NULL || predicate.apply(n.toJsInt().value) == null);
   }
+
 
   private static Gen<? extends JsValue> createJsIntGen(IntegerSchemaConstraints constraints,
                                                        boolean nullable) {
@@ -1043,6 +1128,19 @@ public final class SpecToGen {
     return createJsLongGen(null,
                            nullable)
         .suchThat(n -> n == JsNull.NULL || predicate.apply(n.toJsLong().value) == null);
+  }
+
+  private static Gen<? extends JsValue> createJsInstantGenSuchThat(boolean nullable,
+                                                                   Function<Instant, JsError> predicate) {
+    return createJsInstantGen(nullable,
+                              null)
+        .suchThat(n -> n == JsNull.NULL || predicate.apply(n.toJsInstant().value) == null);
+  }
+
+  private static Gen<? extends JsValue> createJsBinaryGenSuchThat(boolean nullable,
+                                                                  Function<byte[], JsError> predicate) {
+    return createJsBinaryGen(nullable)
+        .suchThat(n -> n == JsNull.NULL || predicate.apply(n.toJsBinary().value) == null);
   }
 
 

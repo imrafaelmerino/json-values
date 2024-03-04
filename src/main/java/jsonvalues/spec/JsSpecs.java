@@ -172,6 +172,20 @@ public final class JsSpecs {
     return arrayOfLong;
   }
 
+  public static JsArraySpec arrayOfLong(LongSchema schema) {
+
+    return new JsArrayOfLong(false,
+                             schema.build());
+  }
+
+  public static JsArraySpec arrayOfLong(LongSchema schema,
+                                        ArraySchema arraySchema) {
+
+    return new JsArrayOfLong(false,
+                             arraySchema.build(),
+                             schema.build());
+  }
+
   /**
    * non-nullable array of integer numbers spec
    *

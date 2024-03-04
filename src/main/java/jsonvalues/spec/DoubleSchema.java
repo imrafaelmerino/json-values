@@ -7,8 +7,8 @@ package jsonvalues.spec;
 public final class DoubleSchema {
 
   private double minimum = Double.NEGATIVE_INFINITY;
-  private double maximum = Double.NEGATIVE_INFINITY;
-  private double multipleOf = Double.NEGATIVE_INFINITY;
+  private double maximum = Double.POSITIVE_INFINITY;
+  private double multipleOf;
 
   /**
    * Sets the minimum value for double numbers in the schema.

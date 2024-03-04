@@ -345,9 +345,12 @@ class JsWriter {
    * @param value bytes to encode
    */
   void writeBinary(byte[] value) {
-    if (position + (value.length << 1) + 2 >= buffer.length) {
+    int length = value.length;
+    int neededSize = (int) Math.ceil((double) length / 3) * 4 + 2;
+    if (position + neededSize >= buffer.length) {
       enlargeOrFlush(position,
-                     (value.length << 1) + 2);
+                     neededSize
+                    );
     }
     buffer[position++] = '"';
     position += Base64.encodeToBytes(value,

@@ -13,7 +13,7 @@ final class JsDoubleSpec extends AbstractNullable implements JsOneErrorSpec, Avr
          null);
   }
 
-  JsDoubleSpec(final boolean nullable,
+  JsDoubleSpec(boolean nullable,
                DoubleSchemaConstraints constraints) {
     super(nullable);
     this.constraints = constraints;
