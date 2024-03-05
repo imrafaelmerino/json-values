@@ -25,7 +25,7 @@ import jsonvalues.spec.JsObjSpec;
 /**
  * Represents a JsObj generator. It can be created using the static factory methods {@code of} or inserting new
  * key-generator pairs to an existing JsObj generator with the method {@link JsObjGen#set(String, Gen)}. Each generator
- * of the Json is created from a new seed that is calculated passing the original one to the
+ * of the Json is created from a new seed that is calculated by passing the original one to the
  * {@link SplitGen#DEFAULT split generator }
  * <p>
  * There are factory methods to create generators of up to 50-key Json objects.
@@ -54,10 +54,10 @@ public final class JsObjGen implements Gen<JsObj> {
   private final Set<String> optionals;
   private final Set<String> nullables;
 
-  private JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
-                   Set<String> optionals,
-                   Set<String> nullables
-                  ) {
+  public JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
+                  Set<String> optionals,
+                  Set<String> nullables
+                 ) {
     for (String key : optionals) {
       if (!bindings.containsKey(key)) {
         throw new IllegalArgumentException("optional '" + key + "' not defined in generator");
@@ -83,7 +83,6 @@ public final class JsObjGen implements Gen<JsObj> {
     Map<String, Gen<? extends JsValue>> map = new HashMap<>();
     return new JsObjGen(map);
   }
-
 
 
   public static JsObjGen of(final String key,

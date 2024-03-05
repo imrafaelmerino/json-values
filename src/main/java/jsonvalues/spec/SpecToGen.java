@@ -4,14 +4,18 @@ import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.IntGen;
 import fun.gen.ListGen;
+import fun.gen.NamedGen;
 import fun.gen.SplitGen;
 import fun.gen.StrGen;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.DoubleFunction;
 import java.util.function.Function;
 import java.util.function.IntFunction;
@@ -65,6 +69,17 @@ public final class SpecToGen {
                    Map.of());
   }
 
+  public static Gen<? extends JsValue> convert(final JsSpec spec) {
+    if (spec instanceof NamedSpec namedSpec) {
+      return createNamedGen(namedSpec,
+                            Map.of(),
+                            JsPath.empty(),
+                            new HashSet<>());
+    }
+
+    return null;
+  }
+
   /**
    * Converts a JsObjSpec to a JSON schema (JsObj).
    *
@@ -73,28 +88,53 @@ public final class SpecToGen {
    */
   public static JsObjGen convert(JsObjSpec objSpec,
                                  Map<JsPath, Gen<? extends JsValue>> overrides) {
-    var gen = JsObjGen.empty();
+    return convert(objSpec,
+                   overrides,
+                   new HashSet<>());
+  }
+
+  public static JsObjGen convert(JsObjSpec objSpec,
+                                 Map<JsPath, Gen<? extends JsValue>> overrides,
+                                 Set<String> nameSpecsVisited) {
+    var gen = new HashMap<String, Gen<? extends JsValue>>();
     var currentPath = JsPath.empty();
+    Set<String> optionals = new HashSet<>();
+    Set<String> nullables = new HashSet<>();
     for (var binding : objSpec.bindings.entrySet()) {
-      JsPath path = currentPath.key(binding.getKey());
-      Gen<? extends JsValue> keyGen =
+      var path = currentPath.key(binding.getKey());
+      var optional = objSpec.optionalFields.contains(binding.getKey());
+      var nullable = binding.getValue()
+                            .isNullable();
+      if (nullable) {
+        nullables.add(binding.getKey());
+      }
+      if (optional) {
+        optionals.add(binding.getKey());
+      }
+
+      var keyGen =
           overrides.containsKey(path) ?
           overrides.get(path) :
           createGen(binding.getValue(),
                     overrides,
-                    path
+                    path,
+                    nameSpecsVisited
                    );
-      gen = gen.set(binding.getKey(),
-                    keyGen
-                   );
+      gen.put(binding.getKey(),
+              keyGen
+             );
+
     }
-    return gen;
+    return new JsObjGen(gen,
+                        optionals,
+                        nullables);
   }
 
 
   private static Gen<? extends JsValue> createGen(JsSpec spec,
                                                   Map<JsPath, Gen<? extends JsValue>> overrides,
-                                                  JsPath currentPath) {
+                                                  JsPath currentPath,
+                                                  Set<String> nameSpecsVisited) {
     return switch (spec) {
       case JsIntSpec s -> createJsIntGen(s.constraints,
                                          s.nullable);
@@ -117,33 +157,44 @@ public final class SpecToGen {
       case JsDecimalSuchThat s -> createJsBigDecimalGenSuchThat(s.nullable,
                                                                 s.predicate);
       case JsBooleanSpec s -> createJsBoolGen(s.nullable);
+
       case JsStrSpec s -> createJsStrGen(s.constraints,
                                          s.nullable,
                                          currentPath);
+
       case JsStrSuchThat s -> createJsStrSuchThatGen(s.nullable,
                                                      s.predicate);
       case JsInstantSpec s -> createJsInstantGen(s.nullable,
                                                  s.constraints);
+
       case JsInstantSuchThat s -> createJsInstantGenSuchThat(s.nullable,
                                                              s.predicate);
 
       case JsBinarySpec s -> createJsBinaryGen(s.nullable);
+
       case JsBinarySuchThat s -> createJsBinaryGenSuchThat(s.nullable,
                                                            s.predicate);
+
       case JsFixedBinary s -> createJsFixedBinaryGen(s.getSize(),
                                                      s.nullable);
       case JsEnum jsEnum -> createEnumGen(jsEnum);
+
       case AnySpec s -> createAnySpecGen(s.isNullable());
+
       case AnySuchThat ignored ->
           throw new IllegalArgumentException("Generators for `AnySuchThat` spec are not supported. User `override` parameter to provide a custom generator for the path %s".formatted(currentPath));
 
       case JsArraySpec s -> createJsArrayGen(s.isNullable(),
                                              s,
                                              currentPath,
-                                             overrides);
+                                             overrides,
+                                             nameSpecsVisited);
       case JsObjSpec s -> convert(s,
-                                  overrides);
-      case IsJsObj s -> createIsObjGen(s.nullable);
+                                  overrides,
+                                  nameSpecsVisited);
+
+      case IsJsObj s -> createIsObjGen(s.isNullable());
+
       case JsObjSuchThat ignored ->
           throw new IllegalArgumentException("Generators for `JsObjSuchThat` spec are not supported. User `override` parameter to provide a custom generator for the path %s".formatted(currentPath));
 
@@ -170,19 +221,54 @@ public final class SpecToGen {
       case JsMapOfSpec s -> createMapOfSpecGen(s.nullable,
                                                s.getValueSpec(),
                                                overrides,
-                                               currentPath);
+                                               currentPath,
+                                               nameSpecsVisited);
 
       case JsMapOfStr s -> createMapOfStrGen(s.nullable,
                                              s.valuesConstraints,
                                              currentPath);
 
-      case NamedSpec namedSpec -> null;
+      case NamedSpec namedSpec -> createNamedGen(namedSpec,
+                                                 overrides,
+                                                 currentPath,
+                                                 nameSpecsVisited);
       case OneOf oneOf -> createOneOfGen(oneOf,
                                          overrides,
-                                         currentPath);
+                                         currentPath,
+                                         nameSpecsVisited);
       default -> throw new IllegalArgumentException();
     };
 
+  }
+
+  private static Gen<? extends JsValue> createNamedGen(NamedSpec namedSpec,
+                                                       Map<JsPath, Gen<? extends JsValue>> overrides,
+                                                       JsPath currentPath,
+                                                       Set<String> nameSpecsVisited) {
+
+    String name = namedSpec.name;
+    System.out.println(name);
+    Gen<? extends JsValue> gen;
+    boolean contains = nameSpecsVisited.contains(name);
+    System.out.println("processed? " + contains);
+    if (contains) {
+      gen = NamedGen.of(name);
+    } else {
+      nameSpecsVisited.add(name);
+      gen =
+          NamedGen.of(name,
+                      createGen(JsSpecCache.get(name),
+                                overrides,
+                                currentPath,
+                                nameSpecsVisited
+                               )
+                     );
+    }
+    return namedSpec.nullable ?
+           Combinators.oneOf(Gen.cons(JsNull.NULL),
+                             gen
+                            ) :
+           gen;
   }
 
   private static Gen<JsValue> createAnySpecGen(boolean nullable) {
@@ -233,13 +319,16 @@ public final class SpecToGen {
 
   private static Gen<? extends JsValue> createOneOfGen(OneOf oneOf,
                                                        Map<JsPath, Gen<? extends JsValue>> overrides,
-                                                       JsPath currentPath
-                                                      ) {
+                                                       JsPath currentPath,
+                                                       final Set<String> nameSpecsVisited) {
     List<Gen<? extends JsValue>>
         gens = new ArrayList<>(oneOf.specs.stream()
                                           .map(spec -> createGen(spec,
                                                                  overrides,
-                                                                 currentPath))
+                                                                 currentPath,
+                                                                 nameSpecsVisited
+                                                                )
+                                              )
                                           .toList());
     return Combinators.oneOfList(gens);
   }
@@ -305,7 +394,8 @@ public final class SpecToGen {
   private static Gen<? extends JsValue> createMapOfSpecGen(final boolean nullable,
                                                            final JsSpec valueSpec,
                                                            final Map<JsPath, Gen<? extends JsValue>> overrides,
-                                                           final JsPath path) {
+                                                           final JsPath path,
+                                                           final Set<String> nameSpecsVisited) {
     var keyGen = StrGen.alphabetic(MIN_KEY_MAP_SIZE,
                                    MAX_KEY_MAP_SIZE)
                        .distinct();
@@ -314,8 +404,8 @@ public final class SpecToGen {
                                  MAX_MAP_SIZE);
     var value = createGen(valueSpec,
                           overrides,
-                          path
-                         );
+                          path,
+                          nameSpecsVisited);
 
     return mapGen(nullable,
                   keys,
@@ -455,7 +545,8 @@ public final class SpecToGen {
   private static Gen<? extends JsValue> createJsArrayGen(boolean nullable,
                                                          JsArraySpec spec,
                                                          JsPath path,
-                                                         Map<JsPath, Gen<? extends JsValue>> overrides) {
+                                                         Map<JsPath, Gen<? extends JsValue>> overrides,
+                                                         Set<String> nameSpecsVisited) {
 
     return switch (spec) {
       case JsArrayOfInt s -> getSizableArrayOfIntGen(nullable,
@@ -507,14 +598,16 @@ public final class SpecToGen {
       case JsArrayOfSpec s -> getSizableArrayOfSpecGen(nullable,
                                                        s,
                                                        overrides,
-                                                       path);
+                                                       path,
+                                                       nameSpecsVisited);
       case JsTuple tuple -> getTupleGen(nullable,
-                                        tuple);
+                                        tuple,
+                                        nameSpecsVisited);
     };
   }
 
-  private static Gen<? extends JsValue> getSizableArrayOfBigIntGen(final boolean nullable,
-                                                                   final JsArrayOfBigInt spec) {
+  private static Gen<? extends JsValue> getSizableArrayOfBigIntGen(boolean nullable,
+                                                                   JsArrayOfBigInt spec) {
     var constraints = spec.constraints;
     var arrayConstraints = spec.arrayConstraints;
     if (arrayConstraints == null) {
@@ -552,13 +645,16 @@ public final class SpecToGen {
   }
 
   private static Gen<? extends JsValue> getTupleGen(final boolean nullable,
-                                                    final JsTuple tuple) {
+                                                    final JsTuple tuple,
+                                                    final Set<String> nameSpecsVisited) {
     List<JsSpec> specs = tuple.specs;
     List<Gen<? extends JsValue>> gens = new ArrayList<>();
     for (JsSpec spec : specs) {
       gens.add(createGen(spec,
                          Map.of(),
-                         JsPath.empty()));
+                         JsPath.empty(),
+                         nameSpecsVisited)
+              );
     }
     return nullable ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
@@ -570,33 +666,34 @@ public final class SpecToGen {
   private static Gen<? extends JsValue> getSizableArrayOfSpecGen(boolean nullable,
                                                                  JsArrayOfSpec spec,
                                                                  Map<JsPath, Gen<? extends JsValue>> overrides,
-                                                                 JsPath path) {
+                                                                 JsPath path,
+                                                                 Set<String> nameSpecsVisited) {
     var arrayConstraints = spec.arrayConstraints;
+    Gen<? extends JsValue> elemGen = createGen(spec.getElemSpec(),
+                                               overrides,
+                                               path,
+                                               nameSpecsVisited);
     if (arrayConstraints == null) {
       Gen<JsArray> arrGen = IntGen.arbitrary(MIN_ARRAY_SIZE,
                                              MAX_ARRAY_SIZE)
-                                  .then(max -> JsArrayGen.biased(createGen(spec.getElemSpec(),
-                                                                           overrides,
-                                                                           path),
-                                                                 MIN_ARRAY_SIZE,
-                                                                 max)
+                                  .then(max ->
+                                            JsArrayGen.biased(elemGen,
+                                                              MIN_ARRAY_SIZE,
+                                                              max)
                                        );
       return nullable ?
              Combinators.oneOf(Gen.cons(JsNull.NULL),
                                arrGen) :
              IntGen.arbitrary(MIN_ARRAY_SIZE,
                               MAX_ARRAY_SIZE)
-                   .then(max -> JsArrayGen.biased(createGen(spec.getElemSpec(),
-                                                            overrides,
-                                                            path),
-                                                  MIN_ARRAY_SIZE,
-                                                  max)
+                   .then(max ->
+                             JsArrayGen.biased(elemGen,
+                                               MIN_ARRAY_SIZE,
+                                               max)
                         );
     }
 
-    Gen<JsArray> arrGen = JsArrayGen.biased(createGen(spec.getElemSpec(),
-                                                      overrides,
-                                                      path),
+    Gen<JsArray> arrGen = JsArrayGen.biased(elemGen,
                                             arrayConstraints.minItems(),
                                             arrayConstraints.maxItems()
                                            );
@@ -878,8 +975,9 @@ public final class SpecToGen {
                                             arrayConstraints.minItems(),
                                             arrayConstraints.maxItems()
                                            );
-    return nullable ? Combinators.oneOf(Gen.cons(JsNull.NULL),
-                                        arrGen) :
+    return nullable ?
+           Combinators.oneOf(Gen.cons(JsNull.NULL),
+                             arrGen) :
            arrGen;
   }
 

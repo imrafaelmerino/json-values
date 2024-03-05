@@ -528,7 +528,7 @@ public class JsSpecToJsonSchemaTests {
   @Test
   public void testNamedSpecs() {
 
-    var address =
+    var unused =
         JsSpecs.ofNamedSpec("address",
                             JsObjSpec.of("street",
                                          JsSpecs.str(),

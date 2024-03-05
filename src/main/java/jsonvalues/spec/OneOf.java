@@ -66,7 +66,7 @@ final class OneOf extends AbstractNullable implements JsSpec, AvroSpec {
 
   private boolean debug(int i,
                         JsParserException e) {
-    System.out.printf("OneOf %d trie: %s%n",
+    System.out.printf("OneOf %d trie: %s. Keep trying with the next one spec%n",
                       i,
                       e.getMessage());
     return i >= 0;

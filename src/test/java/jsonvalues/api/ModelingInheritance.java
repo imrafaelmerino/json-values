@@ -29,7 +29,7 @@ public final class ModelingInheritance {
   String KEY_COUNT_FIELD = "keyCount";
   String MEDIA_BUTTONS_FIELD = "mediaButtons";
   String CONNECTED_DEVICES_FIELD = "connectedDevices";
-  String PERIPHERAL_FIELD = "peripheral";
+  String PERIPHERAL_FIELD = "any_peripheral";
   List<String> TRACKING_TYPE_ENUM = List.of("ball",
                                             "optical");
 
@@ -93,7 +93,7 @@ public final class ModelingInheritance {
 
     var usbHubSpec =
         JsObjSpec.of(CONNECTED_DEVICES_FIELD,
-                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
+                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD)).nullable()
                     )
                  .withOptKeys(CONNECTED_DEVICES_FIELD)
                  .concat(baseSpec);
@@ -106,6 +106,7 @@ public final class ModelingInheritance {
                     TYPE_FIELD,
                     Gen.cons(JsStr.of("usb_hub"))
                    )
+                .withNullValues(CONNECTED_DEVICES_FIELD)
                 .withOptKeys(CONNECTED_DEVICES_FIELD)
                 .concat(baseGen);
 

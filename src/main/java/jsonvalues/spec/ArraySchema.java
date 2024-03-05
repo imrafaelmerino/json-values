@@ -17,28 +17,38 @@ public final class ArraySchema {
    * @return This ArraySchema instance for method chaining.
    * @throws IllegalArgumentException If minItems is negative.
    */
-  public ArraySchema setMinItems(int minItems) {
+  public static ArraySchema withMinItems(int minItems) {
     if (minItems < 0) {
       throw new IllegalArgumentException("minItems must be >= 0");
     }
-    this.minItems = minItems;
-    return this;
+    var schema = new ArraySchema();
+    schema.minItems = minItems;
+    return schema;
   }
 
-  /**
-   * Sets the maximum number of items allowed in the array.
-   *
-   * @param maxItems The maximum number of items (inclusive). Must be greater than or equal to 0.
-   * @return This ArraySchema instance for method chaining.
-   * @throws IllegalArgumentException If maxItems is negative.
-   */
-  public ArraySchema setMaxItems(int maxItems) {
+
+  public static ArraySchema withMaxItems(int maxItems) {
     if (maxItems < 0) {
       throw new IllegalArgumentException("maxItems must be >= 0");
     }
-    this.maxItems = maxItems;
-    return this;
+    var schema = new ArraySchema();
+    schema.maxItems = maxItems;
+    return schema;
   }
+
+  public static ArraySchema withItems(int minItems,int maxItems) {
+    if (minItems < 0) {
+      throw new IllegalArgumentException("minItems must be >= 0");
+    }
+    if (maxItems < 0) {
+      throw new IllegalArgumentException("maxItems must be >= 0");
+    }
+    var schema = new ArraySchema();
+    schema.minItems = minItems;
+    schema.maxItems = maxItems;
+    return schema;
+  }
+
 
   /**
    * Sets the flag to enforce unique items in the array.

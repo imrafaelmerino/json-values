@@ -109,18 +109,19 @@ public final class JsArrayGen implements Gen<JsArray> {
                             Pair.of(2,
                                     JsArrayGen.arbitrary(gen,
                                                          minSize,
-                                                         maxSize)));
+                                                         maxSize))
+                           );
   }
 
 
   private static Supplier<JsArray> arraySupplier(Supplier<? extends JsValue> elemSupplier,
                                                  Supplier<Integer> sizeSupplier
                                                 ) {
-    return () ->
-        JsArray.ofIterable(IntStream.range(0,
-                                           sizeSupplier.get())
-                                    .mapToObj(i -> elemSupplier.get())
-                                    .collect(Collectors.toList()));
+    return () -> JsArray.ofIterable(IntStream.range(0,
+                                                    sizeSupplier.get())
+                                             .mapToObj(i -> elemSupplier.get())
+                                             .collect(Collectors.toList())
+                                   );
   }
 
 

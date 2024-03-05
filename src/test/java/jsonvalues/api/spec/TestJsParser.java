@@ -159,8 +159,8 @@ public class TestJsParser {
                                example);
 
     JsSpec spec = JsSpecs.arrayOfSpec(objSpec,
-                                      new ArraySchema().setMinItems(1)
-                                                       .setMaxItems(5));
+                                      ArraySchema.withItems(1,
+                                                            5));
 
     JsArraySpecParser parser = JsArraySpecParser.of(spec);
 
@@ -300,12 +300,10 @@ public class TestJsParser {
   public void test_parsing_nullable_arrays() {
 
     JsObjSpec spec = JsObjSpec.of("a",
-                                  JsSpecs.arrayOfDec(new ArraySchema().setMinItems(0)
-                                                                      .setMaxItems(1))
+                                  JsSpecs.arrayOfDec(ArraySchema.withMaxItems(1))
                                          .nullable(),
                                   "b",
-                                  JsSpecs.arrayOfInt(new ArraySchema().setMinItems(0)
-                                                                      .setMaxItems(1))
+                                  JsSpecs.arrayOfInt(ArraySchema.withMaxItems(1))
                                          .nullable(),
                                   "c",
                                   JsSpecs.array()
@@ -344,11 +342,11 @@ public class TestJsParser {
                                   str(s -> s.length() < 10).nullable(),
                                   "b",
                                   arrayOfStr(s -> s.length() < 10,
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)).nullable(),
+                                             ArraySchema.withItems(1,
+                                                                   10)).nullable(),
                                   "c",
-                                  arrayOfStr(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)).nullable(),
+                                  arrayOfStr(ArraySchema.withItems(1,
+                                                                   10)).nullable(),
                                   "d",
                                   arrayOfStrSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
@@ -391,11 +389,11 @@ public class TestJsParser {
                                   str(s -> s.length() < 10),
                                   "b",
                                   arrayOfStr(s -> s.length() < 10,
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                             ArraySchema.withItems(1,
+                                                                   10)),
                                   "c",
-                                  arrayOfStr(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                  arrayOfStr(ArraySchema.withItems(1,
+                                                                   10)),
                                   "d",
                                   arrayOfStrSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  )
@@ -444,11 +442,11 @@ public class TestJsParser {
                                   integer(s -> s < 10),
                                   "b",
                                   arrayOfInt(s -> s < 10,
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                             ArraySchema.withItems(1,
+                                                                   10)),
                                   "c",
-                                  arrayOfInt(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                  arrayOfInt(ArraySchema.withItems(1,
+                                                                   10)),
                                   "d",
                                   arrayOfIntSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
@@ -499,11 +497,11 @@ public class TestJsParser {
                                          .nullable(),
                                   "b",
                                   arrayOfInt(s -> s < 10,
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)).nullable(),
+                                             ArraySchema.withItems(1,
+                                                                   10)).nullable(),
                                   "c",
-                                  arrayOfInt(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)).nullable(),
+                                  arrayOfInt(ArraySchema.withItems(1,
+                                                                   10)).nullable(),
                                   "d",
                                   arrayOfIntSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
@@ -548,8 +546,8 @@ public class TestJsParser {
                                   JsSpecs.oneValOf(List.of(FALSE))
                                          .nullable(),
                                   "c",
-                                  arrayOfBool(new ArraySchema().setMinItems(1)
-                                                               .setMaxItems(10)).nullable(),
+                                  arrayOfBool(ArraySchema.withItems(1,
+                                                                    10)).nullable(),
                                   "d",
                                   arrayOfBoolSuchThat(a -> a.size() < 11 && !a.isEmpty()).nullable()
                                  )
@@ -590,8 +588,8 @@ public class TestJsParser {
     JsObjSpec spec = JsObjSpec.of("a",
                                   bool(),
                                   "b",
-                                  arrayOfBool(new ArraySchema().setMinItems(1)
-                                                               .setMaxItems(10)),
+                                  arrayOfBool(ArraySchema.withItems(1,
+                                                                    10)),
                                   "c",
                                   arrayOfBoolSuchThat(a -> a.size() < 11 && !a.isEmpty()),
                                   "d",
@@ -647,11 +645,11 @@ public class TestJsParser {
                                   longInteger(s -> s < 10),
                                   "b",
                                   arrayOfLong(s -> s < 10,
-                                              new ArraySchema().setMinItems(1)
-                                                               .setMaxItems(10)),
+                                              ArraySchema.withItems(1,
+                                                                    10)),
                                   "c",
-                                  arrayOfLong(new ArraySchema().setMinItems(1)
-                                                               .setMaxItems(10)),
+                                  arrayOfLong(ArraySchema.withItems(1,
+                                                                    10)),
                                   "d",
                                   arrayOfLongSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
@@ -756,11 +754,11 @@ public class TestJsParser {
                                   decimal(s -> s.compareTo(BigDecimal.TEN) < 0),
                                   "b",
                                   arrayOfDec(s -> s.compareTo(BigDecimal.TEN) < 0,
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                             ArraySchema.withItems(1,
+                                                                   10)),
                                   "c",
-                                  arrayOfDec(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                  arrayOfDec(ArraySchema.withItems(1,
+                                                                   10)),
                                   "d",
                                   arrayOfDecSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
@@ -812,11 +810,11 @@ public class TestJsParser {
                                   bigInteger(s -> s.compareTo(BigInteger.TEN) < 0),
                                   "b",
                                   arrayOfBigInt(s -> s.compareTo(BigInteger.TEN) < 0,
-                                                new ArraySchema().setMinItems(1)
-                                                                 .setMaxItems(10)),
+                                                ArraySchema.withItems(1,
+                                                                      10)),
                                   "c",
-                                  arrayOfBigInt(new ArraySchema().setMinItems(1)
-                                                                 .setMaxItems(10)),
+                                  arrayOfBigInt(ArraySchema.withItems(1,
+                                                                      10)),
                                   "d",
                                   arrayOfBigIntSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
@@ -867,11 +865,11 @@ public class TestJsParser {
                                   obj(s -> s.containsKey("a")),
                                   "b",
                                   arrayOfObj(s -> s.containsKey("a"),
-                                             new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                             ArraySchema.withItems(1,
+                                                                   10)),
                                   "c",
-                                  arrayOfObj(new ArraySchema().setMinItems(1)
-                                                              .setMaxItems(10)),
+                                  arrayOfObj(ArraySchema.withItems(1,
+                                                                   10)),
                                   "d",
                                   arrayOfObjSuchThat(a -> a.size() < 11 && !a.isEmpty())
                                  );
