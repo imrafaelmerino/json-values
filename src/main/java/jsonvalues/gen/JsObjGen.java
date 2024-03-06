@@ -73,24 +73,6 @@ public final class JsObjGen implements Gen<JsObj> {
     this.bindings = bindings;
   }
 
-  int optionalProbability = 2;
-  int nullableProbability = 2;
-
-  public JsObjGen withOptionalProbability(int prob) {
-    if (prob < 2 && prob > 10) {
-      throw new IllegalArgumentException("The probability must be between 2 and 10");
-    }
-    this.optionalProbability = prob;
-    return this;
-  }
-
-  public JsObjGen withNullableProbability(int prob) {
-    if (prob < 2 && prob > 10) {
-      throw new IllegalArgumentException("The probability must be between 2 and 10");
-    }
-    this.nullableProbability = prob;
-    return this;
-  }
 
   private JsObjGen(Map<String, Gen<? extends JsValue>> bindings) {
     this.optionals = new HashSet<>();
@@ -5522,6 +5504,42 @@ public final class JsObjGen implements Gen<JsObj> {
                         nullables);
   }
 
+  int optionalProbability = 2;
+  int nullableProbability = 2;
+
+  /**
+   * Sets the probability of including optional fields when generating JsObj instances.
+   *
+   * @param prob The probability value should be between 2 and 10 (inclusive). Default value is 2. Higher values make
+   *             the inclusion of optional fields more likely. For example, if prob is set to 4, the chances of
+   *             including optional fields are 4 times higher.
+   * @return The JsObjGen instance for method chaining.
+   * @throws IllegalArgumentException If the probability is not within the valid range.
+   */
+  public JsObjGen withOptionalProbability(int prob) {
+    if (prob < 2 && prob > 10) {
+      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    }
+    this.optionalProbability = prob;
+    return this;
+  }
+
+  /**
+   * Sets the probability of including nullable fields when generating JsObj instances.
+   *
+   * @param prob The probability value should be between 2 and 10 (inclusive). Default value is 2. Higher values make
+   *             the inclusion of nullable fields more likely. For example, if prob is set to 4, the chances of
+   *             including nullable fields are 4 times higher.
+   * @return The JsObjGen instance for method chaining.
+   * @throws IllegalArgumentException If the probability is not within the valid range.
+   */
+  public JsObjGen withNullableProbability(int prob) {
+    if (prob < 2 && prob > 10) {
+      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    }
+    this.nullableProbability = prob;
+    return this;
+  }
 
   @Override
   public Supplier<JsObj> apply(final RandomGenerator seed) {

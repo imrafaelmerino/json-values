@@ -56,8 +56,80 @@ public class JsSpecToJsonSchemaTests {
                                            )
                               );
 
-    System.out.println(SpecToJsonSchema.convert(objSpec)
-                                       .toPrettyString());
+    Assertions.assertEquals("""
+                                {
+                                  "$schema": "https://json-schema.org/draft/2019-09/schema",
+                                  "properties": {
+                                    "height": {
+                                      "type": "number"
+                                    },
+                                    "name": {
+                                      "maxLength": 10,
+                                      "pattern": "[a-z]+",
+                                      "format": "email",
+                                      "minLength": 3,
+                                      "type": "string"
+                                    },
+                                    "birthDate": {
+                                      "format": "date-time",
+                                      "type": "string"
+                                    },
+                                    "address": {
+                                      "properties": {
+                                        "zip": {
+                                          "type": "integer"
+                                        },
+                                        "street": {
+                                          "maxLength": 10,
+                                          "pattern": "[a-z]+",
+                                          "format": "email",
+                                          "minLength": 5,
+                                          "type": "string"
+                                        },
+                                        "city": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "additionalProperties": false,
+                                      "type": "object",
+                                      "required": [
+                                        "street",
+                                        "city",
+                                        "zip"
+                                      ]
+                                    },
+                                    "distance": {
+                                      "type": "integer"
+                                    },
+                                    "image": {
+                                      "contentEncoding": "base64",
+                                      "type": "string"
+                                    },
+                                    "vip": {
+                                      "type": "boolean"
+                                    },
+                                    "age": {
+                                      "maximum": 100,
+                                      "minimum": 0,
+                                      "type": "integer"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "type": "object",
+                                  "$id": "person_with_embedded_address",
+                                  "required": [
+                                    "name",
+                                    "age",
+                                    "address",
+                                    "vip",
+                                    "height",
+                                    "distance",
+                                    "image",
+                                    "birthDate"
+                                  ]
+                                }""",
+                            SpecToJsonSchema.convert(objSpec)
+                                            .toPrettyString());
 
   }
 
@@ -642,29 +714,138 @@ public class JsSpecToJsonSchemaTests {
                             JsSpecs.mapOfStr(strSchema)
                            );
 
-    System.out.println(SpecToJsonSchema.convert(spec)
-                                       .toPrettyString());
+    Assertions.assertEquals("""
+                                {
+                                  "$schema": "https://json-schema.org/draft/2019-09/schema",
+                                  "properties": {
+                                    "a": {
+                                      "maxLength": 2,
+                                      "pattern": ".*",
+                                      "format": "email",
+                                      "minLength": 1,
+                                      "type": "string"
+                                    },
+                                    "b": {
+                                      "items": {
+                                        "maxLength": 2,
+                                        "pattern": ".*",
+                                        "format": "email",
+                                        "minLength": 1,
+                                        "type": "string"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "c": {
+                                      "additionalProperties": {
+                                        "maxLength": 2,
+                                        "pattern": ".*",
+                                        "format": "email",
+                                        "minLength": 1,
+                                        "type": "string"
+                                      },
+                                      "type": "object"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "type": "object",
+                                  "required": [
+                                    "a",
+                                    "b",
+                                    "c"
+                                  ]
+                                }""",
+                            SpecToJsonSchema.convert(spec)
+                                            .toPrettyString());
   }
 
   @Test
   public void testArrays() {
-    JsObjSpec objSpec = JsObjSpec.of("a",
-                                     JsSpecs.arrayOfStr(),
-                                     "b",
-                                     JsSpecs.arrayOfInt(),
-                                     "d",
-                                     JsSpecs.arrayOfDec(),
-                                     "e",
-                                     JsSpecs.arrayOfLong(),
-                                     "g",
-                                     JsSpecs.arrayOfDouble(),
-                                     "h",
-                                     JsSpecs.arrayOfBigInt(),
-                                     "c",
-                                     JsSpecs.arrayOfBool(),
-                                     "f",
-                                     JsSpecs.arrayOfObj()
-                                    );
+    JsObjSpec spec = JsObjSpec.of("a",
+                                  JsSpecs.arrayOfStr(),
+                                  "b",
+                                  JsSpecs.arrayOfInt(),
+                                  "d",
+                                  JsSpecs.arrayOfDec(),
+                                  "e",
+                                  JsSpecs.arrayOfLong(),
+                                  "g",
+                                  JsSpecs.arrayOfDouble(),
+                                  "h",
+                                  JsSpecs.arrayOfBigInt(),
+                                  "c",
+                                  JsSpecs.arrayOfBool(),
+                                  "f",
+                                  JsSpecs.arrayOfObj()
+                                 );
+
+    Assertions.assertEquals("""
+                                {
+                                  "$schema": "https://json-schema.org/draft/2019-09/schema",
+                                  "properties": {
+                                    "a": {
+                                      "items": {
+                                        "type": "string"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "b": {
+                                      "items": {
+                                        "type": "integer"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "c": {
+                                      "items": {
+                                        "type": "boolean"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "d": {
+                                      "items": {
+                                        "type": "number"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "e": {
+                                      "items": {
+                                        "type": "integer"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "f": {
+                                      "items": {
+                                        "type": "object"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "g": {
+                                      "items": {
+                                        "type": "number"
+                                      },
+                                      "type": "array"
+                                    },
+                                    "h": {
+                                      "items": {
+                                        "type": "integer"
+                                      },
+                                      "type": "array"
+                                    }
+                                  },
+                                  "additionalProperties": false,
+                                  "type": "object",
+                                  "required": [
+                                    "a",
+                                    "b",
+                                    "d",
+                                    "e",
+                                    "g",
+                                    "h",
+                                    "c",
+                                    "f"
+                                  ]
+                                }""",
+                            SpecToJsonSchema.convert(spec)
+                                            .toPrettyString());
 
   }
 
