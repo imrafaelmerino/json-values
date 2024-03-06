@@ -6,7 +6,7 @@ import static jsonvalues.spec.ERROR_CODE.REQUIRED;
 import java.util.Objects;
 import jsonvalues.JsValue;
 
-final class Cons implements JsOneErrorSpec {
+final class Cons implements JsOneErrorSpec, AvroSpec {
 
   final JsValue value;
 

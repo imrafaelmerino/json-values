@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
-import java.util.Optional;
+import java.util.Base64;
 import java.util.function.DoublePredicate;
 import java.util.function.IntPredicate;
 import java.util.function.LongPredicate;
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  * of methods:
  * <p>
  * 1. Classificatory methods, which start with the prefix <b>isXXX</b>. 2. Accessory methods to convert the JsValue to
- * the real implementation, which start with the prefix toJsXXX.
+ * the real implementation, which starts with the prefix toJsXXX.
  */
 public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
 
@@ -151,10 +151,10 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
     if (this instanceof JsInstant) {
       return ((JsInstant) this);
     }
-    if (this instanceof JsStr) {
-      var instant = JsStr.instantPrism.getOptional.apply(((JsStr) this).value);
-      if (instant.isPresent()) {
-        return JsInstant.of(instant.get());
+    if (this instanceof JsStr s) {
+      try {
+        return JsInstant.of(Instant.parse(s.value));
+      } catch (Exception ignored) {
       }
     }
     throw UserError.isNotAJsInstant(this);
@@ -171,10 +171,11 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
     if (this instanceof JsBinary) {
       return ((JsBinary) this);
     }
-    if (this instanceof JsStr) {
-      Optional<byte[]> bytes = JsStr.base64Prism.getOptional.apply(((JsStr) this).value);
-      if (bytes.isPresent()) {
-        return JsBinary.of(bytes.get());
+    if (this instanceof JsStr s) {
+      try {
+        return JsBinary.of(Base64.getDecoder()
+                                 .decode(s.value));
+      } catch (IllegalArgumentException ignored) {
       }
     }
     throw UserError.isNotAJsBinary(this);

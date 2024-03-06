@@ -10,7 +10,7 @@ sealed interface AvroSpec permits JsArrayOfBigInt, JsArrayOfBigIntSuchThat, JsAr
                                   JsDoubleSuchThat, JsEnum, JsFixedBinary, JsInstantSpec, JsInstantSuchThat, JsIntSpec,
                                   JsIntSuchThat, JsLongSpec, JsLongSuchThat, JsMapOfBigInt, JsMapOfBinary, JsMapOfBool,
                                   JsMapOfDec, JsMapOfDouble, JsMapOfInstant, JsMapOfInt, JsMapOfLong, JsMapOfSpec,
-                                  JsMapOfStr, JsObjSpec, JsStrSpec, JsStrSuchThat, OneOf {
+                                  JsMapOfStr, JsObjSpec, JsStrSpec, JsStrSuchThat, OneOf,Cons {
 
 
 }
