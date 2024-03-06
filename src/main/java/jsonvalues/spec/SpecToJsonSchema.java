@@ -38,6 +38,7 @@ public final class SpecToJsonSchema {
   private static final String ONE_OF = "oneOf";
   private static final String ARRAY = "array";
   private static final String ITEMS = "items";
+  private static final String CONST = "const";
   private static final String MIN_ITEMS = "minItems";
   private static final String MAX_ITEMS = "maxItems";
   private static final String ADDITIONAL_ITEMS = "additionalItems";
@@ -142,8 +143,7 @@ public final class SpecToJsonSchema {
     MetaData metaData = jsObjSpec.metaData;
     return JsObj.of(TYPE,
                     jsObjSpec.nullable ? JsArray.of(JsStr.of(OBJECT),
-                                                    JsStr.of(NULL)
-                                                   ) : JsStr.of(OBJECT),
+                                                    JsStr.of(NULL)) : JsStr.of(OBJECT),
                     PROPERTIES,
                     getProperties(jsObjSpec,
                                   nameSpecsVisited,
@@ -153,20 +153,16 @@ public final class SpecToJsonSchema {
                     REQUIRED,
                     getRequired(jsObjSpec),
                     DESCRIPTION,
-                    metaData != null && metaData.doc() != null ?
-                    JsStr.of(metaData.doc()) :
-                    JsNothing.NOTHING,
+                    metaData != null && metaData.doc() != null ? JsStr.of(metaData.doc()) : JsNothing.NOTHING,
                     ID,
-                    metaData != null ?
-                    JsStr.of(metaData.getFullName()) :
-                    JsNothing.NOTHING
+                    metaData != null ? JsStr.of(metaData.getFullName()) : JsNothing.NOTHING
                    );
 
   }
 
   private static JsValue getDefinitions(final JsSpec jsObjSpec,
                                         final Set<String> nameSpecsVisited) {
-    JsObj definitions = JsObj.empty();
+    var definitions = JsObj.empty();
     var names = new HashSet<String>();
     findDefinitionsRecursively(jsObjSpec,
                                names,
@@ -256,6 +252,7 @@ public final class SpecToJsonSchema {
                                  final Set<String> nameSpecsVisited) {
 
     return switch (spec) {
+      case Cons o -> getConsSchema(o);
       case JsIntSpec s -> getIntSchema(s,
                                        s.constraints);
       case JsIntSuchThat s -> getIntSchema(s);
@@ -305,8 +302,14 @@ public final class SpecToJsonSchema {
                                           );
       case OneOf oneOf -> getOneOfSchema(oneOf,
                                          nameSpecsVisited);
-      default -> throw new IllegalArgumentException();
     };
+
+  }
+
+  private static JsObj getConsSchema(final Cons s) {
+
+    return JsObj.of(CONST,
+                    s.value);
 
   }
 

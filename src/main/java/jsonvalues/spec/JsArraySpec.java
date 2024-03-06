@@ -1,5 +1,9 @@
 package jsonvalues.spec;
 
+import fun.gen.Gen;
+import jsonvalues.JsArray;
+import jsonvalues.gen.JsObjGen;
+
 /**
  * Represents a specification of a JSON array
  */
@@ -14,5 +18,7 @@ public sealed interface JsArraySpec extends JsSpec permits JsArrayOfBigInt, JsAr
                                                            JsArrayOfTestedInt, JsArrayOfTestedLong, JsArrayOfTestedObj,
                                                            JsArrayOfTestedStr, JsArrayOfTestedValue, JsArrayOfValue,
                                                            JsArraySuchThat, JsTuple {
+
+
 
 }

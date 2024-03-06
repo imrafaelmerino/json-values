@@ -6,6 +6,7 @@ import fun.gen.BoolGen;
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.SplitGen;
+import fun.tuple.Pair;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,7 +21,6 @@ import jsonvalues.JsNull;
 import jsonvalues.JsObj;
 import jsonvalues.JsValue;
 import jsonvalues.spec.JsObjSpec;
-
 
 /**
  * Represents a JsObj generator. It can be created using the static factory methods {@code of} or inserting new
@@ -54,13 +54,14 @@ public final class JsObjGen implements Gen<JsObj> {
   private final Set<String> optionals;
   private final Set<String> nullables;
 
+
   public JsObjGen(Map<String, Gen<? extends JsValue>> bindings,
                   Set<String> optionals,
                   Set<String> nullables
                  ) {
     for (String key : optionals) {
       if (!bindings.containsKey(key)) {
-        throw new IllegalArgumentException("optional '" + key + "' not defined in generator");
+        throw new IllegalArgumentException("optional '%s' not defined in generator".formatted(key));
       }
     }
     for (String key : nullables) {
@@ -5503,10 +5504,10 @@ public final class JsObjGen implements Gen<JsObj> {
                         nullables);
   }
 
+
   @Override
   public Supplier<JsObj> apply(final RandomGenerator seed) {
     requireNonNull(seed);
-
     var optionalFields =
         optionals.isEmpty() ?
         EMPTY_SET_GEN :
@@ -5521,16 +5522,17 @@ public final class JsObjGen implements Gen<JsObj> {
                    .suchThat(set -> !set.isEmpty())
                    .sample(SplitGen.DEFAULT.apply(seed));
 
-    var isOpt = BoolGen.arbitrary()
-                       .apply(seed);
-    var isNullable = BoolGen.arbitrary()
-                            .apply(seed);
+    var isOpt = Combinators.freq(Pair.of(3,Gen.cons(true)),
+                                 Pair.of(1,Gen.cons(false))).apply(seed);
+    var isNullable =Combinators.freq(Pair.of(3,Gen.cons(true)),
+                                     Pair.of(1,Gen.cons(false))).sample(seed);
 
     Map<String, Supplier<? extends JsValue>> map = new LinkedHashMap<>();
     for (var pair : bindings.entrySet()) {
       map.put(pair.getKey(),
               pair.getValue()
-                  .apply(SplitGen.DEFAULT.apply(seed)));
+                  .apply(SplitGen.DEFAULT.apply(seed))
+             );
     }
 
     return () ->
@@ -5538,19 +5540,40 @@ public final class JsObjGen implements Gen<JsObj> {
       var obj = JsObj.empty();
       var nullFields = isNullable.get() ? nullableFields.get() : null;
       var optFields = isOpt.get() ? optionalFields.get() : null;
-
       for (var pair : map.entrySet()) {
-        if (optFields == null || !optFields.contains(pair.getKey())) {
-          var value = nullFields != null && nullFields.contains(pair.getKey()) ?
-                      JsNull.NULL :
-                      pair.getValue()
-                          .get();
+        boolean isOptional =
+            optFields != null
+            && optFields.contains(pair.getKey());
+        boolean isNull =
+            nullFields != null
+            && nullFields.contains(pair.getKey());
+
+        if (isOptional && isNull) {
+          if (seed.nextBoolean()) {
+            obj = obj.set(pair.getKey(),
+                          JsNull.NULL
+                         );
+          }
+        } else if (isOptional) {
+          continue;
+        } else if (isNull) {
           obj = obj.set(pair.getKey(),
-                        value);
+                        JsNull.NULL
+                       );
+        } else {
+
+          obj = obj.set(pair.getKey(),
+                        pair.getValue()
+                            .get()
+                       );
+
+
         }
       }
       return obj;
-    };
+    }
+
+        ;
   }
 
 

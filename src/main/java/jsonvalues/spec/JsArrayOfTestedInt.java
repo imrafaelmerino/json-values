@@ -7,7 +7,7 @@ import jsonvalues.JsValue;
 
 final class JsArrayOfTestedInt extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
 
-  final IntFunction<JsError> predicate;
+  private final IntFunction<JsError> predicate;
 
   JsArrayOfTestedInt(final IntFunction<JsError> predicate,
                      final boolean nullable

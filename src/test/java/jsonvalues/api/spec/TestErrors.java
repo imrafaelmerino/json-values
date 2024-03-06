@@ -27,13 +27,15 @@ public class TestErrors {
   public void test_parsing_numbers() {
 
     //language=JSON
-    String json1 = "{\n" +
-                   "  \"a\": 111111111111111111111111111111111111111111111111111\n" +
-                   "}";
+    String json1 = """
+        {
+          "a": 111111111111111111111111111111111111111111111111111
+        }""";
 
-    String json2 = "{\n" +
-                   "  \"a\": -\n" +
-                   "}";
+    String json2 = """
+        {
+          "a": -
+        }""";
 
     JsObjSpecParser parserAsLong = JsObjSpecParser.of(JsObjSpec.of("a",
                                                                    JsSpecs.longInteger()));
@@ -57,16 +59,18 @@ public class TestErrors {
     Assertions.assertThrows(JsParserException.class,
                             () -> parserAsInt.parse(json2));
 
-    String json3 = "{\n" +
-                   "  \"a\": -1E-2a\n" +
-                   "}";
+    String json3 = """
+        {
+          "a": -1E-2a
+        }""";
 
     Assertions.assertThrows(JsParserException.class,
                             () -> parserAsDec.parse(json3));
 
-    String json4 = "{\n" +
-                   "  \"a\": -1E-2\n" +
-                   "}";
+    String json4 = """
+        {
+          "a": -1E-2
+        }""";
 
     Assertions.assertEquals(new BigDecimal("-1E-2"),
                             parserAsDec.parse(json4)
@@ -78,9 +82,10 @@ public class TestErrors {
     Assertions.assertThrows(JsParserException.class,
                             () -> parserAsLong.parse(json4));
 
-    String json5 = "{\n" +
-                   "  \"a\": 1000E3\n" +
-                   "}";
+    String json5 = """
+        {
+          "a": 1000E3
+        }""";
 
     Assertions.assertEquals(1000000,
                             parserAsInt.parse(json5)
@@ -89,9 +94,10 @@ public class TestErrors {
                             parserAsLong.parse(json5)
                                         .getInt("a"));
 
-    String json6 = "{\n" +
-                   "  \"a\": 1000000000000000000E3\n" +
-                   "}";
+    String json6 = """
+        {
+          "a": 1000000000000000000E3
+        }""";
 
     Assertions.assertEquals(new BigInteger("1000000000000000000000"),
                             parserAsBigInt.parse(json6)

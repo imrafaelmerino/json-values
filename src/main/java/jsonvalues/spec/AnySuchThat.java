@@ -16,7 +16,7 @@ final class AnySuchThat implements JsOneErrorSpec {
 
   @Override
   public JsSpec nullable() {
-    return this;
+    throw new RuntimeException("not allowed for AnySuchThat. Just use the predicate...");
   }
 
   @Override

@@ -6,7 +6,7 @@ final class AnySpec implements JsOneErrorSpec {
 
   @Override
   public JsSpec nullable() {
-    return this;
+    throw new RuntimeException("not allowed for AnySpec. Null is already included...");
   }
 
   @Override

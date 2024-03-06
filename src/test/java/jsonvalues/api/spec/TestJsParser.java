@@ -540,11 +540,9 @@ public class TestJsParser {
   @Test
   public void parsingBool() {
     JsObjSpec spec = JsObjSpec.of("a",
-                                  JsSpecs.oneValOf(List.of(TRUE))
-                                         .nullable(),
+                                  JsSpecs.oneValOf(List.of(TRUE)),
                                   "b",
-                                  JsSpecs.oneValOf(List.of(FALSE))
-                                         .nullable(),
+                                  JsSpecs.oneValOf(List.of(FALSE)),
                                   "c",
                                   arrayOfBool(ArraySchema.withItems(1,
                                                                     10)).nullable(),
@@ -630,7 +628,7 @@ public class TestJsParser {
                                     .allMatch(obj -> {
                                       try {
                                         parser.parse(obj.toPrettyString());
-                                        return false;
+                                        throw new RuntimeException("Should not parse: \n"+obj.toPrettyString());
                                       } catch (JsParserException e) {
                                         return true;
                                       }

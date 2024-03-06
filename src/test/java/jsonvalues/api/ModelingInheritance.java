@@ -124,7 +124,7 @@ public final class ModelingInheritance {
 
     var parser = JsObjSpecParser.of(peripheralSpec);
 
-    peripheralGen.sample(100)
+    peripheralGen.sample(150)
                  .peek(System.out::println)
                  .forEach(obj -> {
                             System.out.println(obj);

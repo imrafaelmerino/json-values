@@ -259,6 +259,34 @@ final class JsParsers {
                     );
   }
 
+  JsParser ofConstant(JsValue cons) {
+
+    return reader ->
+    {
+
+      JsValue value = READERS.valueReader.nullOrValue(reader);
+      if (value == JsNull.NULL) {
+        if (cons.isNull()) {
+          return value;
+        }
+        throw newParseException.apply(reader,
+                                      new JsError(value,
+                                                  ERROR_CODE.NULL_NOT_EXPECTED)
+                                     );
+      }
+      if (value.equals(cons)) {
+        return value;
+      }
+      throw newParseException.apply(reader,
+                                    new JsError(value,
+                                                ERROR_CODE.CONSTANT_CONDITION)
+                                   );
+
+    };
+
+
+  }
+
   JsParser ofValueSuchThat(Function<JsValue, JsError> predicate) {
     return reader ->
     {
@@ -276,13 +304,11 @@ final class JsParsers {
     };
   }
 
-
   JsParser ofBool(boolean nullable) {
     return getParser(READERS.boolReader,
                      nullable
                     );
   }
-
 
   JsParser ofArrayOfBool(boolean nullable,
                          ArraySchemaConstraints arrayConstraints
@@ -352,7 +378,6 @@ final class JsParsers {
                      arrayConstraints
                     );
   }
-
 
   JsParser ofStr(boolean nullable,
                  final StrConstraints constraints) {
@@ -445,7 +470,6 @@ final class JsParsers {
       };
     }
   }
-
 
   JsParser ofArrayOfIntegralSuchThat(Function<JsArray, JsError> p,
                                      boolean nullable
@@ -609,7 +633,6 @@ final class JsParsers {
 
   }
 
-
   JsParser ofArrayOfLong(boolean nullable,
                          ArraySchemaConstraints arrayConstraints
                         ) {
@@ -643,7 +666,6 @@ final class JsParsers {
                      nullable
                     );
   }
-
 
   JsParser ofDecimal(boolean nullable,
                      final DecimalSchemaConstraints schema) {
@@ -897,7 +919,6 @@ final class JsParsers {
                     );
   }
 
-
   JsParser ofMapOfBigInt(boolean nullable,
                          final BigIntSchemaConstraints schema) {
     return schema != null ?
@@ -911,7 +932,6 @@ final class JsParsers {
                      nullable
                     );
   }
-
 
   JsParser ofLong(boolean nullable,
                   final LongSchemaConstraints schema) {
@@ -1021,7 +1041,6 @@ final class JsParsers {
     }
   }
 
-
   JsParser ofArrayOfInt(boolean nullable,
                         ArraySchemaConstraints arrayConstraints
                        ) {
@@ -1040,7 +1059,6 @@ final class JsParsers {
                     );
   }
 
-
   JsParser ofArrayOfIntSuchThat(Function<JsArray, JsError> p,
                                 boolean nullable
                                ) {
@@ -1049,7 +1067,6 @@ final class JsParsers {
                      nullable
                     );
   }
-
 
   JsParser ofArrayOfIntEachSuchThat(IntFunction<JsError> p,
                                     boolean nullable,
@@ -1168,7 +1185,6 @@ final class JsParsers {
       };
     }
   }
-
 
   JsParser ofInstant(boolean nullable,
                      final InstantSchemaConstraints schema

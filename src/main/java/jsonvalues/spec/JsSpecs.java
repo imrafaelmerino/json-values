@@ -4,7 +4,6 @@ package jsonvalues.spec;
 import static java.util.Objects.requireNonNull;
 import static jsonvalues.spec.ERROR_CODE.ARRAY_CONDITION;
 import static jsonvalues.spec.ERROR_CODE.BINARY_CONDITION;
-import static jsonvalues.spec.ERROR_CODE.CONSTANT_CONDITION;
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_CONDITION;
 import static jsonvalues.spec.ERROR_CODE.DOUBLE_CONDITION;
 import static jsonvalues.spec.ERROR_CODE.INSTANT_CONDITION;
@@ -530,10 +529,7 @@ public final class JsSpecs {
    * @return A specification that enforces the provided constant value.
    */
   public static JsSpec cons(final JsValue value) {
-    return new AnySuchThat(v -> requireNonNull(value).equals(v) ?
-                                null :
-                                new JsError(v,
-                                            CONSTANT_CONDITION));
+    return new Cons(requireNonNull(value));
   }
 
   /**

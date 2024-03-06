@@ -2,20 +2,12 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.JsSpecs.oneSpecOf;
 
-import fun.gen.Combinators;
-import fun.gen.Gen;
-import fun.gen.NamedGen;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 import jsonvalues.JsStr;
-import jsonvalues.gen.JsArrayGen;
-import jsonvalues.gen.JsBoolGen;
-import jsonvalues.gen.JsIntGen;
-import jsonvalues.gen.JsObjGen;
-import jsonvalues.gen.JsStrGen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -576,15 +568,13 @@ public class SpecToGenTests {
   public void test() {
 
     var baseSpec = JsObjSpec.of(NAME_FIELD,
-                                JsSpecs.str(),
-                                TYPE_FIELD,
-                                JsSpecs.oneStringOf("mouse",
-                                                    "keyboard",
-                                                    "usb_hub"));
-
+                                JsSpecs.str()
+                               );
 
     var mouseSpec =
-        JsObjSpec.of(BUTTON_COUNT_FIELD,
+        JsObjSpec.of(TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("mouse")),
+                     BUTTON_COUNT_FIELD,
                      JsSpecs.integer(),
                      WHEEL_COUNT_FIELD,
                      JsSpecs.integer(),
@@ -593,27 +583,26 @@ public class SpecToGenTests {
                     )
                  .concat(baseSpec);
 
-
-
     var keyboardSpec =
-        JsObjSpec.of(KEY_COUNT_FIELD,
+        JsObjSpec.of(
+                     TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("keyboard")),
+                     KEY_COUNT_FIELD,
                      JsSpecs.integer(),
                      MEDIA_BUTTONS_FIELD,
                      JsSpecs.bool()
                     )
                  .concat(baseSpec);
 
-
-
     var usbHubSpec =
-        JsObjSpec.of(CONNECTED_DEVICES_FIELD,
-                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD)).nullable()
+        JsObjSpec.of(TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("usb_hub")),
+                     CONNECTED_DEVICES_FIELD,
+                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
+                            .nullable()
                     )
                  .withOptKeys(CONNECTED_DEVICES_FIELD)
-
                  .concat(baseSpec);
-
-
 
     var peripheralSpec =
         JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
@@ -621,16 +610,14 @@ public class SpecToGenTests {
                                       keyboardSpec,
                                       usbHubSpec));
 
-    var peripheralGen = SpecToGen.convert(peripheralSpec);
+    System.out.println(SpecToJsonSchema.convert(peripheralSpec).toPrettyString());
 
+    var peripheralGen = SpecToGen.convert(peripheralSpec);
 
     var parser = JsObjSpecParser.of(peripheralSpec);
 
-
-    peripheralGen.sample(100)
-                 .peek(System.out::println)
+    peripheralGen.sample(500)
                  .forEach(obj -> {
-                            System.out.println(obj);
                             Assertions.assertEquals(obj,
                                                     parser.parse(obj.toString())
                                                    );

@@ -5865,4 +5865,5 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
                          newReq,
                          newMet);
   }
+
 }

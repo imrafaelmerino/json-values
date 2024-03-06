@@ -206,8 +206,7 @@ public class TestJsObjParser {
                                         "e",
                                         JsSpecs.oneValOf(List.of(TRUE)),
                                         "f",
-                                        JsSpecs.oneValOf(List.of(FALSE))
-                                               .nullable(),
+                                        JsSpecs.oneValOf(List.of(FALSE)),
                                         "g",
                                         decimal(),
                                         "h",
@@ -415,11 +414,9 @@ public class TestJsObjParser {
                      "d",
                      bool(),
                      "e",
-                     JsSpecs.oneValOf(List.of(TRUE))
-                            .nullable(),
+                     JsSpecs.oneValOf(List.of(TRUE)),
                      "f",
-                     JsSpecs.oneValOf(List.of(FALSE))
-                            .nullable(),
+                     JsSpecs.oneValOf(List.of(FALSE)),
                      "g",
                      decimal(d -> d.doubleValue() > 0.0),
                      "h",
@@ -1136,17 +1133,17 @@ public class TestJsObjParser {
   @Test
   public void test_numbers() {
 
-    String obj = "{ \n"
-                 + "  \"a\": 10E-5,\n"
-                 + "  \"b\": -10E+3,\n"
-                 + "  \"c\":  10E-3,\n"
-                 + "  \"d\": 15.5E-3,\n"
-                 + "  \"e\": -1000.50,\n"
-                 + "  \"f\": 100000000000000000000000000.0E5,\n"
-                 + "  \"i\": 100000000000000000000000000.0E+5,\n"
-                 + "  \"g\": -1245600.25E-2\n"
-                 +
-                 "}";
+    String obj = """
+        {\s
+          "a": 10E-5,
+          "b": -10E+3,
+          "c":  10E-3,
+          "d": 15.5E-3,
+          "e": -1000.50,
+          "f": 100000000000000000000000000.0E5,
+          "i": 100000000000000000000000000.0E+5,
+          "g": -1245600.25E-2
+        }""";
 
     final JsObj parsed = JsObjSpecParser.of(JsObjSpec.of("a",
                                                          decimal(),
