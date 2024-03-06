@@ -6,6 +6,9 @@ package jsonvalues.spec;
  */
 public final class DoubleSchema {
 
+  private DoubleSchema() {
+  }
+
   private double minimum = Double.NEGATIVE_INFINITY;
   private double maximum = Double.POSITIVE_INFINITY;
 
@@ -21,8 +24,8 @@ public final class DoubleSchema {
     return schema;
   }
 
-  public static DoubleSchema betweenInterval(final double minimum,
-                                             final double maximum) {
+  public static DoubleSchema between(final double minimum,
+                                     final double maximum) {
     var schema = new DoubleSchema();
     schema.minimum = minimum;
     schema.maximum = maximum;

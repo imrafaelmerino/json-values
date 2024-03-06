@@ -46,7 +46,6 @@ import jsonvalues.gen.JsTupleGen;
  */
 public final class SpecToGen {
 
-
   private static final int MAX_ARRAY_SIZE = 100;
   private static final int MIN_ARRAY_SIZE = 0;
   private static final int MAX_MAP_SIZE = 20;

@@ -75,39 +75,39 @@ public class SpecToGenTests {
                             JsSpecs.str(StrSchema.withLength(0,
                                                              10)),
                             "b",
-                            JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
-                                                                          BigDecimal.TEN)
+                            JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                                  BigDecimal.TEN)
                                            ),
                             "c",
-                            JsSpecs.doubleNumber(DoubleSchema.betweenInterval(0.0,
-                                                                              10.0)),
+                            JsSpecs.doubleNumber(DoubleSchema.between(0.0,
+                                                                      10.0)),
                             "d",
-                            JsSpecs.integer(IntegerSchema.betweenInterval(0,
-                                                                          10)),
+                            JsSpecs.integer(IntegerSchema.between(0,
+                                                                  10)),
                             "e",
                             JsSpecs.longInteger(LongSchema.betweenInterval(0,
                                                                            10)),
                             "f",
                             JsSpecs.bool(),
                             "g",
-                            JsSpecs.instant(new InstantSchema().setMinimum(Instant.EPOCH)
-                                                               .setMaximum(Instant.EPOCH.plus(365,
-                                                                                              ChronoUnit.DAYS)
-                                                                          )
+                            JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
+                                                                  Instant.EPOCH.plus(365,
+                                                                                             ChronoUnit.DAYS)
+                                                                 )
                                            ),
                             "h",
                             JsObjSpec.of("a",
                                          JsSpecs.str(StrSchema.withLength(0,
                                                                           10)),
                                          "b",
-                                         JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
-                                                                                       BigDecimal.TEN)),
+                                         JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                                               BigDecimal.TEN)),
                                          "c",
-                                         JsSpecs.doubleNumber(DoubleSchema.betweenInterval(0.0,
-                                                                                           10.0)),
+                                         JsSpecs.doubleNumber(DoubleSchema.between(0.0,
+                                                                                   10.0)),
                                          "d",
-                                         JsSpecs.integer(IntegerSchema.betweenInterval(0,
-                                                                                       10)
+                                         JsSpecs.integer(IntegerSchema.between(0,
+                                                                               10)
                                                         ),
                                          "e",
                                          JsSpecs.longInteger(LongSchema.betweenInterval(0,
@@ -115,17 +115,17 @@ public class SpecToGenTests {
                                          "f",
                                          JsSpecs.bool(),
                                          "g",
-                                         JsSpecs.instant(new InstantSchema().setMinimum(Instant.EPOCH)
-                                                                            .setMaximum(Instant.EPOCH.plus(365,
-                                                                                                           ChronoUnit.DAYS)
-                                                                                       )),
+                                         JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
+                                                                               Instant.EPOCH.plus(365,
+                                                                                                          ChronoUnit.DAYS)
+                                                                              )),
                                          "h",
-                                         JsSpecs.decimal(DecimalSchema.betweenInterval(BigDecimal.ZERO,
-                                                                                       BigDecimal.TEN)),
+                                         JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                                               BigDecimal.TEN)),
                                          "i",
-                                         JsSpecs.bigInteger(BigIntSchema.betweenInterval(new BigInteger("10000000000000000"),
-                                                                                         new BigInteger("20000000000000000")
-                                                                                        )
+                                         JsSpecs.bigInteger(BigIntSchema.between(new BigInteger("10000000000000000"),
+                                                                                 new BigInteger("20000000000000000")
+                                                                                )
                                                            ),
                                          "j",
                                          JsSpecs.binary()
@@ -280,24 +280,24 @@ public class SpecToGenTests {
                             JsSpecs.arrayOfStr(StrSchema.withLength(0,
                                                                     10)),
                             "b",
-                            JsSpecs.arrayOfDec(DecimalSchema.betweenInterval(BigDecimal.ZERO,
-                                                                             BigDecimal.TEN)),
+                            JsSpecs.arrayOfDec(DecimalSchema.between(BigDecimal.ZERO,
+                                                                     BigDecimal.TEN)),
                             "c",
-                            JsSpecs.arrayOfDouble(DoubleSchema.betweenInterval(0.0,
-                                                                               10.0)),
+                            JsSpecs.arrayOfDouble(DoubleSchema.between(0.0,
+                                                                       10.0)),
                             "d",
-                            JsSpecs.arrayOfInt(IntegerSchema.betweenInterval(0,
-                                                                             10)),
+                            JsSpecs.arrayOfInt(IntegerSchema.between(0,
+                                                                     10)),
                             "e",
                             JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
                                                                            10)),
                             "f",
                             JsSpecs.arrayOfBool(),
                             "g",
-                            JsSpecs.arrayOfSpec(JsSpecs.instant(new InstantSchema().setMaximum(Instant.EPOCH.plus(365,
-                                                                                                                  ChronoUnit.DAYS)
-                                                                                              )
-                                                                                   .setMinimum(Instant.EPOCH)
+                            JsSpecs.arrayOfSpec(JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
+                                                                                      Instant.EPOCH.plus(365,
+                                                                                                                 ChronoUnit.DAYS)
+                                                                                     )
                                                                )
                                                ),
                             "h",
@@ -305,14 +305,14 @@ public class SpecToGenTests {
                                          JsSpecs.arrayOfStr(StrSchema.withLength(0,
                                                                                  10)),
                                          "b",
-                                         JsSpecs.arrayOfDec(DecimalSchema.betweenInterval(BigDecimal.ZERO,
-                                                                                          BigDecimal.TEN)),
+                                         JsSpecs.arrayOfDec(DecimalSchema.between(BigDecimal.ZERO,
+                                                                                  BigDecimal.TEN)),
                                          "c",
-                                         JsSpecs.arrayOfDouble(DoubleSchema.betweenInterval(0.0,
-                                                                                            10.0)),
+                                         JsSpecs.arrayOfDouble(DoubleSchema.between(0.0,
+                                                                                    10.0)),
                                          "d",
-                                         JsSpecs.arrayOfInt(IntegerSchema.betweenInterval(0,
-                                                                                          10)),
+                                         JsSpecs.arrayOfInt(IntegerSchema.between(0,
+                                                                                  10)),
                                          "e",
                                          JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
                                                                                         10)),
@@ -321,8 +321,8 @@ public class SpecToGenTests {
                                          "g",
                                          JsSpecs.arrayOfSpec(JsSpecs.instant()),
                                          "i",
-                                         JsSpecs.arrayOfBigInt(BigIntSchema.betweenInterval(new BigInteger("10000000000000000"),
-                                                                                            new BigInteger("20000000000000000"))),
+                                         JsSpecs.arrayOfBigInt(BigIntSchema.between(new BigInteger("10000000000000000"),
+                                                                                    new BigInteger("20000000000000000"))),
                                          "j",
                                          JsSpecs.arrayOfSpec(JsSpecs.binary()
                                                             )
@@ -610,7 +610,8 @@ public class SpecToGenTests {
                                       keyboardSpec,
                                       usbHubSpec));
 
-    System.out.println(SpecToJsonSchema.convert(peripheralSpec).toPrettyString());
+    System.out.println(SpecToJsonSchema.convert(peripheralSpec)
+                                       .toPrettyString());
 
     var peripheralGen = SpecToGen.convert(peripheralSpec);
 

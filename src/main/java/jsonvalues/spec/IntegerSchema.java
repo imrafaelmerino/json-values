@@ -6,6 +6,8 @@ package jsonvalues.spec;
  */
 public final class IntegerSchema {
 
+  private IntegerSchema() {
+  }
   private int minimum = Integer.MIN_VALUE;
   private int maximum = Integer.MAX_VALUE;
 
@@ -21,8 +23,8 @@ public final class IntegerSchema {
     return schema;
   }
 
-  public static IntegerSchema betweenInterval(final int minimum,
-                                              final int maximum) {
+  public static IntegerSchema between(final int minimum,
+                                      final int maximum) {
     var schema = new IntegerSchema();
     schema.minimum = minimum;
     schema.maximum = maximum;

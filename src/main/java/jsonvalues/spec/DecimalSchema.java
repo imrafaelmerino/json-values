@@ -8,6 +8,9 @@ import java.math.BigDecimal;
  */
 public final class DecimalSchema {
 
+  private DecimalSchema() {
+  }
+
   private BigDecimal minimum;
   private BigDecimal maximum;
 
@@ -23,8 +26,8 @@ public final class DecimalSchema {
     return schema;
   }
 
-  public static DecimalSchema betweenInterval(final BigDecimal minimum,
-                                              final BigDecimal maximum) {
+  public static DecimalSchema between(final BigDecimal minimum,
+                                      final BigDecimal maximum) {
     var schema = new DecimalSchema();
     schema.minimum = minimum;
     schema.maximum = maximum;

@@ -6,6 +6,9 @@ package jsonvalues.spec;
  */
 public final class ArraySchema {
 
+  private ArraySchema() {
+  }
+
   private int minItems;
   private int maxItems;
   private boolean uniqueItems;
@@ -17,7 +20,7 @@ public final class ArraySchema {
    * @return This ArraySchema instance for method chaining.
    * @throws IllegalArgumentException If minItems is negative.
    */
-  public static ArraySchema withMinItems(int minItems) {
+  public static ArraySchema withMinSize(int minItems) {
     if (minItems < 0) {
       throw new IllegalArgumentException("minItems must be >= 0");
     }
@@ -27,7 +30,7 @@ public final class ArraySchema {
   }
 
 
-  public static ArraySchema withMaxItems(int maxItems) {
+  public static ArraySchema withMaxSize(int maxItems) {
     if (maxItems < 0) {
       throw new IllegalArgumentException("maxItems must be >= 0");
     }
@@ -36,7 +39,8 @@ public final class ArraySchema {
     return schema;
   }
 
-  public static ArraySchema withItems(int minItems,int maxItems) {
+  public static ArraySchema sizeBetween(int minItems,
+                                        int maxItems) {
     if (minItems < 0) {
       throw new IllegalArgumentException("minItems must be >= 0");
     }

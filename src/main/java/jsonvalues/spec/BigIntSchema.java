@@ -5,6 +5,9 @@ import java.math.BigInteger;
 
 public final class BigIntSchema {
 
+  private BigIntSchema() {
+  }
+
   private BigInteger minimum;
   private BigInteger maximum;
 
@@ -20,8 +23,8 @@ public final class BigIntSchema {
     return schema;
   }
 
-  public static BigIntSchema betweenInterval(final BigInteger minimum,
-                                             final BigInteger maximum) {
+  public static BigIntSchema between(final BigInteger minimum,
+                                     final BigInteger maximum) {
     var schema = new BigIntSchema();
     schema.minimum = minimum;
     schema.maximum = maximum;

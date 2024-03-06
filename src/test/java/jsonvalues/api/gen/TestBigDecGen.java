@@ -42,7 +42,7 @@ public class TestBigDecGen {
   @Test
   public void biasedBigDecimal() {
 
-    Map<JsBigDec, Long> counts = TestFun.generate(100000,
+    Map<JsBigDec, Long> counts = TestFun.generate(500000,
                                                   JsBigDecGen.biased());
 
     List<JsBigDec> problematic = TestFun.list(JsBigDec.of(BigDecimal.valueOf(Long.MAX_VALUE)),

@@ -1,6 +1,7 @@
 package jsonvalues.spec;
 
 import java.time.Instant;
+import java.util.Objects;
 
 /**
  * A class representing the schema for integer values in a JSON structure. It allows setting constraints such as
@@ -8,32 +9,31 @@ import java.time.Instant;
  */
 public final class InstantSchema {
 
+  private InstantSchema() {
+  }
   private Instant minimum;
   private Instant maximum;
 
-  /**
-   * Sets the minimum value for the instant in the schema.
-   *
-   * @param minimum The minimum value (inclusive).
-   * @return This InstantSchema instance for method chaining.
-   */
-  public InstantSchema setMinimum(final Instant minimum) {
-    this.minimum = minimum;
-    return this;
+
+  public static InstantSchema withMinimum(final Instant minimum) {
+    var schema = new InstantSchema();
+    schema.minimum = Objects.requireNonNull(minimum);
+    return schema;
   }
 
-  /**
-   * Sets the maximum value for the instant in the schema.
-   *
-   * @param maximum The maximum value (inclusive).
-   * @return This InstantSchema instance for method chaining.
-   */
-  public InstantSchema setMaximum(final Instant maximum) {
-    this.maximum = maximum;
-    return this;
+  public static InstantSchema withMaximum(final Instant maximum) {
+    var schema = new InstantSchema();
+    schema.maximum = Objects.requireNonNull(maximum);
+    return schema;
   }
 
-
+  public static InstantSchema between(final Instant minimum,
+                                      final Instant maximum) {
+    var schema = new InstantSchema();
+    schema.minimum = Objects.requireNonNull(minimum);
+    schema.maximum = Objects.requireNonNull(maximum);
+    return schema;
+  }
 
 
   /**

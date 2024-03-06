@@ -29,8 +29,8 @@ public class JsSpecToJsonSchemaTests {
                                                                  .setFormat("email")
                                                        ),
                                             "age",
-                                            JsSpecs.integer(IntegerSchema.betweenInterval(0,
-                                                                                          100)
+                                            JsSpecs.integer(IntegerSchema.between(0,
+                                                                                  100)
                                                            ),
                                             "address",
                                             JsObjSpec.of("street",
