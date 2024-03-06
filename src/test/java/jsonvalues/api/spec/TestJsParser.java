@@ -627,8 +627,8 @@ public class TestJsParser {
     Assertions.assertTrue(invalidGen.sample(10000)
                                     .allMatch(obj -> {
                                       try {
-                                        System.out.println(obj);
                                         parser.parse(obj.toPrettyString());
+                                        System.out.println(obj);
                                         throw new RuntimeException("Should not parse: \n"+obj.toPrettyString());
                                       } catch (JsParserException e) {
                                         return true;

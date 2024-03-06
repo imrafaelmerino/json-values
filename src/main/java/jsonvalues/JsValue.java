@@ -155,6 +155,7 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
       try {
         return JsInstant.of(Instant.parse(s.value));
       } catch (Exception ignored) {
+        // it's not instant; that's fine, just continue
       }
     }
     throw UserError.isNotAJsInstant(this);
@@ -176,6 +177,7 @@ public sealed interface JsValue permits JsNothing, JsPrimitive, Json {
         return JsBinary.of(Base64.getDecoder()
                                  .decode(s.value));
       } catch (IllegalArgumentException ignored) {
+        // it's not base 64; that's fine, just continue
       }
     }
     throw UserError.isNotAJsBinary(this);

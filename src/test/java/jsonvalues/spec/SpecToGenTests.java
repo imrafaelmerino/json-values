@@ -55,7 +55,7 @@ public class SpecToGenTests {
                                         )
                            );
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
     var parser = JsObjSpecParser.of(spec);
 
     gen.sample(100)
@@ -92,7 +92,7 @@ public class SpecToGenTests {
                             "g",
                             JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
                                                                   Instant.EPOCH.plus(365,
-                                                                                             ChronoUnit.DAYS)
+                                                                                     ChronoUnit.DAYS)
                                                                  )
                                            ),
                             "h",
@@ -117,7 +117,7 @@ public class SpecToGenTests {
                                          "g",
                                          JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
                                                                                Instant.EPOCH.plus(365,
-                                                                                                          ChronoUnit.DAYS)
+                                                                                                  ChronoUnit.DAYS)
                                                                               )),
                                          "h",
                                          JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
@@ -132,7 +132,7 @@ public class SpecToGenTests {
                                         )
                            );
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
     var parser = JsObjSpecParser.of(spec);
 
     gen.sample(1000)
@@ -204,12 +204,11 @@ public class SpecToGenTests {
                                      .nullable()
                            );
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
     var parser = JsObjSpecParser.of(spec);
 
     gen.sample(1000)
        .forEach(generated -> {
-         System.out.println(generated);
          Assertions.assertEquals(generated,
                                  parser.parse(generated.toPrettyString()));
 
@@ -262,7 +261,7 @@ public class SpecToGenTests {
 
     var parser = JsObjSpecParser.of(spec);
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
     gen.sample(1000)
        .forEach(generated -> {
@@ -296,7 +295,7 @@ public class SpecToGenTests {
                             "g",
                             JsSpecs.arrayOfSpec(JsSpecs.instant(InstantSchema.between(Instant.EPOCH,
                                                                                       Instant.EPOCH.plus(365,
-                                                                                                                 ChronoUnit.DAYS)
+                                                                                                         ChronoUnit.DAYS)
                                                                                      )
                                                                )
                                                ),
@@ -331,7 +330,7 @@ public class SpecToGenTests {
 
     var parser = JsObjSpecParser.of(spec);
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
     String xs = "{\"a\":[\"b4395Jz3\",\"u46QR5b\",\"PW70c5290\",\"o8P7cS\",\"7ZqL\",\"7Z9Y19400s\",\"\",\"3AA30F084\",\"64me5\",\"x\",\"9d0tZbeav\",\"1e2426rO9\",\"4iLjQ8P6U4\",\"2\",\"\",\"80x2X64\",\"338\",\"01J6omrCT\",\"\",\"1\",\"57F40Ps0\",\"B0lJB7A\",\"4lW\",\"5\",\"R3N\",\"i054GC28l0\",\"caq6\",\"gR\",\"p18Y084\",\"\",\"tH4D\",\"89Qf4\",\"pJL55I9\",\"J8\",\"\",\"v3WJ11O\",\"23SJ9936\",\"1i3\",\"Dj\",\"\",\"z12bd2h\",\"mT1ygV4P\",\"301y\",\"13\",\"V377j\",\"2\",\"vwsh85e\",\"s2Q\",\"7X60\",\"563pH102R7\",\"29\",\"o1yWIde\",\"0bKg47f\",\"0lT892x2\",\"64tc3\"],\"b\":[0,0,0,0,0,2.61,8.32],\"c\":[0.0,0.0,0.11759551430205017,0.0,3.242733496828464,3.907891010307485,5.40405791080767,10.0,4.211979371438392,0.4486362144427891,9.873575826724856,10.0,0.0,0.0,10.0,8.4250628917738,1.9979983179720662,7.6469851750609585,6.105687534570046,8.028618570967833],\"d\":[0,0,4,0],\"e\":[5,0,9],\"f\":[true,false,false,false,true,false,true,false,true,false,false,false,false,false,false,false,true,true,false,true,true,false,false,false,true,false,true,true,false,false,false,true,false,true,true,false,true,false,false,true,false,false,true,false,true,true,true,true,false,false,false,true,true,false,false,true,true,false,true,false,false,false,false,false,true],\"g\":[\"1970-10-04T21:44:35Z\",\"1971-01-01T00:00:00Z\",\"1971-01-01T00:00:00Z\",\"1971-01-01T00:00:00Z\",\"1970-01-01T00:00:00Z\",\"1970-12-20T05:13:56Z\",\"1970-01-01T00:00:00Z\",\"1970-09-10T16:56:39Z\",\"1970-03-13T02:19:17Z\",\"1970-01-01T00:00:00Z\",\"1970-08-22T16:44:40Z\",\"1970-01-01T00:00:00Z\",\"1970-01-01T00:00:00Z\",\"1970-01-01T00:00:00Z\",\"1970-05-31T19:44:58Z\",\"1971-01-01T00:00:00Z\",\"1970-01-01T00:00:00Z\"],\"h\":{\"a\":[],\"b\":[8.07,10,0,10,7.93,10,5.45,4.20,8.74,10,10],\"c\":[5.841745668525272,0.0,0.0,0.0,9.683044000845348,9.005224553493946,0.0,0.0,10.0,0.0,0.0,0.0,0.8493887708766223,0.0,10.0,0.0,0.0,3.4761138109612864,0.0,10.0,5.283830066678784,9.899566492509187,7.290568782574582,0.0],\"d\":[10,0,2,5,1,1,0,10,2,0,0,10,10,10,10,0,0,9,10,10,0,0,9,10,2,10,5,8,1,8,0,6,0,0,0,3],\"e\":[0,4,4,0,9,8,0,3,3,10,0,10,2,5,7,0,7,2,10,0,10,0,1,0,0,0,9,3,0,0,2,10,8,8,10,0,10,10,8,3,1,10,0,6,0,0,0,10,10,3,0,10,10,10,10,6,0,9,7,8],\"f\":[false,false,true,false,true,true,false,false,false,true,true,true,false,true,true,true,false,true,true,false,false,true,true,true,true,true,true,true,false,false,false,true,false,false,true,true,true,false,false,true,false,true,true,false,false,false,true,true,false,false,true,false,true,true,true,false,true,false,false,false,true,false,false,true,false,true,false,true,false,false,true,false,true,true,false,true,false,false,false],\"g\":[],\"i\":[20000000000000000,11921736416164099,11533176505135556,15999779660558580],\"j\":[\"goyxummv\",\"93Gug7kSXg==\",\"\",\"u7YYLm3kgOeA\",\"MAnqAlrcZOc=\",\"em8=\",\"Bv8=\",\"\",\"jZhWV11jig==\",\"hocSdn7h+4V8\",\"t5c=\",\"17o=\",\"TQ==\",\"sm6i5UQ=\",\"5FUIANVXikM=\",\"5ZQIjclqHuTI\",\"TR77tGki4w==\",\"Q4kZYZ9xavij\",\"Lj899pY=\",\"Dg==\",\"gJPCcg==\",\"mSZw\",\"NWeGIvpa\",\"cj/dKIbpb4qiGQ==\",\"cZuKV0dCgN7Eiw==\",\"gD7VgSIR\",\"SFEUx+8g\",\"CL4zyQ==\",\"TuEmkPw6/bXokQ==\",\"O9l1AhalmILz\",\"bb0=\",\"Tjaxa0gMNG62nA==\",\"dQ==\",\"ocmMQ1ClKA==\",\"8lFL5dUR4g+D+A==\",\"M9tS0w==\",\"Qsg=\",\"+YdfOe14j/OQ\",\"\",\"Sg==\"]}}\n";
 
@@ -340,8 +339,6 @@ public class SpecToGenTests {
     gen.sample(1000)
        .forEach(generated -> {
          String json = generated.toString();
-         System.out.println(json.length());
-         System.out.println(json);
          Assertions.assertEquals(generated,
                                  parser.parse(json));
          Assertions.assertTrue(spec.test(generated)
@@ -410,11 +407,10 @@ public class SpecToGenTests {
 
     var parser = JsObjSpecParser.of(spec);
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
     gen.sample(1000)
        .forEach(generated -> {
-         System.out.println(generated);
          Assertions.assertEquals(generated,
                                  parser.parse(generated.toPrettyString()));
          Assertions.assertTrue(spec.test(generated)
@@ -465,7 +461,7 @@ public class SpecToGenTests {
 
     var parser = JsObjSpecParser.of(spec);
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
     gen.sample(1000)
        .forEach(generated -> {
@@ -538,11 +534,10 @@ public class SpecToGenTests {
 
     var parser = JsObjSpecParser.of(spec);
 
-    var gen = SpecToGen.convert(spec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
     gen.sample(1000)
        .forEach(generated -> {
-         System.out.println(generated);
          Assertions.assertEquals(generated,
                                  parser.parse(generated.toPrettyString()));
          Assertions.assertTrue(spec.test(generated)
@@ -612,13 +607,17 @@ public class SpecToGenTests {
 
     System.out.println(SpecToJsonSchema.convert(peripheralSpec)
                                        .toPrettyString());
-
-    var peripheralGen = SpecToGen.convert(peripheralSpec);
+    //to avoid stackoverflow errors
+    var specToGen =
+        SpecToGen.of(new SpecGenConfBuilder().withNullableObjProbability(4)
+                                             .withOptionalObjFieldProbability(4));
+    var peripheralGen = specToGen.convert(peripheralSpec);
 
     var parser = JsObjSpecParser.of(peripheralSpec);
 
     peripheralGen.sample(500)
                  .forEach(obj -> {
+                            System.out.println(obj);
                             Assertions.assertEquals(obj,
                                                     parser.parse(obj.toString())
                                                    );

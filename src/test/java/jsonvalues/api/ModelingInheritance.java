@@ -125,10 +125,7 @@ public final class ModelingInheritance {
     var parser = JsObjSpecParser.of(peripheralSpec);
 
     peripheralGen.sample(150)
-                 .peek(System.out::println)
                  .forEach(obj -> {
-                            System.out.println(obj);
-                            System.out.println(obj.getStr(TYPE_FIELD));
 
                             Assertions.assertEquals(obj,
                                                     parser.parse(obj.toString())

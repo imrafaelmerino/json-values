@@ -529,7 +529,13 @@ public final class JsSpecs {
    * @return A specification that enforces the provided constant value.
    */
   public static JsSpec cons(final JsValue value) {
-    return new Cons(requireNonNull(value));
+    return new Cons(value);
+  }
+
+  public static JsSpec cons(final String name,
+                            final JsValue value) {
+    return new Cons(value,
+                    name);
   }
 
   /**

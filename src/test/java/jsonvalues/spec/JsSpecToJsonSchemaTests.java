@@ -666,9 +666,6 @@ public class JsSpecToJsonSchemaTests {
                                      JsSpecs.arrayOfObj()
                                     );
 
-    System.out.println(SpecToJsonSchema.convert(objSpec)
-                                       .toPrettyString());
-
   }
 
   @Test
@@ -703,8 +700,6 @@ public class JsSpecToJsonSchemaTests {
                                    try {
                                      parser.parse(obj.toString());
                                    } catch (Exception e) {
-                                     System.out.println(obj);
-                                     System.out.println(e.getMessage());
                                      throw e;
                                    }
                                  }
@@ -746,8 +741,6 @@ public class JsSpecToJsonSchemaTests {
                                    try {
                                      parser.parse(obj.toString());
                                    } catch (Exception e) {
-                                     System.out.println(obj);
-                                     System.out.println(e.getMessage());
                                      throw e;
                                    }
                                  }

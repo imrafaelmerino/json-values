@@ -2,7 +2,6 @@ package jsonvalues.gen;
 
 import static java.util.Objects.requireNonNull;
 
-import fun.gen.BoolGen;
 import fun.gen.Combinators;
 import fun.gen.Gen;
 import fun.gen.SplitGen;
@@ -72,6 +71,25 @@ public final class JsObjGen implements Gen<JsObj> {
     this.optionals = optionals;
     this.nullables = nullables;
     this.bindings = bindings;
+  }
+
+  int optionalProbability = 2;
+  int nullableProbability = 2;
+
+  public JsObjGen withOptionalProbability(int prob) {
+    if (prob < 2 && prob > 10) {
+      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    }
+    this.optionalProbability = prob;
+    return this;
+  }
+
+  public JsObjGen withNullableProbability(int prob) {
+    if (prob < 2 && prob > 10) {
+      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    }
+    this.nullableProbability = prob;
+    return this;
   }
 
   private JsObjGen(Map<String, Gen<? extends JsValue>> bindings) {
@@ -5522,10 +5540,16 @@ public final class JsObjGen implements Gen<JsObj> {
                    .suchThat(set -> !set.isEmpty())
                    .sample(SplitGen.DEFAULT.apply(seed));
 
-    var isOpt = Combinators.freq(Pair.of(3,Gen.cons(true)),
-                                 Pair.of(1,Gen.cons(false))).apply(seed);
-    var isNullable =Combinators.freq(Pair.of(3,Gen.cons(true)),
-                                     Pair.of(1,Gen.cons(false))).sample(seed);
+    var isOpt = Combinators.freq(Pair.of(optionalProbability,
+                                         Gen.cons(true)),
+                                 Pair.of(1,
+                                         Gen.cons(false)))
+                           .apply(seed);
+    var isNullable = Combinators.freq(Pair.of(nullableProbability,
+                                              Gen.cons(true)),
+                                      Pair.of(1,
+                                              Gen.cons(false)))
+                                .sample(seed);
 
     Map<String, Supplier<? extends JsValue>> map = new LinkedHashMap<>();
     for (var pair : bindings.entrySet()) {
@@ -5561,19 +5585,14 @@ public final class JsObjGen implements Gen<JsObj> {
                         JsNull.NULL
                        );
         } else {
-
           obj = obj.set(pair.getKey(),
                         pair.getValue()
                             .get()
                        );
-
-
         }
       }
       return obj;
-    }
-
-        ;
+    };
   }
 
 

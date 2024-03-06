@@ -109,6 +109,7 @@ New features:
 - `SpecToJsonSchema` to convert specs into json-schema (SchemaDraft.DRAFT_2019_09)
 - `SpecToGen` to convert specs into generators
 - `JsBigIntGen` new methods `biased(min, max)` and `arbitrary(min,max)` 
+-  `Cons` spec
 
 Bugs:
 

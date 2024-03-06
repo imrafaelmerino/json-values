@@ -324,14 +324,11 @@ public class TestJsArraySpec {
     JsObj obj = JsObj.of("a",
                          JsArray.of(1 / 2d,
                                     1 / 4d));
-    System.out.println(obj);
 
     Assertions.assertTrue(spec.test(obj)
                               .isEmpty());
 
     JsObj obj2 = parser.parse(obj.toString());
-
-    System.out.println(obj2);
 
     Assertions.assertEquals(obj,
                             obj2);
