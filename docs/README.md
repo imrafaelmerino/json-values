@@ -1375,6 +1375,14 @@ var spec =
 
 In this example, the spec named 'person' is referenced within its own definition.
 
+You can turn a spec into a generator as well:
+
+```code 
+
+Gen<JsObj> gen = SpecToGen.DEFAULT.convert(spec);
+
+```
+
 As previously mentioned, the capability to create JSON and AVRO schemas is a powerful feature. It
 enables the generation of schemas from specifications, facilitating the sharing of schemas with
 other systems or tools that necessitate such structured representations.
