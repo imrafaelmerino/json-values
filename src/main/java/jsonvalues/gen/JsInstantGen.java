@@ -83,6 +83,21 @@ public final class JsInstantGen implements Gen<JsInstant> {
   }
 
   /**
+   * Returns a biased instant generator that produces potential problematic values with a higher probability. These values
+   * include: The lower bound of the time range and the upper bound of the time range both in seconds from the epoch
+   * time
+   *
+   * @param min The lower bound of the time range in seconds since epoch time (inclusive).
+   * @param max The upper bound of the time range in seconds since epoch time (inclusive).
+   * @return A biased JsInstant generator.
+   */
+  public static Gen<JsInstant> biased(long min,
+                                      long max) {
+    return new JsInstantGen(InstantGen.biased(min,
+                                              max));
+  }
+
+  /**
    * Returns a biased generator that produces potential problematic values with a higher probability. These values
    * include: - The lower bound of the time range - The upper bound of the time range
    *
@@ -90,10 +105,10 @@ public final class JsInstantGen implements Gen<JsInstant> {
    * @param max The upper bound of the time range (inclusive).
    * @return A biased JsInstant generator.
    */
-  public static Gen<JsInstant> biased(long min,
-                                      long max) {
-    return new JsInstantGen(InstantGen.biased(min,
-                                              max));
+  public static Gen<JsInstant> biased(Instant min,
+                                      Instant max) {
+    return biased(min.getEpochSecond(),
+                  max.getEpochSecond());
   }
 
   /**

@@ -13,6 +13,7 @@ import java.time.Instant;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
+import java.util.Locale;
 import java.util.function.Function;
 import jsonvalues.JsArray;
 import jsonvalues.JsBigDec;
@@ -877,7 +878,7 @@ public class TestJsArray {
                            .map(it -> it.path()
                                         .last()
                                         .asKey().name)
-                           .allMatch(key -> key.toUpperCase()
+                           .allMatch(key -> key.toUpperCase(Locale.ENGLISH)
                                                .equals(key)));
 
   }
@@ -892,7 +893,7 @@ public class TestJsArray {
                           );
 
     Assertions.assertEquals(a,
-                            a.mapKeys(key -> key.toUpperCase())
+                            a.mapKeys(key -> key.toUpperCase(Locale.ENGLISH))
                            );
 
     JsArray b = JsArray.of(JsObj.of("a",
@@ -918,7 +919,7 @@ public class TestJsArray {
                               b.get(p)
                              );
       return p.last()
-              .asKey().name.toUpperCase();
+              .asKey().name.toUpperCase(Locale.ENGLISH);
 
     });
 
@@ -934,7 +935,7 @@ public class TestJsArray {
                            .map(it -> it.path()
                                         .last()
                                         .asKey().name)
-                           .allMatch(key -> key.toUpperCase()
+                           .allMatch(key -> key.toUpperCase(Locale.ENGLISH)
                                                .equals(key)));
 
   }

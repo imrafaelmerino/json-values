@@ -39,11 +39,16 @@ import jsonvalues.gen.JsStrGen;
 import jsonvalues.gen.JsTupleGen;
 
 /**
- * Utility class for converting JSON specifications (JsObjSpec or JsArraySpec) to JSON schemas represented with a
- * JsObj.
+ * Class responsible for converting JSON specs to JSON generators. When a generator cannot be created for a given spec,
+ * a {@code RuntimeException} is thrown. In this case, the user can provide a custom generator for the path using the
+ * {@code override} parameter.
  */
 public final class SpecToGen {
 
+  /**
+   * The default instance of the {@code SpecToGen} class. To customize how data is generated, use the
+   * {@link #of(SpecGenConfBuilder)} method to create a new instance with the desired configuration.
+   */
   public static final SpecToGen DEFAULT = new SpecToGen();
 
   private final GenConf conf;
@@ -78,20 +83,37 @@ public final class SpecToGen {
   }
 
 
+  /**
+   * Creates a new instance of the {@code SpecToGen} class with the specified configuration.
+   *
+   * @param confBuilder The configuration to customize how data is generated.
+   * @return A new instance of the {@code SpecToGen} class with the specified configuration.
+   */
   public static SpecToGen of(SpecGenConfBuilder confBuilder) {
     return new SpecToGen(confBuilder);
   }
 
+  /**
+   * Converts a JsObjSpec to a JSON object generator. It throws a {@code RuntimeException} if the generator cannot be
+   * created. In this case, use the alternative method {@link #convert(JsObjSpec, Map)} that accepts an override
+   * parameter to provide a custom generator
+   *
+   * @param objSpec The JsObjSpec to be converted.
+   * @return The resulting JsObjGen
+   */
   public JsObjGen convert(final JsObjSpec objSpec) {
     return convert(objSpec,
                    Map.of());
   }
 
   /**
-   * Converts a JsObjSpec to a JSON schema (JsObj).
+   * Converts a JsObjSpec to a JSON object generator with the specified overrides. It throws a {@code RuntimeException}
+   * if the generator cannot be created. In this case, override the generator for the path using the {@code overrides}
+   * parameter.
    *
-   * @param objSpec The JsObjSpec to be converted.
-   * @return The resulting JSON schema as a JsObj.
+   * @param objSpec   The JsObjSpec to be converted.
+   * @param overrides The overrides to apply to the generator.
+   * @return The resulting JsObjGen
    */
   public JsObjGen convert(JsObjSpec objSpec,
                           Map<JsPath, Gen<? extends JsValue>> overrides) {
@@ -101,33 +123,34 @@ public final class SpecToGen {
                   );
   }
 
+  /**
+   * Converts a spec to a JSON object generator. It throws a {@code RuntimeException} if the generator cannot be
+   * created. In this case, override the generator for the path using the method {@link #convert(JsSpec, Map)}.
+   *
+   * @param spec The spec to be converted.
+   * @return The resulting JSON value generator
+   */
   public Gen<? extends JsValue> convert(final JsSpec spec) {
     return convert(spec,
                    Map.of());
   }
 
+  /**
+   * Converts a JsSpec to a JSON generator. It throws a {@code RuntimeException} if the generator cannot be created. In
+   * this case, use the alternative method {@link #convert(JsSpec, Map)} that accepts an override parameter to provide a
+   * custom generator.
+   *
+   * @param spec      The JsSpec to be converted.
+   * @param overrides The overrides to apply to the generator.
+   * @return The resulting JSON value generator
+   */
   public Gen<? extends JsValue> convert(final JsSpec spec,
                                         final Map<JsPath, Gen<? extends JsValue>> overrides) {
-    Gen<? extends JsValue> gen = switch (Objects.requireNonNull(spec)) {
-      case NamedSpec namedSpec -> createNamedGen(namedSpec,
-                                                 overrides,
-                                                 JsPath.empty(),
-                                                 new HashSet<>());
-      case JsObjSpec objSpec -> convert(objSpec,
-                                        Map.of());
-      case JsArraySpec arraySpec -> createJsArrayGen(arraySpec,
-                                                     JsPath.empty(),
-                                                     overrides,
-                                                     new HashSet<>());
-      case OneOf oneOf -> createOneOfGen(oneOf,
-                                         overrides,
-                                         JsPath.empty(),
-                                         new HashSet<>());
-      default -> createGen(spec,
-                           overrides,
-                           JsPath.empty(),
-                           new HashSet<>());
-    };
+    var gen = createGen(spec,
+                        overrides,
+                        JsPath.empty(),
+                        new HashSet<>());
+
     return spec.isNullable() ?
            Combinators.oneOf(Gen.cons(JsNull.NULL),
                              gen
@@ -148,7 +171,7 @@ public final class SpecToGen {
     var currentPath = JsPath.empty();
     Set<String> optionals = new HashSet<>();
     Set<String> nullables = new HashSet<>();
-    for (var binding : objSpec.bindings.entrySet()) {
+    for (var binding : Objects.requireNonNull(objSpec).bindings.entrySet()) {
       var path = currentPath.key(binding.getKey());
       var optional = objSpec.optionalFields.contains(binding.getKey());
       var nullable = binding.getValue()
@@ -174,8 +197,7 @@ public final class SpecToGen {
     }
     return new JsObjGen(gen,
                         optionals,
-                        nullables
-    )
+                        nullables)
         .withNullableProbability(conf.nullableProbability())
         .withOptionalProbability(conf.optionalProbability());
   }
@@ -609,11 +631,13 @@ public final class SpecToGen {
       case JsArrayOfSpec s -> createArrayOfSpecGen(s,
                                                    overrides,
                                                    path,
-                                                   nameSpecsVisited);
-      case JsTuple tuple -> getTupleGen(tuple,
-                                        nameSpecsVisited,
-                                        path,
-                                        overrides);
+                                                   nameSpecsVisited
+                                                  );
+      case JsTuple tuple -> createTupleGen(tuple,
+                                           nameSpecsVisited,
+                                           path,
+                                           overrides
+                                          );
     };
   }
 
@@ -802,24 +826,27 @@ public final class SpecToGen {
 
   }
 
-  private Gen<? extends JsValue> getTupleGen(final JsTuple tuple,
-                                             final Set<String> nameSpecsVisited,
-                                             final JsPath path,
-                                             final Map<JsPath, Gen<? extends JsValue>> overrides) {
+  private Gen<? extends JsValue> createTupleGen(final JsTuple tuple,
+                                                final Set<String> nameSpecsVisited,
+                                                final JsPath path,
+                                                final Map<JsPath, Gen<? extends JsValue>> overrides) {
     List<JsSpec> specs = tuple.specs;
     List<Gen<? extends JsValue>> gens = new ArrayList<>();
     for (int i = 0; i < specs.size(); i++) {
       JsSpec spec = specs.get(i);
+      JsPath currentPath = path.index(i);
+      var gen = overrides.containsKey(currentPath) ?
+                overrides.get(currentPath) :
+                createGen(spec,
+                          overrides,
+                          path.index(i),
+                          nameSpecsVisited
+                         );
       gens.add(spec.isNullable() ?
                Combinators.oneOf(Gen.cons(JsNull.NULL),
-                                 createGen(spec,
-                                           overrides,
-                                           path.index(i),
-                                           nameSpecsVisited)) :
-               createGen(spec,
-                         overrides,
-                         path.index(i),
-                         nameSpecsVisited)
+                                 gen
+                                ) :
+               gen
               );
     }
     return JsTupleGen.of(gens);

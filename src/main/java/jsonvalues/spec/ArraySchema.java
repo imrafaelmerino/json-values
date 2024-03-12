@@ -14,11 +14,11 @@ public final class ArraySchema {
   private boolean uniqueItems;
 
   /**
-   * Sets the minimum number of items allowed in the array.
+   * Creates an ArraySchema with a minimum size constraint.
    *
-   * @param minItems The minimum number of items (inclusive). Must be greater than or equal to 0.
-   * @return This ArraySchema instance for method chaining.
-   * @throws IllegalArgumentException If minItems is negative.
+   * @param minItems The minimum number of items allowed in the array (must be >= 0).
+   * @return An ArraySchema instance with the specified minimum size constraint.
+   * @throws IllegalArgumentException if minItems is less than 0.
    */
   public static ArraySchema withMinSize(int minItems) {
     if (minItems < 0) {
@@ -29,7 +29,13 @@ public final class ArraySchema {
     return schema;
   }
 
-
+  /**
+   * Creates an ArraySchema with a maximum size constraint.
+   *
+   * @param maxItems The maximum number of items allowed in the array (must be >= 0).
+   * @return An ArraySchema instance with the specified maximum size constraint.
+   * @throws IllegalArgumentException if maxItems is less than 0.
+   */
   public static ArraySchema withMaxSize(int maxItems) {
     if (maxItems < 0) {
       throw new IllegalArgumentException("maxItems must be >= 0");
@@ -39,6 +45,14 @@ public final class ArraySchema {
     return schema;
   }
 
+  /**
+   * Creates an ArraySchema with both minimum and maximum size constraints.
+   *
+   * @param minItems The minimum number of items allowed in the array (must be >= 0).
+   * @param maxItems The maximum number of items allowed in the array (must be >= 0).
+   * @return An ArraySchema instance with the specified minimum and maximum size constraints.
+   * @throws IllegalArgumentException if minItems or maxItems is less than 0.
+   */
   public static ArraySchema sizeBetween(int minItems,
                                         int maxItems) {
     if (minItems < 0) {
@@ -55,20 +69,16 @@ public final class ArraySchema {
 
 
   /**
-   * Sets the flag to enforce unique items in the array.
+   * Sets the uniqueItems constraint for the array.
    *
-   * @return This ArraySchema instance for method chaining.
+   * @return The current ArraySchema instance with the uniqueItems constraint set to true.
    */
   public ArraySchema setUniqueItems() {
     this.uniqueItems = true;
     return this;
   }
 
-  /**
-   * Builds and returns an instance of ArraySchemaConstraints based on the specified constraints.
-   *
-   * @return An instance of ArraySchemaConstraints with the specified constraints.
-   */
+
   ArraySchemaConstraints build() {
     return new ArraySchemaConstraints(minItems,
                                       maxItems,

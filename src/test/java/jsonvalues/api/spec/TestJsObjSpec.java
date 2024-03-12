@@ -1927,7 +1927,8 @@ public class TestJsObjSpec {
 
     JsObjSpec spec = JsObjSpec.of("a",
                                   arrayOfDouble(s -> s > 1.5,
-                                                ArraySchema.sizeBetween(1, 10)).nullable(),
+                                                ArraySchema.sizeBetween(1,
+                                                                        10)).nullable(),
                                   "b",
                                   doubleNumber(s -> s > 0.0d).nullable()
                                  );

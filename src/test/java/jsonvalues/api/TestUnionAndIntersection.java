@@ -6,6 +6,7 @@ import static jsonvalues.JsArray.TYPE.SET;
 import static jsonvalues.JsBool.TRUE;
 import static jsonvalues.JsNull.NULL;
 
+import java.util.Locale;
 import jsonvalues.JsArray;
 import jsonvalues.JsObj;
 import jsonvalues.JsStr;
@@ -290,7 +291,7 @@ public class TestUnionAndIntersection {
                          JsStr.of("B")
                         );
 
-    JsObj newObj = obj.mapKeys(key -> key.toUpperCase());
+    JsObj newObj = obj.mapKeys(key -> key.toUpperCase(Locale.ENGLISH));
 
     Assertions.assertNotEquals(newObj,
                                obj
@@ -315,7 +316,7 @@ public class TestUnionAndIntersection {
                          );
 
     JsObj newObj1 = obj1.mapKeys((path, val) -> path.last()
-                                                    .asKey().name.toUpperCase());
+                                                    .asKey().name.toUpperCase(Locale.ENGLISH));
 
     Assertions.assertNotEquals(newObj1,
                                obj1

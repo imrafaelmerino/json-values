@@ -1,13 +1,25 @@
 package jsonvalues.spec;
 
-import static jsonvalues.spec.JsSpecs.oneSpecOf;
+import static jsonvalues.spec.JsSpecs.arrayOfStr;
+import static jsonvalues.spec.JsSpecs.decimal;
+import static jsonvalues.spec.JsSpecs.integer;
+import static jsonvalues.spec.JsSpecs.str;
+import static jsonvalues.spec.JsSpecs.tuple;
 
+import fun.gen.Combinators;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import jsonvalues.JsStr;
+import java.util.Map;
+import jsonvalues.JsObj;
+import jsonvalues.JsPath;
+import jsonvalues.gen.JsBigDecGen;
+import jsonvalues.gen.JsInstantGen;
+import jsonvalues.gen.JsLongGen;
+import jsonvalues.gen.JsObjGen;
+import jsonvalues.gen.JsStrGen;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -18,13 +30,13 @@ public class SpecToGenTests {
   public void test_primitives_without_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.str(),
+                            str(),
                             "b",
-                            JsSpecs.decimal(),
+                            decimal(),
                             "c",
                             JsSpecs.doubleNumber(),
                             "d",
-                            JsSpecs.integer(),
+                            integer(),
                             "e",
                             JsSpecs.longInteger(),
                             "f",
@@ -33,13 +45,13 @@ public class SpecToGenTests {
                             JsSpecs.instant(),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.str(),
+                                         str(),
                                          "b",
-                                         JsSpecs.decimal(),
+                                         decimal(),
                                          "c",
                                          JsSpecs.doubleNumber(),
                                          "d",
-                                         JsSpecs.integer(),
+                                         integer(),
                                          "e",
                                          JsSpecs.longInteger(),
                                          "f",
@@ -47,7 +59,7 @@ public class SpecToGenTests {
                                          "g",
                                          JsSpecs.instant(),
                                          "h",
-                                         JsSpecs.decimal(),
+                                         decimal(),
                                          "i",
                                          JsSpecs.bigInteger(),
                                          "j",
@@ -72,21 +84,21 @@ public class SpecToGenTests {
   public void test_primitives_with_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.str(StrSchema.withLength(0,
-                                                             10)),
+                            str(StrSchema.withLength(0,
+                                                     10)),
                             "b",
-                            JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
-                                                                  BigDecimal.TEN)
-                                           ),
+                            decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                          BigDecimal.TEN)
+                                   ),
                             "c",
                             JsSpecs.doubleNumber(DoubleSchema.between(0.0,
                                                                       10.0)),
                             "d",
-                            JsSpecs.integer(IntegerSchema.between(0,
-                                                                  10)),
+                            integer(IntegerSchema.between(0,
+                                                          10)),
                             "e",
-                            JsSpecs.longInteger(LongSchema.betweenInterval(0,
-                                                                           10)),
+                            JsSpecs.longInteger(LongSchema.between(0,
+                                                                   10)),
                             "f",
                             JsSpecs.bool(),
                             "g",
@@ -97,21 +109,21 @@ public class SpecToGenTests {
                                            ),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.str(StrSchema.withLength(0,
-                                                                          10)),
+                                         str(StrSchema.withLength(0,
+                                                                  10)),
                                          "b",
-                                         JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
-                                                                               BigDecimal.TEN)),
+                                         decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                                       BigDecimal.TEN)),
                                          "c",
                                          JsSpecs.doubleNumber(DoubleSchema.between(0.0,
                                                                                    10.0)),
                                          "d",
-                                         JsSpecs.integer(IntegerSchema.between(0,
-                                                                               10)
-                                                        ),
+                                         integer(IntegerSchema.between(0,
+                                                                       10)
+                                                ),
                                          "e",
-                                         JsSpecs.longInteger(LongSchema.betweenInterval(0,
-                                                                                        10)),
+                                         JsSpecs.longInteger(LongSchema.between(0,
+                                                                                10)),
                                          "f",
                                          JsSpecs.bool(),
                                          "g",
@@ -120,8 +132,8 @@ public class SpecToGenTests {
                                                                                                   ChronoUnit.DAYS)
                                                                               )),
                                          "h",
-                                         JsSpecs.decimal(DecimalSchema.between(BigDecimal.ZERO,
-                                                                               BigDecimal.TEN)),
+                                         decimal(DecimalSchema.between(BigDecimal.ZERO,
+                                                                       BigDecimal.TEN)),
                                          "i",
                                          JsSpecs.bigInteger(BigIntSchema.between(new BigInteger("10000000000000000"),
                                                                                  new BigInteger("20000000000000000")
@@ -149,17 +161,17 @@ public class SpecToGenTests {
   public void test_nullable_primitives_without_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.str()
-                                   .nullable(),
+                            str()
+                                .nullable(),
                             "b",
-                            JsSpecs.decimal()
-                                   .nullable(),
+                            decimal()
+                                .nullable(),
                             "c",
                             JsSpecs.doubleNumber()
                                    .nullable(),
                             "d",
-                            JsSpecs.integer()
-                                   .nullable(),
+                            integer()
+                                .nullable(),
                             "e",
                             JsSpecs.longInteger()
                                    .nullable(),
@@ -171,17 +183,17 @@ public class SpecToGenTests {
                                    .nullable(),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.str()
-                                                .nullable(),
+                                         str()
+                                             .nullable(),
                                          "b",
-                                         JsSpecs.decimal()
-                                                .nullable(),
+                                         decimal()
+                                             .nullable(),
                                          "c",
                                          JsSpecs.doubleNumber()
                                                 .nullable(),
                                          "d",
-                                         JsSpecs.integer()
-                                                .nullable(),
+                                         integer()
+                                             .nullable(),
                                          "e",
                                          JsSpecs.longInteger()
                                                 .nullable(),
@@ -192,8 +204,8 @@ public class SpecToGenTests {
                                          JsSpecs.instant()
                                                 .nullable(),
                                          "h",
-                                         JsSpecs.decimal()
-                                                .nullable(),
+                                         decimal()
+                                             .nullable(),
                                          "i",
                                          JsSpecs.bigInteger()
                                                 .nullable(),
@@ -221,7 +233,7 @@ public class SpecToGenTests {
   public void test_array_of_primitives_without_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.arrayOfStr(),
+                            arrayOfStr(),
                             "b",
                             JsSpecs.arrayOfDec(),
                             "c",
@@ -236,7 +248,7 @@ public class SpecToGenTests {
                             JsSpecs.arrayOfSpec(JsSpecs.instant()),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.arrayOfStr(),
+                                         arrayOfStr(),
                                          "b",
                                          JsSpecs.arrayOfDec(),
                                          "c",
@@ -276,8 +288,8 @@ public class SpecToGenTests {
   public void test_array_of_primitives_with_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.arrayOfStr(StrSchema.withLength(0,
-                                                                    10)),
+                            arrayOfStr(StrSchema.withLength(0,
+                                                            10)),
                             "b",
                             JsSpecs.arrayOfDec(DecimalSchema.between(BigDecimal.ZERO,
                                                                      BigDecimal.TEN)),
@@ -288,8 +300,8 @@ public class SpecToGenTests {
                             JsSpecs.arrayOfInt(IntegerSchema.between(0,
                                                                      10)),
                             "e",
-                            JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
-                                                                           10)),
+                            JsSpecs.arrayOfLong(LongSchema.between(0,
+                                                                   10)),
                             "f",
                             JsSpecs.arrayOfBool(),
                             "g",
@@ -301,8 +313,8 @@ public class SpecToGenTests {
                                                ),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.arrayOfStr(StrSchema.withLength(0,
-                                                                                 10)),
+                                         arrayOfStr(StrSchema.withLength(0,
+                                                                         10)),
                                          "b",
                                          JsSpecs.arrayOfDec(DecimalSchema.between(BigDecimal.ZERO,
                                                                                   BigDecimal.TEN)),
@@ -313,8 +325,8 @@ public class SpecToGenTests {
                                          JsSpecs.arrayOfInt(IntegerSchema.between(0,
                                                                                   10)),
                                          "e",
-                                         JsSpecs.arrayOfLong(LongSchema.betweenInterval(0,
-                                                                                        10)),
+                                         JsSpecs.arrayOfLong(LongSchema.between(0,
+                                                                                10)),
                                          "f",
                                          JsSpecs.arrayOfBool(),
                                          "g",
@@ -350,8 +362,8 @@ public class SpecToGenTests {
   public void test_nullable_array_of_primitives_without_constraints() {
 
     var spec = JsObjSpec.of("a",
-                            JsSpecs.arrayOfStr()
-                                   .nullable(),
+                            arrayOfStr()
+                                .nullable(),
                             "b",
                             JsSpecs.arrayOfDec()
                                    .nullable(),
@@ -372,8 +384,8 @@ public class SpecToGenTests {
                                    .nullable(),
                             "h",
                             JsObjSpec.of("a",
-                                         JsSpecs.arrayOfStr()
-                                                .nullable(),
+                                         arrayOfStr()
+                                             .nullable(),
                                          "b",
                                          JsSpecs.arrayOfDec()
                                                 .nullable(),
@@ -547,85 +559,235 @@ public class SpecToGenTests {
 
   }
 
-  String NAME_FIELD = "name";
-  String TYPE_FIELD = "type";
-  String BUTTON_COUNT_FIELD = "buttonCount";
-  String WHEEL_COUNT_FIELD = "wheelCount";
-  String TRACKING_TYPE_FIELD = "trackingType";
-  String KEY_COUNT_FIELD = "keyCount";
-  String MEDIA_BUTTONS_FIELD = "mediaButtons";
-  String CONNECTED_DEVICES_FIELD = "connectedDevices";
-  String PERIPHERAL_FIELD = "my_peripheral";
-  List<String> TRACKING_TYPE_ENUM = List.of("ball",
-                                            "optical");
+  @Test
+  public void testOverride() {
+
+    JsObjSpec spec = JsObjSpec.of("a",
+                                  tuple(str(),
+                                        integer()
+                                       )
+                                 );
+
+    JsPath path = JsPath.empty()
+                        .key("a")
+                        .index(0);
+    var gen =
+        SpecToGen.DEFAULT.convert(spec,
+                                  Map.of(path,
+                                         JsStrGen.alphabetic(1000,
+                                                             2000))
+                                 );
+
+    Assertions.assertTrue(gen.sample(1000)
+                             .allMatch(json -> {
+                               String str = json.getStr(path);
+                               int length = str
+                                   .length();
+                               return length >= 1000 && length <= 2000;
+                             }));
+  }
 
   @Test
-  public void test() {
-
-    var baseSpec = JsObjSpec.of(NAME_FIELD,
-                                JsSpecs.str()
-                               );
-
-    var mouseSpec =
-        JsObjSpec.of(TYPE_FIELD,
-                     JsSpecs.cons(JsStr.of("mouse")),
-                     BUTTON_COUNT_FIELD,
-                     JsSpecs.integer(),
-                     WHEEL_COUNT_FIELD,
-                     JsSpecs.integer(),
-                     TRACKING_TYPE_FIELD,
-                     JsSpecs.oneStringOf(TRACKING_TYPE_ENUM)
+  public void testCustomOptions() {
+    JsObjSpec spec =
+        JsObjSpec.of("name",
+                     str(),
+                     "languages",
+                     arrayOfStr(),
+                     "age",
+                     integer(),
+                     "address",
+                     JsObjSpec.of("street",
+                                  str(),
+                                  "coordinates",
+                                  tuple(decimal(),
+                                        decimal()
+                                       )
+                                 )
                     )
-                 .concat(baseSpec);
+                 .withOptKeys("address");
 
-    var keyboardSpec =
-        JsObjSpec.of(
-                     TYPE_FIELD,
-                     JsSpecs.cons(JsStr.of("keyboard")),
-                     KEY_COUNT_FIELD,
-                     JsSpecs.integer(),
-                     MEDIA_BUTTONS_FIELD,
-                     JsSpecs.bool()
-                    )
-                 .concat(baseSpec);
+    var gen = SpecToGen.DEFAULT.convert(spec);
 
-    var usbHubSpec =
-        JsObjSpec.of(TYPE_FIELD,
-                     JsSpecs.cons(JsStr.of("usb_hub")),
-                     CONNECTED_DEVICES_FIELD,
-                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
-                            .nullable()
-                    )
-                 .withOptKeys(CONNECTED_DEVICES_FIELD)
-                 .concat(baseSpec);
+    var gen1 = SpecToGen.of(new SpecGenConfBuilder().withIntSize(10,
+                                                                 100)
+                                                    .withStringLength(10,
+                                                                      100)
+                                                    .withOptionalKeyProbability(4))
+                        .convert(spec);
 
-    var peripheralSpec =
-        JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
-                            oneSpecOf(mouseSpec,
-                                      keyboardSpec,
-                                      usbHubSpec));
+    var gen2 = SpecToGen.of(new SpecGenConfBuilder().withIntSize(10,
+                                                                 100)
+                                                    .withStringLength(10,
+                                                                      100)
+                                                    .withOptionalKeyProbability(4))
+                        .convert(spec,
+                                 Map.of(JsPath.path("/address/$0"),
+                                        JsBigDecGen.arbitrary(-180,
+                                                              180)));
 
-    System.out.println(SpecToJsonSchema.convert(peripheralSpec)
-                                       .toPrettyString());
-    //to avoid stackoverflow errors
-    var specToGen =
-        SpecToGen.of(new SpecGenConfBuilder().withNullableObjProbability(4)
-                                             .withOptionalObjFieldProbability(4));
-    var peripheralGen = specToGen.convert(peripheralSpec);
+    JsObjSpecParser parser = JsObjSpecParser.of(spec);
 
-    var parser = JsObjSpecParser.of(peripheralSpec);
+    gen.sample(1000)
+       .forEach(json -> {
 
-    peripheralGen.sample(500)
-                 .forEach(obj -> {
-                            System.out.println(obj);
-                            Assertions.assertEquals(obj,
-                                                    parser.parse(obj.toString())
-                                                   );
+         Assertions.assertEquals(json,
+                                 parser.parse(json.toPrettyString()));
+         Assertions.assertTrue(spec.test(json)
+                                   .isEmpty());
 
-                            Assertions.assertTrue(peripheralSpec.test(obj)
-                                                                .isEmpty());
-                          }
-                         );
+       });
+
+    gen1.sample(1000)
+        .forEach(json -> {
+
+          Assertions.assertEquals(json,
+                                  parser.parse(json.toPrettyString()));
+          Assertions.assertTrue(spec.test(json)
+                                    .isEmpty());
+
+        });
+
+    gen2.sample(1000)
+        .forEach(json -> {
+
+          Assertions.assertEquals(json,
+                                  parser.parse(json.toPrettyString()));
+
+          Assertions.assertTrue(spec.test(json)
+                                    .isEmpty());
+
+        });
+
+    JsObj jsonSchema = SpecToJsonSchema.convert(spec);
+
+    System.out.println(jsonSchema.toPrettyString());
+
+
+  }
+
+
+  @Test
+  public void testConstraints() {
+    var spec = JsObjSpec.of("a",
+                            JsSpecs.str(StrSchema.withMinLength(10)
+                                                 .setMaxLength(15)
+                                       ),
+                            "b",
+                            JsSpecs.str(StrSchema.withMaxLength(15)
+                                                 .setMinLength(5)
+                                       ),
+                            "c",
+                            JsSpecs.decimal(DecimalSchema.withMinimum(BigDecimal.TEN)),
+                            "d",
+                            JsSpecs.decimal(DecimalSchema.withMaximum(BigDecimal.TEN)),
+                            "e",
+                            JsSpecs.doubleNumber(DoubleSchema.withMaximum(3.0d)),
+                            "f",
+                            JsSpecs.doubleNumber(DoubleSchema.withMinimum(3.0d)),
+                            "g",
+                            JsSpecs.integer(IntegerSchema.withMaximum(3)),
+                            "h",
+                            JsSpecs.integer(IntegerSchema.withMinimum(3)),
+                            "i",
+                            JsSpecs.longInteger(LongSchema.withMaximum(3)),
+                            "j",
+                            JsSpecs.longInteger(LongSchema.withMinimum(3)),
+                            "k",
+                            JsSpecs.instant(InstantSchema.withMaximum(Instant.MAX)),
+                            "l",
+                            JsSpecs.instant(InstantSchema.withMinimum(Instant.MIN))
+                           );
+
+    var gen = SpecToGen.DEFAULT.convert(spec);
+
+    JsObjSpecParser parser = JsObjSpecParser.of(spec);
+
+    gen.sample(1000)
+       .peek(System.out::println)
+       .forEach(json -> {
+
+         Assertions.assertEquals(json,
+                                 parser.parse(json.toPrettyString()));
+         Assertions.assertTrue(spec.test(json)
+                                   .isEmpty());
+
+       });
+
+  }
+
+  @Test
+  public void testErrorsConstraints() {
+    var spec = JsObjSpec.of("a",
+                            JsSpecs.str(StrSchema.withMinLength(10)
+                                                 .setMaxLength(15)
+                                                 .setPattern("^[a-z]+$")
+                                       ),
+
+                            "b",
+                            JsSpecs.decimal(DecimalSchema.withMinimum(BigDecimal.TEN)),
+                            "c",
+                            JsSpecs.decimal(DecimalSchema.withMaximum(BigDecimal.TEN)),
+                            "d",
+                            JsSpecs.longInteger(LongSchema.withMaximum(10)),
+                            "e",
+                            JsSpecs.longInteger(LongSchema.withMinimum(10)),
+                            "f",
+                            JsSpecs.instant(InstantSchema.withMaximum(Instant.EPOCH)),
+                            "g",
+                            JsSpecs.instant(InstantSchema.withMinimum(Instant.EPOCH))
+                           );
+
+    var gen = JsObjGen.of("a",
+                          Combinators.oneOf(JsStrGen.alphabetic(0,
+                                                                9),
+                                            JsStrGen.alphabetic(16,
+                                                                20),
+                                            JsStrGen.digits(10,15)
+                                           ),
+                          "b",
+                          JsBigDecGen.biased(BigDecimal.ZERO,
+                                             BigDecimal.valueOf(9)),
+                          "c",
+                          JsBigDecGen.biased(BigDecimal.valueOf(11),
+                                             BigDecimal.valueOf(100)
+                                            ),
+                          "d",
+                          JsLongGen.biased(11,20),
+                          "e",
+                          JsLongGen.biased(0,9),
+                          "f",
+                          JsInstantGen.biased(Instant.EPOCH.plus(1,
+                                                                 ChronoUnit.DAYS),
+                                              Instant.EPOCH.plus(10,
+                                                                 ChronoUnit.DAYS)
+                                             ),
+                          "g",
+                          JsInstantGen.biased(Instant.EPOCH.minus(10,
+                                                                 ChronoUnit.DAYS),
+                                              Instant.EPOCH.minus(1,
+                                                                 ChronoUnit.DAYS)
+                                             )
+
+                          ).withAllOptKeys();
+    JsObjSpecParser parser = JsObjSpecParser.of(spec);
+
+    gen.sample(1000)
+       .peek(System.out::println)
+       .forEach(json -> {
+         try {
+           parser.parse(json.toPrettyString());
+           Assertions.assertFalse(false,
+                                  "Should have thrown a parse exception");
+         } catch (JsParserException e) {
+           System.out.println(e.getMessage());
+         }
+         List<SpecError> errors = spec.test(json);
+         System.out.println(errors);
+         Assertions.assertFalse(errors.isEmpty());
+
+       });
+
   }
 
 }

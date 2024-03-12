@@ -15,6 +15,7 @@ import jsonvalues.gen.JsStrGen;
 import jsonvalues.spec.JsObjSpec;
 import jsonvalues.spec.JsObjSpecParser;
 import jsonvalues.spec.JsSpecs;
+import jsonvalues.spec.SpecToJsonSchema;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
@@ -37,18 +38,16 @@ public final class ModelingInheritance {
   public void test() {
 
     var baseSpec = JsObjSpec.of(NAME_FIELD,
-                                JsSpecs.str(),
-                                TYPE_FIELD,
-                                JsSpecs.oneStringOf("mouse",
-                                                    "keyboard",
-                                                    "usb_hub"));
+                                JsSpecs.str());
 
     var baseGen = JsObjGen.of(NAME_FIELD,
                               JsStrGen.alphabetic()
                                       .distinct());
 
     var mouseSpec =
-        JsObjSpec.of(BUTTON_COUNT_FIELD,
+        JsObjSpec.of(TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("mouse")),
+                     BUTTON_COUNT_FIELD,
                      JsSpecs.integer(),
                      WHEEL_COUNT_FIELD,
                      JsSpecs.integer(),
@@ -73,7 +72,9 @@ public final class ModelingInheritance {
                 .concat(baseGen);
 
     var keyboardSpec =
-        JsObjSpec.of(KEY_COUNT_FIELD,
+        JsObjSpec.of(TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("keyboard")),
+                     KEY_COUNT_FIELD,
                      JsSpecs.integer(),
                      MEDIA_BUTTONS_FIELD,
                      JsSpecs.bool()
@@ -92,8 +93,11 @@ public final class ModelingInheritance {
                 .concat(baseGen);
 
     var usbHubSpec =
-        JsObjSpec.of(CONNECTED_DEVICES_FIELD,
-                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD)).nullable()
+        JsObjSpec.of(TYPE_FIELD,
+                     JsSpecs.cons(JsStr.of("usb_hub")),
+                     CONNECTED_DEVICES_FIELD,
+                     JsSpecs.arrayOfSpec(JsSpecs.ofNamedSpec(PERIPHERAL_FIELD))
+                            .nullable()
                     )
                  .withOptKeys(CONNECTED_DEVICES_FIELD)
                  .concat(baseSpec);
@@ -112,9 +116,12 @@ public final class ModelingInheritance {
 
     var peripheralSpec =
         JsSpecs.ofNamedSpec(PERIPHERAL_FIELD,
-                            oneSpecOf(mouseSpec,
-                                      keyboardSpec,
-                                      usbHubSpec));
+                            oneSpecOf(JsSpecs.ofNamedSpec("mouse_spec",
+                                                          mouseSpec),
+                                      JsSpecs.ofNamedSpec("keyboard_spec",
+                                                          keyboardSpec),
+                                      JsSpecs.ofNamedSpec("usb_hub_spec",
+                                                          usbHubSpec)));
 
     var peripheralGen =
         NamedGen.of(PERIPHERAL_FIELD,
@@ -123,6 +130,10 @@ public final class ModelingInheritance {
                                       usbHubGen));
 
     var parser = JsObjSpecParser.of(peripheralSpec);
+
+    var schema = SpecToJsonSchema.convert(peripheralSpec);
+
+    System.out.println(schema);
 
     peripheralGen.sample(150)
                  .forEach(obj -> {

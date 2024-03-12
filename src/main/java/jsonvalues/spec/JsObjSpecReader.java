@@ -49,7 +49,7 @@ class JsObjSpecReader extends AbstractJsObjReader {
                                 .parse(reader)
                            );
     byte nextToken;
-    int size = 0;
+    int size = 1;//we already parsed one field
     while ((nextToken = reader.readNextToken()) == ',') {
       reader.readNextToken();
       key = reader.readKey();

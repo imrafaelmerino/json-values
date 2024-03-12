@@ -18,6 +18,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Set;
 import java.util.function.Supplier;
 import jsonvalues.JsArray;
@@ -72,7 +73,7 @@ public class TestJsObj {
     Assertions.assertEquals(5,
                             obj.size()
                            );
-    final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase());
+    final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase(Locale.ENGLISH));
 
     Set<String> set = new HashSet<>(Arrays.asList("A",
                                                   "B",
@@ -113,7 +114,7 @@ public class TestJsObj {
     Assertions.assertEquals(5,
                             obj.size()
                            );
-    final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase());
+    final JsObj obj1 = obj.mapKeys(key -> key.toUpperCase(Locale.ENGLISH));
 
     Set<String> set = new HashSet<>(Arrays.asList("A",
                                                   "B",
@@ -678,11 +679,11 @@ public class TestJsObj {
                                                                                         );
                                                                  return path.last()
                                                                             .asKey().name.trim()
-                                                                                         .toUpperCase();
+                                                                                         .toUpperCase(Locale.ENGLISH);
                                                                })));
 
     Assertions.assertFalse(anyKeyLetterIsLowerCase(obj.mapKeys(key -> key.trim()
-                                                                         .toUpperCase())));
+                                                                         .toUpperCase(Locale.ENGLISH))));
 
   }
 

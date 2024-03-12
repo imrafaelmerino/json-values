@@ -11,8 +11,8 @@ final class Cons implements JsOneErrorSpec, AvroSpec {
   final String name;
   final JsValue value;
 
-  public Cons(final JsValue value,
-              final String name) {
+  Cons(final JsValue value,
+       final String name) {
     if (!value.isPrimitive()) {
       throw new IllegalArgumentException("The constant  must be a primitive value");
     }
@@ -20,7 +20,7 @@ final class Cons implements JsOneErrorSpec, AvroSpec {
     this.name = Objects.requireNonNull(name);
   }
 
-  public Cons(final JsValue value) {
+  Cons(final JsValue value) {
     this(value,
          "");
   }

@@ -301,107 +301,7 @@ public class JsSpecToJsonSchemaTests {
                                                   ]
                                                 }
                                               },
-                                              "oneOf": [
-                                                {
-                                                  "properties": {
-                                                    "name": {
-                                                      "type": "string"
-                                                    },
-                                                    "trackingType": {
-                                                      "enum": [
-                                                        "trackingType"
-                                                      ],
-                                                      "type": "string"
-                                                    },
-                                                    "wheelCount": {
-                                                      "type": "integer"
-                                                    },
-                                                    "type": {
-                                                      "enum": [
-                                                        "mouse",
-                                                        "keyboard",
-                                                        "usb_hub"
-                                                      ],
-                                                      "type": "string"
-                                                    },
-                                                    "buttonCount": {
-                                                      "type": "integer"
-                                                    }
-                                                  },
-                                                  "additionalProperties": false,
-                                                  "type": "object",
-                                                  "$id": "mouse_device",
-                                                  "required": [
-                                                    "buttonCount",
-                                                    "wheelCount",
-                                                    "trackingType",
-                                                    "name",
-                                                    "type"
-                                                  ]
-                                                },
-                                                {
-                                                  "properties": {
-                                                    "name": {
-                                                      "type": "string"
-                                                    },
-                                                    "keyCount": {
-                                                      "type": "integer"
-                                                    },
-                                                    "type": {
-                                                      "enum": [
-                                                        "mouse",
-                                                        "keyboard",
-                                                        "usb_hub"
-                                                      ],
-                                                      "type": "string"
-                                                    },
-                                                    "mediaButtons": {
-                                                      "type": "boolean"
-                                                    }
-                                                  },
-                                                  "additionalProperties": false,
-                                                  "type": "object",
-                                                  "$id": "keyboard_device",
-                                                  "required": [
-                                                    "keyCount",
-                                                    "mediaButtons",
-                                                    "name",
-                                                    "type"
-                                                  ]
-                                                },
-                                                {
-                                                  "properties": {
-                                                    "name": {
-                                                      "type": "string"
-                                                    },
-                                                    "connectedDevices": {
-                                                      "items": {
-                                                        "$ref": "#/defs/peripheral_device"
-                                                      },
-                                                      "default": null,
-                                                      "type": [
-                                                        "array",
-                                                        "null"
-                                                      ]
-                                                    },
-                                                    "type": {
-                                                      "enum": [
-                                                        "mouse",
-                                                        "keyboard",
-                                                        "usb_hub"
-                                                      ],
-                                                      "type": "string"
-                                                    }
-                                                  },
-                                                  "additionalProperties": false,
-                                                  "type": "object",
-                                                  "$id": "usb_hub_device",
-                                                  "required": [
-                                                    "name",
-                                                    "type"
-                                                  ]
-                                                }
-                                              ],
+                                              "$ref": "#/defs/peripheral_device",
                                               "$id": "peripheral_device"
                                             }"""),
                             SpecToJsonSchema.convert(peripheralSpec));
@@ -579,17 +479,7 @@ public class JsSpecToJsonSchemaTests {
                                                   ]
                                                 }
                                               },
-                                              "oneOf": [
-                                                {
-                                                  "$ref": "#/defs/mouse"
-                                                },
-                                                {
-                                                  "$ref": "#/defs/keyboard"
-                                                },
-                                                {
-                                                  "$ref": "#/defs/usbHub"
-                                                }
-                                              ],
+                                              "$ref": "#/defs/peripheral",
                                               "$id": "peripheral"
                                             }
                                             """),

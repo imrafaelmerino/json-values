@@ -61,7 +61,7 @@ public final class JsArraySpecParser {
   }
 
   private boolean isValid(JsSpec spec) {
-    if (spec instanceof JsArraySpec) {
+    if (requireNonNull(spec) instanceof JsArraySpec) {
       return true;
     }
     if (spec instanceof OneOf oneOf) {

@@ -30,8 +30,9 @@ import jsonvalues.JsObj;
  * It's important to note that the provided JSON specification should match the structure and constraints of the JSON data you expect
  * to parse. The parser will enforce these constraints during parsing.
  */
-public final class JsObjSpecParser {
 
+
+public final class JsObjSpecParser {
 
   private final JsParser parser;
 

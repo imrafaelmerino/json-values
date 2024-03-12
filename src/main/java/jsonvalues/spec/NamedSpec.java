@@ -7,7 +7,7 @@ import jsonvalues.JsNull;
 import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
-final class NamedSpec extends AbstractNullable implements JsSpec {
+final class NamedSpec extends AbstractNullable implements JsSpec,AvroSpec {
 
   final String name;
 

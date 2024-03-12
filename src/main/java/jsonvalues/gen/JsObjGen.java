@@ -5517,8 +5517,8 @@ public final class JsObjGen implements Gen<JsObj> {
    * @throws IllegalArgumentException If the probability is not within the valid range.
    */
   public JsObjGen withOptionalProbability(int prob) {
-    if (prob < 2 && prob > 10) {
-      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    if (prob < 2) {
+      throw new IllegalArgumentException("The probability must be greater than 2");
     }
     this.optionalProbability = prob;
     return this;
@@ -5534,8 +5534,8 @@ public final class JsObjGen implements Gen<JsObj> {
    * @throws IllegalArgumentException If the probability is not within the valid range.
    */
   public JsObjGen withNullableProbability(int prob) {
-    if (prob < 2 && prob > 10) {
-      throw new IllegalArgumentException("The probability must be between 2 and 10");
+    if (prob < 2) {
+      throw new IllegalArgumentException("The probability must be greater than 2");
     }
     this.nullableProbability = prob;
     return this;

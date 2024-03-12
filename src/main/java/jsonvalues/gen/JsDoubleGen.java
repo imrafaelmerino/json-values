@@ -69,8 +69,20 @@ public final class JsDoubleGen implements Gen<JsDouble> {
   public static Gen<JsDouble> biased(double min,
                                      double max
                                     ) {
+    validateBounds(min,
+                   max);
     return new JsDoubleGen(DoubleGen.biased(min,
                                             max));
+  }
+
+  private static void validateBounds(final double min,
+                                     final double max) {
+    if (Double.isNaN(min) || Double.isNaN(max)) {
+      throw new IllegalArgumentException("min and max must be valid numbers");
+    }
+    if (Double.isInfinite(min) || Double.isInfinite(max)) {
+      throw new IllegalArgumentException("min and max must be valid numbers");
+    }
   }
 
 
@@ -84,6 +96,8 @@ public final class JsDoubleGen implements Gen<JsDouble> {
   public static Gen<JsDouble> arbitrary(double min,
                                         double max
                                        ) {
+    validateBounds(min,
+                   max);
     return new JsDoubleGen(DoubleGen.arbitrary(min,
                                                max));
   }

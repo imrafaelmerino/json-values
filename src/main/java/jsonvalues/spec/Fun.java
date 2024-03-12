@@ -148,10 +148,10 @@ class Fun {
     String value = jsStr.value;
     int length = value.length();
     if (length < constraints.minLength) {
-      return ERROR_CODE.STR_SIZE_LOWER_THAN_MIN;
+      return ERROR_CODE.STR_LENGTH_LOWER_THAN_MIN;
     }
     if (length > constraints.maxLength) {
-      return ERROR_CODE.STR_SIZE_GREATER_THAN_MAX;
+      return ERROR_CODE.STR_LENGTH_GREATER_THAN_MAX;
     }
     if (constraints.pattern != null
         && !constraints.pattern.matcher(value)

@@ -49,6 +49,12 @@ public final class JsDouble extends JsNumber implements Comparable<JsDouble> {
    * @return a new JsDouble
    */
   public static JsDouble of(double n) {
+    if (Double.isNaN(n)) {
+      throw new IllegalArgumentException("JsDouble cannot be NaN");
+    }
+    if (Double.isInfinite(n)) {
+      throw new IllegalArgumentException("JsDouble cannot be Infinity");
+    }
     return new JsDouble(n);
   }
 
