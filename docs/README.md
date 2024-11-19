@@ -1973,4 +1973,3 @@ After the development of json-values, I published some more related projects:
   with MongoDB
 - [avro-spec](https://github.com/imrafaelmerino/avro-spec) To create avro schemas from specs and
   serialize/deserialize `JsObj` according avro specification.
-- [json-scala-values](https://github.com/imrafaelmerino/json-scala-values) The Scala version
