@@ -145,3 +145,9 @@ Improvements:
 
 - `JsSpecs.mapOfXXX` specs didn't return the right path of errors using the method `test`. Besides, 
 it only returned one error event if multiple existed, which has been fixed as well
+
+
+**14.0.0**
+
+- Error prone fixes (good practices)
+- upgrade plugin dependencies in pom.xml
