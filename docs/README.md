@@ -5,6 +5,9 @@
 “_Simplicity is a great virtue, but it requires hard work to achieve it and education to appreciate
 it. And to make matters worse: complexity sells better._” **Edsger Wybe Dijkstra**
 
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-%E2%98%95%20Support-yellow)](https://www.buymeacoffee.com/imrafaelmerino)
+
+
 - [Code wins arguments](#cwa)
 - [Introduction](#introduction)
 - [What to use _json-values_ for and when to use it](#whatfor)
