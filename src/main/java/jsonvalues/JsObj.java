@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.Spliterator;
 import java.util.Spliterators;
 import java.util.function.BiFunction;
 import java.util.function.BiPredicate;
@@ -3796,7 +3797,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   public Stream<JsObjPair> streamOfKeys() {
     return StreamSupport.stream(Spliterators.spliterator(iterator(),
                                                          size(),
-                                                         Collector.Characteristics.UNORDERED.ordinal()
+                                                         Spliterator.ORDERED
                                                         ),
                                 false
                                );

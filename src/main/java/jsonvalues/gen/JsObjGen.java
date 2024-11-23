@@ -5596,9 +5596,7 @@ public final class JsObjGen implements Gen<JsObj> {
                           JsNull.NULL
                          );
           }
-        } else if (isOptional) {
-          continue;
-        } else if (isNull) {
+        }  else if (isNull) {
           obj = obj.set(pair.getKey(),
                         JsNull.NULL
                        );

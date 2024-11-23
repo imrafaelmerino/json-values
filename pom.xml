@@ -3,7 +3,7 @@
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <artifactId>json-values</artifactId>
-  <version>14.0.0-RC3</version>
+  <version>14.0.0</version>
   <scm>
     <url>https://github.com/imrafaelmerino/json-values.git</url>
   </scm>
@@ -14,18 +14,16 @@
     <JUNIT-JUPITER-API.VERSION>5.8.2</JUNIT-JUPITER-API.VERSION>
     <MAVEN-COMPILER-PLUGIN.SOURCE>21</MAVEN-COMPILER-PLUGIN.SOURCE>
     <MAVEN-COMPILER-PLUGIN.TARGET>21</MAVEN-COMPILER-PLUGIN.TARGET>
-    <MAVEN-COMPILER-PLUGIN.VERSION>3.10.1</MAVEN-COMPILER-PLUGIN.VERSION>
+    <MAVEN-COMPILER-PLUGIN.VERSION>3.13.0</MAVEN-COMPILER-PLUGIN.VERSION>
     <MAVEN-GPG-PLUGIN.VERSION>1.6</MAVEN-GPG-PLUGIN.VERSION>
-    <MAVEN-JAR-PLUGIN.VERSION>3.2.2</MAVEN-JAR-PLUGIN.VERSION>
-    <MAVEN-JAVADOC-PLUGIN.VERSION>3.3.2</MAVEN-JAVADOC-PLUGIN.VERSION>
+    <MAVEN-JAR-PLUGIN.VERSION>3.4.2</MAVEN-JAR-PLUGIN.VERSION>
+    <MAVEN-JAVADOC-PLUGIN.VERSION>3.11.1</MAVEN-JAVADOC-PLUGIN.VERSION>
     <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
-    <MAVEN-SUREFIRE-PLUGIN.VERSION>3.0.0-M6</MAVEN-SUREFIRE-PLUGIN.VERSION>
+    <MAVEN-SUREFIRE-PLUGIN.VERSION>3.5.2</MAVEN-SUREFIRE-PLUGIN.VERSION>
     <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.12</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
-    <error-prone.version>2.19.0</error-prone.version>
+    <error-prone.version>2.36.0</error-prone.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
-    <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-    <sonar.organization>imrafaelmerino</sonar.organization>
   </properties>
   <build>
     <plugins>
@@ -41,7 +39,8 @@
           </annotationProcessorPaths>
           <compilerArgs>
             <arg>-XDcompilePolicy=simple</arg>
-            <arg>-Xplugin:ErrorProne</arg>
+            <arg>--should-stop=ifError=FLOW</arg>
+            <arg>-Xplugin:ErrorProne -Xep:DeadException:WARN -Xep:GuardedBy:OFF</arg>
             <arg>-Xlint:all</arg>
           </compilerArgs>
           <encoding>${project.build.sourceEncoding}</encoding>
