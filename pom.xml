@@ -9,8 +9,8 @@
   </scm>
   <url>https://github.com/imrafaelmerino/json-values</url>
   <properties>
-    <JACOCO-MAVEN-PLUGIN.VERSION>0.8.8</JACOCO-MAVEN-PLUGIN.VERSION>
-    <JAVA-FUN.VERSION>2.2.0</JAVA-FUN.VERSION>
+    <JACOCO-MAVEN-PLUGIN.VERSION>0.8.12</JACOCO-MAVEN-PLUGIN.VERSION>
+    <JAVA-FUN.VERSION>3.0.1-SNAPSHOT</JAVA-FUN.VERSION>
     <JUNIT-JUPITER-API.VERSION>5.8.2</JUNIT-JUPITER-API.VERSION>
     <MAVEN-COMPILER-PLUGIN.SOURCE>21</MAVEN-COMPILER-PLUGIN.SOURCE>
     <MAVEN-COMPILER-PLUGIN.TARGET>21</MAVEN-COMPILER-PLUGIN.TARGET>
@@ -21,9 +21,12 @@
     <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
     <MAVEN-SUREFIRE-PLUGIN.VERSION>3.5.2</MAVEN-SUREFIRE-PLUGIN.VERSION>
     <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.12</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
+    <PITEST-JUNIT5-PLUGIN.VERSION>1.2.2</PITEST-JUNIT5-PLUGIN.VERSION>
+    <PITEST-MAVEN-PLUGIN.VERSION>1.17.2</PITEST-MAVEN-PLUGIN.VERSION>
     <error-prone.version>2.36.0</error-prone.version>
+    <pit.targetClasses>jsonvalues.spec.NumberConverter*</pit.targetClasses>
+    <pit.targetTests>jsonvalues.spec.NumberConverter*Test</pit.targetTests>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
   </properties>
   <build>
     <plugins>
@@ -49,12 +52,32 @@
           <target>${MAVEN-COMPILER-PLUGIN.TARGET}</target>
         </configuration>
         <groupId>org.apache.maven.plugins</groupId>
-        <version>3.8.0</version>
+        <version>${MAVEN-COMPILER-PLUGIN.VERSION}</version>
       </plugin>
       <plugin>
         <artifactId>maven-surefire-plugin</artifactId>
         <groupId>org.apache.maven.plugins</groupId>
         <version>${MAVEN-SUREFIRE-PLUGIN.VERSION}</version>
+      </plugin>
+      <plugin>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <groupId>org.jacoco</groupId>
+        <version>${JACOCO-MAVEN-PLUGIN.VERSION}</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+            <id>prepare-agent</id>
+          </execution>
+          <execution>
+            <goals>
+              <goal>report</goal>
+            </goals>
+            <id>report</id>
+            <phase>verify</phase>
+          </execution>
+        </executions>
       </plugin>
       <plugin>
         <artifactId>maven-jar-plugin</artifactId>
@@ -88,6 +111,12 @@
 
     <dependency>
       <artifactId>junit-jupiter-api</artifactId>
+      <groupId>org.junit.jupiter</groupId>
+      <scope>test</scope>
+      <version>${JUNIT-JUPITER-API.VERSION}</version>
+    </dependency>
+    <dependency>
+      <artifactId>junit-jupiter-engine</artifactId>
       <groupId>org.junit.jupiter</groupId>
       <scope>test</scope>
       <version>${JUNIT-JUPITER-API.VERSION}</version>
@@ -192,6 +221,60 @@
         </snapshotRepository>
       </distributionManagement>
       <id>release</id>
+    </profile>
+    <profile>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>pitest-maven</artifactId>
+            <configuration>
+              <outputFormats>
+                <param>HTML</param>
+                <param>XML</param>
+              </outputFormats>
+              <targetClasses>
+                <param>${pit.targetClasses}</param>
+              </targetClasses>
+              <targetTests>
+                <param>${pit.targetTests}</param>
+              </targetTests>
+              <threads>4</threads>
+              <timestampedReports>false</timestampedReports>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <artifactId>pitest-junit5-plugin</artifactId>
+                <groupId>org.pitest</groupId>
+                <version>${PITEST-JUNIT5-PLUGIN.VERSION}</version>
+              </dependency>
+            </dependencies>
+            <groupId>org.pitest</groupId>
+            <version>${PITEST-MAVEN-PLUGIN.VERSION}</version>
+          </plugin>
+        </plugins>
+      </build>
+      <id>mutation</id>
+    </profile>
+    <profile>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <configuration>
+              <groups>stress</groups>
+            </configuration>
+            <groupId>org.apache.maven.plugins</groupId>
+            <version>${MAVEN-SUREFIRE-PLUGIN.VERSION}</version>
+          </plugin>
+        </plugins>
+      </build>
+      <id>stress</id>
     </profile>
   </profiles>
 
