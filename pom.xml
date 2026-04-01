@@ -40,7 +40,7 @@
     <java.minimum.version>21</java.minimum.version>
     <maven.minimum.version>3.6.3</maven.minimum.version>
 
-    <java-fun.version>3.0.1-SNAPSHOT</java-fun.version>
+    <java-fun.version>4.0.0-SNAPSHOT</java-fun.version>
     <junit-jupiter.version>5.11.3</junit-jupiter.version>
 
     <maven.compiler.release>21</maven.compiler.release>

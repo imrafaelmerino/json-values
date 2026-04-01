@@ -1,161 +1,120 @@
 **14.0.1-SNAPSHOT**
 
-- Sanitized and reordered `pom.xml` for better maintainability.
-- Upgraded key Maven plugins (compiler, surefire, jar, javadoc, source, gpg, nexus-staging).
-- Added `maven-enforcer-plugin` to enforce build toolchain requirements (Java 21+, Maven 3.6.3+).
-- Switched compiler configuration from `source/target` to `release=21`.
-- Upgraded JUnit test dependency to `junit-jupiter` 5.11.3.
-
-**12.3.0**
-
-- New method JsSpec.withReqKeys New methods `JsObjGen.withReqKeys` and `JsObjGen.withNonNullValues`
-- Static factory methods to create specs and generators: up to 50 key-spec and key-gen pairs
-
-**12.3.1**
-
-- Bug: Some static factory methods were missing in `JsSpec`
-
-**12.3.2**
-
-- Improved javadoc Improved implementation of `JsObjGen`
-
-**12.4.0**
-
-- `JsObjGen` with optional and nullable fields
-
-**12.5.0**
-
-- upgrade java-fun library
-- better optional and nullable distribution in JsObjGen
-- New methods: `JsIntGen.biased(min)` `JsLongGen.biased(min)` `JsLongGen.arbitrary(min)`
-  `JsIntGen.arbitrary(min)`
-
-**12.6.0**
-
-- upgrade java-fun to 1.3.2
-
-**12.7.0**
-
-- Bug: Previous versions compiled without enabling preview features. All preview features have been
-  eliminated as they are no longer necessary and were exclusively used for internal purposes.
-- Eliminate compilation warnings in both source and test code.
-
-**12.8.0**
-
-- JsObjGen new method: `concat(JsObjGen)`
-
-**12.9.0**
-
-- JsObj new methods: `set(key,primitive)` `set(path,primitive)`
-
-**13.0.0**
-
-- added avro support for some specs with the interface AvroSpec (not public is used by avro-values
-  project)
-- `JsObjSpecBuilder`, `JsFixedBuilder` and `JsEnumBuilder` to facilitate integration with avro. It
-  caches specs by name and now is possible to define recursive data types with
-  `JsObjSpecs.ofNamedSpec`
-- If spec builder is used to create specs and parsers, the metadata of the spec can be used for
-  parsing, for example, aliases and default values.
-- added `oneOf` specs and parsers (JsReader now support set marks and rollback to that marks!)
-- added `JsArray.of(varargs)` and `JsArray.ofXXX(list)` methods to create arrays from primitives and
-  list of primitives
-- added map of spec: `JsSpecs.mapOfSpec(JsSpec spec)`
-- added array of spec: `JsSpecs.arrayOfSpec(JsSpec spec)`
-- Refactor public classes:
-  - `JsObjSpecParser.of` and `JsArraySpecParser.of` instead of constructors
-  - `JsReader` visibility change (is not public)
-  - `JsSpec.readNextValue(JsReader)` -> `JsSpec.parse(String)`. Method used by jio-console and was
-    changed since it's not necessary to create a JsReader
-  - `reduce` methods doesn't return Optional (implementation inefficient since create a lot of
-    Optional objects)
-  - `JsSerializerException` move to spec package to reduce visibility of constructors
-- Refactor internal classes and tests (clients not affected)
-- decimal specs like `JsSpecs.decimal` can parse any kind of numeric values (integers as well)
-- Removed `JsSpecs.number` and related specs like `arrayOfNumbers` (use decimal instead)
-- Added `JsDoubleSpec` and other related specs (`JsSpecs.arrayOfDouble` and others related)
-- Removed automatic module name. I'll keep unnamed json-values because of split packages are not
-  allowed in the module system and then there is a problem with avro-spec and all the libraries that
-  defined the package `jsonvalues.spec` (already defined in json-values)
-
-**13.1.0**
-
-- New features:
-  - The addition of `JsSpecs.ofNamedSpec(name, spec)`, which allows the creation of any type of
-    named spec. Unlike the previous version, where only `JsObjSpec` created with `JsObjSpecBuilder`
-    were cached, this new method broadens the scope of cached named specs.
-  - Introduction of `JsObjSpec.concat(JsObjSpec)`, a function that facilitates the concatenation of
-    Json object specs. This enhancement streamlines code reuse and makes it more convenient.
-  - Enhancements to `JsObjSpecParser` and `JsArraySpecParser` to accept `NamedSpec`, providing
-    increased flexibility and compatibility.
-  - Refactor `JsObjGen` to support recursive generators implemented in java-fun with `NamedGen`
-  - Upgrade java-fun to version 1.4.0
-- Doc:
-  - Introducing a new section in the readme, featuring an illustrative implementation of
-    [Modeling Inheritance](https://json-schema.org/blog/posts/modelling-inheritance)
-- Issues:
-  - https://github.com/imrafaelmerino/json-values/issues/195
-
-**13.2.0**
-
-New features:
-
-- Previous version 13.1.0 allows named specs of any type with `JsSpecs.ofNamedSpec(name, spec)`, but
-  in the case of registering `JsObjSpec`, `JsEnum` and `JsFixedBinary` with that method instead of
-  the builders `JsObjSpecBuilder`, `JsEnumBuilder` and `JsFixedBinaryBuilder`, we need to create the
-  metadata object to be able to create Avro schemas with avro-spec
-
-- JsEnumBuilder new overloaded build method `build(JsArray)`
-
-- Doc—Proofreading javadoc typos
-
-**13.3.0**
-
-- Backward compatible with 13.2.0 version
-- Upgrade to java-fun 2.0.0.
-- This java-fun version works with the new Java 17 interface `RandomGenerator` instead of `Random`,
-  that is an implementation.
-
-**13.4.0**
-
-- Examples.java class leak in source code
-
-**14.0.0-RC1**
-
-Breaking changes:
-
-- JsSpec parsers returns `JsBigInt` instead of `JsBigDec` when numbers don't have a decimal part and
-  don't fit in a `long` If you are parsing strings into Json using spec parsers and have to deal
-  with big integer numbers, please take this into account.
-- Removed methods `biased(nBits)` and `arbitrary(nBits)` since better alternatives has been added
-
-New features:
-
-- `SpecToJsonSchema` to convert specs into json-schema (SchemaDraft.DRAFT_2019_09)
-- `SpecToGen` to convert specs into generators
-- `JsBigIntGen` new methods `biased(min, max)` and `arbitrary(min,max)`
-- `Cons` spec
-
-Bugs:
-
-- `writeBinary` method in `JsWritter` class when binary was one byte long
-
-**14.0.0-RC2**
-
-Bugs:
-
- - `SpecToGen` convert method returns `Gen<JsValue>` instead of `Gen<? extends JsValue>`.
-It's not a good practice to use wildcards for return types in methods
-
-**14.0.0-RC3**
-
-Improvements:
-
-- `JsSpecs.mapOfXXX` specs didn't return the right path of errors using the method `test`. Besides, 
-it only returned one error event if multiple existed, which has been fixed as well
-
+- Build: sanitized and reordered `pom.xml` for maintainability.
+- Build: upgraded key Maven plugins (`compiler`, `surefire`, `jar`, `javadoc`, `source`, `gpg`, `nexus-staging`).
+- Build: added `maven-enforcer-plugin` to enforce Java 21+ and Maven 3.6.3+.
+- Build: switched compiler configuration from `source/target` to `release=21`.
+- Dependencies: upgraded test dependency to `junit-jupiter` `5.11.3`.
+- Dependencies: upgraded `java-fun` dependency to `4.0.0-SNAPSHOT`.
+- Docs: reformatted and expanded README and changelog content.
 
 **14.0.0**
 
-- Error prone fixes (good practices)
-- upgrade plugin dependencies in pom.xml
+- Build: Error Prone fixes and plugin dependency upgrades in `pom.xml`.
+
+**14.0.0-RC3**
+
+- Improvement: `JsSpecs.mapOfXXX` specs now report correct error paths in `test`.
+- Improvement: `JsSpecs.mapOfXXX` specs now return multiple error events when multiple errors exist.
+
+**14.0.0-RC2**
+
+- Fix: `SpecToGen.convert` return type adjusted to avoid wildcard return type usage.
+
+**14.0.0-RC1**
+
+- Breaking: spec parsers return `JsBigInt` (instead of `JsBigDec`) for integer numbers that do not fit in `long`.
+- Breaking: removed `biased(nBits)` and `arbitrary(nBits)` in favor of improved alternatives.
+- Feature: added `SpecToJsonSchema` (draft `2019-09`) to convert specs to JSON Schema.
+- Feature: added `SpecToGen` to convert specs into generators.
+- Feature: added `JsBigIntGen.biased(min, max)` and `JsBigIntGen.arbitrary(min, max)`.
+- Feature: added `Cons` spec.
+- Fix: fixed `writeBinary` behavior in `JsWritter` when binary length is one byte.
+
+**13.4.0**
+
+- Fix: removed accidental `Examples.java` source leak.
+
+**13.3.0**
+
+- Compatibility: backward compatible with `13.2.0`.
+- Dependencies: upgraded to `java-fun` `2.0.0`.
+- Platform: migrated from `Random` to Java 17 `RandomGenerator` API.
+
+**13.2.0**
+
+- Feature: improved named-spec workflow for Avro integration when using `JsSpecs.ofNamedSpec(name, spec)`.
+- Feature: added overloaded `JsEnumBuilder.build(JsArray)`.
+- Docs: proofreading and javadoc typo fixes.
+
+**13.1.0**
+
+- Feature: added `JsSpecs.ofNamedSpec(name, spec)` for named specs of any type.
+- Feature: added `JsObjSpec.concat(JsObjSpec)` to compose object specs.
+- Feature: `JsObjSpecParser` and `JsArraySpecParser` now accept named specs.
+- Feature: refactored `JsObjGen` to support recursive generators using `NamedGen` from `java-fun`.
+- Dependencies: upgraded to `java-fun` `1.4.0`.
+- Docs: added a new README section with a modeling inheritance example.
+- Tracking: issue [#195](https://github.com/imrafaelmerino/json-values/issues/195).
+
+**13.0.0**
+
+- Feature: added Avro support through `AvroSpec` (used by `avro-values`).
+- Feature: added `JsObjSpecBuilder`, `JsFixedBuilder`, and `JsEnumBuilder` for Avro-friendly spec definitions.
+- Feature: support for recursive data types through named specs and builder caches.
+- Feature: builder metadata can be reused by parsers (aliases, default values, etc.).
+- Feature: added `oneOf` specs and parsers with reader marks and rollback support.
+- Feature: added `JsArray.of(varargs)` and `JsArray.ofXXX(list)` constructors.
+- Feature: added `JsSpecs.mapOfSpec(JsSpec)` and `JsSpecs.arrayOfSpec(JsSpec)`.
+- Refactor: `JsObjSpecParser.of` and `JsArraySpecParser.of` replace constructors.
+- Refactor: `JsReader` visibility reduced from public API.
+- Refactor: `JsSpec.readNextValue(JsReader)` replaced with `JsSpec.parse(String)`.
+- Refactor: `reduce` methods no longer return `Optional` to avoid allocation overhead.
+- Refactor: moved `JsSerializerException` to `spec` package to reduce constructor visibility.
+- Refactor: internal classes and tests reorganized (no client-facing impact).
+- Improvement: decimal specs can parse integer numbers as decimals.
+- Removal: removed `JsSpecs.number` and related specs (use decimal-based specs instead).
+- Feature: added `JsDoubleSpec` and related helpers (`JsSpecs.arrayOfDouble`, etc.).
+- Module: removed automatic module name to avoid split-package conflicts with Avro-related libraries.
+
+**12.9.0**
+
+- Feature: added `JsObj.set(key, primitive)` and `JsObj.set(path, primitive)`.
+
+**12.8.0**
+
+- Feature: added `JsObjGen.concat(JsObjGen)`.
+
+**12.7.0**
+
+- Fix: removed unnecessary preview-feature dependency in build setup.
+- Improvement: eliminated compilation warnings in source and tests.
+
+**12.6.0**
+
+- Dependencies: upgraded `java-fun` to `1.3.2`.
+
+**12.5.0**
+
+- Dependencies: upgraded `java-fun`.
+- Improvement: better optional/nullable distribution in `JsObjGen`.
+- Feature: added `JsIntGen.biased(min)`, `JsLongGen.biased(min)`, `JsLongGen.arbitrary(min)`, and `JsIntGen.arbitrary(min)`.
+
+**12.4.0**
+
+- Feature: `JsObjGen` support for optional and nullable fields.
+
+**12.3.2**
+
+- Docs: javadoc improvements.
+- Improvement: internal implementation improvements in `JsObjGen`.
+
+**12.3.1**
+
+- Fix: restored missing static factory methods in `JsSpec`.
+
+**12.3.0**
+
+- Feature: added `JsSpec.withReqKeys`.
+- Feature: added `JsObjGen.withReqKeys` and `JsObjGen.withNonNullValues`.
+- Feature: expanded static factory methods for specs and generators up to 50 key/spec pairs.
