@@ -40,7 +40,7 @@ public class DecimalConverterTest {
   private final JsIO dslJson = JsIO.INSTANCE;
 
   @Test
-  public void testSerialization() {
+  public void shouldSerialization() {
     // setup
     final String[] values = VALUES.split(", *");
     final int count = values.length;
@@ -96,7 +96,7 @@ public class DecimalConverterTest {
   }
 
   @Test
-  public void testDeserialization() {
+  public void shouldDeserialization() {
     // setup
     final String[] values = VALUES.split(", *");
     final int count = values.length;
@@ -190,7 +190,7 @@ public class DecimalConverterTest {
   }
 
   @Test
-  public void testPowersOf10() throws IOException {
+  public void shouldPowersOf10() throws IOException {
     for (int i = -500; i < 500; i++) {
       final String sciForm = "1E" + i;
       final BigDecimal check = new BigDecimal(sciForm);

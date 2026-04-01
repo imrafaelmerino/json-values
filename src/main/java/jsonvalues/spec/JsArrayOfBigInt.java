@@ -39,11 +39,21 @@ final class JsArrayOfBigInt extends AbstractSizableArr implements JsOneErrorSpec
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Fun.testArrayOfTestedValue(v ->
-                                          v.isIntegral() ?
-                                          null :
-                                          new JsError(v,
-                                                      INTEGRAL_EXPECTED),
+    return Fun.testArrayOfTestedValue(v -> {
+                                        if (!v.isIntegral()) {
+                                          return new JsError(v,
+                                                             INTEGRAL_EXPECTED);
+                                        }
+                                        if (constraints != null) {
+                                          var errorCode = Fun.testBigIntConstraints(constraints,
+                                                                                     v.toJsBigInt());
+                                          if (errorCode != null) {
+                                            return new JsError(v,
+                                                               errorCode);
+                                          }
+                                        }
+                                        return null;
+                                      },
                                       nullable,
                                       arrayConstraints,
                                       value

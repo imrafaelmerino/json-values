@@ -31,8 +31,7 @@ import jsonvalues.spec.JsObjSpec;
  * <p>
  * Optional and nullable keys are specified with the methods {@code setOptionals} and {@code setNullable}.
  * <p>
- * Given the following optional fields a, b, and c, all the possible permutations (2^n = 8) are generated with the same
- * probability:
+ * Given optional fields a, b, and c, all the possible permutations (2^n = 8) are reachable:
  * <pre>
  *  - a, b, and c missing
  *  - a and b missing
@@ -47,6 +46,9 @@ import jsonvalues.spec.JsObjSpec;
  * The same applies for nullable fields.
  */
 public final class JsObjGen implements Gen<JsObj> {
+
+  private static final int MIN_PROBABILITY = 2;
+  private static final int MAX_PROBABILITY = 10;
 
   private final static Supplier<Set<String>> EMPTY_SET_GEN = HashSet::new;
   private final Map<String, Gen<? extends JsValue>> bindings;
@@ -5504,22 +5506,20 @@ public final class JsObjGen implements Gen<JsObj> {
                         nullables);
   }
 
-  int optionalProbability = 2;
-  int nullableProbability = 2;
+  int optionalProbability = MIN_PROBABILITY;
+  int nullableProbability = MIN_PROBABILITY;
 
   /**
    * Sets the probability of including optional fields when generating JsObj instances.
    *
    * @param prob The probability value should be between 2 and 10 (inclusive). Default value is 2. Higher values make
-   *             the inclusion of optional fields more likely. For example, if prob is set to 4, the chances of
-   *             including optional fields are 4 times higher.
+   *             optional-key omission logic more likely to be applied during generation. For example, if prob is set to
+   *             4, optional keys are omitted more often than with the default.
    * @return The JsObjGen instance for method chaining.
    * @throws IllegalArgumentException If the probability is not within the valid range.
    */
   public JsObjGen withOptionalProbability(int prob) {
-    if (prob < 2) {
-      throw new IllegalArgumentException("The probability must be greater than 2");
-    }
+    validateProbability(prob);
     this.optionalProbability = prob;
     return this;
   }
@@ -5534,11 +5534,15 @@ public final class JsObjGen implements Gen<JsObj> {
    * @throws IllegalArgumentException If the probability is not within the valid range.
    */
   public JsObjGen withNullableProbability(int prob) {
-    if (prob < 2) {
-      throw new IllegalArgumentException("The probability must be greater than 2");
-    }
+    validateProbability(prob);
     this.nullableProbability = prob;
     return this;
+  }
+
+  private static void validateProbability(int prob) {
+    if (prob < MIN_PROBABILITY || prob > MAX_PROBABILITY) {
+      throw new IllegalArgumentException("Probability must be between 2 and 10 (inclusive)");
+    }
   }
 
   @Override
@@ -5590,13 +5594,13 @@ public final class JsObjGen implements Gen<JsObj> {
             nullFields != null
             && nullFields.contains(pair.getKey());
 
-        if (isOptional && isNull) {
-          if (seed.nextBoolean()) {
+        if (isOptional) {
+          if (isNull && seed.nextBoolean()) {
             obj = obj.set(pair.getKey(),
                           JsNull.NULL
                          );
           }
-        }  else if (isNull) {
+        } else if (isNull) {
           obj = obj.set(pair.getKey(),
                         JsNull.NULL
                        );

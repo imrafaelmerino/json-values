@@ -43,7 +43,7 @@ final class JsIntSpec extends AbstractNullable implements JsOneErrorSpec, AvroSp
                       nullable,
                       value
                      );
-    if (error != null) {
+    if (error != null || value.isNull()) {
       return error;
     }
 

@@ -14,9 +14,12 @@ import jsonvalues.JsValue;
 import jsonvalues.Json;
 
 /**
- * Singleton instance to create JSON readers and writers to parse bytes into JSON and serialize JSON into bytes. Only a
- * few a methods are exposed since this class is vastly used internally. You may be interested in creating JsReaders
- * only to parse bytes or strings token by token.
+ * Entry point for low-level JSON parsing and serialization.
+ * <p>
+ * {@link #INSTANCE} is thread-safe: readers and writers are reused per thread via {@link ThreadLocal}.
+ * <p>
+ * This type is also used internally by higher-level APIs such as {@link JsSpec#parse(String)},
+ * {@link JsObjSpecParser}, and {@link JsArraySpecParser}.
  *
  * @see DslJsReader
  * @see JsSpec#parse(String)
@@ -24,7 +27,7 @@ import jsonvalues.Json;
 public final class JsIO {
 
   /**
-   * Singleton instance
+   * Shared singleton configured with default settings.
    */
   public static final JsIO INSTANCE = new JsIO();
   static final JsValueWritter valueSerializer = new JsValueWritter();
@@ -75,11 +78,12 @@ public final class JsIO {
   }
 
   /**
-   * Parses the given array of bytes into an immutable and persistent JSON object.
+   * Parses a JSON object from UTF-8 bytes.
    *
-   * @param bytes the array of bytes
-   * @return a JsObj object
-   * @throws JsParserException if the string doesn't represent a json object
+   * @param bytes JSON payload.
+   * @return parsed object.
+   * @throws NullPointerException if {@code bytes} is {@code null}.
+   * @throws JsParserException if input is malformed or does not encode a JSON object.
    */
   public JsObj parseToJsObj(final byte[] bytes) {
     DslJsReader reader = createReader(bytes);
@@ -92,11 +96,12 @@ public final class JsIO {
   }
 
   /**
-   * Parses the given array of bytes into an immutable and persistent JSON array.
+   * Parses a JSON array from UTF-8 bytes.
    *
-   * @param bytes the array of bytes
-   * @return a JsArray object
-   * @throws JsParserException if the string doesn't represent a json object
+   * @param bytes JSON payload.
+   * @return parsed array.
+   * @throws NullPointerException if {@code bytes} is {@code null}.
+   * @throws JsParserException if input is malformed or does not encode a JSON array.
    */
   public JsArray parseToJsArray(final byte[] bytes) {
     DslJsReader reader = createReader(bytes);
@@ -125,10 +130,10 @@ public final class JsIO {
   }
 
   /**
-   * Creates a JSON reader from an array of bytes.
+   * Creates or reuses the current thread reader and binds it to the provided bytes.
    *
-   * @param bytes the array of bytes
-   * @return a JSON reader
+   * @param bytes input bytes.
+   * @return bound reader.
    */
   DslJsReader createReader(final byte[] bytes) {
     return localReader.get()
@@ -140,10 +145,11 @@ public final class JsIO {
   }
 
   /**
-   * Creates a JSON reader from an input stream.
+   * Creates or reuses the current thread reader and binds it to the provided stream.
    *
-   * @param is the input stream
-   * @return a JSON reader
+   * @param is input stream.
+   * @return bound reader.
+   * @throws JsParserException if stream read fails while preparing the first buffer.
    */
   DslJsReader createReader(final InputStream is) throws JsParserException {
 
@@ -209,10 +215,10 @@ public final class JsIO {
   }
 
   /**
-   * Serializes the specified JSON into an array of bytes
+   * Serializes JSON into UTF-8 bytes.
    *
-   * @param json the JSON
-   * @return an array of bytes
+   * @param json JSON value to serialize.
+   * @return serialized bytes.
    */
   public byte[] serialize(final Json<?> json) throws JsSerializerException {
     ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -228,10 +234,10 @@ public final class JsIO {
   }
 
   /**
-   * Serializes the specified JSON into the given output stream
+   * Serializes JSON into the provided stream.
    *
-   * @param json   the JSON
-   * @param stream the stream
+   * @param json JSON value to serialize.
+   * @param stream destination stream.
    */
   public void serialize(final Json<?> json,
                         final OutputStream stream
@@ -255,11 +261,11 @@ public final class JsIO {
 
 
   /**
-   * Serializes a JSON into a formatted string
+   * Serializes JSON into a pretty-printed string.
    *
-   * @param json         the json
-   * @param indentLength the indentation length
-   * @return a string representation of the JSON
+   * @param json JSON value to serialize.
+   * @param indentLength number of spaces used for indentation.
+   * @return formatted JSON text.
    */
   public String toPrettyString(final Json<?> json,
                                int indentLength

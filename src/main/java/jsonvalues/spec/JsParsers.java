@@ -588,9 +588,21 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfDecimal(boolean nullable,
-                            ArraySchemaConstraints arrayConstraints
+                            ArraySchemaConstraints arrayConstraints,
+                            DecimalSchemaConstraints schema
                            ) {
-    return getParser(READERS.arrayOfDecimalReader,
+    return schema != null ?
+           reader -> ofArrayOfDecimalEachSuchThat(d -> {
+                                                    validateDecimal(schema,
+                                                                    d,
+                                                                    reader
+                                                                   );
+                                                    return null;
+                                                  },
+                                                  nullable,
+                                                  arrayConstraints
+                                                 ).parse(reader) :
+           getParser(READERS.arrayOfDecimalReader,
                      nullable,
                      arrayConstraints
                     );
@@ -634,9 +646,21 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfLong(boolean nullable,
-                         ArraySchemaConstraints arrayConstraints
+                         ArraySchemaConstraints arrayConstraints,
+                         LongSchemaConstraints schema
                         ) {
-    return getParser(READERS.arrayOfLongReader,
+    return schema != null ?
+           reader -> ofArrayOfLongEachSuchThat(l -> {
+                                                 validateLong(schema,
+                                                              l,
+                                                              reader
+                                                             );
+                                                 return null;
+                                               },
+                                               nullable,
+                                               arrayConstraints
+                                              ).parse(reader) :
+           getParser(READERS.arrayOfLongReader,
                      nullable,
                      arrayConstraints
                     );
@@ -1042,18 +1066,42 @@ final class JsParsers {
   }
 
   JsParser ofArrayOfInt(boolean nullable,
-                        ArraySchemaConstraints arrayConstraints
+                        ArraySchemaConstraints arrayConstraints,
+                        IntegerSchemaConstraints schema
                        ) {
-    return getParser(READERS.arrayOfIntReader,
+    return schema != null ?
+           reader -> ofArrayOfIntEachSuchThat(i -> {
+                                                validateInteger(schema,
+                                                                i,
+                                                                reader
+                                                               );
+                                                return null;
+                                              },
+                                              nullable,
+                                              arrayConstraints
+                                             ).parse(reader) :
+           getParser(READERS.arrayOfIntReader,
                      nullable,
                      arrayConstraints
                     );
   }
 
   JsParser ofArrayOfDouble(boolean nullable,
-                           ArraySchemaConstraints arrayConstraints
+                           ArraySchemaConstraints arrayConstraints,
+                           DoubleSchemaConstraints schema
                           ) {
-    return getParser(READERS.arrayOfDoubleReader,
+    return schema != null ?
+           reader -> ofArrayOfDoubleEachSuchThat(d -> {
+                                                   validateDouble(schema,
+                                                                  d,
+                                                                  reader
+                                                                 );
+                                                   return null;
+                                                 },
+                                                 nullable,
+                                                 arrayConstraints
+                                                ).parse(reader) :
+           getParser(READERS.arrayOfDoubleReader,
                      nullable,
                      arrayConstraints
                     );

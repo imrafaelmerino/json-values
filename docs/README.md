@@ -28,6 +28,9 @@ it. And to make matters worse: complexity sells better._” **Edsger Wybe Dijkst
 - [Installation](#installation)
 - [Backward compatibility](#bc)
 - [Related projects](#rp)
+- [JavaDoc Style Guide](./JAVADOC_STYLE.md)
+- [JavaDoc Audit Summary](./JAVADOC_AUDIT_SUMMARY.md)
+- [Quality Workflow](./QUALITY_WORKFLOW.md)
 
 ## <a name="cwa"><a/> Code wins arguments
 

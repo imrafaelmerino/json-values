@@ -240,9 +240,9 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on the json object located at an index in an array
+     * Lens that focuses on the JSON object located at an index in an array.
      *
-     * @param index the index where the json object is located at
+     * @param index the index where the JSON object is located
      * @return a lens
      */
     public Lens<JsArray, JsObj> obj(final int index) {
@@ -250,9 +250,9 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on the json array located at a path in an array
+     * Lens that focuses on the JSON array located at a path in an array.
      *
-     * @param path the path where the json array is located at
+     * @param path the path where the JSON array is located
      * @return a lens
      */
     public Lens<JsArray, JsArray> array(final JsPath path) {
@@ -264,9 +264,9 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on the json array located at an index in an array
+     * Lens that focuses on the JSON array located at an index in an array.
      *
-     * @param index the index where the json array is located at
+     * @param index the index where the JSON array is located
      * @return a lens
      */
     public Lens<JsArray, JsArray> array(final int index) {
@@ -542,7 +542,7 @@ public final class JsOptics {
     }
 
     /**
-     * optional that focus on the json object located at an index in an array
+     * Optional that focuses on the JSON object located at an index in an array.
      *
      * @param index the index
      * @return an optional
@@ -569,7 +569,7 @@ public final class JsOptics {
     }
 
     /**
-     * optional that focus on the json array located at an index in an array
+     * Optional that focuses on the JSON array located at an index in an array.
      *
      * @param index the index
      * @return an optional
@@ -915,10 +915,10 @@ public final class JsOptics {
   public static class JsObjLenses {
 
     /**
-     * lens that focus on a value located at a path in an object.
+     * lens that focuses on a value located at a path in an object.
      *
      * @param path the path where the value is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, JsValue> value(final JsPath path) {
       if (path.head()
@@ -930,20 +930,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a value located at a key in an object.
+     * lens that focuses on a value located at a key in an object.
      *
      * @param key the key where the value is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, JsValue> value(final String key) {
       return new JsValueLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a string located at a path in an object.
+     * lens that focuses on a string located at a path in an object.
      *
      * @param path the path where the string is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, String> str(final JsPath path) {
       if (path.head()
@@ -955,20 +955,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a string located at a key in an object.
+     * lens that focuses on a string located at a key in an object.
      *
      * @param key the key where the string is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, String> str(final String key) {
       return new JsStrLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a boolean located at a path in an object.
+     * lens that focuses on a boolean located at a path in an object.
      *
      * @param path the path where the boolean is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Boolean> bool(final JsPath path) {
       if (path.head()
@@ -980,20 +980,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a boolean located at a path in an object.
+     * lens that focuses on a boolean located at a path in an object.
      *
      * @param key the key where the boolean is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Boolean> bool(final String key) {
       return new JsBoolLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a long number located at a path in an object.
+     * lens that focuses on a long number located at a path in an object.
      *
      * @param path the path where the long number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Long> longNum(final JsPath path) {
       if (path.head()
@@ -1005,20 +1005,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a long number located at a key in an object.
+     * lens that focuses on a long number located at a key in an object.
      *
      * @param key the key where the long number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Long> longNum(final String key) {
       return new JsLongLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on an integer number located at a path in an object.
+     * lens that focuses on an integer number located at a path in an object.
      *
      * @param path the path where the integer number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Integer> intNum(final JsPath path) {
       if (path.head()
@@ -1030,20 +1030,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on an integer number located at a key in an object.
+     * lens that focuses on an integer number located at a key in an object.
      *
      * @param key the key where the integer number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Integer> intNum(final String key) {
       return new JsIntLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a double number located at a path in an object.
+     * lens that focuses on a double number located at a path in an object.
      *
      * @param path the path where the double number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Double> doubleNum(final JsPath path) {
       if (path.head()
@@ -1055,20 +1055,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a double number located at a key in an object.
+     * lens that focuses on a double number located at a key in an object.
      *
      * @param key the key where the double number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Double> doubleNum(final String key) {
       return new JsDoubleLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a decimal number located at a path in an object.
+     * lens that focuses on a decimal number located at a path in an object.
      *
      * @param path the path where the decimal number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, BigDecimal> decimalNum(final JsPath path) {
       if (path.head()
@@ -1080,20 +1080,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a decimal number located at a key in an object.
+     * lens that focuses on a decimal number located at a key in an object.
      *
      * @param key the key where the decimal number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, BigDecimal> decimalNum(final String key) {
       return new JsDecimalLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on an integral number located at a path in an object.
+     * lens that focuses on an integral number located at a path in an object.
      *
      * @param path the path where the integral number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, BigInteger> integralNum(final JsPath path) {
       if (path.head()
@@ -1105,20 +1105,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on an integral number located at a key in an object.
+     * lens that focuses on an integral number located at a key in an object.
      *
      * @param key the key where the integral number is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, BigInteger> integralNum(final String key) {
       return new JsBigIntLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a json object located at a path in an object.
+     * Lens that focuses on a JSON object located at a path in an object.
      *
-     * @param path the path where the json object is located at
-     * @return an optional
+     * @param path the path where the JSON object is located
+     * @return a lens
      */
     public Lens<JsObj, JsObj> obj(final JsPath path) {
       if (path.head()
@@ -1130,20 +1130,20 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a json object located at a key in an object.
+     * Lens that focuses on a JSON object located at a key in an object.
      *
-     * @param key the key where the json object is located at
-     * @return an optional
+     * @param key the key where the JSON object is located
+     * @return a lens
      */
     public Lens<JsObj, JsObj> obj(final String key) {
       return new JsObjLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
     }
 
     /**
-     * lens that focus on a json object located at a path in an object.
+     * Lens that focuses on a JSON array located at a path in an object.
      *
-     * @param path the path where the json array is located at
-     * @return an optional
+     * @param path the path where the JSON array is located
+     * @return a lens
      */
     public Lens<JsObj, JsArray> array(final JsPath path) {
       if (path.head()
@@ -1155,10 +1155,10 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on a json array located at a key in an object.
+     * Lens that focuses on a JSON array located at a key in an object.
      *
-     * @param key the key where the json array is located at
-     * @return an optional
+     * @param key the key where the JSON array is located
+     * @return a lens
      */
     public Lens<JsObj, JsArray> array(final String key) {
       return new JsArrayLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
@@ -1166,10 +1166,10 @@ public final class JsOptics {
 
 
     /**
-     * lens that focus on an array of bytes located at a path in an object.
+     * lens that focuses on an array of bytes located at a path in an object.
      *
      * @param path the path where the array of bytes is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, byte[]> binary(final JsPath path) {
       if (path.head()
@@ -1181,10 +1181,10 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on an array of bytes located at a key in an object.
+     * lens that focuses on an array of bytes located at a key in an object.
      *
      * @param key the key where the array of bytes is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, byte[]> binary(final String key) {
       return new JsBinaryLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));
@@ -1192,10 +1192,10 @@ public final class JsOptics {
 
 
     /**
-     * lens that focus on an instant located at a path in an object.
+     * lens that focuses on an instant located at a path in an object.
      *
      * @param path the path where the instant is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Instant> instant(final JsPath path) {
       if (path.head()
@@ -1207,10 +1207,10 @@ public final class JsOptics {
     }
 
     /**
-     * lens that focus on an instant located at a key in an object.
+     * lens that focuses on an instant located at a key in an object.
      *
      * @param key the key where the instant is located at
-     * @return an optional
+     * @return a lens
      */
     public Lens<JsObj, Instant> instant(final String key) {
       return new JsInstantLens<>(requireNonNull(JsPath.fromKey(requireNonNull(key))));

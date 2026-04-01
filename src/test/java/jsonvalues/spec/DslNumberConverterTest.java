@@ -14,7 +14,7 @@ public class DslNumberConverterTest {
    * this is the reason I implemented MyNumberConverter . I consider this a bug from dsl-json strings are not numbers
    */
   @Test
-  public void testNumber() {
+  public void shouldNumber() {
     JsIO dslJson = new JsIO();
     Supplier<DslJsReader> reader = () -> {
       DslJsReader r = dslJson.newReader("\"1\"".getBytes(StandardCharsets.UTF_8));
@@ -29,7 +29,7 @@ public class DslNumberConverterTest {
   }
 
   @Test
-  public void deserializeDecimal() throws JsParserException {
+  public void shouldDeserializeDecimal() throws JsParserException {
 
     JsIO dslJson = new JsIO();
     Supplier<DslJsReader> reader = () -> {
@@ -45,7 +45,7 @@ public class DslNumberConverterTest {
   }
 
   @Test
-  public void deserializeDecimal1() throws JsParserException {
+  public void shouldDeserializeDecimalWithLeadingPlusSign() throws JsParserException {
 
     JsIO dslJson = new JsIO();
     Supplier<DslJsReader> reader = () -> {

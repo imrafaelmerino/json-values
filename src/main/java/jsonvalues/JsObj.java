@@ -3231,8 +3231,8 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    * Parses the given string into an immutable and persistent JSON object.
    *
    * @param str the string to be parsed
-   * @return a JsOb object
-   * @throws JsParserException if the string doesn't represent a json object
+   * @return a JsObj object
+   * @throws JsParserException if the string doesn't represent a JSON object
    */
   public static JsObj parse(final String str) throws JsParserException {
     return JsIO.INSTANCE.parseToJsObj(str.getBytes(StandardCharsets.UTF_8));
@@ -3243,7 +3243,7 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
    *
    * @param bytes the array of bytes
    * @return a JsObj object
-   * @throws JsParserException if the string doesn't represent a json object
+   * @throws JsParserException if the bytes don't represent a JSON object
    */
   public static JsObj parse(final byte[] bytes) throws JsParserException {
     return JsIO.INSTANCE.parseToJsObj(bytes);
@@ -4105,10 +4105,11 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   }
 
   /**
-   * Returns the json object located at the given key or null if it doesn't exist, or it's not an object.
+   * Returns the JSON object located at the given key or {@code null} if it doesn't exist, or if the value is not an
+   * object.
    *
    * @param key the key
-   * @return the json object located at the given key or null
+   * @return the JSON object located at the given key or {@code null}
    */
   public JsObj getObj(final String key) {
     JsValue value = get(requireNonNull(key));
@@ -4116,12 +4117,12 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
   }
 
   /**
-   * Returns the json object located at the given key or the default value provided if it doesn't exist, or it's not an
-   * object.
+   * Returns the JSON object located at the given key or the default value provided by {@code orElse} if it doesn't
+   * exist, or if the value is not an object.
    *
    * @param key    the key
    * @param orElse the default value
-   * @return the json object located at the given key or the default value
+   * @return the JSON object located at the given key or the default value
    */
   public JsObj getObj(final String key,
                       final Supplier<JsObj> orElse
@@ -4369,4 +4370,3 @@ public final class JsObj implements Json<JsObj>, Iterable<JsObjPair> {
 
 
 }
-

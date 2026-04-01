@@ -41,7 +41,7 @@ final class JsDecimalSpec extends AbstractNullable implements JsOneErrorSpec, Av
                       nullable,
                       value
                      );
-    if (error != null) {
+    if (error != null || value.isNull()) {
       return error;
     }
 

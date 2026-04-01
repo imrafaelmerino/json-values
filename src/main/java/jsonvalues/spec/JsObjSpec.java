@@ -5746,7 +5746,8 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     for (String requiredField : requiredFields) {
       if (!json.containsKey(requiredField) && !containAnAlias(json,
                                                               requiredField,
-                                                              metaData)) {
+                                                              metaData) && !containsDefault(requiredField,
+                                                                                            metaData)) {
         errors.add(SpecError.of(parent.key(requiredField),
                                 new JsError(JsNothing.NOTHING,
                                             REQUIRED
@@ -5757,7 +5758,7 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     if (predicate != null && !predicate.test(json)) {
-      errors.add(SpecError.of(JsPath.empty(),
+      errors.add(SpecError.of(parent,
                               new JsError(json,
                                           OBJ_CONDITION
                               )
@@ -5766,6 +5767,12 @@ public final class JsObjSpec extends AbstractNullable implements JsSpec, AvroSpe
     }
 
     return errors;
+  }
+
+  private boolean containsDefault(String key,
+                                  MetaData metaData) {
+    return metaData != null && metaData.fieldsDefault() != null && metaData.fieldsDefault()
+                                                                           .containsKey(key);
   }
 
   JsSpec getSpec(String key) {

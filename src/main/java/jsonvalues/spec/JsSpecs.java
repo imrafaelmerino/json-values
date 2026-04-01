@@ -180,7 +180,7 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfLong(LongSchema schema) {
 
     return new JsArrayOfLong(false,
-                             schema.build());
+                             requireNonNull(schema).build());
   }
 
   /**
@@ -195,8 +195,8 @@ public final class JsSpecs {
                                         ArraySchema arraySchema) {
 
     return new JsArrayOfLong(false,
-                             arraySchema.build(),
-                             schema.build());
+                             requireNonNull(arraySchema).build(),
+                             requireNonNull(schema).build());
   }
 
   /**
@@ -267,9 +267,9 @@ public final class JsSpecs {
   }
 
   /**
-   * non-nullable double number. Each element of the array must satisfy the given schema.
+   * non-nullable double number that satisfies the given schema.
    *
-   * @param schema the schema that each element of the array must satisfy
+   * @param schema the schema that the double number must satisfy
    * @return a spec
    */
   public static JsSpec doubleNumber(DoubleSchema schema) {
@@ -306,9 +306,9 @@ public final class JsSpecs {
 
 
   /**
-   * non-nullable integer number Each element of the array must satisfy the given schema.
+   * non-nullable integer number that satisfies the given schema.
    *
-   * @param schema the schema that each element of the array must satisfy
+   * @param schema the schema the integer number must satisfy
    * @return a spec
    */
   public static JsSpec integer(IntegerSchema schema) {
@@ -317,7 +317,7 @@ public final class JsSpecs {
   }
 
   /**
-   * non-nullable json object
+   * Non-nullable JSON object specification.
    *
    * @return a spec
    */
@@ -326,7 +326,7 @@ public final class JsSpecs {
   }
 
   /**
-   * non-nullable json array
+   * Non-nullable JSON array specification.
    *
    * @return a spec
    */
@@ -354,14 +354,14 @@ public final class JsSpecs {
 
 
   /**
-   * non-nullable string Each element of the array must satisfy the given schema.
+   * non-nullable string that satisfies the given schema.
    *
-   * @param schema the schema that each element of the array must satisfy
+   * @param schema the schema the string must satisfy
    * @return a spec
    */
   public static JsSpec str(StrSchema schema) {
     return new JsStrSpec(false,
-                         schema.build());
+                         requireNonNull(schema).build());
   }
 
 
@@ -375,7 +375,7 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfInt(ArraySchema schema) {
 
     return new JsArrayOfInt(false,
-                            schema.build());
+                            requireNonNull(schema).build());
   }
 
   /**
@@ -402,8 +402,8 @@ public final class JsSpecs {
                                        ArraySchema arraySchema) {
 
     return new JsArrayOfInt(false,
-                            arraySchema.build(),
-                            schema.build());
+                            requireNonNull(arraySchema).build(),
+                            requireNonNull(schema).build());
   }
 
 
@@ -417,7 +417,7 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfDouble(ArraySchema arraySchema) {
 
     return new JsArrayOfDouble(false,
-                               arraySchema.build());
+                               requireNonNull(arraySchema).build());
   }
 
 
@@ -430,7 +430,7 @@ public final class JsSpecs {
   public static JsArraySpec arrayOfDouble(DoubleSchema schema) {
 
     return new JsArrayOfDouble(false,
-                               schema.build(),
+                               requireNonNull(schema).build(),
                                null);
   }
 
@@ -446,8 +446,8 @@ public final class JsSpecs {
                                           ArraySchema arraySchema) {
 
     return new JsArrayOfDouble(false,
-                               schema.build(),
-                               arraySchema.build());
+                               requireNonNull(schema).build(),
+                               requireNonNull(arraySchema).build());
   }
 
 
@@ -1006,14 +1006,14 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable double number that satisfies the given predicate.
    *
    * @param predicate The predicate that the double number must satisfy.
-   * @return A specification for long numbers based on the specified predicate.
+   * @return A specification for double numbers based on the specified predicate.
    */
   public static JsSpec doubleNumber(final DoublePredicate predicate) {
     requireNonNull(predicate);
     return new JsDoubleSuchThat(s -> predicate.test(s) ?
                                      null :
                                      new JsError(JsDouble.of(s),
-                                                 LONG_CONDITION),
+                                                 DOUBLE_CONDITION),
                                 false);
   }
 
@@ -1171,7 +1171,7 @@ public final class JsSpecs {
    * Returns a specification for a non-nullable JSON instant that satisfies the given schema.
    *
    * @param schema The schema the instant must satisfy.
-   * @return A specification that enforces the specified condition for JSON long numbers.
+   * @return A specification that enforces the specified condition for JSON instants.
    */
   public static JsSpec instant(final InstantSchema schema) {
     return new JsInstantSpec(false,
@@ -1316,8 +1316,16 @@ public final class JsSpecs {
    * @return A specification that checks if a JSON value matches one of the provided specifications.
    */
   public static JsSpec oneSpecOf(List<? extends JsSpec> specs) {
+    requireNonNull(specs);
+    if (specs.isEmpty()) {
+      throw new IllegalArgumentException("At least one spec is required");
+    }
+    if (specs.stream()
+             .anyMatch(java.util.Objects::isNull)) {
+      throw new IllegalArgumentException("Specs list cannot contain null elements");
+    }
     return new OneOf(false,
-                     requireNonNull(specs));
+                     specs);
   }
 
 
@@ -1386,12 +1394,41 @@ public final class JsSpecs {
   }
 
   /**
+   * Alias of {@link #mapOfInteger()} for naming consistency with {@code arrayOfInt}.
+   *
+   * @return A JSON specification for objects with integer values.
+   */
+  public static JsSpec mapOfInt() {
+    return mapOfInteger();
+  }
+
+  /**
+   * Alias-style overload of {@link #mapOfInteger()} with value constraints.
+   *
+   * @param schema the schema that each element of the map must satisfy
+   * @return A JSON specification for objects with integer values.
+   */
+  public static JsSpec mapOfInt(final IntegerSchema schema) {
+    return new JsMapOfInt(false,
+                          requireNonNull(schema).build());
+  }
+
+  /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a big integer.
    *
    * @return A JSON specification for objects with big integer values.
    */
   public static JsSpec mapOfBigInteger() {
     return mapOfBigIntegerSpec;
+  }
+
+  /**
+   * Alias of {@link #mapOfBigInteger()} for naming consistency with {@code arrayOfBigInt}.
+   *
+   * @return A JSON specification for objects with big integer values.
+   */
+  public static JsSpec mapOfBigInt() {
+    return mapOfBigInteger();
   }
 
   /**
@@ -1404,6 +1441,16 @@ public final class JsSpecs {
   public static JsSpec mapOfBigInteger(final BigIntSchema schema) {
     return new JsMapOfBigInt(false,
                              requireNonNull(schema).build());
+  }
+
+  /**
+   * Alias-style overload of {@link #mapOfBigInteger(BigIntSchema)}.
+   *
+   * @param schema the schema that each element of the map must satisfy
+   * @return A JSON specification for objects with big integer values.
+   */
+  public static JsSpec mapOfBigInt(final BigIntSchema schema) {
+    return mapOfBigInteger(schema);
   }
 
   /**
@@ -1427,6 +1474,7 @@ public final class JsSpecs {
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a double
    * that satisfies the given schema.
+   *
    * @param doubleSchema the schema that each element of the map must satisfy
    * @return A JSON specification for objects with double values.
    */
@@ -1447,6 +1495,7 @@ public final class JsSpecs {
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is a decimal number
    * that satisfies the given schema.
+   *
    * @param decimalSchema the schema that each element of the map must satisfy
    * @return A JSON specification for objects with decimal number values.
    */
@@ -1475,7 +1524,8 @@ public final class JsSpecs {
 
   /**
    * Returns a specification that validates that the JSON is an object, and the value of each key is an instant
-   * that satifies the given schema.
+   * that satisfies the given schema.
+   *
    * @param instantSchema the schema that each element of the map must satisfy
    * @return A JSON specification for objects with instant values.
    */

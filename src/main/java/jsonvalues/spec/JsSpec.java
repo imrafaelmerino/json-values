@@ -7,26 +7,15 @@ import jsonvalues.JsPath;
 import jsonvalues.JsValue;
 
 /**
- * The `JsSpec` interface represents a specification for validating JSON data structures. It provides methods and
- * contracts for defining validation rules and constraints on JSON values to ensure they conform to expected formats and
- * patterns.
+ * Contract for JSON specifications used to parse and validate JSON values.
  * <p>
- * JSON specifications are essential for parsing and validating JSON data in applications, ensuring that the data
- * adheres to predefined rules before processing or storing it.
- * <p>
- * Implementations of this interface define custom validation rules and provide methods for testing JSON values against
- * these rules. The primary goal is to verify whether a given JSON value satisfies the specification.
- * <p>
- * The `JsSpec` interface offers the following key functionality: - Enabling the nullable flag, indicating whether the
- * JSON value can be null. - Retrieving the deserializer used during the parsing process for parsing arrays of bytes or
- * strings into JSON values. - Reading and parsing JSON values token by token from a reader while verifying if they
- * conform to the specification. - Testing JSON values against the specification and returning a set of path/code pairs
- * for validation errors.
- * <p>
- * This interface serves as a foundation for building a JSON validation framework and allows for the creation of custom
- * JSON specifications for various data types, including numbers, strings, arrays, objects, and more.
- * <p>
- * Implementations of this interface should be immutable and thread-safe to support concurrent usage.
+ * A {@code JsSpec} can:
+ * <ul>
+ *   <li>Expose a parser for streaming/byte-based validation ({@link #parser()}).</li>
+ *   <li>Parse a JSON string and return a validated {@link JsValue} ({@link #parse(String)}).</li>
+ *   <li>Validate an in-memory {@link JsValue} and return semantic errors ({@link #test(JsPath, JsValue)}).</li>
+ * </ul>
+ * Implementations are expected to be immutable and safe for concurrent use.
  *
  * @see JsValue
  * @see JsParser
@@ -39,26 +28,26 @@ public sealed interface JsSpec permits JsArraySpec, JsMapOfBigInt, JsMapOfBinary
                                        JsObjSpec, JsOneErrorSpec, NamedSpec, OneOf {
 
   /**
-   * Returns the same spec with the nullable flag enabled.
+   * Returns a variant of this spec that accepts {@code null} values.
    *
-   * @return A new `JsSpec` instance with the nullable flag enabled.
+   * @return a nullable variant of this spec.
    */
   JsSpec nullable();
 
   /**
-   * Returns the deserializer used during the parsing process to parse an array of bytes or strings into a JSON value.
+   * Returns the low-level parser backing this specification.
    *
-   * @return The deserializer used during parsing.
+   * @return parser used to validate and decode JSON input according to this spec.
    */
   JsParser parser();
 
   /**
-   * Low-level method to parse a JSON value from their string representation. Returns the JsValue if it conforms to this
-   * spec, otherwise throws a `JsParserException`.
+   * Parses a JSON string and validates it against this spec.
    *
-   * @param json The reader to parse JSON values from.
-   * @return The next token as a `JsValue`.
-   * @throws JsParserException If the parsed value does not conform to this spec.
+   * @param json JSON payload as text.
+   * @return validated JSON value.
+   * @throws NullPointerException if {@code json} is {@code null}.
+   * @throws JsParserException if JSON is malformed or does not satisfy this spec.
    */
   default JsValue parse(final String json) throws JsParserException {
     var reader = JsIO.INSTANCE.createReader(Objects.requireNonNull(json)
@@ -68,20 +57,20 @@ public sealed interface JsSpec permits JsArraySpec, JsMapOfBigInt, JsMapOfBinary
   }
 
   /**
-   * Verify if the given JSON value satisfies this spec.
+   * Validates a JSON value against this spec using the provided parent path.
    *
-   * @param parentPath The path where the tested value is located within the JSON structure.
-   * @param value      The JSON value to be tested.
-   * @return A set of path/code pairs representing validation errors.
+   * @param parentPath logical location of {@code value} in a larger JSON structure.
+   * @param value JSON value to validate.
+   * @return list of validation errors; empty when value conforms.
    */
   List<SpecError> test(final JsPath parentPath,
                        final JsValue value);
 
   /**
-   * Verify if the given JSON value satisfies this spec, starting from the root path.
+   * Validates a JSON value against this spec from the root path.
    *
-   * @param value The JSON value to be tested.
-   * @return A set of path/code pairs representing validation errors.
+   * @param value JSON value to validate.
+   * @return list of validation errors; empty when value conforms.
    */
   default List<SpecError> test(final JsValue value) {
     return test(JsPath.empty(),
@@ -92,5 +81,4 @@ public sealed interface JsSpec permits JsArraySpec, JsMapOfBigInt, JsMapOfBinary
   boolean isNullable();
 
 }
-
 

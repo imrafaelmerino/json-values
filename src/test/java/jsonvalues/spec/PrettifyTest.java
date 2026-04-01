@@ -31,19 +31,19 @@ public class PrettifyTest {
   }
 
   @Test
-  public void number() throws IOException {
+  public void shouldNumber() throws IOException {
     testPrettify(" 123.4 ",
                  "123.4");
   }
 
   @Test
-  public void string() throws IOException {
+  public void shouldString() throws IOException {
     testPrettify("\n\"1234\"   ",
                  "\"1234\"");
   }
 
   @Test
-  public void specialStrings() throws IOException {
+  public void shouldSpecialStrings() throws IOException {
     testPrettify("[\"1\\2\\\"34\",\"\\\\\",\"\"]",
                  "[\n  \"1\\2\\\"34\",\n  \"\\\\\",\n  \"\"\n]");
     testPrettify("[\"\",\"\\\\\",\"\",\"\\\\\",\"\"]",
@@ -55,49 +55,49 @@ public class PrettifyTest {
   }
 
   @Test
-  public void nullConstant() throws IOException {
+  public void shouldNullConstant() throws IOException {
     testPrettify("null",
                  "null");
   }
 
   @Test
-  public void trueConstant() throws IOException {
+  public void shouldTrueConstant() throws IOException {
     testPrettify("true",
                  "true");
   }
 
   @Test
-  public void falseConstant() throws IOException {
+  public void shouldFalseConstant() throws IOException {
     testPrettify("false",
                  "false");
   }
 
   @Test
-  public void objectInArray() throws IOException {
+  public void shouldObjectInArray() throws IOException {
     testPrettify("[{\"abc\":123},{\"abc\":234}]",
                  "[\n  {\n    \"abc\": 123\n  },\n  {\n    \"abc\": 234\n  }\n]");
   }
 
   @Test
-  public void stuffInArray() throws IOException {
+  public void shouldStuffInArray() throws IOException {
     testPrettify("[true,false,null,{\"abc\":[]},{\"abc\":234}]",
                  "[\n  true,\n  false,\n  null,\n  {\n    \"abc\": []\n  },\n  {\n    \"abc\": 234\n  }\n]");
   }
 
   @Test
-  public void stuffInObject() throws IOException {
+  public void shouldStuffInObject() throws IOException {
     testPrettify("{\"a\":true,\"b\":false,\"c\":null,\"d\":{\"abc\":[]},\"e\":{\"abc\":234}}",
                  "{\n  \"a\": true,\n  \"b\": false,\n  \"c\": null,\n  \"d\": {\n    \"abc\": []\n  },\n  \"e\": {\n    \"abc\": 234\n  }\n}");
   }
 
   @Test
-  public void emptyObjectInArray() throws IOException {
+  public void shouldEmptyObjectInArray() throws IOException {
     testPrettify("[{}]",
                  "[\n  {}\n]");
   }
 
   @Test
-  public void largeIndent() throws IOException {
+  public void shouldLargeIndent() throws IOException {
     ByteArrayOutputStream out = new ByteArrayOutputStream();
     MyPrettifyOutputStream prettifyStream = new MyPrettifyOutputStream(out,
                                                                        MyPrettifyOutputStream.IndentType.TABS,

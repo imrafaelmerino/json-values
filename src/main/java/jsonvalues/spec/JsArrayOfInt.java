@@ -49,16 +49,28 @@ final class JsArrayOfInt extends AbstractSizableArr implements JsOneErrorSpec, J
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfInt(nullable,
-                                           arrayConstraints);
+                                           arrayConstraints,
+                                           constraints);
   }
 
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Fun.testArrayOfTestedValue(v -> v.isInt() ?
-                                           null :
-                                           new JsError(v,
-                                                       INT_EXPECTED),
+    return Fun.testArrayOfTestedValue(v -> {
+                                        if (!v.isInt()) {
+                                          return new JsError(v,
+                                                             INT_EXPECTED);
+                                        }
+                                        if (constraints != null) {
+                                          var errorCode = Fun.testIntConstraints(constraints,
+                                                                                  v.toJsInt());
+                                          if (errorCode != null) {
+                                            return new JsError(v,
+                                                               errorCode);
+                                          }
+                                        }
+                                        return null;
+                                      },
                                       nullable,
                                       arrayConstraints,
                                       value

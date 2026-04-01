@@ -42,7 +42,7 @@ final class JsBigIntSpec extends AbstractNullable implements JsOneErrorSpec, Avr
                       nullable,
                       value
                      );
-    if (error != null) {
+    if (error != null || value.isNull()) {
       return error;
     }
 

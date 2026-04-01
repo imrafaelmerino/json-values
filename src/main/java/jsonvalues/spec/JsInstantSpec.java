@@ -17,7 +17,7 @@ final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, Av
   @Override
   public JsSpec nullable() {
     return new JsInstantSpec(true,
-                             null);
+                             constraints);
   }
 
   @Override
@@ -34,7 +34,7 @@ final class JsInstantSpec extends AbstractNullable implements JsOneErrorSpec, Av
                       nullable,
                       value
                      );
-    if (error != null) {
+    if (error != null || value.isNull()) {
       return error;
     }
 

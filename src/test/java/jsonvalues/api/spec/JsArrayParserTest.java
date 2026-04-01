@@ -54,11 +54,11 @@ import jsonvalues.spec.JsSpecs;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class JsArrayParserTest {
+class JsArrayParserTest {
 
 
   @Test
-  public void test_array_of_different_elements() {
+  public void shouldParseArrayWithDifferentElementSpecs() {
 
     var spec = JsSpecs.tuple(str(),
                              integer(),
@@ -113,7 +113,7 @@ public class JsArrayParserTest {
   }
 
   @Test
-  public void testNullable() {
+  public void shouldParseNullableArrays() {
     JsObjSpec spec = JsObjSpec.of("a",
                                   arrayOfStr().nullable()
                                  );
@@ -155,7 +155,7 @@ public class JsArrayParserTest {
   }
 
   @Test
-  public void testArrayOfObject() {
+  public void shouldParseArrayOfObjects() {
     JsObjSpec spec = JsObjSpec.of("a",
                                   JsSpecs.arrayOfSpec(JsObjSpec.of("a",
                                                                    str(),
@@ -297,7 +297,7 @@ public class JsArrayParserTest {
   }
 
   @Test
-  public void testArrayOfDouble() {
+  public void shouldParseArrayOfDoubleValues() {
 
     JsSpec spec = JsSpecs.arrayOfDouble();
     JsSpec spec1 = JsSpecs.arrayOfDoubleSuchThat(a -> a.size() == 3);
@@ -323,7 +323,7 @@ public class JsArrayParserTest {
   }
 
   @Test
-  public void testArrayOfValue() {
+  public void shouldParseArrayOfAnyValues() {
     Gen<JsValue> valueGen = Combinators.oneOf(JsBigIntGen.biased(),
                                               JsStrGen.biased(10));
     JsObjGen gen = JsObjGen.of("a",
