@@ -42,16 +42,28 @@ final class JsArrayOfDouble extends AbstractSizableArr implements JsOneErrorSpec
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDouble(nullable,
-                                              arrayConstraints);
+                                              arrayConstraints,
+                                              constraints);
   }
 
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Fun.testArrayOfTestedValue(v -> v.isDouble() ?
-                                           null :
-                                           new JsError(v,
-                                                       DOUBLE_EXPECTED),
+    return Fun.testArrayOfTestedValue(v -> {
+                                        if (!v.isDouble()) {
+                                          return new JsError(v,
+                                                             DOUBLE_EXPECTED);
+                                        }
+                                        if (constraints != null) {
+                                          var errorCode = Fun.testDoubleConstraints(constraints,
+                                                                                     v.toJsDouble());
+                                          if (errorCode != null) {
+                                            return new JsError(v,
+                                                               errorCode);
+                                          }
+                                        }
+                                        return null;
+                                      },
                                       nullable,
                                       arrayConstraints,
                                       value

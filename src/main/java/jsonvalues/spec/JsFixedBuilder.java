@@ -112,7 +112,7 @@ public final class JsFixedBuilder {
    */
   public JsSpec build(final int size) {
     if (size <= 0) {
-      throw new IllegalArgumentException("size < 0");
+      throw new IllegalArgumentException("size <= 0");
     }
     var metadata = new FixedMetaData(name,
                                      nameSpace,

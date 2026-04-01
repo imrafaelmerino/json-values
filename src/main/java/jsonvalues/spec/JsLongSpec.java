@@ -40,7 +40,7 @@ final class JsLongSpec extends AbstractNullable implements JsOneErrorSpec, AvroS
                       nullable,
                       value
                      );
-    if (error != null) {
+    if (error != null || value.isNull()) {
       return error;
     }
 

@@ -117,17 +117,15 @@ public final class SpecToJsonSchema {
   private static JsObj convert(final JsSpec spec,
                                final NamedSpec namedSpec) {
     HashSet<String> visited = new HashSet<>();
-    return JsObj.of(DEFINITIONS,
-                    getDefinitions(spec,
-                                   visited),
-                    SCHEMA,
-                    JsStr.of(DRAFT),
-                    ID,
-                    JsStr.of(namedSpec.name),
-                    REF,
-                    JsStr.of("#/%s/%s".formatted(DEFINITIONS,
-                                                 namedSpec.name))
-                   );
+    JsObj root = JsObj.of(DEFINITIONS,
+                          getDefinitions(spec,
+                                         visited),
+                          SCHEMA,
+                          JsStr.of(DRAFT),
+                          ID,
+                          JsStr.of(namedSpec.name));
+    return root.union(getNamedSpecSchema(namedSpec),
+                      JsArray.TYPE.SET);
   }
 
 
@@ -297,21 +295,24 @@ public final class SpecToJsonSchema {
                                   nameSpecsVisited);
       case IsJsObj ignored -> getObjType();
       case JsObjSuchThat ignored -> getObjType();
-      case JsMapOfBigInt s -> getMapOfBigIntSchema(s.valuesConstraints);
-      case JsMapOfInt s -> getMapOfIntegerSchema(s.valuesConstraints);
-      case JsMapOfLong s -> getMapOfLongSchema(s.valuesConstraints);
-      case JsMapOfDouble s -> getMapOfDoubleSchema(s.valuesConstraints);
-      case JsMapOfDec s -> getMapOfDecSchema(s.valuesConstraints);
-      case JsMapOfBinary ignored -> getMapOfBinarySchema();
-      case JsMapOfBool ignored -> getMapOfBoolSchema();
-      case JsMapOfInstant ignored -> getMapOfInstantSchema();
+      case JsMapOfBigInt s -> getMapOfBigIntSchema(s.valuesConstraints,
+                                                   s.nullable);
+      case JsMapOfInt s -> getMapOfIntegerSchema(s.valuesConstraints,
+                                                 s.nullable);
+      case JsMapOfLong s -> getMapOfLongSchema(s.valuesConstraints,
+                                               s.nullable);
+      case JsMapOfDouble s -> getMapOfDoubleSchema(s.valuesConstraints,
+                                                   s.nullable);
+      case JsMapOfDec s -> getMapOfDecSchema(s.valuesConstraints,
+                                             s.nullable);
+      case JsMapOfBinary s -> getMapOfBinarySchema(s.nullable);
+      case JsMapOfBool s -> getMapOfBoolSchema(s.nullable);
+      case JsMapOfInstant s -> getMapOfInstantSchema(s.nullable);
       case JsMapOfSpec s -> getMapOfSpec(s,
                                          nameSpecsVisited);
-      case JsMapOfStr s -> getMapOfStrSchema(s.valuesConstraints);
-      case NamedSpec namedSpec -> JsObj.of(REF,
-                                           JsStr.of("#/%s/%s".formatted(DEFINITIONS,
-                                                                        namedSpec.name))
-                                          );
+      case JsMapOfStr s -> getMapOfStrSchema(s.valuesConstraints,
+                                             s.nullable);
+      case NamedSpec namedSpec -> getNamedSpecSchema(namedSpec);
       case OneOf oneOf -> getOneOfSchema(oneOf,
                                          nameSpecsVisited);
     };
@@ -325,10 +326,24 @@ public final class SpecToJsonSchema {
 
   }
 
-  private static JsObj getMapOfIntegerSchema(IntegerSchemaConstraints valuesConstraints) {
+  private static JsObj getNamedSpecSchema(NamedSpec namedSpec) {
+    JsObj refSchema = JsObj.of(REF,
+                               JsStr.of("#/%s/%s".formatted(DEFINITIONS,
+                                                            namedSpec.name)));
+    if (namedSpec.nullable) {
+      return JsObj.of(ONE_OF,
+                      JsArray.of(refSchema,
+                                 JsObj.of(TYPE,
+                                          JsStr.of(NULL))));
+    }
+    return refSchema;
+  }
+
+  private static JsObj getMapOfIntegerSchema(IntegerSchemaConstraints valuesConstraints,
+                                             boolean nullable) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(INTEGER),
@@ -340,13 +355,14 @@ public final class SpecToJsonSchema {
                                                                                 : JsInt.of(valuesConstraints.maximum())
                               ));
     }
-    return getMapOfIntegerSchema();
+    return getMapOfIntegerSchema(nullable);
   }
 
-  private static JsObj getMapOfDecSchema(DecimalSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfDecSchema(DecimalSchemaConstraints valuesConstraints,
+                                         boolean nullable) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(NUMBER),
@@ -358,14 +374,15 @@ public final class SpecToJsonSchema {
                                                                    : JsBigDec.of(valuesConstraints.maximum())
                               ));
     }
-    return getMapOfNumberSchema();
+    return getMapOfNumberSchema(nullable);
   }
 
-  private static JsObj getMapOfDoubleSchema(DoubleSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfDoubleSchema(DoubleSchemaConstraints valuesConstraints,
+                                            boolean nullable) {
 
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(NUMBER),
@@ -377,13 +394,14 @@ public final class SpecToJsonSchema {
                                                                                        : JsDouble.of(valuesConstraints.maximum())
                               ));
     }
-    return getMapOfNumberSchema();
+    return getMapOfNumberSchema(nullable);
   }
 
-  private static JsObj getMapOfLongSchema(LongSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfLongSchema(LongSchemaConstraints valuesConstraints,
+                                          boolean nullable) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(INTEGER),
@@ -395,13 +413,14 @@ public final class SpecToJsonSchema {
                                                                              : JsLong.of(valuesConstraints.maximum())
                               ));
     }
-    return getMapOfIntegerSchema();
+    return getMapOfIntegerSchema(nullable);
   }
 
-  private static JsObj getMapOfBigIntSchema(BigIntSchemaConstraints valuesConstraints) {
+  private static JsObj getMapOfBigIntSchema(BigIntSchemaConstraints valuesConstraints,
+                                            boolean nullable) {
     if (valuesConstraints != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(INTEGER),
@@ -413,7 +432,7 @@ public final class SpecToJsonSchema {
                                                                    : JsBigInt.of(valuesConstraints.maximum()))
                      );
     }
-    return getMapOfIntegerSchema();
+    return getMapOfIntegerSchema(nullable);
   }
 
   private static JsObj getDecimalSchema(JsDecimalSpec s,
@@ -501,10 +520,11 @@ public final class SpecToJsonSchema {
     return getIntSchema(s);
   }
 
-  private static JsObj getMapOfStrSchema(StrConstraints schema) {
+  private static JsObj getMapOfStrSchema(StrConstraints schema,
+                                         boolean nullable) {
     if (schema != null) {
       return JsObj.of(TYPE,
-                      JsStr.of(OBJECT),
+                      getMapType(nullable),
                       ADDITIONAL_PROPERTIES,
                       JsObj.of(TYPE,
                                JsStr.of(STRING),
@@ -520,7 +540,7 @@ public final class SpecToJsonSchema {
                      );
     }
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(STRING)
@@ -561,16 +581,16 @@ public final class SpecToJsonSchema {
   private static JsObj getMapOfSpec(JsMapOfSpec jsMapOfSpec,
                                     Set<String> nameSpecsVisited) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(jsMapOfSpec.nullable),
                     ADDITIONAL_PROPERTIES,
                     getSchema(jsMapOfSpec.getValueSpec(),
                               nameSpecsVisited)
                    );
   }
 
-  private static JsObj getMapOfInstantSchema() {
+  private static JsObj getMapOfInstantSchema(boolean nullable) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
@@ -580,9 +600,9 @@ public final class SpecToJsonSchema {
                    );
   }
 
-  private static JsObj getMapOfBoolSchema() {
+  private static JsObj getMapOfBoolSchema(boolean nullable) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(BOOLEAN)
@@ -590,9 +610,9 @@ public final class SpecToJsonSchema {
                    );
   }
 
-  private static JsObj getMapOfBinarySchema() {
+  private static JsObj getMapOfBinarySchema(boolean nullable) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(STRING),
@@ -602,9 +622,9 @@ public final class SpecToJsonSchema {
                    );
   }
 
-  private static JsObj getMapOfIntegerSchema() {
+  private static JsObj getMapOfIntegerSchema(boolean nullable) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(INTEGER)
@@ -612,14 +632,20 @@ public final class SpecToJsonSchema {
                    );
   }
 
-  private static JsObj getMapOfNumberSchema() {
+  private static JsObj getMapOfNumberSchema(boolean nullable) {
     return JsObj.of(TYPE,
-                    JsStr.of(OBJECT),
+                    getMapType(nullable),
                     ADDITIONAL_PROPERTIES,
                     JsObj.of(TYPE,
                              JsStr.of(NUMBER)
                             )
                    );
+  }
+
+  private static JsValue getMapType(boolean nullable) {
+    return nullable ? JsArray.of(JsStr.of(OBJECT),
+                                 JsStr.of(NULL))
+                    : JsStr.of(OBJECT);
   }
 
   private static JsObj getObjType() {

@@ -56,6 +56,7 @@ class ParserErrors {
   static final String LONG_OVERFLOW = "Long overflow";
   static final String EXPECTING_LONG_INSTEAD_OF_DECIMAL = "Expecting long, but found decimal value";
   static final String UNKNOWN_DIGIT = "Unknown digit";
+  static final String NO_EXPONENT_DIGITS = "No exponent digits.";
   static final String INVALID_FIXED_BINARY_SIZE = "Invalid size for fixed type. Expected %s bytes but get %s";
   static final String EXPECTING_STRING_START = "Expecting '\"' for string start";
   static final String PREMATURE_END_OF_JSONSTRING = "Premature end of JSON string";

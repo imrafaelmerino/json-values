@@ -1,3 +1,11 @@
+**14.0.1-SNAPSHOT**
+
+- Sanitized and reordered `pom.xml` for better maintainability.
+- Upgraded key Maven plugins (compiler, surefire, jar, javadoc, source, gpg, nexus-staging).
+- Added `maven-enforcer-plugin` to enforce build toolchain requirements (Java 21+, Maven 3.6.3+).
+- Switched compiler configuration from `source/target` to `release=21`.
+- Upgraded JUnit test dependency to `junit-jupiter` 5.11.3.
+
 **12.3.0**
 
 - New method JsSpec.withReqKeys New methods `JsObjGen.withReqKeys` and `JsObjGen.withNonNullValues`

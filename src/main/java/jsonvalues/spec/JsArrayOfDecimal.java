@@ -2,6 +2,8 @@ package jsonvalues.spec;
 
 import static jsonvalues.spec.ERROR_CODE.DECIMAL_EXPECTED;
 
+import java.math.BigDecimal;
+import jsonvalues.JsBigDec;
 import jsonvalues.JsValue;
 
 final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpec, JsArraySpec, AvroSpec {
@@ -51,16 +53,33 @@ final class JsArrayOfDecimal extends AbstractSizableArr implements JsOneErrorSpe
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfDecimal(nullable,
-                                               arrayConstraints);
+                                               arrayConstraints,
+                                               constraints);
   }
 
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Fun.testArrayOfTestedValue(v -> v.isNumber() ?
-                                           null :
-                                           new JsError(v,
-                                                       DECIMAL_EXPECTED),
+    return Fun.testArrayOfTestedValue(v -> {
+                                        if (!v.isNumber()) {
+                                          return new JsError(v,
+                                                             DECIMAL_EXPECTED);
+                                        }
+                                        if (constraints != null) {
+                                          JsBigDec numericValue = v.isBigDec() ? v.toJsBigDec()
+                                                                               : v.isDouble() ? JsBigDec.of(BigDecimal.valueOf(v.toJsDouble().value))
+                                                                                              : v.isLong() ? JsBigDec.of(BigDecimal.valueOf(v.toJsLong().value))
+                                                                                                           : v.isInt() ? JsBigDec.of(BigDecimal.valueOf(v.toJsInt().value))
+                                                                                                                       : JsBigDec.of(new BigDecimal(v.toJsBigInt().value));
+                                          var errorCode = Fun.testDecimalConstraints(constraints,
+                                                                                      numericValue);
+                                          if (errorCode != null) {
+                                            return new JsError(v,
+                                                               errorCode);
+                                          }
+                                        }
+                                        return null;
+                                      },
                                       nullable,
                                       arrayConstraints,
                                       value

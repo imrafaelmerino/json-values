@@ -103,7 +103,7 @@ public final class SpecGenConfBuilder {
   }
 
   /**
-   * Sets the size range for generated json objects.
+   * Sets the size range for generated JSON objects.
    *
    * @param minimumSize The minimum size for maps.
    * @param maximumSize The maximum size for maps.
@@ -117,7 +117,7 @@ public final class SpecGenConfBuilder {
   }
 
   /**
-   * Sets the length range for keys in generated json objects.
+   * Sets the length range for keys in generated JSON objects.
    *
    * @param minimumLength The minimum length for keys.
    * @param maximumLength The maximum length for keys.

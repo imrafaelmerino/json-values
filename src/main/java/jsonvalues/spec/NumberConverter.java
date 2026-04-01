@@ -80,13 +80,32 @@ abstract class NumberConverter {
                                       );
     }
 
-    int offset = buf[0] == '-' ?
+    int offset = (buf[0] == '-' || buf[0] == '+') ?
                  1 :
                  0;
+    if (end <= offset) {
+      throw JsParserException.reasonAt(ParserErrors.DIGIT_NOT_FOUND,
+                                       reader.getCurrentIndex()
+                                      );
+    }
     if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
       throw JsParserException.reasonAt(ParserErrors.LEADING_ZERO,
                                        reader.getCurrentIndex()
                                       );
+    }
+    for (int i = offset; i < end; i++) {
+      if (buf[i] == 'e' || buf[i] == 'E') {
+        int exponentStart = i + 1;
+        if (exponentStart < end && (buf[exponentStart] == '+' || buf[exponentStart] == '-')) {
+          exponentStart++;
+        }
+        if (exponentStart >= end || buf[exponentStart] < '0' || buf[exponentStart] > '9') {
+          throw JsParserException.reasonAt(ParserErrors.NO_EXPONENT_DIGITS,
+                                           reader.getCurrentIndex()
+                                          );
+        }
+        break;
+      }
     }
 
     try {
@@ -1463,6 +1482,21 @@ abstract class NumberConverter {
                                 end - start - offset,
                                 reader);
     }
+    if (end <= start + offset) {
+      if (end == reader.length()) {
+        final NumberInfo tmp = readLongNumber(reader,
+                                              start + offset);
+        if (tmp.length > 0) {
+          return parseDoubleGeneric(tmp.buffer,
+                                    tmp.length,
+                                    reader);
+        }
+      }
+      numberException(reader,
+                      start,
+                      end,
+                      ParserErrors.DIGIT_NOT_FOUND);
+    }
     long value = 0;
     byte ch = ' ';
     int i = start + offset;
@@ -1502,10 +1536,28 @@ abstract class NumberConverter {
                       end,
                       "Leading zero is not allowed");
     } else if (i == end) {
+      if (end == reader.length()) {
+        final NumberInfo tmp = readLongNumber(reader,
+                                              start + offset);
+        if (tmp.length > end - start - offset) {
+          return parseDoubleGeneric(tmp.buffer,
+                                    tmp.length,
+                                    reader);
+        }
+      }
       return value;
     } else if (ch == '.') {
       i++;
       if (i == end) {
+        if (end == reader.length()) {
+          final NumberInfo tmp = readLongNumber(reader,
+                                                start + offset);
+          if (tmp.length > end - start - offset) {
+            return parseDoubleGeneric(tmp.buffer,
+                                      tmp.length,
+                                      reader);
+          }
+        }
         numberException(reader,
                         start,
                         end,
@@ -1566,6 +1618,15 @@ abstract class NumberConverter {
         value = (value << 3) + (value << 1) + ind;
       }
       if (i == end) {
+        if (end == reader.length()) {
+          final NumberInfo tmp = readLongNumber(reader,
+                                                start + offset);
+          if (tmp.length > end - start - offset) {
+            return parseDoubleGeneric(tmp.buffer,
+                                      tmp.length,
+                                      reader);
+          }
+        }
         return value / POW_10[i - decPos - 1];
       } else if (ch == 'e' || ch == 'E') {
         return doubleExponent(reader,
@@ -1614,10 +1675,19 @@ abstract class NumberConverter {
       while (i < end && ch >= '0' && ch <= '9') {
         ch = buf[i++];
       }
+      if (i == end && end == reader.length()) {
+        final NumberInfo tmp = readLongNumber(reader,
+                                              start + offset);
+        if (tmp.length > end - start - offset) {
+          return parseDoubleGeneric(tmp.buffer,
+                                    tmp.length,
+                                    reader);
+        }
+      }
       if (ch == 'e' || ch == 'E') {
         return doubleExponent(reader,
                               0,
-                              expDiff,
+                              -expDiff,
                               number,
                               buf,
                               start,
@@ -1669,15 +1739,66 @@ abstract class NumberConverter {
                                 end - start - offset,
                                 reader);
     }
-    byte ch;
-    ch = buf[++i];
+    if (end == reader.length()) {
+      final NumberInfo tmp = readLongNumber(reader,
+                                            start + offset);
+      return parseDoubleGeneric(tmp.buffer,
+                                tmp.length,
+                                reader);
+    }
+    if (++i >= end) {
+      if (end == reader.length()) {
+        final NumberInfo tmp = readLongNumber(reader,
+                                              start + offset);
+        if (tmp.length > end - start - offset) {
+          return parseDoubleGeneric(tmp.buffer,
+                                    tmp.length,
+                                    reader);
+        }
+      }
+      numberException(reader,
+                      start,
+                      end,
+                      ParserErrors.DIGIT_NOT_FOUND);
+    }
+    byte ch = buf[i];
     final int exp;
     if (ch == '-') {
+      if (i + 1 >= end) {
+        if (end == reader.length()) {
+          final NumberInfo tmp = readLongNumber(reader,
+                                                start + offset);
+          if (tmp.length > end - start - offset) {
+            return parseDoubleGeneric(tmp.buffer,
+                                      tmp.length,
+                                      reader);
+          }
+        }
+        numberException(reader,
+                        start,
+                        end,
+                        ParserErrors.DIGIT_NOT_FOUND);
+      }
       exp = parseNegativeInt(buf,
                              reader,
                              i,
                              end) - decimals;
     } else if (ch == '+') {
+      if (i + 1 >= end) {
+        if (end == reader.length()) {
+          final NumberInfo tmp = readLongNumber(reader,
+                                                start + offset);
+          if (tmp.length > end - start - offset) {
+            return parseDoubleGeneric(tmp.buffer,
+                                      tmp.length,
+                                      reader);
+          }
+        }
+        numberException(reader,
+                        start,
+                        end,
+                        ParserErrors.DIGIT_NOT_FOUND);
+      }
       exp = parsePositiveInt(buf,
                              reader,
                              i,
@@ -1698,11 +1819,8 @@ abstract class NumberConverter {
       } else if (exp < 0 && -exp < POW_10.length) {
         return whole / POW_10[-exp - 1];
       } else if (reader.doublePrecision != DslJsReader.DoublePrecision.HIGH) {
-        if (exp > 0 && exp < 300) {
+        if (exp > -300 && exp < 300) {
           return whole * Math.pow(10,
-                                  exp);
-        } else if (exp > -300 && exp < 0) {
-          return whole / Math.pow(10,
                                   exp);
         }
       }
@@ -1714,12 +1832,9 @@ abstract class NumberConverter {
       } else if (exp < 0 && -exp < POW_10.length) {
         return fraction / POW_10[-exp - 1] + whole / POW_10[-exp - 1];
       } else if (reader.doublePrecision != DslJsReader.DoublePrecision.HIGH) {
-        if (exp > 0 && exp < 300) {
-          return whole * Math.pow(10,
-                                  exp);
-        } else if (exp > -300 && exp < 0) {
-          return whole / Math.pow(10,
-                                  exp);
+        if (exp > -300 && exp < 300) {
+          return (whole + fraction) * Math.pow(10,
+                                               exp);
         }
       }
     }
@@ -1736,16 +1851,55 @@ abstract class NumberConverter {
     while (end > 0 && Character.isWhitespace(buf[end - 1])) {
       end--;
     }
+    if (end == 0) {
+      throw JsParserException.reasonAt(ParserErrors.DIGIT_NOT_FOUND,
+                                       reader.getCurrentIndex()
+                                      );
+    }
     if (end > reader.maxNumberDigits) {
       throw JsParserException.reasonAt(ParserErrors.TOO_MANY_DIGITS.formatted(end),
                                        reader.getCurrentIndex()
                                       );
     }
+    if (buf[0] == '+') {
+      throw JsParserException.reasonAt("Unknown digit: +",
+                                       reader.getCurrentIndex()
+                                      );
+    }
     final int offset = buf[0] == '-' ? 1 : 0;
+    if (end <= offset) {
+      throw JsParserException.reasonAt(ParserErrors.DIGIT_NOT_FOUND,
+                                       reader.getCurrentIndex()
+                                      );
+    }
+    if (buf[offset] == '.') {
+      throw JsParserException.reasonAt("Unknown digit: .",
+                                       reader.getCurrentIndex()
+                                      );
+    }
+    if (buf[end - 1] == '.') {
+      throw JsParserException.reasonAt("Number ends with a dot",
+                                       reader.getCurrentIndex()
+                                      );
+    }
     if (buf[offset] == '0' && end > offset + 1 && buf[offset + 1] >= '0' && buf[offset + 1] <= '9') {
       throw JsParserException.reasonAt(ParserErrors.LEADING_ZERO,
                                        reader.getCurrentIndex()
                                       );
+    }
+    for (int i = offset; i < end; i++) {
+      if (buf[i] == 'e' || buf[i] == 'E') {
+        int exponentStart = i + 1;
+        if (exponentStart < end && (buf[exponentStart] == '+' || buf[exponentStart] == '-')) {
+          exponentStart++;
+        }
+        if (exponentStart >= end || buf[exponentStart] < '0' || buf[exponentStart] > '9') {
+          throw JsParserException.reasonAt(ParserErrors.NO_EXPONENT_DIGITS,
+                                           reader.getCurrentIndex()
+                                          );
+        }
+        break;
+      }
     }
     try {
       return Double.parseDouble(new String(buf,
@@ -1773,4 +1927,3 @@ abstract class NumberConverter {
 
 
 }
-

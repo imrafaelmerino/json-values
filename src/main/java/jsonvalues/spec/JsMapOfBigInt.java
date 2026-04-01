@@ -22,7 +22,8 @@ final class JsMapOfBigInt extends AbstractMap implements JsSpec, AvroSpec {
 
   @Override
   public JsSpec nullable() {
-    return new JsMapOfBigInt(true);
+    return new JsMapOfBigInt(true,
+                             valuesConstraints);
   }
 
   @Override

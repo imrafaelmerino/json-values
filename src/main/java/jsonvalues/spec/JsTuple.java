@@ -73,8 +73,7 @@ final class JsTuple extends AbstractNullable implements JsArraySpec {
   public List<SpecError> test(final JsPath parentPath,
                               final JsValue value
                              ) {
-    return test(JsPath.empty()
-                      .append(JsPath.fromIndex(-1)),
+    return test(parentPath.append(JsPath.fromIndex(-1)),
                 this,
                 new ArrayList<>(),
                 value

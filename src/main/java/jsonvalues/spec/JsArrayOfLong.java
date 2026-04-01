@@ -52,16 +52,30 @@ final class JsArrayOfLong extends AbstractSizableArr implements JsOneErrorSpec, 
   @Override
   public JsParser parser() {
     return JsParsers.INSTANCE.ofArrayOfLong(nullable,
-                                            arrayConstraints);
+                                            arrayConstraints,
+                                            constraints);
   }
 
 
   @Override
   public JsError testValue(final JsValue value) {
-    return Fun.testArrayOfTestedValue(v -> v.isInt() || v.isLong() ?
-                                           null :
-                                           new JsError(v,
-                                                       LONG_EXPECTED),
+    return Fun.testArrayOfTestedValue(v -> {
+                                        if (!v.isInt() && !v.isLong()) {
+                                          return new JsError(v,
+                                                             LONG_EXPECTED);
+                                        }
+                                        if (constraints != null) {
+                                          var longValue = v.isLong() ? v.toJsLong()
+                                                                     : jsonvalues.JsLong.of(v.toJsInt().value);
+                                          var errorCode = Fun.testLongConstraints(constraints,
+                                                                                   longValue);
+                                          if (errorCode != null) {
+                                            return new JsError(v,
+                                                               errorCode);
+                                          }
+                                        }
+                                        return null;
+                                      },
                                       nullable,
                                       arrayConstraints,
                                       value

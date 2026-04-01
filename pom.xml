@@ -1,123 +1,188 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-  xmlns="http://maven.apache.org/POM/4.0.0"
-  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+  <modelVersion>4.0.0</modelVersion>
+
+  <groupId>com.github.imrafaelmerino</groupId>
   <artifactId>json-values</artifactId>
-  <version>14.0.0</version>
+  <version>14.0.1-SNAPSHOT</version>
+  <packaging>jar</packaging>
+
+  <name>json-values</name>
+  <description>json-values is a functional Java library to work with immutable Json using persistent data structures.</description>
+  <url>https://github.com/imrafaelmerino/json-values</url>
+
+  <licenses>
+    <license>
+      <name>Apache License, Version 2.0</name>
+      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
+      <distribution>repo</distribution>
+    </license>
+  </licenses>
+
+  <developers>
+    <developer>
+      <id>imrafaelmerino</id>
+      <name>Rafael Merino García</name>
+      <email>imrafael.merino@gmail.com</email>
+    </developer>
+  </developers>
+
   <scm>
     <url>https://github.com/imrafaelmerino/json-values.git</url>
   </scm>
-  <url>https://github.com/imrafaelmerino/json-values</url>
+
   <properties>
-    <JACOCO-MAVEN-PLUGIN.VERSION>0.8.8</JACOCO-MAVEN-PLUGIN.VERSION>
-    <JAVA-FUN.VERSION>2.2.0</JAVA-FUN.VERSION>
-    <JUNIT-JUPITER-API.VERSION>5.8.2</JUNIT-JUPITER-API.VERSION>
-    <MAVEN-COMPILER-PLUGIN.SOURCE>21</MAVEN-COMPILER-PLUGIN.SOURCE>
-    <MAVEN-COMPILER-PLUGIN.TARGET>21</MAVEN-COMPILER-PLUGIN.TARGET>
-    <MAVEN-COMPILER-PLUGIN.VERSION>3.13.0</MAVEN-COMPILER-PLUGIN.VERSION>
-    <MAVEN-GPG-PLUGIN.VERSION>1.6</MAVEN-GPG-PLUGIN.VERSION>
-    <MAVEN-JAR-PLUGIN.VERSION>3.4.2</MAVEN-JAR-PLUGIN.VERSION>
-    <MAVEN-JAVADOC-PLUGIN.VERSION>3.11.1</MAVEN-JAVADOC-PLUGIN.VERSION>
-    <MAVEN-SOURCE-PLUGIN.VERSION>3.0.1</MAVEN-SOURCE-PLUGIN.VERSION>
-    <MAVEN-SUREFIRE-PLUGIN.VERSION>3.5.2</MAVEN-SUREFIRE-PLUGIN.VERSION>
-    <NEXUS-STAGING-MAVEN-PLUGIN.VERSION>1.6.12</NEXUS-STAGING-MAVEN-PLUGIN.VERSION>
-    <error-prone.version>2.36.0</error-prone.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.build.sourceEncoding>UTF8</project.build.sourceEncoding>
+
+    <java.minimum.version>21</java.minimum.version>
+    <maven.minimum.version>3.6.3</maven.minimum.version>
+
+    <java-fun.version>3.0.1-SNAPSHOT</java-fun.version>
+    <junit-jupiter.version>5.11.3</junit-jupiter.version>
+
+    <maven.compiler.release>21</maven.compiler.release>
+    <maven.compiler.plugin.version>3.15.0</maven.compiler.plugin.version>
+    <maven.surefire.plugin.version>3.5.5</maven.surefire.plugin.version>
+    <maven.jar.plugin.version>3.5.0</maven.jar.plugin.version>
+    <maven.javadoc.plugin.version>3.12.0</maven.javadoc.plugin.version>
+    <maven.source.plugin.version>3.4.0</maven.source.plugin.version>
+    <maven.gpg.plugin.version>3.2.8</maven.gpg.plugin.version>
+    <maven.enforcer.plugin.version>3.5.0</maven.enforcer.plugin.version>
+    <nexus.staging.maven.plugin.version>1.7.0</nexus.staging.maven.plugin.version>
+
+    <jacoco.maven.plugin.version>0.8.12</jacoco.maven.plugin.version>
+    <pitest.maven.plugin.version>1.17.2</pitest.maven.plugin.version>
+    <pitest.junit5.plugin.version>1.2.2</pitest.junit5.plugin.version>
+
+    <error-prone.version>2.36.0</error-prone.version>
+
+    <pit.targetClasses>jsonvalues.spec.NumberConverter*</pit.targetClasses>
+    <pit.targetTests>jsonvalues.spec.NumberConverter*Test</pit.targetTests>
   </properties>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.github.imrafaelmerino</groupId>
+      <artifactId>java-fun</artifactId>
+      <version>${java-fun.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
   <build>
     <plugins>
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <version>${maven.enforcer.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>enforce-build-requirements</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>[${maven.minimum.version},)</version>
+                </requireMavenVersion>
+                <requireJavaVersion>
+                  <version>[${java.minimum.version},)</version>
+                </requireJavaVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-compiler-plugin</artifactId>
+        <version>${maven.compiler.plugin.version}</version>
         <configuration>
-          <annotationProcessorPaths>
-            <path>
-              <artifactId>error_prone_core</artifactId>
-              <groupId>com.google.errorprone</groupId>
-              <version>${error-prone.version}</version>
-            </path>
-          </annotationProcessorPaths>
+          <release>${maven.compiler.release}</release>
+          <showWarnings>true</showWarnings>
+          <encoding>${project.build.sourceEncoding}</encoding>
           <compilerArgs>
             <arg>-XDcompilePolicy=simple</arg>
             <arg>--should-stop=ifError=FLOW</arg>
             <arg>-Xplugin:ErrorProne -Xep:DeadException:WARN -Xep:GuardedBy:OFF</arg>
             <arg>-Xlint:all</arg>
           </compilerArgs>
-          <encoding>${project.build.sourceEncoding}</encoding>
-          <showWarnings>true</showWarnings>
-          <source>${MAVEN-COMPILER-PLUGIN.SOURCE}</source>
-          <target>${MAVEN-COMPILER-PLUGIN.TARGET}</target>
+          <annotationProcessorPaths>
+            <path>
+              <groupId>com.google.errorprone</groupId>
+              <artifactId>error_prone_core</artifactId>
+              <version>${error-prone.version}</version>
+            </path>
+          </annotationProcessorPaths>
         </configuration>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>3.8.0</version>
       </plugin>
+
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>${MAVEN-SUREFIRE-PLUGIN.VERSION}</version>
+        <version>${maven.surefire.plugin.version}</version>
       </plugin>
+
       <plugin>
+        <groupId>org.jacoco</groupId>
+        <artifactId>jacoco-maven-plugin</artifactId>
+        <version>${jacoco.maven.plugin.version}</version>
+        <executions>
+          <execution>
+            <id>prepare-agent</id>
+            <goals>
+              <goal>prepare-agent</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>report</id>
+            <phase>verify</phase>
+            <goals>
+              <goal>report</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>${MAVEN-JAR-PLUGIN.VERSION}</version>
+        <version>${maven.jar.plugin.version}</version>
       </plugin>
+
       <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-javadoc-plugin</artifactId>
+        <version>${maven.javadoc.plugin.version}</version>
         <configuration>
-          <source>${MAVEN-COMPILER-PLUGIN.SOURCE}</source>
+          <source>${maven.compiler.release}</source>
         </configuration>
         <executions>
           <execution>
+            <id>attach-javadocs</id>
             <goals>
               <goal>jar</goal>
             </goals>
-            <id>attach-javadocs</id>
           </execution>
         </executions>
-        <groupId>org.apache.maven.plugins</groupId>
-        <version>${MAVEN-JAVADOC-PLUGIN.VERSION}</version>
       </plugin>
     </plugins>
   </build>
-  <dependencies>
-    <dependency>
-      <artifactId>java-fun</artifactId>
-      <groupId>com.github.imrafaelmerino</groupId>
-      <version>${JAVA-FUN.VERSION}</version>
-    </dependency>
 
-    <dependency>
-      <artifactId>junit-jupiter-api</artifactId>
-      <groupId>org.junit.jupiter</groupId>
-      <scope>test</scope>
-      <version>${JUNIT-JUPITER-API.VERSION}</version>
-    </dependency>
-
-  </dependencies>
-  <description>json-values is a functional Java library to work with immutable Json using persistent
-    data
-    structures.
-  </description>
-  <developers>
-    <developer>
-      <email>imrafael.merino@gmail.com</email>
-      <id>imrafaelmerino</id>
-      <name>Rafael Merino García</name>
-    </developer>
-  </developers>
-  <groupId>com.github.imrafaelmerino</groupId>
-  <licenses>
-    <license>
-      <distribution>repo</distribution>
-      <name>Apache License, Version 2.0</name>
-      <url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-    </license>
-  </licenses>
-  <modelVersion>4.0.0</modelVersion>
-  <name>json-values</name>
-  <packaging>jar</packaging>
   <profiles>
     <profile>
+      <id>local</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
@@ -133,54 +198,13 @@
           <url>http://127.0.0.1:8081/repository/maven-snapshots/</url>
         </snapshotRepository>
       </distributionManagement>
-      <id>local</id>
     </profile>
+
     <profile>
+      <id>release</id>
       <activation>
         <activeByDefault>false</activeByDefault>
       </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <configuration>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <serverId>ossrh</serverId>
-            </configuration>
-            <extensions>true</extensions>
-            <groupId>org.sonatype.plugins</groupId>
-            <version>${NEXUS-STAGING-MAVEN-PLUGIN.VERSION}</version>
-          </plugin>
-          <plugin>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-              </execution>
-            </executions>
-            <groupId>org.apache.maven.plugins</groupId>
-            <version>${MAVEN-GPG-PLUGIN.VERSION}</version>
-          </plugin>
-          <plugin>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-                <id>attach-sources</id>
-              </execution>
-            </executions>
-            <groupId>org.apache.maven.plugins</groupId>
-            <version>${MAVEN-SOURCE-PLUGIN.VERSION}</version>
-          </plugin>
-        </plugins>
-      </build>
       <distributionManagement>
         <repository>
           <id>ossrh</id>
@@ -191,7 +215,106 @@
           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
         </snapshotRepository>
       </distributionManagement>
-      <id>release</id>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.sonatype.plugins</groupId>
+            <artifactId>nexus-staging-maven-plugin</artifactId>
+            <version>${nexus.staging.maven.plugin.version}</version>
+            <extensions>true</extensions>
+            <configuration>
+              <serverId>ossrh</serverId>
+              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+              <autoReleaseAfterClose>true</autoReleaseAfterClose>
+            </configuration>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-gpg-plugin</artifactId>
+            <version>${maven.gpg.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>sign-artifacts</id>
+                <phase>verify</phase>
+                <goals>
+                  <goal>sign</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-source-plugin</artifactId>
+            <version>${maven.source.plugin.version}</version>
+            <executions>
+              <execution>
+                <id>attach-sources</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+              </execution>
+            </executions>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>mutation</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.pitest</groupId>
+            <artifactId>pitest-maven</artifactId>
+            <version>${pitest.maven.plugin.version}</version>
+            <configuration>
+              <outputFormats>
+                <param>HTML</param>
+                <param>XML</param>
+              </outputFormats>
+              <targetClasses>
+                <param>${pit.targetClasses}</param>
+              </targetClasses>
+              <targetTests>
+                <param>${pit.targetTests}</param>
+              </targetTests>
+              <threads>4</threads>
+              <timestampedReports>false</timestampedReports>
+            </configuration>
+            <dependencies>
+              <dependency>
+                <groupId>org.pitest</groupId>
+                <artifactId>pitest-junit5-plugin</artifactId>
+                <version>${pitest.junit5.plugin.version}</version>
+              </dependency>
+            </dependencies>
+          </plugin>
+        </plugins>
+      </build>
+    </profile>
+
+    <profile>
+      <id>stress</id>
+      <activation>
+        <activeByDefault>false</activeByDefault>
+      </activation>
+      <build>
+        <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-surefire-plugin</artifactId>
+            <version>${maven.surefire.plugin.version}</version>
+            <configuration>
+              <groups>stress</groups>
+            </configuration>
+          </plugin>
+        </plugins>
+      </build>
     </profile>
   </profiles>
 
